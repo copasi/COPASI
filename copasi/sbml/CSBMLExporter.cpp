@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -326,10 +326,6 @@ std::string getUserDefinedFuctionForName(SBMLDocument* pSBMLDocument,
 
   return id;
 }
-
-#ifdef USE_SBMLUNIT
-# include "copasi/sbmlunit/CSBMLunitInterface.h"
-#endif // USE_SBMLUNIT
 
 void
 CSBMLExporter::setHandler(CProcessReport * pProcessReport)
@@ -3339,62 +3335,6 @@ CSBMLExporter::exportModelToString(CDataModel& dataModel,
   if (!exportLayout(sbmlLevel, dataModel))
     return "";
 
-#ifdef USE_SBMLUNIT
-
-  if (this->mpSBMLDocument != NULL)
-    {
-      if (createProgressStepOrStop(13,
-                                   1,
-                                   "Infering units..."))
-        {
-          finishExport();
-          return "";
-        }
-
-      CSBMLunitInterface uif(this->mpSBMLDocument->getModel(), true);
-      uif.determineUnits();
-
-      // check if there were conflicts
-      if (uif.getStatistics().all[5] == 0)
-        {
-          // check if there are unresolved parameter units left
-          if ((uif.getStatistics().local[0] != 0 || uif.getStatistics().global[0] != 0) && uif.getStatistics().numbers[0] != 0)
-            {
-              // try with heuristics
-              CSBMLunitInterface uif2(this->mpSBMLDocument->getModel(), true);
-              uif2.setAssumeDimensionlessOne(true);
-              uif2.determineUnits();
-
-              // check again if there have been conflicts
-              if (uif2.getStatistics().all[5] == 0)
-                {
-                  // done use result from uif2
-                  // there were no conflicts, so we write the units that could be determined
-                  uif2.writeBackToModel();
-                  std::cerr << "undetermined: " << uif2.getStatistics().global[0] +  uif2.getStatistics().local[0] << std::endl;
-                }
-              else
-                {
-                  // TODO create appropriate warning
-                  std::cerr << "Warning. " << uif2.getStatistics().all[5] << " conflicts found." << std::endl;
-                }
-            }
-          else
-            {
-              // no conflicts, so we can write the parameters that could be determined to the model
-              uif.writeBackToModel();
-              std::cerr << "undetermined: " << uif.getStatistics().global[0] +  uif.getStatistics().local[0] << std::endl;
-            }
-        }
-      else
-        {
-          // TODO create a warning
-          std::cerr << "Warning. " << uif.getStatistics().all[5] << " conflicts found." << std::endl;
-        }
-    }
-
-#endif // USE_SBMLUNIT
-
   // export the model to a string
   if (this->mpSBMLDocument == NULL) return std::string();
 
@@ -3494,11 +3434,6 @@ CSBMLExporter::addInitialAssignmentsToModel(const CDataModel &dataModel)
 
 bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
 {
-  // reset warnings for missing entries in modelhistory
-  mHaveModelHistoryAuthorWarning = false;
-  mHaveModelHistoryCreationDateWarning = false;
-  mHaveModelHistoryModificationDateWarning = false;
-
   const SBMLDocument* pOldSBMLDocument = dataModel.getCurrentSBMLDocument();
   const CModel* pModel = dataModel.getModel();
 
@@ -5916,7 +5851,7 @@ void CSBMLExporter::checkForPiecewiseFunctions(const CEvaluationNode& node, std:
  */
 void CSBMLExporter::removeUnusedObjects()
 {
-  if (this->mpSBMLDocument != NULL || this->mpSBMLDocument->getModel() == NULL)
+  if (this->mpSBMLDocument != NULL && this->mpSBMLDocument->getModel() != NULL)
     {
       // we need to reverse the COPASI2SBMLMap so that we can remove objects
       // from the map if we delete them
@@ -6713,9 +6648,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_UNKNOWN);
             break;
 
-          // IS DESCRIBED BY is handled in the references below
-          //case bqbiol_isDescribedBy:
-          //    break;
+            // IS DESCRIBED BY is handled in the references below
+            //case bqbiol_isDescribedBy:
+            //    break;
           case CRDFPredicate::bqbiol_isEncodedBy:
           case CRDFPredicate::copasi_isEncodedBy:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -6752,7 +6687,7 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setBiologicalQualifierType(BQB_IS_VERSION_OF);
             break;
 
-          // This qualifier is supported in libsbml 4.1
+            // This qualifier is supported in libsbml 4.1
           case CRDFPredicate::bqbiol_occursIn:
           case CRDFPredicate::copasi_occursIn:
             cvTerm.setQualifierType(BIOLOGICAL_QUALIFIER);
@@ -6814,9 +6749,9 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
             cvTerm.setModelQualifierType(BQM_HAS_INSTANCE);
             break;
 
-          // IS DESCRIBED BY is handled in the references below
-          //case bqmodel_isDescribedBy:
-          //    break;
+            // IS DESCRIBED BY is handled in the references below
+            //case bqmodel_isDescribedBy:
+            //    break;
           default:
             // there are many qualifiers that start e.g. with copasi_ which are
             // not handled
@@ -6945,7 +6880,6 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
   const CModel* pModel = dynamic_cast<const CModel*>(pCOPASIObject);
 
   if ((pModel != NULL && this->mSBMLLevel < 3)
-      // actually this preprocessor directive is not really necessary, but better safe then sorry
       || this->mSBMLLevel > 2
      )
     {
@@ -6978,11 +6912,6 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
           modelHistory.addCreator(&modelCreator);
         }
 
-      if (modelHistory.getNumCreators() < 1 && !mHaveModelHistoryAuthorWarning)
-        {
-          mHaveModelHistoryAuthorWarning = true;
-          CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no author has been defined.");
-        }
 
       // now set the creation date
       std::string creationDateString = miriamInfo.getCreatedDT();
@@ -6994,87 +6923,61 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
           modified = true;
         }
 
-      if (!modelHistory.isSetCreatedDate() && !mHaveModelHistoryCreationDateWarning)
-        {
-          mHaveModelHistoryCreationDateWarning = true;
-          CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no creation date has been defined.");
-        }
-
-      // Since SBML can have only one modification time, and we can have several,
-      // we have to take the last one
       const CDataVector <CModification> & modifications = miriamInfo.getModifications();
       iMax = modifications.size();
 
-      if (iMax != 0)
+      for (i = 0; i < iMax; ++i)
         {
           modified = true;
-          const CModification* pModification = &modifications[0];
-          assert(pModification != NULL);
-          std::string lastDateString = pModification->getDate();
+          const CModification* pModification = &modifications[i];
 
-          for (i = 1; i < iMax; ++i)
-            {
-              pModification = &modifications[i];
-              assert(pModification != NULL);
-              std::string dateString = pModification->getDate();
+          if (!pModification)
+            continue;
 
-              // since the date string is in W3CDTF format, a normal string
-              // compare should be enough to find out which date is more recent
-              if (dateString > lastDateString)
-                {
-                  lastDateString = dateString;
-                }
-            }
+          std::string dateString = pModification->getDate();
 
-          Date modifiedDate(lastDateString);
-          modelHistory.setModifiedDate(&modifiedDate);
+          if (dateString.empty())
+            continue;
+
+          Date modifiedDate(dateString);
+          modelHistory.addModifiedDate(&modifiedDate);
         }
-      else if (modelHistory.isSetCreatedDate())
+
+      if (iMax == 0 && modelHistory.isSetCreatedDate())
         {
           // a model history is only valid if it has a modifiedData
           modelHistory.setModifiedDate(modelHistory.getCreatedDate());
         }
 
-      if (!modelHistory.isSetModifiedDate() && mHaveModelHistoryModificationDateWarning)
+      // make sure the element has a meta id
+      if (!pSBMLObject->isSetMetaId())
         {
-          mHaveModelHistoryModificationDateWarning = true;
-          CCopasiMessage(CCopasiMessage::WARNING, "The ModelHistory cannot be exported to SBML, as no modification date has been defined.");
+          std::string metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI", true, "");
+          metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLObject));
+          pSBMLObject->setMetaId(metaId);
         }
 
-      if (this->mSBMLLevel > 2)
+      if (modified == true)
         {
-          // set the model history on the sbml object
-
-          // make sure the model has a meta id
-          if (!pSBMLObject->isSetMetaId())
+          if (pSBMLObject->setModelHistory(&modelHistory) != LIBSBML_OPERATION_SUCCESS)
             {
-              std::string metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI", true, "");
-              metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLObject));
-              pSBMLObject->setMetaId(metaId);
-            }
+#if LIBSBML_VERSION >= 52000
 
-          if (modified == true)
-            {
-              pSBMLObject->setModelHistory(&modelHistory);
-            }
-        }
-      else
-        {
-          // set the model history on the model
-          Model* pSBMLModel = dynamic_cast<Model*>(pSBMLObject);
-          assert(pSBMLModel != NULL);
+              // setting the history failed, probably since we have an incomplete object.
+              // so instead we just set the dates
+              if (modelHistory.isSetCreatedDate())
+                pSBMLObject->setCreatedDate(modelHistory.getCreatedDate());
 
-          // make sure the model has a meta id
-          if (!pSBMLModel->isSetMetaId())
-            {
-              std::string metaId = CSBMLExporter::createUniqueId(metaIds, "COPASI", true, "");
-              metaIds.insert(std::pair<const std::string, const SBase*>(metaId, pSBMLModel));
-              pSBMLModel->setMetaId(metaId);
-            }
+              // if we have already modified dates on the object remove
+              pSBMLObject->unsetModifiedDates();
 
-          if (modified == true)
-            {
-              pSBMLModel->setModelHistory(&modelHistory);
+              // then add all modified dates from current element
+              for (unsigned int i = 0; i < modelHistory.getNumModifiedDates(); ++i)
+                {
+                  pSBMLObject->addModifiedDate(modelHistory.getModifiedDate(i));
+                }
+
+#endif // LIBSBML_VERSION >= 52000
             }
         }
     }

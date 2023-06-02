@@ -1,4 +1,4 @@
-# Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -59,6 +59,7 @@ if (NOT (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY) OR NOT ZLIB_FOUND)
 	          /opt/csw/lib   # Blastwave
 	          /opt/lib
 	          /usr/freeware/lib64
+              CMAKE_FIND_ROOT_PATH_BOTH
              NO_DEFAULT_PATH)
 
     if (NOT ZLIB_LIBRARY)

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -269,27 +269,32 @@ bool CQEventDM::removeRows(int position, int rows, const QModelIndex & parent)
 
   beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
-  std::vector< const CEvent * > ToBeDeleted;
+  std::vector< CCommonName > ToBeDeleted;
   ToBeDeleted.resize(rows);
 
-  std::vector< const CEvent * >::iterator it = ToBeDeleted.begin();
-  std::vector< const CEvent * >::iterator end = ToBeDeleted.end();
+  std::vector< CCommonName >::iterator it = ToBeDeleted.begin();
+  std::vector< CCommonName >::iterator end = ToBeDeleted.end();
 
   CDataVector< CEvent >::const_iterator itRow = mpEvents->begin() + position;
 
   for (; it != end; ++it, ++itRow)
     {
-      *it = &*itRow;
+      *it = itRow->getCN();
     }
 
   for (it = ToBeDeleted.begin(); it != end; ++it)
     {
-      CUndoData UndoData;
-      (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-      ListViews::addUndoMetaData(this, UndoData);
-
       if (mFetched > 0)
         --mFetched;
+
+      const CEvent * pObj = dynamic_cast< const CEvent * >(mpDataModel->getObject(*it));
+
+      if (!pObj)
+        continue;
+
+      CUndoData UndoData;
+      pObj->createUndoData(UndoData, CUndoData::Type::REMOVE);
+      ListViews::addUndoMetaData(this, UndoData);
 
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
@@ -310,8 +315,8 @@ bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex& index)
   QModelIndexList::const_iterator i;
 
   for (i = rows.begin(); i != rows.end(); ++i)
-    if (i->isValid() && !isDefaultRow(*i) &&
-        &mpEvents->operator[](i->row()) != NULL)
+    if (i->isValid()
+        && !isDefaultRow(*i))
       {
         Events.append(&mpEvents->operator[](i->row()));
       }

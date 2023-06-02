@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -116,6 +116,9 @@ void CQFittingResultTab1::load(const CFitProblem * pProblem)
   mpEditFailedEvaluationsExc->setText(QString::number(FailedEvaluationsExc));
   const unsigned C_INT32 & FailedEvaluationsNaN = pProblem->getFailedEvaluationsNaN();
   mpEditFailedEvaluationsNaN->setText(QString::number(FailedEvaluationsNaN));
+
+  mpEditConstraint->setText(QString::number(pProblem->getConstraintEvaluations()));
+  mpEditFailedConstraint->setText(QString::number(pProblem->geFailedConstraintCounter()));
 }
 
 void CQFittingResultTab1::init()

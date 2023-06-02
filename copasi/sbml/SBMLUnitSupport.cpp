@@ -19,7 +19,7 @@
 
 bool areApproximatelyEqual(double x, double y)
 {
-  double maxXYOne = std::max( {1.0, std::fabs(x), std::fabs(y)});
+  double maxXYOne = std::max({1.0, std::fabs(x), std::fabs(y)});
 
   return std::fabs(x - y) <= maxXYOne * std::numeric_limits< double >::epsilon();
 }
@@ -138,7 +138,7 @@ std::string SBMLUnitSupport::unitKindToString(UnitKind_t kind)
 
 SBMLUnitSupport::~SBMLUnitSupport()
 {
-for (std::pair< const std::string, SUnitInfo > & UnitInfo : mImportedUnits)
+  for (std::pair< const std::string, SUnitInfo > & UnitInfo : mImportedUnits)
     if (UnitInfo.second.allocated)
       pdelete(UnitInfo.second.pSBML);
 }
@@ -1168,7 +1168,8 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
                   if (pDimensionlessUnit == nullptr)
                     pDimensionlessUnit = &UnitInfo;
 
-                  if (pDimensionlessUnit  != NULL && !areSBMLUnitDefinitionsIdentical(*pDimensionlessUnit, UnitInfo))
+                  if (pDimensionlessUnit != nullptr
+                      && !areSBMLUnitDefinitionsIdentical(*pDimensionlessUnit, UnitInfo))
                     {
                       inconsistentDimensionlessUnits = true;
                     }
@@ -1215,17 +1216,17 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
   {
     std::ostringstream os;
 
-for (const std::string & entity : nonDefaultCompartmentsVolume)
+    for (const std::string & entity : nonDefaultCompartmentsVolume)
       {
         os << entity << ", ";
       }
 
-for (const std::string & entity : nonDefaultCompartmentsArea)
+    for (const std::string & entity : nonDefaultCompartmentsArea)
       {
         os << entity << ", ";
       }
 
-for (const std::string & entity : nonDefaultCompartmentsLength)
+    for (const std::string & entity : nonDefaultCompartmentsLength)
       {
         os << entity << ", ";
       }
@@ -1266,22 +1267,26 @@ for (const std::string & entity : nonDefaultCompartmentsLength)
 
               if (areApproximatelyEqual(pCompartment->getSpatialDimensionsAsDouble(), 3.0))
                 {
-                  if (pVolumeUnit  != NULL && !areSBMLUnitDefinitionsIdentical(*pVolumeUnit, UnitInfo))
+                  if (mpVolumeUnit != nullptr
+                      && !areSBMLUnitDefinitionsIdentical(*mpVolumeUnit, UnitInfo))
                     CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
                 }
               else if (areApproximatelyEqual(pCompartment->getSpatialDimensionsAsDouble(), 2.0))
                 {
-                  if (pAreaUnit != NULL && !areSBMLUnitDefinitionsIdentical(*pAreaUnit, UnitInfo))
+                  if (mpAreaUnit != nullptr
+                      && !areSBMLUnitDefinitionsIdentical(*mpAreaUnit, UnitInfo))
                     CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
                 }
               else if (areApproximatelyEqual(pCompartment->getSpatialDimensionsAsDouble(), 1.0))
                 {
-                  if (pLengthUnit != NULL && !areSBMLUnitDefinitionsIdentical(*pLengthUnit, UnitInfo))
+                  if (mpLengthUnit != nullptr
+                      && !areSBMLUnitDefinitionsIdentical(*mpLengthUnit, UnitInfo))
                     CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
                 }
               else
                 {
-                  if (pDimensionlessUnit  != NULL && !areSBMLUnitDefinitionsIdentical(*pDimensionlessUnit, UnitInfo))
+                  if (pDimensionlessUnit != nullptr
+                      && !areSBMLUnitDefinitionsIdentical(*pDimensionlessUnit, UnitInfo))
                     CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
                 }
             }
@@ -1304,12 +1309,14 @@ for (const std::string & entity : nonDefaultCompartmentsLength)
                   pCopasiModel->setQuantityUnit(UnitInfo.expression, CCore::Framework::Concentration);
                 }
 
-              if (mpSubstanceUnit  != NULL && !areSBMLUnitDefinitionsIdentical(*mpSubstanceUnit, UnitInfo))
+              if (mpSubstanceUnit != nullptr
+                  && !areSBMLUnitDefinitionsIdentical(*mpSubstanceUnit, UnitInfo))
                 {
                   nonDefaultSpecies.push_back(pSpecies->getId());
                 }
 
-              if (pSubstanceUnit  != NULL && !areSBMLUnitDefinitionsIdentical(*pSubstanceUnit, UnitInfo))
+              if (pSubstanceUnit != nullptr
+                  && !areSBMLUnitDefinitionsIdentical(*pSubstanceUnit, UnitInfo))
                 {
                   inconsistentUnits = true;
                 }
@@ -1331,7 +1338,7 @@ for (const std::string & entity : nonDefaultCompartmentsLength)
   {
     std::ostringstream os;
 
-for (const std::string & entity : nonDefaultSpecies)
+    for (const std::string & entity : nonDefaultSpecies)
       {
         os << entity << ", ";
       }
@@ -1354,7 +1361,7 @@ for (const std::string & entity : nonDefaultSpecies)
       pReaction = pSBMLModel->getReaction(i);
       pKineticLaw = pReaction->getKineticLaw();
 
-      if (pKineticLaw != NULL)
+      if (pKineticLaw != nullptr)
         {
           std::string unitId;
 
@@ -1409,12 +1416,14 @@ for (const std::string & entity : nonDefaultSpecies)
                       pCopasiModel->setTimeUnit(UnitInfo.expression);
                     }
 
-                  if (mpTimeUnit != NULL && !areSBMLUnitDefinitionsIdentical(*mpTimeUnit, UnitInfo))
+                  if (mpTimeUnit != nullptr
+                      && !areSBMLUnitDefinitionsIdentical(*mpTimeUnit, UnitInfo))
                     {
                       nonDefaultKineticTime.push_back(pReaction->getId());
                     }
 
-                  if (pTimeUnit != NULL && !areSBMLUnitDefinitionsIdentical(*pTimeUnit, UnitInfo))
+                  if (pTimeUnit != nullptr
+                      && !areSBMLUnitDefinitionsIdentical(*pTimeUnit, UnitInfo))
                     {
                       inconsistentTimeUnits = true;
                     }
@@ -1442,7 +1451,7 @@ for (const std::string & entity : nonDefaultSpecies)
   {
     std::ostringstream os;
 
-for (const std::string & entity : nonDefaultKineticSubstance)
+    for (const std::string & entity : nonDefaultKineticSubstance)
       {
         os << entity << ", ";
       }
@@ -1469,7 +1478,7 @@ for (const std::string & entity : nonDefaultKineticSubstance)
   {
     std::ostringstream os;
 
-for (const std::string & entity : nonDefaultKineticTime)
+    for (const std::string & entity : nonDefaultKineticTime)
       {
         os << entity << ", ";
       }
@@ -1508,12 +1517,14 @@ for (const std::string & entity : nonDefaultKineticTime)
                   pCopasiModel->setTimeUnit(UnitInfo.expression);
                 }
 
-              if (mpTimeUnit != NULL && pReaction != NULL && !areSBMLUnitDefinitionsIdentical(*mpTimeUnit, UnitInfo))
+              if (mpTimeUnit != nullptr
+                  && !areSBMLUnitDefinitionsIdentical(*mpTimeUnit, UnitInfo))
                 {
-                  nonDefaultEventTime.push_back(pReaction->getId());
+                  nonDefaultEventTime.push_back(pEvent->getId());
                 }
 
-              if (pTimeUnit != NULL && !areSBMLUnitDefinitionsIdentical(*pTimeUnit, UnitInfo))
+              if (pTimeUnit != nullptr
+                  && !areSBMLUnitDefinitionsIdentical(*pTimeUnit, UnitInfo))
                 {
                   inconsistentTimeUnits = true;
                 }
@@ -1540,7 +1551,7 @@ for (const std::string & entity : nonDefaultKineticTime)
   {
     std::ostringstream os;
 
-for (const std::string & entity : nonDefaultEventTime)
+    for (const std::string & entity : nonDefaultEventTime)
       {
         os << entity << ", ";
       }
@@ -1702,13 +1713,13 @@ void SBMLUnitSupport::checkForSpatialSizeUnits(const CDataModel & dataModel, std
 {
   const SBMLDocument * pSBMLDocument = const_cast< CDataModel & >(dataModel).getCurrentSBMLDocument();
 
-  if (pSBMLDocument != NULL)
+  if (pSBMLDocument != nullptr)
     {
       // check all species in the model if they have a spatial size attribute set
       // and if it is identical to the unit of the compartment the species is in
       const CModel * pModel = dataModel.getModel();
 
-      if (pModel != NULL)
+      if (pModel != nullptr)
         {
           CDataVector< CMetab >::const_iterator it = pModel->getMetabolites().begin(), endit = pModel->getMetabolites().end();
           std::set< std::string > badSpecies;
@@ -1728,7 +1739,7 @@ void SBMLUnitSupport::checkForSpatialSizeUnits(const CDataModel & dataModel, std
                 {
                   // check for the spatial size units attribute
                   pSBMLSpecies = dynamic_cast< const Species * >(pos->second);
-                  assert(pSBMLSpecies != NULL);
+                  assert(pSBMLSpecies != nullptr);
 
                   if (pSBMLSpecies == NULL)
                     continue;
@@ -1743,13 +1754,13 @@ void SBMLUnitSupport::checkForSpatialSizeUnits(const CDataModel & dataModel, std
                       const Compartment * pCompartment = pSBMLDocument->getModel()->getCompartment(pSBMLSpecies->getCompartment());
                       const SBMLUnitSupport::SUnitInfo * pCompartmentUnitInfo = NULL;
 
-                      if (pCompartment != NULL)
+                      if (pCompartment != nullptr)
                         {
                           if (pCompartment->isSetUnits())
                             {
-                              assert(pSBMLDocument->getModel() != NULL);
+                              assert(pSBMLDocument->getModel() != nullptr);
 
-                              if (pSBMLDocument->getModel() != NULL)
+                              if (pSBMLDocument->getModel() != nullptr)
                                 {
                                   pCompartmentUnitInfo = &UnitImporter.importUnit(pCompartment->getUnits(), pSBMLDocument->getModel());
                                 }
@@ -1759,9 +1770,9 @@ void SBMLUnitSupport::checkForSpatialSizeUnits(const CDataModel & dataModel, std
                               // the compartment has the default units associated with the
                               // symbol length , area or volume depending on the spatial size
                               // of the compartment
-                              assert(pSBMLDocument->getModel() != NULL);
+                              assert(pSBMLDocument->getModel() != nullptr);
 
-                              if (pSBMLDocument->getModel() != NULL)
+                              if (pSBMLDocument->getModel() != nullptr)
                                 {
                                   switch (pCompartment->getSpatialDimensions())
                                     {

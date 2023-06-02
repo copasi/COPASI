@@ -73,27 +73,27 @@ public:
     /**
     * Counter of evaluations
     */
-    unsigned C_INT32 Counter{0};
+    unsigned C_INT32 Counter {0};
 
     /**
     * Counter of failed evaluations (throwing Exception)
     */
-    unsigned C_INT32 FailedCounterException{0};
+    unsigned C_INT32 FailedCounterException {0};
 
     /**
     * Counter of failed evaluations (result NaN)
     */
-    unsigned C_INT32 FailedCounterNaN{0};
+    unsigned C_INT32 FailedCounterNaN {0};
 
     /**
     * Counter of constraint checks
     */
-    unsigned C_INT32 ConstraintCounter{0};
+    unsigned C_INT32 ConstraintCounter {0};
 
     /**
     * Counter of failed constraint checks
     */
-    unsigned C_INT32 FailedConstraintCounter{0};
+    unsigned C_INT32 FailedConstraintCounter {0};
   };
 
   /**
@@ -418,14 +418,20 @@ public:
   const unsigned C_INT32 & getFunctionEvaluations() const;
 
   /**
+   * Retrieve the constraint evaluation counter.
+   * @return const unsigned C_INT32 & constraintCounter
+   */
+  const unsigned C_INT32 & getConstraintEvaluations() const;
+
+  /**
    * Adds increment to the internal counters
    * @param const sCounter & increment
    */
   void incrementCounters(const sCounter & increment);
 
   /**
-   * Retrieve the internal counterc
-   * @return const sCounter & counterc
+   * Retrieve the internal counter
+   * @return const sCounter & counter
    */
   const sCounter & getCounters() const;
 
@@ -445,6 +451,13 @@ public:
    * @return const unsigned C_INT32 & failedEvaluationsNaN
    */
   const unsigned C_INT32 & getFailedEvaluationsNaN() const;
+
+  /**
+   * Retrieve the counter of failed Constraint Evaluations
+   * @return const unsigned C_INT32 & failedConstraintCounter
+   */
+  const unsigned C_INT32 & geFailedConstraintCounter() const;
+
 
   /**
    * Retrieve the objective function.

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -158,6 +158,22 @@ const std::string & CExperimentObjectMap::getName(const size_t & index) const
     return pColumn->getObjectName();
   else
     return NoName;
+}
+
+std::string CExperimentObjectMap::getNthCnOfType(size_t index, CExperiment::Type role) const
+{
+  size_t count = 0;
+
+  for (size_t i = 0; i <= getLastColumn(); ++i)
+    {
+      CExperiment::Type r = getRole(i);
+
+      if (r == role)
+        if (count++ == index)
+          return getObjectCN(i);
+    }
+
+  return std::string();
 }
 
 bool CExperimentObjectMap::setRole(const size_t & index,
