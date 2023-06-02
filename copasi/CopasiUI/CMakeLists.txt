@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -69,8 +69,56 @@ if (BUILD_STATIC_COPASISE)
     set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS FALSE) 
 endif (BUILD_STATIC_COPASISE) 
 
-add_executable(CopasiUI ${COPASI_UI_FLAGS} ${SOURCES} ${HEADERS})
+# need to bundle resource files for apple
+set (RESOURCES)
+if (APPLE)
+  file(GLOB_RECURSE WIZARD_RESOURCES "${CMAKE_SOURCE_DIR}/copasi/wizard/help_html/*")
+  file(GLOB_RECURSE EXAMPLES_RESOURCES "${CMAKE_SOURCE_DIR}/TestSuite/distribution/*")
+  set (ICNS_FILE "${CMAKE_SOURCE_DIR}/copasi.icns")
+  set (RESOURCES ${WIZARD_RESOURCES} ${EXAMPLES_RESOURCES} ${ICNS_FILE})
+endif()
+
+add_executable(CopasiUI ${COPASI_UI_FLAGS} ${SOURCES} ${HEADERS} ${RESOURCES})
 target_link_libraries(CopasiUI libCOPASIUI)
+
+# now modify the package location for the resource files
+if (APPLE)
+
+# Wizard files first
+foreach (FILE ${WIZARD_RESOURCES})
+    # Get the relative path from the data-folder to the particular file.
+    file(RELATIVE_PATH NEW_FILE "${CMAKE_SOURCE_DIR}/copasi/wizard/help_html" ${FILE})
+
+    # Get the relative path to the file.
+    get_filename_component(NEW_FILE_PATH ${NEW_FILE} DIRECTORY)
+
+    # Set it's location inside the app package (under Resources).
+    set_property(SOURCE ${FILE} PROPERTY MACOSX_PACKAGE_LOCATION "Resources/doc/html/${NEW_FILE_PATH}")
+
+    # Optional: Add the file to the 'Resources' folder group in Xcode.
+    #           This also preserves folder structure.
+    source_group("Resources/doc/html/${NEW_FILE_PATH}" FILES "${FILE}")
+endforeach ()
+
+# then examples
+foreach (FILE ${EXAMPLES_RESOURCES})
+    # Get the relative path from the data-folder to the particular file.
+    file(RELATIVE_PATH NEW_FILE "${CMAKE_SOURCE_DIR}/TestSuite/distribution" ${FILE})
+
+    # Get the relative path to the file.
+    get_filename_component(NEW_FILE_PATH ${NEW_FILE} DIRECTORY)
+
+    # Set it's location inside the app package (under Resources).
+    set_property(SOURCE ${FILE} PROPERTY MACOSX_PACKAGE_LOCATION "Resources/examples/${NEW_FILE_PATH}")
+
+    # Optional: Add the file to the 'Resources' folder group in Xcode.
+    #           This also preserves folder structure.
+    source_group("Resources/examples/${NEW_FILE_PATH}" FILES "${FILE}")
+endforeach ()
+# and icon
+set_property(SOURCE ${ICNS_FILE} PROPERTY MACOSX_PACKAGE_LOCATION "Resources")
+source_group("Resources" FILES "${ICNS_FILE}")
+endif()
 
 if(NOT APPLE)
     SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/CopasiUI${CMAKE_EXECUTABLE_SUFFIX}" CACHE INTERNAL "")

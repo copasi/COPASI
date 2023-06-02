@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -142,7 +142,7 @@ const MESSAGES Messages[] =
   {MCTrajectoryMethod + 19, "CTrajectoryMethod (19): The model contains a global quantity with an assignment rule. \nThe value of the quantity is used in the model. \nStochastic simulation of such models is not possible with this version of COPASI."}, //obsolete
   {MCTrajectoryMethod + 20, "CTrajectoryMethod (20): The model contains a species with an ODE rule.\nStochastic simulation is not possible."},
   {MCTrajectoryMethod + 21, "CTrajectoryMethod (21): The model contains a compartment with an ODE rule.\nStochastic simulation is not possible."},
-  {MCTrajectoryMethod + 23, "CTrajectoryMethod (23): The model contains events. Stochastic simulation is not possible with this version of COPASI."},
+  {MCTrajectoryMethod + 23, "CTrajectoryMethod (23): The model contains events. Simulation with '%s' is not possible with this version of COPASI."},
   {MCTrajectoryMethod + 24, "CTrajectoryMethod (24): The model contains a species with an assignment. Hybrid simulation is not possible with this version of COPASI."},
   {MCTrajectoryMethod + 25, "CTrajectoryMethod (25): Invalid state at time '%f'."},
   {MCTrajectoryMethod + 26, "CTrajectoryMethod (26): A tau-Leap step encountered numerical problems.\nPlease check whether some particle numbers are large."},

@@ -1682,6 +1682,11 @@ bool CDataModel::exportShinyArchive(std::string fileName, bool includeCOPASI, bo
       std::remove(fileName.c_str());
     }
 
+  // set a temporary directory that we are are allowed to write to
+  std::string tempDir;
+  COptions::getValue("Tmp", tempDir);
+  Util::setDefaultTempDir(tempDir);
+
   CombineArchive archive;
 
   std::map< std::string, std::string > renamedExperiments;
@@ -1863,6 +1868,11 @@ bool CDataModel::exportCombineArchive(
       // delete existing file
       std::remove(fileName.c_str());
     }
+
+  // set a temporary directory that we are are allowed to write to
+  std::string tempDir;
+  COptions::getValue("Tmp", tempDir);
+  Util::setDefaultTempDir(tempDir);
 
   CombineArchive archive;
 
@@ -3383,9 +3393,14 @@ bool CDataModel::changeModelParameter(CDataObject * element, double value)
     {
       if (pRef->getValuePointer() != NULL)
         {
+          bool isInitialConcentration = pRef->getObjectName() == "InitialConcentration" && pRef->getObjectDataModel() != NULL && pRef->getObjectDataModel()->getModel() != NULL;
+
+          if (isInitialConcentration)
+            pRef->getObjectDataModel()->getModel()->updateInitialValues(pRef);
+
           *static_cast< double * >(pRef->getValuePointer()) = value;
 
-          if (pRef->getObjectName() == "InitialConcentration" && pRef->getObjectDataModel() != NULL && pRef->getObjectDataModel()->getModel() != NULL)
+          if (isInitialConcentration)
             pRef->getObjectDataModel()->getModel()->updateInitialValues(pRef);
 
           return true;

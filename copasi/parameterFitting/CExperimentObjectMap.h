@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -237,6 +237,14 @@ public:
    * @return CExperiment::Type role
    */
   CExperiment::Type getRole(const size_t & index) const;
+
+  /**
+   * Retrieve the nth CN of specified Type
+   * @param index the index
+   * @param type the type to return the column name for
+   * @ return name or empty string if not found
+   */
+  std::string getNthCnOfType(size_t index, CExperiment::Type role) const;
 
   /**
    * Set the object CN of the object mapped to the indexed column

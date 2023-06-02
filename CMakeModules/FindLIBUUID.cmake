@@ -1,4 +1,4 @@
-# Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2020 - 2023 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -10,13 +10,24 @@ pkg_check_modules(PKG_LIBUUID QUIET uuid)
 set(LIBUUID_DEFINITIONS ${PKG_LIBUUID_CFLAGS_OTHER})
 set(LIBUUID_VERSION ${PKG_LIBUUID_VERSION})
 
+string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
+set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
+
 find_path(LIBUUID_INCLUDE_DIR
 	NAMES uuid/uuid.h
 	HINTS ${PKG_LIBUUID_INCLUDE_DIRS} ${PKG_LIBUUID_INCLUDE_DIRS}/..
+	${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+	${${_PROJECT_DEPENDENCY_DIR}}/lib
+	${${_PROJECT_DEPENDENCY_DIR}}
+	CMAKE_FIND_ROOT_PATH_BOTH
 )
 find_library(LIBUUID_LIBRARY
 	NAMES uuid
 	HINTS ${PKG_LIBUUID_LIBRARY_DIRS}
+	${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+	${${_PROJECT_DEPENDENCY_DIR}}/lib
+	${${_PROJECT_DEPENDENCY_DIR}}
+	CMAKE_FIND_ROOT_PATH_BOTH
 )
 
 include(FindPackageHandleStandardArgs)

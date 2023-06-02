@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -695,7 +695,8 @@ bool COptProblem::checkFunctionalConstraints()
   std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
   std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
 
-  mCounters.ConstraintCounter++;
+  if (!mpConstraintItems->empty())
+    mCounters.ConstraintCounter++;
 
   for (; it != end; ++it)
     if ((*it)->checkConstraint())
@@ -1218,6 +1219,11 @@ const bool & COptProblem::getCalculateStatistics() const
 const unsigned C_INT32 & COptProblem::getFunctionEvaluations() const
 {return mCounters.Counter;}
 
+const unsigned C_INT32 & COptProblem::getConstraintEvaluations() const
+{
+  return mCounters.ConstraintCounter;
+}
+
 const COptProblem::sCounter & COptProblem::getCounters() const
 {
   return mCounters;
@@ -1245,6 +1251,11 @@ const unsigned C_INT32 & COptProblem::getFailedEvaluationsExc() const
 
 const unsigned C_INT32 & COptProblem::getFailedEvaluationsNaN() const
 {return mCounters.FailedCounterNaN;}
+
+const unsigned C_INT32 & COptProblem::geFailedConstraintCounter() const
+{
+  return mCounters.FailedConstraintCounter;
+}
 
 const C_FLOAT64 & COptProblem::getExecutionTime() const
 {

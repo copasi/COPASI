@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the -->
+<!-- Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the -->
 <!-- University of Virginia, University of Heidelberg, and University -->
 <!-- of Connecticut School of Medicine. -->
 <!-- All rights reserved. -->
@@ -25160,6 +25160,110 @@ operated by California Digital Library, Crossref, and Datacite.</definition>
     <namespace>ror</namespace>
     <uris>
       <uri type="URN">urn:miriam:ror</uri>
+    </uris>
+  </datatype>
+  <datatype id="MIR:00000964" pattern="^[0-9]+(LR)?$">
+    <name>ChecklistBank</name>
+    <definition>ChecklistBank is an index and repository for taxonomic and nomenclatural datasets</definition>
+    <namespace>clb</namespace>
+    <uris>
+      <uri type="URN">urn:miriam:clb</uri>
+    </uris>
+  </datatype>
+  <datatype id="MIR:00000966" pattern="^[0-9]+$">
+    <name>DrugCentral</name>
+    <definition>DrugCentral (http://drugcentral.org) is an open-access online drug compendium. DrugCentral integrates structure, bioactivity, regulatory, pharmacologic actions and indications for active pharmaceutical ingredients approved by FDA and other regulatory agencies. Monitoring of regulatory agencies for new drugs approvals ensures the resource is up-to-date. DrugCentral integrates content for active ingredients with pharmaceutical formulations, indexing drugs and drug label annotations, complementing similar resources available online. Its complementarity with other online resources is facilitated by cross referencing to external resources. At the molecular level, DrugCentral bridges drug-target interactions with pharmacological action and indications. The integration with FDA drug labels enables text mining applications for drug adverse events and clinical trial information. Chemical structure overlap between DrugCentral and five online drug resources, and the overlap between DrugCentral FDA-approved drugs and their presence in four different chemical collections, are discussed. DrugCentral can be accessed via the web application or downloaded in relational database format.</definition>
+    <namespace>drugcentral</namespace>
+    <uris>
+      <uri type="URN">urn:miriam:drugcentral</uri>
+    </uris>
+  </datatype>
+  <datatype id="MIR:00000968" pattern="^rx[0-9]{5}$">
+    <name>Stress Knowledge Map</name>
+    <definition>Stress Knowledge Map (SKM, available at https://skm.nib.si) is a knowledge graph resulting from the integration of dispersed published information on plant molecular responses to biotic and abiotic stressors. </definition>
+    <namespace>skm</namespace>
+    <uris>
+      <uri type="URN">urn:miriam:skm</uri>
+    </uris>
+  </datatype>
+  <datatype id="MIR:00000969" pattern="^[23456789BCDFGHJKLMNPQRSTVWXYZ]{1,6}$">
+    <name>Catalogue of Life</name>
+    <definition>Identifier of a taxon or synonym in the Catalogue of Life</definition>
+    <namespace>col</namespace>
+    <uris>
+      <uri type="URN">urn:miriam:col</uri>
+    </uris>
+  </datatype>
+  <datatype id="MIR:00000973" pattern="^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$">
+    <name>Sciflection</name>
+    <definition>Sciflection is a public repository for experiments and associated spectra, usually uploaded from Electronic Lab Notebooks, shared under FAIR conditions</definition>
+    <namespace>sciflection</namespace>
+    <uris>
+      <uri type="URN">urn:miriam:sciflection</uri>
+    </uris>
+  </datatype>
+  <datatype id="MIR:00000976" pattern="^AT.G[0-9]{5}$">
+    <name>TAIR gene name</name>
+    <definition>The Arabidopsis Information Resource (TAIR) maintains a database of genetic and molecular biology data for the model higher plant Arabidopsis thaliana. The name of a Locus is unique and used by TAIR, TIGR, and MIPS.</definition>
+    <namespace>tair.name</namespace>
+    <uris>
+      <uri type="URN">urn:miriam:tair.name</uri>
+    </uris>
+  </datatype>
+  <datatype id="MIR:00000979" pattern="^[0-9]+$">
+    <name>CIViC Variant Group</name>
+    <definition>Variant Groups in CIViC provide user-defined grouping of Variants within and between genes based on unifying characteristics. CIViC curators are required to define a cohesive rationale for grouping these variants together, summarize their relevance to cancer diagnosis, prognosis or treatment and highlight any treatments or cancers of particular relevance</definition>
+    <namespace>civic.vgid</namespace>
+    <uris>
+      <uri type="URN">urn:miriam:civic.vgid</uri>
+    </uris>
+  </datatype>
+  <datatype id="MIR:00000981" pattern="^[0-9]+$">
+    <name>CIViC Molecular Profile</name>
+    <definition>CIViC Molecular Profiles are combinations of one or more CIViC variants. Most Molecular Profiles are “Simple” Molecular Profiles comprised of a single variant. In most cases, these can be considered equivalent to the CIViC concept of a Variant. However, increasingly clinical significance must be considered in the context of multiple variants simultaneously. Complex Molecular Profiles in CIViC allow for curation of such variant combinations. Regardless of the nature of the Molecular Profile (Simple or Complex), it must have a Predictive, Prognostic, Predisposing, Diagnostic, Oncogenic, or Functional clinical relevance to be entered in CIViC.</definition>
+    <namespace>civic.mpid</namespace>
+    <uris>
+      <uri type="URN">urn:miriam:civic.mpid</uri>
+    </uris>
+  </datatype>
+  <datatype id="MIR:00000983" pattern="^\d{7}$">
+    <name>Cell Line Ontology</name>
+    <definition>The Cell Line Ontology is a community-based ontology of cell lines. The CLO is developed to unify publicly available cell line entry data from multiple sources to a standardized logically defined format based on consensus design patterns.</definition>
+    <namespace>clo</namespace>
+    <uris>
+      <uri type="URN">urn:miriam:clo</uri>
+    </uris>
+  </datatype>
+  <datatype id="MIR:00000986" pattern="EMPIAR-\d{5,}">
+    <name>EMPIAR</name>
+    <definition>EMPIAR, the Electron Microscopy Public Image Archive, is a public resource for raw images underpinning 3D cryo-EM maps and tomograms (themselves archived in EMDB). EMPIAR also accommodates 3D datasets obtained with volume EM techniques and soft and hard X-ray tomography.</definition>
+    <namespace>empiar</namespace>
+    <uris>
+      <uri type="URN">urn:miriam:empiar</uri>
+    </uris>
+  </datatype>
+  <datatype id="MIR:00000988" pattern="^[0-9]+$">
+    <name>NLFFF Database</name>
+    <definition>Nonlinear Force-Free Field Three-Dimensional Magnetic Fields Data of Solar Active Regions Database</definition>
+    <namespace>nlfff</namespace>
+    <uris>
+      <uri type="URN">urn:miriam:nlfff</uri>
+    </uris>
+  </datatype>
+  <datatype id="MIR:00000993" pattern="([3-5][A-Z])\w+[^A-Z][0-9]">
+    <name>UTRdb</name>
+    <definition>A curated database of 5' and 3' untranslated sequences of eukaryotic mRNAs. In the current update, the UTR entries are organized in a gene-centric structure to better visualize and retrieve 5' and 3'UTR variants generated by alternative initiation and termination of transcription and alternative splicing. Experimentally validated miRNA targets and conserved sequence elements are also annotated. The integration of UTRdb with genomic data has allowed the implementation of an efficient annotation system and a powerful retrieval resource for the selection and extraction of specific UTR subsets. </definition>
+    <namespace>utrdb</namespace>
+    <uris>
+      <uri type="URN">urn:miriam:utrdb</uri>
+    </uris>
+  </datatype>
+  <datatype id="MIR:00000995" pattern="bkc[0-9]*">
+    <name>BioKC</name>
+    <definition>BioKC (Biological Knowledge Curation), is a web-based collaborative platform for the curation and annotation of biomedical knowledge following the standard data model from Systems Biology Markup Language (SBML).</definition>
+    <namespace>biokc</namespace>
+    <uris>
+      <uri type="URN">urn:miriam:biokc</uri>
     </uris>
   </datatype>
   <listOfTags>

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -208,7 +208,12 @@ void COptions::init(C_INT argc, char *argv[])
 
 #ifdef Darwin
   setValue("DefaultConfigDir", CDirEntry::dirName(CopasiDir) + "/config");
-  setValue("ExampleDir", CDirEntry::dirName(CopasiDir) + "/examples");
+  std::string exampleDir = CDirEntry::dirName(CopasiDir) + "/examples";
+
+  if (!CDirEntry::exist(exampleDir))
+    exampleDir = CopasiDir + "/Contents/Resources/examples";
+
+  setValue("ExampleDir", exampleDir);
   setValue("WizardDir", CopasiDir + "/Contents/Resources/doc/html");
 #elif WIN32
   setValue("DefaultConfigDir", CopasiDir + "\\share\\copasi\\config");

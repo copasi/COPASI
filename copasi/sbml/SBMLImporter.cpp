@@ -2082,6 +2082,8 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           std::stringstream os;
           os << "There exists no species for the specified modifier '" << sr->getSpecies() << "'.";
           CCopasiMessage(CCopasiMessage::WARNING, os.str().c_str());
+
+          continue;
         }
 
       std::map<const CDataObject*, SBase*>::const_iterator spos = copasi2sbmlmap.find(pos->second);

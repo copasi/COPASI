@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -330,27 +330,33 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex & 
 
   beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
 
-  std::vector< const CModelValue * > ToBeDeleted;
+  std::vector< CCommonName > ToBeDeleted;
   ToBeDeleted.resize(rows);
 
-  std::vector< const CModelValue * >::iterator it = ToBeDeleted.begin();
-  std::vector< const CModelValue * >::iterator end = ToBeDeleted.end();
+  std::vector< CCommonName >::iterator it = ToBeDeleted.begin();
+  std::vector< CCommonName >::iterator end = ToBeDeleted.end();
 
   CDataVector< CModelValue >::const_iterator itRow = mpGlobalQuantities->begin() + position;
 
   for (; it != end; ++it, ++itRow)
     {
-      *it = &*itRow;
+      *it = (*itRow).getCN();
     }
 
   for (it = ToBeDeleted.begin(); it != end; ++it)
     {
-      CUndoData UndoData;
-      (*it)->createUndoData(UndoData, CUndoData::Type::REMOVE);
-      ListViews::addUndoMetaData(this, UndoData);
 
       if (mFetched > 0)
         --mFetched;
+
+      const CModelValue * pObj = dynamic_cast< const CModelValue * >(mpDataModel->getObject(*it));
+
+      if (!pObj)
+        continue;
+
+      CUndoData UndoData;
+      pObj->createUndoData(UndoData, CUndoData::Type::REMOVE);
+      ListViews::addUndoMetaData(this, UndoData);
 
       emit signalNotifyChanges(mpDataModel->applyData(UndoData));
     }
@@ -371,8 +377,8 @@ bool CQGlobalQuantityDM::removeRows(QModelIndexList rows, const QModelIndex& ind
   QModelIndexList::const_iterator i;
 
   for (i = rows.begin(); i != rows.end(); ++i)
-    if (i->isValid() && !isDefaultRow(*i) &&
-        &mpGlobalQuantities->operator[](i->row()) != NULL)
+    if (i->isValid()
+        && !isDefaultRow(*i))
       {
         ModelValues.append(&mpGlobalQuantities->operator[](i->row()));
       }

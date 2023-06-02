@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -343,6 +343,12 @@ public:
    * @return CExperimentObjectMap & mpObjectMap
    */
   CExperimentObjectMap & getObjectMap();
+
+  /**
+   * Retrieve the object map
+   * @return CExperimentObjectMap & mpObjectMap
+   */
+  const CExperimentObjectMap & getObjectMap() const;
 
   /**
    * Retrieve the list of fitting points

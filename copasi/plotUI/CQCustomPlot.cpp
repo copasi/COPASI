@@ -18,6 +18,7 @@
 #  include "copasi/commandline/CLocaleString.h"
 #  include "copasi/CopasiDataModel/CDataModel.h"
 #  include "copasi/parameterFitting/CExperiment.h"
+#  include "copasi/parameterFitting/CExperimentObjectMap.h"
 #  include "copasi/parameterFitting/CExperimentSet.h"
 
 #  include <QApplication>
@@ -1952,10 +1953,14 @@ CQCustomPlot::initializeIndependentData(const CDataModel& model)
       if (numCols == 0)
         continue;
 
-      int c = 0;
-
-      for (auto & obj : independentObjects)
+      for (int c = 0; c < numCols; ++c)
         {
+          std::string cn = pExperiment->getObjectMap().getNthCnOfType(c, CExperiment::independent);
+          auto *obj = model.getObject(CCommonName(cn));
+
+          if (!obj)
+            continue;
+
           QVector< qreal > axisData;
           QString name = FROM_UTF8(obj->getObjectDisplayName());
           mIndependentNames.insert(name);
@@ -1965,7 +1970,6 @@ CQCustomPlot::initializeIndependentData(const CDataModel& model)
               axisData << matrix(r, c);
             }
 
-          ++c;
           mIndependentData[std::make_pair(name, experimentName)] = axisData;
         }
     }

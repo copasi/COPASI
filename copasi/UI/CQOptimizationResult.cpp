@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -116,6 +116,9 @@ bool CQOptimizationResult::enterProtected()
   mpEditFailedEvaluationsExc->setText(QString::number(FailedEvaluationsExc));
   const unsigned C_INT32 & FailedEvaluationsNaN = mpProblem->getFailedEvaluationsNaN();
   mpEditFailedEvaluationsNaN->setText(QString::number(FailedEvaluationsNaN));
+
+  mpEditConstraint->setText(QString::number(mpProblem->getConstraintEvaluations()));
+  mpEditFailedConstraint->setText(QString::number(mpProblem->geFailedConstraintCounter()));
 
   QColor BackgroundColor = mpParameters->palette().brush(QPalette::Active, QPalette::Base).color();
 

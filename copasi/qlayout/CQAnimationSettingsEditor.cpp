@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -52,7 +52,7 @@ void CQAnimationSettingsEditor::slotEffectAdded()
       ->getMainWidget(),
       CQSimpleSelectionTree::NumericValues);
 
-for (auto * item : objects)
+  for (auto * item : objects)
     {
       auto * parent = item->getObjectParent();
 
@@ -79,7 +79,7 @@ void CQAnimationSettingsEditor::updateListFromEntries()
       CQEffectDescription current = *it;
 
       QListWidgetItem * item = new QListWidgetItem(FROM_UTF8(current.getDisplayName()));
-      item->setData(Qt::UserRole, listWidget->count());
+      item->setData(Qt::UserRole, FROM_UTF8(current.getDataCN()));
       listWidget->addItem(item);
       ++it;
     }
@@ -87,26 +87,54 @@ void CQAnimationSettingsEditor::updateListFromEntries()
   listWidget->blockSignals(false);
 }
 
+CQEffectDescription* CQAnimationSettingsEditor::getEntry(const QString & dataCN)
+{
+  for (auto it = mEntries.begin(); it != mEntries.end(); ++it)
+    {
+      if (it->getDataCN() == TO_UTF8(dataCN))
+        {
+          return &(*it);
+        }
+    }
+
+  return NULL;
+}
+
+void CQAnimationSettingsEditor::removeEntry(const QString& dataCN)
+{
+  for (auto it = mEntries.begin(); it != mEntries.end(); ++it)
+    {
+      if (it->getDataCN() == TO_UTF8(dataCN))
+        {
+          mEntries.erase(it);
+          return;
+        }
+    }
+}
+
 void CQAnimationSettingsEditor::slotEffectRemoved()
 {
 
   // fill with new entries
-  QList< QListWidgetItem * > selected = mLastSelection;
+  QList< std::pair<QString, QString>> selected = mLastSelection;
 
   listWidget->blockSignals(true);
 
-  for (int i = selected.size(); i != 0; --i)
+  for (auto & entry : selected)
     {
-      QListWidgetItem * current = selected[i - 1];
-      int index = current->data(Qt::UserRole).toInt();
-      mEntries.erase(mEntries.begin() + index);
+      QList< QListWidgetItem * > items = listWidget->findItems(entry.first, Qt::MatchExactly);
+
+      if (items.size() == 0)
+        continue;
+
+      QListWidgetItem * current = items[0];
       listWidget->removeItemWidget(current);
+      removeEntry(entry.second);
     }
 
   updateListFromEntries();
 
   mLastSelection.clear();
-
 }
 
 void CQAnimationSettingsEditor::saveChanges()
@@ -114,9 +142,17 @@ void CQAnimationSettingsEditor::saveChanges()
   // go through last selection to save changes
   for (int i = 0; i < mLastSelection.size(); ++i)
     {
-      QListWidgetItem* current = mLastSelection[i];
-      int index = current->data(Qt::UserRole).toInt();
-      widget->saveTo(&mEntries[index], mLastSelection.size() > 1);
+      QList< QListWidgetItem * > items = listWidget->findItems(mLastSelection[i].first, Qt::MatchExactly);
+
+      if (items.size() == 0)
+        continue;
+
+      CQEffectDescription * current = getEntry(mLastSelection[i].second);
+
+      if (current == NULL)
+        continue;
+
+      widget->saveTo(current, mLastSelection.size() > 1);
     }
 }
 
@@ -125,16 +161,21 @@ void CQAnimationSettingsEditor::slotSelectionChanged()
   saveChanges();
 
   // fill with new entries
-  QList<QListWidgetItem*> selected = listWidget->selectedItems();
+  QModelIndexList selected = listWidget->selectionModel()->selectedIndexes();
+  mLastSelection = QList<std::pair<QString, QString>>();
 
   for (int i = 0; i < selected.size(); ++i)
     {
-      QListWidgetItem* current = selected[i];
-      int index = current->data(Qt::UserRole).toInt();
-      widget->initFrom(&mEntries[index], selected.size() > 1);
-    }
+      QListWidgetItem * current = listWidget->item(selected.at(i).row());
+      QString dataCN = current->data(Qt::UserRole).toString();
+      CQEffectDescription * entry = getEntry(dataCN);
 
-  mLastSelection = selected;
+      if (current == NULL)
+        continue;
+
+      widget->initFrom(entry, selected.size() > 1);
+      mLastSelection.append(std::make_pair(current->text(), dataCN));
+    }
 }
 
 void CQAnimationSettingsEditor::initFrom(CQCopasiAnimation* other)
@@ -147,13 +188,14 @@ void CQAnimationSettingsEditor::initFrom(CQCopasiAnimation* other)
   std::vector<CQEffectDescription> entries = other->getEntries();
   std::vector<CQEffectDescription>::iterator it = entries.begin();
   mEntries.clear();
+  mLastSelection.clear();
 
   while (it != entries.end())
     {
       CQEffectDescription current = *it;
 
       QListWidgetItem* item = new QListWidgetItem(FROM_UTF8(current.getDisplayName()));
-      item->setData(Qt::UserRole, (int)mEntries.size());
+      item->setData(Qt::UserRole, FROM_UTF8(current.getDataCN()));
       listWidget->addItem(item);
       mEntries.push_back(current);
 

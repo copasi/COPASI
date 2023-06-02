@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1068,17 +1068,14 @@ public:
       {
         const std::string & OldName = itOld->getProperty(CData::OBJECT_NAME).toString();
         const std::string & NewName = itNew->getObjectName();
-        std::cout << "Old Name: " << OldName << " New Name: " << NewName << std::endl;
 
         if (OldName < NewName)
           {
-            std::cout << "REMOVE: " << OldName << std::endl;
             Deleted[itOld->getProperty(CData::OBJECT_INDEX).toSizeT()] = *itOld;
             ++itOld;
           }
         else if (OldName > NewName)
           {
-            std::cout << "INSERT: " << NewName << std::endl;
             Inserted[CDataVector< CType >::getIndex(*itNew)] = itNew->toData();
             ++itNew;
           }
@@ -1089,7 +1086,6 @@ public:
 
             if (!UndoData.empty())
               {
-                std::cout << "CHANGE: " << NewName << std::endl;
                 OldData[itOld->getProperty(CData::OBJECT_INDEX).toSizeT()] = UndoData.getOldData();
                 NewData[CDataVector< CType >::getIndex(*itNew)] = UndoData.getNewData();
               }
@@ -1101,13 +1097,11 @@ public:
 
     for (; itOld != endOld; ++itOld)
       {
-        std::cout << "REMOVE: " << itOld->getProperty(CData::OBJECT_NAME).toString() << std::endl;
         Deleted[itOld->getProperty(CData::OBJECT_INDEX).toSizeT()] = *itOld;
       }
 
     for (; itNew != endNew; ++itNew)
       {
-        std::cout << "INSERT: " << itNew->getObjectName() << std::endl;
         Inserted[CDataVector< CType >::getIndex(*itNew)] = itNew->toData();
       }
 
