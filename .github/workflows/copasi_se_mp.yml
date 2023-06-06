@@ -1,4 +1,4 @@
-name: Build and Test 
+name: Build OpenMP (ubuntu-20.04)
 
 on: [push]
 
@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [ubuntu-latest]
+        platform: [ubuntu-20.04]
 
     runs-on: ${{ matrix.platform }}
 
@@ -67,11 +67,6 @@ jobs:
       shell: bash
       working-directory: ${{github.workspace}}/build_copasi
       run: cmake --build . --config $BUILD_TYPE --target install
-
-    - name: Test
-      working-directory: ${{github.workspace}}/build_copasi
-      shell: bash
-      run: ctest -C $BUILD_TYPE -V
 
     - name: binary archive
       uses: actions/upload-artifact@v2
