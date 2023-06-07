@@ -1,6 +1,15 @@
-name: Build OpenMP (ubuntu-20.04)
+name: Build OpenMP (manylinux2014)
 
-on: [push]
+on: 
+  push:
+    paths:
+        - "**"
+        - "!.github/**"
+        - ".github/workflows/copasi_se_mp.yml"
+
+defaults:
+  run:
+    shell: bash
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -8,71 +17,57 @@ env:
 
 jobs:
   build:
-    name:
-      ${{ matrix.platform }}
-    strategy:
-      fail-fast: false
-      matrix:
-        platform: [ubuntu-20.04]
-
-    runs-on: ${{ matrix.platform }}
+    name: manylinux
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
 
     steps:
     - uses: actions/checkout@v2
-    - uses: seanmiddleditch/gha-setup-ninja@master
-
-    - name: Add msbuild to PATH (Windows)
-      if: matrix.platform == 'windows-latest'
-      uses: ilammy/msvc-dev-cmd@v1.6.0
 
     - name: Create Build Environment
-      # Some projects don't allow in-source building, so create a separate build directory
-      # We'll use this as our working directory for all subsequent commands
-      shell: bash
       run: |
         cmake --version
-        curl -L https://github.com/copasi/copasi-dependencies/releases/latest/download/${{ matrix.platform }}.zip -o ${{ matrix.platform }}.zip
-        unzip -n -qq ${{ matrix.platform }}.zip -d dependencies
+        curl -L https://github.com/copasi/copasi-dependencies/releases/latest/download/manylinux2014.zip -o manylinux2014.zip
+        unzip -n -qq manylinux2014.zip -d dependencies
  
-    - name: Patch dependencies (ubuntu)
-      shell: bash
-      if: matrix.platform == 'ubuntu-latest'
-      working-directory: ${{github.workspace}}/dependencies/lib/cmake
-      run: |
-        sed -i 's|/home/runner/work/copasi-dependencies/copasi-dependencies/install/|${_IMPORT_PREFIX}/|g'  *.cmake
-       
-    - name: Update COPASI Version
-      shell: bash
-      working-directory: ${{github.workspace}}
-      run: ./gitTools/UpdateCopasiVersion
+    - name: install latest cmake
+      run: | 
+           /opt/python/cp38-cp38/bin/pip install cmake
+           ln -s /opt/python/cp38-cp38/bin/cmake /usr/bin/cmake
 
-    - name: Download SBML Test Suite cases
-      shell: bash
-      working-directory: ${{github.workspace}}
+    - name: install libuuid (static)
       run: |
-        curl -L http://bqfrank.spdns.org/Files/test-suite.zip  -o test-suite.zip
-        unzip -n -qq test-suite.zip
+           curl -L -O http://downloads.sourceforge.net/libuuid/libuuid-1.0.3.tar.gz 
+           tar -zxf libuuid-1.0.3.tar.gz
+           cd libuuid-1.0.3
+           ./configure --disable-dependency-tracking --with-pic --enable-static=yes --enable-shared=no
+           make
+           make install
+           rm /usr/local/lib/libuuid.la
+
+    - name: Update COPASI Version
+      run: ./gitTools/UpdateCopasiVersion --force
 
     - name: Configure COPASI
       shell: bash
       run: |
-        cmake -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCOPASI_INSTALL_C_API=ON -DBUILD_TESTS=ON -DBUILD_GUI=OFF -DCOPASI_DEPENDENCY_DIR=./dependencies/ -DCMAKE_INSTALL_PREFIX=./install/ -DENABLE_OMP=ON -S .  -B ./build_copasi
+        cmake -B build_copasi -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCOPASI_INSTALL_C_API=ON -DBUILD_TESTS=ON -DBUILD_GUI=OFF -DCOPASI_DEPENDENCY_DIR=./dependencies/ -DCMAKE_INSTALL_PREFIX=./install/ -DENABLE_OMP=ON -S . 
 
     - name: Build COPASI
       shell: bash
-      working-directory: ${{github.workspace}}/build_copasi
+      working-directory: build_copasi
       run: cmake --build . --config $BUILD_TYPE
 
     - name: Install COPASI
       shell: bash
-      working-directory: ${{github.workspace}}/build_copasi
+      working-directory: build_copasi
       run: cmake --build . --config $BUILD_TYPE --target install
 
     - name: binary archive
       uses: actions/upload-artifact@v2
       with:
         name:
-          copasi-se-openmp-${{ matrix.platform }}
+          copasi-se-openmp-manylinux2014
         path: ${{github.workspace}}/install/*
         retention-days: 10
         if-no-files-found: error
