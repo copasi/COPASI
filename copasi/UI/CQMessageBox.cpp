@@ -51,6 +51,7 @@ CQMessageBox::CQMessageBox(QMessageBox::Icon icon, const QString & title, const 
                            Qt::WindowFlags f)
   : QDialog(parent, f)
   , mButton(QMessageBox::NoButton)
+  , mpClickedButton(NULL)
   //QMessageBox(icon, title, QString(), buttons, parent, f),
 {
   if (CopasiUI3Window::getMainWindow() != NULL)
@@ -420,18 +421,28 @@ void CQMessageBox::setFilteredText(const QString & text)
 void CQMessageBox::setDefaultButton(QMessageBox::StandardButton defaultButton)
 {
   auto *button = mpButtonBox->button((QDialogButtonBox::StandardButton) defaultButton);
+  setDefaultButton(button);
+}
 
-  if (button != NULL)
-    {
-      button->setDefault(true);
-      button->setFocus();
-    }
+void CQMessageBox::setDefaultButton(QPushButton* button)
+{
+    if (button != NULL)
+      {
+        button->setDefault(true);
+        button->setFocus();
+      }
 }
 
 void CQMessageBox::slotButtonPressed(QAbstractButton * pButton)
 {
   mButton = (QMessageBox::StandardButton)((int) mpButtonBox->standardButton(pButton));
+  mpClickedButton = pButton;
   close();
+}
+
+QAbstractButton* CQMessageBox::clickedButton()
+{
+  return mpClickedButton;
 }
 
 int CQMessageBox::exec()
@@ -440,3 +451,14 @@ int CQMessageBox::exec()
   return (int)mButton;
 }
 
+QAbstractButton*
+CQMessageBox::button(QMessageBox::StandardButton button)
+{
+  return mpButtonBox->button((QDialogButtonBox::StandardButton)((int) button));
+}
+
+QPushButton*
+CQMessageBox::addButton(QMessageBox::StandardButton button)
+{
+  return mpButtonBox->addButton((QDialogButtonBox::StandardButton)((int) button));
+}

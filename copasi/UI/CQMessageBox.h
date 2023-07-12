@@ -37,6 +37,7 @@
 class QTabWidget;
 class QTextEdit;
 class QAbstractButton;
+class QPushButton;
 class QVBoxLayout;
 class CDataObject;
 class CFunctionDB;
@@ -77,7 +78,15 @@ public:
   void setFilteredText(const QString & text);
 
   void setDefaultButton(QMessageBox::StandardButton defaultButton);
+    
+  void setDefaultButton(QPushButton* pButton);
+    
+  QAbstractButton* button(QMessageBox::StandardButton button);
+    
+  QPushButton* addButton(QMessageBox::StandardButton button);
 
+  QAbstractButton* clickedButton();
+    
   virtual int exec();
 
 public slots:
@@ -86,6 +95,7 @@ public slots:
 private:
 
   QMessageBox::StandardButton mButton;
+  QAbstractButton* mpClickedButton;
 
 };
 
