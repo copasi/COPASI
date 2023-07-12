@@ -1100,9 +1100,9 @@ void SEDMLImporter::initializeContent()
 {
   mContent.mCopasi2SBMLMap.clear();
   mContent.mCopasi2SEDMLMap.clear();
-  mContent.pTaskList = new CDataVectorN< CCopasiTask >("TaskList", mpDataModel);
-  mContent.pReportDefinitionList = new CReportDefinitionVector("ReportDefinitions", mpDataModel);
-  mContent.pPlotDefinitionList = new COutputDefinitionVector("OutputDefinitions", mpDataModel);
+  mContent.pTaskList = new CDataVectorN< CCopasiTask >("TaskList", NO_PARENT);
+  mContent.pReportDefinitionList = new CReportDefinitionVector("ReportDefinitions", NO_PARENT);
+  mContent.pPlotDefinitionList = new COutputDefinitionVector("OutputDefinitions", NO_PARENT);
 }
 
 void SEDMLImporter::updateContent(CDataModel::CContent & data, CDataModel & dm)
