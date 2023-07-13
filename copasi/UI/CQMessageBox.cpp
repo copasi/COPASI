@@ -52,7 +52,7 @@ CQMessageBox::CQMessageBox(QMessageBox::Icon icon, const QString & title, const 
   : QDialog(parent, f)
   , mButton(QMessageBox::NoButton)
   , mpClickedButton(NULL)
-  //QMessageBox(icon, title, QString(), buttons, parent, f),
+    //QMessageBox(icon, title, QString(), buttons, parent, f),
 {
   if (CopasiUI3Window::getMainWindow() != NULL)
     {
@@ -68,7 +68,10 @@ CQMessageBox::CQMessageBox(QMessageBox::Icon icon, const QString & title, const 
   setWindowTitle(title);
   mpMessage->setPlainText(text);
   mpButtonBox->setStandardButtons((QDialogButtonBox::StandardButtons)((int)buttons));
-  mpTabFiltered->setVisible(false);
+  int filteredIndex = mpTabWidget->indexOf(mpTabFiltered);
+
+  if (filteredIndex != -1)
+    mpTabWidget->removeTab(filteredIndex);
 
 #define COPASI_PIXMAP_SIZE 64
 
@@ -93,8 +96,6 @@ CQMessageBox::CQMessageBox(QMessageBox::Icon icon, const QString & title, const 
       default:
         break;
     }
-
-
 }
 
 CQMessageBox::~CQMessageBox()
@@ -413,7 +414,10 @@ void CQMessageBox::setText(const QString & text)
 
 void CQMessageBox::setFilteredText(const QString & text)
 {
-  mpTabFiltered->setVisible(!text.isEmpty());
+  int filteredIndex = mpTabWidget->indexOf(mpTabFiltered);
+
+  if (filteredIndex == -1 && !text.isEmpty())
+    mpTabWidget->addTab(mpTabFiltered, "Filtered Messages");
 
   mpFilteredMessage->setPlainText(text);
 }
@@ -426,11 +430,11 @@ void CQMessageBox::setDefaultButton(QMessageBox::StandardButton defaultButton)
 
 void CQMessageBox::setDefaultButton(QPushButton* button)
 {
-    if (button != NULL)
-      {
-        button->setDefault(true);
-        button->setFocus();
-      }
+  if (button != NULL)
+    {
+      button->setDefault(true);
+      button->setFocus();
+    }
 }
 
 void CQMessageBox::slotButtonPressed(QAbstractButton * pButton)
