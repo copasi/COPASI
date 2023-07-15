@@ -25,9 +25,9 @@ typedef int MPI_Win;
 
 #ifdef USE_OMP
 # include <omp.h>
-# ifndef omp_sched_monotonic
-const omp_sched_t omp_sched_monotonic = (omp_sched_t) 0x80000000u;
-# endif // omp_sched_monotonic
+# ifndef OMP_HAVE_MONOTONIC
+const omp_sched_t omp_sched_monotonic = (omp_sched_t) 0x80000000;
+# endif // OMP_HAVE_MONOTONIC
 #else
 # define omp_get_max_threads() (1)
 # define omp_get_num_threads() (1)
