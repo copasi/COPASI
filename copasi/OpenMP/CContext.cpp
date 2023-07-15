@@ -12,7 +12,7 @@ std::string omp_info::operator()()
   std::ostringstream Info;
 
 #ifdef USE_OMP
-  Info << "(OpenMP threads: " << omp_get_max_threads() << " schedule: ";
+  Info << " (OpenMP threads: " << omp_get_max_threads() << " schedule: ";
   omp_sched_t Schedule;
   int Chunk;
   omp_get_schedule(&Schedule, &Chunk);

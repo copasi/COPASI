@@ -762,7 +762,7 @@ void writeLogo()
   if (NoLogo) return;
 
   std::cout << "COPASI "
-            << CVersion::VERSION.getVersion() << " " << omp_info()() << std::endl
+            << CVersion::VERSION.getVersion() <<  omp_info()() << std::endl
             << "The use of this software indicates the acceptance of the attached license." << std::endl
             << "To view the license please use the option: --license" << std::endl
             << std::endl;

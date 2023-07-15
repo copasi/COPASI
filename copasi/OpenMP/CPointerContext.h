@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,7 +36,7 @@ CPointerContext< Data >::CPointerContext(const bool & parallel)
   Base::init();
   Base::master() = NULL;
 
-  if (Base::mSize > 1)
+  if (Base::size() > 1)
     {
       Data ** pIt = Base::beginThread();
       Data ** pEnd = Base::endThread();
@@ -55,11 +55,14 @@ CPointerContext< Data >::~CPointerContext()
 template < class Data >
 void CPointerContext< Data >::setMaster(Data * pMaster)
 {
+  if (Base::size() == 0)
+    return;
+
   if (Base::master() != NULL)
     {
       Base::master() = NULL;
 
-      if (Base::mSize > 1)
+      if (Base::size() > 1)
         {
           Data ** pIt = Base::beginThread();
           Data ** pEnd = Base::endThread();
@@ -77,7 +80,7 @@ void CPointerContext< Data >::setMaster(Data * pMaster)
     {
       Base::master() = pMaster;
 
-      if (Base::mSize > 1)
+      if (Base::size() > 1)
         {
           Data ** pIt = Base::beginThread();
           Data ** pEnd = Base::endThread();

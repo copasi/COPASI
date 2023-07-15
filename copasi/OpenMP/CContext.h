@@ -64,7 +64,7 @@ public:
   int globalIndex(const Data * data) const;
   const size_t & size() const;
 
-protected:
+private:
   Data * mMasterData;
   Data * mThreadData;
   bool mParallel;
