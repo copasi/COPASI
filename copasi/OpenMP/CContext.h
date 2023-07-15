@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -6,7 +6,7 @@
 #ifndef COPASI_CCONTEXT
 #define COPASI_CCONTEXT
 
-#include <cstring>
+#include <string>
 #include "copasi/config.h"
 
 #ifdef USE_MPI
@@ -25,11 +25,19 @@ typedef int MPI_Win;
 
 #ifdef USE_OMP
 # include <omp.h>
+# ifndef omp_sched_monotonic
+const omp_sched_t omp_sched_monotonic = (omp_sched_t) 0x80000000u;
+# endif // omp_sched_monotonic
 #else
 # define omp_get_max_threads() (1)
 # define omp_get_num_threads() (1)
 # define omp_get_thread_num() (0)
 #endif // USE_OMP
+
+struct omp_info
+{
+  std::string operator()();
+};
 
 template < class Data > class CContext
 {

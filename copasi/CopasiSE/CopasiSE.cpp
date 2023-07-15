@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -56,7 +56,9 @@
 #include "copasi/utilities/CDirEntry.h"
 #include "copasi/utilities/CSparseMatrix.h"
 #include "copasi/utilities/CProcessReport.h"
-#include <copasi/sedml/SEDMLUtils.h>
+#include "copasi/sedml/SEDMLUtils.h"
+
+#include "copasi/OpenMP/CContext.h"
 
 #define OPERATION_SUCCEDED 0
 #define OPERATION_FAILED 1
@@ -89,7 +91,7 @@ SedmlImportOptions getSedmlImportOptions(SedmlInfo& info, int& retcode)
     {
       std::cout << "SED-ML Tasks:" << std::endl;
 
-for (auto & entry : info.getTaskNames())
+      for (auto & entry : info.getTaskNames())
         {
           std::cout << std::endl;
           std::cout << "Id:\t" << entry.first << std::endl;
@@ -98,9 +100,7 @@ for (auto & entry : info.getTaskNames())
 
       retcode = OPERATION_SUCCEDED;
       return options;
-
     }
-
 
   if (SedmlTask.empty())
     SedmlTask = info.getFirstTaskWithOutput();
@@ -116,7 +116,7 @@ for (auto & entry : info.getTaskNames())
 
   std::vector< std::string > plots;
 
-for (auto & entry : info.getPlotsForTask(SedmlTask))
+  for (auto & entry : info.getPlotsForTask(SedmlTask))
     plots.push_back(entry.first);
 
   options = SedmlImportOptions(
@@ -534,7 +534,7 @@ int runScheduledTasks(CProcessReport * pProcessReport)
         }
 
       // mark all other potential tasks as not scheduled
-for (CCopasiTask & task : TaskList)
+      for (CCopasiTask & task : TaskList)
         {
           task.setScheduled(false);
         }
@@ -546,7 +546,7 @@ for (CCopasiTask & task : TaskList)
         toBeScheduled.setUpdateModel(true);
     }
 
-for (CCopasiTask & task : TaskList)
+  for (CCopasiTask & task : TaskList)
     if (task.isScheduled())
       {
         task.setCallBack(pProcessReport);
@@ -762,7 +762,7 @@ void writeLogo()
   if (NoLogo) return;
 
   std::cout << "COPASI "
-            << CVersion::VERSION.getVersion() << std::endl
+            << CVersion::VERSION.getVersion() << " " << omp_info()() << std::endl
             << "The use of this software indicates the acceptance of the attached license." << std::endl
             << "To view the license please use the option: --license" << std::endl
             << std::endl;
