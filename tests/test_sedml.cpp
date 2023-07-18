@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,6 +8,7 @@
 extern std::string getTestFile(const std::string & fileName);
 
 #include <copasi/CopasiTypes.h>
+#include <copasi/utilities/CCopasiException.h>
 #include <sbml/SBMLTypes.h>
 #include <sedml/SedTypes.h>
 
@@ -245,6 +246,34 @@ TEST_CASE("generating variables with terms", "[copasi,sedml]")
     REQUIRE(VariableInfo(m->getReactions()[0].getFluxReference()).getTerm() == SEDML_KISAO_FLUX);
     REQUIRE(VariableInfo(m->getReactions()[0].getParameterObjects("k1").at(0)).getXpath() == "/sbml:sbml/sbml:model/sbml:listOfReactions/sbml:reaction[@id='R1']/sbml:kineticLaw/sbml:listOfParameters/sbml:parameter[@id='k1']");
   }
+
+  CRootContainer::removeDatamodel(dm);
+}
+
+TEST_CASE("importing document with remote model should fail", "[copasi,sedml]")
+{
+  // generate sedml
+
+  auto* doc = new SedDocument(1, 4);
+  auto* model = doc->createModel();
+  model->setId("model");
+  model->setLanguage("urn:sedml:language:sbml");
+  model->setSource("urn:miriam:biomodels.db:BIOMD0000000005");
+  auto sedml = writeSedMLToStdString(doc);
+  delete doc;
+
+
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != nullptr);
+
+  try
+    {
+      dm->importSEDMLFromString(sedml, "", NULL, true);
+    }
+  catch (const CCopasiException& e)
+    {
+      REQUIRE(e.getMessage().getText().find("remote") != std::string::npos);
+    }
 
   CRootContainer::removeDatamodel(dm);
 }

@@ -1525,6 +1525,13 @@ CModel * SEDMLImporter::importModel(const std::string & modelId)
 
   std::string modelSource = sedmlModel->getSource();
 
+  if (modelSource.find("urn:") == 0 || modelSource.find("http://") == 0 || modelSource.find("https://") == 0)
+    CCopasiMessage(CCopasiMessage::EXCEPTION,
+                   "Currently, only local files are supported. Please resolve the remote source '%s' first before importing the SED-ML document.",
+                   modelSource.c_str()
+                  );
+
+
   SedModel * referencedModel = mpSEDMLDocument->getModel(modelSource);
 
   if (!referencedModel && modelSource[0] == '#')
