@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,14 +36,16 @@
 // Uncomment this line below to get numeric debug print out.
 // #define DEBUG_OUTPUT 1
 
-CMathEvent::CAssignment::CAssignment():
-  mpTarget(NULL),
-  mpAssignment(NULL)
+CMathEvent::CAssignment::CAssignment()
+  : mpTarget(NULL)
+  , mpAssignment(NULL)
+  , mIsStateValue(false)
 {}
 
-CMathEvent::CAssignment::CAssignment(const CMathEvent::CAssignment & src):
-  mpTarget(src.mpTarget),
-  mpAssignment(src.mpAssignment)
+CMathEvent::CAssignment::CAssignment(const CMathEvent::CAssignment & src)
+  : mpTarget(src.mpTarget)
+  , mpAssignment(src.mpAssignment)
+  , mIsStateValue(src.mIsStateValue)
 {}
 
 CMathEvent::CAssignment::~CAssignment()
@@ -84,10 +86,9 @@ bool CMathEvent::CAssignment::compile(const CEventAssignment * pDataAssignment,
 
   if (mpTarget != NULL)
     {
-      if (mpTarget->getEntityType() == CMath::EntityType::Species)
+      if (mpTarget->getEntityType() == CMath::EntityType::Species
+          && mpTarget->isIntensiveProperty())
         {
-          assert(mpTarget->isIntensiveProperty());
-
           MultiplyByVolume = true;
           mpTarget = const_cast< CMathObject * >(mpTarget->getCorrespondingProperty());
         }
@@ -155,6 +156,16 @@ void CMathEvent::CAssignment::setAssignment(CMathObject * pExpression)
 const CMathObject * CMathEvent::CAssignment::getAssignment() const
 {
   return mpAssignment;
+}
+
+void CMathEvent::CAssignment::setIsStateValue(bool isStateValue)
+{
+  mIsStateValue = isStateValue;
+}
+
+const bool & CMathEvent::CAssignment::isStateValue() const
+{
+  return mIsStateValue;
 }
 
 CMathEvent::CTrigger::CRootProcessor::CRootProcessor():
@@ -1382,8 +1393,8 @@ void CMathEvent::createUpdateSequences()
 
   Requested.clear();
   CObjectInterface::ObjectSet EventTargets;
-  const CAssignment * pAssignment = mAssignments.array();
-  const CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
+  CAssignment * pAssignment = mAssignments.array();
+  CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
 
   for (; pAssignment != pAssignmentEnd; ++pAssignment)
     {
@@ -1403,10 +1414,11 @@ void CMathEvent::createUpdateSequences()
         {
           mEffectsSimulation |= CMath::eStateChange::FixedEventTarget;
         }
-      else if (!mEffectsSimulation.isSet(CMath::eStateChange::State) &&
-               StateValues.find(pTarget) != StateValues.end())
+      else if (StateValues.find(pTarget) != StateValues.end())
         {
-          mEffectsSimulation |= CMath::eStateChange::State;
+          // mEffectsSimulation |= CMath::eStateChange::State;
+          // This is only true if the target value changes, i.e., we need to check each individual assignments for state values when executed
+          pAssignment->setIsStateValue(true);
         }
     }
 
@@ -1526,13 +1538,17 @@ CMath::StateChange CMathEvent::setTargetValues(const CVectorCore< C_FLOAT64 > & 
   const C_FLOAT64 * pValue = values.array();
   const C_FLOAT64 * pValueEnd = pValue + values.size();
   C_FLOAT64 ** ppTarget = mTargetPointers.array();
+  const CAssignment * pAssignment = mAssignments.begin();
 
-  for (; pValue != pValueEnd; ++pValue, ++ppTarget)
+  for (; pValue != pValueEnd; ++pValue, ++ppTarget, ++pAssignment)
     {
       if (2.0 * fabs(**ppTarget - *pValue) > (fabs(**ppTarget) + fabs(*pValue)) * std::numeric_limits< C_FLOAT64 >::epsilon() ||
           (fabs(**ppTarget) == std::numeric_limits< C_FLOAT64 >::infinity() && *pValue != **ppTarget) ||
           (fabs(*pValue) == std::numeric_limits< C_FLOAT64 >::infinity() && *pValue != **ppTarget))
         {
+          if (pAssignment->isStateValue())
+            StateChange |= CMath::eStateChange::State;
+
           ValuesChanged = true;
           **ppTarget = *pValue;
         }
@@ -1543,7 +1559,7 @@ CMath::StateChange CMathEvent::setTargetValues(const CVectorCore< C_FLOAT64 > & 
       mpContainer->applyUpdateSequence(mPostAssignmentSequence);
       mpContainer->updateSimulatedValues(false);
       mpContainer->updateRootValues(false);
-      StateChange = mEffectsSimulation;
+      StateChange |= mEffectsSimulation;
     }
 
   return StateChange;

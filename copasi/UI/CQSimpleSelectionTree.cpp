@@ -1331,7 +1331,8 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses &classes, const CDataObje
           Status != CModelEntity::Status::ASSIGNMENT &&
           (ObjectName == "Value" ||
            ObjectName == "Volume" ||
-           ObjectName == "Concentration"))
+           ObjectName == "Concentration" ||
+           ObjectName == "ParticleNumber"))
         return true;
 
       if ((classes & ObservedConstants) &&
