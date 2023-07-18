@@ -2040,6 +2040,26 @@ bool CDataModel::exportCombineArchive(
   return true;
 }
 
+
+void addMessages(const std::string & title, std::stringstream & messageStream, const std::vector< CCopasiMessage > & messages)
+{
+  if (messages.size() == 0)
+    return;
+
+  messageStream << title << "\n";
+
+  messageStream << "\n";
+
+for (auto & message : messages)
+    {
+      auto startPos = message.getText().find_first_of("\n");
+      auto text = message.getText().substr(startPos + 1);
+      messageStream << " - " << text << "\n";
+    }
+
+  messageStream << "\n";
+}
+
 bool CDataModel::openCombineArchive(const std::string & fileName,
                                     CProcessReport * pProgressReport,
                                     const bool & deleteOldData,
@@ -2078,7 +2098,6 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
   // read the master file
   const CaContent * content = archive.getMasterFile();
   bool haveCopasi = content != NULL && content->isFormat("copasi");
-  std::stringstream messageStream;
 
   // if we don't have one, or we have one we don't understand look for copasi file
   if (content == NULL ||
@@ -2121,6 +2140,11 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
     }
 
   bool loadedModel = false;
+
+  int numMessagesBefore = CCopasiMessage::size();
+  std::vector<CCopasiMessage> importCopasiMessages;
+  std::vector< CCopasiMessage > importSedMLMessages;
+  std::vector< CCopasiMessage > importSbmlMessages;
 
   if (haveCopasi || (content != NULL && content->isFormat("copasi")))
     {
@@ -2193,12 +2217,16 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
                 }
             }
         }
-      else
+
+      // save the messages
+      while (numMessagesBefore < CCopasiMessage::size())
         {
-          CCopasiMessage(CCopasiMessage::ERROR, "COMBINE archive import: failed to load COPASI file from archive.");
-          messageStream << CCopasiMessage::getAllMessageText();
+          CCopasiMessage message = CCopasiMessage::getLastMessage();
+          importCopasiMessages.push_back(message);
         }
     }
+
+  numMessagesBefore = CCopasiMessage::size();
 
   if (loadedModel == false && sedml_content != NULL)
     {
@@ -2208,10 +2236,6 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
         }
       catch (const CCopasiException &)
         {
-          // error is reported to log already
-          CCopasiMessage(CCopasiMessage::ERROR, "COMBINE archive import: failed to load SED-ML file from archive.");
-          messageStream << CCopasiMessage::getAllMessageText();
-
           // need to set model back as the import might have corrupted the
           // tasks
           newModel(NULL, true);
@@ -2220,7 +2244,17 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
       this->mData.mSEDMLFileName = "";
       this->mData.mSBMLFileName = "";
+
+      // save the messages
+      while (numMessagesBefore < CCopasiMessage::size())
+        {
+          CCopasiMessage message = CCopasiMessage::getLastMessage();
+          importSedMLMessages.push_back(message);
+        }
+
     }
+
+  numMessagesBefore = CCopasiMessage::size();
 
   if (loadedModel == false && sbml_content != NULL)
     {
@@ -2228,10 +2262,45 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
       this->mData.mSBMLFileName = "";
     }
 
+  // save the messages
+  while (numMessagesBefore < CCopasiMessage::size())
+    {
+      CCopasiMessage message = CCopasiMessage::getLastMessage();
+      importSbmlMessages.push_back(message);
+    }
+
+
+  std::stringstream messageStream;
+  auto severity = loadedModel ? CCopasiMessage::WARNING : CCopasiMessage::ERROR;
+
+  if (!importCopasiMessages.empty())
+    {
+      addMessages("Messages from attempted COPASI file import: ", messageStream, importCopasiMessages);
+
+      if (sedml_content)
+        {
+          messageStream << "Attempting to import the SED-ML file instead." << std::endl;
+        }
+    }
+
+  if (!importSedMLMessages.empty())
+    {
+      addMessages("Messages from attempted SED-ML file import: ", messageStream, importSedMLMessages);
+
+      if (sbml_content)
+        {
+          messageStream << "Attempting to import the SBML file instead." << std::endl;
+        }
+    }
+
+  if (!importSbmlMessages.empty())
+    addMessages("Messages from attempted SBML file import: ", messageStream, importSbmlMessages);
+
+
   std::string additionalMessages = messageStream.str();
 
   if (!additionalMessages.empty())
-    CCopasiMessage(CCopasiMessage::ERROR, additionalMessages.c_str());
+    CCopasiMessage(severity, additionalMessages.c_str());
 
   this->mData.mSaveFileName = "";
   this->changed();
