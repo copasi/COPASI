@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -469,136 +469,76 @@ void ListViews::resetCache()
           this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
 }
 
+#define CREATE_WIDGET(variable, stackwidget, Type, parent)\
+  if (!variable)\
+    {\
+      variable = new Type(parent);\
+      stackwidget->addWidget(variable);\
+    }
+
+#define CREATE_TAB_WIDGET(variable, stackwidget, objectType, Type, parent)\
+  if (!variable)\
+    {\
+      variable = new CQTabWidget(objectType, new Type(parent), parent);\
+      stackwidget->addWidget(variable);\
+    }
+
 /***********ListViews::ConstructNodeWidgets()---------------------------->
  ** Description:-This method is used to construct all the node widgets
  *************************************************************************/
 void ListViews::ConstructNodeWidgets()
 {
+  // construct widgets that we definitely always need, like the model widget,
+  // since that will be automatically activated after startup:
+  CREATE_TAB_WIDGET(modelWidget, mpStackedWidget, ListViews::ObjectType::MODEL, CQModelWidget, this);
+
+
+  // defer early construction of remaining widgets if requested
+  if (!qgetenv("COPASIUI_DEFER_WIDGET_CONSTRUCTION").isEmpty())
+    return;
 
   // create the model widgets
-  if (!mpCompartmentsWidget)
-    {
-      mpCompartmentsWidget = new CQCompartmentsWidget(this);
-      mpStackedWidget->addWidget(mpCompartmentsWidget);
-    }
+  CREATE_WIDGET(mpCompartmentsWidget, mpStackedWidget, CQCompartmentsWidget, this);
 
-  if (!compartmentsWidget1)
-    {
-      compartmentsWidget1 = new CQTabWidget(ListViews::ObjectType::COMPARTMENT, new CQCompartment(this), this);
-      mpStackedWidget->addWidget(compartmentsWidget1);
-    }
+  CREATE_TAB_WIDGET(compartmentsWidget1, mpStackedWidget, ListViews::ObjectType::COMPARTMENT, CQCompartment, this);
 
 #ifdef HAVE_MML
 
-  if (!differentialEquations)
-    {
-      differentialEquations = new CQDifferentialEquations(this);
-      mpStackedWidget->addWidget(differentialEquations);
-    }
+  CREATE_WIDGET(differentialEquations, mpStackedWidget, CQDifferentialEquations, this);
 
 #endif // HAVE_MML
 
-  if (!eventsWidget)
-    {
-      eventsWidget = new CQEventsWidget(this);
-      mpStackedWidget->addWidget(eventsWidget);
-    }
+  CREATE_WIDGET(eventsWidget, mpStackedWidget, CQEventsWidget, this);
 
-  if (!eventWidget1)
-    {
-      eventWidget1 = new CQTabWidget(ListViews::ObjectType::EVENT, new CQEventWidget1(this), this);
-      mpStackedWidget->addWidget(eventWidget1);
-    }
+  CREATE_TAB_WIDGET(eventWidget1, mpStackedWidget, ListViews::ObjectType::EVENT, CQEventWidget1, this);
 
-  if (!mpFunctionsWidget)
-    {
-      mpFunctionsWidget = new CQFunctionsWidget(this);
-      mpStackedWidget->addWidget(mpFunctionsWidget);
-    }
+  CREATE_WIDGET(mpFunctionsWidget, mpStackedWidget, CQFunctionsWidget, this);
 
-  if (!functionWidget1)
-    {
-      functionWidget1 = new CQTabWidget(ListViews::ObjectType::FUNCTION, new FunctionWidget1(this), this);
-      mpStackedWidget->addWidget(functionWidget1);
-    }
+  CREATE_TAB_WIDGET(functionWidget1, mpStackedWidget, ListViews::ObjectType::FUNCTION, FunctionWidget1, this);
 
-  if (!lyapWidget)
-    {
-      lyapWidget = new CQLyapWidget(this);
-      mpStackedWidget->addWidget(lyapWidget);
-    }
+  CREATE_WIDGET(lyapWidget, mpStackedWidget, CQLyapWidget, this);
 
-  if (!lyapResultWidget)
-    {
-      lyapResultWidget = new CQLyapResultWidget(this);
-      mpStackedWidget->addWidget(lyapResultWidget);
-    }
+  CREATE_WIDGET(lyapResultWidget, mpStackedWidget, CQLyapResultWidget, this);
 
-  if (!mpSpeciesWidget)
-    {
-      mpSpeciesWidget = new CQSpeciesWidget(this);
-      mpStackedWidget->addWidget(mpSpeciesWidget);
-    }
+  CREATE_WIDGET(mpSpeciesWidget, mpStackedWidget, CQSpeciesWidget, this);
 
-  if (!metabolitesWidget1)
-    {
-      metabolitesWidget1 = new CQTabWidget(ListViews::ObjectType::METABOLITE, new CQSpeciesDetail(this), this);
-      mpStackedWidget->addWidget(metabolitesWidget1);
-    }
+  CREATE_TAB_WIDGET(metabolitesWidget1, mpStackedWidget, ListViews::ObjectType::METABOLITE, CQSpeciesDetail, this);
 
-  if (!modelWidget)
-    {
-      modelWidget = new CQTabWidget(ListViews::ObjectType::MODEL, new CQModelWidget(this), this);
-      mpStackedWidget->addWidget(modelWidget);
-    }
+  CREATE_TAB_WIDGET(mpModelValueWidget, mpStackedWidget, ListViews::ObjectType::MODELVALUE, CQModelValue, this);
 
-  if (!mpModelValueWidget)
-    {
-      mpModelValueWidget = new CQTabWidget(ListViews::ObjectType::MODELVALUE, new CQModelValue(this), this);
-      mpStackedWidget->addWidget(mpModelValueWidget);
-    }
+  CREATE_WIDGET(mpGlobalQuantitiesWidget, mpStackedWidget, CQGlobalQuantitiesWidget, this);
 
-  if (!mpGlobalQuantitiesWidget)
-    {
-      mpGlobalQuantitiesWidget = new CQGlobalQuantitiesWidget(this);
-      mpStackedWidget->addWidget(mpGlobalQuantitiesWidget);
-    }
+  CREATE_WIDGET(mpEFMWidget, mpStackedWidget, CQEFMWidget, this);
 
-  if (!mpEFMWidget)
-    {
-      mpEFMWidget = new CQEFMWidget(this);
-      mpStackedWidget->addWidget(mpEFMWidget);
-    }
+  CREATE_WIDGET(mpEFMResultWidget, mpStackedWidget, CQEFMResultWidget, this);
 
-  if (!mpEFMResultWidget)
-    {
-      mpEFMResultWidget = new CQEFMResultWidget(this);
-      mpStackedWidget->addWidget(mpEFMResultWidget);
-    }
+  CREATE_WIDGET(mpMoietiesTaskResult, mpStackedWidget, CQMoietiesTaskResult, this);
 
-  if (!mpMoietiesTaskResult)
-    {
-      mpMoietiesTaskResult = new CQMoietiesTaskResult(this);
-      mpStackedWidget->addWidget(mpMoietiesTaskResult);
-    }
+  CREATE_WIDGET(mpMoietiesTaskWidget, mpStackedWidget, CQMoietiesTaskWidget, this);
 
-  if (!mpMoietiesTaskWidget)
-    {
-      mpMoietiesTaskWidget = new CQMoietiesTaskWidget(this);
-      mpStackedWidget->addWidget(mpMoietiesTaskWidget);
-    }
+  CREATE_WIDGET(mpParameterOverviewWidget, mpStackedWidget, CQParameterOverviewWidget, this);
 
-  if (!mpParameterOverviewWidget)
-    {
-      mpParameterOverviewWidget = new CQParameterOverviewWidget(this);
-      mpStackedWidget->addWidget(mpParameterOverviewWidget);
-    }
-
-  if (!mpParameterSetsWidget)
-    {
-      mpParameterSetsWidget = new CQParameterSetsWidget(this);
-      mpStackedWidget->addWidget(mpParameterSetsWidget);
-    }
+  CREATE_WIDGET(mpParameterSetsWidget, mpStackedWidget, CQParameterSetsWidget, this);
 
   if (!mpParameterSetWidget)
     {
@@ -613,167 +553,59 @@ void ListViews::ConstructNodeWidgets()
       mpStackedWidget->addWidget(mpParameterSetWidget);
     }
 
-  if (!mpCMCAResultWidget)
-    {
-      mpCMCAResultWidget = new CMCAResultWidget(this);
-      mpStackedWidget->addWidget(mpCMCAResultWidget);
-    }
+  CREATE_WIDGET(mpCMCAResultWidget, mpStackedWidget, CMCAResultWidget, this);
 
-  if (!mpCQMCAWidget)
-    {
-      mpCQMCAWidget = new CQMCAWidget(this);
-      mpStackedWidget->addWidget(mpCQMCAWidget);
-    }
+  CREATE_WIDGET(mpCQMCAWidget, mpStackedWidget, CQMCAWidget, this);
 
-  if (!mpCLNAResultWidget)
-    {
-      mpCLNAResultWidget = new CLNAResultWidget(this);
-      mpStackedWidget->addWidget(mpCLNAResultWidget);
-    }
+  CREATE_WIDGET(mpCLNAResultWidget, mpStackedWidget, CLNAResultWidget, this);
 
-  if (!mpCQLNAWidget)
-    {
-      mpCQLNAWidget = new CQLNAWidget(this);
-      mpStackedWidget->addWidget(mpCQLNAWidget);
-    }
+  CREATE_WIDGET(mpCQLNAWidget, mpStackedWidget, CQLNAWidget, this);
 
-  if (!optimizationWidget)
-    {
-      optimizationWidget = new CQOptimizationWidget(this);
-      mpStackedWidget->addWidget(optimizationWidget);
-    }
+  CREATE_WIDGET(optimizationWidget, mpStackedWidget, CQOptimizationWidget, this);
 
-  if (!optResultWidget)
-    {
-      optResultWidget = new CQOptimizationResult(this);
-      mpStackedWidget->addWidget(optResultWidget);
-    }
+  CREATE_WIDGET(optResultWidget, mpStackedWidget, CQOptimizationResult, this);
 
-  if (!paramFittingWidget)
-    {
-      paramFittingWidget = new CQFittingWidget(this);
-      mpStackedWidget->addWidget(paramFittingWidget);
-    }
+  CREATE_WIDGET(paramFittingWidget, mpStackedWidget, CQFittingWidget, this);
 
-  if (!mpFittingResultWidget)
-    {
-      mpFittingResultWidget = new CQFittingResult(this);
-      mpStackedWidget->addWidget(mpFittingResultWidget);
-    }
+  CREATE_WIDGET(mpFittingResultWidget, mpStackedWidget, CQFittingResult, this);
 
-  if (!mpPlotsWidget)
-    {
-      mpPlotsWidget = new CQPlotsWidget(this);
-      mpStackedWidget->addWidget(mpPlotsWidget);
-    }
+  CREATE_WIDGET(mpPlotsWidget, mpStackedWidget, CQPlotsWidget, this);
 
-  if (!mpPlotSubwidget)
-    {
-      mpPlotSubwidget = new CQPlotSubwidget(this);
-      mpStackedWidget->addWidget(mpPlotSubwidget);
-    }
+  CREATE_WIDGET(mpPlotSubwidget, mpStackedWidget, CQPlotSubwidget, this);
 
-  if (!mpReactionsWidget)
-    {
-      mpReactionsWidget = new CQReactionsWidget(this);
-      mpStackedWidget->addWidget(mpReactionsWidget);
-    }
+  CREATE_WIDGET(mpReactionsWidget, mpStackedWidget, CQReactionsWidget, this);
 
-  if (!reactionsWidget1)
-    {
-      reactionsWidget1 = new CQTabWidget(ListViews::ObjectType::REACTION, new ReactionsWidget1(this), this);
-      mpStackedWidget->addWidget(reactionsWidget1);
-    }
+  CREATE_TAB_WIDGET(reactionsWidget1, mpStackedWidget, ListViews::ObjectType::REACTION, ReactionsWidget1, this);
 
-  if (!scanWidget)
-    {
-      scanWidget = new ScanWidget(this);
-      mpStackedWidget->addWidget(scanWidget);
-    }
+  CREATE_WIDGET(scanWidget, mpStackedWidget, ScanWidget, this);
 
-  if (!stateWidget)
-    {
-      stateWidget = new CQSteadyStateResult(this);
-      mpStackedWidget->addWidget(stateWidget);
-    }
+  CREATE_WIDGET(stateWidget, mpStackedWidget, CQSteadyStateResult, this);
 
-  if (!steadystateWidget)
-    {
-      steadystateWidget = new SteadyStateWidget(this);
-      mpStackedWidget->addWidget(steadystateWidget);
-    }
+  CREATE_WIDGET(steadystateWidget, mpStackedWidget, SteadyStateWidget, this);
 
-  if (!mpReportsWidget)
-    {
-      mpReportsWidget = new CQReportsWidget(this);
-      mpStackedWidget->addWidget(mpReportsWidget);
-    }
+  CREATE_WIDGET(mpReportsWidget, mpStackedWidget, CQReportsWidget, this);
 
-  if (!mpUnitsWidget)
-    {
-      mpUnitsWidget = new CQUnitsWidget(this);
-      mpStackedWidget->addWidget(mpUnitsWidget);
-    }
+  CREATE_WIDGET(mpUnitsWidget, mpStackedWidget, CQUnitsWidget, this);
 
-  if (!mpUnitDetail)
-    {
-      mpUnitDetail = new CQTabWidget(ListViews::ObjectType::UNIT, new CQUnitDetail(this), this);
-      mpStackedWidget->addWidget(mpUnitDetail);
-    }
+  CREATE_TAB_WIDGET(mpUnitDetail, mpStackedWidget, ListViews::ObjectType::UNIT, CQUnitDetail, this);
 
-  if (!tableDefinition1)
-    {
-      tableDefinition1 = new CQReportDefinition(this);
-      mpStackedWidget->addWidget(tableDefinition1);
-    }
+  CREATE_WIDGET(tableDefinition1, mpStackedWidget, CQReportDefinition, this);
 
-  if (!sensWidget)
-    {
-      sensWidget = new SensitivitiesWidget(this);
-      mpStackedWidget->addWidget(sensWidget);
-    }
+  CREATE_WIDGET(sensWidget, mpStackedWidget, SensitivitiesWidget, this);
 
-  if (!sensResultWidget)
-    {
-      sensResultWidget = new CQSensResultWidget(this);
-      mpStackedWidget->addWidget(sensResultWidget);
-    }
+  CREATE_WIDGET(sensResultWidget, mpStackedWidget, CQSensResultWidget, this);
 
-  if (!timeSeriesWidget)
-    {
-      timeSeriesWidget = new CQTimeSeriesWidget(this);
-      mpStackedWidget->addWidget(timeSeriesWidget);
-    }
+  CREATE_WIDGET(timeSeriesWidget, mpStackedWidget, CQTimeSeriesWidget, this);
 
-  if (!trajectoryWidget)
-    {
-      trajectoryWidget = new CQTrajectoryWidget(this);
-      mpStackedWidget->addWidget(trajectoryWidget);
-    }
+  CREATE_WIDGET(trajectoryWidget, mpStackedWidget, CQTrajectoryWidget, this);
 
-  if (!tssaWidget)
-    {
-      tssaWidget = new CQTSSAWidget(this);
-      mpStackedWidget->addWidget(tssaWidget);
-    }
+  CREATE_WIDGET(tssaWidget, mpStackedWidget, CQTSSAWidget, this);
 
-  if (!tssaResultWidget)
-    {
-      tssaResultWidget = new CQTSSAResultWidget(this);
-      mpStackedWidget->addWidget(tssaResultWidget);
-    }
+  CREATE_WIDGET(tssaResultWidget, mpStackedWidget, CQTSSAResultWidget, this);
 
-  if (!crossSectionTimeSeriesWidget)
-    {
-      crossSectionTimeSeriesWidget = new CQTimeSeriesWidget(this);
-      mpStackedWidget->addWidget(crossSectionTimeSeriesWidget);
-    }
+  CREATE_WIDGET(crossSectionTimeSeriesWidget, mpStackedWidget, CQTimeSeriesWidget, this);
 
-  if (!crossSectionTaskWidget)
-    {
-      crossSectionTaskWidget = new CQCrossSectionTaskWidget(this);
-      mpStackedWidget->addWidget(crossSectionTaskWidget);
-    }
+  CREATE_WIDGET(crossSectionTaskWidget, mpStackedWidget, CQCrossSectionTaskWidget, this);
 
 #ifdef WITH_ANALYTICS
 
@@ -793,17 +625,8 @@ void ListViews::ConstructNodeWidgets()
 
 #ifdef WITH_TIME_SENS
 
-  if (!timeSensResultWidget)
-    {
-      timeSensResultWidget = new CQTimeSeriesWidget(this);
-      mpStackedWidget->addWidget(timeSensResultWidget);
-    }
-
-  if (!timeSensWidget)
-    {
-      timeSensWidget = new CQTimeSensWidget(this);
-      mpStackedWidget->addWidget(timeSensWidget);
-    }
+  CREATE_WIDGET(timeSensResultWidget, mpStackedWidget, CQTimeSeriesWidget, this);
+  CREATE_WIDGET(timeSensWidget, mpStackedWidget, CQTimeSensWidget, this);
 
 #endif // WITH_TIME_SENS
 
@@ -819,25 +642,346 @@ void ListViews::ConstructNodeWidgets()
 
 #ifdef COPASI_DEBUG
 
-  if (!mpUpdatesWidget)
-    {
-      mpUpdatesWidget = new CQUpdatesWidget(this);
-      mpStackedWidget->addWidget(mpUpdatesWidget);
-    }
+  CREATE_WIDGET(mpUpdatesWidget, mpStackedWidget, CQUpdatesWidget, this);
 
 #endif // COPASI_DEBUG
 
-  if (!mpMathMatrixWidget)
+  CREATE_WIDGET(mpMathMatrixWidget, mpStackedWidget, CQMathMatrixWidget, this);
+  CREATE_WIDGET(mpLayoutsWidget, mpStackedWidget, CQLayoutsWidget, this);
+
+}
+
+CopasiWidget* ListViews::createWidgetFromId(const ListViews::WidgetType& id)
+{
+  switch (id)
     {
-      mpMathMatrixWidget = new CQMathMatrixWidget(this);
-      mpStackedWidget->addWidget(mpMathMatrixWidget);
+      case WidgetType::Model:
+        CREATE_TAB_WIDGET(modelWidget, mpStackedWidget, ListViews::ObjectType::MODEL, CQModelWidget, this);
+        return modelWidget;
+        break;
+
+      case WidgetType::Compartments:
+        CREATE_WIDGET(mpCompartmentsWidget, mpStackedWidget, CQCompartmentsWidget, this);
+        return mpCompartmentsWidget;
+        break;
+
+      case WidgetType::CompartmentDetail:
+        CREATE_TAB_WIDGET(compartmentsWidget1, mpStackedWidget, ListViews::ObjectType::COMPARTMENT, CQCompartment, this);
+
+        return compartmentsWidget1;
+        break;
+
+      case WidgetType::Species:
+        CREATE_WIDGET(mpSpeciesWidget, mpStackedWidget, CQSpeciesWidget, this);
+        return mpSpeciesWidget;
+        break;
+
+      case WidgetType::SpeciesDetail:
+        CREATE_TAB_WIDGET(metabolitesWidget1, mpStackedWidget, ListViews::ObjectType::METABOLITE, CQSpeciesDetail, this);
+        return metabolitesWidget1;
+        break;
+
+      case WidgetType::Reactions:
+        CREATE_WIDGET(mpReactionsWidget, mpStackedWidget, CQReactionsWidget, this);
+        return mpReactionsWidget;
+        break;
+
+      case WidgetType::ReactionDetail:
+        CREATE_TAB_WIDGET(reactionsWidget1, mpStackedWidget, ListViews::ObjectType::REACTION, ReactionsWidget1, this);
+        return reactionsWidget1;
+        break;
+
+      case WidgetType::GlobalQuantities:
+        CREATE_WIDGET(mpGlobalQuantitiesWidget, mpStackedWidget, CQGlobalQuantitiesWidget, this);
+        return mpGlobalQuantitiesWidget;
+        break;
+
+      case WidgetType::GlobalQuantityDetail:
+        CREATE_TAB_WIDGET(mpModelValueWidget, mpStackedWidget, ListViews::ObjectType::MODELVALUE, CQModelValue, this);
+        return mpModelValueWidget;
+        break;
+
+      case WidgetType::Events:
+        CREATE_WIDGET(eventsWidget, mpStackedWidget, CQEventsWidget, this);
+        return eventsWidget;
+        break;
+
+      case WidgetType::EventDetail:
+        CREATE_TAB_WIDGET(eventWidget1, mpStackedWidget, ListViews::ObjectType::EVENT, CQEventWidget1, this);
+        return eventWidget1;
+        break;
+
+      case WidgetType::ParameterOverview:
+        CREATE_WIDGET(mpParameterOverviewWidget, mpStackedWidget, CQParameterOverviewWidget, this);
+        return mpParameterOverviewWidget;
+        break;
+
+      case WidgetType::ParameterSets:
+        CREATE_WIDGET(mpParameterSetsWidget, mpStackedWidget, CQParameterSetsWidget, this);
+        return mpParameterSetsWidget;
+        break;
+
+      case WidgetType::ParameterSetDetail:
+        if (!mpParameterSetWidget)
+          {
+            CQParameterOverviewWidget * overviewWidget = new CQParameterOverviewWidget(this);
+            overviewWidget->setBtnGroupVisible(false);
+            mpParameterSetWidget = new CQTabWidget(ListViews::ObjectType::MODELPARAMETERSET, overviewWidget, this);
+
+            QPushButton * btn = new QPushButton("Save to File");
+            connect(btn, SIGNAL(pressed()), overviewWidget, SLOT(slotBtnSaveToFile()));
+            mpParameterSetWidget->getHeaderLayout()->addWidget(btn);
+
+            mpStackedWidget->addWidget(mpParameterSetWidget);
+          }
+
+        return mpParameterSetWidget;
+        break;
+
+#  ifdef HAVE_MML
+
+      case WidgetType::DifferentialEquations:
+        CREATE_WIDGET(differentialEquations, mpStackedWidget, CQDifferentialEquations, this);
+        return differentialEquations;
+        break;
+#  endif // HAVE_MML
+
+      case WidgetType::Matrices:
+        CREATE_WIDGET(mpMathMatrixWidget, mpStackedWidget, CQMathMatrixWidget, this);
+        return mpMathMatrixWidget;
+        break;
+
+#  ifdef COPASI_DEBUG
+
+      case WidgetType::UpdateOrder:
+        CREATE_WIDGET(mpUpdatesWidget, mpStackedWidget, CQUpdatesWidget, this);
+        return mpUpdatesWidget;
+        break;
+#  endif
+
+      case WidgetType::Diagrams:
+        CREATE_WIDGET(mpLayoutsWidget, mpStackedWidget, CQLayoutsWidget, this);
+        return mpLayoutsWidget;
+        break;
+
+      case WidgetType::SteadyState:
+        CREATE_WIDGET(steadystateWidget, mpStackedWidget, SteadyStateWidget, this);
+        return steadystateWidget;
+        break;
+
+      case WidgetType::SteadyStateResult:
+        CREATE_WIDGET(stateWidget, mpStackedWidget, CQSteadyStateResult, this);
+        return stateWidget;
+        break;
+
+      case WidgetType::ElementaryModes:
+        CREATE_WIDGET(mpEFMWidget, mpStackedWidget, CQEFMWidget, this);
+        return mpEFMWidget;
+        break;
+
+      case WidgetType::ElementaryModesResult:
+        CREATE_WIDGET(mpEFMResultWidget, mpStackedWidget, CQEFMResultWidget, this);
+        return mpEFMResultWidget;
+        break;
+
+      case WidgetType::MassConservation:
+        CREATE_WIDGET(mpMoietiesTaskWidget, mpStackedWidget, CQMoietiesTaskWidget, this);
+        return mpMoietiesTaskWidget;
+        break;
+
+      case WidgetType::MassConservationResult:
+        CREATE_WIDGET(mpMoietiesTaskResult, mpStackedWidget, CQMoietiesTaskResult, this);
+        return mpMoietiesTaskResult;
+        break;
+
+      case WidgetType::TimeCourse:
+        CREATE_WIDGET(trajectoryWidget, mpStackedWidget, CQTrajectoryWidget, this);
+        return trajectoryWidget;
+        break;
+
+      case WidgetType::TimeCourseResult:
+        CREATE_WIDGET(timeSeriesWidget, mpStackedWidget, CQTimeSeriesWidget, this);
+        return timeSeriesWidget;
+        break;
+
+      case WidgetType::MetabolicControlAnalysis:
+        CREATE_WIDGET(mpCQMCAWidget, mpStackedWidget, CQMCAWidget, this);
+        return mpCQMCAWidget;
+        break;
+
+      case WidgetType::MetabolicControlAnalysisResult:
+        CREATE_WIDGET(mpCMCAResultWidget, mpStackedWidget, CMCAResultWidget, this);
+        return mpCMCAResultWidget;
+        break;
+
+      case WidgetType::LyapunovExponents:
+        CREATE_WIDGET(lyapWidget, mpStackedWidget, CQLyapWidget, this);
+        return lyapWidget;
+        break;
+
+      case WidgetType::LyapunovExponentsResult:
+        CREATE_WIDGET(lyapResultWidget, mpStackedWidget, CQLyapResultWidget, this);
+        return lyapResultWidget;
+        break;
+
+      case WidgetType::TimeScaleSeparationAnalysis:
+        CREATE_WIDGET(tssaWidget, mpStackedWidget, CQTSSAWidget, this);
+        return tssaWidget;
+        break;
+
+      case WidgetType::TimeScaleSeparationAnalysisResult:
+        CREATE_WIDGET(tssaResultWidget, mpStackedWidget, CQTSSAResultWidget, this);
+        return tssaResultWidget;
+        break;
+
+      case WidgetType::CrossSection:
+        CREATE_WIDGET(crossSectionTaskWidget, mpStackedWidget, CQCrossSectionTaskWidget, this);
+        return crossSectionTaskWidget;
+        break;
+
+      case WidgetType::CrossSectionResult:
+        CREATE_WIDGET(crossSectionTimeSeriesWidget, mpStackedWidget, CQTimeSeriesWidget, this);
+        return crossSectionTimeSeriesWidget;
+        break;
+
+#  ifdef WITH_ANALYTICS
+
+      case WidgetType::Analysis:
+        return analyticsWidget;
+        break;
+
+      case WidgetType::AnalysisResult:
+        return analyticsResultWidget;
+        break;
+#  endif // WITH_ANALYTICS
+
+#  ifdef WITH_TIME_SENS
+
+      case ListViews::WidgetType::TimeCourseSensitivities:
+        CREATE_WIDGET(timeSensWidget, mpStackedWidget, CQTimeSensWidget, this);
+        return timeSensWidget;
+        break;
+
+      case ListViews::WidgetType::TimeCourseSensitivitiesResult:
+        CREATE_WIDGET(timeSensResultWidget, mpStackedWidget, CQTimeSeriesWidget, this);
+        return timeSensResultWidget;
+        break;
+#  endif // WITH_TIME_SENS
+
+#  ifdef COPASI_NONLIN_DYN_OSCILLATION
+
+      case WidgetType::Oscillation:
+        return oscillationTaskWidget;
+        break;
+#  endif
+
+      case WidgetType::ParameterScan:
+        CREATE_WIDGET(scanWidget, mpStackedWidget, ScanWidget, this);
+        return scanWidget;
+        break;
+
+      case WidgetType::Optimization:
+        CREATE_WIDGET(optimizationWidget, mpStackedWidget, CQOptimizationWidget, this);
+        return optimizationWidget;
+        break;
+
+      case WidgetType::OptimizationResult:
+        CREATE_WIDGET(optResultWidget, mpStackedWidget, CQOptimizationResult, this);
+        return optResultWidget;
+        break;
+
+      case WidgetType::ParameterEstimation:
+        CREATE_WIDGET(paramFittingWidget, mpStackedWidget, CQFittingWidget, this);
+        return paramFittingWidget;
+        break;
+
+      case WidgetType::ParameterEstimationResult:
+        CREATE_WIDGET(mpFittingResultWidget, mpStackedWidget, CQFittingResult, this);
+        return mpFittingResultWidget;
+        break;
+
+      case WidgetType::Sensitivities:
+        CREATE_WIDGET(sensWidget, mpStackedWidget, SensitivitiesWidget, this);
+        return sensWidget;
+        break;
+
+      case WidgetType::SensitivitiesResult:
+        CREATE_WIDGET(sensResultWidget, mpStackedWidget, CQSensResultWidget, this);
+        return sensResultWidget;
+        break;
+
+      case WidgetType::LinearNoiseApproximation:
+        CREATE_WIDGET(mpCQLNAWidget, mpStackedWidget, CQLNAWidget, this);
+        return mpCQLNAWidget;
+        break;
+
+      case WidgetType::LinearNoiseApproximationResult:
+        CREATE_WIDGET(mpCLNAResultWidget, mpStackedWidget, CLNAResultWidget, this);
+        return mpCLNAResultWidget;
+        break;
+
+      case WidgetType::ReportTemplates:
+        CREATE_WIDGET(mpReportsWidget, mpStackedWidget, CQReportsWidget, this);
+        return mpReportsWidget;
+        break;
+
+      case WidgetType::ReportTemplateDetail:
+        CREATE_WIDGET(tableDefinition1, mpStackedWidget, CQReportDefinition, this);
+        return tableDefinition1;
+        break;
+
+      case WidgetType::Plots:
+        CREATE_WIDGET(mpPlotsWidget, mpStackedWidget, CQPlotsWidget, this);
+        return mpPlotsWidget;
+        break;
+
+      case WidgetType::PlotDetail:
+        CREATE_WIDGET(mpPlotSubwidget, mpStackedWidget, CQPlotSubwidget, this);
+        return mpPlotSubwidget;
+        break;
+
+      case WidgetType::Functions:
+        CREATE_WIDGET(mpFunctionsWidget, mpStackedWidget, CQFunctionsWidget, this);
+        return mpFunctionsWidget;
+        break;
+
+      case WidgetType::FunctionDetail:
+        CREATE_TAB_WIDGET(functionWidget1, mpStackedWidget, ListViews::ObjectType::FUNCTION, FunctionWidget1, this);
+        return functionWidget1;
+        break;
+
+      case WidgetType::Units:
+        CREATE_WIDGET(mpUnitsWidget, mpStackedWidget, CQUnitsWidget, this);
+        return mpUnitsWidget;
+        break;
+
+      case WidgetType::UnitDetail:
+        CREATE_TAB_WIDGET(mpUnitDetail, mpStackedWidget, ListViews::ObjectType::UNIT, CQUnitDetail, this);
+        return mpUnitDetail;
+        break;
     }
 
-  if (!mpLayoutsWidget)
+  //give up
+  return NULL;
+}
+
+CopasiWidget * ListViews::createWidgetFromIndex(const QModelIndex & index)
+{
+  if (!index.isValid())
+    return NULL;
+
+  // first try ID
+  WidgetType id = mpTreeDM->getIdFromIndex(index);
+
+  if (id != WidgetType::NotFound)
     {
-      mpLayoutsWidget = new CQLayoutsWidget(this);
-      mpStackedWidget->addWidget(mpLayoutsWidget);
+      return createWidgetFromId(id);
     }
+
+  // then try parent id:
+  id = mpTreeDM->getIdFromIndex(mpTreeDM->parent(index));
+
+  return createWidgetFromId(id);
 }
 
 CopasiWidget* ListViews::findTabWidgetFromId(const ListViews::WidgetType & id) const
@@ -1181,6 +1325,9 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
   // find the widget
   CopasiWidget* newWidget = findWidgetFromIndex(index);
 
+  if (!newWidget)
+    newWidget = createWidgetFromIndex(index);
+
   if (!newWidget) return; //do nothing
 
   const CCommonName & itemCN = mpTreeDM->getCNFromIndex(index);
@@ -1284,7 +1431,8 @@ bool ListViews::slotNotify(ObjectType objectType, Action action, const CCommonNa
   // model had been changed.
   if (objectType == ObjectType::MODEL && action == DELETE)
     {
-      mpLayoutsWidget->deleteLayoutWindows();
+      if (mpLayoutsWidget)
+        mpLayoutsWidget->deleteLayoutWindows();
     }
 
   if (!updateCurrentWidget(objectType, action, cn)) success = false;
