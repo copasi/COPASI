@@ -1190,6 +1190,32 @@ bool addToKnownFunctionToMap(std::map<std::string, std::string>& map, const Func
   return false;
 }
 
+bool hasCopasiAnnotation(const SBase* sbmlObject, const std::string & sNamespace)
+{
+  if (sbmlObject == NULL)
+    return false;
+
+  if (!sbmlObject->isSetAnnotation())
+    return false;
+
+  const XMLNode * element = sbmlObject->getAnnotation();
+
+  if (element == NULL)
+    return false;
+
+  for (unsigned int i = 0; i < element->getNumChildren(); ++i)
+    {
+      const XMLNode & annot = element->getChild(i);
+
+      if (annot.getURI() == sNamespace)
+        {
+          return true;
+        }
+    }
+
+  return false;
+}
+
 int
 AstStrCmp(const void *s1, const void *s2)
 {
@@ -7176,7 +7202,8 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
 
       if (!pEventAssignment->isSetVariable())
         {
-          fatalError();
+          CCopasiMessage(CCopasiMessage::WARNING, "EventAssignment without variable defined for event '%s', ignoring.", pEvent->getId().c_str());
+          continue;
         }
 
       // the COPASI object that corresponds to the variable
@@ -7218,7 +7245,17 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
       CExpression* pExpression = NULL;
       CEventAssignment* pAssignment = NULL;
       pMath = pEventAssignment->getMath();
+      bool isEventAssignmentToParticleNumber = hasCopasiAnnotation(pEventAssignment, "http://copasi.org/eventAssignment");
       assert(pMath != NULL);
+
+      if (isEventAssignmentToParticleNumber && pMath)
+        {
+          if (pMath->getType() == AST_DIVIDE && pMath->getNumChildren() == 2)
+            {
+              // drop the division
+              pMath = pMath->getChild(0);
+            }
+        }
 
       // check for references to species references in the expression because we don't support them yet
       if (!SBMLImporter::findIdInASTTree(pMath, this->mSBMLSpeciesReferenceIds).empty())
@@ -7248,14 +7285,15 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
           pExpression->setTree(*pTmpNode, false);
           delete pTmpNode;
 
-          if (pos2->second->getTypeCode() == SBML_SPECIES && dynamic_cast<const Species*>(pos2->second)->getHasOnlySubstanceUnits() == true)
+          const CMetab * pMetab = dynamic_cast< const CMetab * >(pObject);
+
+          if (pos2->second->getTypeCode() == SBML_SPECIES && dynamic_cast< const Species * >(pos2->second)->getHasOnlySubstanceUnits() == true)
             {
               // divide the expression by the volume
               // check if the top level node is a multiplication and one
               // of the children is the volume of the compartment the species
               // is in. If this is the case, just drop the multiplication
               // instead of dividing
-              const CMetab* pMetab = dynamic_cast<const CMetab*>(pObject);
               assert(pMetab != NULL);
               const CCompartment* pCompartment = pMetab->getCompartment();
 
@@ -7274,7 +7312,12 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
                 }
             }
 
-          pAssignment = new CEventAssignment(pObject->getKey(), pCOPASIEvent);
+          std::string target = pObject->getKey();
+
+          if (isEventAssignmentToParticleNumber && pMetab)
+            target = pMetab->getValueReference()->getCN();
+
+          pAssignment = new CEventAssignment(target, pCOPASIEvent);
           pAssignment->setExpressionPtr(pExpression);
         }
       catch (...)

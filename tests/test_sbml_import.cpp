@@ -8,6 +8,7 @@
 extern std::string getTestFile(const std::string & fileName);
 
 #include <copasi/CopasiTypes.h>
+#include <copasi/utilities/CCopasiException.h>
 #include <copasi/sbml/SBMLUnitSupport.h>
 #include <sbml/SBMLTypes.h>
 
@@ -309,6 +310,76 @@ TEST_CASE("importing an SBML file and delete used function definition", "[copasi
 
   CRootContainer::removeDatamodel(dm);
 }
+
+
+TEST_CASE("SBML import / export of events with particle numbers", "[copasi,sbml]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != nullptr);
+
+  dm->newModel(NULL, true);
+
+  auto * model = dm->getModel();
+
+  model->createCompartment("compartment");
+
+  REQUIRE(model->createMetabolite("A", "compartment") != NULL);
+  model->createMetabolite("B", "compartment");
+  model->createMetabolite("C", "compartment");
+
+  // create event
+  {
+    auto * event = model->createEvent("event");
+    std::stringstream str;
+    str << "<" << model->getValueReference()->getCN() << "> > 1";
+    event->setTriggerExpression(str.str());
+    auto & assignments = event->getAssignments();
+    assignments.clear();
+    auto * assignment = new CEventAssignment(model->getMetabolites()[0].getConcentrationReference()->getCN(), model);
+    assignment->setExpression("1");
+    assignments.add(assignment);
+    assignment = new CEventAssignment(model->getMetabolites()[1].getValueReference()->getCN(), model);
+    assignment->setExpression("2");
+    assignments.add(assignment);
+    assignment = new CEventAssignment(model->getMetabolites()[2].getCN(), model);
+    assignment->setExpression("3");
+    assignments.add(assignment);
+  }
+
+  // save model as cps
+  std::string cps_model = dm->saveModelToString();
+
+  // save model as sbml
+  std::string sbml_model = dm->exportSBMLToString(NULL, 3, 1);
+
+  // load model from sbml
+  try
+    {
+      bool result = dm->importSBMLFromString(sbml_model);
+      REQUIRE(result == true);
+    }
+  catch (const CCopasiException& e)
+    {
+      std::cout << e.getMessage().getText() << std::endl;
+      REQUIRE(false);
+    }
+
+  // get event
+  model = dm->getModel();
+  auto& event = model->getEvents()[0];
+
+  // ensure that targets point to correct objects
+  REQUIRE(event.getAssignments()[0].getTargetObject() == model->getMetabolites()[0].getConcentrationReference());
+  REQUIRE(event.getAssignments()[1].getTargetObject() == model->getMetabolites()[1].getValueReference());
+  REQUIRE(event.getAssignments()[2].getTargetObject() == model->getMetabolites()[2].getConcentrationReference());
+
+  // export again for comparison
+  std::string sbml_model_2 = dm->exportSBMLToString(NULL, 3, 1);
+
+
+  CRootContainer::removeDatamodel(dm);
+}
+
 
 //#include <filesystem>
 //#include <copasi/utilities/CCopasiException.h>
