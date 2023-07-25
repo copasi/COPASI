@@ -221,7 +221,7 @@ TEST_CASE("2: importing an sbml file and saving as COPASI file", "[copasi,sbml]"
   // create model values for amounts:
   auto * model = dm->getModel();
 
-  for (auto & metab : model->getMetabolites())
+for (auto & metab : model->getMetabolites())
     {
       std::stringstream str;
       str << metab.getObjectName() << "_amount";

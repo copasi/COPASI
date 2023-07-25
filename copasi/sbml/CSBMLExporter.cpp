@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <cmath>
 
@@ -4507,10 +4507,12 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
       //        now we have to get the object for the key, check if the object is a
       //        compartment, species or global parameter,
       const CDataObject* pObject = CObjectInterface::DataObject(event.getObjectDataModel()->getObject(itAssignment->getTargetCN()));
+      const CDataObject * pObjectReference = NULL;
       std::string objectType = pObject->getObjectType();
 
       if (objectType == "Reference")
         {
+          pObjectReference = pObject;
           pObject = pObject->getObjectParent();
           objectType = pObject->getObjectType();
         }
@@ -4678,8 +4680,6 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
           // if so, multiply the expression be the volume of the compartment that
           // the species belongs to.
 
-          // TODO CRITICAL Issue 3152. The expression for species can be in particle numbers or concentration.
-          // The code below assumes concentration.
           const CMetab* pMetab = dynamic_cast<const CMetab*>(pObject);
 
           if (pMetab != NULL)
@@ -4710,6 +4710,28 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
 
           if (pNode != NULL)
             {
+            
+              if (pMetab && pObjectReference && pObjectReference == pMetab->getValueReference())
+                {
+                  // mark assignment as particle number assignment
+                  pAssignment->setAnnotation("<particleNumber xmlns=\"http://copasi.org/eventAssignment\" />");
+                  
+                  // divide by the compartment volume and the avogadro number
+                  ASTNode* pDivide = new ASTNode(AST_DIVIDE);
+                  ASTNode * pTimes = new ASTNode(AST_TIMES);
+                  auto * name = new ASTNode(AST_NAME);
+                  name->setName(pMetab->getCompartment()->getSBMLId().c_str());
+                  pTimes->addChild(name);
+                  ASTNode * pFactor = new ASTNode(AST_REAL);
+                  pFactor->setValue(dataModel.getModel()->getQuantity2NumberFactor());
+                  pTimes->addChild(pFactor);
+                  pDivide->addChild(pNode);
+                  pDivide->addChild(pTimes);
+
+                  // and use adjusted expression below
+                  pNode = pDivide;
+                }
+
               if (pAssignment->setMath(pNode) != LIBSBML_OPERATION_SUCCESS)
                 CCopasiMessage(CCopasiMessage::WARNING, "event assignment for variable with id '%s' (in event '%s') with expression '%s' could not be set.", sbmlId.c_str(), event.getObjectName().c_str(), pExpression->getInfix().c_str());
 
