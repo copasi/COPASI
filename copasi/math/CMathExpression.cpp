@@ -15,6 +15,8 @@
 
 #define JIT_IMPLEMENTATION
 
+#include <memory>
+
 #include "copasi/copasi.h"
 
 #include "copasi/math/CMathExpression.h"
@@ -28,6 +30,7 @@
 #include "copasi/function/CEvaluationLexer.h"
 #include "copasi/utilities/CCopasiTree.h"
 #include "copasi/utilities/CNodeIterator.h"
+#include "copasi/utilities/CBalanceTree.h"
 
 #define pMathContainer static_cast< const CMathContainer * >(getObjectParent())
 
@@ -399,36 +402,11 @@ CEvaluationNode * CMathExpression::createMassActionPart(const C_FLOAT64 * pK,
   for (; itSpecies != endSpecies; ++itSpecies)
     Nodes.push_back(createNodeFromValue(itSpecies->value));
 
-  while (Nodes.size() > 1)
-    {
-      std::vector< CEvaluationNode * > Tmp;
-
-      std::vector< CEvaluationNode * >::const_iterator it = Nodes.begin();
-      std::vector< CEvaluationNode * >::const_iterator end = Nodes.end();
-      bool first = true;
-
-      for (; it != end; ++it)
-        {
-          if (first)
-            {
-              first = false;
-
-              if (Nodes.size() % 2)
-                {
-                  Tmp.push_back(*it);
-                  continue;
-                }
-            }
-
-          CEvaluationNode * p = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
-          p->addChild(*it);
-          p->addChild(*++it);
-
-          Tmp.push_back(p);
-        }
-
-      Nodes = Tmp;
-    }
-
-  return Nodes[0];
+  return BalanceTree< CEvaluationNode * >::create(Nodes, [](CEvaluationNode * const & pFirst, CEvaluationNode * const & pSecond)
+  {
+    CEvaluationNode * pNew = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
+    pNew->addChild(pFirst);
+    pNew->addChild(pSecond);
+    return pNew;
+  });
 }
