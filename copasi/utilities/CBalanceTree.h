@@ -14,9 +14,12 @@ struct BalanceTree
   typedef CFunctor< CType, const CType &, const CType & > join_functor;
   typedef CType(*join_method)(const CType &, const CType &);
 
-  static CType create(const std::vector< CType > nodes, join_method pJoinMethod)
+  static CType create(const std::vector< CType > unbalanced, join_method pJoinMethod)
   {
-    std::vector< CType > Balanced {nodes};
+    if (unbalanced.empty())
+      return CType();
+
+    std::vector< CType > Balanced {unbalanced};
 
     while (Balanced.size() > 1)
       {
@@ -51,9 +54,12 @@ struct BalanceTree
     return Balanced[0];
   }
 
-  static CType create(const std::vector< CType > nodes, join_functor * pJoinFunctor)
+  static CType create(const std::vector< CType > unbalanced, join_functor * pJoinFunctor)
   {
-    std::vector< CType > Balanced {nodes};
+    if (unbalanced.empty())
+      return CType();
+
+    std::vector< CType > Balanced {unbalanced};
 
     while (Balanced.size() > 1)
       {
