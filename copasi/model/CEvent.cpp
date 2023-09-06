@@ -278,6 +278,20 @@ const std::string & CEventAssignment::getTargetCN() const
   return mTargetCN;
 }
 
+std::string CEventAssignment::getXmlTargetCN() const
+{
+  CCommonName parentCN;
+  std::string objectType;
+  std::string objectName;
+
+  mTargetCN.split(parentCN, objectType, objectName);
+
+  if (objectName != "ParticleNumber")
+    return parentCN;
+
+  return mTargetCN;
+}
+
 bool CEventAssignment::setExpression(const std::string & expression)
 {
   if (mpExpression == nullptr)

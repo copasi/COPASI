@@ -1051,7 +1051,7 @@ bool CCopasiXML::saveModel()
 
               for (; it != end; ++it)
                 {
-                  Attr.setValue(0, it->getTargetCN());
+                  Attr.setValue(0, it->getXmlTargetCN());
 
                   startSaveElement("Assignment", Attr);
 
