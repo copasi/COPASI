@@ -6,18 +6,58 @@
 #pragma once
 
 #include <vector>
+#include <functional>
+#include <type_traits>
+
 #include "copasi/utilities/CFunctor.h"
 
 template < class CType >
 struct BalanceTree
 {
-  typedef CFunctor< CType, const CType &, const CType & > join_functor;
-  typedef CType(*join_method)(const CType &, const CType &);
-
-  static CType create(const std::vector< CType > unbalanced, join_method pJoinMethod)
+  static CType create(const std::vector< CType > & unbalanced, std::function< CType(const CType &, const CType &) > & joinFunction)
   {
     if (unbalanced.empty())
-      return CType();
+      return std::is_pointer< CType >::value ? nullptr : CType();
+
+    std::vector< CType > Balanced {unbalanced};
+
+    while (Balanced.size() > 1)
+      {
+        std::vector< CType > Tmp;
+
+        typename std::vector< CType >::const_iterator it = Balanced.begin();
+        typename std::vector< CType >::const_iterator end = Balanced.end();
+        bool first = true;
+
+        for (; it != end; ++it)
+          {
+            if (first)
+              {
+                first = false;
+
+                if (Balanced.size() % 2)
+                  {
+                    Tmp.push_back(*it);
+                    continue;
+                  }
+              }
+
+            const CType & First = *it;
+            const CType & Second = *++it;
+
+            Tmp.emplace_back(joinFunction.operator()(First, Second));
+          }
+
+        Balanced = Tmp;
+      }
+
+    return Balanced[0];
+  }
+
+  static CType create(const std::vector< CType > & unbalanced, CType(*pJoinMethod)(const CType &, const CType &))
+  {
+    if (unbalanced.empty())
+      return std::is_pointer< CType >::value ? nullptr : CType();
 
     std::vector< CType > Balanced {unbalanced};
 
@@ -54,10 +94,10 @@ struct BalanceTree
     return Balanced[0];
   }
 
-  static CType create(const std::vector< CType > unbalanced, join_functor * pJoinFunctor)
+  static CType create(const std::vector< CType > & unbalanced, CFunctor< CType, const CType &, const CType & > * pJoinFunctor)
   {
     if (unbalanced.empty())
-      return CType();
+      return std::is_pointer< CType >::value ? nullptr : CType();
 
     std::vector< CType > Balanced {unbalanced};
 
