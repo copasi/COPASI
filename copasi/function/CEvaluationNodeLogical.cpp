@@ -569,16 +569,13 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
 
             default:
             {
-              std::function< CEvaluationNode *(CEvaluationNode * const & pFirst, CEvaluationNode * const & pSecond) >
-              join = [subType, data](CEvaluationNode * const & pFirst, CEvaluationNode * const & pSecond)
+              pNode = BalanceTree< CEvaluationNode * >::create(children, [subType, data](CEvaluationNode * const & pFirst, CEvaluationNode * const & pSecond)
               {
                 CEvaluationNode * pNew = new CEvaluationNodeLogical(subType, data);
                 pNew->addChild(pFirst);
                 pNew->addChild(pSecond);
                 return pNew;
-              };
-
-              pNode = BalanceTree< CEvaluationNode * >::create(children, join);
+              });
             }
             break;
           }
