@@ -171,6 +171,7 @@ CQCustomPlot::CQCustomPlot(QWidget * parent)
   , mLogTicker(NULL)
   , mDefaultTicker(NULL)
   , mpSubLayout(NULL)
+  , mHaveNewData(true)
 {
 }
 
@@ -194,6 +195,7 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
   , mLogTicker(new QCPAxisTickerLog)
   , mDefaultTicker(NULL)
   , mpSubLayout(NULL)
+  , mHaveNewData(true)
 {
   // Size the vectors to be able to store information for all activities.
   mData.resize(ActivitySize);
@@ -993,6 +995,7 @@ void CQCustomPlot::output(const Activity & activity)
           }
       }
 
+  mHaveNewData = true;
   updatePlot();
 }
 
@@ -1031,6 +1034,7 @@ void CQCustomPlot::separate(const Activity & activity)
           }
       }
 
+  mHaveNewData = true;
   updatePlot();
 
   return;
@@ -1480,6 +1484,9 @@ for (auto & item : dependentNames)
 
 void CQCustomPlot::updateCurves(const size_t & activity)
 {
+  if (!mHaveNewData)
+    return;
+
   if (activity == C_INVALID_INDEX)
     {
       C_INT32 ItemActivity;
@@ -1489,6 +1496,7 @@ void CQCustomPlot::updateCurves(const size_t & activity)
           updateCurves(ItemActivity);
         }
 
+      mHaveNewData = false;
       return;
     }
 

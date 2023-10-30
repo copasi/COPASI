@@ -334,6 +334,8 @@ protected:
   CCopasiTimeVariable mNextWheelTime;
   QCPLayoutGrid * mpSubLayout;
 
+  bool mHaveNewData;
+
 signals:
   void replotSignal();
 };
