@@ -75,7 +75,14 @@ public:
    */
   virtual QString getSaveFilters();
 
-  QString getAxisText(Axis axis, const CObjectInterface * pObjectInterface);
+  /**
+   *
+   * @param axis the axis to return the text for
+   * @param pObjectInterface the object to return text for
+   * @param returnUnit (optional bool, default true) returns the unit of the object rather than its name
+   * @return the unit of the specified object
+  */
+  QString getAxisText(Axis axis, const CObjectInterface * pObjectInterface, bool returnUnit = true);
 };
 
 #endif // COPASIPLOT_INTERFACE_H

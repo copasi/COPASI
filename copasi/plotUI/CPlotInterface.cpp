@@ -64,7 +64,7 @@ QString CPlotInterface::getSaveFilters()
   return "PDF Files (*.pdf);;PNG Files (*.png);;SVG Files (*.svg)";
 }
 
-QString CPlotInterface::getAxisText(Axis axis, const CObjectInterface * pObjectInterface)
+QString CPlotInterface::getAxisText(Axis axis, const CObjectInterface * pObjectInterface, bool returnUnit)
 {
   auto * pPlotSpec = getPlotSpecification();
   QString text = getParameterValue(pPlotSpec, AxisNames[axis]).toString();
@@ -76,6 +76,9 @@ QString CPlotInterface::getAxisText(Axis axis, const CObjectInterface * pObjectI
 
   if (pObject == NULL)
     return "";
+
+  if (!returnUnit)
+    return FROM_UTF8(pObject->getObjectDisplayName());
 
   std::string Units = CUnit::prettyPrint(pObject->getUnits());
 
