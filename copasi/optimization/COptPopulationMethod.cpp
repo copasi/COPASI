@@ -61,7 +61,8 @@ COptPopulationMethod::~COptPopulationMethod()
 
 void COptPopulationMethod::initObjects()
 {
-  if (getSubType() != CTaskEnum::Method::ParticleSwarm && getSubType() != CTaskEnum::Method::ScatterSearch)
+  if (getSubType() != CTaskEnum::Method::ParticleSwarm
+      && getSubType() != CTaskEnum::Method::ScatterSearch)
     addObjectReference("Current Generation", mCurrentGeneration, CDataObject::ValueInt);
 }
 
@@ -96,19 +97,18 @@ COptPopulationMethod::initialize()
   else
     mPopulationSize = 0;
 
-  CRandom * pRandom = NULL;
-
-  if (getParameter("Random Number Generator") != NULL && getParameter("Seed") != NULL)
-    {
-      pRandom = CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                                         getValue< unsigned C_INT32 >("Seed"));
-    }
+  if (getParameter("Random Number Generator") != NULL)
+    if (getParameter("Seed") != NULL)
+      mRandomContext.init((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
+                          getValue< unsigned C_INT32 >("Seed"));
+    else
+      mRandomContext.init((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"));
+  else if (getParameter("Seed") != NULL)
+    mRandomContext.init(CRandom::Type::mt19937,
+                        getValue< unsigned C_INT32 >("Seed"));
   else
-    {
-      pRandom = CRandom::createGenerator();
-    }
+    mRandomContext.init();
 
-  mRandomContext.setMaster(pRandom);
   mVariableSize = mProblemContext.master()->getOptItemList(true).size();
 
   return true;
