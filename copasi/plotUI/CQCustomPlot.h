@@ -329,6 +329,7 @@ protected:
   QSharedPointer< QCPAxisTicker > mDefaultTicker;
   QSharedPointer< QCPAxisTickerText > mTextTicker;
   QVector<QString> mDependentNames;
+  QVector< QCPCurve * > mContours;
   std::set< QString > mIndependentNames;
   std::map< std::pair< QString, QString>, QVector< qreal > > mIndependentData;
   QString mSelectedIndependent;

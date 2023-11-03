@@ -10,6 +10,7 @@
 #  include "CQCustomPlot.h"
 
 #  include "CQPlotColors.h"
+#  include "CQMarchingSquares.h"
 
 #  include "copasi/plot/CPlotSpecification.h"
 #  include "copasi/UI/qtUtilities.h"
@@ -450,6 +451,39 @@ void setGradient(QCPColorMap * pMap, QCPColorScale * pColorScale, const std::str
 }
 
 
+void addContourLevels(QCPColorMap * map, const std::string & contourLevelString)
+{
+  QString contours = FROM_UTF8(contourLevelString);
+  QList< QVariant > contourLevels;
+  bool flag;
+  int levels = contours.toInt(&flag);
+
+  if (flag)
+    {
+      // have only a certain number of levels, applying them here
+      for (double level = 0.5; level < levels; level += 1.0)
+        contourLevels += level;
+    }
+  else
+    {
+      // have explicit list of numbers to plot
+#  if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+      QStringList list = contours.split(QRegExp(",| |;"), QString::SkipEmptyParts);
+#  elif QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      QStringList list = contours.split(QRegExp(",| |;"), Qt::SkipEmptyParts);
+#  else
+      QStringList list = contours.split(QRegularExpression(",| |;"), Qt::SkipEmptyParts);
+#  endif
+
+      foreach(const QString & level, list)
+      {
+        contourLevels += level.toDouble();
+      }
+    }
+
+  map->setProperty("contourLevels", contourLevels);
+}
+
 bool CQCustomPlot::initFromSpec(const CPlotSpecification * plotspec)
 {
   mIgnoreUpdate = true;
@@ -539,6 +573,7 @@ for (auto * item : plotLayout()->elements(false))
           map->setProperty("curve_type", QVariant((int) itPlotItem->getType()));
           map->setProperty("activity", QVariant((int) itPlotItem->getActivity()));
           map->setProperty("copasi_key", QVariant(FROM_UTF8(itPlotItem->CCopasiParameter::getKey())));
+          addContourLevels(map, itPlotItem->getValue< std::string >("contours"));
           QString strLimitZ = FROM_UTF8(itPlotItem->getValue< std::string >("maxZ"));
           bool flag;
           double limitZ = strLimitZ.toDouble(&flag);
@@ -1836,6 +1871,57 @@ void CQCustomPlot::updateCurves(const size_t & activity)
                       {
                         map->data()->setData(cur_x, cur_y, cur_z);
                         // map->data()->setCell(x_index, y_index, cur_z);
+                      }
+                  }
+
+                QList< QVariant > contourLevels = map->property("contourLevels").toList();
+
+                if (!contourLevels.isEmpty())
+                  {
+                    // remove old contours
+for (QCPCurve * pContourCurve : mContours)
+                      {
+                        removePlottable(pContourCurve);
+                      }
+
+                    mContours.clear();
+
+                    // calculate new ones
+                    CQMarchingSquares contourPlot(map->data(), min_x, max_x, min_y, max_y);
+
+                    std::vector< CQMarchingSquares::levelPaths > contours = contourPlot.mkIsos(contourLevels);
+
+
+                    // add them
+                    QCPCurve * base;
+
+                    for (int l = 0; l < contours.size(); l++)
+                      {
+
+                        for (int j = 0; j < contours[l].size(); j++)
+                          {
+                            base = new QCPCurve(xAxis, yAxis);
+                            registerPlottable(base);
+                            base->removeFromLegend();
+                            mContours += base;
+                            QVector< double > x, y;
+                            base->setPen(QPen(Qt::black));
+                            base->setName(QString::number(contourLevels[l].toDouble()));
+                            //base->setBrush(brushes[l]);
+
+                            if (contours[l][j].size() > 4)
+                              {
+
+                                for (int i = 0; i < contours[l][j].size(); i++)
+                                  {
+
+                                    x.push_back(contours[l][j][i].x());
+                                    y.push_back(contours[l][j][i].y());
+                                  }
+                              }
+
+                            base->setData(x, y);
+                          }
                       }
                   }
 
