@@ -97,18 +97,10 @@ COptPopulationMethod::initialize()
   else
     mPopulationSize = 0;
 
-  if (getParameter("Random Number Generator") != NULL)
-    if (getParameter("Seed") != NULL)
-      mRandomContext.init((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                          getValue< unsigned C_INT32 >("Seed"));
-    else
-      mRandomContext.init((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"));
-  else if (getParameter("Seed") != NULL)
-    mRandomContext.init(CRandom::Type::mt19937,
-                        getValue< unsigned C_INT32 >("Seed"));
-  else
-    mRandomContext.init();
+  CRandom::Type RNG = (getParameter("Random Number Generator") != NULL) ? (CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator") : CRandom::Type::mt19937;
+  unsigned C_INT32 seed = (getParameter("Seed") != NULL) ? getValue< unsigned C_INT32 >("Seed") : 0;
 
+  mRandomContext.init(RNG, seed);
   mVariableSize = mProblemContext.master()->getOptItemList(true).size();
 
   return true;

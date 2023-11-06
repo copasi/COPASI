@@ -15,6 +15,10 @@ CRandomContext::~CRandomContext()
 void  CRandomContext::init(CRandom::Type type, unsigned C_INT32 seed)
 {
   Base::init();
+
+  if (Base::master())
+    delete Base::master();
+
   Base::setMaster(nullptr);
 
   Base::master() = CRandom::createGenerator(type, seed);
