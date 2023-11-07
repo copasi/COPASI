@@ -170,7 +170,7 @@ COutputAssistant::findItemByName(const std::string& name, bool isPlot /*= true*/
   if (mMap.empty())
     initialize();
 
-  for (auto & entry : mMap)
+for (auto & entry : mMap)
     {
       if (entry.second.isPlot == isPlot && entry.second.name == name)
         return entry.first;
@@ -310,6 +310,9 @@ bool COutputAssistant::initialize()
     {"Weighted Errors", false, "Displays Weighted Errors"}
   };
   mMap.insert(tmp);
+
+  // need to reset the options
+  tmp.second.options = {};
 
   //fitting result plots
   tmp.first = 913;
@@ -1715,7 +1718,7 @@ COutputAssistant::isOptionEnabled(
   if (!pOptions)
     return defaultValue;
 
-  for (auto entry : *pOptions)
+for (auto entry : *pOptions)
     if (entry.name == name)
       return entry.enabled;
 
