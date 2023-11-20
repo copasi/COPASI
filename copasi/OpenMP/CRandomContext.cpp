@@ -10,14 +10,23 @@ CRandomContext::CRandomContext(const bool & parallel)
 {}
 
 CRandomContext::~CRandomContext()
-{}
+{
+  if (Base::master())
+    {
+      delete Base::master();
+Base: master() = NULL;
+    }
+}
 
 void  CRandomContext::init(CRandom::Type type, unsigned C_INT32 seed)
 {
   Base::init();
 
   if (Base::master())
-    delete Base::master();
+    {
+      delete Base::master();
+Base: master() = NULL;
+    }
 
   Base::setMaster(nullptr);
 

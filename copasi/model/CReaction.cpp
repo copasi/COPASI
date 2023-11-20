@@ -717,7 +717,7 @@ CFunction * CReaction::createFunctionFromExpression(const std::string & infix)
         continue;
 
       // Check whether we have compartment with that name
-for (const CCompartment * pCompartment : mChemEq.getCompartments())
+      for (const CCompartment * pCompartment : mChemEq.getCompartments())
         if (pCompartment->getObjectName() == "Name")
           {
             it->setUsage(CFunctionParameter::Role::VOLUME);
@@ -1712,7 +1712,7 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
 const CModel * CReaction::getFirstCModelOrDefault(std::map< const CDataObject *, SBase * > & copasi2sbmlmap)
 {
 
-for (auto & pair : copasi2sbmlmap)
+  for (auto & pair : copasi2sbmlmap)
     {
       const CModel * pModel = dynamic_cast<const CModel*>(pair.first->getObjectAncestor("Model"));
 
@@ -1866,15 +1866,14 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
         {
           if (SBMLImporter::areEqualFunctions(pExistingFunction, pTmpFunction))
             {
-
-              setFunction(pExistingFunction);
-
               // The functions and their signature are equal however the role of the variables
               // might not be defined for the existing function if this is the first time it is used
-              mpFunction->setReversible(pTmpFunction->isReversible());
-              mpFunction->getVariables() = pTmpFunction->getVariables();
+              pExistingFunction->setReversible(pTmpFunction->isReversible());
+              pExistingFunction->getVariables() = pTmpFunction->getVariables();
 
               pdelete(pTmpFunction);
+
+              setFunction(pExistingFunction);
 
               // we still need to do the mapping, otherwise global parameters might not be mapped
               it = replacementMap.begin();
