@@ -124,8 +124,8 @@ const MESSAGES Messages[] =
   },
   {MCTrajectoryMethod + 4, "CTrajectoryMethod (4): Lower Limit '%.2f' is greater than Upper Limit '%.2f'."},
   {
-    MCTrajectoryMethod + 6, "CTrajectoryMethod (6): Deterministic integration failed. "
-    "LSODA reported:\n%s \n\nPlease see result for indications of numerical instability."
+    MCTrajectoryMethod + 6, "CTrajectoryMethod (6): Deterministic integration failed:"
+    "\n%s \n\nPlease see result for indications of numerical instability."
   },
   {MCTrajectoryMethod + 7, "CTrajectoryMethod (7): Problem is not set."},
   {MCTrajectoryMethod + 8, "CTrajectoryMethod (8): Problem is not a trajectory problem."},
@@ -427,8 +427,8 @@ const MESSAGES Messages[] =
 
   // CTSSAMethod
   {
-    MCTSSAMethod + 1, "CTSSAMethod (1): Deterministic integration failed. "
-    "LSODA reported:\n%s \n\nPlease see result for indications of numerical instability."
+    MCTSSAMethod + 1, "CTSSAMethod (1): Deterministic integration failed:"
+    "\n%s \n\nPlease see result for indications of numerical instability."
   },
   {MCTSSAMethod + 2, "CTSSAMethod (2): Problem is not a time scale separation analysis problem."},
   {MCTSSAMethod + 3, "CTSSAMethod (3): Internal step limit exceeded."},

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,6 +25,7 @@
 #include "copasi/model/CCompartment.h"
 #include "copasi/model/CModel.h"
 #include "copasi/function/CExpression.h"
+#include "copasi/utilities/CBalanceTree.h"
 #include "copasi/utilities/utility.h"
 
 // Uncomment next line track any NaN value in calculations
@@ -1334,19 +1335,16 @@ bool CMathObject::compilePropensity(CMathContainer & container)
   else
     {
       // Propensity is the same as the particle flux, but it must not be negative.
-      Infix << "max(0," << pointerToString(mpCorrespondingPropertyValue);
+      Infix << "max(0," << pointerToString(mpCorrespondingPropertyValue) << ")";
 
       // Apply correction for deterministic models
       if (container.getModel().getModelType() == CModel::ModelType::deterministic)
         {
-          std::ostringstream Divisor;
-          Divisor.imbue(std::locale::classic());
-          Divisor.precision(std::numeric_limits<double>::digits10 + 2);
-
           const CDataVector<CChemEqElement> & Substrates = pReaction->getChemEq().getSubstrates();
           CDataVector< CChemEqElement >::const_iterator itSubstrate = Substrates.begin();
           CDataVector< CChemEqElement >::const_iterator endSubstrate = Substrates.end();
-          bool first = true;
+          std::vector< CEvaluationNode * > Numerator;
+          std::vector< CEvaluationNode * > Denominator;
 
           for (; itSubstrate != endSubstrate; ++itSubstrate)
             {
@@ -1360,23 +1358,14 @@ bool CMathObject::compilePropensity(CMathContainer & container)
 
               if (Multiplicity > 2.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
                 {
-                  if (!first)
-                    {
-                      Divisor << "*";
-                    }
-
-                  first = false;
-                  Divisor << NumberPointer << "^" << Multiplicity;
+                  CEvaluationNode * pPower = new CEvaluationNodeOperator(CEvaluationNode::SubType::POWER, "^");
+                  pPower->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::POINTER, NumberPointer));
+                  pPower->addChild(new CEvaluationNodeNumber(CEvaluationNode::SubType::DOUBLE, StringPrint("%e", Multiplicity)));
+                  Denominator.emplace_back(pPower);
                 }
               else if (Multiplicity > 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
                 {
-                  if (!first)
-                    {
-                      Divisor << "*";
-                    }
-
-                  first = false;
-                  Divisor << NumberPointer;
+                  Denominator.emplace_back(new CEvaluationNodeObject(CEvaluationNode::SubType::POINTER, NumberPointer));
                 }
 
               if (Multiplicity > 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
@@ -1386,18 +1375,48 @@ bool CMathObject::compilePropensity(CMathContainer & container)
 
               while (Multiplicity > 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
                 {
-                  Infix << "*(" << NumberPointer << "-" << Multiplicity << ")";
+                  CEvaluationNode * pMinus = new CEvaluationNodeOperator(CEvaluationNode::SubType::MINUS, "-");
+                  pMinus->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::POINTER, NumberPointer));
+                  pMinus->addChild(new CEvaluationNodeNumber(CEvaluationNode::SubType::DOUBLE, StringPrint("%e", Multiplicity)));
+
+                  CEvaluationNode * pMax = new CEvaluationNodeFunction(CEvaluationNode::SubType::MAX, "max");
+                  pMax->addChild(new CEvaluationNodeNumber(CEvaluationNode::SubType::DOUBLE, "0"));
+                  pMax->addChild(pMinus);
+
+                  Numerator.emplace_back(pMax);
+
                   Multiplicity -= 1.0;
                 }
             }
 
-          if (Divisor.str() != "")
+          if (!Numerator.empty())
             {
-              Infix << "/(" << Divisor.str() << ")";
+              CExpression Tmp;
+              Tmp.setRoot(BalanceTree< CEvaluationNode * >::create(Numerator, [](CEvaluationNode * const & pFirst, CEvaluationNode * const & pSecond)
+              {
+                CEvaluationNode * pNew = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
+                pNew->addChild(pFirst);
+                pNew->addChild(pSecond);
+                return pNew;
+              }));
+
+              Infix << "*" << Tmp.getInfix();
+            }
+
+          if (!Denominator.empty())
+            {
+              CExpression Tmp;
+              Tmp.setRoot(BalanceTree< CEvaluationNode * >::create(Denominator, [](CEvaluationNode * const & pFirst, CEvaluationNode * const & pSecond)
+              {
+                CEvaluationNode * pNew = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
+                pNew->addChild(pFirst);
+                pNew->addChild(pSecond);
+                return pNew;
+              }));
+
+              Infix << "/(" << Tmp.getInfix() << ")";
             }
         }
-
-      Infix << ")";
     }
 
   if (mpExpression == NULL)

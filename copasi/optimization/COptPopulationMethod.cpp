@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -61,7 +61,8 @@ COptPopulationMethod::~COptPopulationMethod()
 
 void COptPopulationMethod::initObjects()
 {
-  if (getSubType() != CTaskEnum::Method::ParticleSwarm && getSubType() != CTaskEnum::Method::ScatterSearch)
+  if (getSubType() != CTaskEnum::Method::ParticleSwarm
+      && getSubType() != CTaskEnum::Method::ScatterSearch)
     addObjectReference("Current Generation", mCurrentGeneration, CDataObject::ValueInt);
 }
 
@@ -96,19 +97,10 @@ COptPopulationMethod::initialize()
   else
     mPopulationSize = 0;
 
-  CRandom * pRandom = NULL;
+  CRandom::Type RNG = (getParameter("Random Number Generator") != NULL) ? (CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator") : CRandom::Type::mt19937;
+  unsigned C_INT32 seed = (getParameter("Seed") != NULL) ? getValue< unsigned C_INT32 >("Seed") : 0;
 
-  if (getParameter("Random Number Generator") != NULL && getParameter("Seed") != NULL)
-    {
-      pRandom = CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                                         getValue< unsigned C_INT32 >("Seed"));
-    }
-  else
-    {
-      pRandom = CRandom::createGenerator();
-    }
-
-  mRandomContext.setMaster(pRandom);
+  mRandomContext.init(RNG, seed);
   mVariableSize = mProblemContext.master()->getOptItemList(true).size();
 
   return true;
@@ -123,8 +115,6 @@ COptPopulationMethod::cleanup()
     pdelete(mIndividuals[i]);
 
   mIndividuals.clear();
-
-  pdelete(mRandomContext.master());
 
   return true;
 }

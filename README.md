@@ -127,3 +127,26 @@ In order to tag the latest commit in the current branch as a snapshot execute:
 gitTools/UpdateCopasiVersion --registerBuild
 ```
 The above command will automatically select the next tag of the format: `Build-N` and push the tag to the upstream repository.
+
+### Building API documentation
+To build the API documentation doxygen can be used. here the command line for generating the documentation after a git 
+checkout: 
+
+```bash
+PROJECT_NUMBER=4.40.278 doxygen -x COPASI.doxyfile > Doxyfile && doxygen
+```
+
+This will fix the version number of the generated files to the one specified in the environment variable and 
+generate a local `Doxygen` file with which it runs doxygen.  The resulting documentation is placed in `./doc/html`.
+
+To update it on the copasi.github.io project you'd run from the `copasi.github.io` folder: 
+
+```bash
+pushd ./static/API_Documentation/
+rm -rf ./*
+git commit -a -m " - removed old documentation"
+cp -R ../../../COPASI/doc/html/* .
+git add . 
+git commit -a -m " - add documentation for COPASI 4.40.278"
+git push
+```

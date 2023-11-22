@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,6 +46,8 @@
 #include <copasi/UI/qtUtilities.h>
 #include <copasi/math/CJitCompiler.h>
 #include <copasi/utilities/CVersion.h>
+#include "copasi/OpenMP/CContext.h"
+
 #ifdef QWT_VERSION
 #include <qwt_global.h>
 #endif
@@ -98,7 +100,7 @@ const char *AboutDialog::text =
 QString AboutDialog::getDefaultVersionText()
 {
   return QString(AboutDialog::text)
-         .arg(FROM_UTF8(CVersion::VERSION.getVersion()))            // 1
+         .arg(FROM_UTF8(CVersion::VERSION.getVersion() + omp_info()()))            // 1
          .arg(QT_VERSION_STR)                                       // 2
          .arg(QWT_VERSION_STR)                                      // 3
          .arg(COPASI_EXPAT_VERSION)                                 // 4

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -147,6 +147,105 @@ bool TaskHandler::processEnd(const XML_Char * pszName)
               }
 
             mpData->mKey2ObjectiveFunction.clear();
+          }
+
+        if (mpData->pCurrentTask->getType() == CTaskEnum::Task::parameterFitting)
+          {
+            // it could be that the object map needs to be upgraded, in the old format
+            // it was:
+            //
+            // <ParameterGroup name="Column Role">
+            //   <Parameter name="0" type="unsignedInteger" value="3"/>
+            //   ...
+            // </ParameterGroup>
+            // <ParameterGroup name="Object Map">
+            //    <Parameter name="0" type="cn" value="CN=Root,Model=SEQFB reverse engineer,Reference=Time"/>
+            //    ...
+            // </ParameterGroup>
+            //
+            // this needs to change into:
+            //
+            // <ParameterGroup name="Object Map">
+            //   <ParameterGroup name="0">
+            //     <Parameter name="Role" type="unsignedInteger" value="1"/>
+            //     <Parameter name="Object CN" type="cn" value="..."/>
+            //   </ParameterGroup>
+            //   ...
+            // </ParameterGroup>
+
+            CCopasiProblem * pProblem = mpData->pCurrentTask->getProblem();
+            CCopasiParameterGroup * pExpSet = pProblem->getGroup("Experiment Set");
+
+            for (size_t i = 0; i < pExpSet->size(); ++i)
+              {
+                CCopasiParameterGroup * pExp = pExpSet->getGroup(i);
+
+                if (pExp == NULL)
+                  continue;
+
+                CCopasiParameterGroup * pColumnRole = pExp->getGroup("Column Role");
+
+                if (pColumnRole == NULL)
+                  {
+                    // no need to convert
+                    continue;
+                  }
+
+                CCopasiParameterGroup * pObjMap = pExp->getGroup("Object Map");
+
+                if (pObjMap == NULL)
+                  {
+                    continue;
+                  }
+
+                std::map< std::string, std::pair< unsigned C_INT32, std::string > > map;
+
+                for (size_t j = 0; j < pColumnRole->size(); ++j)
+                  {
+                    CCopasiParameter * pParam = pColumnRole->getParameter(j);
+                    std::string name = pParam->getObjectName();
+                    unsigned C_INT32 role = pParam->getValue< unsigned C_INT32 >();
+                    map[name] = std::make_pair(role, std::string());
+                  }
+
+                // remove the parameter
+                pExp->removeParameter(pColumnRole);
+
+                for (size_t j = 0; j < pObjMap->size(); ++j)
+                  {
+                    CCopasiParameter * pParam = pObjMap->getParameter(j);
+                    std::string name = pParam->getObjectName();
+                    CCommonName cn = pParam->getValue< CCommonName >();
+
+                    auto it = map.find(name);
+
+                    if (it == map.end())
+                      {
+                        // set mapping to ignore for things we don't know
+                        map[name] = std::make_pair(0, std::string());
+                      }
+
+                    map[name].second = cn;
+                  }
+
+                // clear old map
+                pObjMap->clear();
+
+                // add map in new format:
+for (auto entry : map)
+                  {
+                    pObjMap->addGroup(entry.first);
+                    CCopasiParameterGroup * pGroup = pObjMap->getGroup(entry.first);
+
+                    if (!pGroup)
+                      continue;
+
+                    pGroup->addParameter("Role", CCopasiParameter::Type::UINT, entry.second.first);
+                    pGroup->addParameter("Object CN", CCopasiParameter::Type::CN, entry.second.second);
+                  }
+
+              }
+
           }
 
         mpData->pCurrentTask->getProblem()->elevateChildren();

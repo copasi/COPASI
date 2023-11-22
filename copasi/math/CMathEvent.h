@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -77,9 +77,14 @@ public:
 
     const CMathObject * getAssignment() const;
 
+    void setIsStateValue(bool isStateValue);
+
+    const bool & isStateValue() const;
+
   private:
     CMathObject * mpTarget;
     CMathObject * mpAssignment;
+    bool mIsStateValue;
   };
 
   class CTrigger

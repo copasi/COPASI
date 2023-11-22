@@ -263,7 +263,7 @@ if (APPLE AND CMAKE_GENERATOR STREQUAL "Xcode" OR DISABLE_CORE_OBJECT_LIBRARY)
   endif (ENABLE_OMP)
 else()
   add_library (libCOPASISE-core OBJECT ${COPASI_SOURCES} ${COPASI_HEADERS})
-  # target_compile_options(libCOPASISE-core PRIVATE -Werror -Wall -Wextra -Wsuggest-override)
+  target_compile_options(libCOPASISE-core PRIVATE -fstack-protector-all)
   target_link_libraries(libCOPASISE-core
     ${CROSSGUID_LIBRARY} 
     RAPTOR::RAPTOR

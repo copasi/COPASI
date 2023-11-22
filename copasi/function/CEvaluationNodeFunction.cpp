@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,6 +34,7 @@
 
 #include "sbml/math/ASTNode.h"
 #include "copasi/sbml/ConverterASTNode.h"
+#include "copasi/sbml/SBMLImporter.h"
 
 CRandom * CEvaluationNodeFunction::mpRandom = NULL;
 
@@ -865,18 +866,29 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
   else if (type == AST_FUNCTION_LOG && iMax == 2)
     {
       /**
-       * Replaces all LOG10 (AST_FUNCTION_LOG) nodes that have two
-       * children with the quotient of two LOG10 nodes with the base
+       * Replaces all LOG10 (AST_FUNCTION_LOG) nodes that have two children and
+       * the base is not 10 with the quotient of two LOG10 nodes with the base
        * as the argument for the divisor LOG10 node.
        */
+      CEvaluationNode * pNode = nullptr;
 
-      CEvaluationNode * pNode = new CEvaluationNodeOperator(SubType::DIVIDE, "/");
-      CEvaluationNode * pValue = new CEvaluationNodeFunction(SubType::LOG10, "log10");
-      pValue->addChild(children[1]);
-      CEvaluationNode * pBase = new CEvaluationNodeFunction(SubType::LOG10, "log10");
-      pBase->addChild(children[0]);
-      pNode->addChild(pValue);
-      pNode->addChild(pBase);
+      if (children[0]->mainType() == CEvaluationNode::MainType::NUMBER
+          && SBMLImporter::areApproximatelyEqual(*children[0]->getValuePointer(), 10.0, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
+        {
+          pNode = new CEvaluationNodeFunction(SubType::LOG10, "log10");
+          pNode->addChild(children[1]);
+        }
+      else
+        {
+          CEvaluationNode * pValue = new CEvaluationNodeFunction(SubType::LOG10, "log10");
+          pValue->addChild(children[1]);
+          CEvaluationNode * pBase = new CEvaluationNodeFunction(SubType::LOG10, "log10");
+          pBase->addChild(children[0]);
+
+          pNode = new CEvaluationNodeOperator(SubType::DIVIDE, "/");
+          pNode->addChild(pValue);
+          pNode->addChild(pBase);
+        }
 
       return pNode;
     }

@@ -193,17 +193,12 @@ void CQEventWidget1::slotAddTarget()
   if (pObject == NULL)
     return;
 
-  const CModelEntity * pME = dynamic_cast< const CModelEntity * >(pObject->getObjectParent());
-
-  if (pME == NULL)
-    return;
-
-  QString displayName(FROM_UTF8(pME->getObjectDisplayName()));
+  QString displayName(FROM_UTF8(pObject->getObjectDisplayName()));
 
   if (!mpLBTarget->findItems(displayName, Qt::MatchExactly).isEmpty())
     return;
 
-  mAssignments.add(new CEventAssignment(pME->getCN()), true);
+  mAssignments.add(new CEventAssignment(pObject->getCN()), true);
   mpLBTarget->addItem(displayName);
 
   mpLBTarget->setCurrentRow((int)(mAssignments.size() - 1));
@@ -284,11 +279,11 @@ bool CQEventWidget1::loadFromEvent()
 
   for (; it != end; ++it, ijk++)
     {
-      const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(CObjectInterface::DataObject(mpDataModel->getObject(it->getTargetCN())));
+      const CDataObject * pObject = CObjectInterface::DataObject(mpDataModel->getObject(it->getTargetCN()));
 
-      if (pEntity != NULL)
+      if (pObject != NULL)
         {
-          Targets.append(FROM_UTF8(pEntity->getObjectDisplayName()));
+          Targets.append(FROM_UTF8(pObject->getObjectDisplayName()));
           mAssignments.add(*it);
         }
     }
@@ -501,20 +496,15 @@ void CQEventWidget1::slotSelectObject()
     CQSimpleSelectionTree::EventTarget;
 
   const CDataObject * pObject =
-    CCopasiSelectionDialog::getObjectSingle(this, Classes);
+    CCopasiSelectionDialog::getObjectSingle(this, Classes, mAssignments[mCurrentTarget].getTargetObject());
 
   if (pObject == NULL)
     return;
 
-  const CModelEntity * pME = dynamic_cast< const CModelEntity * >(pObject->getObjectParent());
-
-  if (pME == NULL)
-    return;
-
-  if (mAssignments[mCurrentTarget].setTargetCN(pME->getCN()))
+  if (mAssignments[mCurrentTarget].setTargetCN(pObject->getCN()))
     {
       // If the target key change was successful we need to update the label.
-      mpLBTarget->item((int) mCurrentTarget)->setText(FROM_UTF8(pME->getObjectDisplayName()));
+      mpLBTarget->item((int) mCurrentTarget)->setText(FROM_UTF8(pObject->getObjectDisplayName()));
     }
 }
 

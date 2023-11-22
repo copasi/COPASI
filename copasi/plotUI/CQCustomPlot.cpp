@@ -10,6 +10,7 @@
 #  include "CQCustomPlot.h"
 
 #  include "CQPlotColors.h"
+#  include "CQMarchingSquares.h"
 
 #  include "copasi/plot/CPlotSpecification.h"
 #  include "copasi/UI/qtUtilities.h"
@@ -171,6 +172,7 @@ CQCustomPlot::CQCustomPlot(QWidget * parent)
   , mLogTicker(NULL)
   , mDefaultTicker(NULL)
   , mpSubLayout(NULL)
+  , mHaveNewData(true)
 {
 }
 
@@ -194,6 +196,7 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
   , mLogTicker(new QCPAxisTickerLog)
   , mDefaultTicker(NULL)
   , mpSubLayout(NULL)
+  , mHaveNewData(true)
 {
   // Size the vectors to be able to store information for all activities.
   mData.resize(ActivitySize);
@@ -409,6 +412,76 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
           this, SLOT(displayToolTip(QCPAbstractPlottable*, int, QMouseEvent*)));
 }
 
+void setGradient(QCPColorMap * pMap, QCPColorScale * pColorScale, const std::string & map)
+{
+  QCPColorGradient gradient(QCPColorGradient::gpSpectrum);
+
+  if (map == "Grayscale")
+    {
+      //gradient = QCPColorGradient(QCPColorGradient::gpGrayscale);
+      gradient = QCPColorGradient();
+      gradient.setColorStopAt(0, QColor("white"));
+      gradient.setColorStopAt(1, QColor("black"));
+    }
+  else if (map == "Yellow-Red")
+    {
+      gradient = QCPColorGradient();
+      gradient.setColorStopAt(0, QColor("yellow"));
+      gradient.setColorStopAt(1, QColor("red"));
+    }
+  else if (map == "Blue-White-Red")
+    {
+      gradient = QCPColorGradient();
+      gradient.setColorStopAt(0, QColor("blue"));
+      gradient.setColorStopAt(0.5, QColor("white"));
+      gradient.setColorStopAt(1, QColor("red"));
+    }
+  else if (map == "Hot")
+    {
+      gradient = QCPColorGradient(QCPColorGradient::gpHot);
+    }
+  else if (map == "Cold")
+    {
+      gradient = QCPColorGradient(QCPColorGradient::gpCold);
+    }
+
+  pColorScale->setGradient(gradient);
+  pMap->setGradient(gradient);
+}
+
+void addContourLevels(QCPColorMap * map, const std::string & contourLevelString)
+{
+  QString contours = FROM_UTF8(contourLevelString);
+  QList< QVariant > contourLevels;
+  bool flag;
+  int levels = contours.toInt(&flag);
+
+  if (flag)
+    {
+      // have only a certain number of levels, applying them here
+      for (double level = 0.5; level < levels; level += 1.0)
+        contourLevels += level;
+    }
+  else
+    {
+      // have explicit list of numbers to plot
+#  if QT_VERSION < QT_VERSION_CHECK(5, 15, 0)
+      QStringList list = contours.split(QRegExp(",| |;"), QString::SkipEmptyParts);
+#  elif QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      QStringList list = contours.split(QRegExp(",| |;"), Qt::SkipEmptyParts);
+#  else
+      QStringList list = contours.split(QRegularExpression(",| |;"), Qt::SkipEmptyParts);
+#  endif
+
+      foreach (const QString & level, list)
+        {
+          contourLevels += level.toDouble();
+        }
+    }
+
+  map->setProperty("contourLevels", contourLevels);
+}
+
 bool CQCustomPlot::initFromSpec(const CPlotSpecification * plotspec)
 {
   mIgnoreUpdate = true;
@@ -436,7 +509,7 @@ bool CQCustomPlot::initFromSpec(const CPlotSpecification * plotspec)
     {
       auto key = itPlotItem->CCopasiParameter::getKey();
 
-      if ((found = mCurveMap.find(key)) != mCurveMap.end())
+      if ((found = mCurveMap.find(key)) != mCurveMap.end() && found->second)
         {
           // take same visibility as we had
           visibleMap[FROM_UTF8(itPlotItem->getTitle())] = found->second->visible();
@@ -455,6 +528,17 @@ bool CQCustomPlot::initFromSpec(const CPlotSpecification * plotspec)
 
   clearPlottables();
 
+  // remove old color scales
+  for (auto * item : plotLayout()->elements(false))
+    {
+      auto * scale = dynamic_cast< QCPColorScale * >(item);
+
+      if (scale)
+        {
+          plotLayout()->remove(scale);
+        }
+    }
+
   mCurveMap.clear();
   mY2Map.clear();
 
@@ -470,21 +554,35 @@ bool CQCustomPlot::initFromSpec(const CPlotSpecification * plotspec)
       if (itPlotItem->getType() == CPlotItem::spectogram)
         {
           QCPColorMap * map = new QCPColorMap(xAxis, yAxis);
+          auto scaleType = itPlotItem->getValue< bool >("logZ") ? QCPAxis::stLogarithmic : QCPAxis::stLinear;
           map->setInterpolate(itPlotItem->getValue< bool >("bilinear"));
+          map->setDataScaleType(scaleType);
+          map->setTightBoundary(false);
           map->data()->setSize(width(), height());
           QCPColorScale * colorScale = new QCPColorScale(this);
           plotLayout()->addElement(1, 1, colorScale);
           colorScale->setType(QCPAxis::atRight);
-          map->setColorScale(colorScale);
+          colorScale->setDataScaleType(scaleType);
           colorScale->axis()->setLabel("z");
+          map->setColorScale(colorScale);
+          setGradient(map, colorScale, itPlotItem->getValue< std::string >("colorMap"));
           map->setName(FROM_UTF8(itPlotItem->getTitle()));
 
-          map->setGradient(QCPColorGradient::gpSpectrum);
           map->setProperty("curve_type", QVariant((int) itPlotItem->getType()));
           map->setProperty("activity", QVariant((int) itPlotItem->getActivity()));
           map->setProperty("copasi_key", QVariant(FROM_UTF8(itPlotItem->CCopasiParameter::getKey())));
+          addContourLevels(map, itPlotItem->getValue< std::string >("contours"));
+          QString strLimitZ = FROM_UTF8(itPlotItem->getValue< std::string >("maxZ"));
+          bool flag;
+          double limitZ = strLimitZ.toDouble(&flag);
+
+          if (!flag)
+            limitZ = std::numeric_limits< double >::quiet_NaN();
+
+          map->setProperty("max_scale", QVariant(limitZ));
 
           *ppCurve = map;
+          mCurveMap[itPlotItem->CCopasiParameter::getKey()] = map;
 
           needLeft = true;
 
@@ -796,6 +894,7 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
     {
       const CPlotItem * pItem = &mpPlotSpecification->getItems()[i];
       auto pCurve = mCurveMap[pItem->CCopasiParameter::getKey()];
+      auto * pMap = dynamic_cast< QCPColorMap * >(pCurve);
       bool isSpectogram = pItem->getType() == CPlotItem::spectogram;
       Activity ItemActivity = pItem->getActivity();
       DataIndex.first = ItemActivity;
@@ -856,19 +955,24 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
                   mSaveCurveObjects.push_back(NewX);
                   itX = mSaveCurveObjects.end() - 1;
 
-                  if (!isSpectogram)
-                    setAxisUnits(CPlotInterface::Axis::xAxis, pObj);
+                  setAxisText(CPlotInterface::Axis::xAxis, pObj, !isSpectogram);
                 }
 
               if (pItem->getType() == CPlotItem::histoItem1d)
                 mSaveHistogramObjects.push_back(objectCN);
             }
+          else if (j == 1)
+            {
+              itX->push_back(objectCN);
+
+              setAxisText(CPlotInterface::Axis::yAxis, pObj, !isSpectogram);
+            }
           else
             {
               itX->push_back(objectCN);
 
-              if (!isSpectogram)
-                setAxisUnits(CPlotInterface::Axis::yAxis, pObj);
+              setAxisText(CPlotInterface::Axis::zAxis, pObj, !isSpectogram,
+                          pMap != NULL && pMap->colorScale() != NULL ? pMap->colorScale()->axis() : NULL);
             }
 
           Inserted = ActivityObjects[ItemActivity].insert(pObj);
@@ -993,6 +1097,7 @@ void CQCustomPlot::output(const Activity & activity)
           }
       }
 
+  mHaveNewData = true;
   updatePlot();
 }
 
@@ -1031,6 +1136,7 @@ void CQCustomPlot::separate(const Activity & activity)
           }
       }
 
+  mHaveNewData = true;
   updatePlot();
 
   return;
@@ -1306,6 +1412,16 @@ void CQCustomPlot::replot(bool resetZoom)
   if (mIgnoreUpdate)
     return;
 
+  // if mutex is already locked, skip replot
+  if (mMutex.tryLock(10))
+    {
+      mMutex.unlock();
+    }
+  else
+    {
+      return;
+    }
+
   if (mNextPlotTime < CCopasiTimeVariable::getCurrentWallTime())
     {
       // skip rendering when shift is pressed
@@ -1480,6 +1596,9 @@ double getDependentIndex(QCPCurve * curve, const QVector< QString >& dependentNa
 
 void CQCustomPlot::updateCurves(const size_t & activity)
 {
+  if (!mHaveNewData)
+    return;
+
   if (activity == C_INVALID_INDEX)
     {
       C_INT32 ItemActivity;
@@ -1489,6 +1608,7 @@ void CQCustomPlot::updateCurves(const size_t & activity)
           updateCurves(ItemActivity);
         }
 
+      mHaveNewData = false;
       return;
     }
 
@@ -1518,20 +1638,23 @@ void CQCustomPlot::updateCurves(const size_t & activity)
       if (curve == NULL && graph == NULL && map == NULL)
         continue;
 
+      if (mDataSize[activity] == 0)
+        continue;
+
       std::vector< CVector< double > * > & data = mData[curve_activity];
 
       switch (curve_type)
         {
           case CPlotItem::curve2d:
           {
-            auto & x = *data[mDataIndex[k][0].second];
-            auto & y = *data[mDataIndex[k][1].second];
-
             int data_size = mDataSize[activity];
             int current_count = curve->property("last_count").toInt();
             // need to store the number of data points we added,
             // so we wont replot them in case they are skipped
             curve->setProperty("last_count", data_size);
+
+            auto & x = *data[mDataIndex[k][0].second];
+            auto & y = *data[mDataIndex[k][1].second];
 
             int steadyType = xAxis->property("axis_label").toInt();
             QString experimentName = curve->property("experiment_name").toString();
@@ -1674,6 +1797,7 @@ void CQCustomPlot::updateCurves(const size_t & activity)
             auto & z = *data[mDataIndex[k][2].second];
             auto data_size = mDataSize[activity];
             auto current_count = map->data()->keySize();
+            double max_scale = map->property("max_scale").toDouble();
 
             if (data_size != current_count)
               {
@@ -1682,6 +1806,8 @@ void CQCustomPlot::updateCurves(const size_t & activity)
                 double max_x = -std::numeric_limits< double >::infinity();
                 double min_y = std::numeric_limits< double >::infinity();
                 double max_y = -std::numeric_limits< double >::infinity();
+                double min_z = std::numeric_limits< double >::infinity();
+                double max_z = -std::numeric_limits< double >::infinity();
 
                 std::set< double > x_range;
                 std::set< double > y_range;
@@ -1690,6 +1816,7 @@ void CQCustomPlot::updateCurves(const size_t & activity)
                   {
                     auto cur_x = x[count];
                     auto cur_y = y[count];
+                    auto cur_z = z[count];
 
                     if (cur_x < min_x)
                       min_x = cur_x;
@@ -1703,6 +1830,12 @@ void CQCustomPlot::updateCurves(const size_t & activity)
                     if (cur_y > max_y)
                       max_y = cur_y;
 
+                    if (cur_z < min_z)
+                      min_z = cur_z;
+
+                    if (cur_z > max_z)
+                      max_z = cur_z;
+
                     x_range.insert(cur_x);
                     y_range.insert(cur_y);
                   }
@@ -1710,18 +1843,90 @@ void CQCustomPlot::updateCurves(const size_t & activity)
                 map->data()->setSize(x_range.size(), y_range.size());
                 map->data()->setKeyRange(QCPRange(min_x, max_x));
                 map->data()->setValueRange(QCPRange(min_y, max_y));
+                map->setDataRange(QCPRange(min_z, max_z));
 
+                //// create vectors out of x_range and y_range
+                //std::vector< double > x_vals(x_range.begin(), x_range.end());
+                //std::vector< double > y_vals(y_range.begin(), y_range.end());
+
+                // then loop through all datapoints and add them
                 for (int count = 0; count < data_size; ++count)
                   {
                     auto cur_x = x[count];
                     auto cur_y = y[count];
                     auto cur_z = z[count];
 
+                    //// find index of cur_x in x_vals
+                    //auto x_it = std::find(x_vals.begin(), x_vals.end(), cur_x);
+                    //auto y_it = std::find(y_vals.begin(), y_vals.end(), cur_y);
+
+                    //// convert iterator to integer
+                    //int x_index = std::distance(x_vals.begin(), x_it);
+                    //int y_index = std::distance(y_vals.begin(), y_it);
+
                     if (!qIsNaN(cur_z))
-                      map->data()->setData(cur_x, cur_y, cur_z);
+                      {
+                        map->data()->setData(cur_x, cur_y, cur_z);
+                        // map->data()->setCell(x_index, y_index, cur_z);
+                      }
                   }
 
-                map->rescaleDataRange();
+                QList< QVariant > contourLevels = map->property("contourLevels").toList();
+
+                if (!contourLevels.isEmpty())
+                  {
+                    // remove old contours
+                    for (QCPCurve * pContourCurve : mContours)
+                      {
+                        removePlottable(pContourCurve);
+                      }
+
+                    mContours.clear();
+
+                    // calculate new ones
+                    CQMarchingSquares contourPlot(map->data(), min_x, max_x, min_y, max_y);
+
+                    std::vector< CQMarchingSquares::levelPaths > contours = contourPlot.mkIsos(contourLevels);
+
+                    // add them
+                    QCPCurve * base;
+
+                    for (int l = 0; l < contours.size(); l++)
+                      {
+
+                        for (int j = 0; j < contours[l].size(); j++)
+                          {
+                            base = new QCPCurve(xAxis, yAxis);
+                            registerPlottable(base);
+                            base->removeFromLegend();
+                            mContours += base;
+                            QVector< double > x, y;
+                            base->setPen(QPen(Qt::black));
+                            base->setName(QString::number(contourLevels[l].toDouble()));
+
+                            //base->setBrush(brushes[l]);
+
+                            if (contours[l][j].size() > 4)
+                              {
+
+                                for (int i = 0; i < contours[l][j].size(); i++)
+                                  {
+
+                                    x.push_back(contours[l][j][i].x());
+                                    y.push_back(contours[l][j][i].y());
+                                  }
+                              }
+
+                            base->setData(x, y);
+                          }
+                      }
+                  }
+
+                //map->rescaleDataRange();
+                if (!qIsNaN(max_scale))
+                  map->colorScale()->axis()->setRangeUpper(max_scale);
+
+                map->colorScale()->axis()->rescale();
                 map->rescaleAxes();
               }
 
@@ -1852,12 +2057,30 @@ void CQCustomPlot::clearBuffers()
   mHaveAfter = false;
 }
 
-void CQCustomPlot::setAxisUnits(Axis axis, const CObjectInterface * pObjectInterface)
+void CQCustomPlot::setAxisText(Axis axis, const CObjectInterface * pObjectInterface,
+                               bool setUnit, QCPAxis * pAxis)
 {
-  if (axis == CPlotInterface::Axis::xAxis)
-    xAxis->setLabel(getAxisText(axis, pObjectInterface));
-  else
-    yAxis->setLabel(getAxisText(axis, pObjectInterface));
+  QString label = getAxisText(axis, pObjectInterface, setUnit);
+
+  if (pAxis != NULL)
+    {
+      pAxis->setLabel(label);
+      return;
+    }
+
+  switch (axis)
+    {
+      case CPlotInterface::Axis::xAxis:
+        xAxis->setLabel(label);
+        break;
+
+      case CPlotInterface::Axis::yAxis:
+        yAxis->setLabel(label);
+        break;
+
+      default:
+        break;
+    }
 }
 
 void CQCustomPlot::saveToFile(const QString & fileName, QRect & rect)

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,9 +33,9 @@
 
 #include "copasi/copasi.h"
 
-#include "CFunctionDB.h"
-#include "CFunction.h"
-#include "FunctionDB.xml.h"
+#include "copasi/function/CFunctionDB.h"
+#include "copasi/function/CFunction.h"
+#include "copasi/function/FunctionDB.xml.h"
 
 #include "copasi/utilities/CCopasiException.h"
 #include "copasi/utilities/CDirEntry.h"
@@ -44,6 +44,7 @@
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/xml/CCopasiXML.h"
 #include "copasi/model/CModel.h"
+#include "copasi/core/CRootContainer.h"
 
 CFunctionDB::CFunctionDB(const std::string & name,
                          const CDataContainer * pParent):
@@ -453,29 +454,50 @@ bool CFunctionDB::appendDependentFunctions(const CDataObject::ObjectSet & candid
 std::vector< const CFunction * > CFunctionDB::getUsedFunctions(const CModel* pModel) const
 {
   std::vector< const CFunction * > UsedFunctions;
-  CDataVectorN < CFunction >::const_iterator it = mLoadedFunctions.begin();
-  CDataVectorN < CFunction >::const_iterator end = mLoadedFunctions.end();
 
-  for (; it != end; ++it)
+  if (pModel != nullptr)
     {
-      CDataObject::ObjectSet Function;
-      Function.insert(it);
+      CDataVectorN< CFunction >::const_iterator it = mLoadedFunctions.begin();
+      CDataVectorN< CFunction >::const_iterator end = mLoadedFunctions.end();
 
-      CDataObject::DataObjectSet Reactions;
-      CDataObject::DataObjectSet Metabolites;
-      CDataObject::DataObjectSet Values;
-      CDataObject::DataObjectSet Compartments;
-      CDataObject::DataObjectSet Events;
-      CDataObject::DataObjectSet EventAssignments;
-
-      if (pModel->appendAllDependents(Function, Reactions, Metabolites, Compartments, Values, Events, EventAssignments))
+      for (; it != end; ++it)
         {
-          UsedFunctions.push_back(it);
-          continue;
+          CDataObject::ObjectSet Function;
+          Function.insert(it);
+
+          CDataObject::DataObjectSet Reactions;
+          CDataObject::DataObjectSet Metabolites;
+          CDataObject::DataObjectSet Values;
+          CDataObject::DataObjectSet Compartments;
+          CDataObject::DataObjectSet Events;
+          CDataObject::DataObjectSet EventAssignments;
+
+          if (pModel->appendAllDependents(Function, Reactions, Metabolites, Compartments, Values, Events, EventAssignments))
+            UsedFunctions.push_back(it);
         }
+
+      CFunction::completeFunctionList(UsedFunctions);
     }
 
-  CFunction::completeFunctionList(UsedFunctions);
-
   return UsedFunctions;
+}
+
+void CFunctionDB::purgeUnusedUserDefinedFunctions()
+{
+  std::set< const CFunction * > UserDefinedFunctions;
+  std::set< const CFunction * > UsedFunctions;
+
+  for (const CFunction & Function : mLoadedFunctions)
+    if (Function.getType() == CFunction::Type::UserDefined)
+      UserDefinedFunctions.insert(&Function);
+
+  for (const CDataModel & DataModel : *CRootContainer::getDatamodelList())
+    {
+      std::vector< const CFunction * > Functions = getUsedFunctions(DataModel.getModel());
+      UsedFunctions.insert(Functions.begin(), Functions.end());
+    }
+
+  for (const CFunction * pFunction : UserDefinedFunctions)
+    if (UsedFunctions.find(pFunction) == UsedFunctions.end())
+      delete pFunction;
 }

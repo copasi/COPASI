@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -87,6 +87,10 @@ const CEnumAnnotation< std::string, CQIconResource::IconID > CQIconResource::Bac
   "viewmagfit.png",
   "reset.png",
   "animation.png",
+  "dialog_error.png",
+  "dialog_information.png",
+  "dialog_warning.png",
+  "dialog_question.png",
   // This is the default icon which is empty
   ""
 });
@@ -151,6 +155,10 @@ const CEnumAnnotation< std::string, CQIconResource::IconID > CQIconResource::The
   "zoom-fit-best",
   "reset",
   "animation",
+  "dialog_error",
+  "dialog_information",
+  "dialog_warning",
+  "dialog_question",
   // This is the default icon which is empty
   "unknown"
 });
@@ -215,6 +223,10 @@ const CEnumAnnotation< QStyle::StandardPixmap, CQIconResource::IconID > CQIconRe
   QStyle::SP_CustomBase, // "viewmagfit.png",
   QStyle::SP_CustomBase, // "reset.png",
   QStyle::SP_CustomBase, // "animation.png",
+  QStyle::SP_MessageBoxCritical, // "dialog_error.png",
+  QStyle::SP_MessageBoxInformation, // "dialog_information.png",
+  QStyle::SP_MessageBoxWarning, // "dialog_warning.png",
+  QStyle::SP_MessageBoxQuestion, // "dialog_question.png",
   // This is the default icon which is empty
   QStyle::SP_CustomBase, // ""
 });
@@ -290,6 +302,10 @@ void CQIconResource::init()
   load(viewmagfit, QIcon::Normal, QIcon::On);
   load(_reset, QIcon::Normal, QIcon::On);
   load(animation, QIcon::Normal, QIcon::On);
+  load(dialog_error, QIcon::Normal, QIcon::On);
+  load(dialog_information, QIcon::Normal, QIcon::On);
+  load(dialog_warning, QIcon::Normal, QIcon::On);
+  load(dialog_question, QIcon::Normal, QIcon::On);
 
   needInit = false;
 }

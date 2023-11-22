@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -181,7 +181,8 @@ public:
   bool addParameter(const std::string & name,
                     const CCopasiParameter::Type type,
                     const CType & value,
-                    const CCopasiParameter::UserInterfaceFlag & flag = CCopasiParameter::UserInterfaceFlag::All)
+                    const CCopasiParameter::UserInterfaceFlag & flag = CCopasiParameter::UserInterfaceFlag::All,
+                    bool validateValue = true)
   {
     CCopasiParameter * pParameter;
 
@@ -190,7 +191,7 @@ public:
         // Create a temporary group with the correct name
         CCopasiParameterGroup *tmp = new CCopasiParameterGroup(name);
 
-        if (!tmp->isValidValue(value))
+        if (validateValue && !tmp->isValidValue(value))
           {
             delete tmp;
             return false;
@@ -209,7 +210,7 @@ public:
       {
         pParameter = new CCopasiParameter(name, type, NULL);
 
-        if (!pParameter->isValidValue(value))
+        if (validateValue && !pParameter->isValidValue(value))
           {
             delete pParameter;
             return false;
@@ -251,7 +252,11 @@ public:
       {
         if (pParm) removeParameter(name);
 
-        addParameter(name, type, defaultValue);
+        if (!addParameter(name, type, defaultValue))
+          {
+            CCopasiMessage(CCopasiMessage::EXCEPTION, "Invalid value for parameter %s", name.c_str());
+          }
+
         pParm = getParameter(name);
         pParm->setUserInterfaceFlag(flag);
       }

@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,7 +46,7 @@ void CPointerMathContext< Data >::setMathContext(CMathContext & Context)
     {
       Base::master()->setMathContainer(Context.master());
 
-      if (Base::mSize > 1)
+      if (Base::size() > 1)
         {
           Data ** pIt = Base::beginThread();
           Data ** pEnd = Base::endThread();

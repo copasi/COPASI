@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -95,13 +95,15 @@ void CMCAProblem::load(CReadConfig & configBuffer,
  */
 void CMCAProblem::setSteadyStateRequested(const bool & steadyStateRequested)
 {
-  CSteadyStateTask * pSubTask = NULL;
+  CSteadyStateTask * pSubTask = nullptr;
   CDataModel* pDataModel = getObjectDataModel();
 
-  if (pDataModel && pDataModel->getTaskList())
+  if (pDataModel != nullptr
+      && pDataModel->getTaskList())
     pSubTask = dynamic_cast<CSteadyStateTask *>(&pDataModel->getTaskList()->operator[]("Steady-State"));
 
-  if (steadyStateRequested && pSubTask)
+  if (steadyStateRequested
+      && pSubTask != nullptr)
     setValue("Steady-State", pSubTask->getKey());
   else
     setValue("Steady-State", std::string(""));
@@ -118,21 +120,19 @@ bool CMCAProblem::isSteadyStateRequested() const
 
 CCopasiTask * CMCAProblem::getSubTask() const
 {
-  CCopasiTask * pSubTask = NULL;
+  CCopasiTask * pSubTask = nullptr;
 
   if (isSteadyStateRequested())
     {
       pSubTask = dynamic_cast< CCopasiTask * >(CRootContainer::getKeyFactory()->get(getValue< std::string >("Steady-State")));
 
-      if (pSubTask == NULL)
+      if (pSubTask == nullptr)
         {
           CDataModel * pDataModel = getObjectDataModel();
-          assert(pDataModel != NULL);
 
-          if (pDataModel && pDataModel->getTaskList())
-            {
-              pSubTask = dynamic_cast< CCopasiTask * >(&pDataModel->getTaskList()->operator[]("Steady-State"));
-            }
+          if (pDataModel != nullptr
+              && pDataModel->getTaskList())
+            pSubTask = dynamic_cast< CCopasiTask * >(&pDataModel->getTaskList()->operator[]("Steady-State"));
         }
     }
 

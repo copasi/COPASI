@@ -283,11 +283,19 @@ public:
   CCrossValidationSet & getCrossValidationSet();
 
   /**
-   * Add an optimization item to the problem.
+   * Add a fit item to the problem.
    * @param const CCommonName & objectCN
-   * @return COptItem optItemAdded
+   * @return CFitItem optItemAdded
    */
   CFitItem & addFitItem(const CCommonName & objectCN);
+
+  /**
+   * Add a fit constraint to the problem.
+   * @param const CCommonName & objectCN
+   * @return CFitConstraint optItemAdded
+   */
+  CFitConstraint & addFitConstraint(const CCommonName & objectCN);
+
 
   /**
    * Set the solution.
@@ -336,6 +344,7 @@ public:
   const bool & getCreateParameterSets() const;
 
   void setUseTimeSens(bool value);
+
   const bool& getUseTimeSens() const;
 
   void createParameterSets();
