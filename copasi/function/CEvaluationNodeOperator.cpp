@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,6 +33,7 @@
 #include "copasi/utilities/CValidatedUnit.h"
 #include "copasi/math/CMathObject.h"
 #include "copasi/math/CMathContainer.h"
+#include "copasi/utilities/CBalanceTree.h"
 
 CEvaluationNodeOperator::CEvaluationNodeOperator():
   CEvaluationNode(MainType::OPERATOR, SubType::INVALID, ""),
@@ -475,52 +476,22 @@ CEvaluationNode * CEvaluationNodeOperator::fromAST(const ASTNode * pASTNode, con
       switch (iMax)
         {
           case 0:
-
             if (type == AST_PLUS)
-              {
-                pNode = new CEvaluationNodeNumber(SubType::DOUBLE, "0.0");
-              }
+              pNode = new CEvaluationNodeNumber(SubType::DOUBLE, "0.0");
             else
-              {
-                pNode = new CEvaluationNodeNumber(SubType::DOUBLE, "1.0");
-              }
+              pNode = new CEvaluationNodeNumber(SubType::DOUBLE, "1.0");
 
             break;
 
-          case 1:
-            // replace the current node with its only child
-            pNode = children[0];
-            break;
-
-          case 2:
+          default:
           {
-            pNode = new CEvaluationNodeOperator(subType, data);
-            CEvaluationNode * pCurrent = pNode;
-
-            // We have at least 2 children
-            while (i < iMax - 1)
-              {
-                // add the first value
-                pCurrent->addChild(children[i++]);
-
-                switch (iMax - i)
-                  {
-                    case 1:
-                      // We have only 1 more child
-                      pCurrent->addChild(children[i++]);
-                      break;
-
-                    default:
-                      // We have at least 2 more children
-                    {
-                      // create a new node with the same operator
-                      CEvaluationNode * pTmp = new CEvaluationNodeOperator(subType, data);
-                      pCurrent->addChild(pTmp);
-                      pCurrent = pTmp;
-                    }
-                    break;
-                  }
-              }
+            pNode = BalanceTree< CEvaluationNode * >::create(children, [subType, data](CEvaluationNode * const & pFirst, CEvaluationNode * const & pSecond)
+            {
+              CEvaluationNode * pNew = new CEvaluationNodeOperator(subType, data);
+              pNew->addChild(pFirst);
+              pNew->addChild(pSecond);
+              return pNew;
+            });
           }
           break;
         }

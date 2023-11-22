@@ -926,6 +926,19 @@ CFitItem & CFitProblem::addFitItem(const CCommonName & objectCN)
   return *pItem;
 }
 
+CFitConstraint & CFitProblem::addFitConstraint(const CCommonName & objectCN)
+{
+  CDataModel * pDataModel = getObjectDataModel();
+  assert(pDataModel != NULL);
+
+  CFitConstraint * pItem = new CFitConstraint(pDataModel);
+  pItem->setObjectCN(objectCN);
+
+  mpGrpConstraints->addParameter(pItem);
+
+  return *pItem;
+}
+
 /**
  * Utility function creating a parameter set for each experiment
  */

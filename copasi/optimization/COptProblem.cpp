@@ -423,7 +423,7 @@ bool COptProblem::initialize()
   mSolutionVariables = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mOriginalVariables = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  if (mpOptItems->size() == 0)
+  if (mpOptItems->size() == 0 && pTask->getMethod()->getSubType() != CTaskEnum::Method::Statistics)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 6);
       return false;
@@ -1041,7 +1041,37 @@ bool COptProblem::setSolution(const C_FLOAT64 & value,
 }
 
 const C_FLOAT64 & COptProblem::getSolutionValue() const
-{return mSolutionValue;}
+{
+  return mSolutionValue;
+}
+
+COptItem & COptProblem::getOptConstraint(const size_t & index)
+{
+  return *(*mpConstraintItems)[index];
+}
+
+size_t COptProblem::getOptConstraintSize() const
+{
+  return mpGrpConstraints->size();
+}
+
+COptItem & COptProblem::addOptConstraint(const CCommonName & objectCN)
+{
+  CDataModel * pDataModel = getObjectDataModel();
+  assert(pDataModel != NULL);
+
+  COptItem * pItem = new COptItem(pDataModel);
+  pItem->setObjectCN(objectCN);
+
+  mpGrpConstraints->addParameter(pItem);
+
+  return *pItem;
+}
+
+bool COptProblem::removeOptConstraint(const size_t & index)
+{
+  return mpGrpConstraints->removeParameter(index);
+}
 
 COptItem & COptProblem::getOptItem(const size_t & index)
 {return *(*mpOptItems)[index];}

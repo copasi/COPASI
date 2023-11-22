@@ -1100,9 +1100,9 @@ void SEDMLImporter::initializeContent()
 {
   mContent.mCopasi2SBMLMap.clear();
   mContent.mCopasi2SEDMLMap.clear();
-  mContent.pTaskList = new CDataVectorN< CCopasiTask >("TaskList", mpDataModel);
-  mContent.pReportDefinitionList = new CReportDefinitionVector("ReportDefinitions", mpDataModel);
-  mContent.pPlotDefinitionList = new COutputDefinitionVector("OutputDefinitions", mpDataModel);
+  mContent.pTaskList = new CDataVectorN< CCopasiTask >("TaskList", NO_PARENT);
+  mContent.pReportDefinitionList = new CReportDefinitionVector("ReportDefinitions", NO_PARENT);
+  mContent.pPlotDefinitionList = new COutputDefinitionVector("OutputDefinitions", NO_PARENT);
 }
 
 void SEDMLImporter::updateContent(CDataModel::CContent & data, CDataModel & dm)
@@ -1524,6 +1524,13 @@ CModel * SEDMLImporter::importModel(const std::string & modelId)
                    "Sorry currently, only SBML models are supported.");
 
   std::string modelSource = sedmlModel->getSource();
+
+  if (modelSource.find("urn:") == 0 || modelSource.find("http://") == 0 || modelSource.find("https://") == 0)
+    CCopasiMessage(CCopasiMessage::EXCEPTION,
+                   "Currently, only local files are supported. Please resolve the remote source '%s' first before importing the SED-ML document.",
+                   modelSource.c_str()
+                  );
+
 
   SedModel * referencedModel = mpSEDMLDocument->getModel(modelSource);
 

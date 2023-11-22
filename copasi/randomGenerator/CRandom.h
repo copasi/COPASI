@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -134,7 +134,7 @@ protected:
 
 public:
   /**
-   * get a system dependend seed (hopefully random)
+   * get a system dependent seed (hopefully random)
    */
   static unsigned C_INT32 getSystemSeed();
 
@@ -159,13 +159,13 @@ public:
   CRandom * copy();
 
   /**
-   * Retreive the type of the generator
+   * Retrieve the type of the generator
    * @return const CRandom::Type & type
    */
   const CRandom::Type & getType() const;
 
   /**
-   * Retreive the method dependend modulus
+   * Retrieve the method dependent modulus
    * @return const unsigned C_INT32 & modulus
    */
   const unsigned C_INT32 & getModulus() const;

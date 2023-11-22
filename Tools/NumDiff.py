@@ -28,7 +28,7 @@ def itos(integer):
 # gripe and return 0 if it couldn't be opened
 def fopen(fname):
   try:
-    return open(fname, 'U')
+    return open(fname, 'r')
   except (IOError) as detail:
     return fail("Couldn't open " + fname + ": " + str(detail))
 

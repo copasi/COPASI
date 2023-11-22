@@ -175,13 +175,18 @@ private:
   void clearBuffers();
 
   /**
-   * Set the units of the indexed axis based on the
+   * Set the text of the indexed axis based on the
    * type of the object.
-   * @param const C_INT32 & index
-   * @param const CObjectInterface * pObject
+   * @param axis, the axis to set the text on
+   * @param const CObjectInterface * pObject the object
+   * @param setUnit if true the unit of the object will be set
+   * @param pAxis optional axis object to use
    */
-  void setAxisUnits(Axis axis,
-                    const CObjectInterface * pObject);
+  void setAxisText(Axis axis,
+                   const CObjectInterface * pObject,
+                   bool setUnit = true,
+                   QCPAxis * pAxis = NULL);
+
 
   void updateSteadyStateInfo(int type);
 
@@ -324,6 +329,7 @@ protected:
   QSharedPointer< QCPAxisTicker > mDefaultTicker;
   QSharedPointer< QCPAxisTickerText > mTextTicker;
   QVector<QString> mDependentNames;
+  QVector< QCPCurve * > mContours;
   std::set< QString > mIndependentNames;
   std::map< std::pair< QString, QString>, QVector< qreal > > mIndependentData;
   QString mSelectedIndependent;
@@ -333,6 +339,8 @@ protected:
   int mLegendCol;
   CCopasiTimeVariable mNextWheelTime;
   QCPLayoutGrid * mpSubLayout;
+
+  bool mHaveNewData;
 
 signals:
   void replotSignal();

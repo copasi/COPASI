@@ -102,5 +102,5 @@ jobs:
         name:
           copasi-se-${{ matrix.platform }}
         path: ${{github.workspace}}/install/*
-        retention-days: 1
+        retention-days: 10
         if-no-files-found: error

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -229,7 +229,25 @@ CQwtPlot::createSpectogram(const CPlotItem *plotItem)
   else if (colorMap == "Blue-White-Red")
     {
       CLinearColorMap *colorMap = new CLinearColorMap(Qt::blue, Qt::red);
-      colorMap->setAbsoluteStop(0.0, Qt::white);
+      colorMap->addColorStop(0.5, Qt::white);
+      pSpectogram->setColorMap(colorMap);
+    }
+  else if (colorMap == "Hot")
+    {
+      CLinearColorMap * colorMap = new CLinearColorMap(QColor(50, 0, 0), Qt::white);
+      colorMap->addColorStop(0.2, QColor(180, 10, 0));
+      colorMap->addColorStop(0.4, QColor(245, 50, 0));
+      colorMap->addColorStop(0.6, QColor(255, 150, 10));
+      colorMap->addColorStop(0.8, QColor(255, 255, 50));
+      pSpectogram->setColorMap(colorMap);
+    }
+  else if (colorMap == "Cold")
+    {
+      CLinearColorMap * colorMap = new CLinearColorMap(QColor(0, 0, 50), Qt::white);
+      colorMap->addColorStop(0.2, QColor(0, 10, 180));
+      colorMap->addColorStop(0.4, QColor(0, 50, 245));
+      colorMap->addColorStop(0.6, QColor(10, 150, 255));
+      colorMap->addColorStop(0.8, QColor(50, 255, 255));
       pSpectogram->setColorMap(colorMap);
     }
   else

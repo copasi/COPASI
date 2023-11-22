@@ -57,5 +57,9 @@
     <file>images/viewmagfit.png</file>
     <file>images/reset.png</file>
     <file>images/animation.png</file>
+    <file>images/dialog_error.png</file>
+    <file>images/dialog_information.png</file>
+    <file>images/dialog_warning.png</file>
+    <file>images/dialog_question.png</file>
   </qresource>
 </RCC>

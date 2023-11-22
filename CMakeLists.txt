@@ -408,6 +408,29 @@ if (ENABLE_OMP)
 
   find_package (OpenMP REQUIRED)
   include_directories(BEFORE ${OpenMP_INCLUDE_PATH})
+
+  include(CheckCXXSourceCompiles)
+
+  function(detect_code_compiled code macro msg)
+    message(STATUS "Detecting ${msg}")
+    check_cxx_source_compiles("${code}" "${macro}" FAIL_REGEX "warning")
+
+    if(${macro})
+      message(STATUS "Detecting ${msg} - supported")
+    else(${macro})
+      message(STATUS "Detecting ${msg} - not supported")
+    endif(${macro})
+  endfunction(detect_code_compiled)
+
+  # Detect std::optional
+  detect_code_compiled("
+    #include <omp.h>
+    int main()
+    { 
+       omp_sched_t schedule = omp_sched_monotonic; 
+    }" 
+    OMP_HAVE_MONOTONIC 
+    "omp_sched_monotonic")
 endif(ENABLE_OMP)
 
 # TODO raptor should be restricted to a version which is at least

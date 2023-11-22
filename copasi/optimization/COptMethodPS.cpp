@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -623,7 +623,7 @@ bool COptMethodPS::optimise()
   // the others are random
   C_INT32 k, kmax = (C_INT32) mPopulationSize;
 
-#pragma omp parallel for
+#pragma omp parallel for schedule(runtime)
 
   for (k = 1; k < kmax; k++)
     if (mContinue)
@@ -643,7 +643,7 @@ bool COptMethodPS::optimise()
 
       C_INT32 k, kmax = (C_INT32) mPopulationSize;
 
-#pragma omp parallel for
+#pragma omp parallel for schedule(runtime)
 
       for (k = 0; k < kmax; k++)
         if (mContinue)

@@ -944,16 +944,16 @@ void CQSimpleSelectionTree::populateTree(const std::vector< const CDataObject * 
 void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const ObjectClasses & classes)
 {
   /*
-    <Object cn="CN=Root,CN=Information,String=User Email"/>
-    <Object cn="CN=Root,CN=Information,String=User Family Name"/>
-    <Object cn="CN=Root,CN=Information,String=User Given Name"/>
-    <Object cn="CN=Root,CN=Information,String=User Organization"/>
-    <Object cn="CN=Root,CN=Information,String=COPASI Version"/>
+    <Object cn="CN=Root,CN=Information,Reference=User Email"/>
+    <Object cn="CN=Root,CN=Information,Reference=User Family Name"/>
+    <Object cn="CN=Root,CN=Information,Reference=User Given Name"/>
+    <Object cn="CN=Root,CN=Information,Reference=User Organization"/>
+    <Object cn="CN=Root,CN=Information,Reference=COPASI Version"/>
     <Object cn="CN=Root,CN=Information,Timer=Current Date/Time"/>
-    <Object cn="CN=Root,CN=Information,String=File Name"/>
+    <Object cn="CN=Root,CN=Information,Reference=File Name"/>
   */
 
-  const CDataObject * pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,String=User Email")));
+  const CDataObject * pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Reference=User Email")));
 
   if (filter(classes, pObject))
     {
@@ -961,7 +961,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,String=User Family Name")));
+  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Reference=User Family Name")));
 
   if (filter(classes, pObject))
     {
@@ -969,7 +969,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,String=User Given Name")));
+  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Reference=User Given Name")));
 
   if (filter(classes, pObject))
     {
@@ -977,7 +977,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,String=User Organization")));
+  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Reference=User Organization")));
 
   if (filter(classes, pObject))
     {
@@ -985,7 +985,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,String=COPASI Version")));
+  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Reference=COPASI Version")));
 
   if (filter(classes, pObject))
     {
@@ -1001,7 +1001,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,String=File Name")));
+  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Reference=File Name")));
 
   if (filter(classes, pObject))
     {
@@ -1331,7 +1331,8 @@ bool CQSimpleSelectionTree::filter(const ObjectClasses &classes, const CDataObje
           Status != CModelEntity::Status::ASSIGNMENT &&
           (ObjectName == "Value" ||
            ObjectName == "Volume" ||
-           ObjectName == "Concentration"))
+           ObjectName == "Concentration" ||
+           ObjectName == "ParticleNumber"))
         return true;
 
       if ((classes & ObservedConstants) &&

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -232,8 +232,6 @@ bool CCopasiXML::saveModelParameterSets(std::ostream & os, const std::string & r
       endSaveElement("Model");
     }
 
-
-
   endSaveElement("COPASI");
 
   return success;
@@ -416,7 +414,7 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
 
           for (; itChosen != endChosen; ++itChosen)
             {
-              (*itChosen)->setExpression(CUnit::replaceSymbol((*itChosen)->getExpression() , itIL->getSymbol(), pUnitDefToAdd->getSymbol()));
+              (*itChosen)->setExpression(CUnit::replaceSymbol((*itChosen)->getExpression(), itIL->getSymbol(), pUnitDefToAdd->getSymbol()));
             }
 
           // for all the ones remaining in the Import List
@@ -424,7 +422,7 @@ void CCopasiXML::mergeUnitDefinitions(CUnitDefinitionDB * pUnitDefImportList)
 
           for (; itILrem != endIL; ++itILrem)
             {
-              itILrem->setExpression(CUnit::replaceSymbol(itILrem->getExpression() , itIL->getSymbol(), pUnitDefToAdd->getSymbol()));
+              itILrem->setExpression(CUnit::replaceSymbol(itILrem->getExpression(), itIL->getSymbol(), pUnitDefToAdd->getSymbol()));
             }
 
           // for any units used in the model
@@ -1047,15 +1045,13 @@ bool CCopasiXML::saveModel()
 
               CXMLAttributeList Attr;
               Attr.add("target", "");
-              Attr.add("targetKey", "");
 
               CDataVectorN< CEventAssignment >::const_iterator it = Assignments.begin();
               CDataVectorN< CEventAssignment >::const_iterator end = Assignments.end();
 
               for (; it != end; ++it)
                 {
-                  Attr.setValue(0, it->getTargetCN());
-                  Attr.setValue(1, CObjectInterface::DataObject(pDataModel->getObject(it->getTargetCN()))->getKey());
+                  Attr.setValue(0, it->getXmlTargetCN());
 
                   startSaveElement("Assignment", Attr);
 

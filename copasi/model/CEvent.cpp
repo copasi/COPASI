@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -79,7 +79,7 @@ bool CEventAssignment::applyData(const CData & data, CUndoData::CChangeSet & cha
     {
       CModel * pModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
 
-      if (pModel != NULL)
+      if (pModel != nullptr)
         {
           pModel->setCompileFlag(true);
         }
@@ -108,26 +108,25 @@ void CEventAssignment::createUndoData(CUndoData & undoData,
 // The default constructor is intentionally not implemented.
 // CEventAssignment::CEventAssignment() {}
 
-
 CEventAssignment::CEventAssignment(const std::string & targetCN,
                                    const CDataContainer * pParent) :
   CDataContainer(targetCN, pParent, "EventAssignment"),
   mKey(CRootContainer::getKeyFactory()->add("EventAssignment", this)),
   mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
   mTargetCN(targetCN),
-  mpTarget(NULL),
-  mpExpression(NULL)
+  mpTarget(nullptr),
+  mpExpression(nullptr)
 {
   //fall back, in case the constructor is called with a key instead of a CN
-  CDataObject * pObject = CRootContainer::getKeyFactory()->get(targetCN);
+  CModelEntity * pObject = dynamic_cast< CModelEntity * >(CRootContainer::getKeyFactory()->get(targetCN));
 
-  if (pObject != NULL)
+  if (pObject != nullptr)
     {
-      setObjectName(pObject->getCN());
-      mTargetCN = pObject->getCN();
+      mTargetCN = pObject->getValueObject()->getCN();
+      setObjectName(mTargetCN);
     }
 
-  if (mpModel != NULL)
+  if (mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -140,9 +139,9 @@ CEventAssignment::CEventAssignment(const CEventAssignment & src,
   mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
   mTargetCN(src.mTargetCN),
   mpTarget(src.mpTarget),
-  mpExpression(NULL)
+  mpExpression(nullptr)
 {
-  if (mpModel != NULL)
+  if (mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -154,7 +153,7 @@ CEventAssignment::~CEventAssignment()
 {
   pdelete(mpExpression);
 
-  if (mpModel != NULL)
+  if (mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -178,7 +177,7 @@ bool CEventAssignment::operator != (const CEventAssignment & rhs) const
 bool CEventAssignment::setObjectParent(const CDataContainer * pParent)
 {
   if (pParent != getObjectParent() &&
-      mpModel != NULL)
+      mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -186,7 +185,7 @@ bool CEventAssignment::setObjectParent(const CDataContainer * pParent)
   bool success = CDataContainer::setObjectParent(pParent);
   mpModel = static_cast<CModel *>(getObjectAncestor("Model"));
 
-  if (mpModel != NULL)
+  if (mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -201,41 +200,42 @@ CIssue CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer
   mValidity.clear();
   CIssue firstWorstIssue;
 
-  mpTarget = NULL;
-
-  const CModelEntity * pEntity = NULL;
+  mpTarget = nullptr;
   CDataModel * pDataModel = getObjectDataModel();
 
-  if (pDataModel != NULL)
-    {
-      pEntity = dynamic_cast< const CModelEntity * >(CObjectInterface::DataObject(pDataModel->getObject(getTargetCN())));
-    }
+  if (pDataModel != nullptr)
+    mpTarget = CObjectInterface::DataObject(pDataModel->getObject(getTargetCN()));
 
-  // The entity type must not be an ASSIGNMENT
-  if (pEntity != NULL &&
+  const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(mpTarget);
+
+  if (pEntity != nullptr)
+    {
+      mpTarget = pEntity->getValueObject();
+      setTargetCN(mpTarget->getCN());
+    }
+  else
+    pEntity =  dynamic_cast< const CModelEntity * >(mpTarget->getObjectParent());
+
+  if (pEntity != nullptr &&
       pEntity->getStatus() != CModelEntity::Status::ASSIGNMENT)
     {
       mPrerequisits.insert(pEntity);
-
-      // We need use the virtual method getValueObject to retrieve the
-      // target value from the model entity
-      mpTarget = pEntity->getValueObject();
     }
-  else if (pEntity != NULL &&
+  else if (pEntity != nullptr &&
            pEntity->getStatus() == CModelEntity::Status::ASSIGNMENT)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "Invalid EventAssignment for '%s': an Assignment Rule already exists", pEntity->getObjectName().c_str());
       mValidity.add(CIssue(CIssue::eSeverity::Error, CIssue::eKind::EventAlreadyHasAssignment));
       firstWorstIssue &= mValidity.getFirstWorstIssue();
     }
-  else if (pEntity == NULL)
+  else if (pEntity == nullptr)
     {
       CCopasiMessage(CCopasiMessage::WARNING, "Invalid EventAssignment for '%s': object does not exist.", getObjectName().c_str());
       mValidity.add(CIssue(CIssue::eSeverity::Warning, CIssue::eKind::ObjectNotFound));
       firstWorstIssue &= mValidity.getFirstWorstIssue();
     }
 
-  if (mpExpression != NULL)
+  if (mpExpression != nullptr)
     {
       firstWorstIssue &= mpExpression->compile(listOfContainer);
       mPrerequisits.insert(mpExpression->getPrerequisites().begin(), mpExpression->getPrerequisites().end());
@@ -262,7 +262,7 @@ const CDataObject * CEventAssignment::getTargetObject() const
 bool CEventAssignment::setTargetCN(const std::string & targetCN)
 {
   if (targetCN != getTargetCN() &&
-      mpModel != NULL)
+      mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -278,13 +278,27 @@ const std::string & CEventAssignment::getTargetCN() const
   return mTargetCN;
 }
 
+std::string CEventAssignment::getXmlTargetCN() const
+{
+  CCommonName parentCN;
+  std::string objectType;
+  std::string objectName;
+
+  mTargetCN.split(parentCN, objectType, objectName);
+
+  if (objectName != "ParticleNumber")
+    return parentCN;
+
+  return mTargetCN;
+}
+
 bool CEventAssignment::setExpression(const std::string & expression)
 {
-  if (mpExpression == NULL)
+  if (mpExpression == nullptr)
     mpExpression = new CExpression("Expression", this);
 
   if (mpExpression->getInfix() != expression &&
-      mpModel != NULL)
+      mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -296,9 +310,9 @@ bool CEventAssignment::setExpressionPtr(CExpression * pExpression)
 {
   if (pExpression == mpExpression) return true;
 
-  if (pExpression == NULL) return false;
+  if (pExpression == nullptr) return false;
 
-  if (mpModel != NULL)
+  if (mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -320,14 +334,14 @@ bool CEventAssignment::setExpressionPtr(CExpression * pExpression)
   // If compile fails we do not take ownership
   // and we remove the object from the container
   remove(mpExpression);
-  mpExpression->setObjectParent(NULL);
+  mpExpression->setObjectParent(nullptr);
   mpExpression = pOld;
   return false;
 }
 
 std::string CEventAssignment::getExpression() const
 {
-  if (mpExpression == NULL)
+  if (mpExpression == nullptr)
     return "";
 
   mpExpression->updateInfix();
@@ -337,14 +351,14 @@ std::string CEventAssignment::getExpression() const
 
 const CExpression* CEventAssignment::getExpressionPtr() const
 {
-  if (mpExpression != NULL) mpExpression->updateInfix();
+  if (mpExpression != nullptr) mpExpression->updateInfix();
 
   return mpExpression;
 }
 
 CExpression* CEventAssignment::getExpressionPtr()
 {
-  if (mpExpression != NULL) mpExpression->updateInfix();
+  if (mpExpression != nullptr) mpExpression->updateInfix();
 
   return mpExpression;
 }
@@ -430,7 +444,7 @@ bool CEvent::applyData(const CData & data, CUndoData::CChangeSet & changes)
     {
       CModel * pModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
 
-      if (pModel != NULL)
+      if (pModel != nullptr)
         {
           pModel->setCompileFlag(true);
         }
@@ -487,9 +501,9 @@ CEvent::CEvent(const std::string & name,
   mDelayAssignment(true),
   mFireAtInitialTime(false),
   mPersistentTrigger(false),
-  mpTriggerExpression(NULL),
-  mpDelayExpression(NULL),
-  mpPriorityExpression(NULL),
+  mpTriggerExpression(nullptr),
+  mpDelayExpression(nullptr),
+  mpPriorityExpression(nullptr),
   mType(Assignment)
 {
   mKey = (CRootContainer::getKeyFactory()->add(getObjectType(), this));
@@ -507,9 +521,9 @@ CEvent::CEvent(const CEvent & src,
   mDelayAssignment(src.mDelayAssignment),
   mFireAtInitialTime(src.mFireAtInitialTime),
   mPersistentTrigger(src.mPersistentTrigger),
-  mpTriggerExpression(src.mpTriggerExpression != NULL ? new CExpression(*src.mpTriggerExpression, this) : NULL),
-  mpDelayExpression(src.mpDelayExpression != NULL ? new CExpression(*src.mpDelayExpression, this) : NULL),
-  mpPriorityExpression(src.mpPriorityExpression != NULL ? new CExpression(*src.mpPriorityExpression, this) : NULL),
+  mpTriggerExpression(src.mpTriggerExpression != nullptr ? new CExpression(*src.mpTriggerExpression, this) : nullptr),
+  mpDelayExpression(src.mpDelayExpression != nullptr ? new CExpression(*src.mpDelayExpression, this) : nullptr),
+  mpPriorityExpression(src.mpPriorityExpression != nullptr ? new CExpression(*src.mpPriorityExpression, this) : nullptr),
   mType(src.mType)
 {
   mKey = (CRootContainer::getKeyFactory()->add(getObjectType(), this));
@@ -520,7 +534,7 @@ CEvent::CEvent(const CEvent & src,
 
 CEvent::~CEvent()
 {
-  if (mpModel != NULL)
+  if (mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -542,21 +556,21 @@ std::string CEvent::getOriginFor(const DataObjectSet & deletedObjects) const
   std::string Origin;
   std::string Separator;
 
-  if (mpTriggerExpression != NULL &&
+  if (mpTriggerExpression != nullptr &&
       mpTriggerExpression->containsCN(deletedObjects))
     {
       Origin += Separator + "Trigger";
       Separator = "\n";
     }
 
-  if (mpPriorityExpression != NULL &&
+  if (mpPriorityExpression != nullptr &&
       mpPriorityExpression->containsCN(deletedObjects))
     {
       Origin += Separator + "Priority";
       Separator = "\n";
     }
 
-  if (mpDelayExpression != NULL &&
+  if (mpDelayExpression != nullptr &&
       mpDelayExpression->containsCN(deletedObjects))
     {
       Origin += Separator + "Delay";
@@ -570,14 +584,14 @@ std::string CEvent::getOriginFor(const DataObjectSet & deletedObjects) const
     {
       const CEventAssignment& assignment = *itAssignment;
 
-      if (assignment.getExpressionPtr() != NULL &&
+      if (assignment.getExpressionPtr() != nullptr &&
           assignment.getExpressionPtr()->containsCN(deletedObjects))
         {
-          Origin += Separator + "Assignment (" + (assignment.getTargetObject() != NULL ? assignment.getTargetObject()->getObjectDisplayName() : "not found") + ")";
+          Origin += Separator + "Assignment (" + (assignment.getTargetObject() != nullptr ? assignment.getTargetObject()->getObjectDisplayName() : "not found") + ")";
           Separator = "\n";
         }
 
-      if (assignment.getTargetObject() != NULL)
+      if (assignment.getTargetObject() != nullptr)
         {
 
           auto setIt = deletedObjects.begin();
@@ -588,7 +602,7 @@ std::string CEvent::getOriginFor(const DataObjectSet & deletedObjects) const
               if (assignment.getTargetObject()->getCN() == (*setIt)->getCN())
                 {
 
-                  Origin += Separator + "Target (" + (assignment.getTargetObject() != NULL ? assignment.getTargetObject()->getObjectDisplayName() : "not found") + ")";
+                  Origin += Separator + "Target (" + (assignment.getTargetObject() != nullptr ? assignment.getTargetObject()->getObjectDisplayName() : "not found") + ")";
                   Separator = "\n";
                 }
             }
@@ -607,7 +621,7 @@ CIssue CEvent::compile(CObjectInterface::ContainerList listOfContainer)
   mPrerequisits.clear();
 
   // Compile the trigger expression
-  if (mpTriggerExpression != NULL)
+  if (mpTriggerExpression != nullptr)
     {
       firstWorstIssue &= mpTriggerExpression->compile(listOfContainer);
       mPrerequisits.insert(mpTriggerExpression->getPrerequisites().begin(), mpTriggerExpression->getPrerequisites().end());
@@ -619,14 +633,14 @@ CIssue CEvent::compile(CObjectInterface::ContainerList listOfContainer)
     }
 
   // Compile the delay expression
-  if (mpDelayExpression != NULL)
+  if (mpDelayExpression != nullptr)
     {
       firstWorstIssue &= mpDelayExpression->compile(listOfContainer);
       mPrerequisits.insert(mpDelayExpression->getPrerequisites().begin(), mpDelayExpression->getPrerequisites().end());
     }
 
   // Compile the delay expression
-  if (mpPriorityExpression != NULL)
+  if (mpPriorityExpression != nullptr)
     {
       firstWorstIssue &= mpPriorityExpression->compile(listOfContainer);
       mPrerequisits.insert(mpPriorityExpression->getPrerequisites().begin(), mpPriorityExpression->getPrerequisites().end());
@@ -652,7 +666,7 @@ CIssue CEvent::compile(CObjectInterface::ContainerList listOfContainer)
 
 void CEvent::initObjects()
 {
-  if (mpModel != NULL)
+  if (mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -681,7 +695,7 @@ const std::string& CEvent::getSBMLId() const
 void CEvent::setDelayAssignment(const bool & delayAssignment)
 {
   if (mDelayAssignment != delayAssignment &&
-      mpModel != NULL)
+      mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -700,7 +714,7 @@ void CEvent::setFireAtInitialTime(const bool & fireAtInitialTime)
     {
       mFireAtInitialTime = fireAtInitialTime;
 
-      if (mpModel != NULL)
+      if (mpModel != nullptr)
         {
           mpModel->setCompileFlag(true);
         }
@@ -718,7 +732,7 @@ void CEvent::setPersistentTrigger(const bool & persistentTrigger)
     {
       mPersistentTrigger = persistentTrigger;
 
-      if (mpModel != NULL)
+      if (mpModel != nullptr)
         {
           mpModel->setCompileFlag(true);
         }
@@ -733,7 +747,7 @@ const bool & CEvent::getPersistentTrigger() const
 bool CEvent::setObjectParent(const CDataContainer * pParent)
 {
   if (pParent != getObjectParent() &&
-      mpModel != NULL)
+      mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -742,7 +756,7 @@ bool CEvent::setObjectParent(const CDataContainer * pParent)
 
   mpModel = static_cast<CModel *>(getObjectAncestor("Model"));
 
-  if (mpModel != NULL)
+  if (mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -762,14 +776,14 @@ std::string CEvent::getObjectDisplayName() const
 
 bool CEvent::setTriggerExpression(const std::string & expression)
 {
-  if (mpTriggerExpression == NULL)
+  if (mpTriggerExpression == nullptr)
     {
       mpTriggerExpression = new CExpression("TriggerExpression", this);
       mpTriggerExpression->setIsBoolean(true);
     }
 
   if (mType != Discontinuity &&
-      mpModel != NULL &&
+      mpModel != nullptr &&
       mpTriggerExpression->getInfix() != expression)
     {
       mpModel->setCompileFlag(true);
@@ -782,9 +796,9 @@ bool CEvent::setTriggerExpressionPtr(CExpression * pExpression)
 {
   if (pExpression == mpTriggerExpression) return true;
 
-  if (pExpression == NULL) return false;
+  if (pExpression == nullptr) return false;
 
-  if (mpModel != NULL)
+  if (mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -806,14 +820,14 @@ bool CEvent::setTriggerExpressionPtr(CExpression * pExpression)
   // If compile fails we do not take ownership
   // and we remove the object from the container
   remove(mpTriggerExpression);
-  mpTriggerExpression->setObjectParent(NULL);
+  mpTriggerExpression->setObjectParent(nullptr);
   mpTriggerExpression = pOld;
   return false;
 }
 
 std::string CEvent::getTriggerExpression() const
 {
-  if (mpTriggerExpression == NULL)
+  if (mpTriggerExpression == nullptr)
     return "";
 
   mpTriggerExpression->updateInfix();
@@ -823,25 +837,25 @@ std::string CEvent::getTriggerExpression() const
 
 const CExpression* CEvent::getTriggerExpressionPtr() const
 {
-  if (mpTriggerExpression != NULL) mpTriggerExpression->updateInfix();
+  if (mpTriggerExpression != nullptr) mpTriggerExpression->updateInfix();
 
   return mpTriggerExpression;
 }
 
 CExpression* CEvent::getTriggerExpressionPtr()
 {
-  if (mpTriggerExpression != NULL) mpTriggerExpression->updateInfix();
+  if (mpTriggerExpression != nullptr) mpTriggerExpression->updateInfix();
 
   return mpTriggerExpression;
 }
 
 bool CEvent::setDelayExpression(const std::string & expression)
 {
-  if (mpDelayExpression == NULL)
+  if (mpDelayExpression == nullptr)
     mpDelayExpression = new CExpression("DelayExpression", this);
 
   if (mpDelayExpression->getInfix() != expression &&
-      mpModel != NULL)
+      mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -853,9 +867,9 @@ bool CEvent::setDelayExpressionPtr(CExpression * pExpression)
 {
   if (pExpression == mpDelayExpression) return true;
 
-  if (pExpression == NULL) return false;
+  if (pExpression == nullptr) return false;
 
-  if (mpModel != NULL)
+  if (mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -877,14 +891,14 @@ bool CEvent::setDelayExpressionPtr(CExpression * pExpression)
   // If compile fails we do not take ownership
   // and we remove the object from the container
   remove(mpDelayExpression);
-  mpDelayExpression->setObjectParent(NULL);
+  mpDelayExpression->setObjectParent(nullptr);
   mpDelayExpression = pOld;
   return false;
 }
 
 std::string CEvent::getDelayExpression() const
 {
-  if (mpDelayExpression == NULL)
+  if (mpDelayExpression == nullptr)
     return "";
 
   mpDelayExpression->updateInfix();
@@ -894,25 +908,25 @@ std::string CEvent::getDelayExpression() const
 
 const CExpression* CEvent::getDelayExpressionPtr() const
 {
-  if (mpDelayExpression != NULL) mpDelayExpression->updateInfix();
+  if (mpDelayExpression != nullptr) mpDelayExpression->updateInfix();
 
   return mpDelayExpression;
 }
 
 CExpression* CEvent::getDelayExpressionPtr()
 {
-  if (mpDelayExpression != NULL) mpDelayExpression->updateInfix();
+  if (mpDelayExpression != nullptr) mpDelayExpression->updateInfix();
 
   return mpDelayExpression;
 }
 
 bool CEvent::setPriorityExpression(const std::string & expression)
 {
-  if (mpPriorityExpression == NULL)
+  if (mpPriorityExpression == nullptr)
     mpPriorityExpression = new CExpression("PriorityExpression", this);
 
   if (mpPriorityExpression->getInfix() != expression &&
-      mpModel != NULL)
+      mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -924,9 +938,9 @@ bool CEvent::setPriorityExpressionPtr(CExpression* pExpression)
 {
   if (pExpression == mpPriorityExpression) return true;
 
-  if (pExpression == NULL) return false;
+  if (pExpression == nullptr) return false;
 
-  if (mpModel != NULL)
+  if (mpModel != nullptr)
     {
       mpModel->setCompileFlag(true);
     }
@@ -948,14 +962,14 @@ bool CEvent::setPriorityExpressionPtr(CExpression* pExpression)
   // If compile fails we do not take ownership
   // and we remove the object from the container
   remove(mpPriorityExpression);
-  mpPriorityExpression->setObjectParent(NULL);
+  mpPriorityExpression->setObjectParent(nullptr);
   mpPriorityExpression = pOld;
   return false;
 }
 
 std::string CEvent::getPriorityExpression() const
 {
-  if (mpPriorityExpression == NULL)
+  if (mpPriorityExpression == nullptr)
     return "";
 
   mpPriorityExpression->updateInfix();
@@ -965,14 +979,14 @@ std::string CEvent::getPriorityExpression() const
 
 CExpression* CEvent::getPriorityExpressionPtr()
 {
-  if (mpPriorityExpression != NULL) mpPriorityExpression->updateInfix();
+  if (mpPriorityExpression != nullptr) mpPriorityExpression->updateInfix();
 
   return mpPriorityExpression;
 }
 
 const CExpression* CEvent::getPriorityExpressionPtr() const
 {
-  if (mpPriorityExpression != NULL) mpPriorityExpression->updateInfix();
+  if (mpPriorityExpression != nullptr) mpPriorityExpression->updateInfix();
 
   return mpPriorityExpression;
 }
@@ -992,7 +1006,7 @@ void CEvent::deleteAssignment(const std::string & key)
   CEventAssignment * pAssignment =
     dynamic_cast<CEventAssignment *>(CRootContainer::getKeyFactory()->get(key));
 
-  if (pAssignment != NULL)
+  if (pAssignment != nullptr)
     {
       mAssignments.CDataVector< CEventAssignment >::remove(pAssignment);
     }

@@ -304,6 +304,33 @@ public:
   const C_FLOAT64 & getSolutionValue() const;
 
   /**
+   * Retrieve the 'index' optimization constraint.
+   * @param const size_t & index
+   * @return COptItem optItem
+   */
+  COptItem & getOptConstraint(const size_t & index);
+
+  /**
+   * Retrieve the number of optimization constraints.
+   * @return const size_t size
+   */
+  size_t getOptConstraintSize() const;
+
+  /**
+   * Add an optimization constraint to the problem.
+   * @param const CCommonName & objectCN
+   * @return COptItem optItemAdded
+   */
+  COptItem & addOptConstraint(const CCommonName & objectCN);
+
+  /**
+   * Remove an optimization constraint.
+   * @param const size_t & index
+   * @return bool success
+   */
+  bool removeOptConstraint(const size_t & index);
+
+  /**
    * Retrieve the 'index' optimization item.
    * @param const size_t & index
    * @return COptItem optItem

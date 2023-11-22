@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -110,6 +110,7 @@
     if (self->getType() != CCopasiParameter::Type::STRING && 
       self->getType() != CCopasiParameter::Type::KEY &&
       self->getType() != CCopasiParameter::Type::FILE && 
+      self->getType() != CCopasiParameter::Type::CN &&
       self->getType() != CCopasiParameter::Type::EXPRESSION)
       return "";
 
@@ -131,6 +132,7 @@
     if (self->getType() != CCopasiParameter::Type::STRING && 
       self->getType() != CCopasiParameter::Type::KEY &&
       self->getType() != CCopasiParameter::Type::FILE && 
+      self->getType() != CCopasiParameter::Type::CN &&
       self->getType() != CCopasiParameter::Type::EXPRESSION)
       return "";
 
@@ -143,6 +145,7 @@
     if (self->getType() != CCopasiParameter::Type::STRING && 
       self->getType() != CCopasiParameter::Type::KEY &&
       self->getType() != CCopasiParameter::Type::FILE && 
+      self->getType() != CCopasiParameter::Type::CN &&
       self->getType() != CCopasiParameter::Type::EXPRESSION)
       return "";
       

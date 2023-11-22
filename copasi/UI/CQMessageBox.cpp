@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,6 +29,7 @@
 #include <QLabel>
 #include <QStyle>
 #include <QApplication>
+#include <QPushButton>
 
 #include "copasiui3window.h"
 #include "CQMessageBox.h"
@@ -45,17 +46,13 @@
 
 #include "copasi/resourcesUI/CQIconResource.h"
 
-CQMessageBox::CQMessageBox(Icon icon, const QString &title, const QString &text,
+CQMessageBox::CQMessageBox(QMessageBox::Icon icon, const QString & title, const QString & text,
                            QMessageBox::StandardButtons buttons, QWidget *parent,
-                           Qt::WindowFlags f):
-  QMessageBox(icon, title, QString(), buttons, parent, f),
-  mpTabWidget(NULL),
-  mpPage1(NULL),
-  mpVerticalLayoutPage1(NULL),
-  mpText1(NULL),
-  mpPage2(NULL),
-  mpVerticalLayoutPage2(NULL),
-  mpText2(NULL)
+                           Qt::WindowFlags f)
+  : QDialog(parent, f)
+  , mButton(QMessageBox::NoButton)
+  , mpClickedButton(NULL)
+    //QMessageBox(icon, title, QString(), buttons, parent, f),
 {
   if (CopasiUI3Window::getMainWindow() != NULL)
     {
@@ -66,45 +63,38 @@ CQMessageBox::CQMessageBox(Icon icon, const QString &title, const QString &text,
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
 #endif // not Darwin
 
-  mpTabWidget = new QTabWidget(this);
-  mpTabWidget->setObjectName(QString::fromUtf8("mpTabWidget"));
-  mpTabWidget->setMinimumSize(QSize(400, 200));
+  setupUi(this);
 
-  mpPage1 = new QWidget();
-  mpPage1->setObjectName(QString::fromUtf8("mpPage1"));
+  setWindowTitle(title);
+  mpMessage->setPlainText(text);
+  mpButtonBox->setStandardButtons((QDialogButtonBox::StandardButtons)((int)buttons));
+  int filteredIndex = mpTabWidget->indexOf(mpTabFiltered);
 
-  mpVerticalLayoutPage1 = new QVBoxLayout(mpPage1);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-  mpVerticalLayoutPage1->setMargin(2);
-#else
-  mpVerticalLayoutPage1->setContentsMargins(2, 2, 2, 2);
-#endif
+  if (filteredIndex != -1)
+    mpTabWidget->removeTab(filteredIndex);
 
-  mpVerticalLayoutPage1->setObjectName(QString::fromUtf8("mpVerticalLayoutPage1"));
+#define COPASI_PIXMAP_SIZE 64
 
-  mpText1 = new QTextEdit(mpPage1);
-  mpText1->setObjectName(QString::fromUtf8("mpText1"));
-  mpText1->setReadOnly(true);
-  mpText1->setText(text);
-  mpVerticalLayoutPage1->addWidget(mpText1);
-
-  mpTabWidget->addTab(mpPage1, QString("Messages"));
-
-  // The code below is derived from qt-4.4.3/src/gui/dialogs/qmessagebox.cpp
-  QLabel * pLabel = findChild<QLabel *>("qt_msgbox_label");
-  QGridLayout* pLayout = static_cast<QGridLayout *>(layout());
-
-  if (pLabel != NULL)
+  switch (icon)
     {
-      int index = pLayout->indexOf(pLabel);
-      int row, col, rs, cs;
-      pLayout->getItemPosition(index, &row, &col, &rs, &cs);
-      pLayout->addWidget(mpTabWidget, row, col, rs, cs);
-      pLabel->hide();
-    }
-  else
-    {
-      pLayout->addWidget(mpTabWidget, 0, 1, 1, 1);
+      case QMessageBox::Question:
+        mpLblIcon->setPixmap(CQIconResource::icon(CQIconResource::dialog_question).pixmap(COPASI_PIXMAP_SIZE, COPASI_PIXMAP_SIZE));
+        break;
+
+      case QMessageBox::Information:
+        mpLblIcon->setPixmap(CQIconResource::icon(CQIconResource::dialog_information).pixmap(COPASI_PIXMAP_SIZE, COPASI_PIXMAP_SIZE));
+        break;
+
+      case QMessageBox::Warning:
+        mpLblIcon->setPixmap(CQIconResource::icon(CQIconResource::dialog_warning).pixmap(COPASI_PIXMAP_SIZE, COPASI_PIXMAP_SIZE));
+        break;
+
+      case QMessageBox::Critical:
+        mpLblIcon->setPixmap(CQIconResource::icon(CQIconResource::dialog_error).pixmap(COPASI_PIXMAP_SIZE, COPASI_PIXMAP_SIZE));
+        break;
+
+      default:
+        break;
     }
 }
 
@@ -126,7 +116,7 @@ QMessageBox::StandardButton CQMessageBox::information(QWidget *parent, const QSt
 
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Information, title, text, buttons, parent);
   pMessageBox->setDefaultButton(defaultButton);
-  StandardButton choice = (StandardButton) pMessageBox->exec();
+  QMessageBox::StandardButton choice = (QMessageBox::StandardButton) pMessageBox->exec();
   delete pMessageBox;
 
   return choice;
@@ -141,7 +131,7 @@ QMessageBox::StandardButton CQMessageBox::question(QWidget *parent, const QStrin
 
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Question, title, text, buttons, parent);
   pMessageBox->setDefaultButton(defaultButton);
-  StandardButton choice = (StandardButton) pMessageBox->exec();
+  QMessageBox::StandardButton choice = (QMessageBox::StandardButton) pMessageBox->exec();
   delete pMessageBox;
 
   return choice;
@@ -157,7 +147,7 @@ QMessageBox::StandardButton CQMessageBox::warning(QWidget *parent, const QString
 
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Warning, title, text, buttons, parent);
   pMessageBox->setDefaultButton(defaultButton);
-  StandardButton choice = (StandardButton) pMessageBox->exec();
+  QMessageBox::StandardButton choice = (QMessageBox::StandardButton) pMessageBox->exec();
   delete pMessageBox;
 
   return choice;
@@ -173,7 +163,7 @@ QMessageBox::StandardButton CQMessageBox::critical(QWidget *parent, const QStrin
 
   CQMessageBox * pMessageBox = new CQMessageBox(QMessageBox::Critical, title, text, buttons, parent);
   pMessageBox->setDefaultButton(defaultButton);
-  StandardButton choice = (StandardButton) pMessageBox->exec();
+  QMessageBox::StandardButton choice = (QMessageBox::StandardButton) pMessageBox->exec();
   delete pMessageBox;
 
   return choice;
@@ -217,7 +207,7 @@ QMessageBox::StandardButton CQMessageBox::confirmDelete(QWidget *parent,
   QString msg = buildDeleteConfirmationMessage(objectType, objects,
                 pFunctionDB, DeletedObjects, pDataModel, isUsed);
 
-  StandardButton choice = QMessageBox::Ok;
+  QMessageBox::StandardButton choice = QMessageBox::Ok;
 
   if (isUsed)
     {
@@ -233,7 +223,7 @@ QString CQMessageBox::buildDeleteConfirmationMessage(
   const QString & objectType,
   const QString & objects,
   CFunctionDB * pFunctionDB,
-  CDataObject::ObjectSet & DeletedObjects,
+  std::set< const CObjectInterface * > & DeletedObjects,
   const CDataModel * pDataModel,
   bool &isUsed)
 {
@@ -419,30 +409,60 @@ QString CQMessageBox::buildDeleteConfirmationMessage(
 
 void CQMessageBox::setText(const QString & text)
 {
-  mpText1->setText(text);
+  mpMessage->setPlainText(text);
 }
 
 void CQMessageBox::setFilteredText(const QString & text)
 {
-  if (!text.isEmpty() && mpPage2 == NULL)
+  int filteredIndex = mpTabWidget->indexOf(mpTabFiltered);
+
+  if (filteredIndex == -1 && !text.isEmpty())
+    mpTabWidget->addTab(mpTabFiltered, "Filtered Messages");
+
+  mpFilteredMessage->setPlainText(text);
+}
+
+void CQMessageBox::setDefaultButton(QMessageBox::StandardButton defaultButton)
+{
+  auto *button = mpButtonBox->button((QDialogButtonBox::StandardButton) defaultButton);
+  setDefaultButton(button);
+}
+
+void CQMessageBox::setDefaultButton(QPushButton* button)
+{
+  if (button != NULL)
     {
-      mpPage2 = new QWidget();
-      mpPage2->setObjectName(QString::fromUtf8("mpPage2"));
-
-      mpVerticalLayoutPage2 = new QVBoxLayout(mpPage2);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-      mpVerticalLayoutPage2->setMargin(2);
-#else
-      mpVerticalLayoutPage2->setContentsMargins(2, 2, 2, 2);
-#endif
-      mpVerticalLayoutPage2->setObjectName(QString::fromUtf8("mpVerticalLayoutPage2"));
-
-      mpText2 = new QTextEdit(mpPage2);
-      mpText2->setObjectName(QString::fromUtf8("mpText2"));
-      mpText2->setReadOnly(true);
-      mpVerticalLayoutPage2->addWidget(mpText2);
-      mpTabWidget->addTab(mpPage2, QString("Minor Issues"));
+      button->setDefault(true);
+      button->setFocus();
     }
+}
 
-  mpText2->setText(text);
+void CQMessageBox::slotButtonPressed(QAbstractButton * pButton)
+{
+  mButton = (QMessageBox::StandardButton)((int) mpButtonBox->standardButton(pButton));
+  mpClickedButton = pButton;
+  close();
+}
+
+QAbstractButton* CQMessageBox::clickedButton()
+{
+  return mpClickedButton;
+}
+
+int CQMessageBox::exec()
+{
+  int result = QDialog::exec();
+  return (int)mButton;
+}
+
+QAbstractButton*
+CQMessageBox::button(QMessageBox::StandardButton button)
+{
+  return mpButtonBox->button((QDialogButtonBox::StandardButton)((int) button));
+}
+
+QPushButton*
+CQMessageBox::addButton(QMessageBox::StandardButton button)
+{
+  return mpButtonBox->addButton((QDialogButtonBox::StandardButton)((int) button));
 }

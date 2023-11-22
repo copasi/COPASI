@@ -484,7 +484,7 @@ void CTrajectoryMethodDsaLsodar::start()
 
   CMathReaction * pReaction = mReactions.array();
   CMathReaction * pReactionEnd = pReaction + mNumReactions;
-  CCore::CUpdateSequence * pUpdateSequence;
+  CCore::CUpdateSequence * pUpdateSequence = mUpdateSequences.array();
   CMathObject * pPropensityObject = mPropensityObjects.array();
   CMathObject * pPropensityObjectEnd = pPropensityObject + mPropensityObjects.size();
 

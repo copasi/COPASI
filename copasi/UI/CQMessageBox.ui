@@ -1,258 +1,179 @@
-<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
-<class>CQMessageBox</class>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> University of Virginia, University of Heidelberg, and University </comment>
+<comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
-<widget class="QDialog">
-    <property name="name">
-        <cstring>CQMessageBox</cstring>
-    </property>
-    <property name="geometry">
-        <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>648</width>
-            <height>324</height>
-        </rect>
-    </property>
-    <property name="caption">
-        <string>MyDialog</string>
-    </property>
-    <property name="sizeGripEnabled">
-        <bool>true</bool>
-    </property>
-    <grid>
-        <property name="name">
-            <cstring>unnamed</cstring>
-        </property>
-        <widget class="QLayoutWidget" row="1" column="0" rowspan="1" colspan="2">
-            <property name="name">
-                <cstring>mpLayoutBtn</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>mpBtn0</cstring>
-                    </property>
-                    <property name="text">
-                        <string>0</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>mpBtn1</cstring>
-                    </property>
-                    <property name="text">
-                        <string>1</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                    <property name="default">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>mpBtn2</cstring>
-                    </property>
-                    <property name="text">
-                        <string>2</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-                <widget class="QPushButton">
-                    <property name="name">
-                        <cstring>mpBtn3</cstring>
-                    </property>
-                    <property name="text">
-                        <string>3</string>
-                    </property>
-                    <property name="accel">
-                        <string></string>
-                    </property>
-                    <property name="autoDefault">
-                        <bool>true</bool>
-                    </property>
-                </widget>
-            </hbox>
+
+<comment> Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and University of </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., University of Heidelberg, and The University </comment>
+<comment> of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc., EML Research, gGmbH, University of Heidelberg, </comment>
+<comment> and The University of Manchester. </comment>
+<comment> All rights reserved. </comment>
+
+<comment> Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual </comment>
+<comment> Properties, Inc. and EML Research, gGmbH. </comment>
+<comment> All rights reserved. </comment>
+
+ <comment> All rights reserved. </comment>
+ <class>CQMessageBox</class>
+ <widget class="QDialog" name="CQMessageBox">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>648</width>
+    <height>324</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MyDialog</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout">
+   <item row="0" column="1">
+    <widget class="QTabWidget" name="mpTabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="mpTabMessage">
+      <attribute name="title">
+       <string>Messages</string>
+      </attribute>
+      <layout class="QHBoxLayout">
+       <item>
+        <widget class="QPlainTextEdit" name="mpMessage">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
         </widget>
-        <widget class="QLayoutWidget" row="0" column="0">
-            <property name="name">
-                <cstring>mpLayoutIcon</cstring>
-            </property>
-            <vbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>mpLblIcon</cstring>
-                    </property>
-                    <property name="sizePolicy">
-                        <sizepolicy>
-                            <hsizetype>0</hsizetype>
-                            <vsizetype>0</vsizetype>
-                            <horstretch>0</horstretch>
-                            <verstretch>0</verstretch>
-                        </sizepolicy>
-                    </property>
-                    <property name="text">
-                        <string></string>
-                    </property>
-                    <property name="alignment">
-                        <set>AlignTop</set>
-                    </property>
-                </widget>
-                <spacer>
-                    <property name="name">
-                        <cstring>mpSpacerIcon</cstring>
-                    </property>
-                    <property name="orientation">
-                        <enum>Vertical</enum>
-                    </property>
-                    <property name="sizeType">
-                        <enum>Expanding</enum>
-                    </property>
-                    <property name="sizeHint">
-                        <size>
-                            <width>0</width>
-                            <height>40</height>
-                        </size>
-                    </property>
-                </spacer>
-            </vbox>
-        </widget>
-        <widget class="QTabWidget" row="0" column="1">
-            <property name="name">
-                <cstring>mpTabWidget</cstring>
-            </property>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Messages</string>
-                </attribute>
-                <hbox>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QTextEdit">
-                        <property name="name">
-                            <cstring>mpMessage</cstring>
-                        </property>
-                        <property name="resizePolicy">
-                            <enum>Manual</enum>
-                        </property>
-                        <property name="readOnly">
-                            <bool>true</bool>
-                        </property>
-                    </widget>
-                </hbox>
-            </widget>
-            <widget class="QWidget">
-                <property name="name">
-                    <cstring>tab</cstring>
-                </property>
-                <attribute name="title">
-                    <string>Filtered Messages</string>
-                </attribute>
-                <grid>
-                    <property name="name">
-                        <cstring>unnamed</cstring>
-                    </property>
-                    <widget class="QTextEdit" row="0" column="0">
-                        <property name="name">
-                            <cstring>mpFilteredMessage</cstring>
-                        </property>
-                    </widget>
-                </grid>
-            </widget>
-        </widget>
-    </grid>
-</widget>
-<connections>
-    <connection>
-        <sender>mpBtn0</sender>
-        <signal>clicked()</signal>
-        <receiver>CQMessageBox</receiver>
-        <slot>slotBtn0()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtn1</sender>
-        <signal>clicked()</signal>
-        <receiver>CQMessageBox</receiver>
-        <slot>slotBtn1()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtn2</sender>
-        <signal>clicked()</signal>
-        <receiver>CQMessageBox</receiver>
-        <slot>slotBtn2()</slot>
-    </connection>
-    <connection>
-        <sender>mpBtn3</sender>
-        <signal>clicked()</signal>
-        <receiver>CQMessageBox</receiver>
-        <slot>slotBtn3()</slot>
-    </connection>
-</connections>
-<includes>
-    <include location="global" impldecl="in declaration">qmessagebox.h</include>
-    <include location="local" impldecl="in implementation">CQMessageBox.ui.h</include>
-</includes>
-<variables>
-    <variable access="provate">QPushButton * mBtn[4];</variable>
-    <variable access="private">int mBtnDefault;</variable>
-    <variable access="private">int mBtnEscape;</variable>
-    <variable access="private">bool mBtnFinished;</variable>
-    <variable access="private">int mBtnAnswer[4];</variable>
-</variables>
-<slots>
-    <slot access="private" specifier="non virtual">slotBtn0()</slot>
-    <slot access="private" specifier="non virtual">slotBtn1()</slot>
-    <slot access="private" specifier="non virtual">slotBtn2()</slot>
-    <slot access="private" specifier="non virtual">slotBtn3()</slot>
-</slots>
-<functions>
-    <function specifier="non virtual">configure( const QString &amp; caption, const QString &amp; text, QMessageBox::Icon icon, int btn0, int btn1, int btn2, int btn3 )</function>
-    <function access="private" specifier="non virtual">configureBtn(int index, int type)</function>
-    <function access="private" specifier="non virtual">configure( const QString &amp; caption, const QString &amp; text, QMessageBox::Icon icon, const QString &amp; text0, const QString &amp; text1, const QString &amp; text2, const QString &amp; text3, int btnDefault, int btnEscape )</function>
-    <function access="private" specifier="non virtual">configureBtn(int index, const QString &amp; text, int btnDefault, int btnEscape )</function>
-    <function access="private" specifier="non virtual">init()</function>
-    <function access="protected">keyPressEvent( QKeyEvent * e )</function>
-    <function access="protected">closeEvent( QCloseEvent * e )</function>
-    <function>enableFilteredMessages(bool enable)</function>
-    <function>addMessages(const QString &amp; messageText)</function>
-    <function>addFilteredMessages(const QString &amp; messageText)</function>
-    <function>setFilteredTabLabel(const QString &amp; labelText)</function>
-    <function>setMessageTabLabel(const QString &amp; labelText)</function>
-    <function>setMessageText(const QString &amp; text)</function>
-    <function>setFilteredMessageText(const QString &amp; text)</function>
-    <function specifier="static" returnType="int">critical( QWidget * parent, const QString &amp; caption, const QString &amp; message, int btn0, int btn1, int btn2 = 0)</function>
-    <function specifier="static" returnType="int">critical( QWidget * parent, const QString &amp; caption, const QString &amp; message, const QString &amp; text0 = QString(), const QString &amp; text1 = QString(), const QString &amp; text2 = QString(), int btnDefault = 0, int btnEscape = -1 )</function>
-    <function specifier="static" returnType="int">warning( QWidget * parent, const QString &amp; caption, const QString &amp; message, int btn0, int btn1, int btn2 = 0)</function>
-    <function specifier="static" returnType="int">warning( QWidget * parent, const QString &amp; caption, const QString &amp; message, const QString &amp; text0 = QString(), const QString &amp; text1 = QString(), const QString &amp; text2 = QString(), int btnDefault = 0, int btnEscape = -1 )</function>
-    <function specifier="static" returnType="int">question( QWidget * parent, const QString &amp; caption, const QString &amp; message, int btn0, int btn1, int btn2 = 0)</function>
-    <function specifier="static" returnType="int">question( QWidget * parent, const QString &amp; caption, const QString &amp; message, const QString &amp; text0 = QString(), const QString &amp; text1 = QString(), const QString &amp; text2 = QString(), int btnDefault = 0, int btnEscape = -1 )</function>
-    <function specifier="static" returnType="int">information( QWidget * parent, const QString &amp; caption, const QString &amp; message, int btn0, int btn1, int btn2 = 0)</function>
-    <function specifier="static" returnType="int">information( QWidget * parent, const QString &amp; caption, const QString &amp; message, const QString &amp; text0 = QString(), const QString &amp; text1 = QString(), const QString &amp; text2 = QString(), int btnDefault = 0, int btnEscape = -1 )</function>
-</functions>
-<layoutdefaults spacing="6" margin="11"/>
-</UI>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mpTabFiltered">
+      <attribute name="title">
+       <string>Filtered Messages</string>
+      </attribute>
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QPlainTextEdit" name="mpFilteredMessage"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <layout class="QVBoxLayout">
+     <item>
+      <widget class="QLabel" name="mpLblIcon">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignTop</set>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="mpSpacerIcon">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Expanding</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>0</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="mpButtonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mpButtonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>CQMessageBox</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>323</x>
+     <y>302</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>323</x>
+     <y>161</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpButtonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>CQMessageBox</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>323</x>
+     <y>302</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>323</x>
+     <y>161</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpButtonBox</sender>
+   <signal>clicked(QAbstractButton*)</signal>
+   <receiver>CQMessageBox</receiver>
+   <slot>slotButtonPressed(QAbstractButton*)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>323</x>
+     <y>302</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>323</x>
+     <y>161</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slotButtonPressed(QAbstractButton*)</slot>
+ </slots>
+</ui>

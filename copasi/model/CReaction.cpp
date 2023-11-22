@@ -1866,15 +1866,14 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
         {
           if (SBMLImporter::areEqualFunctions(pExistingFunction, pTmpFunction))
             {
-
-              setFunction(pExistingFunction);
-
               // The functions and their signature are equal however the role of the variables
               // might not be defined for the existing function if this is the first time it is used
-              mpFunction->setReversible(pTmpFunction->isReversible());
-              mpFunction->getVariables() = pTmpFunction->getVariables();
+              pExistingFunction->setReversible(pTmpFunction->isReversible());
+              pExistingFunction->getVariables() = pTmpFunction->getVariables();
 
               pdelete(pTmpFunction);
+
+              setFunction(pExistingFunction);
 
               // we still need to do the mapping, otherwise global parameters might not be mapped
               it = replacementMap.begin();

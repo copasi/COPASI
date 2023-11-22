@@ -1,4 +1,14 @@
 <?xml version="1.0"?>
+<!-- Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the -->
+<!-- University of Virginia, University of Heidelberg, and University -->
+<!-- of Connecticut School of Medicine. -->
+<!-- All rights reserved. -->
+
+<!-- Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual -->
+<!-- Properties, Inc., University of Heidelberg, and University of -->
+<!-- of Connecticut School of Medicine. -->
+<!-- All rights reserved. -->
+
 <!-- Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual -->
 <!-- Properties, Inc., University of Heidelberg, and The University -->
 <!-- of Manchester. -->
@@ -921,10 +931,8 @@
   <define name="listOfEventAssignments.datatype">
     <oneOrMore>
       <element name="Assignment">
-        <attribute name="targetKey">
-          <data type="IDREF">
-            <param name="pattern">(Metabolite|Compartment|ModelValue)_\d+</param>
-          </data>
+        <attribute name="target">
+          <data type="string"/>
         </attribute>
         <ref name="expression.element"/>
       </element>

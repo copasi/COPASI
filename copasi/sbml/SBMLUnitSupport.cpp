@@ -1625,12 +1625,6 @@ bool SBMLUnitSupport::createUnitExpressionFor(SUnitInfo & unitInfo) const
   copasiUnit.buildExpression();
   unitInfo.expression = copasiUnit.getExpression();
 
-  copasiUnit.filterUsedSymbols(*CRootContainer::getUnitList());
-  copasiUnit.buildExpression();
-
-  if (utf8Length(copasiUnit.getExpression()) < utf8Length(unitInfo.expression))
-    unitInfo.expression = copasiUnit.getExpression();
-
   // return whether the expression is valid
   return unitInfo.expression != "?";
 }
