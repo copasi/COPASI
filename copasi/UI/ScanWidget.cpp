@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 //***  In this file I have put "//+++" in all places where something has to be added
 //***  if a new scan item is introduced.
@@ -38,6 +38,10 @@
 #include <QInputDialog>
 
 #include "copasi/copasi.h"
+#include "copasi/core/CDataVector.h"
+#include "copasi/core/CDataContainer.h"
+#include "copasi/model/CModel.h"
+#include "copasi/model/CModelParameterSet.h"
 
 #include "ScanWidget.h"
 #include "copasi/scan/CScanTask.h"
@@ -50,6 +54,7 @@
 #include "CQTaskBtnWidget.h"
 #include "CQSimpleSelectionTree.h"
 #include "CCopasiSelectionDialog.h"
+#include "CQMultipleSelectionDialog.h"
 
 #include "copasi/report/CKeyFactory.h"
 #include "qtUtilities.h"
@@ -60,6 +65,7 @@
 //#include "CScanWidgetBreak.h"
 #include "CScanWidgetRandom.h"
 #include "CScanWidgetRepeat.h"
+#include "CQScanWidgetParameterSet.h"
 #include "CScanWidgetScan.h"
 #include "CScanWidgetTask.h"
 
@@ -102,6 +108,7 @@ ScanWidget::ScanWidget(QWidget* parent, const char* name, Qt::WindowFlags f)
   comboType->addItem("Scan");
   comboType->addItem("Repeat");
   comboType->addItem("Random distribution");
+  comboType->addItem("Parameter Set(s)");
   tmpLayout->addWidget(comboType);
 
   QSpacerItem *mpSpacer = new QSpacerItem(20, 20, QSizePolicy::Maximum, QSizePolicy::Minimum);
@@ -165,6 +172,7 @@ bool ScanWidget::loadTaskProtected()
   CScanWidgetScan* tmp1;
   CScanWidgetRepeat* tmp2;
   CScanWidgetRandom* tmp3;
+  CQScanWidgetParameterSet* tmp4;
   //CScanWidgetBreak* tmp4;
 
   // the scan items
@@ -197,6 +205,12 @@ bool ScanWidget::loadTaskProtected()
             scrollview->addWidget(tmp3);
             break;
 
+          case CScanProblem::SCAN_PARAMETER_SET:
+            tmp4 = new CQScanWidgetParameterSet(scrollview);
+            tmp4->load(scanProblem->getScanItem(i));
+            scrollview->addWidget(tmp4);
+            break;
+
           default:
             break;
         }
@@ -214,58 +228,59 @@ bool ScanWidget::loadTaskProtected()
   return true;
 }
 
-bool ScanWidget::slotAddItem()
-{
-  int totalRows = -1;
-  //+++
-  CScanWidgetScan* tmp1;
-  CScanWidgetRepeat* tmp2;
-  CScanWidgetRandom* tmp3;
-  //CScanWidgetBreak* tmp4;
 
-  int intType = comboType->currentIndex();
+CScanProblem::Type intToType(int intType)
+{
   CScanProblem::Type type;
 
   switch (intType)
     {
-      case 0:
-        type = CScanProblem::SCAN_LINEAR;
-        break;
+    case 0:
+      type = CScanProblem::SCAN_LINEAR;
+      break;
 
-      case 1:
-        type = CScanProblem::SCAN_REPEAT;
-        break;
+    case 1:
+      type = CScanProblem::SCAN_REPEAT;
+      break;
 
-      case 2:
-        type = CScanProblem::SCAN_RANDOM;
-        break;
+    case 2:
+      type = CScanProblem::SCAN_RANDOM;
+      break;
 
-      default:
-        type = CScanProblem::SCAN_LINEAR;
-        break;
+    case 3:
+      type = CScanProblem::SCAN_PARAMETER_SET;
+      break;
+
+    default:
+      type = CScanProblem::SCAN_LINEAR;
+      break;
     }
+  return type;
+}
+
+bool ScanWidget::slotAddItem()
+{
+  auto type = intToType(comboType->currentIndex());
 
   switch (type)
     {
-      case CScanProblem::SCAN_REPEAT:
+    case CScanProblem::SCAN_REPEAT:
       {
-        tmp2 = new CScanWidgetRepeat(scrollview);
+        CScanWidgetRepeat * tmp2 = new CScanWidgetRepeat(scrollview);
 
         //create item to get the default values
-        CCopasiParameterGroup* pItem = CScanProblem::createScanItem(type, 10);
+        CCopasiParameterGroup * pItem = CScanProblem::createScanItem(type, 10);
         tmp2->load(pItem);
         pdelete(pItem);
 
         scrollview->insertWidget(tmp2);
-        totalRows = scrollview->rowCount();
         tmp2->lineEditNumber->setFocus();
       }
       break;
 
-      case CScanProblem::SCAN_LINEAR:
+    case CScanProblem::SCAN_LINEAR:
       {
-        CQSimpleSelectionTree::ObjectClasses Classes = CQSimpleSelectionTree::InitialTime |
-            CQSimpleSelectionTree::Parameters;
+        CQSimpleSelectionTree::ObjectClasses Classes = CQSimpleSelectionTree::InitialTime | CQSimpleSelectionTree::Parameters;
 
         std::vector< const CDataObject * > Selection = CCopasiSelectionDialog::getObjectVector(this, Classes);
 
@@ -273,22 +288,22 @@ bool ScanWidget::slotAddItem()
         std::vector< const CDataObject * >::iterator it = Selection.begin();
         std::vector< const CDataObject * >::iterator end = Selection.end();
 
+        CScanWidgetScan * tmp1;
+
         for (; it != end; ++it)
-          {
-            tmp1 = new CScanWidgetScan(scrollview);
-            tmp1->initFromObject(*it);
-            scrollview->insertWidget(tmp1);
-            totalRows = scrollview->rowCount();
-            tmp1->lineEditMin->setFocus();
-          }
+            {
+              tmp1 = new CScanWidgetScan(scrollview);
+              tmp1->initFromObject(*it);
+              scrollview->insertWidget(tmp1);
+              tmp1->lineEditMin->setFocus();
+            }
 
         break;
       }
 
-      case CScanProblem::SCAN_RANDOM:
+    case CScanProblem::SCAN_RANDOM:
       {
-        CQSimpleSelectionTree::ObjectClasses Classes = CQSimpleSelectionTree::InitialTime |
-            CQSimpleSelectionTree::Parameters;
+        CQSimpleSelectionTree::ObjectClasses Classes = CQSimpleSelectionTree::InitialTime | CQSimpleSelectionTree::Parameters;
 
         std::vector< const CDataObject * > Selection = CCopasiSelectionDialog::getObjectVector(this, Classes);
 
@@ -296,23 +311,66 @@ bool ScanWidget::slotAddItem()
         std::vector< const CDataObject * >::iterator it = Selection.begin();
         std::vector< const CDataObject * >::iterator end = Selection.end();
 
+        CScanWidgetRandom * tmp3;
+
         for (; it != end; ++it)
-          {
-            tmp3 = new CScanWidgetRandom(scrollview);
-            tmp3->initFromObject(*it);
-            scrollview->insertWidget(tmp3);
-            totalRows = scrollview->rowCount();
-            tmp3->lineEditMin->setFocus();
-          }
+            {
+              tmp3 = new CScanWidgetRandom(scrollview);
+              tmp3->initFromObject(*it);
+              scrollview->insertWidget(tmp3);
+              tmp3->lineEditMin->setFocus();
+            }
 
         break;
       }
 
-      default:
+    case CScanProblem::Type::SCAN_PARAMETER_SET:
+      {
+        addScanItemParameterSet();
         break;
+      }
+
+    default:
+      break;
     }
 
   return true;
+}
+
+void ScanWidget::addScanItemParameterSet()
+{
+  std::map< QString, const CModelParameterSet * > pSets;
+  auto & sets = mpDataModel->getModel()->getModelParameterSets();
+  
+  if (sets.empty())
+    return;
+
+  QStringList list;
+  for (auto & set : sets)
+    {
+        QString current = FROM_UTF8(set.getObjectName());
+        pSets[current] = &set;
+        list << current;
+    }
+
+  QStringList selection = CQMultipleSelectionDialog::getSelection(this, "Select ParameterSet(s)", "Parameter Sets:", list);
+  if (selection.isEmpty())
+    return;
+
+  std::map< QString, const CModelParameterSet * > pSelection;
+  for (auto & set : pSets)
+    {
+        if (selection.contains(set.first))
+        pSelection.insert(set);
+    }
+
+  pSets = std::move(pSelection);
+  if (!pSets.empty())
+    {
+        CQScanWidgetParameterSet * tmp4 = new CQScanWidgetParameterSet(scrollview);
+        tmp4->initFromSelection(pSets);
+        scrollview->insertWidget(tmp4);
+    }
 }
 
 bool ScanWidget::saveTaskProtected()
@@ -354,6 +412,10 @@ bool ScanWidget::saveTaskProtected()
         {
           mChanged |= static_cast< CScanWidgetRepeat * >(pWidget)->save(scanProblem->getScanItem(i));
         }
+      else if (pWidget->objectName() == "CQScanWidgetParameterSet")
+        {
+          mChanged |= static_cast< CQScanWidgetParameterSet * >(pWidget)->save(scanProblem->getScanItem(i));
+        }
     }
 
   for (; i < newSize; ++i)
@@ -373,6 +435,10 @@ bool ScanWidget::saveTaskProtected()
       else if (pWidget->objectName() == "CScanWidgetRepeat")
         {
           static_cast< CScanWidgetRepeat * >(pWidget)->save(pItem);
+        }
+      else if (pWidget->objectName() == "CQScanWidgetParameterSet")
+        {
+          static_cast< CQScanWidgetParameterSet * >(pWidget)->save(pItem);
         }
     }
 
