@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -103,7 +103,7 @@ void CQAnalyticsWidget::init()
   mpTxtOutTime->setValidator(mpValidatorOutTime);
 
   CQTimeSeriesWidget * pResult =
-    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(ListViews::WidgetType::AnalyticsResult));
+    dynamic_cast< CQTimeSeriesWidget * >(mpListView->createWidgetFromId(ListViews::WidgetType::AnalyticsResult));
 
   if (pResult != NULL)
     pResult->setTitle("<h2>Analytics Result</h2>");
@@ -193,7 +193,7 @@ bool CQAnalyticsWidget::taskFinishedEvent()
   // We need to load the result here as this is the only place where
   // we know that it is correct.
   CQTimeSeriesWidget * pResult =
-    dynamic_cast< CQTimeSeriesWidget * >(mpListView->findWidgetFromId(ListViews::WidgetType::AnalyticsResult));
+    dynamic_cast< CQTimeSeriesWidget * >(mpListView->createWidgetFromId(ListViews::WidgetType::AnalyticsResult));
 
   if (pResult == NULL)
     return false;

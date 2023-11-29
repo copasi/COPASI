@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -244,7 +244,7 @@ bool CQTSSAWidget::taskFinishedEvent()
   // We need to load the result here as this is the only place where
   // we know that it is correct.
   CQTSSAResultWidget * pResult =
-    dynamic_cast< CQTSSAResultWidget * >(mpListView->findWidgetFromId(ListViews::WidgetType::TimeScaleSeparationAnalysisResult));
+    dynamic_cast< CQTSSAResultWidget * >(mpListView->createWidgetFromId(ListViews::WidgetType::TimeScaleSeparationAnalysisResult));
 
   if (pResult == NULL)
     {
@@ -270,7 +270,7 @@ bool CQTSSAWidget::updateProtected(ListViews::ObjectType objectType, ListViews::
     {
       // need to clear annotated matrices, as otherwise they will hold pointers to non-existing things.
       CQTSSAResultWidget * pResult =
-        dynamic_cast< CQTSSAResultWidget * >(mpListView->findWidgetFromId(ListViews::WidgetType::TimeScaleSeparationAnalysisResult));
+        dynamic_cast< CQTSSAResultWidget * >(mpListView->createWidgetFromId(ListViews::WidgetType::TimeScaleSeparationAnalysisResult));
 
       if (pResult == NULL)
         {
