@@ -5,6 +5,9 @@
 
 #include "CQMarchingSquares.h"
 
+#if defined(COPASI_USE_QCUSTOMPLOT)
+
+
 void CQMarchingSquares::levelPaths::openPoligon(double x, double y)
 {
   _current.push_back(QPointF(x, y));
@@ -741,3 +744,4 @@ void CQMarchingSquares::interpolateCrossing(IsoCell * isoData, int r, int c, dou
     }
 }
 
+#endif // COPASI_USE_QCUSTOMPLOT
