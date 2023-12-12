@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -8,7 +8,7 @@
 # of Connecticut School of Medicine. 
 # All rights reserved. 
 
-cmake_minimum_required(VERSION 3.1.0)
+cmake_minimum_required (VERSION 2.8.12...3.19.1)
 
 set(SELECT_QT "Any" CACHE STRING "The prefered Qt version one of: Qt6, Qt5, Qt4 or Any" )
 if (DEFINED SELECT_QT)
@@ -146,7 +146,7 @@ macro(QT_USE_MODULES _target)
       include_directories(${QT_INCLUDES})
       add_definitions(${QT_DEFINITIONS})
     endif (Qt4_FOUND OR QT4_FOUND)
-  endif (Qt5_FOUND OR OR Qt6_FOUND)
+  endif (Qt5_FOUND OR Qt6_FOUND)
 endmacro(QT_USE_MODULES)
 
 macro(QT_BIND_TO_TARGET _target)

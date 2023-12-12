@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,6 +44,8 @@ void CArray::resize(const index_type & sizes)
 
 CArray::data_type & CArray::operator[](const index_type & index)
 {
+  static data_type Invalid;
+
   assert(index.size() == mDim);
 
   size_t tmpindex = 0;
@@ -49,7 +56,7 @@ CArray::data_type & CArray::operator[](const index_type & index)
 
   for (; it != end; ++it, ++itSize, ++itFactor)
     {
-      if (*it >= *itSize) return * (data_type *) NULL;
+      if (*it >= *itSize) return Invalid;
 
       tmpindex += *itFactor **it;
     }

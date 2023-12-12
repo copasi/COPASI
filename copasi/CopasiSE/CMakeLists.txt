@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -27,7 +27,7 @@
 #
 ###############################################################################
 
-find_package(PythonInterp)
+find_package (Python COMPONENTS Interpreter)
 
 set(COPSISE_SOURCES CopasiSE.cpp)
 
@@ -53,7 +53,7 @@ if (PYTHONINTERP_FOUND)
 
 # call python test script 
 add_test(NAME CopasiTestsuite
-         COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/Tools/RunTests.py "$<TARGET_FILE:CopasiSE>"  ${CMAKE_CURRENT_BINARY_DIR}/CURRENT_BUILD ${CMAKE_SOURCE_DIR}/COPASI_TestSuite/Tests
+         COMMAND ${Python_EXECUTABLE} ${CMAKE_SOURCE_DIR}/Tools/RunTests.py "$<TARGET_FILE:CopasiSE>"  ${CMAKE_CURRENT_BINARY_DIR}/CURRENT_BUILD ${CMAKE_SOURCE_DIR}/COPASI_TestSuite/Tests
          
 )
 set_tests_properties(CopasiTestsuite PROPERTIES FAIL_REGULAR_EXPRESSION "ifferent")	

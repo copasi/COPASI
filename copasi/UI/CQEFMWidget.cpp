@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -75,7 +75,7 @@ bool CQEFMWidget::taskFinishedEvent()
   // We need to load the result here as this is the only place where
   // we know that it is correct.
   CQEFMResultWidget * pResult =
-    dynamic_cast< CQEFMResultWidget * >(CopasiWidget::mpListView->findWidgetFromId(ListViews::WidgetType::ElementaryModesResult));
+    dynamic_cast< CQEFMResultWidget * >(CopasiWidget::mpListView->createWidgetFromId(ListViews::WidgetType::ElementaryModesResult));
 
   if (pResult == NULL)
     return false;

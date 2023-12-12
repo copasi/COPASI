@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /**
  *  CScanMethod class.
@@ -42,6 +42,7 @@ class CScanTask;
 class CSteadyStateTask;
 class CTrajectory;
 class CRandom;
+class CModelParameterSet;
 
 class CScanItem
 {
@@ -114,6 +115,27 @@ public:
   virtual ~CScanItemRepeat() {};
 
   virtual bool isValidScanItem(const bool & continueFromCurrentState);
+};
+
+
+class CScanItemParameterSet : public CScanItem
+{
+private:
+  std::vector< std::string > mValues;
+  std::vector< const CModelParameterSet* > mSets;
+
+  CModelParameterSet * mpOldValue;
+
+public:
+  CScanItemParameterSet(CCopasiParameterGroup * si);
+  virtual void step();
+
+  virtual ~CScanItemParameterSet(){};
+
+  virtual bool isValidScanItem(const bool & continueFromCurrentState);
+
+protected:
+  virtual void ensureParameterGroupHasAllElements(CCopasiParameterGroup * pg);
 };
 
 //***********************************+
@@ -213,6 +235,12 @@ protected:
    * Count exceptions thrown by subtask
    */
   size_t mFailCounter;
+
+  /**
+   * Indicate, that the initial state was changed by a scan item directly 
+   * and shouldn't be overwritten in calculate.
+   */
+  bool mInitialStateChanged;
 
   // Operations
 private:

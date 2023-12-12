@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /**
  *  CScanMethod class.
@@ -79,6 +79,9 @@ CScanItem* CScanItem::createScanItemFromParameterGroup(CCopasiParameterGroup* si
 
   if (type == CScanProblem::SCAN_RANDOM)
     tmp = new CScanItemRandom(si, rg);
+
+  if (type == CScanProblem::SCAN_PARAMETER_SET)
+    tmp = new CScanItemParameterSet(si);
 
   /*  if (type == CScanProblem::SCAN_BREAK)
       tmp = new CScanItemBreak(si, st);*/
@@ -570,6 +573,8 @@ bool CScanMethod::loop(size_t level)
   CScanItem* currentSI = mScanItems[level];
   size_t failCounter = 0;
 
+  mInitialStateChanged = dynamic_cast< CScanItemParameterSet * >(currentSI) != NULL;
+
   for (currentSI->reset(); !currentSI->isFinished(); currentSI->step())
     {
       //TODO: handle slave SIs
@@ -599,6 +604,7 @@ bool CScanMethod::calculate()
   std::cout << "CScanMethod::calculate State 1: " << mpContainer->getValues() << std::endl;
 #endif // DEBUG_OUTPUT
 
+  if (!mInitialStateChanged)
   mpContainer->applyUpdateSequence(mInitialUpdates);
 
 #ifdef DEBUG_OUTPUT
@@ -684,4 +690,63 @@ bool CScanMethod::isValidProblem(const CCopasiProblem * pProblem)
     }
 
   return true;
+}
+
+CScanItemParameterSet::CScanItemParameterSet(CCopasiParameterGroup * si)
+  : CScanItem(si)
+  , mValues()
+  , mSets()
+  , mpOldValue(NULL)
+{
+  ensureParameterGroupHasAllElements(si);
+
+  auto* group = si->getGroup("ParameterSet CNs");
+  if (!group)
+    return;
+
+  mNumSteps = si->getValue< unsigned C_INT32 >("Number of steps");
+
+  CDataModel* dm = dynamic_cast< CDataModel * >(si->getObjectDataModel());
+  
+  for (size_t i = 0; i < group->size(); ++i)
+    {
+      auto* parameter = group->getParameter(i);
+      if (!parameter)
+        continue;
+      auto cn = parameter->getValue<CCommonName>();
+      auto* pSet =  dynamic_cast<const CModelParameterSet*>(dm->getObjectFromCN(cn));
+      if (!pSet)
+        continue;
+      mSets.push_back(pSet);
+      mValues.push_back(cn);
+    }
+}
+
+void CScanItemParameterSet::step()
+{
+  if (mIndex > mNumSteps || mIndex >= mSets.size())
+    mFlagFinished = true;
+  else    
+  {
+    auto* pSet = const_cast<CModelParameterSet* >(mSets[mIndex]);
+    pSet->updateModel();
+  }
+
+  ++mIndex;
+}
+
+bool CScanItemParameterSet::isValidScanItem(const bool & continueFromCurrentState)
+{
+  if (mSets.empty())
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "Invalid or missing scan parameter.");
+      return false;
+    }
+
+  return true;
+}
+
+void CScanItemParameterSet::ensureParameterGroupHasAllElements(CCopasiParameterGroup * pg)
+{
+  pg->assertGroup("ParameterSet CNs");
 }

@@ -102,7 +102,7 @@ bool CQMCAWidget::runTask()
 bool CQMCAWidget::taskFinishedEvent()
 {
   bool success = true;
-  CMCAResultWidget *pResult = dynamic_cast< CMCAResultWidget * >(mpListView->findWidgetFromId(ListViews::WidgetType::MetabolicControlAnalysisResult));
+  CMCAResultWidget *pResult = dynamic_cast< CMCAResultWidget * >(mpListView->createWidgetFromId(ListViews::WidgetType::MetabolicControlAnalysisResult));
 
   if (pResult) pResult->loadFromBackend();
 

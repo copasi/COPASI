@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <QtCore/QString>
 #include <QtCore/QFileInfo>
@@ -50,17 +50,24 @@
 #include <QtCore/QtDebug>
 #endif
 
-bool updateGUI(C_INT32 objectType, C_INT32 action, const std::string & key /*= ""*/)
+DataModelGUI * getDataModel()
 {
   CQCopasiApplication * app = CQCopasiApplication::instance();
 
-  if (app == NULL) return false;
+  if (app == NULL)
+    return NULL;
 
-  CopasiUI3Window* win = app->getMainWindow();
+  CopasiUI3Window * win = app->getMainWindow();
 
-  if (win == NULL) return false;
+  if (win == NULL)
+    return NULL;
 
-  DataModelGUI* dm = win->getDataModel();
+  return win->getDataModel();
+}
+
+bool updateGUI(C_INT32 objectType, C_INT32 action, const std::string & key /*= ""*/)
+{
+  DataModelGUI* dm = getDataModel();
 
   if (dm == NULL) return false;
 
@@ -100,6 +107,16 @@ QVariant getParameterValue(const CCopasiParameter * pParameter)
         break;
 
       case CCopasiParameter::Type::GROUP:
+      {
+        const CCopasiParameterGroup * pGroup = dynamic_cast<const CCopasiParameterGroup *>(pParameter);
+        if (pGroup != NULL)
+        { 
+          QList<QVariant> group;
+          for (size_t i = 0; i < pGroup->size(); ++i)
+            group.append(getParameterValue(pGroup->getParameter(i)));
+          return QVariant(group);
+        }
+      }
       case CCopasiParameter::Type::INVALID:
         break;
     }

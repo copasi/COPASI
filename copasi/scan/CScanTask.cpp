@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /**
  * CScanTask class.
@@ -46,6 +46,7 @@
 #include "copasi/steadystate/CSteadyStateProblem.h"
 #include "copasi/lna/CLNAProblem.h"
 #include "copasi/lna/CLNATask.h"
+#include "copasi/parameterFitting/CFitTask.h"
 #include "copasi/output/COutputHandler.h"
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
@@ -198,7 +199,14 @@ bool CScanTask::processCallback()
 
   //do output
   if (success && !mOutputInSubtask)
-    output(COutputInterface::DURING);
+    if (dynamic_cast< CFitTask * >(mpSubTask))
+      {
+        output(COutputInterface::AFTER);
+      }
+    else
+      output(COutputInterface::DURING);
+  
+
 
   if (mpSubTask->isUpdateModel())
     {
@@ -221,7 +229,12 @@ bool CScanTask::processCallback()
 bool CScanTask::outputSeparatorCallback(bool isLast)
 {
   if ((!isLast) || mOutputInSubtask)
-    separate(COutputInterface::DURING);
+    {
+      if (dynamic_cast< CFitTask * >(mpSubTask))
+        separate(COutputInterface::AFTER);
+      else
+        separate(COutputInterface::DURING);
+    }
 
   return true;
 }
@@ -311,7 +324,12 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
   mpSubTask->setCallBack(NULL);
 
   if (mOutputInSubtask)
-    return mpSubTask->initialize(OUTPUT_DURING, pOutputHandler, pOstream);
+    {
+        if (dynamic_cast< CFitTask * >(mpSubTask))
+          return mpSubTask->initialize(OUTPUT_AFTER, pOutputHandler, pOstream);
+        else 
+          return mpSubTask->initialize(OUTPUT_DURING, pOutputHandler, pOstream);
+    }
   else
     return mpSubTask->initialize(NO_OUTPUT, pOutputHandler, pOstream);
 
