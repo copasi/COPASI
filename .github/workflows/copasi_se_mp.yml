@@ -1,4 +1,4 @@
-name: Build OpenMP (manylinux2014)
+name: Build OpenMP (manylinux_2_28_x86_64)
 
 on: 
   push:
@@ -19,7 +19,7 @@ jobs:
   build:
     name: manylinux
     runs-on: ubuntu-latest
-    container: quay.io/pypa/manylinux2014_x86_64
+    container: quay.io/pypa/manylinux_2_28_x86_64
 
     steps:
     - uses: actions/checkout@v2
@@ -27,8 +27,8 @@ jobs:
     - name: Create Build Environment
       run: |
         cmake --version
-        curl -L https://github.com/copasi/copasi-dependencies/releases/latest/download/manylinux2014.zip -o manylinux2014.zip
-        unzip -n -qq manylinux2014.zip -d dependencies
+        curl -L https://github.com/copasi/copasi-dependencies/releases/latest/download/manylinux_2_28_x86_64 -o manylinux.zip
+        unzip -n -qq manylinux.zip -d dependencies
  
     - name: install latest cmake
       run: | 
