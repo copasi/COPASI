@@ -27,7 +27,7 @@ jobs:
     - name: Create Build Environment
       run: |
         cmake --version
-        curl -L https://github.com/copasi/copasi-dependencies/releases/latest/download/manylinux_2_28_x86_64 -o manylinux.zip
+        curl -L https://github.com/copasi/copasi-dependencies/releases/latest/download/manylinux_2_28_x86_64.zip -o manylinux.zip
         unzip -n -qq manylinux.zip -d dependencies
  
     - name: install latest cmake
@@ -67,7 +67,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name:
-          copasi-se-openmp-manylinux2014
+          copasi-se-openmp-manylinux_2_28_x86_64
         path: ${{github.workspace}}/install/*
         retention-days: 10
         if-no-files-found: error
