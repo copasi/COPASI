@@ -123,7 +123,7 @@ bool SteadyStateWidget::taskFinishedEvent()
     }
 
   CQSteadyStateResult *pResult =
-    dynamic_cast< CQSteadyStateResult * >(mpListView->findWidgetFromId(ListViews::WidgetType::SteadyStateResult));
+    dynamic_cast< CQSteadyStateResult * >(mpListView->createWidgetFromId(ListViews::WidgetType::SteadyStateResult));
 
   if (pResult)
     pResult->loadResult();
