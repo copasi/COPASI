@@ -1,6 +1,11 @@
 name: Build and Test 
 
-on: [push]
+on: 
+  push:
+    paths:
+        - "**"
+        - "!.github/**"
+        - ".github/workflows/copasi_se.yml"
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
