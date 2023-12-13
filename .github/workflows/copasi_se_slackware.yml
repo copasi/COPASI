@@ -43,7 +43,7 @@ jobs:
     - name: Update COPASI Version
       shell: bash
       run: |
-        git config --global --add safe.directory .
+        git config --global --add safe.directory $PWD
         ./gitTools/UpdateCopasiVersion --force
         cat ./copasi/CopasiVersion.h
 
