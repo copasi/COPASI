@@ -41,7 +41,9 @@ jobs:
            rm /usr/local/lib/libuuid.la
 
     - name: Update COPASI Version
+      shell: bash
       run: |
+        git config --global --add safe.directory .
         ./gitTools/UpdateCopasiVersion --force
         cat ./copasi/CopasiVersion.h
 
