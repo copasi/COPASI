@@ -406,31 +406,56 @@ endif (ENABLE_JIT)
 if (ENABLE_OMP)
   set(USE_OMP 1)
 
+  if (APPLE)
+    find_package (OpenMP)
+    if(NOT OpenMP_FOUND)
+      # libomp 15.0+ from brew is keg-only, so have to search in other locations.
+      # See https://github.com/Homebrew/homebrew-core/issues/112107#issuecomment-1278042927.
+      execute_process(COMMAND brew --prefix libomp
+                      OUTPUT_VARIABLE HOMEBREW_LIBOMP_PREFIX
+                      OUTPUT_STRIP_TRAILING_WHITESPACE)
+      set(OpenMP_C_FLAGS "-Xpreprocessor -fopenmp -I${HOMEBREW_LIBOMP_PREFIX}/include")
+      set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp -I${HOMEBREW_LIBOMP_PREFIX}/include")
+      set(OpenMP_C_LIB_NAMES omp)
+      set(OpenMP_CXX_LIB_NAMES omp)
+      set(OpenMP_omp_LIBRARY ${HOMEBREW_LIBOMP_PREFIX}/lib/libomp.dylib)
+    endif()
+  endif()
+
   find_package (OpenMP REQUIRED)
-  include_directories(BEFORE ${OpenMP_INCLUDE_PATH})
 
-  include(CheckCXXSourceCompiles)
+  if (OpenMP_CXX_SPEC_DATE GREATER_EQUAL "201811")
+    # OpenMP 5.0 will always have monotonic scheduling
+    set(OMP_HAVE_MONOTONIC 1 CACHE INTERNAL "" FORCE)
+  else()
+    # otherwise we need to check
+    include_directories(BEFORE ${OpenMP_INCLUDE_PATH} ${OpenMP_CXX_INCLUDE_DIRS})
 
-  function(detect_code_compiled code macro msg)
-    message(STATUS "Detecting ${msg}")
-    check_cxx_source_compiles("${code}" "${macro}" FAIL_REGEX "warning")
+    include(CheckCXXSourceCompiles)
 
-    if(${macro})
-      message(STATUS "Detecting ${msg} - supported")
-    else(${macro})
-      message(STATUS "Detecting ${msg} - not supported")
-    endif(${macro})
-  endfunction(detect_code_compiled)
+    function(detect_code_compiled code macro msg)
+      message(STATUS "Detecting ${msg}")
+      check_cxx_source_compiles("${code}" "${macro}" FAIL_REGEX "warning")
 
-  # Detect std::optional
-  detect_code_compiled("
-    #include <omp.h>
-    int main()
-    { 
-       omp_sched_t schedule = omp_sched_monotonic; 
-    }" 
-    OMP_HAVE_MONOTONIC 
-    "omp_sched_monotonic")
+      if(${macro})
+        message(STATUS "Detecting ${msg} - supported")
+      else(${macro})
+        message(STATUS "Detecting ${msg} - not supported")
+      endif(${macro})
+    endfunction(detect_code_compiled)
+
+    # Detect std::optional
+    detect_code_compiled("
+      #include <omp.h>
+      int main()
+      { 
+        omp_sched_t schedule = omp_sched_monotonic; 
+      }" 
+      OMP_HAVE_MONOTONIC 
+      "omp_sched_monotonic")
+  endif()
+
+
 endif(ENABLE_OMP)
 
 # TODO raptor should be restricted to a version which is at least
