@@ -301,6 +301,11 @@ void CFitProblem::initializeParameter()
   elevateChildren();
 }
 
+void CFitProblem::signalMathContainerChanged()
+{
+  COptProblem::signalMathContainerChanged();
+}
+
 void CFitProblem::setCreateParameterSets(const bool & create)
 {
   *mpCreateParameterSets = create;
@@ -880,7 +885,7 @@ bool CFitProblem::initialize()
       pProblem->clearTargetCNs();
       const CVector< const CObjectInterface* >& dependents = mpExperimentSet->getDependentObjects();
 
-for (auto dep : dependents)
+      for (auto dep : dependents)
         {
           pProblem->addTargetCN(dep->getCN());
         }
@@ -1031,7 +1036,7 @@ bool CFitProblem::calculate()
                   for (size_t k = 0; k < reverseCnMap.size(); ++k)
                     {
                       std::string dependenCn = reverseCnMap[k];
-                      indexMap[std::make_pair(dependenCn, paramCn)] = static_cast<CTimeSensProblem*>(mpTimeSens->getProblem())->getTargetsResultAnnotated()->cnToIndex( {dependenCn, paramCn });
+                      indexMap[std::make_pair(dependenCn, paramCn)] = static_cast<CTimeSensProblem*>(mpTimeSens->getProblem())->getTargetsResultAnnotated()->cnToIndex({dependenCn, paramCn });
                     }
                 }
             }

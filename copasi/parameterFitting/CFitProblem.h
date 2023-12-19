@@ -296,7 +296,6 @@ public:
    */
   CFitConstraint & addFitConstraint(const CCommonName & objectCN);
 
-
   /**
    * Set the solution.
    * @param const C_FLOAT64 & value
@@ -353,6 +352,11 @@ public:
   CMatrix<C_FLOAT64>& getTimeSensJac();
 
 protected:
+  /**
+   * Signal that the math container has changed
+   */
+  virtual void signalMathContainerChanged() override;
+
   /**
    * Do all necessary restore procedures for the container
    * is in the same state as before or the new state if update is true.

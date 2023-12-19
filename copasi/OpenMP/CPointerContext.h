@@ -58,6 +58,9 @@ void CPointerContext< Data >::setMaster(Data * pMaster)
   if (Base::size() == 0)
     return;
 
+  if (Base::master() == pMaster)
+    return;
+
   if (Base::master() != NULL)
     {
       Base::master() = NULL;
