@@ -11,10 +11,12 @@ CRandomContext::CRandomContext(const bool & parallel)
 
 CRandomContext::~CRandomContext()
 {
-  if (Base::master())
+  CRandom * pRNG = Base::master();
+
+  if (pRNG != nullptr)
     {
-      delete Base::master();
-Base: master() = NULL;
+      Base::setMaster(nullptr);
+      delete pRNG;
     }
 }
 
