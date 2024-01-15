@@ -39,7 +39,8 @@ if (NOT (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY) OR NOT ZLIB_FOUND)
 	          /opt/csw/include   # Blastwave
 	          /opt/include
 	          /usr/freeware/include
-            NO_DEFAULT_PATH)
+              CMAKE_FIND_ROOT_PATH_BOTH
+              NO_DEFAULT_PATH)
 
     if (NOT ZLIB_INCLUDE_DIR)
         find_path(ZLIB_INCLUDE_DIR zlib.h zlib/zlib.h)
