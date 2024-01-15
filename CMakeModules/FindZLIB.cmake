@@ -31,7 +31,7 @@ if (NOT (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY) OR NOT ZLIB_FOUND)
     find_path(ZLIB_INCLUDE_DIR zlib.h zlib/zlib.h
 	    PATHS $ENV{ZLIB_DIR}/include
 	          $ENV{ZLIB_DIR}
-            ${${_PROJECT_DEPENDENCY_DIR}}/include
+              ${${_PROJECT_DEPENDENCY_DIR}}/include
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/include        # Fink
@@ -50,8 +50,9 @@ if (NOT (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY) OR NOT ZLIB_FOUND)
 	    PATHS $ENV{ZLIB_DIR}/lib
 	          $ENV{ZLIB_DIR}/lib-dbg
 	          $ENV{ZLIB_DIR}
-            ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
-            ${${_PROJECT_DEPENDENCY_DIR}}
+              ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+              ${${_PROJECT_DEPENDENCY_DIR}}/lib
+              ${${_PROJECT_DEPENDENCY_DIR}}
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/lib        # Fink

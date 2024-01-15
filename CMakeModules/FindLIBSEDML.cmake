@@ -48,6 +48,7 @@ if (NOT ${LIBSEDML_LIBRARY_NAME}_FOUND)
           /opt/local/lib/cmake
           /sw/lib/cmake
           ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}/cmake
+          ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
           ${CONAN_LIB_DIRS_LIBSEDML}/cmake
   )
 endif()
