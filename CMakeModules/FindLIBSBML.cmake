@@ -41,6 +41,7 @@ find_package(${LIBSBML_LIBRARY_NAME} CONFIG QUIET
   PATHS ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
         ${${_PROJECT_DEPENDENCY_DIR}}/lib64/cmake
         ${CONAN_LIB_DIRS_LIBSBML}/cmake
+        CMAKE_FIND_ROOT_PATH_BOTH
         NO_DEFAULT_PATH)
 
 if (NOT ${LIBSBML_LIBRARY_NAME}_FOUND)        
@@ -57,6 +58,7 @@ if (NOT ${LIBSBML_LIBRARY_NAME}_FOUND)
           ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
           ${${_PROJECT_DEPENDENCY_DIR}}/lib64/cmake
           ${CONAN_LIB_DIRS_LIBSBML}/cmake
+          CMAKE_FIND_ROOT_PATH_BOTH
   )
 endif()
 
@@ -120,6 +122,7 @@ find_path(LIBSBML_INCLUDE_DIR sbml/SBase.h
           /opt/csw/include   # Blastwave
           /opt/include
           /usr/freeware/include
+          CMAKE_FIND_ROOT_PATH_BOTH
     NO_DEFAULT_PATH)
 
 if (NOT LIBSBML_INCLUDE_DIR)
