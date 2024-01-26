@@ -1,0 +1,8 @@
+include README.md
+recursive-include copasi-dependencies *
+recursive-include copasi_source *
+exclude copasi_source/.git
+exclude copasi-dependencies/.git
+exclude COPASI
+exclude build*
+exclude install*
