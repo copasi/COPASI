@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -285,7 +285,7 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
     }
   else if (dynamic_cast<ReportItemVector*>(container))
     {
-#ifdef SWIGPERL
+#if defined(SWIGPERL) || SWIG_VERSION >= 0x040200
       pInfo = SWIGTYPE_p_std__vectorT_CRegisteredCommonName_t;
 #else
       pInfo = SWIGTYPE_p_std__vectorT_CRegisteredCommonName_std__allocatorT_CRegisteredCommonName_t_t;
@@ -293,7 +293,7 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
     }
   else if (dynamic_cast<ParameterVector*>(container))
     {
-#ifdef SWIGPERL
+#if defined(SWIGPERL) || SWIG_VERSION >= 0x040200
       pInfo = SWIGTYPE_p_std__vectorT_CCopasiParameter_p_t;
 #else
       pInfo = SWIGTYPE_p_std__vectorT_CCopasiParameter_p_std__allocatorT_CCopasiParameter_p_t_t;
@@ -301,7 +301,7 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
     }
   else if (dynamic_cast<CFunctionStdVector*>(container))
     {
-#ifdef SWIGPERL
+#if defined(SWIGPERL) || SWIG_VERSION >= 0x040200
       pInfo = SWIGTYPE_p_std__vectorT_CFunction_p_t;
 #else
       pInfo = SWIGTYPE_p_std__vectorT_CFunction_p_std__allocatorT_CFunction_p_t_t;
