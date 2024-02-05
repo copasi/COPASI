@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1639,14 +1639,16 @@ bool CModel::buildUserOrder()
   return true;
 }
 
-bool CModel::updateInitialValues(const CCore::Framework & framework)
+bool CModel::updateInitialValues(const CCore::Framework & framework, bool refreshParameterSet)
 {
   bool success = compileIfNecessary(NULL);
 
   mpMathContainer->fetchInitialState();
   mpMathContainer->updateInitialValues(framework);
   mpMathContainer->pushInitialState();
-  refreshActiveParameterSet();
+
+  if (refreshParameterSet)
+    refreshActiveParameterSet();
 
   return success;
 }
@@ -3434,7 +3436,7 @@ CIssue CModel::compileEvents()
   return issue;
 }
 
-void CModel::updateInitialValues(std::set< const CDataObject * > & changedObjects)
+void CModel::updateInitialValues(std::set< const CDataObject * > & changedObjects, bool refreshParameterSet)
 {
   bool success = compileIfNecessary(NULL);
 
@@ -3444,14 +3446,15 @@ void CModel::updateInitialValues(std::set< const CDataObject * > & changedObject
   mpMathContainer->applyUpdateSequence(UpdateSequence);
   mpMathContainer->pushInitialState();
 
-  refreshActiveParameterSet();
+  if (refreshParameterSet)
+    refreshActiveParameterSet();
 }
 
-void CModel::updateInitialValues(const CDataObject* changedObject)
+void CModel::updateInitialValues(const CDataObject* changedObject, bool refreshParameterSet)
 {
   std::set< const CDataObject * > changedObjects;
   changedObjects.insert(changedObject);
-  updateInitialValues(changedObjects);
+  updateInitialValues(changedObjects, refreshParameterSet);
 }
 
 CCore::CUpdateSequence
