@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -385,6 +385,7 @@ bool CCopasiParameter::isValidValue(const std::string & value) const
 
   if (mType != CCopasiParameter::Type::STRING &&
       mType != CCopasiParameter::Type::FILE &&
+      mType != CCopasiParameter::Type::CN &&
       mType != CCopasiParameter::Type::EXPRESSION) return false;
 
   return inValidValues(value);
