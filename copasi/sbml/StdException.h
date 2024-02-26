@@ -1,12 +1,24 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/sbml/StdException.h,v $
-   $Revision: 1.2 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/04/27 01:31:21 $
-   End CVS Header */
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -21,30 +33,30 @@
  * to specify an error message.
  */
 class StdException: public std::exception
-  {
-  public:
-    /**
-     * Constructor that sets the error message object to "Error."
-     */
-    StdException() throw();
+{
+public:
+  /**
+   * Constructor that sets the error message object to "Error."
+   */
+  StdException() throw();
 
-    /**
-     * Constructor that sets the error message object to the string given.
-     */
-    explicit StdException(const std::string what) throw();
+  /**
+   * Constructor that sets the error message object to the string given.
+   */
+  explicit StdException(const std::string what) throw();
 
-    /**
-     * Destructor that does nothing.
-     */
-    virtual ~StdException() throw();
+  /**
+   * Destructor that does nothing.
+   */
+  virtual ~StdException() throw();
 
-    /**
-     * Returns the error message object as a character array.
-     */
-    virtual const char* what() const throw();
+  /**
+   * Returns the error message object as a character array.
+   */
+  virtual const char* what() const throw();
 
-  protected:
-    std::string message;
-  };
+protected:
+  std::string message;
+};
 
 #endif

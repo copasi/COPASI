@@ -1,12 +1,24 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/randomGenerator/Cmt19937.h,v $
-   $Revision: 1.7 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2006/07/21 18:15:48 $
-   End CVS Header */
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright © 2005 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -65,112 +77,112 @@
 #define Cmt19937_N 624
 
 class Cmt19937 : public CRandom
-  {
-    friend CRandom * CRandom::createGenerator(CRandom::Type type,
-        unsigned C_INT32 seed);
+{
+  friend CRandom * CRandom::createGenerator(CRandom::Type type,
+      unsigned C_INT32 seed);
 
-    // Attributes
-  private:
-    unsigned C_INT32 mState[Cmt19937_N]; /* the array for the state vector  */
+  // Attributes
+private:
+  unsigned C_INT32 mState[Cmt19937_N]; /* the array for the state vector  */
 
-    C_INT mLeft; // = 1;
+  C_INT mLeft; // = 1;
 
-    unsigned C_INT32 *mNext;
+  unsigned C_INT32 *mNext;
 
-    // Operations
-  protected:
-    /**
-     * Default/Named constructor.
-     * Seeds the random number generator with the given seed.
-     * @param C_INT32 seed
-     */
-    Cmt19937(unsigned C_INT32 seed);
+  // Operations
+protected:
+  /**
+   * Default/Named constructor.
+   * Seeds the random number generator with the given seed.
+   * @param C_INT32 seed
+   */
+  Cmt19937(unsigned C_INT32 seed);
 
-    void next_state();
+  void next_state();
 
-  public:
-    /**
-     * The destructor.
-     */
-    ~Cmt19937();
+public:
+  /**
+   * The destructor.
+   */
+  ~Cmt19937();
 
-    /**
-     * Initialize or reinitialize the random number generator with
-     * the given seed.
-     * @param unsigned C_INT32 seed (default system seed)
-     */
-    void initialize(unsigned C_INT32 seed = CRandom::getSystemSeed());
+  /**
+   * Initialize or reinitialize the random number generator with
+   * the given seed.
+   * @param unsigned C_INT32 seed (default system seed)
+   */
+  void initialize(unsigned C_INT32 seed = CRandom::getSystemSeed());
 
-    /**
-     * Get a random number in 0 <= n <= Modulus
-     * @return unsigned C_INT32 random
-     */
-    unsigned C_INT32 getRandomU();
+  /**
+   * Get a random number in 0 <= n <= Modulus
+   * @return unsigned C_INT32 random
+   */
+  unsigned C_INT32 getRandomU();
 
-    /**
-     * Get a random number in 0 <= n <= (Modulus & 0x7ffffff)
-     * @return C_INT32 random
-     */
-    C_INT32 getRandomS();
+  /**
+   * Get a random number in 0 <= n <= (Modulus & 0x7ffffff)
+   * @return C_INT32 random
+   */
+  C_INT32 getRandomS();
 
-    /**
-     * Produces a uniformly distributed random number in 0 <= x <= 1.
-     * @return C_FLOAT64 random
-     */
-    C_FLOAT64 getRandomCC();
+  /**
+   * Produces a uniformly distributed random number in 0 <= x <= 1.
+   * @return C_FLOAT64 random
+   */
+  C_FLOAT64 getRandomCC();
 
-    /**
-     * Produces a uniformly distributed random number in 0 <= x < 1.
-     * Note: 0 < x <= 1 may be achieved by 1.0 - getRandomCO().
-     * @return C_FLOAT64 random
-     */
-    C_FLOAT64 getRandomCO();
+  /**
+   * Produces a uniformly distributed random number in 0 <= x < 1.
+   * Note: 0 < x <= 1 may be achieved by 1.0 - getRandomCO().
+   * @return C_FLOAT64 random
+   */
+  C_FLOAT64 getRandomCO();
 
-    /**
-     * Produces a uniformly distributed random number in 0 < x < 1.
-     * @return C_FLOAT64 random
-     */
-    C_FLOAT64 getRandomOO();
+  /**
+   * Produces a uniformly distributed random number in 0 < x < 1.
+   * @return C_FLOAT64 random
+   */
+  C_FLOAT64 getRandomOO();
 
-    void init_by_array(unsigned C_INT32 init_key[],
-                       C_INT32 key_length);
+  void init_by_array(unsigned C_INT32 init_key[],
+                     C_INT32 key_length);
 
-    C_FLOAT64 genrand_res53();        // getRandomCO() with higher resolution
-  };
+  C_FLOAT64 genrand_res53();        // getRandomCO() with higher resolution
+};
 
 class Cmt19937HR : public Cmt19937
-  {
-    friend CRandom * CRandom::createGenerator(CRandom::Type type,
-        unsigned C_INT32 seed);
+{
+  friend CRandom * CRandom::createGenerator(CRandom::Type type,
+      unsigned C_INT32 seed);
 
-    // Operations
-  protected:
-    /**
-     * Default/Named constructor.
-     * Seeds the random number generator with the given seed.
-     * @param C_INT32 seed
-     */
-    Cmt19937HR(unsigned C_INT32 seed);
+  // Operations
+protected:
+  /**
+   * Default/Named constructor.
+   * Seeds the random number generator with the given seed.
+   * @param C_INT32 seed
+   */
+  Cmt19937HR(unsigned C_INT32 seed);
 
-  public:
-    /**
-     * Produces a uniformly distributed random number in 0 <= x <= 1.
-     * @return C_FLOAT64 random
-     */
-    C_FLOAT64 getRandomCC();
+public:
+  /**
+   * Produces a uniformly distributed random number in 0 <= x <= 1.
+   * @return C_FLOAT64 random
+   */
+  C_FLOAT64 getRandomCC();
 
-    /**
-     * Produces a uniformly distributed random number in 0 <= x < 1.
-     * Note: 0 < x <= 1 may be achieved by 1.0 - getRandomCO().
-     * @return C_FLOAT64 random
-     */
-    C_FLOAT64 getRandomCO();
+  /**
+   * Produces a uniformly distributed random number in 0 <= x < 1.
+   * Note: 0 < x <= 1 may be achieved by 1.0 - getRandomCO().
+   * @return C_FLOAT64 random
+   */
+  C_FLOAT64 getRandomCO();
 
-    /**
-     * Produces a uniformly distributed random number in 0 < x < 1.
-     * @return C_FLOAT64 random
-     */
-    C_FLOAT64 getRandomOO();
-  };
+  /**
+   * Produces a uniformly distributed random number in 0 < x < 1.
+   * @return C_FLOAT64 random
+   */
+  C_FLOAT64 getRandomOO();
+};
 
 #endif // COPASI_Cmt19937

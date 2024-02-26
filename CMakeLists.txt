@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -662,7 +662,7 @@ option (BUILD_SBML_TESTSUITE "Build the program to run the new SBML testsuite." 
 option (BUILD_STOCHASTIC_TESTSUITE "Build the program to run the SBML stochastic testsuite." OFF)
 option (BUILD_FRANKS_TESTSUITE "Build the program to run the Frank Bergmann's SBML tests." OFF)
 
-option (BUILD_TESTS "Compiles CPPUNIT Testrunners." OFF)
+option (BUILD_TESTS "Compiles CPPUNIT/Catch2 Testrunners." OFF)
 mark_as_advanced(BUILD_TESTS)
 
 if (BUILD_TESTS)
@@ -738,6 +738,7 @@ endif ()
 # if using msvc or intel windows compiler allow for the use of the static runtime
 if(MSVC OR USING_INTEL)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE -DWIN32_LEAN_AND_MEAN)
+    
     set(BUILD_DEFINITIONS "${BUILD_DEFINITIONS} -D_CRT_SECURE_NO_WARNINGS")
     option(WITH_STATIC_RUNTIME "Compile using the static MSVC Runtime." OFF)
     if(WITH_STATIC_RUNTIME)
@@ -788,7 +789,7 @@ if(MSVC OR USING_INTEL)
               # enable edit & continue for debug builds of msvc 
               add_link_options($<$<CONFIG:Debug>:/INCREMENTAL>)
               add_compile_options($<$<CONFIG:Debug>:/ZI>)
-
+              add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/EHsc>")              
             endif()
     endif()
 
