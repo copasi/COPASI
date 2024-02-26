@@ -1,4 +1,4 @@
-// Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -230,7 +230,7 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
       }
 
     // reset data count on curves, so they will be reset
-    for (auto * element : this->mCurves)
+for (auto * element : this->mCurves)
       {
         auto * curve = dynamic_cast< QCPCurve * >(element);
 
@@ -473,10 +473,10 @@ void addContourLevels(QCPColorMap * map, const std::string & contourLevelString)
       QStringList list = contours.split(QRegularExpression(",| |;"), Qt::SkipEmptyParts);
 #  endif
 
-      foreach (const QString & level, list)
-        {
-          contourLevels += level.toDouble();
-        }
+      foreach(const QString & level, list)
+      {
+        contourLevels += level.toDouble();
+      }
     }
 
   map->setProperty("contourLevels", contourLevels);
@@ -522,14 +522,14 @@ bool CQCustomPlot::initFromSpec(const CPlotSpecification * plotspec)
     }
 
   // Remove unused curves if definition has changed
-  for (auto item : mHisto)
+for (auto item : mHisto)
     pdelete(item.second)
     mHisto.clear();
 
   clearPlottables();
 
   // remove old color scales
-  for (auto * item : plotLayout()->elements(false))
+for (auto * item : plotLayout()->elements(false))
     {
       auto * scale = dynamic_cast< QCPColorScale * >(item);
 
@@ -745,13 +745,13 @@ bool CQCustomPlot::initFromSpec(const CPlotSpecification * plotspec)
                     setSymbol(series, QCPScatterStyle::ssTriangleInverted, color, 7 * width, 2 * width);
                     break;
 
-                  //case CPlotItem::SymbolType::hDash:
-                  //  setSymbol(series, QwtSymbol::HLine, color, 7, 2);
-                  //  break;
+                    //case CPlotItem::SymbolType::hDash:
+                    //  setSymbol(series, QwtSymbol::HLine, color, 7, 2);
+                    //  break;
 
-                  //case CPlotItem::SymbolType::vDash:
-                  //  setSymbol(series, QwtSymbol::VLine, color, 7, 2);
-                  //  break;
+                    //case CPlotItem::SymbolType::vDash:
+                    //  setSymbol(series, QwtSymbol::VLine, color, 7, 2);
+                    //  break;
 
                   case CPlotItem::SymbolType::SmallCross:
                   default:
@@ -1042,7 +1042,7 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
       mDependentNames.clear();
       int count = 0;
 
-      for (auto & name : getDependentObjectNames(*pModel))
+for (auto & name : getDependentObjectNames(*pModel))
         {
           mDependentNames << FROM_UTF8(name);
           labels << FROM_UTF8(name);
@@ -1419,6 +1419,7 @@ void CQCustomPlot::replot(bool resetZoom)
     }
   else
     {
+      mReplotFinished = true;
       return;
     }
 
@@ -1514,7 +1515,7 @@ void CQCustomPlot::mouseReleaseEvent(QMouseEvent * event)
       while (mpContextMenu->actions().length() > 2)
         mpContextMenu->removeAction(mpContextMenu->actions()[2]);
 
-      for (auto & entry : mIndependentNames)
+for (auto & entry : mIndependentNames)
         {
           mpContextMenu->addAction(entry)->setData(X_AXIS_VALUE);
         }
@@ -1583,7 +1584,7 @@ double getDependentIndex(QCPCurve * curve, const QVector< QString >& dependentNa
 
   double result = 1;
 
-  for (auto & item : dependentNames)
+for (auto & item : dependentNames)
     {
       if (yName.startsWith(item))
         return result;
@@ -1876,7 +1877,7 @@ void CQCustomPlot::updateCurves(const size_t & activity)
                 if (!contourLevels.isEmpty())
                   {
                     // remove old contours
-                    for (QCPCurve * pContourCurve : mContours)
+for (QCPCurve * pContourCurve : mContours)
                       {
                         removePlottable(pContourCurve);
                       }
@@ -1979,21 +1980,21 @@ void CQCustomPlot::resizeCurveData(const size_t & activity)
 
           switch ((*itCurves)->property("curve_type").toInt())
             {
-              //case CPlotItem::curve2d:
-              //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
-              //                               data[mDataIndex[k][1].second]);
-              //  break;
+                //case CPlotItem::curve2d:
+                //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
+                //                               data[mDataIndex[k][1].second]);
+                //  break;
 
-              //case CPlotItem::bandedGraph:
-              //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
-              //                               data[mDataIndex[k][1].second],
-              //                               data[mDataIndex[k][2].second]);
-              //  break;
+                //case CPlotItem::bandedGraph:
+                //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
+                //                               data[mDataIndex[k][1].second],
+                //                               data[mDataIndex[k][2].second]);
+                //  break;
 
-              //case CPlotItem::histoItem1d:
-              //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
-              //                               NULL);
-              //  break;
+                //case CPlotItem::histoItem1d:
+                //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
+                //                               NULL);
+                //  break;
 
               default:
                 //fatalError();
@@ -2111,7 +2112,7 @@ CQCustomPlot::getDependentObjectNames(const CDataModel & model)
   std::set< std::string > handledExperiments;
   std::set< std::string > result;
 
-  for (auto * curve : mCurves)
+for (auto * curve : mCurves)
     {
       std::string experimentCN = TO_UTF8(curve->property("experiment_cn").toString());
 
@@ -2127,7 +2128,7 @@ CQCustomPlot::getDependentObjectNames(const CDataModel & model)
       if (!pExperiment)
         continue;
 
-      for (auto entry : pExperiment->getDependentObjectsMap())
+for (auto entry : pExperiment->getDependentObjectsMap())
         {
           const CDataObject * pObj = dynamic_cast< const CDataObject * >(
                                        entry.first);
@@ -2151,7 +2152,7 @@ CQCustomPlot::initializeIndependentData(const CDataModel& model)
   std::set< std::string > handledExperiments;
   std::set< std::string > result;
 
-  for (auto * curve : mCurves)
+for (auto * curve : mCurves)
     {
       std::string experimentCN = TO_UTF8(curve->property("experiment_cn").toString());
 
@@ -2218,7 +2219,8 @@ void CQCustomPlot::legendClicked(QCPLegend * legend, QCPAbstractLegendItem * ite
   if (plItem != NULL && event->button() == Qt::LeftButton)
     {
       auto * pCurve = plItem->plottable();
-      showCurve(pCurve, !pCurve->visible());
+      showCurve(pCurve, !pCurve->visible(), false);
+      //replot(false);
       QCustomPlot::replot();
     }
 
@@ -2301,7 +2303,7 @@ void increaseRange(QCPAxis* axis, double lowerMultiplier = 0.95, double upperMul
   axis->setRange(range.lower * lowerMultiplier, range.upper * upperMultiplier);
 }
 
-void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on)
+void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on, bool rescale)
 {
   if (!pCurve)
     return;
@@ -2319,7 +2321,8 @@ void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on)
   if (pBuddy != mY2Map.end())
     (*pBuddy).second->setVisible(plItem->plottable()->visible());
 
-  ensureCurvesVisible();
+  if (rescale)
+    ensureCurvesVisible();
 }
 
 void CQCustomPlot::ensureCurvesVisible()
