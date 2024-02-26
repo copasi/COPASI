@@ -42,8 +42,12 @@
 #include <copasi/model/CModelParameterSet.h>
 
 #include <copasi/utilities/CopasiTime.h>
+#include <copasi/utilities/CUnitDefinition.h>
 
 #include <copasi/CopasiTaskTypes.h>
+
+typedef CDataVector<CUnitDefinition> CUnitDefinitionVector;
+typedef CDataVectorN<CUnitDefinition> CUnitDefinitionVectorN;
 
 // CArrayInterface
 struct swig_type_info*
@@ -311,7 +315,6 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
     {
       pInfo = SWIGTYPE_p_CDataVectorT_CChemEqElement_t;
     }
-
   else if (dynamic_cast<CEvaluationTree*>(container))
     {
       pInfo = GetDowncastSwigTypeForCEvaluationTree(static_cast<CEvaluationTree*>(container));
@@ -355,6 +358,18 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
   else if (dynamic_cast<CFittingPoint*>(container))
     {
       pInfo = SWIGTYPE_p_CFittingPoint;
+    }
+  else if (dynamic_cast<CUnitDefinitionVectorN*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNT_CUnitDefinition_t;
+    }
+  else if (dynamic_cast<CUnitDefinitionVector*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorT_CUnitDefinition_t;
+    }
+  else if (dynamic_cast<CUnitDefinition*>(container))
+    {
+      pInfo = SWIGTYPE_p_CUnitDefinition;
     }
 
   return pInfo;
@@ -423,6 +438,10 @@ GetDowncastSwigTypeForCDataObject(CDataObject* object)
   else if (dynamic_cast<CReportDefinition*>(object))
     {
       pInfo = SWIGTYPE_p_CReportDefinition;
+    }
+  else if (dynamic_cast<CUnitDefinition*>(object))
+    {
+      pInfo = SWIGTYPE_p_CUnitDefinition;
     }
   else if (dynamic_cast<CDataString*>(object))
     {

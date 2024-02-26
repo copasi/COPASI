@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -175,6 +175,8 @@ size_t INVALID_INDEX();
 %include "CCopasiParameter.i"
 // enable process report 
 %feature("director") CProcessReport;
+%rename(add) CProcessReport::operator+;
+
 %extend CProcessReport
 {
     static double getValue(const double* pValue)
@@ -292,7 +294,6 @@ size_t INVALID_INDEX();
 %include "CMCAProblem.i"
 %include "CMCATask.i"
 %include "compare_utilities.i"
-%include "CRootContainer.i"
 %include "CEvent.i"
 %include "CLBase.i"
 %include "CLGraphicalObject.i"
@@ -403,6 +404,37 @@ size_t INVALID_INDEX();
 
 %include <copasi/math/CJitCompilerImplementation.h>
 
+%template(CUnitDefinitionVector) CDataVector<CUnitDefinition>;
+typedef CDataVector<CUnitDefinition> CUnitDefinitionVector;
+%template(CUnitDefinitionVectorN) CDataVectorN<CUnitDefinition>;
+typedef CDataVectorN<CUnitDefinition> CUnitDefinitionVectorN;
+%template(CUnitStdVector) std::vector< CUnit >;
+typedef std::vector< CUnit > CUnitStdVector;
+
+%{
+  #include <copasi/utilities/CUnitDefinitionDB.h>
+
+  typedef CDataVector<CUnitDefinition> CUnitDefinitionVector;
+  typedef CDataVectorN<CUnitDefinition> CUnitDefinitionVectorN;
+  typedef std::vector< CUnit > CUnitStdVector;
+%}
+
+%rename(addCopy) CUnitDefinitionDB::add(const CUnitDefinition&);
+%include <copasi/utilities/CUnitDefinitionDB.h>
+%extend CUnitDefinitionDB
+{
+    CUnitDefinitionVector * asDataVector()
+    {
+        return dynamic_cast<CUnitDefinitionVector*>($self);
+    }
+    CUnitDefinitionVectorN * asDataVectorN()
+    {
+        return dynamic_cast<CUnitDefinitionVectorN*>($self);
+    }
+}
+
+%include "CRootContainer.i"
+
 %{
 
 
@@ -456,6 +488,7 @@ size_t INVALID_INDEX();
 #include <copasi/core/CDataTimer.h>
 
 #include <copasi/math/CJitCompilerImplementation.h>
+#include <copasi/utilities/CUnitDefinitionDB.h>
 
 %}
 

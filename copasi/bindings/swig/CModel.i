@@ -32,6 +32,7 @@
 
 #include <copasi/utilities/CUnitComponent.h>
 #include <copasi/utilities/CUnit.h>
+#include <copasi/utilities/CUnitDefinition.h>
 #include <copasi/utilities/CValidatedUnit.h>
 #include <copasi/utilities/CUnitValidator.h>
 #include "copasi/math/CMathObject.h"
@@ -150,6 +151,7 @@ typedef std::map< std::string, double > StringDoubleMap;
 
 %include <copasi/utilities/CUnitComponent.h>
 %include <copasi/utilities/CUnit.h>
+%include <copasi/utilities/CUnitDefinition.h>
 %include <copasi/utilities/CValidatedUnit.h>
 %include <copasi/utilities/CUnitValidator.h>
 %include "copasi/math/CMathObject.h"
