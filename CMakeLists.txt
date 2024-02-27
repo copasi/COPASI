@@ -376,7 +376,7 @@ find_package(LIBCOMBINE REQUIRED)
 
 if (ENABLE_FLEX_BISON)
   find_package(FLEX REQUIRED)
-  find_package(BISON REQUIRED) 
+  find_package(BISON REQUIRED)
   set(FLEX_BINARY ${FLEX_EXECUTABLE})
   set(FLEX_EXECUTABLE "${COPASI_SOURCE_DIR}/admin/flex.sh")
   set(BISON_BINARY ${BISON_EXECUTABLE})
@@ -448,10 +448,10 @@ if (ENABLE_OMP)
     detect_code_compiled("
       #include <omp.h>
       int main()
-      { 
-        omp_sched_t schedule = omp_sched_monotonic; 
-      }" 
-      OMP_HAVE_MONOTONIC 
+      {
+        omp_sched_t schedule = omp_sched_monotonic;
+      }"
+      OMP_HAVE_MONOTONIC
       "omp_sched_monotonic")
   endif()
 
@@ -482,7 +482,7 @@ if(BUILD_GUI)
   if (QT_USE_TEXTBROSWSER)
     set(QT_USE_TEXTBROWSER ON)
   endif()
-  
+
   if (${SELECT_QT} MATCHES "Qt5" OR
       ${SELECT_QT} MATCHES "Qt6" OR
       ${SELECT_QT} MATCHES "Any")
@@ -498,7 +498,7 @@ if(BUILD_GUI)
       find_package(QCP REQUIRED)
     endif()
     option(WITH_LEGACY_OPENGL "Use Legacy OpenGL visualization" OFF)
-    
+
     set (ADDITIONAL_QT5_MODULES)
     if (QT5_USE_DATAVISUALIZATION)
     set (ADDITIONAL_QT5_MODULES ${ADDITIONAL_QT5_MODULES} DataVisualization)
@@ -506,12 +506,12 @@ if(BUILD_GUI)
     if (COPASI_USE_QTCHARTS)
     set (ADDITIONAL_QT5_MODULES ${ADDITIONAL_QT5_MODULES} Charts)
     endif()
-    
+
     if(${SELECT_QT} MATCHES "Qt6")
     # for xml sax parser and qregex
     set (ADDITIONAL_QT5_MODULES ${ADDITIONAL_QT5_MODULES} Core5Compat)
     endif()
-    
+
 
     if (QT_USE_TEXTBROWSER)
       QT_FIND_MODULES( Concurrent
@@ -521,7 +521,7 @@ if(BUILD_GUI)
                        Network
                        OpenGL
                        PrintSupport
-                       Svg 
+                       Svg
                        Xml
                        ${ADDITIONAL_QT5_MODULES}
       )
@@ -572,7 +572,7 @@ if(BUILD_GUI)
     set(COPASI_USE_QWT ON)
   endif()
   # check for qwtplot3d
-  
+
   if (NOT QT5_USE_DATAVISUALIZATION)
   find_package(QWTPLOT3D REQUIRED)
   endif()
@@ -589,7 +589,7 @@ if(BUILD_GUI)
   option(ENABLE_SBW_INTEGRATION "Enable SBW Integration" ON)
   if (ENABLE_SBW_INTEGRATION)
   find_package(SBW REQUIRED)
-  
+
   # set up definitions for SBW
   if(UNIX)
   if(APPLE)
@@ -635,7 +635,7 @@ if (ENABLE_CSHARP OR ENABLE_JAVA OR ENABLE_PYTHON OR ENABLE_PERL OR ENABLE_OCTAV
   endif ()
 
   find_package(SWIG REQUIRED)
-  
+
 endif ()
 
 option (ENABLE_TIME_SENS "Enables Time Sensitivities task in UI." ON)
@@ -738,7 +738,6 @@ endif ()
 # if using msvc or intel windows compiler allow for the use of the static runtime
 if(MSVC OR USING_INTEL)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE -DWIN32_LEAN_AND_MEAN)
-    
     set(BUILD_DEFINITIONS "${BUILD_DEFINITIONS} -D_CRT_SECURE_NO_WARNINGS")
     option(WITH_STATIC_RUNTIME "Compile using the static MSVC Runtime." OFF)
     if(WITH_STATIC_RUNTIME)
@@ -784,18 +783,21 @@ if(MSVC OR USING_INTEL)
                 endif(${flag_var} MATCHES "/Zi")
 
             endforeach(flag_var)
-            
+
             if (MSVC AND WIN32 AND NOT MSVC_VERSION VERSION_LESS 142 AND CMAKE_VERSION VERSION_GREATER 3.13)
-              # enable edit & continue for debug builds of msvc 
+              # enable edit & continue for debug builds of msvc
               add_link_options($<$<CONFIG:Debug>:/INCREMENTAL>)
               add_compile_options($<$<CONFIG:Debug>:/ZI>)
-              add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/EHsc>")              
+              add_compile_options("$<$<CXX_COMPILER_ID:MSVC>:/EHsc>")
             endif()
     endif()
 
 endif(MSVC OR USING_INTEL)
 
-
+if (EMSCRIPTEN)
+add_compile_options(-fexceptions)
+add_link_options(-fexceptions -sINITIAL_MEMORY=65536000 -sALLOW_MEMORY_GROWTH=1)
+endif(EMSCRIPTEN)
 
 set(APPS "" CACHE INTERNAL "")
 set(DIRS "${COPASI_DEPENDENCY_DIR}/bin;${COPASI_DEPENDENCY_DIR}/lib" CACHE INTERNAL "")
@@ -952,7 +954,7 @@ message(STATUS "-----------------------------------------------------------
    Qt version           = ${QT_VERSION}
    Qt lib               = ${QT_LIBRARIES}
    Qt include           = ${QT_INCLUDE_DIRS}
-      
+
    QWT version          = ${QWT_VERSION_STRING} (0x${QWT_VERSION_NUMERIC})
    QWT lib              = ${QWT_LIBRARY}
    QWT include          = ${QWT_INCLUDE_DIR}
@@ -978,7 +980,7 @@ message(STATUS "-----------------------------------------------------------
    NativeJIT lib        = ${NATIVEJIT_LIBRARY}
    NativeJIT include    = ${NATIVEJIT_INCLUDE_DIR}
    NativeJIT CXX Flags  = ${NATIVEJIT_COMPILE_OPTIONS}
-   
+
    cpu_features lib     = ${CPUFEATURES_LIBRARY}
    cpu_features include = ${CPUFEATURES_INCLUDE_DIR}
 
@@ -1002,7 +1004,7 @@ message(STATUS "-----------------------------------------------------------
    JIT Compilation          = ${ENABLE_JIT}
    OpenMP                   = ${ENABLE_OMP}
 
-   CXX Flags                = ${CMAKE_CXX_FLAGS} 
+   CXX Flags                = ${CMAKE_CXX_FLAGS}
    Additional Defines       = ${DirDefs}
 
   Language Bindings:
