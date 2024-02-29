@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,6 +49,42 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CReportDefinition.h"
+
+// static
+const CCopasiTask::OutputFlag CCopasiTask::NO_OUTPUT; // = 0,
+
+// static
+const CCopasiTask::OutputFlag CCopasiTask::OUTPUT_BEFORE = CCopasiTask::OutputFlag(CCopasiTask::OutputFlagBase::INITIALIZE);
+
+// static
+const CCopasiTask::OutputFlag CCopasiTask::OUTPUT_DURING = CCopasiTask::OutputFlag(CCopasiTask::OutputFlagBase::STREAM);
+
+// static
+const CCopasiTask::OutputFlag CCopasiTask::OUTPUT_AFTER = CCopasiTask::OutputFlag(CCopasiTask::OutputFlagBase::FINISH);
+
+// do output except time series, but do not initialize/finish
+// static
+const CCopasiTask::OutputFlag CCopasiTask::REPORT = CCopasiTask::OutputFlag(CCopasiTask::OutputFlagBase::REPORT);
+
+// static
+const CCopasiTask::OutputFlag CCopasiTask::PLOT = CCopasiTask::OutputFlag(CCopasiTask::OutputFlagBase::PLOT);
+
+// static
+const CCopasiTask::OutputFlag CCopasiTask::TIME_SERIES = CCopasiTask::OutputFlag(CCopasiTask::OutputFlagBase::TIME_SERIES);
+
+// static
+const CCopasiTask::OutputFlag CCopasiTask::OUTPUT = CCopasiTask::OutputFlag(CCopasiTask::OutputFlagBase::REPORT) | CCopasiTask::OutputFlagBase::PLOT | CCopasiTask::OutputFlagBase::STREAM;
+
+// do output, including initialization and closing
+// static
+const CCopasiTask::OutputFlag CCopasiTask::OUTPUT_SE = CCopasiTask::OutputFlag(CCopasiTask::OutputFlagBase::REPORT) | CCopasiTask::OutputFlagBase::PLOT | CCopasiTask::OutputFlagBase::INITIALIZE | CCopasiTask::OutputFlagBase::STREAM | CCopasiTask::OutputFlagBase::FINISH;
+
+// static
+const CCopasiTask::OutputFlag CCopasiTask::OUTPUT_UI = CCopasiTask::OutputFlag(CCopasiTask::OutputFlagBase::REPORT) | CCopasiTask::OutputFlagBase::PLOT | CCopasiTask::OutputFlagBase::TIME_SERIES | CCopasiTask::OutputFlagBase::INITIALIZE | CCopasiTask::OutputFlagBase::STREAM | CCopasiTask::OutputFlagBase::FINISH;
+
+// only do time series
+// static
+const CCopasiTask::OutputFlag CCopasiTask::ONLY_TIME_SERIES = CCopasiTask::OutputFlag(CCopasiTask::OutputFlagBase::TIME_SERIES) | CCopasiTask::OutputFlagBase::INITIALIZE | CCopasiTask::OutputFlagBase::STREAM | CCopasiTask::OutputFlagBase::FINISH;
 
 // static
 CCopasiTask * CCopasiTask::fromData(const CData & data, CUndoObjectInterface * pParent)
@@ -489,6 +525,10 @@ bool CCopasiTask::initialize(const OutputFlag & of,
   if (mDoOutput == NO_OUTPUT ||
       mpOutputHandler == NULL) return true;
 
+  // A at least one of OUTPUT_BEFORE | OUTPUT_DURING | OUTPUT_AFTER must be set.
+  if (!(mDoOutput & (OUTPUT_BEFORE | OUTPUT_DURING | OUTPUT_AFTER)))
+    mDoOutput &= OUTPUT_DURING;
+
   mOutputCounter = 0;
 
   if (mDoOutput & REPORT)
@@ -621,7 +661,7 @@ void CCopasiTask::output(const COutputInterface::Activity & activity)
       {
         case COutputInterface::DURING:
 
-          if (mDoOutput != NO_OUTPUT)
+          if (mDoOutput & OUTPUT_DURING)
             {
               mpOutputHandler->output(activity);
               ++mOutputCounter;

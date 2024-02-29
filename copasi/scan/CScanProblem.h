@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CScanProblem class.
@@ -33,9 +33,6 @@
 
 #include "copasi/utilities/CCopasiProblem.h"
 #include "copasi/utilities/CReadConfig.h"
-//#include "copasi/model/CState.h"
-
-//class CModel;
 
 class CScanProblem : public CCopasiProblem
 {
@@ -45,12 +42,23 @@ public:
     SCAN_REPEAT = 0,
     SCAN_LINEAR,
     SCAN_RANDOM,
-    SCAN_BREAK, 
+    SCAN_BREAK,
     SCAN_PARAMETER_SET
   };
 
-private:
+  enum struct OutputType
+  {
+    subTaskNone = 0,
+    subTaskBefore,
+    subTaskDuring,
+    subTaskAfter,
+    __SIZE
+  };
 
+  static const CEnumAnnotation< std::string, OutputType > OutputTypeName;
+  typedef CFlags< OutputType > OutputFlags;
+
+private:
   /**
    *  This holds the scan items
    */
@@ -67,7 +75,7 @@ public:
   /**
    * Copy constructor.
    * @param const CTrajectoryProblem & src
-   * @paramconst CDataContainer * pParent (default: NULL)
+   * @param const CDataContainer * pParent (default: NULL)
    */
   CScanProblem(const CScanProblem & src,
                const CDataContainer * pParent);
@@ -76,6 +84,13 @@ public:
    *  Destructor.
    */
   ~CScanProblem();
+
+  /**
+   * This methods must be called to elevate subgroups to
+   * derived objects. The default implementation does nothing.
+   * @return bool success
+   */
+  virtual bool elevateChildren() override;
 
   /**
    * Retrieve the optional sub task
@@ -94,15 +109,9 @@ public:
    */
   CTaskEnum::Task getSubtask() const;
 
-  /**
-   *  Set if output should be done after every step of the subtask.
-   */
-  void setOutputInSubtask(bool ois);
+  OutputFlags getOutputSpecification() const;
 
-  /**
-   *  Ask if output should be done after every step of the subtask.
-   */
-  const bool & getOutputInSubtask() const;
+  void setOutputSpecification(const OutputFlags & outputSpecification);
 
   /**
    *  Set whether the subtask should continue with its last result.

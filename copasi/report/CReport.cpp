@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -154,6 +154,7 @@ void CReport::separate(const Activity & /* activity */)
   if (!mpOstream) return;
 
   (*mpOstream) << std::endl;
+  mState = Compiled;
 }
 
 void CReport::finish()

@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CScanMethod class.
@@ -605,7 +605,7 @@ bool CScanMethod::calculate()
 #endif // DEBUG_OUTPUT
 
   if (!mInitialStateChanged)
-  mpContainer->applyUpdateSequence(mInitialUpdates);
+    mpContainer->applyUpdateSequence(mInitialUpdates);
 
 #ifdef DEBUG_OUTPUT
   std::cout << "CScanMethod::calculate State 2: " << mpContainer->getValues() << std::endl;
@@ -701,22 +701,27 @@ CScanItemParameterSet::CScanItemParameterSet(CCopasiParameterGroup * si)
   ensureParameterGroupHasAllElements(si);
 
   auto* group = si->getGroup("ParameterSet CNs");
+
   if (!group)
     return;
 
   mNumSteps = si->getValue< unsigned C_INT32 >("Number of steps");
 
   CDataModel* dm = dynamic_cast< CDataModel * >(si->getObjectDataModel());
-  
+
   for (size_t i = 0; i < group->size(); ++i)
     {
       auto* parameter = group->getParameter(i);
+
       if (!parameter)
         continue;
+
       auto cn = parameter->getValue<CCommonName>();
       auto* pSet =  dynamic_cast<const CModelParameterSet*>(dm->getObjectFromCN(cn));
+
       if (!pSet)
         continue;
+
       mSets.push_back(pSet);
       mValues.push_back(cn);
     }
@@ -726,11 +731,11 @@ void CScanItemParameterSet::step()
 {
   if (mIndex > mNumSteps || mIndex >= mSets.size())
     mFlagFinished = true;
-  else    
-  {
-    auto* pSet = const_cast<CModelParameterSet* >(mSets[mIndex]);
-    pSet->updateModel();
-  }
+  else
+    {
+      auto* pSet = const_cast<CModelParameterSet* >(mSets[mIndex]);
+      pSet->updateModel();
+    }
 
   ++mIndex;
 }

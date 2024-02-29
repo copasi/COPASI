@@ -1,7 +1,7 @@
-// Copyright (C) 2023 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2023 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
 #include "CQScanWidgetParameterSet.h"
 
@@ -67,20 +67,24 @@ void CQScanWidgetParameterSet::load(const CCopasiParameterGroup * pItem)
     return;
 
   auto * group = mpData->getGroup("ParameterSet CNs");
+
   if (!group)
     return;
 
   std::map< QString, const CModelParameterSet * > selection;
+
   for (size_t i = 0; i < group->size(); ++i)
     {
       auto * p = group->getParameter(i);
       std::string cn = p->getValue< std::string >();
       auto * pSet = dynamic_cast< const CModelParameterSet * >(ListViews::dataModel(this)->getObjectFromCN(cn));
+
       if (!pSet)
         continue;
 
       selection[FROM_UTF8(pSet->getObjectName())] = pSet;
     }
+
   initFromSelection(selection);
 }
 
@@ -88,6 +92,7 @@ bool CQScanWidgetParameterSet::save(CCopasiParameterGroup * pItem) const
 {
   mpData->setValue< unsigned C_INT32 >("Number of steps", mSelection.size());
   auto * group = mpData->getGroup("ParameterSet CNs");
+
   if (!group)
     {
       mpData->addParameter("ParameterSet CNs", CCopasiParameter::Type::GROUP);
@@ -96,6 +101,7 @@ bool CQScanWidgetParameterSet::save(CCopasiParameterGroup * pItem) const
 
   group->clear();
   int count = 0;
+
   for (auto & p : mSelection)
     {
       group->addParameter(std::to_string(count++), CCopasiParameter::Type::CN, p.second->getCN());
@@ -109,6 +115,8 @@ bool CQScanWidgetParameterSet::save(CCopasiParameterGroup * pItem) const
       *pItem = *mpData;
       return true;
     }
+
+  return false;
 }
 
 void CQScanWidgetParameterSet::initFromSelection(std::map< QString, const CModelParameterSet * > & selection)
@@ -117,8 +125,10 @@ void CQScanWidgetParameterSet::initFromSelection(std::map< QString, const CModel
 
   // generate label, just listing the names of the parameter sets selected
   QString label;
+
   for (auto & entry : mSelection)
     label.append(entry.first).append(", ");
+
   // remove last ", "
   label.chop(2);
 
@@ -164,22 +174,29 @@ void CQScanWidgetParameterSet::init()
 void CQScanWidgetParameterSet::slotChooseParameterSets()
 {
   auto * dmGui = getDataModel();
+
   if (!dmGui)
     return;
+
   auto * dm = dmGui->getDataModel();
+
   if (!dm)
     return;
+
   auto * model = dm->getModel();
+
   if (!model)
     return;
 
   QStringList oldSelection;
+
   for (auto & p : mSelection)
     oldSelection << p.first;
 
   std::map< QString, const CModelParameterSet * > pSets;
   auto & sets = model->getModelParameterSets();
   QStringList list;
+
   for (auto & set : sets)
     {
       QString current = FROM_UTF8(set.getObjectName());
@@ -188,10 +205,12 @@ void CQScanWidgetParameterSet::slotChooseParameterSets()
     }
 
   QStringList selection = CQMultipleSelectionDialog::getSelection(this, "Select ParameterSet(s)", "Parameter Sets:", list, &oldSelection);
+
   if (selection.isEmpty())
     return;
 
   std::map< QString, const CModelParameterSet * > pSelection;
+
   for (auto & set : pSets)
     {
       if (selection.contains(set.first))
@@ -199,6 +218,7 @@ void CQScanWidgetParameterSet::slotChooseParameterSets()
     }
 
   pSets = std::move(pSelection);
+
   if (!pSets.empty() && oldSelection != selection) // Object selection changed.
     initFromSelection(pSets);
 }

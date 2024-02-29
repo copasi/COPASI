@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -205,7 +210,7 @@ int main()
   pScanProblem->addScanItem(CScanProblem::SCAN_REPEAT, 100);
 
   // we want the output from the trajectory task
-  pScanProblem->setOutputInSubtask(true);
+  pScanProblem->setOutputSpecification(CScanProblem::OutputType::subTaskDuring);
 
   // we don't want to set the initial conditions of the model to the end
   // state of the last run
