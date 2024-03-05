@@ -109,9 +109,57 @@ public:
    */
   CTaskEnum::Task getSubtask() const;
 
+  /**
+   * This function is here for backwards compatibility
+   *
+   * @return true, if output for subtask is set to during (old behavior)
+   */
+  bool getOutputInSubtask() const;
+
+  /**
+   * Returns the output specification for the subtask as CFlag enum
+   *
+   * @return the output specification for the subtask as CFlag enum
+   */
   OutputFlags getOutputSpecification() const;
 
+  /**
+   * Get the Output Specification String
+   *
+   * This will be a `|` separated string of the output flags
+   * for example: `none` or `subTaskBefore|subTaskDuring|subTaskAfter`
+   *
+   * @return std::string of the combined output flags
+   */
+  std::string getOutputSpecificationString() const;
+
+  /**
+   *  Set the output for the subtask to `subTaskDuring`, the method
+   *  is here for backwards compatibility
+   */
+  void setOutputInSubtask(bool outputDuring);
+
+  /**
+   * sets the specification for output during the subtask execution
+   *
+   * @param outputSpecification flags
+   */
   void setOutputSpecification(const OutputFlags & outputSpecification);
+
+  /**
+   * sets the specification for output during the subtask execution
+   *
+   * @param specification string of the form `none` or `subTaskBefore|subTaskDuring|subTaskAfter`
+   */
+  void setOutputSpecification(const std::string& specification);
+
+  /**
+   * sets the specification for output during the subtask execution
+   *
+   * @param specification vector of string specifying when to collect output from subtask.
+   * Valid strings are `none`, `subTaskBefore`, `subTaskDuring`, `subTaskAfter`.
+   */
+  void setOutputSpecification(const std::vector< std::string > & specification);
 
   /**
    *  Set whether the subtask should continue with its last result.
@@ -127,22 +175,57 @@ public:
    *  Retrieve whether the subtask should continue when an error occurs.
    */
   bool getContinueOnError() const;
+
   /**
    *  Set whether the subtask should continue when error occurs.
    */
   void setContinueOnError(bool coe);
 
+  /**
+   * @return number of scan items
+   */
   size_t getNumberOfScanItems() const;
 
+  /**
+   * @return the scan item at the given index
+   */
   const CCopasiParameterGroup* getScanItem(size_t index) const;
+
+  /**
+   * @return the scan item at the given index
+   */
   CCopasiParameterGroup* getScanItem(size_t index);
 
+  /**
+   * add a scan item
+   *
+   * @param type the type of the scan item
+   * @param steps number of steps
+   * @param obj the object to change
+   * @return CCopasiParameterGroup* the newly added parameter group
+   */
   CCopasiParameterGroup* addScanItem(CScanProblem::Type type, size_t steps = 5, const CDataObject* obj = NULL);
 
+  /**
+   * remove a scan item
+   *
+   * @param index the index of the scan item to remove
+   */
   bool removeScanItem(const size_t & index);
 
+  /**
+   * creates a new scan item
+   *
+   * @param type the type of the scan item
+   * @param steps number of steps
+   * @param obj the object to change
+   * @return CCopasiParameterGroup* the newly created parameter group
+   */
   static CCopasiParameterGroup* createScanItem(CScanProblem::Type type, size_t steps = 5, const CDataObject* obj = NULL);
 
+  /**
+   * removes all scan items
+   */
   void clearScanItems();
 
   /**

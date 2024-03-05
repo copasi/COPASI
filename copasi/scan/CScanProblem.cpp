@@ -126,7 +126,14 @@ void CScanProblem::setSubtask(CTaskEnum::Task type)
 }
 
 CTaskEnum::Task CScanProblem::getSubtask() const
-{return (CTaskEnum::Task) getValue< unsigned C_INT32 >("Subtask");}
+{
+  return (CTaskEnum::Task) getValue< unsigned C_INT32 >("Subtask");
+}
+
+bool CScanProblem::getOutputInSubtask() const
+{
+  return getOutputSpecification() == CScanProblem::OutputType::subTaskDuring;
+}
 
 //************************************
 
@@ -148,21 +155,60 @@ CScanProblem::OutputFlags CScanProblem::getOutputSpecification() const
   return OutputSpecification;
 }
 
-void CScanProblem::setOutputSpecification(const CScanProblem::OutputFlags & outputSpecification)
+std::string CScanProblem::getOutputSpecificationString() const
 {
   std::string Flags;
   std::string Separator;
+  auto outputSpecification = getOutputSpecification();
 
-  for (const std::string & token : outputSpecification.getAnnotations(OutputTypeName))
+for (const std::string & token : outputSpecification.getAnnotations(OutputTypeName))
     {
       Flags += Separator + token;
       Separator = "|";
     }
 
-  if (Flags.empty())
-    Flags = OutputTypeName[OutputType::subTaskNone];
+  return Flags;
+}
 
-  setValue("Subtask Output", Flags);
+void CScanProblem::setOutputInSubtask(bool outputDuring)
+{
+  setOutputSpecification(CScanProblem::OutputType::subTaskDuring);
+}
+
+void CScanProblem::setOutputSpecification(const CScanProblem::OutputFlags & outputSpecification)
+{
+  std::string Flags;
+  std::string Separator;
+
+for (const std::string & token : outputSpecification.getAnnotations(OutputTypeName))
+    {
+      Flags += Separator + token;
+      Separator = "|";
+    }
+
+  setOutputSpecification(Flags);
+}
+
+void CScanProblem::setOutputSpecification(const std::string & specification)
+{
+  if (specification.empty())
+    setValue("Subtask Output", OutputTypeName[OutputType::subTaskNone]);
+  else
+    setValue("Subtask Output", specification);
+}
+
+void CScanProblem::setOutputSpecification(const std::vector< std::string > & specification)
+{
+  std::string Flags;
+  std::string Separator;
+
+for (const std::string & token : specification)
+    {
+      Flags += Separator + token;
+      Separator = "|";
+    }
+
+  setOutputSpecification(Flags);
 }
 
 //************************************
