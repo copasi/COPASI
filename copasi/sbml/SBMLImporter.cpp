@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -3839,6 +3839,14 @@ void SBMLImporter::replaceCallNodeNames(ASTNode* pASTNode)
               this->mCreatedFunctions.insert(newName);
             }
         }
+      else if (itNode->getType() == AST_FUNCTION_RATE_OF && itNode->getNumChildren() == 1)
+        {
+          std::string symbol = itNode->getChild(0)->getName();
+          itNode->removeChild(0);
+          itNode->setType(AST_NAME);
+          itNode->setName(symbol.c_str());
+          itNode->setUserData(strdup("RATE"));
+        }
     }
 }
 
@@ -5814,17 +5822,19 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
 
                   if (!sbmlId.empty() && sbmlId == name)
                     {
+                      if (haveData)
+                        {
+                          itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
+                          break;
+                        }
+
                       // make sure it is only one of the allowed types
                       switch (it->second->getTypeCode())
                         {
                           case SBML_COMPARTMENT:
-
                             if (!initialExpression)
                               {
-                                if (haveData)
-                                  itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
-                                else
-                                  itNode->setName((pObject->getCN() + ",Reference=Volume").c_str());
+                                itNode->setName((pObject->getCN() + ",Reference=Volume").c_str());
                               }
                             else
                               {
@@ -5843,10 +5853,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
                               {
                                 if (!initialExpression)
                                   {
-                                    if (haveData)
-                                      itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
-                                    else
-                                      itNode->setName((pObject->getCN() + ",Reference=Concentration").c_str());
+                                    itNode->setName((pObject->getCN() + ",Reference=Concentration").c_str());
                                   }
                                 else
                                   {
@@ -5857,10 +5864,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
                               {
                                 if (!initialExpression)
                                   {
-                                    if (haveData)
-                                      itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
-                                    else
-                                      itNode->setName((pObject->getCN() + ",Reference=ParticleNumber").c_str());
+                                    itNode->setName((pObject->getCN() + ",Reference=ParticleNumber").c_str());
                                   }
                                 else
                                   {
@@ -5884,10 +5888,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
 
                             if (!initialExpression)
                               {
-                                if (haveData)
-                                  itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
-                                else
-                                  itNode->setName((pObject->getCN() + ",Reference=Value").c_str());
+                                itNode->setName((pObject->getCN() + ",Reference=Value").c_str());
                               }
                             else
                               {
@@ -5900,6 +5901,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
                             fatalError();
                             break;
                         }
+
 
                       break;
                     }
