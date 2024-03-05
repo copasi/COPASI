@@ -129,10 +129,13 @@ size_t INVALID_INDEX();
 %ignore *::end_name;
 
 %include <copasi/undo/CUndoObjectInterface.h>
-%template(CDataStdVector) std::vector<CData>;
-%include <copasi/undo/CData.h>
-%template(CDataValueStdVector) std::vector<CDataValue>;
+
+%ignore CDataValue::CDataValue(const CDataValue::Type &);
+%ignore CDataValue::CDataValue(const Type &);
 %include <copasi/undo/CDataValue.h>
+%template(CDataValueStdVector) std::vector<CDataValue>;
+%include <copasi/undo/CData.h>
+%template(CDataStdVector) std::vector<CData>;
 %include <copasi/undo/CUndoData.h>
 
 %include <copasi/core/CObjectInterface.h>
@@ -175,7 +178,6 @@ size_t INVALID_INDEX();
 %include "CCopasiParameter.i"
 // enable process report 
 %feature("director") CProcessReport;
-%rename(add) CProcessReport::operator+;
 
 %extend CProcessReport
 {
@@ -237,6 +239,9 @@ size_t INVALID_INDEX();
     }
 }
 
+%rename(add) CProcessReport::operator+;
+%rename(increment) CProcessReport::operator++;
+%rename(increment) CProcessReportLevel::operator++;
 %include <copasi/utilities/CProcessReport.h>
 
 %include "CCopasiParameterGroup.i"

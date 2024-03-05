@@ -135,6 +135,6 @@ ExtendCVectorPtr(CVector, const CDataObject*);
 %template(ConstFunctionVectorCore) CVectorCore<const CFunction*>;
 %template(ConstFunctionVector) CVector<const CFunction*>;
 ExtendCVectorPtr(CVector, const CFunction*);
-%template(ConstObjectInterfaceVector) CVector<const CObjectInterface*>;
 %template(ConstObjectInterfaceVectorCore) CVectorCore<const CObjectInterface*>;
+%template(ConstObjectInterfaceVector) CVector<const CObjectInterface*>;
 ExtendCVectorPtr(CVector, const CObjectInterface*);
