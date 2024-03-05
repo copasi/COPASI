@@ -222,7 +222,7 @@ public:
   {
     bitset::reset();
 
-    for (const AType & a : annotations)
+for (const AType & a : annotations)
       operator &= (annotation.toEnum(a));
   }
 };
@@ -302,10 +302,11 @@ CFlags< Enum > operator ^ (const CFlags< Enum > & lhs, const Enum & rhs)
   return operator ^ (lhs, CFlags< Enum >(rhs));
 }
 
+#ifndef SWIG
 // static
 template< class Enum > const CFlags< Enum > CFlags< Enum >::None;
 
 // static
 template< class Enum > const CFlags< Enum > CFlags< Enum >::All(~None);
-
+#endif // SWIG
 #endif // COPASI_CFlags
