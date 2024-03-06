@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -736,5 +736,15 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
   if (dynamic_cast< const COptItem * >(pDataObject))
     return "OptItem::" + static_cast< const COptItem * >(pDataObject)->getObject()->getObjectDisplayName();
 
-  return pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName();
+  // We need to distinguish between initial and transient value if the a corresponding data abject does not exists.
+  if (pMathObject == nullptr ||
+      !pMathObject->isInitialValue())
+    return pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName();
+
+  std::string ObjectName = pDataObject->getObjectName();
+
+  if (ObjectName.substr(0, 7) != "Initial")
+    ObjectName = "Initial" + ObjectName;
+
+  return pDataObject->getObjectParent()->getObjectName() + "::" + ObjectName;
 }
