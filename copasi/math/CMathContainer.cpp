@@ -2577,7 +2577,6 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
       switch (pObject->getValueType())
         {
           case CMath::ValueType::Value:
-          case CMath::ValueType::Rate:
             switch (pObject->getSimulationType())
               {
                 case CMath::SimulationType::Fixed:
@@ -2657,6 +2656,20 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
                 case CMath::SimulationType::__SIZE:
                   break;
+              }
+
+            break;
+
+          case CMath::ValueType::Rate:
+            if (pObject->getPrerequisites().size() > 0)
+              {
+                RequestedExtensive.insert(pObject);
+                RequestedIntensive.insert(pObject);
+              }
+            else
+              {
+                mInitialStateValueExtensive.insert(pObject);
+                mInitialStateValueIntensive.insert(pObject);
               }
 
             break;
