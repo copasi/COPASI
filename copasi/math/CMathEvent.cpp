@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1393,12 +1393,22 @@ void CMathEvent::createUpdateSequences()
 
   Requested.clear();
   CObjectInterface::ObjectSet EventTargets;
+  CObjectInterface::ObjectSet Changed(StateValues);
   CAssignment * pAssignment = mAssignments.array();
   CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
 
   for (; pAssignment != pAssignmentEnd; ++pAssignment)
     {
       Requested.insert(pAssignment->getAssignment());
+
+      CObjectInterface::ObjectSet Prerequisites;
+      pAssignment->getAssignment()->appendPrerequisites(Prerequisites);
+
+      CObjectInterface::ObjectSet::const_iterator it = Prerequisites.begin();
+      CObjectInterface::ObjectSet::const_iterator end = Prerequisites.end();
+
+      for (; it != end; ++it)
+        Changed.insert(*it);
 
       const CMathObject * pTarget = pAssignment->getTarget();
 
@@ -1422,7 +1432,7 @@ void CMathEvent::createUpdateSequences()
         }
     }
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mTargetValuesSequence, CCore::SimulationContext::Default, StateValues, Requested, SimulationValues);
+  mpContainer->getTransientDependencies().getUpdateSequence(mTargetValuesSequence, CCore::SimulationContext::Default, Changed, Requested, SimulationValues);
 
   // We need to add the total mass of the moieties to the state values.
   CObjectInterface::ObjectSet ExtendedStateValues = StateValues;

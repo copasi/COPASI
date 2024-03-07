@@ -216,7 +216,6 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
           std::cout << *static_cast< const CDataObject * >(*it) << std::endl;
         }
 
-      std::cout << *static_cast< const CMathObject * >(*it) << std::endl;
 #endif // DEBUG_OUTPUT
 
       found = mObjects2Nodes.find(*it);
@@ -238,10 +237,6 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
   // Mark all nodes which are requested and its prerequisites.
   for (; it != end && success; ++it)
     {
-#ifdef DEBUG_OUTPUT
-      std::cout << *it << std::endl;
-#endif // DEBUG_OUTPUT
-
       if (*it == NULL)
         {
           success = false; // we should not have NULL elements here
@@ -730,8 +725,17 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
 
   CDataObject * pEvent = pDataObject->getObjectAncestor("Event");
 
-  if (pEvent != NULL && pEvent != pDataObject->getObjectParent())
-    return pEvent->getObjectName() + "::Assignment::" + pDataObject->getObjectParent()->getObjectName();
+  if (pEvent != NULL)
+    {
+      if (pEvent != pDataObject->getObjectParent())
+        return pEvent->getObjectName() + "::Assignment::" + pDataObject->getObjectParent()->getObjectName();
+
+      if (pMathObject != nullptr
+          && pMathObject->getValueType() == CMath::ValueType::EventTrigger)
+        return pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName() + "State";
+
+      return pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName();
+    }
 
   if (dynamic_cast< const COptItem * >(pDataObject))
     return "OptItem::" + static_cast< const COptItem * >(pDataObject)->getObject()->getObjectDisplayName();

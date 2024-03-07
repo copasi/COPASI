@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -69,6 +74,8 @@ public:
    * @return const CObjectInterface::ObjectSet & prerequisites
    */
   virtual const CObjectInterface::ObjectSet & getPrerequisites() const = 0;
+
+  bool appendPrerequisites(CObjectInterface::ObjectSet & prerequisites) const;
 
   /**
    * Check whether a given object is a prerequisite for a context.
