@@ -3747,8 +3747,11 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
 
               itNode->setType(AST_DIVIDE);
               itNode->setCharacter('/');
-              ConverterASTNode* pChild = new ConverterASTNode(AST_NAME);
+              char * userData = static_cast< char * >(itNode->getUserData());
+              itNode->setUserData(NULL);
+              ConverterASTNode * pChild = new ConverterASTNode(AST_NAME);
               pChild->setName(id.c_str());
+              pChild->setUserData(userData);
               itNode->addChild(pChild);
               id = (*this->mPotentialAvogadroNumbers.begin())->getId();
               pChild = new ConverterASTNode(AST_NAME);
@@ -5813,7 +5816,9 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
                   pReaction = dynamic_cast<const CReaction*>(pObject);
                   pModelEntity = dynamic_cast<const CModelEntity*>(pObject);
                   Species* pSpecies = dynamic_cast<Species*>(it->second);
+                  bool hasOnlySubstance = pSpecies && mSubstanceOnlySpecies.find(pSpecies) != mSubstanceOnlySpecies.end();
                   std::string sbmlId;
+                  haveData = haveData || itNode->getUserData() != NULL;
 
                   if (pReaction)
                     {
@@ -5828,7 +5833,11 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
                     {
                       if (haveData)
                         {
-                          itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
+                          if (hasOnlySubstance)
+                            itNode->setName((pObject->getCN() + ",Reference=ParticleNumberRate").c_str());
+                          else
+                            itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
+
                           break;
                         }
 
@@ -5853,7 +5862,7 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
                             // instead. !!!!
                             assert(pSpecies != NULL);
 
-                            if (this->mSubstanceOnlySpecies.find(pSpecies) == this->mSubstanceOnlySpecies.end())
+                            if (!hasOnlySubstance)
                               {
                                 if (!initialExpression)
                                   {
