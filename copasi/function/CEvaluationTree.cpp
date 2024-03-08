@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -782,6 +782,8 @@ CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode, bool isFunc
               case AST_FUNCTION_TAN:
               case AST_FUNCTION_TANH:
               case AST_LOGICAL_NOT:
+              case AST_FUNCTION_MIN:
+              case AST_FUNCTION_MAX:
                 pResultNode = CEvaluationNodeFunction::fromAST(*itNode, itNode.context());
                 break;
 
