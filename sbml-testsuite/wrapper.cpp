@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -376,7 +381,7 @@ public:
               {
                 // create a new global value with an assignment
                 std::stringstream ss;
-                ss << "dummy_modelvalue_" << dummyCount;
+                ss << "amountOf_" << *it;
                 CModelValue* pTmpMV = pDataModel->getModel()->createModelValue(ss.str());
                 ++dummyCount;
                 ss.str("");
@@ -433,6 +438,7 @@ public:
     pTrajectoryTask->getReport().setReportDefinition(pReport);
     pTrajectoryTask->getReport().setTarget(output_filename);
     pTrajectoryTask->getReport().setAppend(false);
+    pTrajectoryTask->getReport().setConfirmOverwrite(false);
   }
 
   /**
