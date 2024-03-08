@@ -1408,7 +1408,8 @@ void CMathEvent::createUpdateSequences()
       CObjectInterface::ObjectSet::const_iterator end = Prerequisites.end();
 
       for (; it != end; ++it)
-        Changed.insert(*it);
+        if ((*it)->getPrerequisites().empty())
+          Changed.insert(*it);
 
       const CMathObject * pTarget = pAssignment->getTarget();
 
