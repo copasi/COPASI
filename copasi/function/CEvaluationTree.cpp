@@ -693,6 +693,7 @@ CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode, bool isFunc
               case AST_DIVIDE:
               case AST_POWER:
               case AST_FUNCTION_POWER:
+              case AST_FUNCTION_REM:
                 // create a CEvaluationNodeOperator
                 pResultNode = CEvaluationNodeOperator::fromAST(*itNode, itNode.context());
                 break;
