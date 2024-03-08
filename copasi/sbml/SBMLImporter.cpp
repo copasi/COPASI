@@ -82,7 +82,6 @@
 #include "copasi/function/CFunctionParameters.h"
 #include "copasi/core/CDataObjectReference.h"
 #include "copasi/utilities/CCopasiTree.h"
-#include "copasi/utilities/CNodeIterator.h"
 #include "copasi/utilities/CUnit.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
@@ -93,7 +92,6 @@
 
 #include "SBMLImporter.h"
 #include "SBMLUtils.h"
-#include "ConverterASTNode.h"
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/commandline/CConfigurationFile.h"
 
@@ -1378,7 +1376,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
 
   ConverterASTNode root(*pSBMLFunction->getMath());
 
-  if (SBMLImporter::isDelayFunctionUsed(&root))
+  if (SBMLImporter::isDelayOrRateFunctionUsed(&root))
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 85, pSBMLFunction->getId().c_str());
     }
@@ -2263,7 +2261,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
 
           ConverterASTNode* node = new ConverterASTNode(*kLawMath);
-          preprocessNode(node, pSBMLModel, copasi2sbmlmap, sbmlReaction);
+          preprocessNode(node, pSBMLModel, copasi2sbmlmap, sbmlReaction, true);
 
           if (node == NULL)
             {
@@ -2281,7 +2279,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
               if (compartment != NULL)
                 {
-                  // check if the division by volume can be done symbollically in the tree.
+                  // check if the division by volume can be done symbolically in the tree.
                   bool wasRemoved = this->divideByVolume(node, compartment->getSBMLId());
 
                   // if not, we have to do it manually
@@ -2731,6 +2729,7 @@ SBMLImporter::SBMLImporter()
   , mAvogadroCreated(false)
   , mImportCOPASIMIRIAM(true)
   , mDelayNodeMap()
+  , mReplacedRates()
   , mUsedSBMLIds()
   , mUsedSBMLIdsPopulated(false)
   , mKnownCustomUserDefinedFunctions()
@@ -3475,7 +3474,10 @@ void SBMLImporter::restoreFunctionDB()
     }
 }
 
-void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, Reaction* pSBMLReaction)
+void
+SBMLImporter::preprocessNode(ConverterASTNode * pNode, Model * pSBMLModel,
+                             std::map< const CDataObject *, SBase * > & copasi2sbmlmap,
+                             Reaction * pSBMLReaction, bool ignoreRate /*= false*/)
 {
   // this function goes through the tree several times.
   // this can probably be handled more intelligently
@@ -3494,7 +3496,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
 
   if (!this->mDelayFound || pSBMLReaction != NULL)
     {
-      bool result = isDelayFunctionUsed(pNode);
+      bool result = isDelayOrRateFunctionUsed(pNode);
 
       if (pSBMLReaction != NULL && result)
         {
@@ -3522,19 +3524,21 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
           // we need a map to store the replacements for local parameters
           // which occur within delay calls
           std::map<std::string, std::string> replacementMap;
-          this->replace_delay_nodes(pNode, pSBMLModel, copasi2sbmlmap, pSBMLReaction, replacementMap);
+          replaceDelayAndRateOfInReaction(pNode, pSBMLModel, copasi2sbmlmap, pSBMLReaction, replacementMap);
 
           if (!replacementMap.empty())
             {
               // replace all local parameter nodes which have been converted to global parameters
               // and that were not in delay calls
-              this->replace_name_nodes(pNode, replacementMap);
+              replace_name_nodes(pNode, replacementMap);
+
               // delete the local parameters that have been replaced from the
               // reaction
               std::map<std::string, std::string>::const_iterator it = replacementMap.begin(), endit = replacementMap.end();
+
               // starting with SBML Level 3, the parameters of a kinetic law are expressed in
               // terms of a new class called LocalParameter instead of Parameter
-              // Unfortunatelly libsbml 4.1 uses separate data structures for
+              // Unfortunately libsbml 4.1 uses separate data structures for
               // the Parameters and the LocalParameters which mandates a small
               // code change to be on the safe side
               ListOfParameters* pList = NULL;
@@ -3558,7 +3562,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
                   ++it;
                 }
 
-              this->mReactionsWithReplacedLocalParameters.insert(pSBMLReaction->getId());
+              mReactionsWithReplacedLocalParameters.insert(pSBMLReaction->getId());
             }
         }
 
@@ -3755,7 +3759,7 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
     }
 }
 
-bool SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pASTNode)
+bool SBMLImporter::isDelayOrRateFunctionUsed(ConverterASTNode* pASTNode)
 {
   bool result = false;
   CNodeIterator< ConverterASTNode > itNode(pASTNode);
@@ -3767,7 +3771,7 @@ bool SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pASTNode)
           continue;
         }
 
-      if (itNode->getType() == AST_FUNCTION_DELAY)
+      if (itNode->getType() == AST_FUNCTION_DELAY || itNode->getType() == AST_FUNCTION_RATE_OF)
         {
           result = true;
           break;
@@ -7520,8 +7524,14 @@ void SBMLImporter::findDirectDependencies(const ASTNode* pNode, std::set<std::st
  * This is necessary because all kinetic laws in COPASI are function calls and
  * function definitions should not contain a call to delay.
  */
-void SBMLImporter::replace_delay_nodes(ConverterASTNode* pASTNode, Model* pModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, Reaction* pSBMLReaction, std::map<std::string, std::string>& localReplacementMap)
+void SBMLImporter::replaceDelayAndRateOfInReaction(ConverterASTNode * pASTNode, Model * pModel, std::map< const CDataObject *, SBase * > & copasi2sbmlmap, Reaction * pSBMLReaction, std::map< std::string, std::string > & localReplacementMap)
 {
+  if (pModel == NULL || mpCopasiModel == NULL)
+    {
+      fatalError();
+    }
+
+
   CNodeIterator< ConverterASTNode > itNode(pASTNode);
 
   while (itNode.next() != itNode.end())
@@ -7533,146 +7543,154 @@ void SBMLImporter::replace_delay_nodes(ConverterASTNode* pASTNode, Model* pModel
 
       if (itNode->getType() == AST_FUNCTION_DELAY)
         {
-          std::string formula = SBML_formulaToString(*itNode);
-          std::map<std::string, std::string>::const_iterator pos = this->mDelayNodeMap.find(formula);
-          std::string replacementId;
+          std::string prefix = "delay_replacement_parameter_";
+          std::map< std::string, std::string > & map = this->mDelayNodeMap;
+          replaceUnsupportedNodeInKinetic(itNode, map, prefix, pModel, copasi2sbmlmap, pSBMLReaction, localReplacementMap);
+        }
+      else if (itNode->getType() == AST_FUNCTION_RATE_OF)
+        {
+          std::string prefix = "rateOf_";
+          std::map< std::string, std::string > & map = this->mReplacedRates;
+          replaceUnsupportedNodeInKinetic(itNode, map, prefix, pModel, copasi2sbmlmap, pSBMLReaction, localReplacementMap);
+        }
+    }
+}
 
-          if (pos == this->mDelayNodeMap.end())
+
+void SBMLImporter::replaceUnsupportedNodeInKinetic(CNodeIterator< ConverterASTNode >& itNode, std::map< std::string, std::string > & map, std::string prefix, Model * pModel, std::map< const CDataObject *, SBase * > & copasi2sbmlmap, Reaction * pSBMLReaction, std::map< std::string, std::string > & localReplacementMap)
+{
+  std::string formula = SBML_formulaToString(*itNode);
+  std::map< std::string, std::string >::const_iterator pos = map.find(formula);
+  std::string replacementId;
+
+  if (pos == map.end())
+    {
+      // create a new global parameter and a rule for it
+      unsigned int index = 0;
+      std::ostringstream os;
+      os << prefix;
+      os << index;
+
+      while (this->mUsedSBMLIds.find(os.str()) != this->mUsedSBMLIds.end())
+        {
+          os.str("");
+          os << prefix;
+          ++index;
+          os << index;
+        }
+
+      Parameter * pParameter = pModel->createParameter();
+      assert(pParameter != NULL);
+
+      if (pParameter == NULL)
+        {
+          fatalError();
+        }
+
+      // mark the id as used
+      pParameter->setId(os.str());
+      pParameter->setName(os.str());
+      pParameter->setConstant(false);
+      replacementId = pParameter->getId();
+      this->mUsedSBMLIds.insert(replacementId);
+
+      // now we need to import that parameter
+      try
+        {
+          assert(mpCopasiModel);
+          this->createCModelValueFromParameter(pParameter, mpCopasiModel, copasi2sbmlmap);
+        }
+      catch (...)
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, "An unknown error has occurred while replacing a delay call in a kinetic law expression. Please report this to the authors of COPASI.");
+        }
+
+      // now we create the rule
+      AssignmentRule * pARule = pModel->createAssignmentRule();
+      assert(pARule != NULL);
+
+      if (pARule == NULL)
+        {
+          fatalError();
+        }
+
+      pARule->setVariable(pParameter->getId());
+
+      // we have to make sure that there is no local parameter referenced
+      // in the tree for the rule.
+      // If there is a local parameter, we have to convert it to a global
+      // parameter
+      // starting with SBML Level 3, the parameters of a kinetic law are expressed in
+      // terms of a new class called LocalParameter instead of Parameter
+      ListOfParameters * pList = NULL;
+
+      if (this->mLevel > 2)
+        {
+          pList = pSBMLReaction->getKineticLaw()->getListOfLocalParameters();
+        }
+      else
+        {
+          pList = pSBMLReaction->getKineticLaw()->getListOfParameters();
+        }
+
+      unsigned int i, iMax = pList->size();
+
+      if (iMax > 0)
+        {
+          std::set< std::string > localIds;
+          // first we fill the local id set
+          const Parameter * pParam = NULL;
+
+          for (i = 0; i < iMax; ++i)
             {
-              // create a new global parameter and a rule for it
-              unsigned int index = 0;
-              std::ostringstream os;
-              os << "delay_replacement_parameter_";
-              os << index;
-
-              while (this->mUsedSBMLIds.find(os.str()) != this->mUsedSBMLIds.end())
-                {
-                  os.str("");
-                  os << "delay_replacement_parameter_";
-                  ++index;
-                  os << index;
-                }
-
-              // create the global parameter
-              if (pModel == NULL)
-                {
-                  fatalError();
-                }
-
-              Parameter* pParameter = pModel->createParameter();
-              assert(pParameter != NULL);
-
-              if (pParameter == NULL)
-                {
-                  fatalError();
-                }
-
-              // mark the id as used
-              pParameter->setId(os.str());
-              pParameter->setName(os.str());
-              pParameter->setConstant(false);
-              replacementId = pParameter->getId();
-              this->mUsedSBMLIds.insert(replacementId);
-
-              // now we need to import that parameter
-              try
-                {
-                  assert(mpCopasiModel);
-                  this->createCModelValueFromParameter(pParameter, mpCopasiModel, copasi2sbmlmap);
-                }
-              catch (...)
-                {
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, "An unknown error has occurred while replacing a delay call in a kinetic law expression. Please report this to the authors of COPASI.");
-                }
-
-              // now we create the rule
-              AssignmentRule* pARule = pModel->createAssignmentRule();
-              assert(pARule != NULL);
-
-              if (pARule == NULL)
-                {
-                  fatalError();
-                }
-
-              pARule->setVariable(pParameter->getId());
-
-              // we have to make sure that there is no local parameter referenced
-              // in the tree for the rule.
-              // If there is a local parameter, we have to convert it to a global
-              // parameter
-              // starting with SBML Level 3, the parameters of a kinetic law are expressed in
-              // terms of a new class called LocalParameter instead of Parameter
-              ListOfParameters* pList = NULL;
-
-              if (this->mLevel > 2)
-                {
-                  pList = pSBMLReaction->getKineticLaw()->getListOfLocalParameters();
-                }
-              else
-                {
-                  pList = pSBMLReaction->getKineticLaw()->getListOfParameters();
-                }
-
-              unsigned int i, iMax = pList->size();
-
-              if (iMax > 0)
-                {
-                  std::set<std::string> localIds;
-                  // first we fill the local id set
-                  const Parameter* pParam = NULL;
-
-                  for (i = 0; i < iMax; ++i)
-                    {
-                      pParam = pList->get(i);
-                      assert(pParam != NULL);
-                      localIds.insert(pParam->getId());
-                    }
-
-                  // this has to be a two step process because we first have to identify
-                  // all local parameters that are used in a delay
-                  // Next we have to go over the tree again and replace all occurrences of
-                  // those parameters with the global parameters, independent of whether
-                  // they are used in a delay expression or not
-                  this->find_local_parameters_in_delay(*itNode, pSBMLReaction, pModel, localReplacementMap, localIds, copasi2sbmlmap);
-
-                  // now we have to at least replace the ones that appear in delays here already because otherwise
-                  // the import of the rule that was created for the delay replacement will fail because it can't resolve
-                  // the name of the local parameter in the rule
-                  if (!localReplacementMap.empty())
-                    {
-                      this->replace_name_nodes(*itNode, localReplacementMap);
-                    }
-                }
-
-              pARule->setMath(*itNode);
-
-              // and we need to import this rule
-              try
-                {
-                  this->importSBMLRule(pARule, copasi2sbmlmap, pModel);
-                }
-              catch (...)
-                {
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, "An unknown error has occurred while replacing a delay call in a kinetic law expression. Please report this to the authors of COPASI.");
-                }
-
-              // and we add the formula id pair to the map so that we can reuse it if
-              // the same expression comes up again
-              this->mDelayNodeMap.insert(std::pair<std::string, std::string>(formula, pParameter->getId()));
-            }
-          else
-            {
-              replacementId = pos->second;
+              pParam = pList->get(i);
+              assert(pParam != NULL);
+              localIds.insert(pParam->getId());
             }
 
-          itNode->setType(AST_NAME);
-          itNode->setName(replacementId.c_str());
+          // this has to be a two step process because we first have to identify
+          // all local parameters that are used in a delay
+          // Next we have to go over the tree again and replace all occurrences of
+          // those parameters with the global parameters, independent of whether
+          // they are used in a delay expression or not
+          this->find_local_parameters_in_delay(*itNode, pSBMLReaction, pModel, localReplacementMap, localIds, copasi2sbmlmap);
 
-          while (itNode->getNumChildren() > 0)
+          // now we have to at least replace the ones that appear in delays here already because otherwise
+          // the import of the rule that was created for the delay replacement will fail because it can't resolve
+          // the name of the local parameter in the rule
+          if (!localReplacementMap.empty())
             {
-              itNode->removeChild(0);
+              this->replace_name_nodes(*itNode, localReplacementMap);
             }
         }
+
+      pARule->setMath(*itNode);
+
+      // and we need to import this rule
+      try
+        {
+          this->importSBMLRule(pARule, copasi2sbmlmap, pModel);
+        }
+      catch (...)
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, "An unknown error has occurred while replacing a delay call in a kinetic law expression. Please report this to the authors of COPASI.");
+        }
+
+      // and we add the formula id pair to the map so that we can reuse it if
+      // the same expression comes up again
+      map.insert(std::pair< std::string, std::string >(formula, pParameter->getId()));
+    }
+  else
+    {
+      replacementId = pos->second;
+    }
+
+  itNode->setType(AST_NAME);
+  itNode->setName(replacementId.c_str());
+
+  while (itNode->getNumChildren() > 0)
+    {
+      itNode->removeChild(0);
     }
 }
 

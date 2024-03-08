@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,7 +34,12 @@
 #include "copasi/function/CFunctionDB.h"
 #include "copasi/sbml/StdException.h"
 #include "copasi/sbml/SBMLUnitSupport.h"
+
 #include "copasi/model/CModel.h"
+
+#include "copasi/utilities/CNodeIterator.h"
+#include "ConverterASTNode.h"
+
 
 LIBSBML_CPP_NAMESPACE_BEGIN
 class SBMLDocument;
@@ -128,6 +133,7 @@ protected:
   // this map maps a delay expression to the global parameter id it has been
   // replaced with
   std::map<std::string, std::string> mDelayNodeMap;
+  std::map< std::string, std::string > mReplacedRates;
   std::set<std::string> mUsedSBMLIds;
   bool mUsedSBMLIdsPopulated;
   std::map<std::string, std::string> mKnownCustomUserDefinedFunctions;
@@ -369,24 +375,31 @@ protected:
    * by a node that references a new global parameter which the function
    * creates. The global parameter gets an expression which corresponds to the
    * delay call.
-   * This is necessary because all knetic laws in COPASI are function calls and
+   *
+   * Similarly occurrences of rateOf terms are also replaced
+   *
+   * This is necessary because all kinetic laws in COPASI are function calls and
    * function definitions should not contain a call to delay.
    */
-  void replace_delay_nodes(ConverterASTNode* pNode,
-                           Model* pModel,
-                           std::map<const CDataObject*, SBase*>& copasi2sbmlmap,
-                           Reaction* pSBMLReaction,
-                           std::map<std::string, std::string>& localReplacementMap
-                          );
+  void replaceDelayAndRateOfInReaction(ConverterASTNode* pNode,
+                                       Model* pModel,
+                                       std::map<const CDataObject*, SBase*>& copasi2sbmlmap,
+                                       Reaction* pSBMLReaction,
+                                       std::map<std::string, std::string>& localReplacementMap
+                                      );
+
+  void replaceUnsupportedNodeInKinetic(CNodeIterator< ConverterASTNode >& itNode, std::map< std::string, std::string > & map, std::string prefix, Model * pModel, std::map< const CDataObject *, SBase * > & copasi2sbmlmap, Reaction * pSBMLReaction, std::map< std::string, std::string > & localReplacementMap);
 
   /**
-   * If we replace delay nodes within kineitc laws, we have to make sure that
+   * If we replace delay nodes within kinetic laws, we have to make sure that
    * there is no reference to a local parameter within the replaced
    * delay node because that would mean that we end up with a reference to a
    * local parameter in the rule for the delay replacement which is not allowed
    * in SBML.
+   *
    * Therefore we have to convert all local parameters which occur within a
    * delay call into global parameters.
+   *
    * This method finds all local parameters that have to be converted to global
    * parameters and it already creates the necessary global parameters.
    * The localReplacementMap returns a mapping between the is of the original
@@ -423,7 +436,7 @@ protected:
    * COPASI can not handle the delay function yet, so if it is used in some expression, we
    * have to abort reading the file.
    */
-  bool isDelayFunctionUsed(ConverterASTNode* pNode);
+  bool isDelayOrRateFunctionUsed(ConverterASTNode* pNode);
 
   /**
    * In a preprocessing step each expression tree that is imported,
@@ -431,10 +444,12 @@ protected:
    * is preprocessed to replace some of the nodes data.
    * See also replaceCallNodeNames and replaceTimeNodeNames.
    */
-  void preprocessNode(ConverterASTNode* pNode,
-                      Model* pSBMLModel,
-                      std::map<const CDataObject*, SBase*>& copasi2sbmlmap,
-                      Reaction* pSBMLReaction = NULL);
+  void preprocessNode(ConverterASTNode * pNode,
+                      Model * pSBMLModel,
+                      std::map< const CDataObject *, SBase * > & copasi2sbmlmap,
+                      Reaction * pSBMLReaction = NULL,
+                      bool ignoreRate = false
+                     );
 
   CFunction* findCorrespondingFunction(const CExpression * pExpression, const CReaction* reaction);
 
