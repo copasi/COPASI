@@ -98,7 +98,7 @@ public:
 
   const std::string & getSymbol() const;
 
-  virtual CIssue setExpression(const std::string & expression);
+  CIssue setExpression(const std::string & expression);
 
   CUnitDefinition & operator=(const CUnitDefinition & src);
 
