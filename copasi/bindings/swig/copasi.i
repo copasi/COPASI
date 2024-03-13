@@ -176,6 +176,8 @@ size_t INVALID_INDEX();
 %include "CReaction.i"
 %include "CModel.i"
 %include "CCopasiParameter.i"
+%include "SBMLUnitSupport.i"
+
 // enable process report 
 %feature("director") CProcessReport;
 

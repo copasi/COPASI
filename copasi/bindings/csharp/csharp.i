@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -1293,14 +1293,14 @@ int GetType_CModelParameter(CModelParameter* pPointer);
     {
         $action
     }
-    catch (std::exception &e)
-    {
-        SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
-        return $null;
-    }
     catch(CCopasiException& e)
     {
         SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.getMessage().getText().c_str());
+        return $null;
+    }
+    catch (std::exception &e)
+    {
+        SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
         return $null;
     }
 %}
@@ -1311,14 +1311,14 @@ int GetType_CModelParameter(CModelParameter* pPointer);
     {
         $action
     }
-    catch (std::exception &e)
-    {
-        SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
-        return $null;
-    }
     catch(CCopasiException& e)
     {
         SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.getMessage().getText().c_str());
+        return $null;
+    }
+    catch (std::exception &e)
+    {
+        SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
         return $null;
     }
 %}
@@ -1329,14 +1329,14 @@ int GetType_CModelParameter(CModelParameter* pPointer);
     {
         $action
     }
-    catch (std::exception &e)
-    {
-        SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
-        return $null;
-    }
     catch(CCopasiException& e)
     {
         SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.getMessage().getText().c_str());
+        return $null;
+    }
+    catch (std::exception &e)
+    {
+        SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
         return $null;
     }
 %}
@@ -1346,14 +1346,14 @@ int GetType_CModelParameter(CModelParameter* pPointer);
     {
         $action
     }
-    catch (std::exception &e)
-    {
-        SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
-        return $null;
-    }
     catch(CCopasiException& e)
     {
         SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.getMessage().getText().c_str());
+        return $null;
+    }
+    catch (std::exception &e)
+    {
+        SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
         return $null;
     }
 %}
@@ -1363,14 +1363,14 @@ int GetType_CModelParameter(CModelParameter* pPointer);
     {
         $action
     }
-    catch (std::exception &e)
-    {
-        SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
-        return $null;
-    }
     catch(CCopasiException& e)
     {
         SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.getMessage().getText().c_str());
+        return $null;
+    }
+    catch (std::exception &e)
+    {
+        SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
         return $null;
     }
 %}
@@ -1380,14 +1380,14 @@ int GetType_CModelParameter(CModelParameter* pPointer);
     {
         $action
     }
-    catch (std::exception &e)
-    {
-        SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
-        return $null;
-    }
     catch(CCopasiException& e)
     {
         SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.getMessage().getText().c_str());
+        return $null;
+    }
+    catch (std::exception &e)
+    {
+        SWIG_CSharpSetPendingException(SWIG_CSharpApplicationException, e.what());
         return $null;
     }
 %}
