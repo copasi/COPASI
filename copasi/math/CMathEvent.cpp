@@ -1388,28 +1388,19 @@ void CMathEvent::createUpdateSequences()
   const CObjectInterface::ObjectSet & SimulationValues = mpContainer->getSimulationUpToDateObjects();
 
   CObjectInterface::ObjectSet Requested;
+
   Requested.insert(mpDelay);
   mpContainer->getTransientDependencies().getUpdateSequence(mDelaySequence, CCore::SimulationContext::Default, StateValues, Requested, SimulationValues);
 
   Requested.clear();
+
   CObjectInterface::ObjectSet EventTargets;
-  CObjectInterface::ObjectSet Changed(StateValues);
   CAssignment * pAssignment = mAssignments.array();
   CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
 
   for (; pAssignment != pAssignmentEnd; ++pAssignment)
     {
       Requested.insert(pAssignment->getAssignment());
-
-      CObjectInterface::ObjectSet Prerequisites;
-      pAssignment->getAssignment()->appendPrerequisites(Prerequisites);
-
-      CObjectInterface::ObjectSet::const_iterator it = Prerequisites.begin();
-      CObjectInterface::ObjectSet::const_iterator end = Prerequisites.end();
-
-      for (; it != end; ++it)
-        if ((*it)->getPrerequisites().empty())
-          Changed.insert(*it);
 
       const CMathObject * pTarget = pAssignment->getTarget();
 
@@ -1433,7 +1424,7 @@ void CMathEvent::createUpdateSequences()
         }
     }
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mTargetValuesSequence, CCore::SimulationContext::Default, Changed, Requested, SimulationValues);
+  mpContainer->getTransientDependencies().getUpdateSequence(mTargetValuesSequence, CCore::SimulationContext::Default, StateValues, Requested, SimulationValues);
 
   // We need to add the total mass of the moieties to the state values.
   CObjectInterface::ObjectSet ExtendedStateValues = StateValues;

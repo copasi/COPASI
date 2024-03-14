@@ -162,8 +162,24 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
 #endif // DEBUG_OUTPUT
     }
 
-  CObjectInterface::ObjectSet::const_iterator it = changedObjects.begin();
-  CObjectInterface::ObjectSet::const_iterator end = changedObjects.end();
+  CObjectInterface::ObjectSet::const_iterator it = requestedObjects.begin();
+  CObjectInterface::ObjectSet::const_iterator end = requestedObjects.end();
+  CObjectInterface::ObjectSet Prerequisites;
+
+  for (; it != end && success; ++it)
+    (*it)->appendPrerequisites(Prerequisites);
+
+  CObjectInterface::ObjectSet ChangedObjects(changedObjects);
+
+  it = Prerequisites.begin();
+  end = Prerequisites.end();
+
+  for (; it != end; ++it)
+    if ((*it)->getPrerequisites().empty())
+      ChangedObjects.insert(*it);
+
+  it = ChangedObjects.begin();
+  end = ChangedObjects.end();
 
   // Mark all nodes which are changed or need to be calculated
   for (; it != end && success; ++it)
