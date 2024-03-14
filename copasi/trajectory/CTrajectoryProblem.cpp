@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -144,6 +144,19 @@ bool CTrajectoryProblem::elevateChildren()
 void CTrajectoryProblem::initObjects()
 {}
 
+// virtual
+void CTrajectoryProblem::signalChanged(const CCopasiParameter * pParameter)
+{
+  if (pParameter != nullptr
+      && (pParameter->getObjectName() == "StepNumber"
+          || pParameter->getObjectName() == "StepSize"
+          || pParameter->getObjectName() == "Duration"))
+    {
+      mStepNumberSetLast = pParameter->getObjectName() == "StepNumber";
+      sync();
+    }
+}
+
 /**
  * Set the number of time steps the trajectory method should integrate.
  * @param "const unsigned C_INT32 &" stepNumber
@@ -264,7 +277,6 @@ void CTrajectoryProblem::load(CReadConfig & configBuffer,
     }
 }
 
-
 void CTrajectoryProblem::printResult(std::ostream* pStream) const
 {
   if (!pStream)
@@ -370,7 +382,7 @@ void CTrajectoryProblem::setValues(const std::vector<C_FLOAT64>& values)
 {
   std::stringstream str;
 
-for (C_FLOAT64 value : values)
+  for (C_FLOAT64 value : values)
     {
       str << value;
     }
@@ -385,7 +397,7 @@ std::set<C_FLOAT64> CTrajectoryProblem::getValues() const
   std::vector<std::string> elems;
   ResultParser::split(*mpValueString, std::string(",; |\n\t\r"), elems);
 
-for (std::string & number : elems)
+  for (std::string & number : elems)
     {
       result.insert(ResultParser::saveToDouble(number));
     }

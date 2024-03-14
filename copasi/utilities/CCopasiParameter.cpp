@@ -37,7 +37,7 @@
 #include "copasi/utilities/CCopasiParameter.h"
 
 #include "copasi/undo/CData.h"
-#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CDataObjectReference.h"

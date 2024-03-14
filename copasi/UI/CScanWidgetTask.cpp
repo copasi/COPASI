@@ -31,7 +31,7 @@
 
 #include "copasi/copasi.h"
 
-#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/scan/CScanProblem.h"
 

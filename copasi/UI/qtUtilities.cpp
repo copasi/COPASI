@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <QtCore/QString>
 #include <QtCore/QFileInfo>
@@ -38,7 +38,7 @@
 #include <copasi/commandline/CConfigurationFile.h>
 #include "qtUtilities.h"
 #include "CQMessageBox.h"
-#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/utilities/CDirEntry.h"
 #include "copasiWidget.h"
 #include "CQCopasiApplication.h"
@@ -109,14 +109,18 @@ QVariant getParameterValue(const CCopasiParameter * pParameter)
       case CCopasiParameter::Type::GROUP:
       {
         const CCopasiParameterGroup * pGroup = dynamic_cast<const CCopasiParameterGroup *>(pParameter);
+
         if (pGroup != NULL)
-        { 
-          QList<QVariant> group;
-          for (size_t i = 0; i < pGroup->size(); ++i)
-            group.append(getParameterValue(pGroup->getParameter(i)));
-          return QVariant(group);
-        }
+          {
+            QList<QVariant> group;
+
+            for (size_t i = 0; i < pGroup->size(); ++i)
+              group.append(getParameterValue(pGroup->getParameter(i)));
+
+            return QVariant(group);
+          }
       }
+
       case CCopasiParameter::Type::INVALID:
         break;
     }
@@ -394,7 +398,6 @@ QString toTsvString(QAbstractItemView* pWidget,
   return toTsvString(pModel, writeColumnHeaders, writeRowHeaders);
 }
 
-
 bool isDarkMode()
 {
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
@@ -410,5 +413,5 @@ bool isDarkMode()
 
 bool isLightMode()
 {
-    return !isDarkMode();
+  return !isDarkMode();
 }
