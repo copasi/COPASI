@@ -108,7 +108,7 @@ QVariant CQEventDM::data(const QModelIndex &index, int role) const
               const CModelEntity * pEntity = nullptr;
 
               for (; it != end; ++it)
-                if (CDataObject::findObjectAncestor(it->getTargetObject(), pEntity))
+                if (CDataContainer::findObjectAncestor(it->getTargetObject(), pEntity))
                   {
                     if (it != begin)
                       {
