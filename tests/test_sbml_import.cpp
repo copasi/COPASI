@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -186,7 +186,7 @@ TEST_CASE("3: creating a new model testing avogadro", "[copasi,sbml]")
 
   {
     auto dh = CDataHandler();
-    dh.addDuringName(model->getModelValues()[0].getValueReference()->getCN());
+    dh.addDuringName(model->getModelValues()[0].getValueReference()->getRegisteredCN());
     task.initialize(CCopasiTask::OUTPUT_UI, &dh, NULL);
     task.process(true);
     task.restore();
@@ -198,7 +198,7 @@ TEST_CASE("3: creating a new model testing avogadro", "[copasi,sbml]")
     avo_num = 7e23;
     model->setAvogadro(avo_num, CCore::Framework::Concentration);
     auto dh = CDataHandler();
-    dh.addDuringName(model->getModelValues()[0].getValueReference()->getCN());
+    dh.addDuringName(model->getModelValues()[0].getValueReference()->getRegisteredCN());
     task.initialize(CCopasiTask::OUTPUT_UI, &dh, NULL);
     task.process(true);
     task.restore();
@@ -222,7 +222,7 @@ TEST_CASE("2: importing an sbml file and saving as COPASI file", "[copasi,sbml]"
   // create model values for amounts:
   auto * model = dm->getModel();
 
-for (auto & metab : model->getMetabolites())
+  for (auto & metab : model->getMetabolites())
     {
       std::stringstream str;
       str << metab.getObjectName() << "_amount";
@@ -244,7 +244,7 @@ for (auto & metab : model->getMetabolites())
   auto &task = (*dm->getTaskList())["Time-Course"];
 
   auto dh = CDataHandler();
-  dh.addDuringName(model->getModelValues()[0].getValueReference()->getCN());
+  dh.addDuringName(model->getModelValues()[0].getValueReference()->getRegisteredCN());
 
   task.initialize(CCopasiTask::OUTPUT_UI, &dh, NULL);
   task.process(true);
@@ -311,7 +311,6 @@ TEST_CASE("importing an SBML file and delete used function definition", "[copasi
   CRootContainer::removeDatamodel(dm);
 }
 
-
 TEST_CASE("SBML import / export of events with particle numbers", "[copasi,sbml]")
 {
   auto * dm = CRootContainer::addDatamodel();
@@ -376,10 +375,8 @@ TEST_CASE("SBML import / export of events with particle numbers", "[copasi,sbml]
   // export again for comparison
   std::string sbml_model_2 = dm->exportSBMLToString(NULL, 3, 1);
 
-
   CRootContainer::removeDatamodel(dm);
 }
-
 
 //#include <filesystem>
 //#include <copasi/utilities/CCopasiException.h>

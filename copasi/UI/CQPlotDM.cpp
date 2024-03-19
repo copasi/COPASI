@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -212,7 +212,7 @@ bool CQPlotDM::setData(const QModelIndex &index, const QVariant &value,
       if (changed)
         {
           emit dataChanged(index, index);
-          emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::CHANGE, pPS->CCopasiParameter::getCN());
+          emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::CHANGE, pPS->CCopasiParameter::getRegisteredCN());
         }
     }
   else if (role == Qt::CheckStateRole && index.column() == COL_ACTIVE_PLOTS)
@@ -242,7 +242,7 @@ bool CQPlotDM::insertRows(int position, int rows, const QModelIndex & parent)
 
       ++mFetched;
 
-      emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::ADD, pPS->CCopasiParameter::getCN());
+      emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::ADD, pPS->CCopasiParameter::getRegisteredCN());
     }
 
   endInsertRows();
@@ -263,7 +263,7 @@ bool CQPlotDM::removeRows(int position, int rows, const QModelIndex & parent)
     {
       CPlotSpecification* pPS =
         &mpDataModel->getPlotDefinitionList()->operator[](position);
-      std::string deletedKey = pPS->CCopasiParameter::getCN();
+      CRegisteredCommonName deletedKey = pPS->CCopasiParameter::getRegisteredCN();
 
       if (mFetched > 0)
         --mFetched;

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -76,7 +76,7 @@ CQOptimizationResult::~CQOptimizationResult()
 void CQOptimizationResult::init()
 {}
 
-bool CQOptimizationResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQOptimizationResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
 
   if (objectType == ListViews::ObjectType::MODEL && action == ListViews::DELETE)
@@ -261,5 +261,5 @@ void CQOptimizationResult::slotUpdateModel()
   const_cast< COptProblem * >(mpProblem)->restore(true);
 
   // We need to notify the GUI to update all values
-  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
+  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getRegisteredCN());
 }

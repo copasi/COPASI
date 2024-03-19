@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -150,7 +150,7 @@ bool CModelParameter::applyData(const CData & data, CUndoData::CChangeSet & chan
 
   if (data.isSetProperty(CData::OBJECT_NAME))
     {
-      setCN(data.getProperty(CData::OBJECT_NAME).toString());
+      setCN(CRegisteredCommonName(data.getProperty(CData::OBJECT_NAME).toString(), getSet()));
     }
 
   if (mpParent != NULL && data.isSetProperty(CData::OBJECT_INDEX))
@@ -382,7 +382,7 @@ CValidatedUnit CModelParameter::getUnit(const CCore::Framework & framework) cons
 }
 
 // virtual
-void CModelParameter::setCN(const CCommonName & cn)
+void CModelParameter::setCN(const CRegisteredCommonName & cn)
 {
   mCN = cn;
 }
@@ -1007,13 +1007,13 @@ void CModelParameterSpecies::compile()
 }
 
 // virtual
-void CModelParameterSpecies::setCN(const CCommonName & cn)
+void CModelParameterSpecies::setCN(const CRegisteredCommonName & cn)
 {
   CModelParameter::setCN(cn);
 
   // Determine the CN for the compartment.
   // "CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A]"
-  mCompartmentCN = mCN.substr(0, mCN.find(",Vector=Metabolites"));
+  mCompartmentCN = CRegisteredCommonName(mCN.substr(0, mCN.find(",Vector=Metabolites")), getSet());
 }
 
 // virtual

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,7 +26,6 @@
 
 #include "CQNotes.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
-
 
 #if defined(QT_USE_TEXTBROWSER)
 # include <QTextBrowser>
@@ -220,7 +219,7 @@ void CQNotes::slotBtnCopy()
 }
 
 // virtual
-bool CQNotes::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQNotes::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {

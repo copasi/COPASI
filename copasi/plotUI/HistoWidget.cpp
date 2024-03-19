@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -239,7 +239,7 @@ bool HistoWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original /
   if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
 
   std::string title = TO_UTF8(mpEditTitle->text());
-  CCommonName name = mpObjectX ? mpObjectX->getCN() : CCommonName("");
+  CRegisteredCommonName name = mpObjectX ? mpObjectX->getRegisteredCN() : CRegisteredCommonName();
   C_FLOAT64 increment = mpEditIncrement->text().toDouble();
   unsigned C_INT32 lineType = (unsigned C_INT32) mpBoxType->currentIndex();
   unsigned C_INT32 lineSubType = (unsigned C_INT32) mpBoxLineSubType->currentIndex();
@@ -272,7 +272,6 @@ bool HistoWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original /
       changed = true;
       curve->setValue("increment", increment);
     }
-
 
   if (original == NULL
       || original->getValue< unsigned C_INT32 >("Line type") != lineType)
@@ -335,7 +334,6 @@ void HistoWidget::setMultipleEditMode(bool mode)
   mpEditVariable->setEnabled(!mode);
   mpBtnVariable->setEnabled(!mode);
 }
-
 
 void HistoWidget::typeChanged(int type)
 {

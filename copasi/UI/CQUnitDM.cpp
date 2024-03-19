@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -214,7 +214,7 @@ bool CQUnitDM::setData(const QModelIndex &index, const QVariant &value,
         pUnitDef->setObjectName(TO_UTF8(createNewName("unit", COL_SYMBOL_UNITS)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::CHANGE, pUnitDef->getCN());
+      emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::CHANGE, pUnitDef->getRegisteredCN());
     }
 
   return true;
@@ -233,7 +233,7 @@ bool CQUnitDM::insertRows(int position, int rows, const QModelIndex & parent)
       ++mFetched;
 
       CRootContainer::getUnitList()->add(pUnitDef, true);
-      emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::ADD, pUnitDef->getCN());
+      emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::ADD, pUnitDef->getRegisteredCN());
     }
 
   endInsertRows();
@@ -280,7 +280,7 @@ bool CQUnitDM::removeRows(int position, int rows, const QModelIndex & parent)
               delete pUnitDef;
             }
 
-          emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::DELETE, *itDeletedCN);
+          emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::DELETE, CRegisteredCommonName(*itDeletedCN, nullptr));
         }
     }
 

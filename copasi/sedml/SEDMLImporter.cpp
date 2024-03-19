@@ -562,8 +562,8 @@ void SEDMLImporter::addCurveToCopasiPlot(
 
             CPlotItem * plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
             plItem->setValue("Line width", 2.0);
-            plItem->addChannel(tmpX->getCN());
-            plItem->addChannel(tmpY->getCN());
+            plItem->addChannel(tmpX->getRegisteredCN());
+            plItem->addChannel(tmpY->getRegisteredCN());
 
             applyStyleToCopasiItem(mpSEDMLDocument->getStyle(curve->getStyle()), plItem);
 
@@ -617,9 +617,9 @@ void SEDMLImporter::addCurveToCopasiPlot(
 
             CPlotItem * plItem = pPl->createItem(itemTitle, CPlotItem::bandedGraph);
             plItem->setValue("Line width", 2.0);
-            plItem->addChannel(tmpX->getCN());
-            plItem->addChannel(tmpY->getCN());
-            plItem->addChannel(tmpZ->getCN());
+            plItem->addChannel(tmpX->getRegisteredCN());
+            plItem->addChannel(tmpY->getRegisteredCN());
+            plItem->addChannel(tmpZ->getRegisteredCN());
 
             applyStyleToCopasiItem(mpSEDMLDocument->getStyle(curve->getStyle()), plItem);
 
@@ -681,9 +681,9 @@ void SEDMLImporter::addSurfaceToCopasiPlot(
 
             CPlotItem * plItem = pPlot->createItem(itemTitle, CPlotItem::spectogram);
             plItem->setValue("Line width", 2.0);
-            plItem->addChannel(tmpX->getCN());
-            plItem->addChannel(tmpY->getCN());
-            plItem->addChannel(tmpZ->getCN());
+            plItem->addChannel(tmpX->getRegisteredCN());
+            plItem->addChannel(tmpY->getRegisteredCN());
+            plItem->addChannel(tmpZ->getRegisteredCN());
 
             //assertParameter("maxZ", CCopasiParameter::Type::STRING, std::string(""));
             plItem->setValue< bool >("logZ", pSurface->getLogZ());
@@ -822,11 +822,11 @@ void SEDMLImporter::importReport(
       std::string title = ds->isSetLabel() ? ds->getLabel() : generator->isSetName() ? generator->getName()
                           : ds->getId();
 
-      pHeader->push_back(CDataString(title).getCN());
-      pHeader->push_back(def->getSeparator().getCN());
+      pHeader->push_back(CDataString(title).getRegisteredCN());
+      pHeader->push_back(def->getSeparator().getRegisteredCN());
 
-      pBody->push_back(tmp->getCN());
-      pBody->push_back(def->getSeparator().getCN());
+      pBody->push_back(tmp->getRegisteredCN());
+      pBody->push_back(def->getSeparator().getRegisteredCN());
 
       if (!isTimeCourse && !isScanTask)
         for (unsigned int j = 0; j < generator->getNumVariables(); ++j)

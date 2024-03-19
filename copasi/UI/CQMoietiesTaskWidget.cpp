@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -79,7 +79,7 @@ bool CQMoietiesTaskWidget::taskFinishedEvent()
   bool success = true;
 
   if (success && isVisible())
-    mpListView->switchToOtherWidget(ListViews::WidgetType::MassConservationResult, std::string()); //change to the results window
+    mpListView->switchToOtherWidget(ListViews::WidgetType::MassConservationResult, CRegisteredCommonName()); //change to the results window
 
   return success;
 }

@@ -287,7 +287,7 @@ bool CSEDMLExporter::exportNthScanItem(CScanProblem * pProblem,
           std::vector< std::string > elems;
           ResultParser::split(values, std::string(",; |\n\t\r"), elems);
 
-for (std::string & number : elems)
+          for (std::string & number : elems)
             {
               range->addValue(ResultParser::saveToDouble(number));
             }
@@ -303,7 +303,7 @@ for (std::string & number : elems)
           range->setType(log ? "log" : "linear");
         }
 
-      const CRegisteredCommonName & cn = (current->getParameter("Object")->getValue< CCommonName >());
+      const CRegisteredCommonName & cn = (current->getParameter("Object")->getValue< CRegisteredCommonName >());
       const CDataObject * pObject = static_cast< const CDataObject * >(mpDataModel->getObject(cn));
 
       if (pObject == NULL)
@@ -597,7 +597,7 @@ CSEDMLExporter::exportAlgorithm(SedAlgorithm * alg,
         break;
     }
 
-for (const auto & entry : SEDMLUtils::PARAMETER_KISAO_MAP)
+  for (const auto & entry : SEDMLUtils::PARAMETER_KISAO_MAP)
     {
       const CCopasiParameter * pParameter = pMethod->getParameter(entry.second);
 
@@ -937,7 +937,7 @@ void CSEDMLExporter::exportPlotItem(const CPlotItem * pPlotItem, size_t i, size_
   // first resolve all elements needed
   std::vector< std::pair< const CDataObject *, VariableInfo > > resolvedElements;
 
-for (auto & channel : pPlotItem->getChannels())
+  for (auto & channel : pPlotItem->getChannels())
     {
       const CDataObject * object = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(channel));
 

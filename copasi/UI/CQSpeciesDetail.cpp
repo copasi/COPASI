@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -101,7 +101,7 @@ bool CQSpeciesDetail::leaveProtected()
   return true;
 }
 
-bool CQSpeciesDetail::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQSpeciesDetail::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   mpMetab = dynamic_cast< CMetab * >(mpObject);
 
@@ -218,7 +218,7 @@ bool CQSpeciesDetail::enterProtected()
 
   if (!mpMetab)
     {
-      mpListView->switchToOtherWidget(ListViews::WidgetType::Species, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::Species, CRegisteredCommonName());
       return false;
     }
 
@@ -509,7 +509,7 @@ void CQSpeciesDetail::copy()
 
       if (pObject != NULL)
         {
-          mpListView->switchToOtherWidget(ListViews::WidgetType::SpeciesDetail, pObject->getCN());
+          mpListView->switchToOtherWidget(ListViews::WidgetType::SpeciesDetail, pObject->getRegisteredCN());
         }
     }
 
@@ -665,7 +665,7 @@ void CQSpeciesDetail::slotSwitchToReaction(int row, int /* column */)
       s2 = pReaction->getObjectName();
 
       if (s1 == s2)
-        mpListView->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, pReaction->getCN());
+        mpListView->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, pReaction->getRegisteredCN());
     }
 }
 
@@ -709,7 +709,7 @@ void CQSpeciesDetail::createNewSpecies()
         break;
     }
 
-  std::string cn = mpMetab->getCN();
+  CRegisteredCommonName cn = mpMetab->getRegisteredCN();
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpMetab);
 

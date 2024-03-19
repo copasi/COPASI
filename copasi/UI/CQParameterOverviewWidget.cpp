@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -79,7 +79,7 @@ CQParameterOverviewWidget::~CQParameterOverviewWidget()
 }
 
 // virtual
-bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
 
   if (objectType == ListViews::ObjectType::MODEL && action == ListViews::DELETE)
@@ -406,7 +406,7 @@ void CQParameterOverviewWidget::slotBtnNew()
   pSetToApply->updateModel();
 
   // Notify the GUI that the model state has changed.
-  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, pModel->getCN());
+  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, pModel->getRegisteredCN());
 
   enterProtected();
 }
@@ -451,7 +451,7 @@ void CQParameterOverviewWidget::slotBtnCopy()
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
 
-  mpListView->switchToOtherWidget(ListViews::WidgetType::ParameterSetDetail, pNew->CDataObject::getCN());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::ParameterSetDetail, pNew->CDataObject::getRegisteredCN());
 }
 
 // virtual

@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -70,10 +70,10 @@ TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
 
     auto* ref = dynamic_cast<const CArrayElementReference*>(dm->getObject(CCommonName("CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[A.ParticleNumber][(reaction).k1]")));
     auto* obj = (double*)ref->getValuePointer();
-    auto cn = ref->getCN();
+    auto cn = ref->getRegisteredCN();
     REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[A.ParticleNumber][(reaction).k1]"));
 
-    auto registeredCN = CRegisteredCommonName(cn);
+    auto registeredCN = cn;
     registeredCN.sanitizeObjectNames();
     REQUIRE(cn == registeredCN);
   }

@@ -160,9 +160,9 @@ public:
 
   /**
    * Set the CN of the object represented by the parameter
-   * @param const CCommonName & cn
+   * @param const CRegisteredCommonName & cn
    */
-  virtual void setCN(const CCommonName & cn);
+  virtual void setCN(const CRegisteredCommonName & cn);
 
   /**
    * Retrieve the CN of the object represented by the parameter
@@ -457,9 +457,9 @@ public:
 
   /**
    * Set the CN of the object represented by the parameter
-   * @param const CCommonName & cn
+   * @param const CRegisteredCommonName & cn
    */
-  virtual void setCN(const CCommonName & cn);
+  virtual void setCN(const CRegisteredCommonName & cn);
 
   /**
    * Set the value of the parameter based on the current framework

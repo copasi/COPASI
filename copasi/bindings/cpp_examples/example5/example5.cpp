@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -184,14 +184,14 @@ int main()
   std::vector<CRegisteredCommonName>* pBody = pReport->getBodyAddr();
 
   // in the report header we write two strings and a separator
-  pHeader->push_back(CRegisteredCommonName(CDataString("best value of objective function").getCN()));
-  pHeader->push_back(CRegisteredCommonName(pReport->getSeparator().getCN()));
-  pHeader->push_back(CRegisteredCommonName(CDataString("initial value of F").getCN()));
+  pHeader->push_back(CRegisteredCommonName(CDataString("best value of objective function").getRegisteredCN()));
+  pHeader->push_back(CRegisteredCommonName(pReport->getSeparator().getRegisteredCN()));
+  pHeader->push_back(CRegisteredCommonName(CDataString("initial value of F").getRegisteredCN()));
   // in the report body we write the best value of the objective function and
   // the initial value of the fixed parameter separated by a comma
-  pBody->push_back(CRegisteredCommonName(pOptProblem->getObject(CCommonName("Reference=Best Value"))->getCN()));
-  pBody->push_back(CRegisteredCommonName(pReport->getSeparator().getCN()));
-  pBody->push_back(CRegisteredCommonName(pFixedModelValue->getObject(CCommonName("Reference=InitialValue"))->getCN()));
+  pBody->push_back(CRegisteredCommonName(pOptProblem->getObject(CCommonName("Reference=Best Value"))->getRegisteredCN()));
+  pBody->push_back(CRegisteredCommonName(pReport->getSeparator().getRegisteredCN()));
+  pBody->push_back(CRegisteredCommonName(pFixedModelValue->getObject(CCommonName("Reference=InitialValue"))->getRegisteredCN()));
 
   // set the report for the task
   pOptTask->getReport().setReportDefinition(pReport);

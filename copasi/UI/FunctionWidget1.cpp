@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -770,7 +770,7 @@ void FunctionWidget1::slotBtnNew()
 
   CRootContainer::getFunctionList()->add(pFunc = new CKinFunction(name), true);
 
-  CCommonName CN = pFunc->getCN();
+  CRegisteredCommonName CN = pFunc->getRegisteredCN();
   protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::ADD, CN);
   // enter(key);
   mpListView->switchToOtherWidget(ListViews::WidgetType::FunctionDetail, CN);
@@ -807,7 +807,7 @@ void FunctionWidget1::slotBtnDelete()
         CRootContainer::getFunctionList()->loadedFunctions().remove(mpObject->getObjectName());
 
         protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::DELETE, mObjectCN);
-        protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::DELETE, std::string());//Refresh all as there may be dependencies.
+        protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::DELETE, CRegisteredCommonName());//Refresh all as there may be dependencies.
         break;
       }
 
@@ -821,7 +821,7 @@ void FunctionWidget1::slotBtnDelete()
 //************************  standard interface to COPASI widgets ******************
 
 //! Function to update the COPASI widgets
-bool FunctionWidget1::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool FunctionWidget1::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {
@@ -1080,6 +1080,6 @@ bool FunctionWidget1::enterProtected()
   if (func)
     return loadFromFunction(func);
 
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Functions, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Functions, CRegisteredCommonName());
   return false;
 }

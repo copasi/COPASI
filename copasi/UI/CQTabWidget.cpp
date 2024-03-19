@@ -154,7 +154,7 @@ bool CQTabWidget::enterProtected()
   return true;
 }
 
-bool CQTabWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQTabWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {

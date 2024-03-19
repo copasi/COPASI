@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -208,7 +208,7 @@ void ReactionsWidget1::slotBtnNew()
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
 
-  mpListView->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, pReaction->getCN());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, pReaction->getRegisteredCN());
 }
 
 void ReactionsWidget1::slotBtnCopy()
@@ -350,7 +350,7 @@ void ReactionsWidget1::copy()
 
   if (pObject != NULL)
     {
-      mpListView->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, pObject->getCN());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, pObject->getRegisteredCN());
     }
 
   pdelete(pDialog);
@@ -541,7 +541,7 @@ void ReactionsWidget1::slotGotoFunction()
 {
   if (mpRi == NULL) return;
 
-  mpListView->switchToOtherWidget(ListViews::WidgetType::FunctionDetail, mpRi->getFunction().getCN());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::FunctionDetail, mpRi->getFunction().getRegisteredCN());
 }
 
 void ReactionsWidget1::slotNewFunction()
@@ -565,9 +565,9 @@ void ReactionsWidget1::slotNewFunction()
     }
 
   CRootContainer::getFunctionList()->add(pFunc = new CKinFunction(nname), true);
-  protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::ADD, pFunc->getCN());
+  protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::ADD, pFunc->getRegisteredCN());
 
-  mpListView->switchToOtherWidget(ListViews::WidgetType::FunctionDetail, pFunc->getCN());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::FunctionDetail, pFunc->getRegisteredCN());
 }
 
 void ReactionsWidget1::slotAddNoiseChanged(bool hasNoise)
@@ -642,7 +642,7 @@ void ReactionsWidget1::slotCompartmentSelectionChanged(const QString & compartme
   mpParameterMapping->updateTable(*mpRi, dynamic_cast< CReaction * >(mpObject));
 }
 
-bool ReactionsWidget1::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool ReactionsWidget1::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   switch (objectType)
     {
@@ -700,7 +700,7 @@ bool ReactionsWidget1::enterProtected()
   if (reac)
     return loadFromReaction(reac);
 
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Reactions, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Reactions, CRegisteredCommonName());
   return false;
 }
 

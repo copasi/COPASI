@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -115,7 +115,7 @@ void CQCompartment::slotBtnNew()
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
 
-  mpListView->switchToOtherWidget(ListViews::WidgetType::CompartmentDetail, mpCompartment->getCN());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::CompartmentDetail, mpCompartment->getRegisteredCN());
 }
 
 void CQCompartment::slotBtnCopy() {}
@@ -215,7 +215,7 @@ void CQCompartment::copy()
 
       if (pObject != NULL)
         {
-          mpListView->switchToOtherWidget(ListViews::WidgetType::CompartmentDetail, pObject->getCN());
+          mpListView->switchToOtherWidget(ListViews::WidgetType::CompartmentDetail, pObject->getRegisteredCN());
         }
     }
 }
@@ -373,7 +373,7 @@ bool CQCompartment::leaveProtected()
   return true;
 }
 
-bool CQCompartment::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQCompartment::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   mpCompartment = dynamic_cast< CCompartment * >(mpObject);
 
@@ -586,7 +586,7 @@ void CQCompartment::slotMetaboliteTableCurrentChanged(int row, int col)
         s2 = (*it)->getObjectName();
 
         if (s1 == s2)
-          mpListView->switchToOtherWidget(ListViews::WidgetType::SpeciesDetail, (*it)->getCN());
+          mpListView->switchToOtherWidget(ListViews::WidgetType::SpeciesDetail, (*it)->getRegisteredCN());
       }
 }
 

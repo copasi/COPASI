@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -158,7 +158,7 @@ bool CQReportDM::setData(const QModelIndex &index, const QVariant &value,
         pRepDef->setObjectName(TO_UTF8(value.toString()));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::CHANGE, pRepDef->getCN());
+      emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::CHANGE, pRepDef->getRegisteredCN());
     }
 
   return true;
@@ -181,7 +181,7 @@ bool CQReportDM::insertRows(int position, int rows, const QModelIndex & parent)
 
       ++mFetched;
 
-      emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::ADD, pRepDef->getCN());
+      emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::ADD, pRepDef->getRegisteredCN());
     }
 
   endInsertRows();
@@ -232,7 +232,7 @@ bool CQReportDM::removeRows(int position, int rows, const QModelIndex & parent)
       if (mFetched > 0)
         --mFetched;
 
-      std::string deletedKey = pReport->getCN();
+      CRegisteredCommonName deletedKey = pReport->getRegisteredCN();
       pReportList->remove(pReport);
       emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::DELETE, deletedKey);
     }

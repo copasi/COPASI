@@ -21,6 +21,7 @@
 class CDataObject;
 class CDataContainer;
 class CCommonName;
+class CRegisteredCommonName;
 
 //********************************************************************************
 
@@ -60,6 +61,8 @@ public:
    * @return CCommonName
    */
   virtual CCommonName getCN() const = 0;
+
+  CRegisteredCommonName getRegisteredCN() const;
 
   /**
    * Retrieve a descendant object by its CN.

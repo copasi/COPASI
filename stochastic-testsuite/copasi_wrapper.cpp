@@ -191,16 +191,16 @@ int main(int argc, char *argv[])
       std::vector<CRegisteredCommonName> * pBody = pReport->getBodyAddr();
 
       // Add time column
-      pHeader->push_back(CDataString("time").getCN());
-      pBody->push_back(CCommonName(pDataModel->getModel()->getCN() + ",Reference=Time"));
+      pHeader->push_back(CDataString("time").getRegisteredCN());
+      pBody->push_back(pDataModel->getModel()->getObject("Reference=Time")->getRegisteredCN());
 
       iMax = iMax - NUMARGS;
       const CDataVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
 
       for (i = 0; i < iMax; ++i)
         {
-          pHeader->push_back(pReport->getSeparator().getCN());
-          pBody->push_back(pReport->getSeparator().getCN());
+          pHeader->push_back(pReport->getSeparator().getRegisteredCN());
+          pBody->push_back(pReport->getSeparator().getRegisteredCN());
 
           unsigned int j, jMax = metabolites.size();
 
@@ -220,8 +220,8 @@ int main(int argc, char *argv[])
               exit(1);
             }
 
-          pHeader->push_back(CDataString(SBMLId).getCN());
-          pBody->push_back(metabolites[j].getObject(CCommonName("Reference=ParticleNumber"))->getCN());
+          pHeader->push_back(CDataString(SBMLId).getRegisteredCN());
+          pBody->push_back(metabolites[j].getObject(CCommonName("Reference=ParticleNumber"))->getRegisteredCN());
         }
 
       CDataVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();

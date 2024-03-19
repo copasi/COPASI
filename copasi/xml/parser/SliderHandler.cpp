@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,6 +18,7 @@
 #include "SliderHandler.h"
 #include "CXMLParser.h"
 #include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/model/CModel.h"
 
 #include "copasi/utilities/CSlider.h"
 
@@ -90,7 +91,7 @@ CXMLHandler * SliderHandler::processStart(const XML_Char * pszName,
                 pSlider->setAssociatedEntityKey("");
               }
 
-            pSlider->setSliderObject((std::string) ObjectCN);
+            pSlider->setSliderObject(CRegisteredCommonName(ObjectCN, mpData->pModel));
             pSlider->setSliderType(ObjectType);
             pSlider->setMaxValue(MaxValue);
             pSlider->setMinValue(MinValue);

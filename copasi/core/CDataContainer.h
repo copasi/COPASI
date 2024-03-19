@@ -42,29 +42,6 @@ class CDataContainer: public CDataObject
 public:
   static const CObjectInterface::ContainerList EmptyList;
 
-  template < class CType > static bool findObjectAncestor(const CDataObject * pObject, CType *& pAncestor)
-  {
-    pAncestor = nullptr;
-
-    if (pObject == nullptr)
-      return false;
-
-    CDataContainer * p = pObject->getObjectParent();
-
-    while (p)
-      {
-        if (dynamic_cast< CType * >(p) != nullptr)
-          {
-            pAncestor = static_cast< CType * >(p);
-            return true;
-          }
-
-        p = p->getObjectParent();
-      }
-
-    return false;
-  }
-
   typedef CDataObjectMap objectMap;
 
 protected:

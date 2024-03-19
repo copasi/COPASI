@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,8 +68,8 @@ CQPlotsWidget::CQPlotsWidget(QWidget *parent, const char *name)
   mpTblPlots->sortByColumn(COL_ROW_NUMBER, Qt::AscendingOrder);
   setFramework(mFramework);
   // Connect the table widget
-  connect(mpPlotDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
+  connect(mpPlotDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)));
   connect(mpPlotDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
@@ -169,7 +169,7 @@ void CQPlotsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQPlotsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQPlotsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   if (!mIgnoreUpdates && isVisible())
     {
@@ -274,7 +274,7 @@ void CQPlotsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
   if (pVector != NULL &&
       index.row() < pVector->size())
     {
-      mpListView->switchToOtherWidget(ListViews::WidgetType::PlotDetail, pVector->operator [](index.row()).getCN());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::PlotDetail, pVector->operator [](index.row()).getRegisteredCN());
     }
 }
 

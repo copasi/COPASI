@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -82,12 +82,12 @@ LIBCOMBINE_CPP_NAMESPACE_USE
 
 // static
 const CEnumAnnotation< std::string, CDataModel::ContentType >
-CDataModel::ContentTypeNames( {"COPASI",
-  "GEPASI",
-  "SBML",
-  "SED-ML",
-  "OMEX"
-});
+CDataModel::ContentTypeNames({"COPASI",
+                              "GEPASI",
+                              "SBML",
+                              "SED-ML",
+                              "OMEX"
+                             });
 
 // static
 CDataModel::ContentType CDataModel::contentType(std::istream & content)
@@ -719,9 +719,9 @@ bool CDataModel::loadModelParameterSets(const std::string & fileName,
   CDataVectorN< CModelParameterSet > & loadedSet = parameterSetModel->getModelParameterSets();
   CCommonName loadedModelCn = parameterSetModel->getCN();
 
-for (CModelParameterSet & set : loadedSet)
+  for (CModelParameterSet & set : loadedSet)
     {
-for (CModelParameter * current : dynamic_cast< CModelParameterGroup & >(set))
+      for (CModelParameter * current : dynamic_cast< CModelParameterGroup & >(set))
         {
           replaceCnInGroup(current, loadedModelCn, thisModelsCn);
         }
@@ -764,7 +764,7 @@ void CDataModel::replaceCnInGroup(CModelParameter * pParam,
   if (!group)
     return;
 
-for (CModelParameter * element : *group)
+  for (CModelParameter * element : *group)
     {
       CModelParameterGroup * inside = dynamic_cast< CModelParameterGroup * >(element);
 
@@ -781,7 +781,7 @@ for (CModelParameter * element : *group)
 
       cn.replace(start, oldCN.length(), newCN);
 
-      element->setCN(CCommonName(cn));
+      element->setCN(CRegisteredCommonName(cn, this));
     }
 }
 
@@ -2040,7 +2040,6 @@ bool CDataModel::exportCombineArchive(
   return true;
 }
 
-
 void addMessages(const std::string & title, std::stringstream & messageStream, const std::vector< CCopasiMessage > & messages)
 {
   if (messages.size() == 0)
@@ -2050,7 +2049,7 @@ void addMessages(const std::string & title, std::stringstream & messageStream, c
 
   messageStream << "\n";
 
-for (auto & message : messages)
+  for (auto & message : messages)
     {
       auto startPos = message.getText().find_first_of("\n");
       auto text = message.getText().substr(startPos + 1);
@@ -2251,7 +2250,6 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
           CCopasiMessage message = CCopasiMessage::getLastMessage();
           importSedMLMessages.push_back(message);
         }
-
     }
 
   numMessagesBefore = CCopasiMessage::size();
@@ -2268,7 +2266,6 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
       CCopasiMessage message = CCopasiMessage::getLastMessage();
       importSbmlMessages.push_back(message);
     }
-
 
   std::stringstream messageStream;
   auto severity = loadedModel ? CCopasiMessage::WARNING : CCopasiMessage::ERROR;
@@ -2295,7 +2292,6 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
   if (!importSbmlMessages.empty())
     addMessages("Messages from attempted SBML file import: ", messageStream, importSbmlMessages);
-
 
   std::string additionalMessages = messageStream.str();
 
@@ -2735,7 +2731,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
         pReport->setSeparator("\t");
-        pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Steady-State]"));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Steady-State]", this));
         break;
 
       case CTaskEnum::Task::timeCourse:
@@ -2744,8 +2740,8 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
         pReport->setSeparator("\t");
-        pReport->getHeaderAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Time-Course],Object=Description"));
-        pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Time-Course],Object=Result"));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Time-Course],Object=Description", this));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Time-Course],Object=Result", this));
         break;
 
       case CTaskEnum::Task::scan:
@@ -2758,7 +2754,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->setComment("Automatically generated report.");
         pReport->setIsTable(false);
         pReport->setSeparator("\t");
-        pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result", this));
         break;
 
       case CTaskEnum::Task::optimization:
@@ -2770,26 +2766,26 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->setSeparator("\t");
 
         // Header
-        pReport->getHeaderAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Optimization],Object=Description"));
-        pReport->getHeaderAddr()->push_back(CCommonName("String=\\[Function Evaluations\\]"));
-        pReport->getHeaderAddr()->push_back(CCommonName("Separator=\t"));
-        pReport->getHeaderAddr()->push_back(CCommonName("String=\\[Best Value\\]"));
-        pReport->getHeaderAddr()->push_back(CCommonName("Separator=\t"));
-        pReport->getHeaderAddr()->push_back(CCommonName("String=\\[Best Parameters\\]"));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Optimization],Object=Description", this));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("String=\\[Function Evaluations\\]", this));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("Separator=\t", this));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("String=\\[Best Value\\]", this));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("Separator=\t", this));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("String=\\[Best Parameters\\]", this));
 
         // Body
-        pReport->getBodyAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations"));
-        pReport->getBodyAddr()->push_back(CCommonName("Separator=\t"));
-        pReport->getBodyAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value"));
-        pReport->getBodyAddr()->push_back(CCommonName("Separator=\t"));
-        pReport->getBodyAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Parameters"));
+        pReport->getBodyAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations", this));
+        pReport->getBodyAddr()->push_back(CRegisteredCommonName("Separator=\t", this));
+        pReport->getBodyAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value", this));
+        pReport->getBodyAddr()->push_back(CRegisteredCommonName("Separator=\t", this));
+        pReport->getBodyAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Parameters", this));
 
         // Footer
-        pReport->getFooterAddr()->push_back(CCommonName("String=\n"));
-        pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Optimization],Object=Result"));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("String=\n", this));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Optimization],Object=Result", this));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::parameterFitting:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2799,26 +2795,26 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->setSeparator("\t");
 
         // Header
-        pReport->getHeaderAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Description"));
-        pReport->getHeaderAddr()->push_back(CCommonName("String=\\[Function Evaluations\\]"));
-        pReport->getHeaderAddr()->push_back(CCommonName("Separator=\t"));
-        pReport->getHeaderAddr()->push_back(CCommonName("String=\\[Best Value\\]"));
-        pReport->getHeaderAddr()->push_back(CCommonName("Separator=\t"));
-        pReport->getHeaderAddr()->push_back(CCommonName("String=\\[Best Parameters\\]"));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Description", this));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("String=\\[Function Evaluations\\]", this));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("Separator=\t", this));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("String=\\[Best Value\\]", this));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("Separator=\t", this));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("String=\\[Best Parameters\\]", this));
 
         // Body
-        pReport->getBodyAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Function Evaluations"));
-        pReport->getBodyAddr()->push_back(CCommonName("Separator=\t"));
-        pReport->getBodyAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Value"));
-        pReport->getBodyAddr()->push_back(CCommonName("Separator=\t"));
-        pReport->getBodyAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Parameters"));
+        pReport->getBodyAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Function Evaluations", this));
+        pReport->getBodyAddr()->push_back(CRegisteredCommonName("Separator=\t", this));
+        pReport->getBodyAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Value", this));
+        pReport->getBodyAddr()->push_back(CRegisteredCommonName("Separator=\t", this));
+        pReport->getBodyAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Problem=Parameter Estimation,Reference=Best Parameters", this));
 
         // Footer
-        pReport->getFooterAddr()->push_back(CCommonName("String=\n"));
-        pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("String=\n", this));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result", this));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::lyap:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2828,14 +2824,14 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->setSeparator("\t");
 
         // Header
-        pReport->getHeaderAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Description"));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Description", this));
 
         // Footer
-        pReport->getFooterAddr()->push_back(CCommonName("String=\n"));
-        pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("String=\n", this));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result", this));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::mca:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2845,14 +2841,14 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->setSeparator("\t");
 
         // Header
-        pReport->getHeaderAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Description"));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Description", this));
 
         // Footer
-        pReport->getFooterAddr()->push_back(CCommonName("String=\n"));
-        pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("String=\n", this));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result", this));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::lna:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2862,14 +2858,14 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->setSeparator("\t");
 
         // Header
-        pReport->getHeaderAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Description"));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Description", this));
 
         // Footer
-        pReport->getFooterAddr()->push_back(CCommonName("String=\n"));
-        pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("String=\n", this));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result", this));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::sens:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2879,14 +2875,14 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->setSeparator("\t");
 
         // Header
-        pReport->getHeaderAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Sensitivities],Object=Description"));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Sensitivities],Object=Description", this));
 
         // Footer
-        pReport->getFooterAddr()->push_back(CCommonName("String=\n"));
-        pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Sensitivities],Object=Result"));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("String=\n", this));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Sensitivities],Object=Result", this));
         break;
 
-        //**************************************************************************
+      //**************************************************************************
       case CTaskEnum::Task::tssAnalysis:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2896,11 +2892,11 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->setSeparator("\t");
 
         // Header
-        pReport->getHeaderAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Description"));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Description", this));
 
         // Footer
-        pReport->getFooterAddr()->push_back(CCommonName("String=\n"));
-        pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("String=\n", this));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result", this));
         break;
 
       case CTaskEnum::Task::moieties:
@@ -2912,11 +2908,11 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->setSeparator("\t");
 
         // Header
-        pReport->getHeaderAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Moieties],Object=Description"));
+        pReport->getHeaderAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Moieties],Object=Description", this));
 
         // Footer
-        pReport->getFooterAddr()->push_back(CCommonName("String=\n"));
-        pReport->getFooterAddr()->push_back(CCommonName("CN=Root,Vector=TaskList[Moieties],Object=Result"));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("String=\n", this));
+        pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Moieties],Object=Result", this));
         break;
 
       default:

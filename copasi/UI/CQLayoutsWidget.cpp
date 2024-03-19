@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -86,8 +86,8 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget *parent)
   mpPushButtonDelegate = new CQPushButtonDelegate(CQIconResource::icon(CQIconResource::unknown), QString(), CQPushButtonDelegate::PushButton, this);
   mpTblLayouts->setItemDelegateForColumn(COL_SHOW, mpPushButtonDelegate);
   // Connect the table widget
-  connect(mpLayoutsDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
+  connect(mpLayoutsDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)));
   connect(mpLayoutsDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
@@ -104,7 +104,7 @@ CQLayoutsWidget::~CQLayoutsWidget()
 }
 
 // virtual
-bool CQLayoutsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQLayoutsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   if (!mIgnoreUpdates)
     {

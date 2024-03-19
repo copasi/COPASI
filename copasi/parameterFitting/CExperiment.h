@@ -60,7 +60,7 @@ public:
    */
   virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
 
-  CFittingPoint(const std::string & name = "unknown",
+  CFittingPoint(const CRegisteredCommonName & name,
                 const CDataContainer * pParent = NO_PARENT);
 
   CFittingPoint(const CFittingPoint & src,

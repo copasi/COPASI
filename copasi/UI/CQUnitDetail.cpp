@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -69,7 +69,7 @@ void CQUnitDetail::slotBtnNew()
 
   unitList->add(pUnitDef = new CUnitDefinition(name, unitList), true);
 
-  CCommonName CN = pUnitDef->getCN();
+  CRegisteredCommonName CN = pUnitDef->getRegisteredCN();
   protectedNotify(ListViews::ObjectType::UNIT, ListViews::ADD, CN);
 // enter(key);
   mpListView->switchToOtherWidget(ListViews::WidgetType::UnitDetail, CN);
@@ -176,7 +176,7 @@ void CQUnitDetail::destroy()
   delete mpExpressionValidator;
 }
 
-bool CQUnitDetail::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQUnitDetail::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   mpUnitDefinition = dynamic_cast< CUnitDefinition * >(mpObject);
 
@@ -201,7 +201,7 @@ bool CQUnitDetail::enterProtected()
 
   if (!mpUnitDefinition)
     {
-      mpListView->switchToOtherWidget(ListViews::WidgetType::Units, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::Units, CRegisteredCommonName());
       return false;
     }
 

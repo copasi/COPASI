@@ -122,6 +122,11 @@ CObjectInterface::CObjectInterface(const CObjectInterface & src):
 CObjectInterface::~CObjectInterface()
 {};
 
+CRegisteredCommonName CObjectInterface::getRegisteredCN() const
+{
+  return CRegisteredCommonName(getCN(), DataObject(this));
+}
+
 bool CObjectInterface::appendPrerequisites(CObjectInterface::ObjectSet & prerequisites) const
 {
   bool appended = false;

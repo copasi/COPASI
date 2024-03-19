@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef COPASI_qtUtilities
 #define COPASI_qtUtilities
@@ -46,20 +46,6 @@ class DataModelGUI;
  * returns the current datamodel being used by the application.
  */
 DataModelGUI * getDataModel();
-
-/**
- * notifies the UI of a modification of the model.
- *
- * This function retrieves the DataModelGUI object, and notifies
- * it about the change.
- *
- * @param objectType enumeration value of type ListViews::ObjectType
- * @param action enumeration value of type ListViews::Action
- * @param key
- *
- * @return success
- */
-bool updateGUI(C_INT32 objectType, C_INT32 action, const std::string & key = "");
 
 /**
  * Retrieve a parameter from a parameter group and convert it to a QString.
@@ -231,7 +217,6 @@ void fillCombobox(QComboBox* pCombo, const CEnumAnnotation< std::string, T>& ann
       pCombo->addItem(FROM_UTF8(*it));
     }
 }
-
 
 bool isDarkMode();
 bool isLightMode();

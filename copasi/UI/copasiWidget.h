@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -62,8 +62,8 @@ public:
    */
   virtual void refresh();
 
-  bool enter(const CCommonName & cn);
-  bool update(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  bool enter(const CRegisteredCommonName & cn);
+  bool update(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn);
   bool leave();
 
   virtual void setFramework(int framework);
@@ -86,7 +86,7 @@ public:
 
 protected:
   virtual bool enterProtected();
-  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn);
   virtual bool leaveProtected();
 
   void initContext();
@@ -104,7 +104,7 @@ private:
   CCommonName mOldCN;
 
 protected slots:
-  virtual bool protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn = std::string());
+  virtual bool protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn = CRegisteredCommonName());
 
 public slots:
   virtual void slotNotifyChanges(const CUndoData::CChangeSet & changes);

@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,7 +49,6 @@ void CQElementProperties::setScene(CQLayoutScene * scene)
 
   mpScene = scene;
 
-
   if (scene == NULL)
     return;
 
@@ -57,7 +56,6 @@ void CQElementProperties::setScene(CQLayoutScene * scene)
 
   connect(mpScene, SIGNAL(selectionChanged()), this, SLOT(slotSelectionChanged()));
 }
-
 
 void CQElementProperties::fillStylesFromScene(CQLayoutScene* scene)
 {
@@ -81,7 +79,6 @@ void CQElementProperties::fillStylesFromScene(CQLayoutScene* scene)
           ui->cmbStyles->addItem(FROM_UTF8(title), FROM_UTF8(style->getKey()));
         }
     }
-
 }
 
 void CQElementProperties::removeGlyphFromStyle(const std::string & glyphKey, const std::string & styleKey)
@@ -93,7 +90,6 @@ void CQElementProperties::removeGlyphFromStyle(const std::string & glyphKey, con
     return;
 
   pGO->removeKey(glyphKey);
-
 }
 
 void CQElementProperties::addGlyphToStyle(const std::string & glyphKey, const std::string & styleKey)
@@ -120,11 +116,10 @@ void CQElementProperties::addGlyphToStyle(const std::string & glyphKey, const st
   mpScene->getResolver()->addKeyToMap(glyphKey, pGlobal);
 }
 
-
 void CQElementProperties::loadFromGlyph(CLGraphicalObject * pGO)
 {
   mGlyphKey = "";
-  mTargetCN = "";
+  mTargetCN = CRegisteredCommonName();
   mTextKey = "";
   mStyleKey = "";
 
@@ -139,12 +134,12 @@ void CQElementProperties::loadFromGlyph(CLGraphicalObject * pGO)
 
   mGlyphKey = pGO->getKey();
   CDataObject * pTarget = pGO->getModelObject();
-  mTargetCN = pTarget == NULL ? std::string() : pTarget->getCN();
+  mTargetCN = pTarget == NULL ? CRegisteredCommonName() : pTarget->getRegisteredCN();
 
   if (mpScene)
     {
 
-for (auto & text : mpScene->getCurrentLayout()->getListOfTextGlyphs())
+      for (auto & text : mpScene->getCurrentLayout()->getListOfTextGlyphs())
         {
           if (text.getGraphicalObjectKey() == mGlyphKey)
             {
@@ -182,7 +177,6 @@ for (auto & text : mpScene->getCurrentLayout()->getListOfTextGlyphs())
           break;
         }
     }
-
 }
 
 void CQElementProperties::loadFromGlyph(const std::string & key)
@@ -224,7 +218,6 @@ void CQElementProperties::slotApply()
     }
 
   mpScene->recreate();
-
 }
 
 void CQElementProperties::slotDisplayStyle()
@@ -245,7 +238,6 @@ void CQElementProperties::slotDisplayStyle()
   QMessageBox::information(this, "Style code", sbml);
 
   free(sbml);
-
 }
 
 void CQElementProperties::slotSelectTextGlyph()
@@ -283,7 +275,7 @@ void CQElementProperties::slotSelectionChanged()
 
   QList< QGraphicsItem * > selection = mpScene->selectedItems();
 
-for (auto * item : selection)
+  for (auto * item : selection)
     {
       std::string key = TO_UTF8(item->data(COPASI_LAYOUT_KEY).toString());
 

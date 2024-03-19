@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -120,8 +120,8 @@ CQMiriamWidget::CQMiriamWidget(QWidget *parent, const char *name)
 
       connect((*itDM), SIGNAL(signalNotifyChanges(const CUndoData::CChangeSet &)),
               this, SLOT(slotNotifyChanges(const CUndoData::CChangeSet &)));
-      connect((*itDM), SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
-              this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
+      connect((*itDM), SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)),
+              this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)));
       connect((*itDM), SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
               this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
     }
@@ -313,7 +313,7 @@ void CQMiriamWidget::slotBtnClearClicked()
     }
 }
 
-bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   // Assure that the pointer is still valid;
   mpAnnotation = CAnnotation::castObject(mpObject);
@@ -327,7 +327,7 @@ bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews
       mpModifiedDM->setMIRIAMInfo(NULL);
 
       mpMIRIAMInfo = NULL;
-      mObjectCN = CCommonName("");
+      mObjectCN = CRegisteredCommonName();
 
       return true;
     }

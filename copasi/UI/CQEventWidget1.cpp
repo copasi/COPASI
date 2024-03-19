@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -390,7 +390,7 @@ void CQEventWidget1::saveToEvent()
 }
 
 /*! The slot to update the active event widget */
-bool CQEventWidget1::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQEventWidget1::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   mpEvent = dynamic_cast< CEvent * >(mpObject);
 
@@ -466,7 +466,7 @@ bool CQEventWidget1::enterProtected()
 
   if (!success)
     {
-      mpListView->switchToOtherWidget(ListViews::WidgetType::Events, std::string()); //TODO
+      mpListView->switchToOtherWidget(ListViews::WidgetType::Events, CRegisteredCommonName()); //TODO
     }
 
   return success;

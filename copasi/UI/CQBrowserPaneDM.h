@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -65,7 +65,7 @@ public:
     friend std::ostream & operator<<(std::ostream & os, const CNode & d);
 
     CNode(const ListViews::WidgetType & id,
-          const CCommonName & cn,
+          const CRegisteredCommonName & cn,
           const QString & displayRole,
           const size_t & sortOrder,
           CNode * pParent);
@@ -80,9 +80,9 @@ public:
 
     QString getSortRole() const;
 
-    void setCN(const CCommonName & cn);
+    void setCN(const CRegisteredCommonName & cn);
 
-    const CCommonName & getCN() const;
+    const CRegisteredCommonName & getCN() const;
 
     const CDataObject * getObject(const CDataModel * pDataModel) const;
 
@@ -125,12 +125,12 @@ public:
 
   ListViews::WidgetType getIdFromIndex(const QModelIndex & index) const;
 
-  const CCommonName & getCNFromIndex(const QModelIndex & index) const;
+  const CRegisteredCommonName & getCNFromIndex(const QModelIndex & index) const;
 
   void remove(CNode * pNode);
 
   void add(const ListViews::WidgetType & id,
-           const CCommonName & cn,
+           const CRegisteredCommonName & cn,
            const QString & displayRole,
            const ListViews::WidgetType & parentId);
 
@@ -145,19 +145,19 @@ public:
   void rename(const std::string & oldCN, const std::string & newCN);
 
 public slots:
-  bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn);
   void slotRefreshValidityFilters();
 
 private:
   static CNode * nodeFromIndex(const QModelIndex & index);
 
   CNode * createNode(const ListViews::WidgetType & id,
-                     const CCommonName & cn,
+                     const CRegisteredCommonName & cn,
                      const QString & displayRole,
                      const size_t & sortOrder,
                      CNode * pParent);
 
-  void updateNode(CNode * pNode, const CCommonName & CN);
+  void updateNode(CNode * pNode, const CRegisteredCommonName & CN);
 
   void destroyNode(CNode * pNode);
 

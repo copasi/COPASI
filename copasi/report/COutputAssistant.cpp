@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <sstream>
 #include <initializer_list>
@@ -170,7 +170,7 @@ COutputAssistant::findItemByName(const std::string& name, bool isPlot /*= true*/
   if (mMap.empty())
     initialize();
 
-for (auto & entry : mMap)
+  for (auto & entry : mMap)
     {
       if (entry.second.isPlot == isPlot && entry.second.name == name)
         return entry.first;
@@ -835,7 +835,7 @@ COutputAssistant::createDefaultOutput(
 
             while (itItem != endItem)
               {
-                itItem->getChannels()[0] = CPlotDataChannelSpec(*itChannelX++);
+                itItem->getChannels()[0] = CPlotDataChannelSpec(CRegisteredCommonName(*itChannelX++, pDataModel));
                 itItem->setTitle(*itName++);
                 itItem->setActivity(COutputInterface::AFTER);
                 itItem->setValue("Line type", *itLineType++);
@@ -1110,7 +1110,7 @@ COutputAssistant::createDefaultOutput(
 
             std::string Name = pExperiment->getObjectName();
             CPlotDataChannelSpec ChannelX =
-              it->getObject(CCommonName("Reference=Independent Value"))->getCN();
+              it->getObject(CCommonName("Reference=Independent Value"))->getRegisteredCN();
             unsigned C_INT32 LineType;
 
             if (isTimeCourse)
@@ -1167,7 +1167,7 @@ COutputAssistant::createDefaultOutput(
                         pItem->setValue("Symbol subtype", (unsigned C_INT32) 1); //fat cross
                         pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                         pItem->addChannel(ChannelX);
-                        pItem->addChannel(it->getObject(CCommonName("Reference=Measured Value"))->getCN());
+                        pItem->addChannel(it->getObject(CCommonName("Reference=Measured Value"))->getRegisteredCN());
                       }
 
                     if (needFitted)
@@ -1184,7 +1184,7 @@ COutputAssistant::createDefaultOutput(
 
                         pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                         pItem->addChannel(ChannelX);
-                        pItem->addChannel(it->getObject(CCommonName("Reference=Fitted Value"))->getCN());
+                        pItem->addChannel(it->getObject(CCommonName("Reference=Fitted Value"))->getRegisteredCN());
                       }
 
                     if (needErrors)
@@ -1196,7 +1196,7 @@ COutputAssistant::createDefaultOutput(
                         pItem->setValue("Symbol subtype", (unsigned C_INT32) 2);
                         pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                         pItem->addChannel(ChannelX);
-                        pItem->addChannel(it->getObject(CCommonName("Reference=Weighted Error"))->getCN());
+                        pItem->addChannel(it->getObject(CCommonName("Reference=Weighted Error"))->getRegisteredCN());
                       }
                   }
               }
@@ -1660,6 +1660,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
         pPl->addTaskType(taskType);
         pPl->addTaskType(CTaskEnum::Task::scan);
         break;
+
       case CTaskEnum::Task::optimization:
       case CTaskEnum::Task::scan:
 #ifdef WITH_TIME_SENS
@@ -1676,7 +1677,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
 
   //create curves
 
-  CPlotDataChannelSpec name1 = x->getCN();
+  CPlotDataChannelSpec name1 = x->getRegisteredCN();
   CPlotDataChannelSpec name2;
   std::string itemTitle;
   CPlotItem * plItem;
@@ -1689,7 +1690,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
     {
       if (!(*it)) continue;
 
-      name2 = (*it)->getCN();
+      name2 = (*it)->getRegisteredCN();
       itemTitle = static_cast< const CDataObject *>(*it)->getObjectDisplayName();
 
       plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
@@ -1721,7 +1722,7 @@ COutputAssistant::isOptionEnabled(
   if (!pOptions)
     return defaultValue;
 
-for (auto entry : *pOptions)
+  for (auto entry : *pOptions)
     if (entry.name == name)
       return entry.enabled;
 
@@ -1761,7 +1762,7 @@ CReportDefinition* COutputAssistant::createTable(const std::string & name,
     {
       if (!(*it)) continue;
 
-      pReport->getTableAddr()->push_back((*it)->getCN());
+      pReport->getTableAddr()->push_back((*it)->getRegisteredCN());
     }
 
   return pReport;

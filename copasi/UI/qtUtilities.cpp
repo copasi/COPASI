@@ -65,15 +65,6 @@ DataModelGUI * getDataModel()
   return win->getDataModel();
 }
 
-bool updateGUI(C_INT32 objectType, C_INT32 action, const std::string & key /*= ""*/)
-{
-  DataModelGUI* dm = getDataModel();
-
-  if (dm == NULL) return false;
-
-  return dm->notify((ListViews::ObjectType)objectType, (ListViews::Action)action, key);
-}
-
 QVariant getParameterValue(const CCopasiParameter * pParameter)
 {
   if (pParameter == NULL)

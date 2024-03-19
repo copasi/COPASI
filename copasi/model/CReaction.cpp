@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -181,7 +181,7 @@ bool CReaction::applyData(const CData & data, CUndoData::CChangeSet & changes)
 
           for (; it != end; ++it)
             {
-              CNs.push_back(it->toString());
+              CNs.push_back(CRegisteredCommonName(it->toString(), this));
             }
 
           Success &= setParameterCNs(Name, CNs);
@@ -228,7 +228,7 @@ bool CReaction::applyData(const CData & data, CUndoData::CChangeSet & changes)
 
           for (; it != end; ++it)
             {
-              CNs.push_back(it->toString());
+              CNs.push_back(CRegisteredCommonName(it->toString(), this));
             }
 
           Success &= setParameterCNs(Name, CNs);
@@ -807,7 +807,7 @@ void CReaction::setParameterValue(const std::string & parameterName,
       pFunctionParameter->getType() != CFunctionParameter::DataType::FLOAT64 ||
       mParameterIndexToCNs[found->second].size() != 1) return;
 
-  mParameterIndexToCNs[found->second][0] = pParameter->getCN();
+  mParameterIndexToCNs[found->second][0] = pParameter->getRegisteredCN();
 }
 
 const C_FLOAT64 & CReaction::getParameterValue(const std::string & parameterName) const
@@ -921,7 +921,7 @@ void CReaction::initializeParameters()
         }
 
       mParameterNameToIndex[name] = pos - 1;
-      mParameterIndexToCNs[pos - 1][0] = pParameter->getCN();
+      mParameterIndexToCNs[pos - 1][0] = pParameter->getRegisteredCN();
       mParameterIndexToObjects[pos - 1][0] = pParameter;
     }
 
@@ -1181,7 +1181,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
           metabName = (*pDataModel->pOldMetabolites)[index].getObjectName();
           const CMetab * pMetab = pModel->findMetabByName(metabName);
 
-          CNs.push_back(pMetab->getCN());
+          CNs.push_back(pMetab->getRegisteredCN());
           Objects.push_back(pMetab);
         }
 
@@ -1222,7 +1222,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
 
           parName = pParameter->getObjectName();
 
-          mParameterIndexToCNs[mParameterNameToIndex[parName]][0] = pMetab->getCN();
+          mParameterIndexToCNs[mParameterNameToIndex[parName]][0] = pMetab->getRegisteredCN();
           mParameterIndexToObjects[mParameterNameToIndex[parName]][0] = pMetab;
 
           // in the old files the chemical equation does not contain
@@ -1331,7 +1331,7 @@ void CReaction::setScalingFactor()
           if (pMetab != NULL)
             {
               mpScalingCompartment = pMetab->getCompartment();
-              mScalingCompartmentCN = mpScalingCompartment->getCN();
+              mScalingCompartmentCN = mpScalingCompartment->getRegisteredCN();
             }
         }
     }
@@ -1845,7 +1845,7 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
           CFunctionParameter* pFunPar = it->second.second;
           std::string id = it->first;
 
-          mParameterIndexToCNs[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first->getCN();
+          mParameterIndexToCNs[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first->getRegisteredCN();
           mParameterIndexToObjects[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first;
           ++it;
         }
@@ -1883,7 +1883,7 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
                   CFunctionParameter* pFunPar = it->second.second;
                   std::string id = it->first;
 
-                  mParameterIndexToCNs[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first->getCN();
+                  mParameterIndexToCNs[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first->getRegisteredCN();
                   mParameterIndexToObjects[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first;
 
                   delete pFunPar;
@@ -2282,7 +2282,7 @@ std::string CReaction::getKineticLawUnit() const
 
 void CReaction::setScalingCompartmentCN(const std::string & compartmentCN)
 {
-  mScalingCompartmentCN = compartmentCN;
+  mScalingCompartmentCN = CRegisteredCommonName(compartmentCN, this);
   ContainerList Containers;
   Containers.push_back(getObjectDataModel());
 
@@ -2297,7 +2297,7 @@ const CCommonName & CReaction::getScalingCompartmentCN() const
 void CReaction::setScalingCompartment(const CCompartment * pCompartment)
 {
   mpScalingCompartment = pCompartment;
-  mScalingCompartmentCN = (mpScalingCompartment != NULL) ? mpScalingCompartment->getCN() : std::string();
+  mScalingCompartmentCN = (mpScalingCompartment != NULL) ? mpScalingCompartment->getRegisteredCN() : CRegisteredCommonName();
 }
 
 const CCompartment * CReaction::getScalingCompartment() const
@@ -2451,11 +2451,11 @@ bool CReaction::setParameterObjects(const size_t & index, const std::vector< con
             {
               if (*itObject != NULL)
                 {
-                  *itCN = (*itObject)->getCN();
+                  *itCN = (*itObject)->getRegisteredCN();
                 }
               else
                 {
-                  *itCN = CCommonName("");
+                  *itCN = CRegisteredCommonName();
                 }
             }
 
@@ -2499,7 +2499,7 @@ bool CReaction::addParameterObject(const size_t & index, const CDataObject * obj
     return false;
 
   mParameterIndexToObjects[index].push_back(object);
-  mParameterIndexToCNs[index].push_back(object->getCN());
+  mParameterIndexToCNs[index].push_back(object->getRegisteredCN());
 
   CModel * pModel = static_cast<CModel *>(getObjectAncestor("Model"));
 

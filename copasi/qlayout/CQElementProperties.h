@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,6 +8,7 @@
 
 #include <QWidget>
 
+#include "copasi/core/CRegisteredCommonName.h"
 namespace Ui
 {
 class CQElementProperties;
@@ -45,11 +46,9 @@ private:
   Ui::CQElementProperties *ui;
 
   std::string mGlyphKey;
-  std::string mTargetCN;
+  CRegisteredCommonName mTargetCN;
   std::string mTextKey;
   std::string mStyleKey;
-
-
 };
 
 #endif // CQELEMENTPROPERTIES_H

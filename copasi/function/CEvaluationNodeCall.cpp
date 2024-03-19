@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -146,7 +146,7 @@ CIssue CEvaluationNodeCall::compile()
             return CIssue(CIssue::eSeverity::Error, CIssue::eKind::CFunctionNotFound);
           }
 
-        mRegisteredFunctionCN = mpFunction->getCN();
+        mRegisteredFunctionCN = mpFunction->getRegisteredCN();
 
         // We need to check whether the provided arguments match the one needed by the
         // function;
@@ -195,7 +195,7 @@ CIssue CEvaluationNodeCall::compile()
                 return CIssue(CIssue::eSeverity::Error, CIssue::eKind::CFunctionNotFound);
               }
 
-            mRegisteredFunctionCN = mpFunction->getCN();
+            mRegisteredFunctionCN = mpFunction->getRegisteredCN();
 
             mMainType = MainType::CALL;
             mSubType = SubType::FUNCTION; // need to set subtype, otherwise it is an infinite loop
@@ -290,7 +290,7 @@ bool CEvaluationNodeCall::setData(const Data & data)
       mQuotesRequired = true;
     }
 
-  mRegisteredFunctionCN = std::string("");
+  mRegisteredFunctionCN = CRegisteredCommonName();
 
   return true;
 }

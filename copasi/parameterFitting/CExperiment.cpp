@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -349,7 +349,7 @@ void CExperiment::updateFittedPoints()
   for (i = 0; i < imax; i++)
     if (mpObjectMap->getRole(i) == dependent)
       {
-        pPoint = new CFittingPoint(mpObjectMap->getObjectCN(i));
+        pPoint = new CFittingPoint(CRegisteredCommonName(mpObjectMap->getObjectCN(i), this));
         mFittingPoints.add(pPoint, true);
       }
 }
@@ -1754,8 +1754,7 @@ void CExperiment::fixBuild55()
 // static
 CFittingPoint * CFittingPoint::fromData(const CData & data, CUndoObjectInterface * pParent)
 {
-  return new CFittingPoint(data.getProperty(CData::OBJECT_NAME).toString(),
-                           NO_PARENT);
+  return new CFittingPoint(CRegisteredCommonName(data.getProperty(CData::OBJECT_NAME).toString(), nullptr), NO_PARENT);
 }
 
 // virtual
@@ -1780,7 +1779,7 @@ bool CFittingPoint::applyData(const CData & data, CUndoData::CChangeSet & change
   return success;
 }
 
-CFittingPoint::CFittingPoint(const std::string & name,
+CFittingPoint::CFittingPoint(const CRegisteredCommonName & name,
                              const CDataContainer * pParent):
   CDataContainer("Fitting Point", pParent, "Fitted Point"),
   mModelObjectCN(name),

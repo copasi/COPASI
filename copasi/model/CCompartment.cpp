@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -217,10 +217,7 @@ bool CCompartment::addMetabolite(CMetab * pMetabolite)
   //the metabolite is changed. This needs to be handled similarly to a
   //rename.
   if (success && getObjectParent())
-    {
-      std::string newCN = pMetabolite->getCN();
-      CRegisteredCommonName::handle(oldCN, newCN);
-    }
+    CRegisteredCommonName::handle(oldCN, pMetabolite->getRegisteredCN());
 
   return success;
 }
