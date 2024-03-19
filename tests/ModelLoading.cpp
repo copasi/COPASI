@@ -1,7 +1,7 @@
-// Copyright (C) 2021 - 2022 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
 // BEGIN: Copyright
 // END: Copyright
@@ -133,4 +133,30 @@ TEST_CASE("Update Model", "[COPASI]")
   REQUIRE(y.getInitialValue() == 2);
 
   CRootContainer::removeDatamodel(dm);
+}
+
+
+TEST_CASE("Species ODE expressions", "[COPASI][multiple_models]")
+{
+  CDataModel * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != nullptr);
+
+  std::string test_file = getTestFile("test-data/Issue3221.cps");
+
+  REQUIRE(dm->loadModel(test_file, NULL) == true);
+
+  CDataModel * dm2 = CRootContainer::addDatamodel();
+  dm2->newModel(NULL, true);
+  dm2->getModel()->setObjectName("empty");
+
+  auto * model = dm->getModel();
+  model->applyInitialValues();
+
+  auto & species = model->getCompartments()["compartment"].getMetabolites()["c"];
+
+  std::string expression = species.getExpression();
+  REQUIRE(expression.find("Model=New Model") != std::string::npos);
+  
+  CRootContainer::removeDatamodel(dm);
+  CRootContainer::removeDatamodel(dm2);
 }
