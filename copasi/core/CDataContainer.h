@@ -55,6 +55,26 @@ protected:
   CDataContainer(const CDataContainer & src);
 
 public:
+  template < class CType > static bool findObjectAncestor(const CDataObject * pObject, CType *& pAncestor)
+  {
+    pAncestor = nullptr;
+
+    CDataObject * p = const_cast< CDataObject * >(pObject);
+
+    while (p != nullptr)
+      {
+        if (dynamic_cast< CType * >(p) != nullptr)
+          {
+            pAncestor = static_cast< CType * >(p);
+            return true;
+          }
+
+        p = p->getObjectParent();
+      }
+
+    return false;
+  }
+
   /**
    * Static method to create a CDataObject based on the provided data
    * @param const CData & data

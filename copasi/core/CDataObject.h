@@ -245,26 +245,6 @@ public:
 
   CDataContainer * getObjectAncestor(const std::string & type) const;
 
-  template < class CType > static bool findObjectAncestor(const CDataObject * pObject, CType *& pAncestor)
-  {
-    pAncestor = nullptr;
-
-    CDataObject * p = const_cast< CDataObject * >(pObject);
-
-    while (p != nullptr)
-      {
-        if (dynamic_cast< CType * >(p) != nullptr)
-          {
-            pAncestor = static_cast< CType * >(p);
-            return true;
-          }
-
-        p = p->getObjectParent();
-      }
-
-    return false;
-  }
-
   bool prerequisitsContains(const DataObjectSet & objects) const;
 
   /**
