@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -95,7 +95,7 @@ public:
   {
   public:
 
-    CContent(const bool & withGUI = false);
+    CContent();
 
     CContent(const CContent & src);
 
@@ -111,7 +111,6 @@ public:
     CListOfLayouts * pListOfLayouts;
     SCopasiXMLGUI * pGUI;
     SBMLDocument* pCurrentSBMLDocument;
-    bool mWithGUI;
     CUndoStack * mpUndoStack;
     std::string mSaveFileName;
     ContentType mContentType;
@@ -181,12 +180,11 @@ public:
    */
   virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
 
-  CDataModel(const bool withGUI = false);
+  CDataModel();
 
   CDataModel(const std::string & name,
              const CDataContainer * pParent = NO_PARENT,
-             const std::string & type = "CN",
-             bool withGUI = false);
+             const std::string & type = "CN");
 
   CDataModel(const CDataModel & src,
              const CDataContainer * pParent);

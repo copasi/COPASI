@@ -72,6 +72,7 @@
 #include "copasi/steadystate/CMCATask.h"
 #include <copasi/utilities/CopasiTime.h>
 #include <copasi/utilities/CUnitDefinition.h>
+#include <copasi/utilities/CSlider.h>
 
 typedef CDataVector<CEvent> EventVector;
 typedef CDataVectorN<CEvent> EventVectorN;

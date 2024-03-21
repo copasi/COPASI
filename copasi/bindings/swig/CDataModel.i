@@ -17,6 +17,9 @@
 #include "copasi/sedml/SEDMLImporter.h"
 #include "copasi/sedml/CSEDMLExporter.h"
 #include "copasi/sedml/SEDMLUtils.h"
+#include "copasi/utilities/CSlider.h"
+#include "copasi/xml/CCopasiXMLInterface.h"
+typedef CDataVector<CSlider> SliderVector;
 
 %}
 
@@ -57,7 +60,6 @@
 %ignore CDataModel::listTaskDependentOnReport(const std::string & key);
 %ignore CDataModel::addReport(const CCopasiTask::Type & taskType);
 %ignore CDataModel::getPlotDefinitionList();
-%ignore CDataModel::getGUI();
 //%ignore CDataModel::getConfiguration();
 %ignore CDataModel::isChanged() const;
 %ignore CDataModel::changed(const bool & changed = true);
@@ -111,11 +113,24 @@
 %include "copasi/sedml/CSEDMLExporter.h"
 %include "copasi/sedml/SEDMLUtils.h"
 %include "copasi/sedml/SedmlImportOptions.h"
+%include "copasi/utilities/CSlider.h"
 
 %rename(newModel) CDataModel::newModel;
 
+
+%template(SliderVector) CDataVector<CSlider>;
+typedef CDataVector<CSlider> SliderVector;
+
 %extend CDataModel
 {
+  SliderVector* getSliders()
+  {
+    if (self->getGUI() == NULL)
+      return NULL;
+
+    return self->getGUI()->getSliderList();
+  }
+
   bool importSBMLFromString(const std::string& content)
   {
     try

@@ -43,6 +43,7 @@
 
 #include <copasi/utilities/CopasiTime.h>
 #include <copasi/utilities/CUnitDefinition.h>
+#include <copasi/utilities/CSlider.h>
 
 #include <copasi/CopasiTaskTypes.h>
 
@@ -370,6 +371,10 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
   else if (dynamic_cast<CUnitDefinition*>(container))
     {
       pInfo = SWIGTYPE_p_CUnitDefinition;
+    }
+  else if (dynamic_cast<CSlider*>(container))
+    {
+      pInfo = SWIGTYPE_p_CSlider;
     }
 
   return pInfo;

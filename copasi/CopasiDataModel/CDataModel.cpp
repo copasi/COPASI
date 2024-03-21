@@ -158,11 +158,11 @@ CDataModel::ContentType CDataModel::contentType(std::istream & content)
   return ContentType::__SIZE;
 }
 
-CDataModel::CDataModel(const bool withGUI)
+CDataModel::CDataModel()
   : CDataContainer("Root", NULL, "CN", CDataObject::DataModel)
   , COutputHandler()
-  , mData(withGUI)
-  , mOldData(withGUI)
+  , mData()
+  , mOldData()
   , mpInfo(NULL)
   , mTempFolders()
   , mNeedToSaveExperimentalData(false)
@@ -205,12 +205,11 @@ bool CDataModel::applyData(const CData & data, CUndoData::CChangeSet & changes)
 
 CDataModel::CDataModel(const std::string & name,
                        const CDataContainer * pParent,
-                       const std::string & type,
-                       bool withGUI)
+                       const std::string & type)
   : CDataContainer(name, pParent, type, CDataObject::DataModel)
   , COutputHandler()
-  , mData(withGUI)
-  , mOldData(withGUI)
+  , mData()
+  , mOldData()
   , mpInfo(NULL)
   , mTempFolders()
   , mNeedToSaveExperimentalData(false)
@@ -465,11 +464,8 @@ bool CDataModel::loadModel(std::istream & in,
 
       SCopasiXMLGUI * pGUI = NULL;
 
-      if (mData.mWithGUI)
-        {
-          pGUI = new SCopasiXMLGUI("GUI", this);
-          XML.setGUI(pGUI);
-        }
+      pGUI = new SCopasiXMLGUI("GUI", this);
+      XML.setGUI(pGUI);
 
       try
         {
@@ -537,10 +533,7 @@ bool CDataModel::loadModel(std::istream & in,
           add(mData.pListOfLayouts, true);
         }
 
-      if (mData.mWithGUI)
-        {
-          mData.pGUI = pGUI;
-        }
+      mData.pGUI = pGUI;
     }
   else if (Line.find("<sbml") != std::string::npos)
     {
@@ -3120,7 +3113,7 @@ const std::string & CDataModel::getReferenceDirectory() const
   return mData.mReferenceDir;
 }
 
-CDataModel::CContent::CContent(const bool & withGUI)
+CDataModel::CContent::CContent()
   : pModel(NULL)
   , pTaskList(NULL)
   , pReportDefinitionList(NULL)
@@ -3128,7 +3121,6 @@ CDataModel::CContent::CContent(const bool & withGUI)
   , pListOfLayouts(NULL)
   , pGUI(NULL)
   , pCurrentSBMLDocument(NULL)
-  , mWithGUI(withGUI)
   , mpUndoStack(NULL)
   , mSaveFileName()
   , mContentType(ContentType::__SIZE)
@@ -3154,7 +3146,6 @@ CDataModel::CContent::CContent(const CContent & src)
   , pListOfLayouts(src.pListOfLayouts)
   , pGUI(src.pGUI)
   , pCurrentSBMLDocument(src.pCurrentSBMLDocument)
-  , mWithGUI(src.mWithGUI)
   , mpUndoStack(src.mpUndoStack)
   , mSaveFileName(src.mSaveFileName)
   , mContentType(src.mContentType)
@@ -3186,7 +3177,6 @@ CDataModel::CContent & CDataModel::CContent::operator=(const CContent & rhs)
       pListOfLayouts = rhs.pListOfLayouts;
       pGUI = rhs.pGUI;
       pCurrentSBMLDocument = rhs.pCurrentSBMLDocument;
-      mWithGUI = rhs.mWithGUI;
       mpUndoStack = rhs.mpUndoStack;
       mSaveFileName = rhs.mSaveFileName;
       mContentType = rhs.mContentType;
@@ -3210,7 +3200,7 @@ CDataModel::CContent & CDataModel::CContent::operator=(const CContent & rhs)
 
 bool CDataModel::CContent::isValid() const
 {
-  return (pModel != NULL && pTaskList != NULL && pReportDefinitionList != NULL && pPlotDefinitionList != NULL && pListOfLayouts != NULL && mpUndoStack != NULL && (pGUI != NULL || mWithGUI == false));
+  return (pModel != NULL && pTaskList != NULL && pReportDefinitionList != NULL && pPlotDefinitionList != NULL && pListOfLayouts != NULL && mpUndoStack != NULL && pGUI != NULL);
 }
 
 void CDataModel::pushData()
@@ -3225,13 +3215,13 @@ void CDataModel::pushData()
 #endif // COPASI_Versioning
 
   mOldData = mData;
-  mData = CContent(mData.mWithGUI);
+  mData = CContent();
 }
 
 void CDataModel::popData()
 {
   // Make sure the old data is valid
-  assert(mOldData.pModel != NULL && mOldData.pTaskList != NULL && mOldData.pReportDefinitionList != NULL && mOldData.pPlotDefinitionList != NULL && mOldData.pListOfLayouts != NULL && (mOldData.pGUI != NULL || mOldData.mWithGUI == false));
+  assert(mOldData.pModel != NULL && mOldData.pTaskList != NULL && mOldData.pReportDefinitionList != NULL && mOldData.pPlotDefinitionList != NULL && mOldData.pListOfLayouts != NULL && mOldData.pGUI != NULL);
 
 #ifdef COPASI_Versioning
   assert(mOldData.mpModelVersionHierarchy != NULL);
@@ -3240,7 +3230,7 @@ void CDataModel::popData()
   // TODO CRITICAL We need to clean up mData to avoid memory leaks.
 
   mData = mOldData;
-  mOldData = CContent(mOldData.mWithGUI);
+  mOldData = CContent();
 }
 
 void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
@@ -3277,7 +3267,7 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
       mData.pPlotDefinitionList = new COutputDefinitionVector("OutputDefinitions", this);
     }
 
-  if (mData.mWithGUI && mData.pGUI == NULL)
+  if (mData.pGUI == NULL)
     {
       mData.pGUI = new SCopasiXMLGUI("GUI", this);
     }
@@ -3386,9 +3376,6 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
 
           // need initialize, so that all objects are created for the
           // object browser
-          if (!mData.mWithGUI && !it->isScheduled())
-            continue;
-
           it->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
 
           // but we should restore any possible changes made to the model
