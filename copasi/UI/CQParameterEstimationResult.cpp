@@ -344,7 +344,7 @@ CQParameterEstimationResult::applyToModelState()
   if (mpDataModelGUI != NULL &&
       mpDataModel != NULL)
     {
-      mpDataModelGUI->notify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpDataModel->getModel()->getRegisteredCN());
+      mpDataModelGUI->notify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpDataModel->getModel()->getCN());
     }
 }
 

@@ -93,7 +93,7 @@ void CQDependencyWidget::updateFromDependencies(std::set< const CDataObject * > 
     {
       const CDataObject *pObject = *it;
       QTableWidgetItem *item = new QTableWidgetItem(FROM_UTF8(pObject->getObjectName()) + ":");
-      item->setData(Qt::UserRole, FROM_UTF8(pObject->getCN()));
+      item->setData(Qt::UserRole, FROM_UTF8(pObject->getStringCN()));
       mpTable->setItem(i, 0, item);
       mpTable->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(getDetailsFor(pObject, elements))));
     }

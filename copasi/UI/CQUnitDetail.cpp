@@ -69,7 +69,7 @@ void CQUnitDetail::slotBtnNew()
 
   unitList->add(pUnitDef = new CUnitDefinition(name, unitList), true);
 
-  CRegisteredCommonName CN = pUnitDef->getRegisteredCN();
+  CRegisteredCommonName CN = pUnitDef->getCN();
   protectedNotify(ListViews::ObjectType::UNIT, ListViews::ADD, CN);
 // enter(key);
   mpListView->switchToOtherWidget(ListViews::WidgetType::UnitDetail, CN);
@@ -103,7 +103,7 @@ void CQUnitDetail::slotBtnCopy()
 
   CUndoData UndoData(CUndoData::Type::INSERT, pUnitDef);
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", pUnitDef->getCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", pUnitDef->getStringCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", pUnitDef->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));

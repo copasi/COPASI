@@ -148,7 +148,7 @@ CDataObject::~CDataObject()
 
 void CDataObject::print(std::ostream * ostream) const {(*ostream) << (*this);}
 
-CCommonName CDataObject::getCN() const
+CCommonName CDataObject::getCNProtected() const
 {
   CCommonName CN;
 
@@ -161,7 +161,7 @@ CCommonName CDataObject::getCN() const
   else if (mpObjectParent)
     {
       std::stringstream tmp;
-      tmp << mpObjectParent->getCN();
+      tmp << mpObjectParent->getCNProtected();
       size_t Index;
 
       if (mpObjectParent->hasFlag(Vector)
@@ -282,7 +282,7 @@ bool CDataObject::setObjectName(const std::string & name)
 
   std::string OldName = mObjectName;
 
-  std::string oldCN = this->getCN();
+  std::string oldCN = this->getCNProtected();
   mObjectName = Name;
 
   std::set< CDataContainer * >::iterator it = mReferences.begin();
@@ -294,7 +294,7 @@ bool CDataObject::setObjectName(const std::string & name)
   if (CRegisteredCommonName::isEnabled() &&
       mpObjectParent != NULL)
     {
-      CRegisteredCommonName::handle(oldCN, getRegisteredCN());
+      CRegisteredCommonName::handle(oldCN, getCN());
     }
 
   return true;
@@ -361,7 +361,7 @@ bool CDataObject::setObjectParent(const CDataContainer * pParent)
     {
       if (CRegisteredCommonName::isEnabled())
         {
-          OldCN = getCN();
+          OldCN = getCNProtected();
         }
 
       mpObjectParent->remove(this);
@@ -374,7 +374,7 @@ bool CDataObject::setObjectParent(const CDataContainer * pParent)
   if (CRegisteredCommonName::isEnabled() &&
       !OldCN.empty())
     {
-      CRegisteredCommonName::handle(OldCN, getRegisteredCN());
+      CRegisteredCommonName::handle(OldCN, getCN());
     }
 
   return true;
@@ -499,7 +499,7 @@ CData CDataObject::toData() const
   Data.addProperty(CData::OBJECT_TYPE, mObjectType);
   Data.addProperty(CData::OBJECT_FLAG, mObjectFlag.to_string());
 
-  std::string CN = (mpObjectParent != NULL) ? mpObjectParent->getCN() : std::string("");
+  std::string CN = (mpObjectParent != NULL) ? mpObjectParent->getCNProtected() : std::string("");
   size_t Index = (mpObjectParent != NULL) ? mpObjectParent->getIndex(this) : C_INVALID_INDEX;
 
   std::vector< CData > References;
@@ -511,14 +511,14 @@ CData CDataObject::toData() const
       {
         if (CN.empty())
           {
-            CN = (*it)->getCN();
+            CN = (*it)->getCNProtected();
             Index = (*it)->getIndex(this);
           }
         else
           {
             CData ReferenceData;
 
-            ReferenceData.addProperty(CData::OBJECT_REFERENCE_CN, (*it)->getCN());
+            ReferenceData.addProperty(CData::OBJECT_REFERENCE_CN, (*it)->getCNProtected());
             ReferenceData.addProperty(CData::OBJECT_REFERENCE_INDEX, (*it)->getIndex(this));
 
             References.push_back(ReferenceData);
@@ -598,7 +598,7 @@ void CDataObject::createUndoData(CUndoData & undoData, const CUndoData::Type & t
   // The UUID of an object must never be changed.
   // undoData.addProperty(CData::OBJECT_UUID, oldData.getProperty(CData::OBJECT_UUID), getUuid().str());
   undoData.addProperty(CData::OBJECT_TYPE, oldData.getProperty(CData::OBJECT_TYPE), mObjectType);
-  undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), (mpObjectParent != NULL) ? mpObjectParent->getCN() : std::string(""));
+  undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), (mpObjectParent != NULL) ? mpObjectParent->getCNProtected() : std::string(""));
   undoData.addProperty(CData::OBJECT_FLAG, oldData.getProperty(CData::OBJECT_FLAG), mObjectFlag.to_string());
   undoData.addProperty(CData::OBJECT_INDEX, oldData.getProperty(CData::OBJECT_INDEX), (mpObjectParent != NULL) ? mpObjectParent->getIndex(this) : C_INVALID_INDEX);
 
@@ -611,7 +611,7 @@ void CDataObject::createUndoData(CUndoData & undoData, const CUndoData::Type & t
       {
         CData ReferenceData;
 
-        ReferenceData.addProperty(CData::OBJECT_REFERENCE_CN, (*it)->getCN());
+        ReferenceData.addProperty(CData::OBJECT_REFERENCE_CN, (*it)->getCNProtected());
         ReferenceData.addProperty(CData::OBJECT_REFERENCE_INDEX, (*it)->getIndex(this));
 
         References.push_back(ReferenceData);

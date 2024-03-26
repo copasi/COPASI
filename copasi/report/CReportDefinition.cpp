@@ -278,7 +278,7 @@ void CReportDefinition::addTableElement(const CDataObject * pObject)
   if ((mHeaderVector.size() == 0) && (mBodyVector.size() == 0))
     isFirst = true;
 
-  CRegisteredCommonName SeparatorCN(mSeparator.getRegisteredCN());
+  CRegisteredCommonName SeparatorCN(mSeparator.getCN());
   CCommonName Title;
 
   if (!pObject) return;
@@ -298,18 +298,18 @@ void CReportDefinition::addTableElement(const CDataObject * pObject)
       if (pObject->getObjectParent())
         {
           if (pObject->getObjectType() == "Separator")
-            mHeaderVector.push_back(CRegisteredCommonName("Separator=" + pObject->getCN().getObjectName(), pObject));
+            mHeaderVector.push_back(CRegisteredCommonName("Separator=" + pObject->getStringCN().getObjectName(), pObject));
           else
-            mHeaderVector.push_back(CRegisteredCommonName(pObject->getCN() + ",Property=DisplayName", pObject));
+            mHeaderVector.push_back(CRegisteredCommonName(pObject->getStringCN() + ",Property=DisplayName", pObject));
         }
       else
-        mHeaderVector.push_back(CRegisteredCommonName(CDataString(pObject->getObjectName()).getCN(), pObject));
+        mHeaderVector.push_back(CRegisteredCommonName(CDataString(pObject->getObjectName()).getStringCN(), pObject));
     }
 
   if (pObject->getObjectType() == "Separator")
-    mBodyVector.push_back(CRegisteredCommonName("Separator=" + pObject->getCN().getObjectName(), pObject));
+    mBodyVector.push_back(CRegisteredCommonName("Separator=" + pObject->getStringCN().getObjectName(), pObject));
   else
-    mBodyVector.push_back(CRegisteredCommonName(pObject->getCN(), pObject));
+    mBodyVector.push_back(CRegisteredCommonName(pObject->getStringCN(), pObject));
 
   return;
 }

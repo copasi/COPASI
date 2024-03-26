@@ -81,7 +81,7 @@ void CDataArray::setAnnotation(size_t d, size_t i, const CDataObject * pObject)
 
   if (pObject != NULL)
     {
-      mAnnotationsCN[d][i] = pObject->getRegisteredCN();
+      mAnnotationsCN[d][i] = pObject->getCN();
       mAnnotationsString[d][i] = pObject->getObjectDisplayName();
     }
   else

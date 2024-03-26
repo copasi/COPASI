@@ -339,7 +339,7 @@ bool TaskWidget::commonAfterRunTask()
   mpDataModel->finish();
 
   CMathContainer * pContainer = mpTask->getMathContainer();
-  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, pContainer->getModel().getRegisteredCN());
+  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, pContainer->getModel().getCN());
 
   unsetCursor();
   CopasiUI3Window::getMainWindow()->suspendAutoSave(false);

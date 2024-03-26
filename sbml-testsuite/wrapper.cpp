@@ -315,10 +315,10 @@ public:
     std::vector<CRegisteredCommonName>* pBodyAddr = pReport->getBodyAddr();
 
     //std::vector<CRegisteredCommonName>* pTable = pReport->getTableAddr();
-    pHeaderAddr->push_back(CDataString("time").getRegisteredCN());
-    pBodyAddr->push_back(pDataModel->getModel()->getValueReference()->getRegisteredCN());
-    pHeaderAddr->push_back(pReport->getSeparator().getRegisteredCN());
-    pBodyAddr->push_back(pReport->getSeparator().getRegisteredCN());
+    pHeaderAddr->push_back(CDataString("time").getCN());
+    pBodyAddr->push_back(pDataModel->getModel()->getValueReference()->getCN());
+    pHeaderAddr->push_back(pReport->getSeparator().getCN());
+    pBodyAddr->push_back(pReport->getSeparator().getCN());
     // create a map of all possible variables
     std::map<std::string, const CDataObject * > variableMap;
     const CDataVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
@@ -375,7 +375,7 @@ public:
 
         if (pMetab != NULL)
           {
-            pHeaderAddr->push_back(CDataString(pMetab->getSBMLId()).getRegisteredCN());
+            pHeaderAddr->push_back(CDataString(pMetab->getSBMLId()).getCN());
 
             if (amounts.find(*it) != amounts.end())
               {
@@ -388,15 +388,15 @@ public:
                 assert(pTmpMV);
                 // create an assignment that takes the concentration of the
                 // metabolite and multiplies it by the compartment
-                ss << "<" << pMetab->getConcentrationReference()->getCN() << "> * <" << pMetab->getCompartment()->getValueReference()->getCN() << ">";
+                ss << "<" << pMetab->getConcentrationReference()->getStringCN() << "> * <" << pMetab->getCompartment()->getValueReference()->getStringCN() << ">";
                 pTmpMV->setStatus(CModelEntity::Status::ASSIGNMENT);
                 bool tmpRes = pTmpMV->setExpression(ss.str());
                 assert(tmpRes == true);
-                pBodyAddr->push_back(pTmpMV->getValueReference()->getRegisteredCN());
+                pBodyAddr->push_back(pTmpMV->getValueReference()->getCN());
               }
             else if (concentrations.find(*it) != concentrations.end())
               {
-                pBodyAddr->push_back(pMetab->getConcentrationReference()->getRegisteredCN());
+                pBodyAddr->push_back(pMetab->getConcentrationReference()->getCN());
               }
             else
               {
@@ -406,28 +406,28 @@ public:
 
         if (pComp != NULL)
           {
-            pHeaderAddr->push_back(CDataString(pComp->getSBMLId()).getRegisteredCN());
-            pBodyAddr->push_back(pComp->getValueReference()->getRegisteredCN());
+            pHeaderAddr->push_back(CDataString(pComp->getSBMLId()).getCN());
+            pBodyAddr->push_back(pComp->getValueReference()->getCN());
           }
 
         if (pMV != NULL)
           {
-            pHeaderAddr->push_back(CDataString(pMV->getSBMLId()).getRegisteredCN());
-            pBodyAddr->push_back(pMV->getValueReference()->getRegisteredCN());
+            pHeaderAddr->push_back(CDataString(pMV->getSBMLId()).getCN());
+            pBodyAddr->push_back(pMV->getValueReference()->getCN());
           }
 
         if (pReaction != NULL)
           {
-            pHeaderAddr->push_back(CDataString(pReaction->getSBMLId()).getRegisteredCN());
-            pBodyAddr->push_back(pReaction->getFluxReference()->getRegisteredCN());
+            pHeaderAddr->push_back(CDataString(pReaction->getSBMLId()).getCN());
+            pBodyAddr->push_back(pReaction->getFluxReference()->getCN());
           }
 
         ++it;
 
         if (it != endit)
           {
-            pHeaderAddr->push_back(pReport->getSeparator().getRegisteredCN());
-            pBodyAddr->push_back(pReport->getSeparator().getRegisteredCN());
+            pHeaderAddr->push_back(pReport->getSeparator().getCN());
+            pBodyAddr->push_back(pReport->getSeparator().getCN());
           }
       }
 

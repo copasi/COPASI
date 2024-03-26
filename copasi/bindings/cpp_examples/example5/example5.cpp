@@ -184,14 +184,14 @@ int main()
   std::vector<CRegisteredCommonName>* pBody = pReport->getBodyAddr();
 
   // in the report header we write two strings and a separator
-  pHeader->push_back(CRegisteredCommonName(CDataString("best value of objective function").getRegisteredCN()));
-  pHeader->push_back(CRegisteredCommonName(pReport->getSeparator().getRegisteredCN()));
-  pHeader->push_back(CRegisteredCommonName(CDataString("initial value of F").getRegisteredCN()));
+  pHeader->push_back(CRegisteredCommonName(CDataString("best value of objective function").getCN()));
+  pHeader->push_back(CRegisteredCommonName(pReport->getSeparator().getCN()));
+  pHeader->push_back(CRegisteredCommonName(CDataString("initial value of F").getCN()));
   // in the report body we write the best value of the objective function and
   // the initial value of the fixed parameter separated by a comma
-  pBody->push_back(CRegisteredCommonName(pOptProblem->getObject(CCommonName("Reference=Best Value"))->getRegisteredCN()));
-  pBody->push_back(CRegisteredCommonName(pReport->getSeparator().getRegisteredCN()));
-  pBody->push_back(CRegisteredCommonName(pFixedModelValue->getObject(CCommonName("Reference=InitialValue"))->getRegisteredCN()));
+  pBody->push_back(CRegisteredCommonName(pOptProblem->getObject(CCommonName("Reference=Best Value"))->getCN()));
+  pBody->push_back(CRegisteredCommonName(pReport->getSeparator().getCN()));
+  pBody->push_back(CRegisteredCommonName(pFixedModelValue->getObject(CCommonName("Reference=InitialValue"))->getCN()));
 
   // set the report for the task
   pOptTask->getReport().setReportDefinition(pReport);

@@ -549,7 +549,7 @@ void PlotWindow::slotEditPlot()
   if (spec == NULL)
     return;
 
-  CopasiUI3Window::getMainWindow()->getMainWidget()->switchToOtherWidget(ListViews::WidgetType::NotFound, spec->getRegisteredCN());
+  CopasiUI3Window::getMainWindow()->getMainWidget()->switchToOtherWidget(ListViews::WidgetType::NotFound, spec->getCN());
 }
 
 void PlotWindow::closeEvent(QCloseEvent *closeEvent)

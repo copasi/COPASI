@@ -291,7 +291,7 @@ bool CQTabWidget::save()
           ListViews::addUndoMetaData(this, UndoData);
 
           if (dynamic_cast< CMetab * >(mpObject))
-            UndoData.addMetaDataProperty("Widget Object Name (after)", mpObject->getObjectName() + "{" + CCommonName::compartmentNameFromCN(mpObject->getCN()) + "}");
+            UndoData.addMetaDataProperty("Widget Object Name (after)", mpObject->getObjectName() + "{" + CCommonName::compartmentNameFromCN(mpObject->getStringCN()) + "}");
           else
             UndoData.addMetaDataProperty("Widget Object Name (after)", mpObject->getObjectName());
 

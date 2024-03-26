@@ -89,7 +89,7 @@ void CQModelValue::slotBtnNew()
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpModelValue);
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getStringCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", mpModelValue->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
@@ -120,7 +120,7 @@ void CQModelValue::slotBtnCopy()
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpModelValue);
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getStringCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", mpModelValue->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));

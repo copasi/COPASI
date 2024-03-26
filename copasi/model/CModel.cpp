@@ -2721,7 +2721,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
         }
 
       std::stringstream trigger; trigger
-          << "<"  << getObject("Reference=Time")->getCN()
+          << "<"  << getObject("Reference=Time")->getStringCN()
           << ">" << " > " << current;
       pEvent->setTriggerExpression(trigger.str());
       pEvent->getTriggerExpressionPtr()->compile();
@@ -2751,7 +2751,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
             }
 
           CEventAssignment * pNewAssignment =
-            new CEventAssignment(currentObject->getDataObject()->getObjectParent()->getCN());
+            new CEventAssignment(currentObject->getDataObject()->getObjectParent()->getStringCN());
           std::stringstream assignmentStr; assignmentStr << value;
           pNewAssignment->setExpression(assignmentStr.str());
           pNewAssignment->getExpressionPtr()->compile();
@@ -3020,8 +3020,8 @@ bool CModel::convert2NonReversible()
 
         for (; itParameter != endParameter; ++itParameter)
           {
-            Old = "<" + itParameter->first->getCN() + ">";
-            New = "<" + itParameter->second->getCN() + ">";
+            Old = "<" + itParameter->first->getStringCN() + ">";
+            New = "<" + itParameter->second->getStringCN() + ">";
             replaceInExpressions(Old, New);
           }
 
@@ -3029,13 +3029,13 @@ bool CModel::convert2NonReversible()
         // with the difference of the forward and backward reaction fluxes and particle fluxes, i.e,
         // flux = forward.flux - backward.flux
 
-        Old = "<" + reac0->getFluxReference()->getCN() + ">";
-        New = "(<" + reac1->getFluxReference()->getCN() + "> - <" + reac2->getFluxReference()->getCN() + ">)";
+        Old = "<" + reac0->getFluxReference()->getStringCN() + ">";
+        New = "(<" + reac1->getFluxReference()->getStringCN() + "> - <" + reac2->getFluxReference()->getStringCN() + ">)";
         replaceInExpressions(Old, New);
 
         // particleFlux = forward.particleFlux - backward.particleFlux
-        Old = "<" + reac0->getParticleFluxReference()->getCN() + ">";
-        New = "(<" + reac1->getParticleFluxReference()->getCN() + "> - <" + reac2->getParticleFluxReference()->getCN() + ">)";
+        Old = "<" + reac0->getParticleFluxReference()->getStringCN() + ">";
+        New = "(<" + reac1->getParticleFluxReference()->getStringCN() + "> - <" + reac2->getParticleFluxReference()->getStringCN() + ">)";
         replaceInExpressions(Old, New);
 
         // Schedule the old reaction for removal.
@@ -3575,14 +3575,14 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
       CDerive der(env, derivExp, simplify);
 
       if (prod.size() == 1)
-        tmp_ma = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getCN() + ">");
+        tmp_ma = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getStringCN() + ">");
       else
         {
-          tmp_ma = der.multiply(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getCN() + ">"),
-                                new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[1]->getCN() + ">"));
+          tmp_ma = der.multiply(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getStringCN() + ">"),
+                                new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[1]->getStringCN() + ">"));
 
           for (j = 2; j < prod.size(); ++j)
-            tmp_ma = der.multiply(tmp_ma, new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[j]->getCN() + ">"));
+            tmp_ma = der.multiply(tmp_ma, new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[j]->getStringCN() + ">"));
         }
 
       //backwards part
@@ -3600,14 +3600,14 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
           prod.push_back(pReaction->getMap().getObjects()[2].value); //k2
 
           if (prod.size() == 1)
-            tt2 = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getCN() + ">");
+            tt2 = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getStringCN() + ">");
           else
             {
-              tt2 = der.multiply(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getCN() + ">"),
-                                 new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[1]->getCN() + ">"));
+              tt2 = der.multiply(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getStringCN() + ">"),
+                                 new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[1]->getStringCN() + ">"));
 
               for (j = 2; j < prod.size(); ++j)
-                tt2 = der.multiply(tt2, new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[j]->getCN() + ">"));
+                tt2 = der.multiply(tt2, new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[j]->getStringCN() + ">"));
             }
 
           tmp_ma = new CEvaluationNodeOperator(CEvaluationNode::SubType::MINUS, "-");
@@ -3642,7 +3642,7 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
           if (tmpMetab)
             tmpObj = tmpMetab->getConcentrationReference();
 
-          std::string tmpstr = tmpObj ? "<" + tmpObj->getCN() + ">" : "<>";
+          std::string tmpstr = tmpObj ? "<" + tmpObj->getStringCN() + ">" : "<>";
           CEvaluationNodeObject* tmpENO = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, tmpstr);
           env[i] = tmpENO;
           tmpENO->compile(); //this uses derivExp as a dummy expression (so that the node has a context for the compile()

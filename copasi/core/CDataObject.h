@@ -133,13 +133,6 @@ public:
   virtual void calculateValue() override;
 
   /**
-   * Retrieve the CN of the object
-   * @return CCommonName
-   */
-  // API (for reporting and expressions)
-  virtual CCommonName getCN() const override;
-
-  /**
    * Retrieve a descendant object by its CN.
    * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
@@ -267,6 +260,14 @@ public:
   void addIssue(const CIssue & issue);
 
   void removeIssue(const CIssue & issue);
+
+protected:
+  /**
+   * Retrieve the CN of the object
+   * @return CCommonName
+   */
+  // API (for reporting and expressions)
+  virtual CCommonName getCNProtected() const override;
 
 private:
   void refreshAggregateValidity();

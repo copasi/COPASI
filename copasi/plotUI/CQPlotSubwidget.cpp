@@ -364,12 +364,12 @@ void chooseAxisFromSelection(
 
               if (!pObject) continue;
 
-              cn = pObject->getRegisteredCN();
+              cn = pObject->getCN();
               mapCNToDisplayName[cn] = pObject->getObjectDisplayName();
             }
           else
             {
-              cn = vector1[i]->getRegisteredCN();
+              cn = vector1[i]->getCN();
               mapCNToDisplayName[cn] = vector1[i]->getObjectDisplayName();
             }
 
@@ -402,7 +402,7 @@ void chooseAxisFromSelection(
                 {
                   if (!*it) continue;
 
-                  cn = (*it)->getRegisteredCN();
+                  cn = (*it)->getCN();
 
                   //check if the CN already is in the list, if not add it.
                   for (sit = objects2.begin(); sit != objects2.end(); ++sit)
@@ -416,7 +416,7 @@ void chooseAxisFromSelection(
             }
           else
             {
-              cn = vector2[i]->getRegisteredCN();
+              cn = vector2[i]->getCN();
               mapCNToDisplayName[cn] = vector2[i]->getObjectDisplayName();
 
               //check if the CN already is in the list, if not add it.
@@ -445,7 +445,7 @@ void chooseAxisFromSelection(
                   if (!*it)
                     continue;
 
-                  cn = (*it)->getRegisteredCN();
+                  cn = (*it)->getCN();
 
                   //check if the CN already is in the list, if not add it.
                   for (sit = objects3.begin(); sit != objects3.end(); ++sit)
@@ -460,7 +460,7 @@ void chooseAxisFromSelection(
             }
           else
             {
-              cn = vector3[i]->getRegisteredCN();
+              cn = vector3[i]->getCN();
               mapCNToDisplayName[cn] = vector3[i]->getObjectDisplayName();
 
               //check if the CN already is in the list, if not add it.
@@ -777,7 +777,7 @@ void CQPlotSubwidget::createHistograms(std::vector<const CDataObject * >objects,
     {
       if (objects[i])
         addHisto1DTab("Histogram: " + objects[i]->getObjectDisplayName(),
-                      CPlotDataChannelSpec(objects[i]->getRegisteredCN()), incr);
+                      CPlotDataChannelSpec(objects[i]->getCN()), incr);
 
       //         lineEditTitle->setText("Histogram: " + FROM_UTF8(mpObjectX->getObjectDisplayName()));
     }
@@ -835,7 +835,7 @@ void CQPlotSubwidget::deletePlot()
   Size = mpDataModel->getPlotDefinitionList()->size();
 
   if (Size > 0)
-    enter(mpDataModel->getPlotDefinitionList()->operator[](std::min(Index, Size - 1)).getRegisteredCN());
+    enter(mpDataModel->getPlotDefinitionList()->operator[](std::min(Index, Size - 1)).getCN());
   else
     enter(CRegisteredCommonName());
 
@@ -865,7 +865,7 @@ void CQPlotSubwidget::copyPlot()
 
   pPl->setObjectName(name);
   pDataModel->getPlotDefinitionList()->add(pPl, true);
-  CRegisteredCommonName cn = pPl->CCopasiParameter::getRegisteredCN();
+  CRegisteredCommonName cn = pPl->CCopasiParameter::getCN();
   protectedNotify(ListViews::ObjectType::PLOT, ListViews::ADD, cn);
   enter(cn);
   mpListView->switchToOtherWidget(ListViews::WidgetType::PlotDetail, cn);
@@ -892,7 +892,7 @@ void CQPlotSubwidget::addPlot()
       name += TO_UTF8(QString::number(i));
     }
 
-  CRegisteredCommonName cn = pPl->CCopasiParameter::getRegisteredCN();
+  CRegisteredCommonName cn = pPl->CCopasiParameter::getCN();
   protectedNotify(ListViews::ObjectType::PLOT, ListViews::ADD, cn);
   enter(cn);
   mpListView->switchToOtherWidget(ListViews::WidgetType::PlotDetail, cn);

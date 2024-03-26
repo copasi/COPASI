@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -355,7 +355,7 @@ bool CFitProblem::elevateChildren()
         for (i = 0; i < imax; i++)
           if (pTasks->operator[](i).getType() == CTaskEnum::Task::steadyState)
             {
-              *mpParmSteadyStateCN = pTasks->operator[](i).getCN();
+              *mpParmSteadyStateCN = pTasks->operator[](i).getStringCN();
               break;
             }
 
@@ -364,7 +364,7 @@ bool CFitProblem::elevateChildren()
         for (i = 0; i < imax; i++)
           if (pTasks->operator[](i).getType() == CTaskEnum::Task::timeCourse)
             {
-              *mpParmTimeCourseCN = pTasks->operator[](i).getCN();
+              *mpParmTimeCourseCN = pTasks->operator[](i).getStringCN();
               break;
             }
     }
@@ -887,7 +887,7 @@ bool CFitProblem::initialize()
 
       for (auto dep : dependents)
         {
-          pProblem->addTargetCN(dep->getCN());
+          pProblem->addTargetCN(dep->getStringCN());
         }
 
       mpTimeSens->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
@@ -1026,7 +1026,7 @@ bool CFitProblem::calculate()
               for (auto it = map.begin(); it != map.end(); ++it)
                 {
                   reverseObjectMap[it->second] = it->first;
-                  reverseCnMap[it->second] = it->first->getCN();
+                  reverseCnMap[it->second] = it->first->getStringCN();
                 }
 
               for (size_t i = 0; i < mpOptItems->size(); ++i)

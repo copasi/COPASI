@@ -146,7 +146,7 @@ CIssue CEvaluationNodeCall::compile()
             return CIssue(CIssue::eSeverity::Error, CIssue::eKind::CFunctionNotFound);
           }
 
-        mRegisteredFunctionCN = mpFunction->getRegisteredCN();
+        mRegisteredFunctionCN = mpFunction->getCN();
 
         // We need to check whether the provided arguments match the one needed by the
         // function;
@@ -195,7 +195,7 @@ CIssue CEvaluationNodeCall::compile()
                 return CIssue(CIssue::eSeverity::Error, CIssue::eKind::CFunctionNotFound);
               }
 
-            mRegisteredFunctionCN = mpFunction->getRegisteredCN();
+            mRegisteredFunctionCN = mpFunction->getCN();
 
             mMainType = MainType::CALL;
             mSubType = SubType::FUNCTION; // need to set subtype, otherwise it is an infinite loop

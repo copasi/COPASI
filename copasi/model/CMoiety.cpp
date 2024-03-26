@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -274,7 +274,7 @@ std::string CMoiety::getExpression() const
           fabs(it->first) < 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
         Infix << fabs(it->first) << "*";
 
-      Infix << "<" << it->second->getInitialValueReference()->getCN() << ">";
+      Infix << "<" << it->second->getInitialValueReference()->getStringCN() << ">";
     }
 
   return Infix.str();

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -156,7 +156,7 @@ void CQFittingItemWidget::slotCheckLowerInf(bool checked)
   else if (isNumber(TO_UTF8(mpEditLower->text())))
     Number = TO_UTF8(mpEditLower->text());
   else if (mpLowerObject)
-    Number = mpLowerObject->getCN();
+    Number = mpLowerObject->getStringCN();
   else return;
 
   std::set< size_t >::const_iterator it = mSelection.begin();
@@ -192,7 +192,7 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
   else if (isNumber(TO_UTF8(mpEditUpper->text())))
     Number = TO_UTF8(mpEditUpper->text());
   else if (mpUpperObject)
-    Number = mpUpperObject->getCN();
+    Number = mpUpperObject->getStringCN();
   else return;
 
   std::set< size_t >::const_iterator it = mSelection.begin();
@@ -245,7 +245,7 @@ void CQFittingItemWidget::slotLowerEdit()
       std::set< size_t >::const_iterator it = mSelection.begin();
       std::set< size_t >::const_iterator end = mSelection.end();
       mpLowerObject = pObject;
-      CCommonName CN = mpLowerObject->getCN();
+      CCommonName CN = mpLowerObject->getStringCN();
 
       for (; it != end; ++it)
         {
@@ -299,7 +299,7 @@ void CQFittingItemWidget::slotUpperEdit()
       std::set< size_t >::const_iterator it = mSelection.begin();
       std::set< size_t >::const_iterator end = mSelection.end();
       mpUpperObject = pObject;
-      CCommonName CN = mpUpperObject->getCN();
+      CCommonName CN = mpUpperObject->getStringCN();
 
       for (; it != end; ++it)
         {
@@ -419,7 +419,7 @@ void CQFittingItemWidget::slotParamEdit()
 
       for (; it != end; ++it)
         {
-          (*mpItemsCopy)[*it]->setObjectCN(Selection[0]->getCN());
+          (*mpItemsCopy)[*it]->setObjectCN(Selection[0]->getStringCN());
           setTableText((int) *it, (*mpItemsCopy)[*it]);
         }
 
@@ -449,7 +449,7 @@ void CQFittingItemWidget::slotParamEdit()
                 break;
             }
 
-          pItem->setObjectCN(Selection[i]->getCN());
+          pItem->setObjectCN(Selection[i]->getStringCN());
           // Add the new item to the list.
           mpItemsCopy->insert(mpItemsCopy->begin() + current + i, pItem);
           // Update the table

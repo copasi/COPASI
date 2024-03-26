@@ -59,12 +59,12 @@ CQReportListItem::setObject(const CDataObject * pObject)
   if (pObject)
     {
       setText(FROM_UTF8(pObject->getObjectDisplayName()));
-      mCN = pObject->getRegisteredCN();
+      mCN = pObject->getCN();
     }
   else
     {
       setText(QString("Not found"));
-      mCN = CDataString("NotFound").getRegisteredCN();
+      mCN = CDataString("NotFound").getCN();
     }
 }
 

@@ -107,7 +107,7 @@ CData CCopasiTask::toData() const
   Data.addProperty(CData::TASK_TYPE, CTaskEnum::TaskName[mType]);
   Data.addProperty(CData::TASK_SCHEDULED, mScheduled);
   Data.addProperty(CData::TASK_UPDATE_MODEL, mUpdateModel);
-  Data.addProperty(CData::TASK_REPORT, mReport.getReportDefinition() != NULL ? mReport.getReportDefinition()->getCN() : CCommonName());
+  Data.addProperty(CData::TASK_REPORT, mReport.getReportDefinition() != NULL ? mReport.getReportDefinition()->getStringCN() : CCommonName());
   Data.addProperty(CData::TASK_REPORT_TARGET, mReport.getTarget());
   Data.addProperty(CData::TASK_REPORT_APPEND, mReport.append());
   Data.addProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE, mReport.confirmOverwrite());
@@ -200,7 +200,7 @@ void CCopasiTask::createUndoData(CUndoData & undoData,
   undoData.addProperty(CData::TASK_TYPE, oldData.getProperty(CData::TASK_TYPE), CTaskEnum::TaskName[mType]);
   undoData.addProperty(CData::TASK_SCHEDULED, oldData.getProperty(CData::TASK_SCHEDULED), mScheduled);
   undoData.addProperty(CData::TASK_UPDATE_MODEL, oldData.getProperty(CData::TASK_UPDATE_MODEL), mUpdateModel);
-  undoData.addProperty(CData::TASK_REPORT, oldData.getProperty(CData::TASK_REPORT), mReport.getReportDefinition() != NULL ? mReport.getReportDefinition()->getCN() : CCommonName());
+  undoData.addProperty(CData::TASK_REPORT, oldData.getProperty(CData::TASK_REPORT), mReport.getReportDefinition() != NULL ? mReport.getReportDefinition()->getStringCN() : CCommonName());
   undoData.addProperty(CData::TASK_REPORT_TARGET, oldData.getProperty(CData::TASK_REPORT_TARGET), mReport.getTarget());
   undoData.addProperty(CData::TASK_REPORT_APPEND, oldData.getProperty(CData::TASK_REPORT_APPEND), mReport.append());
   undoData.addProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE, oldData.getProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE), mReport.confirmOverwrite());

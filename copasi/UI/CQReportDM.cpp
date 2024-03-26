@@ -158,7 +158,7 @@ bool CQReportDM::setData(const QModelIndex &index, const QVariant &value,
         pRepDef->setObjectName(TO_UTF8(value.toString()));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::CHANGE, pRepDef->getRegisteredCN());
+      emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::CHANGE, pRepDef->getCN());
     }
 
   return true;
@@ -181,7 +181,7 @@ bool CQReportDM::insertRows(int position, int rows, const QModelIndex & parent)
 
       ++mFetched;
 
-      emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::ADD, pRepDef->getRegisteredCN());
+      emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::ADD, pRepDef->getCN());
     }
 
   endInsertRows();
@@ -232,7 +232,7 @@ bool CQReportDM::removeRows(int position, int rows, const QModelIndex & parent)
       if (mFetched > 0)
         --mFetched;
 
-      CRegisteredCommonName deletedKey = pReport->getRegisteredCN();
+      CRegisteredCommonName deletedKey = pReport->getCN();
       pReportList->remove(pReport);
       emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::DELETE, deletedKey);
     }

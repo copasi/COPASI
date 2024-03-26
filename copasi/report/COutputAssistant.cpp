@@ -772,7 +772,7 @@ COutputAssistant::createDefaultOutput(
                 if (needMeasured)
                   {
                     data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Measured Value"))));
-                    ChannelX.push_back(data2->getCN());
+                    ChannelX.push_back(data2->getStringCN());
                     Names.push_back(Name + "(Measured Value)");
                     LineTypes.push_back(3);      //symbols & lines
                     SymbolSubTypes.push_back(1); //fat cross
@@ -784,7 +784,7 @@ COutputAssistant::createDefaultOutput(
                 if (needFitted)
                   {
                     data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Fitted Value"))));
-                    ChannelX.push_back(data2->getCN());
+                    ChannelX.push_back(data2->getStringCN());
                     Names.push_back(Name + "(Fitted Value)");
 
                     if (pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse)
@@ -806,7 +806,7 @@ COutputAssistant::createDefaultOutput(
                   {
                     //3
                     data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Weighted Error"))));
-                    ChannelX.push_back(data2->getCN());
+                    ChannelX.push_back(data2->getStringCN());
                     Names.push_back(Name + "(Weighted Error)");
                     LineTypes.push_back(2);      //symbols
                     SymbolSubTypes.push_back(2); //circles
@@ -1110,7 +1110,7 @@ COutputAssistant::createDefaultOutput(
 
             std::string Name = pExperiment->getObjectName();
             CPlotDataChannelSpec ChannelX =
-              it->getObject(CCommonName("Reference=Independent Value"))->getRegisteredCN();
+              it->getObject(CCommonName("Reference=Independent Value"))->getCN();
             unsigned C_INT32 LineType;
 
             if (isTimeCourse)
@@ -1167,7 +1167,7 @@ COutputAssistant::createDefaultOutput(
                         pItem->setValue("Symbol subtype", (unsigned C_INT32) 1); //fat cross
                         pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                         pItem->addChannel(ChannelX);
-                        pItem->addChannel(it->getObject(CCommonName("Reference=Measured Value"))->getRegisteredCN());
+                        pItem->addChannel(it->getObject(CCommonName("Reference=Measured Value"))->getCN());
                       }
 
                     if (needFitted)
@@ -1184,7 +1184,7 @@ COutputAssistant::createDefaultOutput(
 
                         pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                         pItem->addChannel(ChannelX);
-                        pItem->addChannel(it->getObject(CCommonName("Reference=Fitted Value"))->getRegisteredCN());
+                        pItem->addChannel(it->getObject(CCommonName("Reference=Fitted Value"))->getCN());
                       }
 
                     if (needErrors)
@@ -1196,7 +1196,7 @@ COutputAssistant::createDefaultOutput(
                         pItem->setValue("Symbol subtype", (unsigned C_INT32) 2);
                         pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                         pItem->addChannel(ChannelX);
-                        pItem->addChannel(it->getObject(CCommonName("Reference=Weighted Error"))->getRegisteredCN());
+                        pItem->addChannel(it->getObject(CCommonName("Reference=Weighted Error"))->getCN());
                       }
                   }
               }
@@ -1677,7 +1677,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
 
   //create curves
 
-  CPlotDataChannelSpec name1 = x->getRegisteredCN();
+  CPlotDataChannelSpec name1 = x->getCN();
   CPlotDataChannelSpec name2;
   std::string itemTitle;
   CPlotItem * plItem;
@@ -1690,7 +1690,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
     {
       if (!(*it)) continue;
 
-      name2 = (*it)->getRegisteredCN();
+      name2 = (*it)->getCN();
       itemTitle = static_cast< const CDataObject *>(*it)->getObjectDisplayName();
 
       plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
@@ -1762,7 +1762,7 @@ CReportDefinition* COutputAssistant::createTable(const std::string & name,
     {
       if (!(*it)) continue;
 
-      pReport->getTableAddr()->push_back((*it)->getRegisteredCN());
+      pReport->getTableAddr()->push_back((*it)->getCN());
     }
 
   return pReport;

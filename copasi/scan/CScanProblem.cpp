@@ -161,7 +161,7 @@ std::string CScanProblem::getOutputSpecificationString() const
   std::string Separator;
   auto outputSpecification = getOutputSpecification();
 
-for (const std::string & token : outputSpecification.getAnnotations(OutputTypeName))
+  for (const std::string & token : outputSpecification.getAnnotations(OutputTypeName))
     {
       Flags += Separator + token;
       Separator = "|";
@@ -180,7 +180,7 @@ void CScanProblem::setOutputSpecification(const CScanProblem::OutputFlags & outp
   std::string Flags;
   std::string Separator;
 
-for (const std::string & token : outputSpecification.getAnnotations(OutputTypeName))
+  for (const std::string & token : outputSpecification.getAnnotations(OutputTypeName))
     {
       Flags += Separator + token;
       Separator = "|";
@@ -202,7 +202,7 @@ void CScanProblem::setOutputSpecification(const std::vector< std::string > & spe
   std::string Flags;
   std::string Separator;
 
-for (const std::string & token : specification)
+  for (const std::string & token : specification)
     {
       Flags += Separator + token;
       Separator = "|";
@@ -292,7 +292,7 @@ CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, siz
   tmp->addParameter("Type", CCopasiParameter::Type::UINT, (unsigned C_INT32) type);
 
   if (obj)
-    tmp->addParameter("Object", CCopasiParameter::Type::CN, obj->getCN());
+    tmp->addParameter("Object", CCopasiParameter::Type::CN, obj->getStringCN());
   else
     tmp->addParameter("Object", CCopasiParameter::Type::CN, CCommonName(""));
 

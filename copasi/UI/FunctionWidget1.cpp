@@ -770,7 +770,7 @@ void FunctionWidget1::slotBtnNew()
 
   CRootContainer::getFunctionList()->add(pFunc = new CKinFunction(name), true);
 
-  CRegisteredCommonName CN = pFunc->getRegisteredCN();
+  CRegisteredCommonName CN = pFunc->getCN();
   protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::ADD, CN);
   // enter(key);
   mpListView->switchToOtherWidget(ListViews::WidgetType::FunctionDetail, CN);

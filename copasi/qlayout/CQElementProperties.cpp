@@ -134,7 +134,7 @@ void CQElementProperties::loadFromGlyph(CLGraphicalObject * pGO)
 
   mGlyphKey = pGO->getKey();
   CDataObject * pTarget = pGO->getModelObject();
-  mTargetCN = pTarget == NULL ? CRegisteredCommonName() : pTarget->getRegisteredCN();
+  mTargetCN = pTarget == NULL ? CRegisteredCommonName() : pTarget->getCN();
 
   if (mpScene)
     {

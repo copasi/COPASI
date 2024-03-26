@@ -208,7 +208,7 @@ void ReactionsWidget1::slotBtnNew()
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
 
-  mpListView->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, pReaction->getRegisteredCN());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, pReaction->getCN());
 }
 
 void ReactionsWidget1::slotBtnCopy()
@@ -343,14 +343,14 @@ void ReactionsWidget1::copy()
   const CDataObject * pObject = origToCopyMapping.getDuplicateFromObject(mpObject);
 
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN", pObject->getCN());
+  UndoData.addMetaDataProperty("Widget Object CN", pObject->getStringCN());
   UndoData.addMetaDataProperty("Widget Object Name", pObject->getObjectDisplayName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
 
   if (pObject != NULL)
     {
-      mpListView->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, pObject->getRegisteredCN());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, pObject->getCN());
     }
 
   pdelete(pDialog);
@@ -541,7 +541,7 @@ void ReactionsWidget1::slotGotoFunction()
 {
   if (mpRi == NULL) return;
 
-  mpListView->switchToOtherWidget(ListViews::WidgetType::FunctionDetail, mpRi->getFunction().getRegisteredCN());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::FunctionDetail, mpRi->getFunction().getCN());
 }
 
 void ReactionsWidget1::slotNewFunction()
@@ -565,9 +565,9 @@ void ReactionsWidget1::slotNewFunction()
     }
 
   CRootContainer::getFunctionList()->add(pFunc = new CKinFunction(nname), true);
-  protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::ADD, pFunc->getRegisteredCN());
+  protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::ADD, pFunc->getCN());
 
-  mpListView->switchToOtherWidget(ListViews::WidgetType::FunctionDetail, pFunc->getRegisteredCN());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::FunctionDetail, pFunc->getCN());
 }
 
 void ReactionsWidget1::slotAddNoiseChanged(bool hasNoise)

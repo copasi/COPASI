@@ -111,7 +111,7 @@ CData CModelParameter::toData() const
     {
       Data.addProperty(CData::OBJECT_NAME, mCN);
       Data.addProperty(CData::OBJECT_UUID, getUuid().str());
-      Data.addProperty(CData::OBJECT_PARENT_CN, getSet() != NULL ? getSet()->getCN() : CCommonName());
+      Data.addProperty(CData::OBJECT_PARENT_CN, getSet() != NULL ? getSet()->getStringCN() : CCommonName());
       Data.addProperty(CData::OBJECT_TYPE, TypeNames[mType]);
       Data.addProperty(CData::OBJECT_INDEX, getIndex());
     }
@@ -195,7 +195,7 @@ void CModelParameter::createUndoData(CUndoData & undoData,
       undoData.addProperty(CData::OBJECT_NAME, oldData.getProperty(CData::OBJECT_NAME), mCN);
       // The UUID of an object must never be changed.
       // undoData.addProperty(CData::OBJECT_UUID, oldData.getProperty(CData::OBJECT_UUID), getUuid().str());
-      undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), getSet() != NULL ? getSet()->getCN() : CCommonName());
+      undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), getSet() != NULL ? getSet()->getStringCN() : CCommonName());
       undoData.addProperty(CData::OBJECT_TYPE, oldData.getProperty(CData::OBJECT_TYPE), TypeNames[mType]);
       undoData.addProperty(CData::OBJECT_INDEX, oldData.getProperty(CData::OBJECT_INDEX), getIndex());
     }
@@ -797,7 +797,7 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
                     assert(ModelValue.size() == 1);
 
                     const CModelValue * pModelValue = dynamic_cast< const CModelValue * >(ModelValue[0]);
-                    static_cast< CModelParameterReactionParameter * >(this)->setGlobalQuantityCN(pModelValue != NULL ? pModelValue->getInitialValueReference()->getCN() : CDataString("not found").getCN());
+                    static_cast< CModelParameterReactionParameter * >(this)->setGlobalQuantityCN(pModelValue != NULL ? pModelValue->getInitialValueReference()->getStringCN() : CDataString("not found").getStringCN());
                   }
               }
 

@@ -169,7 +169,7 @@ TEST_CASE("3: creating a new model testing avogadro", "[copasi,sbml]")
   std::stringstream str;
 
   str << "<"
-      << CObjectInterface::DataObject(model->getObject(CCommonName("Reference=Avogadro Constant")))->getValueObject()->getCN()
+      << CObjectInterface::DataObject(model->getObject(CCommonName("Reference=Avogadro Constant")))->getValueObject()->getStringCN()
       << ">";
 
   mv->setInitialExpression(str.str());
@@ -186,7 +186,7 @@ TEST_CASE("3: creating a new model testing avogadro", "[copasi,sbml]")
 
   {
     auto dh = CDataHandler();
-    dh.addDuringName(model->getModelValues()[0].getValueReference()->getRegisteredCN());
+    dh.addDuringName(model->getModelValues()[0].getValueReference()->getCN());
     task.initialize(CCopasiTask::OUTPUT_UI, &dh, NULL);
     task.process(true);
     task.restore();
@@ -198,7 +198,7 @@ TEST_CASE("3: creating a new model testing avogadro", "[copasi,sbml]")
     avo_num = 7e23;
     model->setAvogadro(avo_num, CCore::Framework::Concentration);
     auto dh = CDataHandler();
-    dh.addDuringName(model->getModelValues()[0].getValueReference()->getRegisteredCN());
+    dh.addDuringName(model->getModelValues()[0].getValueReference()->getCN());
     task.initialize(CCopasiTask::OUTPUT_UI, &dh, NULL);
     task.process(true);
     task.restore();
@@ -231,9 +231,9 @@ TEST_CASE("2: importing an sbml file and saving as COPASI file", "[copasi,sbml]"
       str.str("");
       str
           << "<"
-          << metab.getConcentrationReference()->getCN()
+          << metab.getConcentrationReference()->getStringCN()
           << "> * <"
-          << metab.getCompartment()->getValueReference()->getCN()
+          << metab.getCompartment()->getValueReference()->getStringCN()
           << ">";
       mv->setStatus(CModelEntity::Status::ASSIGNMENT);
       REQUIRE(mv->setExpression(str.str()).isSuccess());
@@ -244,7 +244,7 @@ TEST_CASE("2: importing an sbml file and saving as COPASI file", "[copasi,sbml]"
   auto &task = (*dm->getTaskList())["Time-Course"];
 
   auto dh = CDataHandler();
-  dh.addDuringName(model->getModelValues()[0].getValueReference()->getRegisteredCN());
+  dh.addDuringName(model->getModelValues()[0].getValueReference()->getCN());
 
   task.initialize(CCopasiTask::OUTPUT_UI, &dh, NULL);
   task.process(true);
@@ -330,17 +330,17 @@ TEST_CASE("SBML import / export of events with particle numbers", "[copasi,sbml]
   {
     auto * event = model->createEvent("event");
     std::stringstream str;
-    str << "<" << model->getValueReference()->getCN() << "> > 1";
+    str << "<" << model->getValueReference()->getStringCN() << "> > 1";
     event->setTriggerExpression(str.str());
     auto & assignments = event->getAssignments();
     assignments.clear();
-    auto * assignment = new CEventAssignment(model->getMetabolites()[0].getConcentrationReference()->getCN(), model);
+    auto * assignment = new CEventAssignment(model->getMetabolites()[0].getConcentrationReference()->getStringCN(), model);
     assignment->setExpression("1");
     assignments.add(assignment);
-    assignment = new CEventAssignment(model->getMetabolites()[1].getValueReference()->getCN(), model);
+    assignment = new CEventAssignment(model->getMetabolites()[1].getValueReference()->getStringCN(), model);
     assignment->setExpression("2");
     assignments.add(assignment);
-    assignment = new CEventAssignment(model->getMetabolites()[2].getCN(), model);
+    assignment = new CEventAssignment(model->getMetabolites()[2].getStringCN(), model);
     assignment->setExpression("3");
     assignments.add(assignment);
   }

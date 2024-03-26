@@ -189,7 +189,7 @@ bool CQLayoutsDM::insertRows(int position, int rows, const QModelIndex & parent)
   for (int row = 0; row < rows; ++row)
     {
       ++mFetched;
-      emit notifyGUI(ListViews::ObjectType::LAYOUT, ListViews::ADD, mpListOfLayouts->operator[](Position + row).getRegisteredCN());
+      emit notifyGUI(ListViews::ObjectType::LAYOUT, ListViews::ADD, mpListOfLayouts->operator[](Position + row).getCN());
     }
 
   endInsertRows();
@@ -219,7 +219,7 @@ bool CQLayoutsDM::removeRows(int position, int rows, const QModelIndex & parent)
       if (mFetched > 0)
         --mFetched;
 
-      CRegisteredCommonName cn = (*itDeletedLayout)->getRegisteredCN();
+      CRegisteredCommonName cn = (*itDeletedLayout)->getCN();
       pdelete(*itDeletedLayout);
       emit notifyGUI(ListViews::ObjectType::LAYOUT, ListViews::DELETE, cn);
     }

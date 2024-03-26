@@ -505,7 +505,7 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
 }
 
 // virtual
-CCommonName CCopasiParameter::getCN() const
+CCommonName CCopasiParameter::getCNProtected() const
 {
   CDataContainer * pObjectParent = getObjectParent();
   CCopasiParameterGroup * pGroup;
@@ -513,10 +513,10 @@ CCommonName CCopasiParameter::getCN() const
   if (pObjectParent != NULL &&
       (pGroup = dynamic_cast< CCopasiParameterGroup * >(pObjectParent)) != NULL)
     {
-      return pObjectParent->getCN() + "," + CCommonName::escape(getObjectType()) + "=" + CCommonName::escape(pGroup->getUniqueParameterName(this));
+      return pObjectParent->getStringCN() + "," + CCommonName::escape(getObjectType()) + "=" + CCommonName::escape(pGroup->getUniqueParameterName(this));
     }
 
-  return CDataObject::getCN();
+  return CDataObject::getCNProtected();
 }
 
 void * CCopasiParameter::getValuePointer() const

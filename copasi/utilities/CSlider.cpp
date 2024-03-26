@@ -153,7 +153,7 @@ bool CSlider::setSliderObject(const CDataObject * pObject)
       return false;
     }
 
-  mCN = pObject->getRegisteredCN();
+  mCN = pObject->getCN();
 
   std::set< const CDataObject * > ChangedObjects;
   ChangedObjects.insert(pObject);

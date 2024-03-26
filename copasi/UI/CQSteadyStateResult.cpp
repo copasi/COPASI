@@ -133,6 +133,6 @@ void CQSteadyStateResult::slotUpdateModel()
       mpTask->restore();
       mpTask->setUpdateModel(updateModel);
 
-      protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getRegisteredCN());
+      protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
     }
 }

@@ -250,7 +250,7 @@ void CQGlobalQuantitiesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
   if (pVector != NULL &&
       index.row() < pVector->size())
     {
-      mpListView->switchToOtherWidget(ListViews::WidgetType::GlobalQuantityDetail, pVector->operator [](index.row()).getRegisteredCN());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::GlobalQuantityDetail, pVector->operator [](index.row()).getCN());
     }
 }
 

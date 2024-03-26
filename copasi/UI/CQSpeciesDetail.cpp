@@ -502,14 +502,14 @@ void CQSpeciesDetail::copy()
       const CDataObject * pObject = origToCopyMapping.getDuplicateFromObject(mpObject);
 
       ListViews::addUndoMetaData(this, UndoData);
-      UndoData.addMetaDataProperty("Widget Object CN (after)", pObject->getCN());
-      UndoData.addMetaDataProperty("Widget Object Name (after)", pObject->getObjectName() + "{" + CCommonName::compartmentNameFromCN(pObject->getCN()) + "}");
+      UndoData.addMetaDataProperty("Widget Object CN (after)", pObject->getStringCN());
+      UndoData.addMetaDataProperty("Widget Object Name (after)", pObject->getObjectName() + "{" + CCommonName::compartmentNameFromCN(pObject->getStringCN()) + "}");
 
       slotNotifyChanges(mpDataModel->recordData(UndoData));
 
       if (pObject != NULL)
         {
-          mpListView->switchToOtherWidget(ListViews::WidgetType::SpeciesDetail, pObject->getRegisteredCN());
+          mpListView->switchToOtherWidget(ListViews::WidgetType::SpeciesDetail, pObject->getCN());
         }
     }
 
@@ -665,7 +665,7 @@ void CQSpeciesDetail::slotSwitchToReaction(int row, int /* column */)
       s2 = pReaction->getObjectName();
 
       if (s1 == s2)
-        mpListView->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, pReaction->getRegisteredCN());
+        mpListView->switchToOtherWidget(ListViews::WidgetType::ReactionDetail, pReaction->getCN());
     }
 }
 
@@ -709,7 +709,7 @@ void CQSpeciesDetail::createNewSpecies()
         break;
     }
 
-  CRegisteredCommonName cn = mpMetab->getRegisteredCN();
+  CRegisteredCommonName cn = mpMetab->getCN();
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpMetab);
 
@@ -719,8 +719,8 @@ void CQSpeciesDetail::createNewSpecies()
     }
 
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", mpMetab->getCN());
-  UndoData.addMetaDataProperty("Widget Object Name (after)", mpMetab->getObjectName() + "{" + CCommonName::compartmentNameFromCN(mpMetab->getCN()) + "}");
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpMetab->getStringCN());
+  UndoData.addMetaDataProperty("Widget Object Name (after)", mpMetab->getObjectName() + "{" + CCommonName::compartmentNameFromCN(mpMetab->getStringCN()) + "}");
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
 

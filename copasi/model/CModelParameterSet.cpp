@@ -153,19 +153,19 @@ CModelParameterSet::CModelParameterSet(const std::string & name,
 
   // Create the proper structure that fits the parameter overview in the GUI
   mpTimes = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
-  mpTimes->setCN(CDataString("Initial Time").getRegisteredCN());
+  mpTimes->setCN(CDataString("Initial Time").getCN());
 
   mpCompartments = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
-  mpCompartments->setCN(CDataString("Initial Compartment Sizes").getRegisteredCN());
+  mpCompartments->setCN(CDataString("Initial Compartment Sizes").getCN());
 
   mpSpecies = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
-  mpSpecies->setCN(CDataString("Initial Species Values").getRegisteredCN());
+  mpSpecies->setCN(CDataString("Initial Species Values").getCN());
 
   mpModelValues = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
-  mpModelValues->setCN(CDataString("Initial Global Quantities").getRegisteredCN());
+  mpModelValues->setCN(CDataString("Initial Global Quantities").getCN());
 
   mpReactions = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
-  mpReactions->setCN(CDataString("Kinetic Parameters").getRegisteredCN());
+  mpReactions->setCN(CDataString("Kinetic Parameters").getCN());
 
   setObjectParent(pParent);
 }
@@ -187,11 +187,11 @@ CModelParameterSet::CModelParameterSet(const CModelParameterSet & src,
   setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
 
   // Create the proper structure that fits the parameter overview in the GUI
-  mpTimes = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Time").getCN()));
-  mpCompartments = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Compartment Sizes").getCN()));
-  mpSpecies = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Species Values").getCN()));
-  mpModelValues = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Global Quantities").getCN()));
-  mpReactions = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Kinetic Parameters").getCN()));
+  mpTimes = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Time").getStringCN()));
+  mpCompartments = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Compartment Sizes").getStringCN()));
+  mpSpecies = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Species Values").getStringCN()));
+  mpModelValues = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Initial Global Quantities").getStringCN()));
+  mpReactions = static_cast< CModelParameterGroup * >(CModelParameterGroup::getModelParameter(CDataString("Kinetic Parameters").getStringCN()));
 
   setObjectParent(pParent);
 
@@ -211,9 +211,9 @@ CModelParameterSet::~CModelParameterSet()
 }
 
 // virtual
-CCommonName CModelParameterSet::getCN() const
+CCommonName CModelParameterSet::getCNProtected() const
 {
-  return CDataContainer::getCN();
+  return CDataContainer::getCNProtected();
 }
 
 CModelParameterGroup * CModelParameterSet::toGroup()
@@ -252,35 +252,35 @@ void CModelParameterSet::add(CModelParameter * pModelParameter)
 
   auto& cn = pModelParameter->getCN();
 
-  if (cn == CDataString("Initial Time").getCN())
+  if (cn == CDataString("Initial Time").getStringCN())
     {
       pdelete(mpTimes);
       mpTimes = static_cast<CModelParameterGroup *>(pModelParameter);
       return;
     }
 
-  if (cn == CDataString("Initial Compartment Sizes").getCN())
+  if (cn == CDataString("Initial Compartment Sizes").getStringCN())
     {
       pdelete(mpCompartments);
       mpCompartments = static_cast<CModelParameterGroup *>(pModelParameter);
       return;
     }
 
-  if (cn == CDataString("Initial Species Values").getCN())
+  if (cn == CDataString("Initial Species Values").getStringCN())
     {
       pdelete(mpSpecies);
       mpSpecies = static_cast<CModelParameterGroup *>(pModelParameter);
       return;
     }
 
-  if (cn == CDataString("Initial Global Quantities").getCN())
+  if (cn == CDataString("Initial Global Quantities").getStringCN())
     {
       pdelete(mpModelValues);
       mpModelValues = static_cast<CModelParameterGroup *>(pModelParameter);
       return;
     }
 
-  if (cn == CDataString("Kinetic Parameters").getCN())
+  if (cn == CDataString("Kinetic Parameters").getStringCN())
     {
       pdelete(mpReactions);
       mpReactions = static_cast<CModelParameterGroup *>(pModelParameter);
@@ -339,7 +339,7 @@ void CModelParameterSet::createFromModel()
   CModelParameter * pParameter;
 
   pParameter = mpTimes->add(Type::Model);
-  pParameter->setCN(mpModel->getRegisteredCN());
+  pParameter->setCN(mpModel->getCN());
   pParameter->setValue(mpModel->getInitialTime(), CCore::Framework::ParticleNumbers, false);
 
   CDataVector< CCompartment >::const_iterator itCompartment = mpModel->getCompartments().begin();
@@ -348,7 +348,7 @@ void CModelParameterSet::createFromModel()
   for (; itCompartment != endCompartment; ++itCompartment)
     {
       pParameter = mpCompartments->add(Type::Compartment);
-      pParameter->setCN(itCompartment->getRegisteredCN());
+      pParameter->setCN(itCompartment->getCN());
       pParameter->setSimulationType(itCompartment->getStatus());
       pParameter->setValue(itCompartment->getInitialValue(), CCore::Framework::ParticleNumbers, false);
       pParameter->setInitialExpression(itCompartment->getInitialExpression());
@@ -360,7 +360,7 @@ void CModelParameterSet::createFromModel()
   for (; itSpecies != endSpecies; ++itSpecies)
     {
       pParameter = mpSpecies->add(Type::Species);
-      pParameter->setCN(itSpecies->getRegisteredCN());
+      pParameter->setCN(itSpecies->getCN());
       pParameter->setSimulationType(itSpecies->getStatus());
       pParameter->setValue(itSpecies->getInitialValue(), CCore::Framework::ParticleNumbers, false);
       pParameter->setInitialExpression(itSpecies->getInitialExpression());
@@ -372,7 +372,7 @@ void CModelParameterSet::createFromModel()
   for (; itModelValue != endModelValue; ++itModelValue)
     {
       pParameter = mpModelValues->add(Type::ModelValue);
-      pParameter->setCN(itModelValue->getRegisteredCN());
+      pParameter->setCN(itModelValue->getCN());
       pParameter->setSimulationType(itModelValue->getStatus());
       pParameter->setValue(itModelValue->getInitialValue(), CCore::Framework::ParticleNumbers, false);
       pParameter->setInitialExpression(itModelValue->getInitialExpression());
@@ -384,7 +384,7 @@ void CModelParameterSet::createFromModel()
   for (; itReaction != endReaction; ++itReaction)
     {
       CModelParameterGroup * pReaction = static_cast< CModelParameterGroup *>(mpReactions->add(Type::Reaction));
-      pReaction->setCN(itReaction->getRegisteredCN());
+      pReaction->setCN(itReaction->getCN());
 
       CCopasiParameterGroup::index_iterator itParameter = itReaction->getParameters().beginIndex();
       CCopasiParameterGroup::index_iterator endParameter = itReaction->getParameters().endIndex();
@@ -401,7 +401,7 @@ void CModelParameterSet::createFromModel()
             }
 
           pParameter = pReaction->add(Type::ReactionParameter);
-          pParameter->setCN((*itParameter)->getRegisteredCN());
+          pParameter->setCN((*itParameter)->getCN());
 
           // Check whether this refers to a global quantity.
           if (itReaction->isLocalParameter((*itParameter)->getObjectName()))
@@ -419,7 +419,7 @@ void CModelParameterSet::createFromModel()
                   && (pModelValue = dynamic_cast< const CModelValue * >(ModelValue[0])) != NULL)
                 {
                   pParameter->setValue(pModelValue->getInitialValue(), CCore::Framework::ParticleNumbers, false);
-                  pParameter->setInitialExpression("<" + pModelValue->getInitialValueReference()->getCN() + ">");
+                  pParameter->setInitialExpression("<" + pModelValue->getInitialValueReference()->getStringCN() + ">");
                 }
               else
                 {
@@ -517,11 +517,11 @@ void CModelParameterSet::assignSetContent(const CModelParameterSet & src,
     const bool & createMissing)
 {
   // Create the proper structure that fits the parameter overview in the GUI
-  mpTimes->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Time").getCN())), createMissing);
-  mpCompartments->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Compartment Sizes").getCN())), createMissing);
-  mpSpecies->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Species Values").getCN())), createMissing);
-  mpModelValues->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Global Quantities").getCN())), createMissing);
-  mpReactions->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Kinetic Parameters").getCN())), createMissing);
+  mpTimes->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Time").getStringCN())), createMissing);
+  mpCompartments->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Compartment Sizes").getStringCN())), createMissing);
+  mpSpecies->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Species Values").getStringCN())), createMissing);
+  mpModelValues->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Initial Global Quantities").getStringCN())), createMissing);
+  mpReactions->assignGroupContent(*static_cast< const CModelParameterGroup * >(src.getModelParameter(CDataString("Kinetic Parameters").getStringCN())), createMissing);
 
   compile();
 }

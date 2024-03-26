@@ -280,7 +280,7 @@ CCommonName CModelExpansion::ElementsMap::getDuplicateFromCN(const CCommonName &
       const CDataObject* retObj = getDuplicateFromObject(tmp);
 
       if (retObj != NULL)
-        return retObj->getCN();
+        return retObj->getStringCN();
     }
 
   return CCommonName("");
@@ -1122,7 +1122,7 @@ void CModelExpansion::duplicateEvent(CEvent* source,
           if (source != newObj)
             {
               //create duplicate of assignment
-              CEventAssignment * pNewAssignment = new CEventAssignment(pSourceTarget->getCN());
+              CEventAssignment * pNewAssignment = new CEventAssignment(pSourceTarget->getStringCN());
               newObj->getAssignments().add(pNewAssignment, true);
               //now copy the expression
               pNewAssignment->setExpression(pSourceAssignment->getExpression());
@@ -1248,7 +1248,7 @@ void CModelExpansion::updateExpression(CExpression* exp,
 
               //update the node
               if (pRef)
-                node->setData("<" + pRef->getCN() + ">");
+                node->setData("<" + pRef->getStringCN() + ">");
 
               // std::cout << node->getData() << std::endl;
             }
@@ -1412,7 +1412,7 @@ void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
       bool success = false;
       bool wasEnabled = CRegisteredCommonName::isEnabled();
       CRegisteredCommonName::setEnabled(true);
-      auto oldCN = pX->getCN();
+      auto oldCN = pX->getStringCN();
 
       do
         {
@@ -1421,7 +1421,7 @@ void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
           if (success)
             {
               oldComp->getMetabolites().remove(pX->getObjectName());
-              CRegisteredCommonName::handle(oldCN, pX->getRegisteredCN());
+              CRegisteredCommonName::handle(oldCN, pX->getCN());
               mpModel->setCompileFlag();
               mpModel->initializeMetabolites();
             }
@@ -1566,7 +1566,7 @@ void CModelExpansion::replaceInEvent(CEvent* pX, const ElementsMap & emap)
       const CDataObject * pObject = emap.getDuplicateFromObject(pAssignment->getTargetObject());
 
       if (pObject != NULL)
-        pAssignment->setTargetCN(pObject->getCN());
+        pAssignment->setTargetCN(pObject->getStringCN());
     }
 }
 
@@ -1607,7 +1607,7 @@ void CModelExpansion::replaceInExpression(CExpression* exp, const ElementsMap & 
 
           //update the node
           if (pRef)
-            node->setData("<" + pRef->getCN() + ">");
+            node->setData("<" + pRef->getStringCN() + ">");
 
           //std::cout << node->getData() << std::endl;
         }

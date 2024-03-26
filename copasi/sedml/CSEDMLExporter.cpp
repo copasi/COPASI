@@ -798,7 +798,7 @@ CSEDMLExporter::exportReport(const CReportDefinition * def)
     {
       CRegisteredCommonName & current = body[i];
 
-      if (current == def->getSeparator().getCN())
+      if (current == def->getSeparator().getStringCN())
         continue;
 
       const CDataObject * object = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(current));
@@ -813,7 +813,7 @@ CSEDMLExporter::exportReport(const CReportDefinition * def)
           CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export report '%s' variable '%s', as no xpath expression for it could be generated.", name.c_str(), object->getObjectDisplayName().c_str());
         }
 
-      if (object->getCN() == mTimeCN)
+      if (object->getStringCN() == mTimeCN)
         pPDGen = mpCurrentTime;
       else
         pPDGen = createDataGenerator(
@@ -1142,7 +1142,7 @@ void CSEDMLExporter::setCurrentTime(std::string & taskId)
     return;
 
   const CDataObject * pTime = static_cast< const CDataObject * >(mpDataModel->getModel()->getObject(CCommonName("Reference=Time")));
-  mTimeCN = pTime->getCN();
+  mTimeCN = pTime->getStringCN();
   auto it = mDataGenerators.find(std::make_pair(taskId, VariableInfo(pTime)));
 
   if (it != mDataGenerators.end())

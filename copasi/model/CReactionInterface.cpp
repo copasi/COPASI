@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -396,7 +396,7 @@ bool CReactionInterface::writeBackToReaction(CReaction * pReaction, bool compile
   if (!mScalingCompartment.empty() &&
       (Index = mpModel->getCompartments().getIndex(mScalingCompartment)) != C_INVALID_INDEX)
     {
-      ScalingCompartmentCN = mpModel->getCompartments()[Index].getCN();
+      ScalingCompartmentCN = mpModel->getCompartments()[Index].getStringCN();
     }
 
   pRea->setScalingCompartmentCN(ScalingCompartmentCN);
@@ -432,14 +432,14 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
             {
               CCompartment Compartment(itSpecies->second);
               CUndoData CompartmentData(CUndoData::Type::INSERT, &Compartment);
-              CompartmentData.addProperty(CData::OBJECT_PARENT_CN, mpModel->getCompartments().getCN());
+              CompartmentData.addProperty(CData::OBJECT_PARENT_CN, mpModel->getCompartments().getStringCN());
               UndoData.addPreProcessData(CompartmentData);
 
-              itSpeciesParentCN = SpeciesParentCNs.insert(std::make_pair(itSpecies->second, mpModel->getCompartments().getCN() + "[" + CCommonName::escape(itSpecies->second) + "],Vector=Metabolites")).first;
+              itSpeciesParentCN = SpeciesParentCNs.insert(std::make_pair(itSpecies->second, mpModel->getCompartments().getStringCN() + "[" + CCommonName::escape(itSpecies->second) + "],Vector=Metabolites")).first;
             }
           else
             {
-              itSpeciesParentCN = SpeciesParentCNs.insert(std::make_pair(itSpecies->second, mpModel->getCompartments()[itSpecies->second].getMetabolites().getCN())).first;
+              itSpeciesParentCN = SpeciesParentCNs.insert(std::make_pair(itSpecies->second, mpModel->getCompartments()[itSpecies->second].getMetabolites().getStringCN())).first;
             }
         }
 
@@ -471,11 +471,11 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
       CData ReferenceData;
       std::vector< CData > References;
 
-      ReferenceData.addProperty(CData::OBJECT_REFERENCE_CN, mpModel->getMetabolites().getCN());
+      ReferenceData.addProperty(CData::OBJECT_REFERENCE_CN, mpModel->getMetabolites().getStringCN());
       ReferenceData.addProperty(CData::OBJECT_REFERENCE_INDEX, mpModel->getMetabolites().getIndex(&Species));
       References.push_back(ReferenceData);
 
-      ReferenceData.addProperty(CData::OBJECT_REFERENCE_CN, mpModel->getMetabolitesX().getCN());
+      ReferenceData.addProperty(CData::OBJECT_REFERENCE_CN, mpModel->getMetabolitesX().getStringCN());
       ReferenceData.addProperty(CData::OBJECT_REFERENCE_INDEX, mpModel->getMetabolitesX().getIndex(&Species));
       References.push_back(ReferenceData);
 
@@ -515,22 +515,22 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
               {
                 NewParameters.addParameter(ParameterName, CCopasiParameter::Type::DOUBLE, mValues[i]);
                 NewParameterSet.insert(std::make_pair(ParameterName, NewParameters.getParameter(ParameterName)->toData()));
-                ParameterSource.push_back(mpReaction->getParameters().getCN() + ",Parameter=" + CCommonName::escape(ParameterName));
+                ParameterSource.push_back(mpReaction->getParameters().getStringCN() + ",Parameter=" + CCommonName::escape(ParameterName));
               }
             else
               {
                 // We need to use the create the CN as the object may not yet exist;
-                ParameterSource.push_back(mpModel->getModelValues().getCN() + "[" + CCommonName::escape(mIndexMap[i]->at(0)) + "]");
+                ParameterSource.push_back(mpModel->getModelValues().getStringCN() + "[" + CCommonName::escape(mIndexMap[i]->at(0)) + "]");
               }
 
             break;
 
           case CFunctionParameter::Role::VOLUME:
-            ParameterSource.push_back(mpModel->getCompartments().getCN() + "[" + CCommonName::escape(mIndexMap[i]->at(0)) + "]");
+            ParameterSource.push_back(mpModel->getCompartments().getStringCN() + "[" + CCommonName::escape(mIndexMap[i]->at(0)) + "]");
             break;
 
           case CFunctionParameter::Role::TIME:
-            ParameterSource.push_back(mpModel->getCN());
+            ParameterSource.push_back(mpModel->getStringCN());
             break;
 
           case CFunctionParameter::Role::SUBSTRATE:
@@ -540,7 +540,7 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
             for (j = 0, jmax = mIndexMap[i]->size(); j < jmax; ++j)
               {
                 Names = mChemEqI.displayNameToNamePair(getUsage(i), mIndexMap[i]->at(j));
-                ParameterSource.push_back(mpModel->getCompartments().getCN() + "[" + CCommonName::escape(Names.second) + "]" + ",Vector=Metabolites[" + CCommonName::escape(Names.first) + "]");
+                ParameterSource.push_back(mpModel->getCompartments().getStringCN() + "[" + CCommonName::escape(Names.second) + "]" + ",Vector=Metabolites[" + CCommonName::escape(Names.first) + "]");
               }
 
             break;
@@ -575,22 +575,22 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
               {
                 NewParameters.addParameter(ParameterName, CCopasiParameter::Type::DOUBLE, mValues[i]);
                 NewParameterSet.insert(std::make_pair(ParameterName, NewParameters.getParameter(ParameterName)->toData()));
-                ParameterSource.push_back(mpReaction->getParameters().getCN() + ",Parameter=" + CCommonName::escape(ParameterName));
+                ParameterSource.push_back(mpReaction->getParameters().getStringCN() + ",Parameter=" + CCommonName::escape(ParameterName));
               }
             else
               {
                 // We need to use the create the CN as the object may not yet exist;
-                ParameterSource.push_back(mpModel->getModelValues().getCN() + "[" + CCommonName::escape(mIndexMap[i]->at(0)) + "]");
+                ParameterSource.push_back(mpModel->getModelValues().getStringCN() + "[" + CCommonName::escape(mIndexMap[i]->at(0)) + "]");
               }
 
             break;
 
           case CFunctionParameter::Role::VOLUME:
-            ParameterSource.push_back(mpModel->getCompartments().getCN() + "[" + CCommonName::escape(mIndexMap[i]->at(0)) + "]");
+            ParameterSource.push_back(mpModel->getCompartments().getStringCN() + "[" + CCommonName::escape(mIndexMap[i]->at(0)) + "]");
             break;
 
           case CFunctionParameter::Role::TIME:
-            ParameterSource.push_back(mpModel->getCN());
+            ParameterSource.push_back(mpModel->getStringCN());
             break;
 
           case CFunctionParameter::Role::SUBSTRATE:
@@ -600,7 +600,7 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
             for (j = 0, jmax = mIndexMap[i]->size(); j < jmax; ++j)
               {
                 Names = mChemEqI.displayNameToNamePair(getUsage(i), mIndexMap[i]->at(j));
-                ParameterSource.push_back(mpModel->getCompartments().getCN() + "[" + CCommonName::escape(Names.second) + "]" + ",Vector=Metabolites[" + CCommonName::escape(Names.first) + "]");
+                ParameterSource.push_back(mpModel->getCompartments().getStringCN() + "[" + CCommonName::escape(Names.second) + "]" + ",Vector=Metabolites[" + CCommonName::escape(Names.first) + "]");
               }
 
             break;
@@ -674,7 +674,7 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
   if (!mScalingCompartment.empty() &&
       (Index = mpModel->getCompartments().getIndex(mScalingCompartment)) != C_INVALID_INDEX)
     {
-      ScalingCompartmentCN = mpModel->getCompartments()[Index].getCN();
+      ScalingCompartmentCN = mpModel->getCompartments()[Index].getStringCN();
     }
 
   UndoData.addProperty(CData::SCALING_COMPARTMENT, OldData.getProperty(CData::SCALING_COMPARTMENT), ScalingCompartmentCN);

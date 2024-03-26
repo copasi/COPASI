@@ -226,7 +226,7 @@ bool CQFunctionDM::setData(const QModelIndex &index, const QVariant &value,
         }
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::CHANGE, pFunc->getRegisteredCN());
+      emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::CHANGE, pFunc->getCN());
     }
 
   return true;
@@ -248,7 +248,7 @@ bool CQFunctionDM::insertRows(int position, int rows, const QModelIndex & parent
       CRootContainer::getFunctionList()->add(pFunc = new CKinFunction(TO_UTF8(Name)), true);
       ++mFetched;
 
-      emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::ADD, pFunc->getRegisteredCN());
+      emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::ADD, pFunc->getCN());
     }
 
   endInsertRows();
@@ -285,7 +285,7 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex & parent
       else
         {
           *itDeletedKey = itRow->getKey();
-          *itDeletedCN = itRow->getCN();
+          *itDeletedCN = itRow->getStringCN();
         }
     }
 

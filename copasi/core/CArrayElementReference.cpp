@@ -158,13 +158,13 @@ std::string CArrayElementReference::getObjectDisplayName() const
     return "Array" + getObjectName();
 }
 
-CCommonName CArrayElementReference::getCN() const
+CCommonName CArrayElementReference::getCNProtected() const
 {
   const_cast< CArrayElementReference * >(this)->updateObjectName();
 
   if (getObjectParent())
     {
-      return getObjectParent()->getCN() + getObjectName();
+      return getObjectParent()->getStringCN() + getObjectName();
     }
   else
     return "Array" + getObjectName();

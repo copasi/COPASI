@@ -214,7 +214,7 @@ bool CQUnitDM::setData(const QModelIndex &index, const QVariant &value,
         pUnitDef->setObjectName(TO_UTF8(createNewName("unit", COL_SYMBOL_UNITS)));
 
       emit dataChanged(index, index);
-      emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::CHANGE, pUnitDef->getRegisteredCN());
+      emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::CHANGE, pUnitDef->getCN());
     }
 
   return true;
@@ -233,7 +233,7 @@ bool CQUnitDM::insertRows(int position, int rows, const QModelIndex & parent)
       ++mFetched;
 
       CRootContainer::getUnitList()->add(pUnitDef, true);
-      emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::ADD, pUnitDef->getRegisteredCN());
+      emit notifyGUI(ListViews::ObjectType::UNIT, ListViews::ADD, pUnitDef->getCN());
     }
 
   endInsertRows();
@@ -261,7 +261,7 @@ bool CQUnitDM::removeRows(int position, int rows, const QModelIndex & parent)
   for (itDeletedKey = DeletedKeys.begin(), row = 0, itDeletedCN = DeletedCNs.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itDeletedCN, ++itRow, ++row)
     {
       *itDeletedKey = itRow->getKey();
-      *itDeletedCN = itRow->getCN();
+      *itDeletedCN = itRow->getStringCN();
     }
 
   beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);

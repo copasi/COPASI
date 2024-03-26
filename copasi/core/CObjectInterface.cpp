@@ -77,7 +77,7 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
 
       CheckDataModel &= (pDataModel != *it);
 
-      ContainerName = (*it)->getCN();
+      ContainerName = (*it)->getStringCN();
 
       while (ContainerName.getRemainder() != "")
         {
@@ -122,9 +122,14 @@ CObjectInterface::CObjectInterface(const CObjectInterface & src):
 CObjectInterface::~CObjectInterface()
 {};
 
-CRegisteredCommonName CObjectInterface::getRegisteredCN() const
+CCommonName CObjectInterface::getStringCN() const
 {
-  return CRegisteredCommonName(getCN(), DataObject(this));
+  return getCNProtected();
+}
+
+CRegisteredCommonName CObjectInterface::getCN() const
+{
+  return CRegisteredCommonName(getCNProtected(), DataObject(this));
 }
 
 bool CObjectInterface::appendPrerequisites(CObjectInterface::ObjectSet & prerequisites) const

@@ -249,7 +249,7 @@ void CQEventsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
   if (pVector != NULL &&
       index.row() < pVector->size())
     {
-      mpListView->switchToOtherWidget(ListViews::WidgetType::EventDetail, pVector->operator [](index.row()).getRegisteredCN());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::EventDetail, pVector->operator [](index.row()).getCN());
     }
 }
 

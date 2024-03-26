@@ -1,17 +1,14 @@
-// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-
 #include <copasi/config.h>
-
 
 #ifdef WITH_QT5_VISUALIZATION
 
 #include "CQDataVizPlot.h"
 #  include "CQPlotColors.h"
-
 
 #  include "copasi/plot/CPlotSpecification.h"
 #  include "copasi/UI/qtUtilities.h"
@@ -36,7 +33,6 @@ using namespace QtDataVisualization;
 #  endif
 
 QT_USE_NAMESPACE
-
 
 #  define ActivitySize 8
 C_FLOAT64 CQDataVizPlot::MissingValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -109,7 +105,6 @@ CQDataVizPlot::CQDataVizPlot(const CPlotSpecification * plotspec, QWidget * pare
   connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotShowContextMenu(const QPoint &)));
 }
 
-
 QString CQDataVizPlot::titleText() const
 {
   if (!mpGraph)
@@ -123,7 +118,6 @@ CQDataVizPlot::getPlotSpecification() const
 {
   return mpPlotSpecification;
 }
-
 
 bool CQDataVizPlot::createGraph(CQDataVizPlot::PlotMode mode)
 {
@@ -219,14 +213,13 @@ void CQDataVizPlot::removeSeries()
   Q3DSurface * surface = qobject_cast< Q3DSurface * >(mpGraph);
 
   if (surface)
-for (auto * series : surface->seriesList())
+    for (auto * series : surface->seriesList())
       surface->removeSeries(series);
 
   if (scatter)
-for (auto * series : scatter->seriesList())
+    for (auto * series : scatter->seriesList())
       scatter->removeSeries(series);
 }
-
 
 bool CQDataVizPlot::initFromSpec(const CPlotSpecification * plotspec)
 {
@@ -250,7 +243,6 @@ bool CQDataVizPlot::initFromSpec(const CPlotSpecification * plotspec)
           *pVisible = found->second->isVisible();
         }
     }
-
 
   if (!createGraph(mMode))
     return false;
@@ -338,14 +330,12 @@ bool CQDataVizPlot::initFromSpec(const CPlotSpecification * plotspec)
       showCurve(series, *pVisible);
 
       mCurveMap[itPlotItem->CCopasiParameter::getKey()] = series;
-
     }
 
   mIgnoreUpdate = false;
 
   return true;
 }
-
 
 bool CQDataVizPlot::compile(CObjectInterface::ContainerList listOfContainer)
 {
@@ -386,7 +376,7 @@ bool CQDataVizPlot::compile(CObjectInterface::ContainerList listOfContainer)
           if (pObj)
             {
               mObjects.insert(pObj);
-              objectCN = pObj->getCN();
+              objectCN = pObj->getStringCN();
               mCnNameMap[objectCN] = pObj->getObjectDisplayName();
             }
           else
@@ -624,7 +614,6 @@ void CQDataVizPlot::updateCurves(const size_t & activity)
   double z_min = mpAxisZ->max();
   double z_max = mpAxisZ->min();
 
-
   bool data_changed = false;
 
   for (; itCurves != endCurves; ++itCurves, ++k)
@@ -694,7 +683,6 @@ void CQDataVizPlot::updateCurves(const size_t & activity)
 
       if (bars)
         {
-
         }
 
       if (surface)
@@ -745,18 +733,17 @@ void CQDataVizPlot::updateCurves(const size_t & activity)
               QSurfaceDataArray * dataArray = new QSurfaceDataArray();
               dataArray->reserve(x_range.size() * y_range.size());
 
-for (auto & cur_y : y_range)
+              for (auto & cur_y : y_range)
                 {
                   QSurfaceDataRow * newRow = new QSurfaceDataRow(y_range.size());
                   int count = 0;
 
-for (auto & cur_x : x_range)
+                  for (auto & cur_x : x_range)
                     {
                       (*newRow)[count++].setPosition(dataMap[std::make_pair(cur_x, cur_y)]);
                     }
 
                   dataArray->append(newRow);
-
                 }
 
               mpAxisX->setRange(x_min, x_max);
@@ -765,15 +752,10 @@ for (auto & cur_x : x_range)
 
               proxy->resetArray(dataArray);
               surface->setProperty("data_count", int(data_size));
-
             }
-
         }
-
     }
-
 }
-
 
 void CQDataVizPlot::resizeCurveData(const size_t & activity)
 {
@@ -794,7 +776,6 @@ void CQDataVizPlot::resizeCurveData(const size_t & activity)
       *it = new CVector< double >(newSize);
       memcpy((*it)->array(), (*itOld)->array(), oldSize * sizeof(double));
     }
-
 }
 
 void CQDataVizPlot::updatePlot()
@@ -1018,7 +999,7 @@ bool CQDataVizPlot::saveData(const std::string & filename)
 
   bool FirstHistogram = true;
 
-for (auto & curve : mCurveMap)
+  for (auto & curve : mCurveMap)
     {
       QSurface3DSeries * surface = qobject_cast< QSurface3DSeries * > (curve.second);
       QScatter3DSeries * scatter = qobject_cast< QScatter3DSeries * >(curve.second);
@@ -1045,7 +1026,6 @@ for (auto & curve : mCurveMap)
               fs << std::endl;
             }
         }
-
     }
 
   fs.close();
@@ -1146,7 +1126,6 @@ void CQDataVizPlot::render(QPainter *, QRect)
 
 void CQDataVizPlot::resetZoom()
 {
-
 }
 
 bool CQDataVizPlot::viewportEvent(QEvent * event)
@@ -1156,7 +1135,6 @@ bool CQDataVizPlot::viewportEvent(QEvent * event)
 
 void CQDataVizPlot::mousePressEvent(QMouseEvent * event)
 {
-
 }
 
 void CQDataVizPlot::mouseMoveEvent(QMouseEvent * event)
@@ -1170,7 +1148,6 @@ void CQDataVizPlot::mouseReleaseEvent(QMouseEvent * event)
     {
       slotShowContextMenu(event->pos());
     }
-
 }
 
 void CQDataVizPlot::keyPressEvent(QKeyEvent * event)
@@ -1294,13 +1271,12 @@ CQDataVizPlot::contextActionTriggered(QAction* action)
           mpGraph->setSelectionMode(QAbstract3DGraph::SelectionItemAndColumn
                                     | QAbstract3DGraph::SelectionSlice);
         }
-
     }
   else if (title == "Style" && mMode == PlotMode::Scatter)
     {
       auto * scatter = dynamic_cast< Q3DScatter * >(mpGraph);
 
-for (auto * series : scatter->seriesList())
+      for (auto * series : scatter->seriesList())
         {
           if (option == "Cube")
             {
@@ -1325,7 +1301,7 @@ for (auto * series : scatter->seriesList())
     {
       auto * surface = dynamic_cast< Q3DSurface * >(mpGraph);
 
-for (auto * series : surface->seriesList())
+      for (auto * series : surface->seriesList())
         {
           if (option == "Wireframe")
             {
@@ -1425,7 +1401,6 @@ CQDataVizPlot::createContextMenu()
 
   mpContextMenu = new QMenu(this);
 
-
   QMenu * menu = new QMenu("Theme", mpContextMenu);
   menu->addAction(new QAction("Qt", menu));
   menu->addAction(new QAction("Primary Colors", menu));
@@ -1476,7 +1451,6 @@ CQDataVizPlot::createContextMenu()
       menu->addAction(new QAction("Surface", menu));
       menu->addAction(new QAction("SurfaceAndWireframe", menu));
       mpContextMenu->addMenu(menu); // Style
-
     }
 
   mpContextMenu->addSeparator();
@@ -1521,7 +1495,6 @@ void CQDataVizPlot::setReverseValueAxis(int enabled)
 
 void CQDataVizPlot::setReflection(bool enabled)
 {
-
 }
 
 void CQDataVizPlot::changeRange(int range)

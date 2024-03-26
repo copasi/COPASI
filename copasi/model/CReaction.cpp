@@ -807,7 +807,7 @@ void CReaction::setParameterValue(const std::string & parameterName,
       pFunctionParameter->getType() != CFunctionParameter::DataType::FLOAT64 ||
       mParameterIndexToCNs[found->second].size() != 1) return;
 
-  mParameterIndexToCNs[found->second][0] = pParameter->getRegisteredCN();
+  mParameterIndexToCNs[found->second][0] = pParameter->getCN();
 }
 
 const C_FLOAT64 & CReaction::getParameterValue(const std::string & parameterName) const
@@ -921,7 +921,7 @@ void CReaction::initializeParameters()
         }
 
       mParameterNameToIndex[name] = pos - 1;
-      mParameterIndexToCNs[pos - 1][0] = pParameter->getRegisteredCN();
+      mParameterIndexToCNs[pos - 1][0] = pParameter->getCN();
       mParameterIndexToObjects[pos - 1][0] = pParameter;
     }
 
@@ -1181,7 +1181,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
           metabName = (*pDataModel->pOldMetabolites)[index].getObjectName();
           const CMetab * pMetab = pModel->findMetabByName(metabName);
 
-          CNs.push_back(pMetab->getRegisteredCN());
+          CNs.push_back(pMetab->getCN());
           Objects.push_back(pMetab);
         }
 
@@ -1222,7 +1222,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
 
           parName = pParameter->getObjectName();
 
-          mParameterIndexToCNs[mParameterNameToIndex[parName]][0] = pMetab->getRegisteredCN();
+          mParameterIndexToCNs[mParameterNameToIndex[parName]][0] = pMetab->getCN();
           mParameterIndexToObjects[mParameterNameToIndex[parName]][0] = pMetab;
 
           // in the old files the chemical equation does not contain
@@ -1331,7 +1331,7 @@ void CReaction::setScalingFactor()
           if (pMetab != NULL)
             {
               mpScalingCompartment = pMetab->getCompartment();
-              mScalingCompartmentCN = mpScalingCompartment->getRegisteredCN();
+              mScalingCompartmentCN = mpScalingCompartment->getCN();
             }
         }
     }
@@ -1357,7 +1357,7 @@ void CReaction::initObjects()
 
 std::string CReaction::getDefaultNoiseExpression() const
 {
-  return "sqrt(abs(<" + mpParticleFluxReference->getCN() + ">))";
+  return "sqrt(abs(<" + mpParticleFluxReference->getStringCN() + ">))";
 }
 
 bool CReaction::setNoiseExpression(const std::string & expression)
@@ -1845,7 +1845,7 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
           CFunctionParameter* pFunPar = it->second.second;
           std::string id = it->first;
 
-          mParameterIndexToCNs[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first->getRegisteredCN();
+          mParameterIndexToCNs[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first->getCN();
           mParameterIndexToObjects[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first;
           ++it;
         }
@@ -1883,7 +1883,7 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
                   CFunctionParameter* pFunPar = it->second.second;
                   std::string id = it->first;
 
-                  mParameterIndexToCNs[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first->getRegisteredCN();
+                  mParameterIndexToCNs[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first->getCN();
                   mParameterIndexToObjects[mParameterNameToIndex[pFunPar->getObjectName()]][0] = it->second.first;
 
                   delete pFunPar;
@@ -2146,7 +2146,7 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9, mParameterIndexToCNs[index][0].c_str());
     }
 
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ">");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getStringCN() + ">");
   return pObjectNode;
 }
 
@@ -2297,7 +2297,7 @@ const CCommonName & CReaction::getScalingCompartmentCN() const
 void CReaction::setScalingCompartment(const CCompartment * pCompartment)
 {
   mpScalingCompartment = pCompartment;
-  mScalingCompartmentCN = (mpScalingCompartment != NULL) ? mpScalingCompartment->getRegisteredCN() : CRegisteredCommonName();
+  mScalingCompartmentCN = (mpScalingCompartment != NULL) ? mpScalingCompartment->getCN() : CRegisteredCommonName();
 }
 
 const CCompartment * CReaction::getScalingCompartment() const
@@ -2451,7 +2451,7 @@ bool CReaction::setParameterObjects(const size_t & index, const std::vector< con
             {
               if (*itObject != NULL)
                 {
-                  *itCN = (*itObject)->getRegisteredCN();
+                  *itCN = (*itObject)->getCN();
                 }
               else
                 {
@@ -2499,7 +2499,7 @@ bool CReaction::addParameterObject(const size_t & index, const CDataObject * obj
     return false;
 
   mParameterIndexToObjects[index].push_back(object);
-  mParameterIndexToCNs[index].push_back(object->getRegisteredCN());
+  mParameterIndexToCNs[index].push_back(object->getCN());
 
   CModel * pModel = static_cast<CModel *>(getObjectAncestor("Model"));
 

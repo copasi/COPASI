@@ -154,7 +154,7 @@ void CQReportDefinitionSelect::slotEdit()
   CReportDefinitionVector* pReportDefinitionVector = pDataModel->getReportDefinitionList();
   C_INT32 row;
   row = mpComboDefinition->currentIndex();
-  mpListView->switchToOtherWidget(ListViews::WidgetType::ReportTemplateDetail, pReportDefinitionVector->operator[](row).getRegisteredCN());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::ReportTemplateDetail, pReportDefinitionVector->operator[](row).getCN());
   accept(); // if shown then close
   mShow = false; // if not shown then close
 }

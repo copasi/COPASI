@@ -707,10 +707,10 @@ bool CDataModel::loadModelParameterSets(const std::string & fileName,
     return false;
 
   CDataVectorN< CModelParameterSet > & thisSet = pModel->getModelParameterSets();
-  CCommonName thisModelsCn = pModel->getCN();
+  CCommonName thisModelsCn = pModel->getStringCN();
 
   CDataVectorN< CModelParameterSet > & loadedSet = parameterSetModel->getModelParameterSets();
-  CCommonName loadedModelCn = parameterSetModel->getCN();
+  CCommonName loadedModelCn = parameterSetModel->getStringCN();
 
   for (CModelParameterSet & set : loadedSet)
     {

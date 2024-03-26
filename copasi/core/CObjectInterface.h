@@ -56,13 +56,9 @@ public:
    */
   virtual void calculateValue() = 0;
 
-  /**
-   * Retrieve the CN of the object
-   * @return CCommonName
-   */
-  virtual CCommonName getCN() const = 0;
+  CCommonName getStringCN() const;
 
-  CRegisteredCommonName getRegisteredCN() const;
+  CRegisteredCommonName getCN() const;
 
   /**
    * Retrieve a descendant object by its CN.
@@ -132,6 +128,11 @@ public:
   virtual void validityChanged(const CValidity & changedValidity) = 0;
 
 protected:
+  /**
+   * Retrieve the CN of the object
+   * @return CCommonName
+   */
+  virtual CCommonName getCNProtected() const = 0;
 
   mutable CValidity mValidity;
 };

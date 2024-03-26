@@ -154,9 +154,9 @@ CQSpectogramWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original
 
   std::string title = TO_UTF8(mpEditTitle->text());
 
-  CRegisteredCommonName xName = mpObjectX ? mpObjectX->getRegisteredCN() : CRegisteredCommonName();
-  CRegisteredCommonName yName = mpObjectY ? mpObjectY->getRegisteredCN() : CRegisteredCommonName();
-  CRegisteredCommonName zName = mpObjectZ ? mpObjectZ->getRegisteredCN() : CRegisteredCommonName();
+  CRegisteredCommonName xName = mpObjectX ? mpObjectX->getCN() : CRegisteredCommonName();
+  CRegisteredCommonName yName = mpObjectY ? mpObjectY->getCN() : CRegisteredCommonName();
+  CRegisteredCommonName zName = mpObjectZ ? mpObjectZ->getCN() : CRegisteredCommonName();
 
   C_INT32 Activity = 0;
 

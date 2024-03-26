@@ -280,14 +280,14 @@ bool CMetab::setCompartment(const std::string& compName)
   bool success = false;
   bool wasEnabled = CRegisteredCommonName::isEnabled();
   CRegisteredCommonName::setEnabled(true);
-  auto oldCN = getCN();
+  auto oldCN = getCNProtected();
 
   success = newComp->addMetabolite(this);
 
   if (success)
     {
       oldComp->getMetabolites().remove(getObjectName());
-      CRegisteredCommonName::handle(oldCN, getRegisteredCN());
+      CRegisteredCommonName::handle(oldCN, getCN());
       mpModel->setCompileFlag();
       mpModel->initializeMetabolites();
     }

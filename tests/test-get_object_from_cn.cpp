@@ -16,7 +16,7 @@ bool verify_cn(const CDataModel* dm, const std::string& cn)
   if (ref == NULL)
     return false;
 
-  auto resolved = ref->getCN();
+  auto resolved = ref->getStringCN();
 
   if (resolved.find("not found") != std::string::npos)
     return false;
@@ -70,7 +70,7 @@ TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
 
     auto* ref = dynamic_cast<const CArrayElementReference*>(dm->getObject(CCommonName("CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[A.ParticleNumber][(reaction).k1]")));
     auto* obj = (double*)ref->getValuePointer();
-    auto cn = ref->getRegisteredCN();
+    auto cn = ref->getCN();
     REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[A.ParticleNumber][(reaction).k1]"));
 
     auto registeredCN = cn;

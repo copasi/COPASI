@@ -122,7 +122,7 @@ CEventAssignment::CEventAssignment(const std::string & targetCN,
 
   if (pObject != nullptr)
     {
-      mTargetCN = pObject->getValueObject()->getRegisteredCN();
+      mTargetCN = pObject->getValueObject()->getCN();
       setObjectName(mTargetCN);
     }
 
@@ -211,7 +211,7 @@ CIssue CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer
   if (pEntity != nullptr)
     {
       mpTarget = pEntity->getValueObject();
-      setTargetCN(mpTarget->getCN());
+      setTargetCN(mpTarget->getStringCN());
     }
   else
     pEntity =  dynamic_cast< const CModelEntity * >(mpTarget->getObjectParent());
@@ -599,7 +599,7 @@ std::string CEvent::getOriginFor(const DataObjectSet & deletedObjects) const
 
           for (; setIt != setEnd; ++setIt)
             {
-              if (assignment.getTargetObject()->getCN() == (*setIt)->getCN())
+              if (assignment.getTargetObject()->getStringCN() == (*setIt)->getStringCN())
                 {
 
                   Origin += Separator + "Target (" + (assignment.getTargetObject() != nullptr ? assignment.getTargetObject()->getObjectDisplayName() : "not found") + ")";

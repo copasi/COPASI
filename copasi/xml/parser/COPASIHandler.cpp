@@ -260,7 +260,7 @@ bool COPASIHandler::processEnd(const XML_Char * pszName)
               {
                 reportIndex = (*innerIt2).second;
                 nameVector = (*innerIt2).first;
-                (*nameVector)[reportIndex] = reportDefinition->getRegisteredCN();
+                (*nameVector)[reportIndex] = reportDefinition->getCN();
                 ++innerIt2;
               }
 

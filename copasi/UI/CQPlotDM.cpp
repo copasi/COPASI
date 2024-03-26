@@ -212,7 +212,7 @@ bool CQPlotDM::setData(const QModelIndex &index, const QVariant &value,
       if (changed)
         {
           emit dataChanged(index, index);
-          emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::CHANGE, pPS->CCopasiParameter::getRegisteredCN());
+          emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::CHANGE, pPS->CCopasiParameter::getCN());
         }
     }
   else if (role == Qt::CheckStateRole && index.column() == COL_ACTIVE_PLOTS)
@@ -242,7 +242,7 @@ bool CQPlotDM::insertRows(int position, int rows, const QModelIndex & parent)
 
       ++mFetched;
 
-      emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::ADD, pPS->CCopasiParameter::getRegisteredCN());
+      emit notifyGUI(ListViews::ObjectType::PLOT, ListViews::ADD, pPS->CCopasiParameter::getCN());
     }
 
   endInsertRows();
@@ -263,7 +263,7 @@ bool CQPlotDM::removeRows(int position, int rows, const QModelIndex & parent)
     {
       CPlotSpecification* pPS =
         &mpDataModel->getPlotDefinitionList()->operator[](position);
-      CRegisteredCommonName deletedKey = pPS->CCopasiParameter::getRegisteredCN();
+      CRegisteredCommonName deletedKey = pPS->CCopasiParameter::getCN();
 
       if (mFetched > 0)
         --mFetched;

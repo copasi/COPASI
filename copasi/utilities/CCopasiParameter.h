@@ -412,14 +412,6 @@ public:
    */
   friend bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs);
 
-  /**
-   * Retrieve the CN of the math container
-   * The math container provides values for the numerical values of model objects.
-   * For the CN mechanism to work properly it has to pretend to be the model.
-   * @return CCommonName
-   */
-  virtual CCommonName getCN() const override;
-
   virtual void * getValuePointer() const override;
 
   void * getValidValuesPointer() const;
@@ -440,6 +432,15 @@ public:
   bool isUnsupported() const;
 
   bool isDefault() const;
+
+protected:
+  /**
+   * Retrieve the CN of the math container
+   * The math container provides values for the numerical values of model objects.
+   * For the CN mechanism to work properly it has to pretend to be the model.
+   * @return CCommonName
+   */
+  virtual CCommonName getCNProtected() const override;
 
 private:
   /**

@@ -264,9 +264,9 @@ BandedGraphWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original 
   C_FLOAT64 lineWidth = (C_FLOAT64) mpSpinBoxWidth->value();
   std::string color = TO_UTF8(mpBoxColor->currentText());
 
-  CRegisteredCommonName xName = mpObjectX ? mpObjectX->getRegisteredCN() : CRegisteredCommonName();
-  CRegisteredCommonName yName1 = mpObjectYone ? mpObjectYone->getRegisteredCN() : CRegisteredCommonName();
-  CRegisteredCommonName yName2 = mpObjectYtwo ? mpObjectYtwo->getRegisteredCN() : (mpObjectYone ? mpObjectYone->getRegisteredCN() : CRegisteredCommonName());
+  CRegisteredCommonName xName = mpObjectX ? mpObjectX->getCN() : CRegisteredCommonName();
+  CRegisteredCommonName yName1 = mpObjectYone ? mpObjectYone->getCN() : CRegisteredCommonName();
+  CRegisteredCommonName yName2 = mpObjectYtwo ? mpObjectYtwo->getCN() : (mpObjectYone ? mpObjectYone->getCN() : CRegisteredCommonName());
 
   C_INT32 Activity = 0;
 

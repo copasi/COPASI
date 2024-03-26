@@ -110,12 +110,12 @@ void CQCompartment::slotBtnNew()
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpCompartment);
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", mpCompartment->getCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpCompartment->getStringCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", mpCompartment->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
 
-  mpListView->switchToOtherWidget(ListViews::WidgetType::CompartmentDetail, mpCompartment->getRegisteredCN());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::CompartmentDetail, mpCompartment->getCN());
 }
 
 void CQCompartment::slotBtnCopy() {}
@@ -182,7 +182,7 @@ void CQCompartment::copy()
 
             if (!pRi->isMulticompartment())
               {
-                if (pRi->getChemEqInterface().getCompartment()->getCN() == mObjectCN)
+                if (pRi->getChemEqInterface().getCompartment()->getStringCN() == mObjectCN)
                   compartmentObjectsToCopy.addReaction(it);
               }
           }
@@ -208,14 +208,14 @@ void CQCompartment::copy()
       const CDataObject * pObject = origToCopyMappings.getDuplicateFromObject(mpObject);
 
       ListViews::addUndoMetaData(this, UndoData);
-      UndoData.addMetaDataProperty("Widget Object CN (after)", pObject->getCN());
+      UndoData.addMetaDataProperty("Widget Object CN (after)", pObject->getStringCN());
       UndoData.addMetaDataProperty("Widget Object Name (after)", pObject->getObjectName());
 
       slotNotifyChanges(mpDataModel->recordData(UndoData));
 
       if (pObject != NULL)
         {
-          mpListView->switchToOtherWidget(ListViews::WidgetType::CompartmentDetail, pObject->getRegisteredCN());
+          mpListView->switchToOtherWidget(ListViews::WidgetType::CompartmentDetail, pObject->getCN());
         }
     }
 }
@@ -586,7 +586,7 @@ void CQCompartment::slotMetaboliteTableCurrentChanged(int row, int col)
         s2 = (*it)->getObjectName();
 
         if (s1 == s2)
-          mpListView->switchToOtherWidget(ListViews::WidgetType::SpeciesDetail, (*it)->getRegisteredCN());
+          mpListView->switchToOtherWidget(ListViews::WidgetType::SpeciesDetail, (*it)->getCN());
       }
 }
 

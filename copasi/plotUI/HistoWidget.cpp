@@ -239,7 +239,7 @@ bool HistoWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original /
   if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
 
   std::string title = TO_UTF8(mpEditTitle->text());
-  CRegisteredCommonName name = mpObjectX ? mpObjectX->getRegisteredCN() : CRegisteredCommonName();
+  CRegisteredCommonName name = mpObjectX ? mpObjectX->getCN() : CRegisteredCommonName();
   C_FLOAT64 increment = mpEditIncrement->text().toDouble();
   unsigned C_INT32 lineType = (unsigned C_INT32) mpBoxType->currentIndex();
   unsigned C_INT32 lineSubType = (unsigned C_INT32) mpBoxLineSubType->currentIndex();

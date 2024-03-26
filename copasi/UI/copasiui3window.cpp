@@ -999,14 +999,14 @@ void CopasiUI3Window::slotNewDoc(QString str)
   //#endif
   mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
-                         mpDataModel->getModel()->getRegisteredCN());
+                         mpDataModel->getModel()->getCN());
 
   // delete the old sliders
   if (this->mpSliders) this->mpSliders->reset();
 
   mpDataModelGUI->createModel();
   this->mpSliders->setChanged(false);
-  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, mpDataModel->getModel()->getRegisteredCN());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, mpDataModel->getModel()->getCN());
   //if (!mbObject_browser_open)
   //mpFileMenu->setItemEnabled(nobject_browser, true);
   mpaSave->setEnabled(true);
@@ -1016,7 +1016,7 @@ void CopasiUI3Window::slotNewDoc(QString str)
   mpaExportSEDML->setEnabled(true);
 
   updateTitle();
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getRegisteredCN(), 0);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN(), 0);
 
   mSaveAsRequired = true;
   mCommitRequired = true;
@@ -1173,7 +1173,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
       //mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
       //#endif
       mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
-                             mpDataModel->getModel()->getRegisteredCN());
+                             mpDataModel->getModel()->getCN());
       mpListView->clearCurrentWidget();
       mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
 
@@ -1285,7 +1285,7 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
     }
 
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD,
-                         mpDataModel->getModel()->getRegisteredCN());
+                         mpDataModel->getModel()->getCN());
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
@@ -1293,7 +1293,7 @@ void CopasiUI3Window::slotFileOpenFinished(bool success)
   mpaExportSEDML->setEnabled(true);
 
   updateTitle();
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getRegisteredCN(), 0);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN(), 0);
 
   refreshRecentFileMenu();
   mNewFile.clear();
@@ -1673,7 +1673,7 @@ void CopasiUI3Window::importSBMLFromString(const std::string &sbmlDocumentText)
       //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
       //#endif
       mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
-                             mpDataModel->getModel()->getRegisteredCN());
+                             mpDataModel->getModel()->getCN());
       mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
       setCursor(Qt::WaitCursor);
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFromStringFinished(bool)));
@@ -1712,12 +1712,12 @@ void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
     }
 
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD,
-                         mpDataModel->getModel()->getRegisteredCN());
+                         mpDataModel->getModel()->getCN());
   //if (!bobject_browser_open)
   //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
   //       msave_button->setEnabled(true);
   //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getRegisteredCN(), 0);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN(), 0);
 
   updateTitle();
   mSaveAsRequired = true;
@@ -1782,7 +1782,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
       //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
       //#endif
       mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
-                             mpDataModel->getModel()->getRegisteredCN());
+                             mpDataModel->getModel()->getCN());
       mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
 
       if (this->mpSliders) this->mpSliders->reset();
@@ -1818,12 +1818,12 @@ void CopasiUI3Window::slotImportSBMLFinished(bool success)
     this->checkPendingMessages();
 
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD,
-                         mpDataModel->getModel()->getRegisteredCN());
+                         mpDataModel->getModel()->getCN());
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
   mpaExportODE->setEnabled(true);
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getRegisteredCN(), 0);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN(), 0);
 
   refreshRecentSBMLFileMenu();
   updateTitle();
@@ -2573,7 +2573,7 @@ void CopasiUI3Window::slotApplyInitialState()
     {
       pModel->compileIfNecessary(NULL);
       pModel->applyInitialValues();
-      mpDataModelGUI->notify(ListViews::ObjectType::STATE, ListViews::CHANGE, pModel->getRegisteredCN());
+      mpDataModelGUI->notify(ListViews::ObjectType::STATE, ListViews::CHANGE, pModel->getCN());
     }
 }
 
@@ -2587,7 +2587,7 @@ void CopasiUI3Window::slotUpdateInitialState()
     {
       pModel->compileIfNecessary(NULL);
       pModel->stateToIntialState();
-      mpDataModelGUI->notify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpDataModel->getModel()->getRegisteredCN());
+      mpDataModelGUI->notify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpDataModel->getModel()->getCN());
     }
 }
 
@@ -3188,12 +3188,12 @@ void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
     }
 
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD,
-                         mpDataModel->getModel()->getRegisteredCN());
+                         mpDataModel->getModel()->getCN());
   //if (!bobject_browser_open)
   //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
   //       msave_button->setEnabled(true);
   //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getRegisteredCN(), 0);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN(), 0);
 
   updateTitle();
   mSaveAsRequired = true;
@@ -3223,12 +3223,12 @@ void CopasiUI3Window::slotImportSEDMLFinished(bool success)
     this->checkPendingMessages();
 
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD,
-                         mpDataModel->getModel()->getRegisteredCN());
+                         mpDataModel->getModel()->getCN());
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
   mpaExportSEDML->setEnabled(true);
   //  mpaExportODE->setEnabled(true);
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getRegisteredCN(), 0);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN(), 0);
 
   refreshRecentSEDMLFileMenu();
   updateTitle();
@@ -3302,7 +3302,7 @@ void CopasiUI3Window::slotImportSEDML(QString file)
       //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
       //#endif
       mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
-                             mpDataModel->getModel()->getRegisteredCN());
+                             mpDataModel->getModel()->getCN());
       mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
 
       if (this->mpSliders) this->mpSliders->reset();
@@ -3542,7 +3542,7 @@ void CopasiUI3Window::slotImportCombine(QString file)
       //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
       //#endif
       mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
-                             mpDataModel->getModel()->getRegisteredCN());
+                             mpDataModel->getModel()->getCN());
       mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
 
       if (this->mpSliders) this->mpSliders->reset();
@@ -3577,12 +3577,12 @@ void CopasiUI3Window::slotImportCombineFinished(bool success)
     this->checkPendingMessages();
 
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD,
-                         mpDataModel->getModel()->getRegisteredCN());
+                         mpDataModel->getModel()->getCN());
   mpaSave->setEnabled(true);
   mpaSaveAs->setEnabled(true);
   mpaExportSBML->setEnabled(true);
   mpaExportODE->setEnabled(true);
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getRegisteredCN(), 0);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN(), 0);
 
   refreshRecentSBMLFileMenu();
   updateTitle();
@@ -3817,7 +3817,7 @@ void CopasiUI3Window::activateElement(const std::string& activate)
 
   if (obj != NULL)
     {
-      mpListView->switchToOtherWidget(ListViews::WidgetType::NotFound, obj->getRegisteredCN());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::NotFound, obj->getCN());
     }
   else
     {
@@ -3840,7 +3840,7 @@ void CopasiUI3Window::activateElement(const std::string& activate)
             obj = dynamic_cast<const CDataObject*>(mpDataModel->getModel()->getObject(activate));
 
           if (obj != NULL)
-            mpListView->switchToOtherWidget(ListViews::WidgetType::NotFound, obj->getRegisteredCN());
+            mpListView->switchToOtherWidget(ListViews::WidgetType::NotFound, obj->getCN());
         }
     }
 }
@@ -3926,7 +3926,7 @@ void CopasiUI3Window::performNextAction()
                                getIndex(CTaskEnum::TaskName[description.mTaskType]);
 
             auto* result = COutputAssistant::createDefaultOutput(id, &((*mpDataModel->getTaskList())[taskIndex]), mpDataModel);
-            mpDataModelGUI->notify(ListViews::ObjectType::PLOT, ListViews::ADD, result->getRegisteredCN());
+            mpDataModelGUI->notify(ListViews::ObjectType::PLOT, ListViews::ADD, result->getCN());
           }
 
         break;

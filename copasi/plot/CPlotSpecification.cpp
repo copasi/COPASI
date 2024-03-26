@@ -232,14 +232,14 @@ bool CPlotSpecification::createDefaultPlot(const CModel * model)
   CPlotDataChannelSpec name2;
   const CDataObject * tmp;
 
-  CPlotDataChannelSpec name1 = model->getValueReference()->getRegisteredCN();
+  CPlotDataChannelSpec name1 = model->getValueReference()->getCN();
 
   size_t i, imax = model->getMetabolites().size();
 
   for (i = 0; i < imax; ++i)
     {
       tmp = model->getMetabolites()[i].getConcentrationReference();
-      name2 = tmp->getRegisteredCN();
+      name2 = tmp->getCN();
       itemTitle = tmp->getObjectDisplayName();
 
       plItem = this->createItem(itemTitle, CPlotItem::curve2d);

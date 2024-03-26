@@ -317,7 +317,7 @@ bool CQFittingWidget::taskFinishedEvent()
 
   for (size_t i = mnParamterSetsBeforeRun; i < finalCount; ++i)
     {
-      protectedNotify(ListViews::ObjectType::MODELPARAMETERSET, ListViews::ADD, pTask->getObjectDataModel()->getModel()->getModelParameterSets()[i].CDataObject::getRegisteredCN());
+      protectedNotify(ListViews::ObjectType::MODELPARAMETERSET, ListViews::ADD, pTask->getObjectDataModel()->getModel()->getModelParameterSets()[i].CDataObject::getCN());
     }
 
   return true;

@@ -266,7 +266,7 @@ void CQParameterSetsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
   if (pVector != NULL &&
       index.row() < pVector->size())
     {
-      mpListView->switchToOtherWidget(ListViews::WidgetType::ParameterSetDetail, pVector->operator [](index.row()).getRegisteredCN());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::ParameterSetDetail, pVector->operator [](index.row()).CObjectInterface::getCN());
     }
 }
 

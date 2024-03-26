@@ -67,7 +67,7 @@ class QConservedSpeciesAnimation : public CQCopasiAnimation
 
     while (it != metabs.end())
       {
-        mEntries.push_back(CQEffectDescription(it->getCN()));
+        mEntries.push_back(CQEffectDescription(it->getStringCN()));
         ++it;
       }
 
@@ -93,7 +93,7 @@ class QConservedSpeciesAnimation : public CQCopasiAnimation
 
     while (it != eqn.end())
       {
-        cnValueMap[(*it).second->getCN()] = (*it).first;
+        cnValueMap[(*it).second->getStringCN()] = (*it).first;
         ++it;
       }
 
@@ -118,8 +118,8 @@ public:
 
     while (it != reactions.end())
       {
-        mEntries.push_back(CQEffectDescription(it->getCN(), CQEffectDescription::Colorize, Qt::black, Qt::red));
-        indexMap[count] = it->getCN();
+        mEntries.push_back(CQEffectDescription(it->getStringCN(), CQEffectDescription::Colorize, Qt::black, Qt::red));
+        indexMap[count] = it->getStringCN();
         ++it;
         ++count;
       }
@@ -164,7 +164,7 @@ public:
       {
         const size_t reactionIndex = (*modeIt).first;
         const double coefficient = (*modeIt).second;
-        cnValueMap[reordered[reactionIndex]->getCN()] = qAbs(coefficient);
+        cnValueMap[reordered[reactionIndex]->getStringCN()] = qAbs(coefficient);
         ++modeIt;
       }
 
@@ -262,8 +262,8 @@ public:
 
     while (it != metabs.end())
       {
-        mEntries.push_back(CQEffectDescription(it->getCN(), CQEffectDescription::Scale));
-        keyMap[it->getCN()] = it->getKey();
+        mEntries.push_back(CQEffectDescription(it->getStringCN(), CQEffectDescription::Scale));
+        keyMap[it->getStringCN()] = it->getKey();
         ++it;
       }
 
@@ -407,8 +407,8 @@ class QCustomTimeCourseAnimation : public CQCopasiAnimation
 
       while (it != metabs.end())
         {
-          entries.push_back(CQEffectDescription(it->getCN(),
-                                                it->getConcentrationReference()->getCN(),
+          entries.push_back(CQEffectDescription(it->getStringCN(),
+                                                it->getConcentrationReference()->getStringCN(),
                                                 CQEffectDescription::Scale));
           ++it;
         }
@@ -420,8 +420,8 @@ class QCustomTimeCourseAnimation : public CQCopasiAnimation
 
       while (it != reactions.end())
         {
-          entries.push_back(CQEffectDescription(it->getCN(),
-                                                it->getFluxReference()->getCN(),
+          entries.push_back(CQEffectDescription(it->getStringCN(),
+                                                it->getFluxReference()->getStringCN(),
                                                 CQEffectDescription::Colorize));
           ++it;
         }

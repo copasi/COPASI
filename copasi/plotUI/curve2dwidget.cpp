@@ -212,8 +212,8 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original
 
   if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
 
-  CRegisteredCommonName xName = mpObjectX ? mpObjectX->getRegisteredCN() : CRegisteredCommonName();
-  CRegisteredCommonName yName = mpObjectY ? mpObjectY->getRegisteredCN() : CRegisteredCommonName();
+  CRegisteredCommonName xName = mpObjectX ? mpObjectX->getCN() : CRegisteredCommonName();
+  CRegisteredCommonName yName = mpObjectY ? mpObjectY->getCN() : CRegisteredCommonName();
 
   bool changed = false;
 

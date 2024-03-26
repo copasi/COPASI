@@ -605,5 +605,5 @@ void CQFittingResult::slotUpdateModel()
   pProb->restore(true, pSelected);
 
   // We need to notify the GUI to update all values
-  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getRegisteredCN());
+  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, mpTask->getMathContainer()->getModel().getCN());
 }

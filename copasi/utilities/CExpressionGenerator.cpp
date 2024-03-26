@@ -1,4 +1,4 @@
-// Copyright (C) 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -175,7 +175,7 @@ std::string CExpressionGenerator::generate(Operation operation, const std::vecto
   result << parts.entryStart;
 
   if (useCn)
-    result << "<" << entry->getCN() << ">";
+    result << "<" << entry->getStringCN() << ">";
   else
     result << "{" << escapeDisplayName(entry) << "}";
 
@@ -189,7 +189,7 @@ std::string CExpressionGenerator::generate(Operation operation, const std::vecto
       result << parts.entryStart;
 
       if (useCn)
-        result << "<" << entry->getCN() << ">";
+        result << "<" << entry->getStringCN() << ">";
       else
         result << "{" << escapeDisplayName(entry) << "}";
 

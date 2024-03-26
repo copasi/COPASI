@@ -112,7 +112,7 @@ bool SensitivitiesWidget::saveTaskProtected()
   if (FunctionChooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     {
       if (mpSingleFunction)
-        TargetFunctions.setSingleObjectCN(mpSingleFunction->getCN());
+        TargetFunctions.setSingleObjectCN(mpSingleFunction->getStringCN());
     }
   else
     TargetFunctions.setListType(FunctionChooser->getCurrentObjectList());
@@ -129,7 +129,7 @@ bool SensitivitiesWidget::saveTaskProtected()
   if (VariableChooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     {
       if (mpSingleVariable)
-        FirstVariables.setSingleObjectCN(mpSingleVariable->getCN());
+        FirstVariables.setSingleObjectCN(mpSingleVariable->getStringCN());
     }
   else
     FirstVariables.setListType(VariableChooser->getCurrentObjectList());
@@ -147,7 +147,7 @@ bool SensitivitiesWidget::saveTaskProtected()
   if (Variable2Chooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     {
       if (mpSingleVariable2)
-        SecondVariables.setSingleObjectCN(mpSingleVariable2->getCN());
+        SecondVariables.setSingleObjectCN(mpSingleVariable2->getStringCN());
     }
   else
     SecondVariables.setListType(Variable2Chooser->getCurrentObjectList());

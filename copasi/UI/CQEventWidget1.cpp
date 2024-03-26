@@ -110,7 +110,7 @@ void CQEventWidget1::slotBtnNew()
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpEvent);
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", mpEvent->getCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpEvent->getStringCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", mpEvent->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
@@ -141,7 +141,7 @@ void CQEventWidget1::slotBtnCopy()
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpEvent);
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", mpEvent->getCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpEvent->getStringCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", mpEvent->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
@@ -198,7 +198,7 @@ void CQEventWidget1::slotAddTarget()
   if (!mpLBTarget->findItems(displayName, Qt::MatchExactly).isEmpty())
     return;
 
-  mAssignments.add(new CEventAssignment(pObject->getCN()), true);
+  mAssignments.add(new CEventAssignment(pObject->getStringCN()), true);
   mpLBTarget->addItem(displayName);
 
   mpLBTarget->setCurrentRow((int)(mAssignments.size() - 1));
@@ -501,7 +501,7 @@ void CQEventWidget1::slotSelectObject()
   if (pObject == NULL)
     return;
 
-  if (mAssignments[mCurrentTarget].setTargetCN(pObject->getCN()))
+  if (mAssignments[mCurrentTarget].setTargetCN(pObject->getStringCN()))
     {
       // If the target key change was successful we need to update the label.
       mpLBTarget->item((int) mCurrentTarget)->setText(FROM_UTF8(pObject->getObjectDisplayName()));

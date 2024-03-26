@@ -306,7 +306,7 @@ void CQParameterOverviewWidget::buildSelectionList()
 {
   // We build the selection for the global parameters for kinetic constants.
   const CModelParameterGroup *pGlobalQuantities =
-    static_cast< const CModelParameterGroup * >(mpParameterSetCopy->getModelParameter(CDataString("Initial Global Quantities").getCN()));
+    static_cast< const CModelParameterGroup * >(mpParameterSetCopy->getModelParameter(CDataString("Initial Global Quantities").getStringCN()));
 
   CModelParameterGroup::const_iterator it = pGlobalQuantities->begin();
   CModelParameterGroup::const_iterator end = pGlobalQuantities->end();
@@ -406,7 +406,7 @@ void CQParameterOverviewWidget::slotBtnNew()
   pSetToApply->updateModel();
 
   // Notify the GUI that the model state has changed.
-  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, pModel->getRegisteredCN());
+  protectedNotify(ListViews::ObjectType::STATE, ListViews::CHANGE, pModel->getCN());
 
   enterProtected();
 }
@@ -446,12 +446,12 @@ void CQParameterOverviewWidget::slotBtnCopy()
 
   CUndoData UndoData(CUndoData::Type::INSERT, pNew->toData());
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", pNew->getCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", pNew->getStringCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", pNew->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
 
-  mpListView->switchToOtherWidget(ListViews::WidgetType::ParameterSetDetail, pNew->CDataObject::getRegisteredCN());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::ParameterSetDetail, pNew->CDataObject::getCN());
 }
 
 // virtual
@@ -582,7 +582,7 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
 
       CUndoData UndoData(CUndoData::Type::INSERT, pNew->toData());
       ListViews::addUndoMetaData(this, UndoData);
-      UndoData.addMetaDataProperty("Widget Object CN (after)", pNew->getCN());
+      UndoData.addMetaDataProperty("Widget Object CN (after)", pNew->getStringCN());
       UndoData.addMetaDataProperty("Widget Object Name (after)", pNew->getObjectName());
 
       slotNotifyChanges(mpDataModel->recordData(UndoData));

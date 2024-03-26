@@ -89,10 +89,10 @@ int main(int argc, char** argv)
       // the body will contain the actual timecourse data
       std::vector<CRegisteredCommonName>* pHeader = pReport->getHeaderAddr();
       std::vector<CRegisteredCommonName>* pBody = pReport->getBodyAddr();
-      pBody->push_back(pDataModel->getModel()->getObject("Reference=Time")->getRegisteredCN());
-      pBody->push_back(pReport->getSeparator().getRegisteredCN());
-      pHeader->push_back(CDataString("time").getRegisteredCN());
-      pHeader->push_back(pReport->getSeparator().getRegisteredCN());
+      pBody->push_back(pDataModel->getModel()->getObject("Reference=Time")->getCN());
+      pBody->push_back(pReport->getSeparator().getCN());
+      pHeader->push_back(CDataString("time").getCN());
+      pHeader->push_back(pReport->getSeparator().getCN());
 
       size_t i, iMax = pModel->getMetabolites().size();
 
@@ -107,14 +107,14 @@ int main(int argc, char** argv)
               // we want the concentration oin the output
               // alternatively, we could use "Reference=Amount" to get the
               // particle number
-              pBody->push_back(pMetab->getObject(CCommonName("Reference=Concentration"))->getRegisteredCN());
+              pBody->push_back(pMetab->getObject(CCommonName("Reference=Concentration"))->getCN());
               // after each entry, we need a seperator
-              pBody->push_back(pReport->getSeparator().getRegisteredCN());
+              pBody->push_back(pReport->getSeparator().getCN());
 
               // add the corresponding id to the header
-              pHeader->push_back(CDataString(pMetab->getSBMLId()).getRegisteredCN());
+              pHeader->push_back(CDataString(pMetab->getSBMLId()).getCN());
               // and a seperator
-              pHeader->push_back(pReport->getSeparator().getRegisteredCN());
+              pHeader->push_back(pReport->getSeparator().getCN());
             }
         }
 
