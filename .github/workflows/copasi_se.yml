@@ -23,7 +23,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - uses: seanmiddleditch/gha-setup-ninja@master
 
     - name: Add msbuild to PATH (Windows)
@@ -102,7 +102,7 @@ jobs:
       run: ctest -C $BUILD_TYPE -V
 
     - name: binary archive
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name:
           copasi-se-${{ matrix.platform }}

@@ -22,7 +22,7 @@ jobs:
     container: quay.io/pypa/manylinux_2_28_x86_64
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Create Build Environment
       run: |
@@ -66,7 +66,7 @@ jobs:
       run: cmake --build . --config $BUILD_TYPE --target install
 
     - name: binary archive
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name:
           copasi-se-openmp-manylinux_2_28_x86_64
