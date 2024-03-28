@@ -259,7 +259,7 @@ const CDataObject * CEventAssignment::getTargetObject() const
   return mpTarget;
 }
 
-bool CEventAssignment::setTargetCN(const std::string & targetCN)
+bool CEventAssignment::setTargetCN(const CRegisteredCommonName & targetCN)
 {
   if (targetCN != getTargetCN() &&
       mpModel != nullptr)
@@ -267,11 +267,11 @@ bool CEventAssignment::setTargetCN(const std::string & targetCN)
       mpModel->setCompileFlag(true);
     }
 
-  mTargetCN = CRegisteredCommonName(targetCN, this);
+  mTargetCN = targetCN;
   return setObjectName(targetCN);
 }
 
-const std::string & CEventAssignment::getTargetCN() const
+const CRegisteredCommonName & CEventAssignment::getTargetCN() const
 {
   //if (mTargetCN != getObjectName())
   //  setObjectName(mTargetCN);

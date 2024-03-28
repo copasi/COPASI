@@ -30,7 +30,7 @@ CCrossSectionProblem::CCrossSectionProblem(const CDataContainer * pParent)
     mpFlagLimitOutCrossings(NULL),
     mpOutCrossingsLimit(NULL),
     mpFlagLimitOutTime(NULL),
-    mSingleObjectCN(NULL),
+    mpSingleObjectCN(NULL),
     mpFlagPositiveDirection(NULL),
     mpThreshold(NULL)
 {
@@ -51,7 +51,7 @@ CCrossSectionProblem::CCrossSectionProblem(const CCrossSectionProblem & src,
   mpFlagLimitOutCrossings(NULL),
   mpOutCrossingsLimit(NULL),
   mpFlagLimitOutTime(NULL),
-  mSingleObjectCN(NULL),
+  mpSingleObjectCN(NULL),
   mpFlagPositiveDirection(NULL),
   mpThreshold(NULL)
 {
@@ -74,7 +74,7 @@ void CCrossSectionProblem::initializeParameter()
   mpFlagLimitOutConvergence = assertParameter("DelayOutputUntilConvergence", CCopasiParameter::Type::BOOL, false);
   mpConvergenceOutTolerance = assertParameter("OutputConvergenceTolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)1E-6);
   mpTriggerExpression = assertParameter("TriggerExpression", CCopasiParameter::Type::EXPRESSION, std::string(""));
-  mSingleObjectCN = assertParameter("SingleVariable", CCopasiParameter::Type::CN, CCommonName(""));
+  mpSingleObjectCN = assertParameter("SingleVariable", CCopasiParameter::Type::CN, CRegisteredCommonName());
   setOutputEvent(false);
 }
 
@@ -151,14 +151,14 @@ void CCrossSectionProblem::setTimeLimit(const C_FLOAT64 &timeLimit)
  */
 const std::string& CCrossSectionProblem::getSingleObjectCN() const
 {
-  return *mSingleObjectCN;
+  return *mpSingleObjectCN;
 }
 
 void CCrossSectionProblem::setSingleObjectCN(const CDataObject* pObject)
 {
   if (pObject == NULL) return;
 
-  setSingleObjectCN(pObject->getStringCN());
+  setSingleObjectCN(pObject->getCN());
 }
 
 const C_FLOAT64& CCrossSectionProblem::getThreshold() const
@@ -173,9 +173,9 @@ void CCrossSectionProblem::setThreshold(const C_FLOAT64 &threshold)
 /*
  * set the variable
  */
-void CCrossSectionProblem::setSingleObjectCN(const std::string& cn)
+void CCrossSectionProblem::setSingleObjectCN(const CRegisteredCommonName & cn)
 {
-  *mSingleObjectCN = cn;
+  *mpSingleObjectCN = cn;
 }
 
 bool CCrossSectionProblem::getFlagLimitConvergence() const

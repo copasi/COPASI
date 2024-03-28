@@ -110,6 +110,23 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
   return const_cast< CObjectInterface * >(pObject);
 }
 
+// static
+CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
+    const CRegisteredCommonName & objName)
+{
+  const CDataModel * pDataModel = objName.getDataModel();
+
+  if (pDataModel != nullptr)
+    {
+      CObjectInterface::ContainerList ListOfContainer = listOfContainer;
+      ListOfContainer.push_back(pDataModel);
+
+      return GetObjectFromCN(ListOfContainer, CCommonName(objName));
+    }
+
+  return GetObjectFromCN(listOfContainer, CCommonName(objName));
+}
+
 CObjectInterface::CObjectInterface():
   mValidity(this)
 {}

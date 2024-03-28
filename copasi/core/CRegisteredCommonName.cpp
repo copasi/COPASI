@@ -16,6 +16,7 @@
 #include "copasi/core/CDataObject.h"
 #include "copasi/core/CDataContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 
 using std::string;
 
@@ -53,10 +54,21 @@ CRegisteredCommonName::CRegisteredCommonName()
   mSet.insert(this);
 }
 
+CRegisteredCommonName::CRegisteredCommonName(const std::string & name)
+  : CCommonName(name)
+  , mpDataModel(nullptr)
+{
+  const CDataObject * pObject = CObjectInterface::DataObject(CRootContainer::getRoot()->getObject(name));
+
+  if (pObject != nullptr)
+    mpDataModel = pObject->getObjectDataModel();
+
+  mSet.insert(this);
+}
+
 CRegisteredCommonName::CRegisteredCommonName(const std::string & name, const CObjectInterface * pObject)
   : CCommonName(name)
-  , mpDataModel((pObject != nullptr
-                 && CObjectInterface::DataObject(pObject) != nullptr)
+  , mpDataModel(CObjectInterface::DataObject(pObject) != nullptr
                 ? CObjectInterface::DataObject(pObject)->getObjectDataModel() : nullptr)
 {
   mSet.insert(this);
@@ -72,6 +84,11 @@ CRegisteredCommonName::CRegisteredCommonName(const CRegisteredCommonName & src)
 CRegisteredCommonName::~CRegisteredCommonName()
 {
   mSet.erase(this);
+}
+
+const CDataModel * CRegisteredCommonName::getDataModel() const
+{
+  return mpDataModel;
 }
 
 // static

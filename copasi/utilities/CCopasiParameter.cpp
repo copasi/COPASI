@@ -385,13 +385,12 @@ bool CCopasiParameter::isValidValue(const std::string & value) const
 
   if (mType != CCopasiParameter::Type::STRING &&
       mType != CCopasiParameter::Type::FILE &&
-      mType != CCopasiParameter::Type::CN &&
       mType != CCopasiParameter::Type::EXPRESSION) return false;
 
   return inValidValues(value);
 }
 
-bool CCopasiParameter::isValidValue(const CCommonName & /* value */) const
+bool CCopasiParameter::isValidValue(const CRegisteredCommonName & /* value */) const
 {
   if (mType != CCopasiParameter::Type::CN) return false;
 

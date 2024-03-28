@@ -141,12 +141,12 @@ int main()
   // now we create the optimization items
   // i.e. the model elements that have to be changed during the optimization
   // in order to get to the optimal solution
-  COptItem* pOptItem = &pOptProblem->addOptItem(CCommonName(pFixedModelValue->getObject(CCommonName("Reference=InitialValue"))->getCN()));
+  COptItem* pOptItem = &pOptProblem->addOptItem(pFixedModelValue->getObject(CCommonName("Reference=InitialValue"))->getCN());
   // we want to change the fixed model value from -100 to +100 with a start
   // value of 50
   pOptItem->setStartValue(50.0);
-  pOptItem->setLowerBound(CCommonName("-100"));
-  pOptItem->setUpperBound(CCommonName("100"));
+  pOptItem->setLowerBound(-100);
+  pOptItem->setUpperBound(100);
 
   // now we set some parameters on the method
   // these parameters are specific to the method type we set above

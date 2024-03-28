@@ -80,6 +80,12 @@ public:
   /**
    * Constructor from base class
    * @param const std::string & name
+   */
+  CRegisteredCommonName(const std::string & name);
+
+  /**
+   * Constructor from base class
+   * @param const std::string & name
    * @param const CObjectInterface * pObject
    */
   CRegisteredCommonName(const std::string & name, const CObjectInterface * pObject);
@@ -94,6 +100,8 @@ public:
    * Destructor
    */
   ~CRegisteredCommonName();
+
+  const CDataModel * getDataModel() const;
 
   /**
    * Enable and disable the rename handler

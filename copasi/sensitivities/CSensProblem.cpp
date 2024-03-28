@@ -182,7 +182,7 @@ void CSensProblem::createParametersInGroup(CCopasiParameterGroup * pg)
   if (!pg)
     return;
 
-  pg->assertParameter("SingleObject", CCopasiParameter::Type::CN, CCommonName(""));
+  pg->assertParameter("SingleObject", CCopasiParameter::Type::CN, CRegisteredCommonName());
   pg->assertParameter("ObjectListType", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 }
 
@@ -680,7 +680,7 @@ std::ostream & operator<<(std::ostream & os, const CSensProblem & o)
      << std::endl;
 
   os << "Calculation to perform: "
-     << CSensProblem::SubTaskName[o.getSubTaskType()] << std::endl
+     << CTaskEnum::TaskName[CSensProblem::SubTaskTypeToTask[o.getSubTaskType()]] << std::endl
      << std::endl;
 
   size_t i, imax = o.getNumberOfVariables();

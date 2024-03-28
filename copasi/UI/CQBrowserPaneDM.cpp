@@ -738,7 +738,7 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
       pNode = findNodeFromCN(cn);
     }
 
-  std::string NewCN = pNode != NULL ? pNode->getCN() : cn;
+  CRegisteredCommonName NewCN = pNode != NULL ? pNode->getCN() : cn;
 
   if (cn != NewCN)
     {

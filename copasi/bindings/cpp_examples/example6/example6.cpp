@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -367,8 +372,8 @@ int main()
   pFitItem1->setObjectCN(pParameterReference->getCN());
   assert(pFitItem1 != NULL);
   pFitItem1->setStartValue(4.0);
-  pFitItem1->setLowerBound(CCommonName("0.00001"));
-  pFitItem1->setUpperBound(CCommonName("10"));
+  pFitItem1->setLowerBound(0.00001);
+  pFitItem1->setUpperBound(10);
   // add the fit item
   pOptimizationItemGroup->addParameter(pFitItem1);
 
@@ -385,8 +390,8 @@ int main()
   pFitItem2->setObjectCN(pParameterReference->getCN());
   assert(pFitItem2 != NULL);
   pFitItem2->setStartValue(4.0);
-  pFitItem2->setLowerBound(CCommonName("0.00001"));
-  pFitItem2->setUpperBound(CCommonName("10"));
+  pFitItem2->setLowerBound(0.00001);
+  pFitItem2->setUpperBound(10);
   // add the fit item
   pOptimizationItemGroup->addParameter(pFitItem2);
 

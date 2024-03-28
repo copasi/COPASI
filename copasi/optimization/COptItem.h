@@ -87,16 +87,16 @@ public:
 
   /**
    * Set the object of the optimization item.
-   * @param const CCommonName & objectCN
+   * @param const CRegisteredCommonName & objectCN
    * @return bool success
    */
-  bool setObjectCN(const CCommonName & objectCN);
+  bool setObjectCN(const CRegisteredCommonName & objectCN);
 
   /**
    * Retrieve the object of the optimization item.
-   * @return const CCommonName objectCN
+   * @return const CRegisteredCommonName & objectCN
    */
-  const CCommonName getObjectCN() const;
+  const CRegisteredCommonName & getObjectCN() const;
 
   /**
    * Retrieve the item object. This may only be called after compile
@@ -112,29 +112,43 @@ public:
 
   /**
    * Set the lower bound.
-   * @param const CCommonName & lowerBound
+   * @param const CRegisteredCommonName & lowerBound
    * @return bool success
    */
-  bool setLowerBound(const CCommonName & lowerBound);
+  bool setLowerBound(const CRegisteredCommonName & lowerBound);
+
+  /**
+   * Set the lower bound.
+   * @param const C_FLOAT64 & upperBound
+   * @return bool success
+   */
+  bool setLowerBound(const C_FLOAT64 & upperBound);
 
   /**
    * Retrieve the lower bound.
-   * @return const std::string lowerBound
+   * @return const CRegisteredCommonName & lowerBound
    */
-  const std::string getLowerBound() const;
+  const CRegisteredCommonName & getLowerBound() const;
 
   /**
    * Set the upper bound.
-   * @param const CCommonName & upperBound
+   * @param const CRegisteredCommonName & upperBound
    * @return bool success
    */
-  bool setUpperBound(const CCommonName & upperBound);
+  bool setUpperBound(const CRegisteredCommonName & upperBound);
+
+  /**
+   * Set the upper bound.
+   * @param const C_FLOAT64 & upperBound
+   * @return bool success
+   */
+  bool setUpperBound(const C_FLOAT64 & upperBound);
 
   /**
    * Retrieve the upper bound.
-   * @return const std::string upperBound
+   * @return const CRegisteredCommonName & upperBound
    */
-  const std::string getUpperBound() const;
+  const CRegisteredCommonName & getUpperBound() const;
 
   /**
    * Check the validity of the optimization item.
@@ -311,17 +325,17 @@ protected:
   /**
    * A pointer to the value of the CCopasiParameter holding the ObjectCN
    */
-  std::string * mpParmObjectCN;
+  CRegisteredCommonName * mpParmObjectCN;
 
   /**
    * A pointer to the value of the CCopasiParameter holding the LowerBound
    */
-  std::string * mpParmLowerBound;
+  CRegisteredCommonName * mpParmLowerBound;
 
   /**
    * A pointer to the value of the CCopasiParameter holding the UpperBound
    */
-  std::string * mpParmUpperBound;
+  CRegisteredCommonName * mpParmUpperBound;
 
   /**
    * A pointer to the value of the CCopasiParameter holding the start value

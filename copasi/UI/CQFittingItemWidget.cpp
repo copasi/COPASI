@@ -149,14 +149,14 @@ void CQFittingItemWidget::slotCheckLowerInf(bool checked)
       mpCheckLowerInf->setStyleSheet(QString(mpCheckLowerInf->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
     }
 
-  std::string Number;
+  CRegisteredCommonName Number;
 
   if (checked)
-    Number = "-inf";
+    Number = CRegisteredCommonName("-inf", nullptr);
   else if (isNumber(TO_UTF8(mpEditLower->text())))
-    Number = TO_UTF8(mpEditLower->text());
+    Number = CRegisteredCommonName(TO_UTF8(mpEditLower->text()), nullptr);
   else if (mpLowerObject)
-    Number = mpLowerObject->getStringCN();
+    Number = mpLowerObject->getCN();
   else return;
 
   std::set< size_t >::const_iterator it = mSelection.begin();
@@ -185,14 +185,14 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
       mpCheckUpperInf->setStyleSheet(QString(mpCheckUpperInf->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
     }
 
-  std::string Number;
+  CRegisteredCommonName Number;
 
   if (checked)
-    Number = "inf";
+    Number = CRegisteredCommonName("inf", nullptr);
   else if (isNumber(TO_UTF8(mpEditUpper->text())))
-    Number = TO_UTF8(mpEditUpper->text());
+    Number = CRegisteredCommonName(TO_UTF8(mpEditUpper->text()), nullptr);
   else if (mpUpperObject)
-    Number = mpUpperObject->getStringCN();
+    Number = mpUpperObject->getCN();
   else return;
 
   std::set< size_t >::const_iterator it = mSelection.begin();
@@ -245,7 +245,7 @@ void CQFittingItemWidget::slotLowerEdit()
       std::set< size_t >::const_iterator it = mSelection.begin();
       std::set< size_t >::const_iterator end = mSelection.end();
       mpLowerObject = pObject;
-      CCommonName CN = mpLowerObject->getStringCN();
+      CRegisteredCommonName CN = mpLowerObject->getCN();
 
       for (; it != end; ++it)
         {
@@ -299,7 +299,7 @@ void CQFittingItemWidget::slotUpperEdit()
       std::set< size_t >::const_iterator it = mSelection.begin();
       std::set< size_t >::const_iterator end = mSelection.end();
       mpUpperObject = pObject;
-      CCommonName CN = mpUpperObject->getStringCN();
+      CRegisteredCommonName CN = mpUpperObject->getCN();
 
       for (; it != end; ++it)
         {
@@ -419,7 +419,7 @@ void CQFittingItemWidget::slotParamEdit()
 
       for (; it != end; ++it)
         {
-          (*mpItemsCopy)[*it]->setObjectCN(Selection[0]->getStringCN());
+          (*mpItemsCopy)[*it]->setObjectCN(Selection[0]->getCN());
           setTableText((int) *it, (*mpItemsCopy)[*it]);
         }
 
@@ -449,7 +449,7 @@ void CQFittingItemWidget::slotParamEdit()
                 break;
             }
 
-          pItem->setObjectCN(Selection[i]->getStringCN());
+          pItem->setObjectCN(Selection[i]->getCN());
           // Add the new item to the list.
           mpItemsCopy->insert(mpItemsCopy->begin() + current + i, pItem);
           // Update the table
@@ -1430,14 +1430,14 @@ void CQFittingItemWidget::saveSelection()
       pItem = (*mpItemsCopy)[*it];
 
       if (mpCheckLowerInf->isChecked())
-        pItem->setLowerBound(CCommonName("-inf"));
+        pItem->setLowerBound(CRegisteredCommonName("-inf", nullptr));
       else if (isNumber(TO_UTF8(mpEditLower->text())))
-        pItem->setLowerBound(CCommonName(TO_UTF8(mpEditLower->text())));
+        pItem->setLowerBound(CRegisteredCommonName(TO_UTF8(mpEditLower->text()), nullptr));
 
       if (mpCheckUpperInf->isChecked())
-        pItem->setUpperBound(CCommonName("inf"));
+        pItem->setUpperBound(CRegisteredCommonName("inf", nullptr));
       else if (isNumber(TO_UTF8(mpEditUpper->text())))
-        pItem->setUpperBound(CCommonName(TO_UTF8(mpEditUpper->text())));
+        pItem->setUpperBound(CRegisteredCommonName(TO_UTF8(mpEditUpper->text()), nullptr));
 
       if (isNumber(TO_UTF8(mpEditStart->text())))
         pItem->setStartValue(mpEditStart->text().toDouble());
@@ -1508,7 +1508,7 @@ void CQFittingItemWidget::slotLowerLostFocus()
 
   for (; it != end; ++it)
     {
-      (*mpItemsCopy)[*it]->setLowerBound(Number);
+      (*mpItemsCopy)[*it]->setLowerBound(CRegisteredCommonName(Number, nullptr));
 
       if (first)
         {
@@ -1541,7 +1541,7 @@ void CQFittingItemWidget::slotUpperLostFocus()
 
   for (; it != end; ++it)
     {
-      (*mpItemsCopy)[*it]->setUpperBound(Number);
+      (*mpItemsCopy)[*it]->setUpperBound(CRegisteredCommonName(Number, nullptr));
 
       if (first)
         {
