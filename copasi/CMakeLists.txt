@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -263,7 +263,15 @@ if (APPLE AND CMAKE_GENERATOR STREQUAL "Xcode" OR DISABLE_CORE_OBJECT_LIBRARY)
   endif (ENABLE_OMP)
 else()
   add_library (libCOPASISE-core OBJECT ${COPASI_SOURCES} ${COPASI_HEADERS})
-  target_compile_options(libCOPASISE-core PRIVATE -fstack-protector-all)
+
+  # add option to disable stack protector
+  option(DISABLE_STACK_PROTECTOR "Disable stack protector" OFF)
+  mark_as_advanced(DISABLE_STACK_PROTECTOR)
+
+  if (NOT DISABLE_STACK_PROTECTOR AND NOT MSVC AND NOT EMSCRIPTEN)
+    target_compile_options(libCOPASISE-core PRIVATE -fstack-protector-all)
+  endif()
+
   target_link_libraries(libCOPASISE-core
     ${CROSSGUID_LIBRARY} 
     RAPTOR::RAPTOR

@@ -269,6 +269,12 @@ public:
    */
   CVectorCore< C_FLOAT64 * > & getContainerVariables(const bool & algorithmOrder = false) const;
 
+protected:
+  /**
+   * Signal that the math container has changed
+   */
+  virtual void signalMathContainerChanged() override;
+
 public:
   /**
    * Retrieve the result of a calculation
@@ -484,7 +490,6 @@ public:
    * @return const unsigned C_INT32 & failedConstraintCounter
    */
   const unsigned C_INT32 & geFailedConstraintCounter() const;
-
 
   /**
    * Retrieve the objective function.

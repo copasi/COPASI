@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -834,6 +834,8 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
   SubType subType;
   std::string data = "";
 
+  bool allowTwo = false;
+
   if (type == AST_FUNCTION_ROOT)
     {
       CEvaluationNode * pNode = NULL;
@@ -1055,17 +1057,38 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
         data = "not";
         break;
 
+      case AST_FUNCTION_MAX:
+        subType = SubType::MAX;
+        data = "max";
+        allowTwo = iMax == 2;
+        break;
+
+      case AST_FUNCTION_MIN:
+        subType = SubType::MIN;
+        data = "min";
+        allowTwo = iMax == 2;
+        break;
+
       default:
         subType = SubType::INVALID;
         fatalError();
         break;
     }
 
-  assert(iMax == 1);
+  if (!allowTwo)
+    {
+      assert(iMax == 1);
+    }
+
   CEvaluationNode * pNode = new CEvaluationNodeFunction(subType, data);
 
   if (!children.empty())
-    pNode->addChild(children[0]);
+    {
+      pNode->addChild(children[0]);
+
+      if (allowTwo)
+        pNode->addChild(children[1]);
+    }
 
   return pNode;
 }
@@ -1303,8 +1326,8 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         node->addChild(sibling->toAST(pDataModel));
       }
       break;
-        // :TODO: Bug 894: Implement me.
-        //fatalError();
+      // :TODO: Bug 894: Implement me.
+      //fatalError();
       break;
     }
 

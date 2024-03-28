@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -89,7 +89,7 @@ void CQModelValue::slotBtnNew()
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpModelValue);
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getStringCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", mpModelValue->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
@@ -120,7 +120,7 @@ void CQModelValue::slotBtnCopy()
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpModelValue);
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getStringCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", mpModelValue->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
@@ -247,7 +247,7 @@ void CQModelValue::init()
 void CQModelValue::destroy()
 {}
 
-bool CQModelValue::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQModelValue::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   mpModelValue = dynamic_cast< CModelValue * >(mpObject);
 
@@ -338,7 +338,7 @@ bool CQModelValue::enterProtected()
 
   if (!mpModelValue)
     {
-      mpListView->switchToOtherWidget(ListViews::WidgetType::GlobalQuantities, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::GlobalQuantities, CRegisteredCommonName());
       return false;
     }
 

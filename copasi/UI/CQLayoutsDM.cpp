@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -219,7 +219,7 @@ bool CQLayoutsDM::removeRows(int position, int rows, const QModelIndex & parent)
       if (mFetched > 0)
         --mFetched;
 
-      std::string cn = (*itDeletedLayout)->getCN();
+      CRegisteredCommonName cn = (*itDeletedLayout)->getCN();
       pdelete(*itDeletedLayout);
       emit notifyGUI(ListViews::ObjectType::LAYOUT, ListViews::DELETE, cn);
     }

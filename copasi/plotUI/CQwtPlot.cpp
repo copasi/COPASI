@@ -1,4 +1,4 @@
-// Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -77,7 +77,6 @@ public:
   }
 };
 #  endif
-
 
 #if QT_VERSION > QT_VERSION_CHECK(6,0,0)
 #include <QRegularExpression>
@@ -317,10 +316,10 @@ CQwtPlot::createSpectogram(const CPlotItem *plotItem)
 #endif
       QwtValueList contourLevels;
 
-      foreach(const QString & level, list)
-      {
-        contourLevels += level.toDouble();
-      }
+      foreach (const QString & level, list)
+        {
+          contourLevels += level.toDouble();
+        }
 
       pSpectogram->setContourLevels(contourLevels);
       pSpectogram->setDisplayMode(QwtPlotSpectrogram::ContourMode, true);
@@ -729,7 +728,7 @@ bool CQwtPlot::compile(CObjectInterface::ContainerList listOfContainer)
           if (pObj)
             {
               mObjects.insert(pObj);
-              objectCN = pObj->getCN();
+              objectCN = pObj->getStringCN();
               mCnNameMap[objectCN] = pObj->getObjectDisplayName();
             }
           else

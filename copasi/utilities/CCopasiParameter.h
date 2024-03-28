@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -216,13 +216,7 @@ public:
    * @param const const CType & value
    * @return bool isValidValue
    */
-  template <class CType> bool setValue(const CType & value)
-  {
-    if (!isValidValue(value)) return false;
-
-    *static_cast< CType * >(mpValue) = value;
-    return true;
-  }
+  template <class CType> bool setValue(const CType & value);
 
   /**
    * Set the value of the parameter when the origin is a parameter group.
@@ -418,14 +412,6 @@ public:
    */
   friend bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs);
 
-  /**
-   * Retrieve the CN of the math container
-   * The math container provides values for the numerical values of model objects.
-   * For the CN mechanism to work properly it has to pretend to be the model.
-   * @return CCommonName
-   */
-  virtual CCommonName getCN() const override;
-
   virtual void * getValuePointer() const override;
 
   void * getValidValuesPointer() const;
@@ -446,6 +432,15 @@ public:
   bool isUnsupported() const;
 
   bool isDefault() const;
+
+protected:
+  /**
+   * Retrieve the CN of the math container
+   * The math container provides values for the numerical values of model objects.
+   * For the CN mechanism to work properly it has to pretend to be the model.
+   * @return CCommonName
+   */
+  virtual CCommonName getCNProtected() const override;
 
 private:
   /**
@@ -508,6 +503,25 @@ bool compareValues(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
     {
       return false;
     }
+
+  return true;
+}
+
+#include "copasi/utilities/CCopasiParameterGroup.h"
+
+template < class CType >
+bool CCopasiParameter::setValue(const CType & value)
+{
+  if (!isValidValue(value))
+    return false;
+
+  *static_cast< CType * >(mpValue) = value;
+
+  CDataContainer * pParent = getObjectParent();
+
+  if (pParent != nullptr
+      && dynamic_cast< CCopasiParameterGroup * >(pParent) != nullptr)
+    static_cast< CCopasiParameterGroup * >(pParent)->signalChanged(this);
 
   return true;
 }

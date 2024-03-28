@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifndef DATAMODELGUI_H
 #define DATAMODELGUI_H
@@ -44,7 +44,7 @@ class COutputHandlerPlot;
 class CDataModel;
 
 #include "copasi/core/CCore.h"
-#include "copasi/core/CCommonName.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/undo/CUndoStack.h"
 #include "copasi/sedml/SedmlImportOptions.h"
 
@@ -150,7 +150,7 @@ public:
   //bool updateMathModel();
   //bool scheduleMathModelUpdate(const bool & update = true);
 
-  bool notify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn = std::string());
+  bool notify(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn = CRegisteredCommonName());
   void notifyChanges(const CUndoData::CChangeSet & changes);
 
   void registerListView(ListViews * pListView);
@@ -174,8 +174,8 @@ private:
 
 signals:
   void updateCompleteView();
-  void notifyView(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
-  void signalSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn, int tabIndex);
+  void notifyView(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn);
+  void signalSwitchWidget(ListViews::WidgetType widgetType, const CRegisteredCommonName & cn, int tabIndex);
   void finished(bool success);
 
 private:
@@ -213,7 +213,6 @@ private:
   SedmlImportOptions mOptions;
 
   bool mIgnoreNextFile;
-
 };
 
 #endif

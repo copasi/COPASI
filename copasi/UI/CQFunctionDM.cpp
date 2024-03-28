@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -285,7 +285,7 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex & parent
       else
         {
           *itDeletedKey = itRow->getKey();
-          *itDeletedCN = itRow->getCN();
+          *itDeletedCN = itRow->getStringCN();
         }
     }
 
@@ -298,8 +298,8 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex & parent
           if (CRootContainer::getFunctionList()->removeFunction(*itDeletedKey))
             {
               mFetched--;
-              emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, *itDeletedCN);
-              emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, std::string()); //Refresh all as there may be dependencies.
+              emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, CRegisteredCommonName(*itDeletedCN, nullptr));
+              emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, CRegisteredCommonName()); //Refresh all as there may be dependencies.
             }
         }
     }

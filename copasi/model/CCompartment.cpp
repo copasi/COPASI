@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -75,7 +75,7 @@ bool CCompartment::applyData(const CData & data, CUndoData::CChangeSet & changes
       const CData & Data = data.getProperty(CData::INITIAL_VALUE).toData();
       mIValue = Data.getProperty(CData::VALUE).toDouble();
       mpModel->updateInitialValues(CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
-      changes.add({CUndoData::Type::CHANGE, "State", mpModel->getCN(), mpModel->getCN()});
+      changes.add({CUndoData::Type::CHANGE, "State", mpModel->getStringCN(), mpModel->getStringCN()});
     }
 
   if (data.isSetProperty(CData::SPATIAL_DIMENSION))
@@ -209,7 +209,7 @@ bool CCompartment::addMetabolite(CMetab * pMetabolite)
 {
   if (!pMetabolite) return false;
 
-  std::string oldCN = pMetabolite->getCN();
+  std::string oldCN = pMetabolite->getStringCN();
 
   bool success = mMetabolites.add(pMetabolite, true);
 
@@ -217,10 +217,7 @@ bool CCompartment::addMetabolite(CMetab * pMetabolite)
   //the metabolite is changed. This needs to be handled similarly to a
   //rename.
   if (success && getObjectParent())
-    {
-      std::string newCN = pMetabolite->getCN();
-      CRegisteredCommonName::handle(oldCN, newCN);
-    }
+    CRegisteredCommonName::handle(oldCN, pMetabolite->getCN());
 
   return success;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -112,7 +112,7 @@ void CQMoietiesTaskResult::init()
   setFramework((int)CCore::Framework::Concentration);
 }
 
-bool CQMoietiesTaskResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQMoietiesTaskResult::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   // :TODO:
   switch (objectType)
@@ -317,7 +317,7 @@ void CQMoietiesTaskResult::slotCreateGlobalQuantity(const QModelIndex & index)
     pMV = pModel->createModelValue("Moiety[" + pMoiety->getObjectName() + "].TotalAmount_" + TO_UTF8(QString::number(++i)));
 
   pMV->setInitialExpression("(" + pMoiety->getExpression() + ")/<" +
-                            pModel->getObject(CCommonName("Reference=Quantity Conversion Factor"))->getCN() + ">");
+                            pModel->getObject(CCommonName("Reference=Quantity Conversion Factor"))->getStringCN() + ">");
 
   protectedNotify(ListViews::ObjectType::MODELVALUE, ListViews::ADD);
 }

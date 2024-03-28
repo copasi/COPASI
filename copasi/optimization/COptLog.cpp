@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -8,7 +13,7 @@
  *  Container for a log of events registed by the copasi optimization methods.
  *  Stores a list of COptLogItems and has methods for generation of a complete log string.
  *
- *  Created for COPASI by Jonas Förster 2013
+ *  Created for COPASI by Jonas FÃ¶rster 2013
  */
 
 #include "COptLog.h"

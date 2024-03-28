@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,13 +26,14 @@
 #include <QApplication>
 
 #include "copasi/copasi.h"
-#include "qtUtilities.h"
 
 #ifdef HAVE_MML
 # include <qtmmlwidget.h>
 #endif // HAVE_MML
 
 #include "CQMmlScrollView.h"
+
+#include "qtUtilities.h"
 
 ///  Constructor
 CQMmlScrollView::CQMmlScrollView(QWidget* parent, const char* /* name */, Qt::WindowFlags /* fl */)

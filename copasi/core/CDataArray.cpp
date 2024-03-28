@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -86,7 +86,7 @@ void CDataArray::setAnnotation(size_t d, size_t i, const CDataObject * pObject)
     }
   else
     {
-      mAnnotationsCN[d][i] = std::string("");
+      mAnnotationsCN[d][i] = CRegisteredCommonName("", this);
       mAnnotationsString[d][i] = "";
     }
 }
@@ -96,7 +96,7 @@ void CDataArray::setAnnotationString(size_t d, size_t i, const std::string s)
   assert(d < dimensionality());
   assert(i < mAnnotationsString[d].size());
 
-  mAnnotationsCN[d][i] = "String=" + CCommonName::escape(s);
+  mAnnotationsCN[d][i] = CRegisteredCommonName("String=" + CCommonName::escape(s), this);
   mAnnotationsString[d][i] = s;
 }
 
@@ -194,7 +194,7 @@ const CDataObject * CDataArray::addElementReference(const CDataArray::index_type
 
   for (; it != end; ++it, ++to, ++itCN)
     {
-      *to = *it < itCN->size() ? itCN->operator [](*it) : CRegisteredCommonName("");
+      *to = *it < itCN->size() ? static_cast< std::string >(itCN->operator [](*it)) : std::string("");
 
       if (to->empty())
         {

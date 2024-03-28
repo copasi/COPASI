@@ -1,14 +1,21 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CCopasiException.h,v $
-   $Revision: 1.6 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2010/09/16 18:26:45 $
-   End CVS Header */
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
 // All rights reserved.
 
 // Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
@@ -27,7 +34,9 @@
 
 #include "CCopasiMessage.h"
 
-class CCopasiException
+#include <exception>
+
+class CCopasiException : public std::exception
 {
 private:
   /**
@@ -52,6 +61,12 @@ public:
    * @return const CCopasiMessage & message
    */
   const CCopasiMessage & getMessage() const;
+
+  /**
+   * Retrieves the Message associated with the exception
+   * @return const char* message
+   */
+  const char* what() const throw();
 
 private:
   const CCopasiMessage mMessage;

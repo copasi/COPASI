@@ -48,7 +48,9 @@ if (NOT ${LIBSEDML_LIBRARY_NAME}_FOUND)
           /opt/local/lib/cmake
           /sw/lib/cmake
           ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}/cmake
+          ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
           ${CONAN_LIB_DIRS_LIBSEDML}/cmake
+          CMAKE_FIND_ROOT_PATH_BOTH
   )
 endif()
 
@@ -74,6 +76,7 @@ find_path(LIBSEDML_INCLUDE_DIR sedml/SedBase.h
           /opt/csw/include   # Blastwave
           /opt/include
           /usr/freeware/include
+          CMAKE_FIND_ROOT_PATH_BOTH
     NO_DEFAULT_PATH)
 
 if (NOT LIBSEDML_INCLUDE_DIR)
@@ -98,6 +101,7 @@ find_library(LIBSEDML_LIBRARY
           /opt/csw/lib   # Blastwave
           /opt/lib
           /usr/freeware/lib64
+          CMAKE_FIND_ROOT_PATH_BOTH
     NO_DEFAULT_PATH)
 
 if (NOT LIBSEDML_LIBRARY)

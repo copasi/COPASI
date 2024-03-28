@@ -52,6 +52,7 @@ if (NOT (RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARY) OR NOT RAPTOR_FOUND)
 	          /opt/csw/include   # Blastwave
 	          /opt/include
 	          /usr/freeware/include
+              CMAKE_FIND_ROOT_PATH_BOTH
              NO_DEFAULT_PATH)
 
     if (NOT RAPTOR_INCLUDE_DIR)
@@ -64,6 +65,7 @@ if (NOT (RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARY) OR NOT RAPTOR_FOUND)
 	          $ENV{RAPTOR_DIR}/lib-dbg
 	          $ENV{RAPTOR_DIR}
               ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+              ${${_PROJECT_DEPENDENCY_DIR}}/lib
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/lib        # Fink
@@ -71,6 +73,7 @@ if (NOT (RAPTOR_INCLUDE_DIR AND RAPTOR_LIBRARY) OR NOT RAPTOR_FOUND)
 	          /opt/csw/lib   # Blastwave
 	          /opt/lib
 	          /usr/freeware/lib64
+              CMAKE_FIND_ROOT_PATH_BOTH
              NO_DEFAULT_PATH)
 
     if (NOT RAPTOR_LIBRARY)

@@ -22,7 +22,7 @@ jobs:
     container: andy5995/slackware-build-essential:15.0
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Create Build Environment
       run: |
@@ -65,7 +65,7 @@ jobs:
       run: cmake --build . --config $BUILD_TYPE --target install
 
     - name: binary archive
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name:
           copasi-se-openmp-slackware

@@ -339,9 +339,8 @@ bool COptMethodPS::create(const size_t & index)
   mBestValues[index] = mValues[index] = evaluate();
   memcpy(mBestPositions[index], mIndividuals[index]->array(), sizeof(C_FLOAT64) * mVariableSize);
 
-#pragma omp critical
-
   if (mBestValues[index] < mBestValue)
+#pragma omp critical
     {
       // and store that value
       mBestIndex = index;

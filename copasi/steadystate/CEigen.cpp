@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -771,9 +771,9 @@ std::ostream &operator<<(std::ostream &os, const CEigen &A)
   os << " time hierarchy = " << A.mHierarchy << std::endl;
 
   os << std::endl;
-  os << "Fold bifurcaton test functions (standard, bifurcation discovery tool): " << A.mBifurcationIndicator_Fold
+  os << "Fold bifurcation test functions (standard, bifurcation discovery tool): " << A.mBifurcationIndicator_Fold
      << ", " << A.mBifurcationIndicator_Fold_BDT <<  std::endl;
-  os << "Hopf bifurcaton test functions (standard, bifurcation discovery tool): " << A.mBifurcationIndicator_Hopf
+  os << "Hopf bifurcation test functions (standard, bifurcation discovery tool): " << A.mBifurcationIndicator_Hopf
      << ", " << A.mBifurcationIndicator_Hopf_BDT <<  std::endl;
 
   os << std::endl;

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -61,31 +61,33 @@ public:
   static bool isValidMethod(const CTaskEnum::Method & method,
                             const CTaskEnum::Method * validMethods);
 
-  enum eOutputFlagBase
+  enum struct OutputFlagBase
   {
-    INITIALIZE = 0x01,
-    STREAM = 0x02,
-    FINISH = 0x04,
-    REPORT = 0x10,
-    PLOT = 0x20,
-    TIME_SERIES = 0x40
+    INITIALIZE = 0,
+    STREAM,
+    FINISH,
+    REPORT,
+    PLOT,
+    TIME_SERIES,
+    __SIZE
   };
 
-  enum OutputFlag
-  {
-    //do no output
-    NO_OUTPUT = 0,
-    OUTPUT_BEFORE = INITIALIZE,
-    OUTPUT_DURING = STREAM,
-    OUTPUT_AFTER = FINISH,
-    //do output except time series, but do not initialize/finish
-    OUTPUT = REPORT | PLOT | STREAM,
-    //do output, including initialization and closing
-    OUTPUT_SE = REPORT | PLOT | INITIALIZE | STREAM | FINISH,
-    OUTPUT_UI = REPORT | PLOT | TIME_SERIES | INITIALIZE | STREAM | FINISH,
-    // only do time series
-    ONLY_TIME_SERIES = TIME_SERIES | INITIALIZE | STREAM | FINISH
-  };
+  typedef CFlags< OutputFlagBase > OutputFlag;
+
+  static const OutputFlag NO_OUTPUT; // = 0,
+  static const OutputFlag OUTPUT_BEFORE; // = INITIALIZE,
+  static const OutputFlag OUTPUT_DURING; // = STREAM,
+  static const OutputFlag OUTPUT_AFTER; // = FINISH,
+  //do output except time series, but do not initialize/finish
+  static const OutputFlag REPORT; // = REPORT,
+  static const OutputFlag PLOT; // = PLOT,
+  static const OutputFlag TIME_SERIES; // = TIME_SERIES,
+  static const OutputFlag OUTPUT; // = REPORT | PLOT | STREAM,
+  //do output, including initialization and closing
+  static const OutputFlag OUTPUT_SE; // = REPORT | PLOT | INITIALIZE | STREAM | FINISH,
+  static const OutputFlag OUTPUT_UI; // = REPORT | PLOT | TIME_SERIES | INITIALIZE | STREAM | FINISH,
+  // only do time series
+  static const OutputFlag ONLY_TIME_SERIES; // = TIME_SERIES | INITIALIZE | STREAM | FINISH
 
   class CDescription: public CDataObject
   {

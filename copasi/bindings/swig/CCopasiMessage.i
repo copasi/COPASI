@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -29,6 +29,8 @@
 %}
 
 %ignore CCopasiMessage::operator=(const CCopasiMessage&);
+%ignore CCopasiMessage::CCopasiMessage(CCopasiMessage::Type,char const *);
+%ignore CCopasiMessage::CCopasiMessage(CCopasiMessage::Type,size_t);
 %ignore MESSAGES;
 %ignore Message;
 

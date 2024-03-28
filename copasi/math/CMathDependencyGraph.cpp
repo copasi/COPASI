@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -162,8 +162,24 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
 #endif // DEBUG_OUTPUT
     }
 
-  CObjectInterface::ObjectSet::const_iterator it = changedObjects.begin();
-  CObjectInterface::ObjectSet::const_iterator end = changedObjects.end();
+  CObjectInterface::ObjectSet::const_iterator it = requestedObjects.begin();
+  CObjectInterface::ObjectSet::const_iterator end = requestedObjects.end();
+  CObjectInterface::ObjectSet Prerequisites;
+
+  for (; it != end && success; ++it)
+    (*it)->appendPrerequisites(Prerequisites);
+
+  CObjectInterface::ObjectSet ChangedObjects(changedObjects);
+
+  it = Prerequisites.begin();
+  end = Prerequisites.end();
+
+  for (; it != end; ++it)
+    if ((*it)->getPrerequisites().empty())
+      ChangedObjects.insert(*it);
+
+  it = ChangedObjects.begin();
+  end = ChangedObjects.end();
 
   // Mark all nodes which are changed or need to be calculated
   for (; it != end && success; ++it)
@@ -216,7 +232,6 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
           std::cout << *static_cast< const CDataObject * >(*it) << std::endl;
         }
 
-      std::cout << *static_cast< const CMathObject * >(*it) << std::endl;
 #endif // DEBUG_OUTPUT
 
       found = mObjects2Nodes.find(*it);
@@ -238,10 +253,6 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
   // Mark all nodes which are requested and its prerequisites.
   for (; it != end && success; ++it)
     {
-#ifdef DEBUG_OUTPUT
-      std::cout << *it << std::endl;
-#endif // DEBUG_OUTPUT
-
       if (*it == NULL)
         {
           success = false; // we should not have NULL elements here
@@ -730,11 +741,30 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
 
   CDataObject * pEvent = pDataObject->getObjectAncestor("Event");
 
-  if (pEvent != NULL && pEvent != pDataObject->getObjectParent())
-    return pEvent->getObjectName() + "::Assignment::" + pDataObject->getObjectParent()->getObjectName();
+  if (pEvent != NULL)
+    {
+      if (pEvent != pDataObject->getObjectParent())
+        return pEvent->getObjectName() + "::Assignment::" + pDataObject->getObjectParent()->getObjectName();
+
+      if (pMathObject != nullptr
+          && pMathObject->getValueType() == CMath::ValueType::EventTrigger)
+        return pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName() + "State";
+
+      return pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName();
+    }
 
   if (dynamic_cast< const COptItem * >(pDataObject))
     return "OptItem::" + static_cast< const COptItem * >(pDataObject)->getObject()->getObjectDisplayName();
 
-  return pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName();
+  // We need to distinguish between initial and transient value if the a corresponding data abject does not exists.
+  if (pMathObject == nullptr ||
+      !pMathObject->isInitialValue())
+    return pDataObject->getObjectParent()->getObjectName() + "::" + pDataObject->getObjectName();
+
+  std::string ObjectName = pDataObject->getObjectName();
+
+  if (ObjectName.substr(0, 7) != "Initial")
+    ObjectName = "Initial" + ObjectName;
+
+  return pDataObject->getObjectParent()->getObjectName() + "::" + ObjectName;
 }

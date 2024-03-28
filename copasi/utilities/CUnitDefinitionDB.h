@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,7 +33,7 @@ public:
   CUnitDefinitionDB(const std::string & name = "NoName",
                     const CDataContainer * pParent = NO_PARENT);
 
-  ~CUnitDefinitionDB() {}
+  virtual ~CUnitDefinitionDB();
 
   virtual bool add(const CUnitDefinition & src);
   virtual bool add(CUnitDefinition * src, bool adopt = false);
@@ -42,6 +42,7 @@ public:
   virtual void remove(const std::string & name);
 
   bool containsSymbol(std::string symbol) const;
+
   const CUnitDefinition * getUnitDefFromSymbol(std::string symbol) const;
 
   bool changeSymbol(CUnitDefinition *pUnitDef, const std::string & symbol);

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -218,8 +218,8 @@ void CQLayoutScene::addGlyph(const CLGraphicalObject* go)
 
       if (obj != NULL && text == NULL)
         {
-          item->setData(COPASI_OBJECT_CN, QString(obj->getCN().c_str()));
-          mItems[obj->getCN()] = item;
+          item->setData(COPASI_OBJECT_CN, QString(obj->getStringCN().c_str()));
+          mItems[obj->getStringCN()] = item;
         }
 
       // if we have a z position, use it

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,7 +22,6 @@
 #include "copasi/model/CMetab.h"
 #include "copasi/model/CReaction.h"
 #include "copasi/utilities/CCopasiParameter.h"
-#include "copasi/utilities/CCopasiParameterGroup.h"
 #include "copasi/utilities/CExpressionGenerator.h"
 #include "copasi/core/CDataObject.h"
 #include "copasi/core/CDataContainer.h"

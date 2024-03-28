@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  * CScanTask class.
@@ -55,26 +55,26 @@
 #include "copasi/utilities/CMethodFactory.h"
 
 CScanTask::CScanTask(const CDataContainer * pParent,
-                     const CTaskEnum::Task & type):
-  CCopasiTask(pParent, type),
-  mProgress(0),
-  mhProgress(C_INVALID_INDEX),
-  mpSubTask(NULL),
-  mOutputInSubtask(false),
-  mUseInitialValues(true)
+                     const CTaskEnum::Task & type)
+  : CCopasiTask(pParent, type)
+  , mProgress(0)
+  , mhProgress(C_INVALID_INDEX)
+  , mpSubTask(NULL)
+  , mOutputSubTask(CScanProblem::OutputType::subTaskNone)
+  , mUseInitialValues(true)
 {
   mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::scanMethod, this);
   static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
 
 CScanTask::CScanTask(const CScanTask & src,
-                     const CDataContainer * pParent):
-  CCopasiTask(src, pParent),
-  mProgress(0),
-  mhProgress(C_INVALID_INDEX),
-  mpSubTask(NULL),
-  mOutputInSubtask(false),
-  mUseInitialValues(true)
+                     const CDataContainer * pParent)
+  : CCopasiTask(src, pParent)
+  , mProgress(0)
+  , mhProgress(C_INVALID_INDEX)
+  , mpSubTask(NULL)
+  , mOutputSubTask(CScanProblem::OutputType::subTaskNone)
+  , mUseInitialValues(true)
 {
   static_cast< CScanMethod * >(mpMethod)->setProblem(static_cast< CScanProblem * >(mpProblem));
 }
@@ -198,15 +198,8 @@ bool CScanTask::processCallback()
   bool success = mpSubTask->process(mUseInitialValues);
 
   //do output
-  if (success && !mOutputInSubtask)
-    if (dynamic_cast< CFitTask * >(mpSubTask))
-      {
-        output(COutputInterface::AFTER);
-      }
-    else
-      output(COutputInterface::DURING);
-  
-
+  if (success && mOutputSubTask.isSet(CScanProblem::OutputType::subTaskNone))
+    output(COutputInterface::DURING);
 
   if (mpSubTask->isUpdateModel())
     {
@@ -228,12 +221,14 @@ bool CScanTask::processCallback()
 
 bool CScanTask::outputSeparatorCallback(bool isLast)
 {
-  if ((!isLast) || mOutputInSubtask)
+  if ((!isLast) || !mOutputSubTask.isSet(CScanProblem::OutputType::subTaskNone))
     {
-      if (dynamic_cast< CFitTask * >(mpSubTask))
-        separate(COutputInterface::AFTER);
-      else
+      if (mOutputSubTask.isSet(CScanProblem::OutputType::subTaskBefore))
+        separate(COutputInterface::BEFORE);
+      else if (mOutputSubTask.isSet(CScanProblem::OutputType::subTaskDuring))
         separate(COutputInterface::DURING);
+      else if (mOutputSubTask.isSet(CScanProblem::OutputType::subTaskAfter))
+        separate(COutputInterface::AFTER);
     }
 
   return true;
@@ -315,23 +310,31 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
         mpSubTask = NULL;
     }
 
-  mOutputInSubtask = pProblem->getValue< bool >("Output in subtask");
-  mUseInitialValues = !pProblem->getContinueFromCurrentState();
-
   if (!mpSubTask) return false;
+
+  mOutputSubTask = pProblem->getOutputSpecification();
+  mUseInitialValues = !pProblem->getContinueFromCurrentState();
 
   mpSubTask->setMathContainer(mpContainer); //TODO
   mpSubTask->setCallBack(NULL);
 
-  if (mOutputInSubtask)
+  CCopasiTask::OutputFlag SubTaskOutput;
+
+  if (!mOutputSubTask.isSet(CScanProblem::OutputType::subTaskNone))
     {
-        if (dynamic_cast< CFitTask * >(mpSubTask))
-          return mpSubTask->initialize(OUTPUT_AFTER, pOutputHandler, pOstream);
-        else 
-          return mpSubTask->initialize(OUTPUT_DURING, pOutputHandler, pOstream);
+      if (mOutputSubTask.isSet(CScanProblem::OutputType::subTaskBefore))
+        SubTaskOutput |= OUTPUT_BEFORE;
+
+      if (mOutputSubTask.isSet(CScanProblem::OutputType::subTaskDuring))
+        SubTaskOutput |= OUTPUT_DURING;
+
+      if (mOutputSubTask.isSet(CScanProblem::OutputType::subTaskAfter))
+        SubTaskOutput |= OUTPUT_AFTER;
     }
   else
-    return mpSubTask->initialize(NO_OUTPUT, pOutputHandler, pOstream);
+    SubTaskOutput |= NO_OUTPUT;
+
+  return mpSubTask->initialize(SubTaskOutput, pOutputHandler, pOstream);
 
   return true;
 }

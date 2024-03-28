@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,7 @@
 
 #include "copasi/copasi.h"
 
-#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/scan/CScanProblem.h"
 
@@ -152,7 +152,20 @@ void CScanWidgetTask::load(const CScanProblem * pg)
 
   mpCheckContinue->setChecked(pg->getContinueFromCurrentState());
 
-  checkOutput->setChecked(pg->getOutputInSubtask());
+  CScanProblem::OutputFlags SubTaskOutput = pg->getOutputSpecification();
+
+  if (!SubTaskOutput.isSet(CScanProblem::OutputType::subTaskNone))
+    {
+      mpCheckBefore->setChecked(SubTaskOutput.isSet(CScanProblem::OutputType::subTaskBefore));
+      mpCheckDuring->setChecked(SubTaskOutput.isSet(CScanProblem::OutputType::subTaskDuring));
+      mpCheckAfter->setChecked(SubTaskOutput.isSet(CScanProblem::OutputType::subTaskAfter));
+    }
+  else
+    {
+      mpCheckBefore->setChecked(false);
+      mpCheckDuring->setChecked(false);
+      mpCheckAfter->setChecked(false);
+    }
 
   mpContinueOnError->setChecked(pg->getContinueOnError());
 
@@ -230,9 +243,23 @@ bool CScanWidgetTask::save(CScanProblem * pg) const
       changed = true;
     }
 
-  if (pg->getOutputInSubtask() != checkOutput->isChecked())
+  CScanProblem::OutputFlags SubTaskOutput;
+
+  if (mpCheckBefore->isChecked())
+    SubTaskOutput |= CScanProblem::OutputType::subTaskBefore;
+
+  if (mpCheckDuring->isChecked())
+    SubTaskOutput |= CScanProblem::OutputType::subTaskDuring;
+
+  if (mpCheckAfter->isChecked())
+    SubTaskOutput |= CScanProblem::OutputType::subTaskAfter;
+
+  if (SubTaskOutput == CScanProblem::OutputFlags::None)
+    SubTaskOutput |= CScanProblem::OutputType::subTaskNone;
+
+  if (pg->getOutputSpecification() != SubTaskOutput)
     {
-      pg->setOutputInSubtask(checkOutput->isChecked());
+      pg->setOutputSpecification(SubTaskOutput);
       changed = true;
     }
 
@@ -247,15 +274,18 @@ bool CScanWidgetTask::save(CScanProblem * pg) const
 
 void CScanWidgetTask::typeChanged(int n)
 {
+  mpCheckBefore->setChecked(false);
+  mpCheckAfter->setChecked(false);
+
   switch (n)
     {
       case 1:
       case 8:
-        checkOutput->setChecked(true);
+        mpCheckDuring->setChecked(true);
         break;
 
       default:
-        checkOutput->setChecked(false);
+        mpCheckDuring->setChecked(false);
         break;
     }
 }

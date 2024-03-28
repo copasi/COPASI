@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -63,8 +63,8 @@ CQUnitsWidget::CQUnitsWidget(QWidget *parent, const char *name)
   mpTblUnits->sortByColumn(COL_NAME_UNITS, Qt::AscendingOrder);
   setFramework(mFramework);
   // Connect the table widget
-  connect(mpUnitDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
-          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
+  connect(mpUnitDM, SIGNAL(notifyGUI(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)),
+          this, SLOT(protectedNotify(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)));
   connect(mpUnitDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(dataChanged(const QModelIndex &, const QModelIndex &)));
   connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
@@ -141,7 +141,7 @@ void CQUnitsWidget::slotBtnClearClicked()
   updateDeleteBtns();
 }
 
-bool CQUnitsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQUnitsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   if (!mIgnoreUpdates)
     {

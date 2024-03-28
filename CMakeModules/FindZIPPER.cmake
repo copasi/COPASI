@@ -40,6 +40,7 @@ find_path(ZIPPER_INCLUDE_DIR
             ${CMAKE_OSX_SYSROOT}/usr/include
             /usr/include
             /usr/local/include
+            CMAKE_FIND_ROOT_PATH_BOTH
             NO_DEFAULT_PATH
       DOC "The directory containing the ZIPPER include files."
             )

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -200,7 +200,7 @@ private slots:
    * @param QwtPlotItem *item
    * @param bool on
    */
-  void showCurve(QCPAbstractPlottable * item, bool on);
+  void showCurve(QCPAbstractPlottable * item, bool on, bool rescale = true);
   void legendClicked(QCPLegend * legend, QCPAbstractLegendItem * item, QMouseEvent * event);
   void displayToolTip(QCPAbstractPlottable * plottable,
                       int dataIndex,

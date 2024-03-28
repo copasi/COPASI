@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,7 +37,7 @@
 #include "copasi/utilities/CCopasiParameter.h"
 
 #include "copasi/undo/CData.h"
-#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CDataObjectReference.h"
@@ -385,6 +385,7 @@ bool CCopasiParameter::isValidValue(const std::string & value) const
 
   if (mType != CCopasiParameter::Type::STRING &&
       mType != CCopasiParameter::Type::FILE &&
+      mType != CCopasiParameter::Type::CN &&
       mType != CCopasiParameter::Type::EXPRESSION) return false;
 
   return inValidValues(value);
@@ -504,7 +505,7 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
 }
 
 // virtual
-CCommonName CCopasiParameter::getCN() const
+CCommonName CCopasiParameter::getCNProtected() const
 {
   CDataContainer * pObjectParent = getObjectParent();
   CCopasiParameterGroup * pGroup;
@@ -512,10 +513,10 @@ CCommonName CCopasiParameter::getCN() const
   if (pObjectParent != NULL &&
       (pGroup = dynamic_cast< CCopasiParameterGroup * >(pObjectParent)) != NULL)
     {
-      return pObjectParent->getCN() + "," + CCommonName::escape(getObjectType()) + "=" + CCommonName::escape(pGroup->getUniqueParameterName(this));
+      return pObjectParent->getStringCN() + "," + CCommonName::escape(getObjectType()) + "=" + CCommonName::escape(pGroup->getUniqueParameterName(this));
     }
 
-  return CDataObject::getCN();
+  return CDataObject::getCNProtected();
 }
 
 void * CCopasiParameter::getValuePointer() const

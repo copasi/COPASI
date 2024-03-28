@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -113,7 +113,7 @@ CEventAssignment::CEventAssignment(const std::string & targetCN,
   CDataContainer(targetCN, pParent, "EventAssignment"),
   mKey(CRootContainer::getKeyFactory()->add("EventAssignment", this)),
   mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
-  mTargetCN(targetCN),
+  mTargetCN(CRegisteredCommonName(targetCN, mpModel)),
   mpTarget(nullptr),
   mpExpression(nullptr)
 {
@@ -211,7 +211,7 @@ CIssue CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer
   if (pEntity != nullptr)
     {
       mpTarget = pEntity->getValueObject();
-      setTargetCN(mpTarget->getCN());
+      setTargetCN(mpTarget->getStringCN());
     }
   else
     pEntity =  dynamic_cast< const CModelEntity * >(mpTarget->getObjectParent());
@@ -267,7 +267,7 @@ bool CEventAssignment::setTargetCN(const std::string & targetCN)
       mpModel->setCompileFlag(true);
     }
 
-  mTargetCN = targetCN;
+  mTargetCN = CRegisteredCommonName(targetCN, this);
   return setObjectName(targetCN);
 }
 
@@ -599,7 +599,7 @@ std::string CEvent::getOriginFor(const DataObjectSet & deletedObjects) const
 
           for (; setIt != setEnd; ++setIt)
             {
-              if (assignment.getTargetObject()->getCN() == (*setIt)->getCN())
+              if (assignment.getTargetObject()->getStringCN() == (*setIt)->getStringCN())
                 {
 
                   Origin += Separator + "Target (" + (assignment.getTargetObject() != nullptr ? assignment.getTargetObject()->getObjectDisplayName() : "not found") + ")";

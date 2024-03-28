@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,7 +34,7 @@
 
 #include "copasi/copasi.h"
 
-#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/utilities/utility.h"
 
@@ -622,6 +622,10 @@ void CCopasiParameterGroup::setUserInterfaceFlag(const CCopasiParameter::UserInt
       (*it)->setUserInterfaceFlag(mUserInterfaceFlag);
     }
 }
+
+// virtual
+void CCopasiParameterGroup::signalChanged(const CCopasiParameter * /* pParameter */)
+{}
 
 CCopasiParameterGroup::index_iterator CCopasiParameterGroup::beginIndex() const
 {return static_cast< elements * >(mpValue)->begin();}

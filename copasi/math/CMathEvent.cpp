@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -119,7 +119,7 @@ bool CMathEvent::CAssignment::compile(const CEventAssignment * pDataAssignment,
 
       Infix << pointerToString(&container.getQuantity2NumberFactor());
       Infix << "*<";
-      Infix << pSpecies->getCompartment()->getValueReference()->getCN();
+      Infix << pSpecies->getCompartment()->getValueReference()->getStringCN();
       Infix << ">*(";
       Infix << pDataAssignment->getExpression();
       Infix << ")";
@@ -1388,10 +1388,12 @@ void CMathEvent::createUpdateSequences()
   const CObjectInterface::ObjectSet & SimulationValues = mpContainer->getSimulationUpToDateObjects();
 
   CObjectInterface::ObjectSet Requested;
+
   Requested.insert(mpDelay);
   mpContainer->getTransientDependencies().getUpdateSequence(mDelaySequence, CCore::SimulationContext::Default, StateValues, Requested, SimulationValues);
 
   Requested.clear();
+
   CObjectInterface::ObjectSet EventTargets;
   CAssignment * pAssignment = mAssignments.array();
   CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -387,7 +387,7 @@ CopasiUI3Window::CopasiUI3Window():
 
   resize(mainWindowSize);
   show();
-  mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
   // Assure that the changed flag is still false;
   assert(mpDataModel != NULL);
   mpDataModel->changed(false);
@@ -997,7 +997,7 @@ void CopasiUI3Window::slotNewDoc(QString str)
   //#ifdef COPASI_Versioning
   //   mpVersionHierarchy->restoreLastSavedVersioningHierarchy(mLastSavedParentOfCurrentModel);
   //#endif
-  mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
                          mpDataModel->getModel()->getCN());
 
@@ -1175,7 +1175,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
       mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
                              mpDataModel->getModel()->getCN());
       mpListView->clearCurrentWidget();
-      mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
 
       if (this->mpSliders) this->mpSliders->reset();
 
@@ -1391,7 +1391,7 @@ void CopasiUI3Window::slotAddFileOpenFinished(bool success)
 
   refreshRecentFileMenu();
   mNewFile.clear();
-  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, std::string());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, CRegisteredCommonName());
 }
 
 void CopasiUI3Window::slotFileSave()
@@ -1674,7 +1674,7 @@ void CopasiUI3Window::importSBMLFromString(const std::string &sbmlDocumentText)
       //#endif
       mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
                              mpDataModel->getModel()->getCN());
-      mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
       setCursor(Qt::WaitCursor);
       connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFromStringFinished(bool)));
       mpDataModelGUI->importSBMLFromString(sbmlDocumentText);
@@ -1783,7 +1783,7 @@ void CopasiUI3Window::slotImportSBML(QString file)
       //#endif
       mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
                              mpDataModel->getModel()->getCN());
-      mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
 
       if (this->mpSliders) this->mpSliders->reset();
 
@@ -1946,7 +1946,7 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
   if (pModel == NULL) return;
 
   mpDataModelGUI->commit();
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Events, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Events, CRegisteredCommonName());
   CCopasiMessage::clearDeque();
 
   if (!pModel->createEventsForTimeseries())
@@ -1971,7 +1971,7 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
     }
 
   mpDataModel->changed();
-  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, std::string());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, CRegisteredCommonName());
 }
 
 void CopasiUI3Window::slotConvertToIrreversible()
@@ -1982,7 +1982,7 @@ void CopasiUI3Window::slotConvertToIrreversible()
   if (!pModel) return;
 
   mpDataModelGUI->commit();
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Reactions, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Reactions, CRegisteredCommonName());
   CCopasiMessage::clearDeque();
 
   if (!pModel->convert2NonReversible())
@@ -1996,7 +1996,7 @@ void CopasiUI3Window::slotConvertToIrreversible()
     }
 
   mpDataModel->changed();
-  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, std::string());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, CRegisteredCommonName());
 }
 
 void CopasiUI3Window::slotShowSliders(bool flag)
@@ -2542,7 +2542,7 @@ void CopasiUI3Window::slotUpdateMIRIAMFinished(bool success)
     }
 
   CCopasiMessage::clearDeque();
-  mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
+  mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
   setCursor(oldCursor);
 }
 
@@ -2706,19 +2706,19 @@ void CopasiUI3Window::slotExpandModel()
 {
   CQExpandModelData *widget = new CQExpandModelData(this, mpDataModel->getModel());
   widget->exec();
-  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, std::string());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, CRegisteredCommonName());
 }
 
 #include "copasi/UI/CQMergingData.h"
 
 void CopasiUI3Window::slotMergeModels()
 {
-  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, std::string());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, CRegisteredCommonName());
   assert(mpDataModel != NULL);
   CModel *pModel = mpDataModel->getModel();
   CQMergingData *widget = new CQMergingData(NULL, pModel, Qt::WindowFlags());
   widget->exec();
-  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, std::string());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, CRegisteredCommonName());
 }
 
 #ifdef COPASI_SBW_INTEGRATION
@@ -3303,7 +3303,7 @@ void CopasiUI3Window::slotImportSEDML(QString file)
       //#endif
       mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
                              mpDataModel->getModel()->getCN());
-      mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
 
       if (this->mpSliders) this->mpSliders->reset();
 
@@ -3543,7 +3543,7 @@ void CopasiUI3Window::slotImportCombine(QString file)
       //#endif
       mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
                              mpDataModel->getModel()->getCN());
-      mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
 
       if (this->mpSliders) this->mpSliders->reset();
 
@@ -3826,7 +3826,7 @@ void CopasiUI3Window::activateElement(const std::string& activate)
 
       if (id != ListViews::WidgetType::NotFound)
         {
-          mpListView->switchToOtherWidget(id, CCommonName(""));
+          mpListView->switchToOtherWidget(id, CRegisteredCommonName());
         }
       else
         {

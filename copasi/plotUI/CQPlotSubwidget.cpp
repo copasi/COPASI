@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -334,23 +334,22 @@ void CQPlotSubwidget::addCurveTab(const std::string &title,
   addPlotItem(item);
 }
 
-
 void chooseAxisFromSelection(
   std::vector<const CDataObject *> &vector1,
   std::vector<const CDataObject *> &vector2,
   std::vector< const CDataObject * > & vector3,
-  std::vector<CCommonName> &objects1,
-  std::vector<CCommonName> &objects2,
-  std::vector< CCommonName > & objects3,
+  std::vector<CRegisteredCommonName> &objects1,
+  std::vector<CRegisteredCommonName> &objects2,
+  std::vector< CRegisteredCommonName > & objects3,
   std::map< std::string, std::string > & mapCNToDisplayName)
 {
   size_t i;
-  std::vector<CCommonName>::const_iterator sit;
-  const CDataArray *pArray;
+  std::vector< CRegisteredCommonName >::const_iterator sit;
+  const CDataArray * pArray;
   // 1. enable user to choose either a cell, an entire row/column, or even the objects themselves, if they are arrays.
   // 2. translate to CNs and remove duplicates
   // x-axis is set for single cell selection
-  std::string cn;
+  CRegisteredCommonName cn;
 
   for (i = 0; i < vector1.size(); i++)
     {
@@ -476,17 +475,16 @@ void chooseAxisFromSelection(
     }
 }
 
-
 void chooseAxisFromSelection(
   std::vector< const CDataObject * > & vector1,
   std::vector< const CDataObject * > & vector2,
-  std::vector< CCommonName > & objects1,
-  std::vector< CCommonName > & objects2,
+  std::vector< CRegisteredCommonName > & objects1,
+  std::vector< CRegisteredCommonName > & objects2,
   std::map< std::string, std::string > & mapCNToDisplayName)
 {
 
   std::vector< const CDataObject * > vector3;
-  std::vector< CCommonName > objects3;
+  std::vector< CRegisteredCommonName > objects3;
   chooseAxisFromSelection(vector1, vector2, vector3, objects1, objects2, objects3, mapCNToDisplayName);
 }
 
@@ -512,7 +510,7 @@ void CQPlotSubwidget::addCurve2D()
       return;
     }
 
-  std::vector< CCommonName > objects1, objects2;
+  std::vector< CRegisteredCommonName > objects1, objects2;
   std::map<std::string, std::string> mapCNToDisplayName;
   size_t i;
   chooseAxisFromSelection(vector1, vector2, objects1, objects2, mapCNToDisplayName);
@@ -582,7 +580,7 @@ void CQPlotSubwidget::addSpectrum()
       return;
     }
 
-  std::vector< CCommonName > objects1, objects2, objects3;
+  std::vector< CRegisteredCommonName > objects1, objects2, objects3;
   std::map<std::string, std::string> mapCNToDisplayName;
   size_t i;
   chooseAxisFromSelection(vector1, vector2, vector3, objects1, objects2, objects3, mapCNToDisplayName);
@@ -681,7 +679,7 @@ void CQPlotSubwidget::addBandedGraph()
       return;
     }
 
-  std::vector<CCommonName> objects1, objects2, objects3;
+  std::vector< CRegisteredCommonName > objects1, objects2, objects3;
   std::map<std::string, std::string> mapCNToDisplayName;
   size_t i;
   chooseAxisFromSelection(vector1, vector2, vector3, objects1, objects2, objects3, mapCNToDisplayName);
@@ -767,7 +765,7 @@ void CQPlotSubwidget::addHisto1DTab(const std::string &title,
 
 void CQPlotSubwidget::addHisto1D()
 {
-  addHisto1DTab("Histogram", CPlotDataChannelSpec(CCommonName("")), 1.0);
+  addHisto1DTab("Histogram", CPlotDataChannelSpec(CRegisteredCommonName()), 1.0);
 }
 
 void CQPlotSubwidget::createHistograms(std::vector<const CDataObject * >objects, const C_FLOAT64 &incr)
@@ -832,14 +830,14 @@ void CQPlotSubwidget::deletePlot()
   Index = mpDataModel->getPlotDefinitionList()->CDataVector<CPlotSpecification>::getIndex(pspec);
   mpDataModel->getPlotDefinitionList()->CDataVector<CPlotSpecification>::remove(Index);
 
-  std::string deletedObjectCN = mObjectCN;
+  CRegisteredCommonName deletedObjectCN = mObjectCN;
 
   Size = mpDataModel->getPlotDefinitionList()->size();
 
   if (Size > 0)
     enter(mpDataModel->getPlotDefinitionList()->operator[](std::min(Index, Size - 1)).getCN());
   else
-    enter(std::string());
+    enter(CRegisteredCommonName());
 
   //ListViews::
   protectedNotify(ListViews::ObjectType::PLOT, ListViews::DELETE, deletedObjectCN);
@@ -867,7 +865,7 @@ void CQPlotSubwidget::copyPlot()
 
   pPl->setObjectName(name);
   pDataModel->getPlotDefinitionList()->add(pPl, true);
-  std::string cn = pPl->CCopasiParameter::getCN();
+  CRegisteredCommonName cn = pPl->CCopasiParameter::getCN();
   protectedNotify(ListViews::ObjectType::PLOT, ListViews::ADD, cn);
   enter(cn);
   mpListView->switchToOtherWidget(ListViews::WidgetType::PlotDetail, cn);
@@ -894,7 +892,7 @@ void CQPlotSubwidget::addPlot()
       name += TO_UTF8(QString::number(i));
     }
 
-  std::string cn = pPl->CCopasiParameter::getCN();
+  CRegisteredCommonName cn = pPl->CCopasiParameter::getCN();
   protectedNotify(ListViews::ObjectType::PLOT, ListViews::ADD, cn);
   enter(cn);
   mpListView->switchToOtherWidget(ListViews::WidgetType::PlotDetail, cn);
@@ -1108,7 +1106,7 @@ bool CQPlotSubwidget::enterProtected()
 
   if (!pspec)
     {
-      mpListView->switchToOtherWidget(ListViews::WidgetType::Plots, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::Plots, CRegisteredCommonName());
       return false;
     }
 
@@ -1169,13 +1167,13 @@ void CQPlotSubwidget::itemSelectionChanged()
 
 //-----------------------------------------------------------------------------
 
-bool CQPlotSubwidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQPlotSubwidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   if (mIgnoreUpdates || isHidden()) return true;
 
   switch (objectType)
     {
-        //TODO: check list:
+      //TODO: check list:
       case ListViews::ObjectType::MODEL:
         switch (action)
           {

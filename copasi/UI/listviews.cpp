@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -442,8 +442,8 @@ ListViews::ListViews(QWidget *parent,
   // establishes the communication between the mpTreeView clicked and the routine called....
   connect(mpTreeDM, SIGNAL(dataChanged(const QModelIndex &, const QModelIndex &)),
           this, SLOT(slotSort(const QModelIndex &, const QModelIndex &)));
-  connect(mpDataModelGUI, SIGNAL(signalSwitchWidget(ListViews::WidgetType, const CCommonName &, int)),
-          this, SLOT(slotSwitchWidget(ListViews::WidgetType, const CCommonName &, int)));
+  connect(mpDataModelGUI, SIGNAL(signalSwitchWidget(ListViews::WidgetType, const CRegisteredCommonName &, int)),
+          this, SLOT(slotSwitchWidget(ListViews::WidgetType, const CRegisteredCommonName &, int)));
 }
 
 ListViews::~ListViews()
@@ -456,8 +456,8 @@ ListViews::~ListViews()
 void ListViews::resetCache()
 {
   //First Disconnect updateCompleteView() and notifyView() from DataModelGUI
-  disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
-             this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
+  disconnect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)),
+             this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)));
 
   mpTreeDM->setGuiDM(mpDataModelGUI);
   mpTreeDM->setCopasiDM(mpDataModel);
@@ -465,8 +465,8 @@ void ListViews::resetCache()
 
   emit signalResetCache();
 
-  connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
-          this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
+  connect(mpDataModelGUI, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)),
+          this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)));
 }
 
 #define CREATE_WIDGET(variable, stackwidget, Type, parent)\
@@ -1178,7 +1178,7 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
 
   if (!newWidget) return; //do nothing
 
-  const CCommonName & itemCN = mpTreeDM->getCNFromIndex(index);
+  const CRegisteredCommonName & itemCN = mpTreeDM->getCNFromIndex(index);
 
   if (newWidget == mpCurrentWidget &&
       itemCN == mCurrentItemRegisteredCN)
@@ -1223,7 +1223,7 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
   emit signalFolderChanged(index);
 }
 
-void ListViews::switchToOtherWidget(const ListViews::WidgetType & id, const CCommonName & cn, const int & tabIndex)
+void ListViews::switchToOtherWidget(const ListViews::WidgetType & id, const CRegisteredCommonName & cn, const int & tabIndex)
 {
   // do not switch if we are there already
   if (!cn.empty() &&
@@ -1260,7 +1260,7 @@ ListViews::WidgetType ListViews::getCurrentItemId()
 
 //static members **************************
 
-bool ListViews::slotNotify(ObjectType objectType, Action action, const CCommonName & cn)
+bool ListViews::slotNotify(ObjectType objectType, Action action, const CRegisteredCommonName & cn)
 {
   if (objectType != ObjectType::MODEL
       && objectType != ObjectType::STATE
@@ -1296,12 +1296,12 @@ void ListViews::slotSort(const QModelIndex & /* index1 */, const QModelIndex & /
   mpTreeView->sortByColumn(0, Qt::AscendingOrder);
 }
 
-void ListViews::slotSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn, int tabIndex)
+void ListViews::slotSwitchWidget(ListViews::WidgetType widgetType, const CRegisteredCommonName & cn, int tabIndex)
 {
   switchToOtherWidget(widgetType, cn, tabIndex);
 }
 
-bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const CCommonName & cn)
+bool ListViews::updateCurrentWidget(ObjectType objectType, Action action, const CRegisteredCommonName & cn)
 {
   bool success = true;
 
@@ -1324,7 +1324,7 @@ const CCommonName & ListViews::getCurrentItemCN() const
   return mCurrentItemCN;
 }
 
-const CCommonName & ListViews::getCurrentItemRegisteredCN() const
+const CRegisteredCommonName & ListViews::getCurrentItemRegisteredCN() const
 {
   return mCurrentItemRegisteredCN;
 }
@@ -1337,7 +1337,7 @@ void ListViews::commit()
 
 void ListViews::notifyChildWidgets(ObjectType objectType,
                                    Action action,
-                                   const CCommonName & cn)
+                                   const CRegisteredCommonName & cn)
 {
   QList <CopasiWidget *> widgets = findChildren<CopasiWidget *>();
   QListIterator<CopasiWidget *> it(widgets); // iterate over the CopasiWidgets

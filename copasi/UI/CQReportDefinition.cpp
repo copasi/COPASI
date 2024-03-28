@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -250,7 +250,7 @@ void CQReportDefinition::btnSeparatorClicked()
   else
     Separator = TO_UTF8_UNTRIMMED(mpSeparator->text());
 
-  _addItem(static_cast<QTableWidget*>(mpReportSectionTab->currentWidget()), new CQReportListItem(Separator.getCN(), mpDataModel));
+  _addItem(static_cast<QTableWidget*>(mpReportSectionTab->currentWidget()), new CQReportListItem(Separator.getStringCN(), mpDataModel));
 
   mChanged = true;
 
@@ -259,7 +259,7 @@ void CQReportDefinition::btnSeparatorClicked()
 
 void CQReportDefinition::btnLineBreakClicked()
 {
-  _addItem(static_cast<QTableWidget*>(mpReportSectionTab->currentWidget()), new CQReportListItem(CDataString("\n").getCN(), mpDataModel));
+  _addItem(static_cast<QTableWidget*>(mpReportSectionTab->currentWidget()), new CQReportListItem(CDataString("\n").getStringCN(), mpDataModel));
 }
 
 void CQReportDefinition::btnTextClicked()
@@ -271,7 +271,7 @@ void CQReportDefinition::btnTextClicked()
     {
       CDataString Text(TO_UTF8(pDialog->getText()));
 
-      _addItem(static_cast<QTableWidget*>(mpReportSectionTab->currentWidget()), new CQReportListItem(Text.getCN(), mpDataModel));
+      _addItem(static_cast<QTableWidget*>(mpReportSectionTab->currentWidget()), new CQReportListItem(Text.getStringCN(), mpDataModel));
     }
 
   delete pDialog;
@@ -458,16 +458,16 @@ void CQReportDefinition::btnDeleteReportClicked()
           }
 
         size_t Index = pReportList->getIndex(mpObject);
-        std::string DeletedObjectCN = mObjectCN;
+        CRegisteredCommonName DeletedObjectCN = mObjectCN;
 
         pReportList->remove(Index);
 
         size_t Size = pReportList->size();
 
         if (Size > 0)
-          enter((*pReportList)[std::min(Index, Size - 1)].getKey());
+          enter((*pReportList)[std::min(Index, Size - 1)].getCN());
         else
-          enter(std::string());
+          enter(CRegisteredCommonName());
 
         protectedNotify(ListViews::ObjectType::REPORT, ListViews::DELETE, DeletedObjectCN);
         break;
@@ -495,7 +495,7 @@ void CQReportDefinition::btnNewReportClicked()
       Name += TO_UTF8(QString::number(i));
     }
 
-  CCommonName CN = pRep->getCN();
+  CRegisteredCommonName CN = pRep->getCN();
   protectedNotify(ListViews::ObjectType::REPORT, ListViews::ADD, CN);
   enter(CN);
   mpListView->switchToOtherWidget(ListViews::WidgetType::ReportTemplateDetail, CN);
@@ -526,7 +526,7 @@ void CQReportDefinition::btnCopyReportClicked()
 
   pDataModel->getReportDefinitionList()->add(pRep, true);
 
-  CCommonName CN = pRep->getCN();
+  CRegisteredCommonName CN = pRep->getCN();
   protectedNotify(ListViews::ObjectType::REPORT, ListViews::ADD, CN);
   enter(CN);
   mpListView->switchToOtherWidget(ListViews::WidgetType::ReportTemplateDetail, CN);
@@ -666,11 +666,11 @@ void CQReportDefinition::slotAddSeparator()
 
   if (selected.empty())
     {
-      _addItem(current, new CQReportListItem(Separator.getCN(), mpDataModel));
+      _addItem(current, new CQReportListItem(Separator.getStringCN(), mpDataModel));
     }
   else
     {
-      _insertItem(current, current->row(selected.first()), new CQReportListItem(Separator.getCN(), mpDataModel));
+      _insertItem(current, current->row(selected.first()), new CQReportListItem(Separator.getStringCN(), mpDataModel));
     }
 
   mChanged = true;
@@ -686,11 +686,11 @@ void CQReportDefinition::slotAddLineBreak()
 
   if (selected.empty())
     {
-      _addItem(current, new CQReportListItem(CDataString("\n").getCN(), mpDataModel));
+      _addItem(current, new CQReportListItem(CDataString("\n").getStringCN(), mpDataModel));
     }
   else
     {
-      _insertItem(current, current->row(selected.first()), new CQReportListItem(CDataString("\n").getCN(), mpDataModel));
+      _insertItem(current, current->row(selected.first()), new CQReportListItem(CDataString("\n").getStringCN(), mpDataModel));
     }
 
   mChanged = true;
@@ -739,7 +739,7 @@ void CQReportDefinition::setDirty()
   mChanged = true;
 }
 
-bool CQReportDefinition::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQReportDefinition::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   mpReportDefinition = dynamic_cast< CReportDefinition * >(mpObject);
 
@@ -779,7 +779,7 @@ bool CQReportDefinition::enterProtected()
 
   if (!mpReportDefinition)
     {
-      mpListView->switchToOtherWidget(ListViews::WidgetType::ReportTemplates, std::string());
+      mpListView->switchToOtherWidget(ListViews::WidgetType::ReportTemplates, CRegisteredCommonName());
       return false;
     }
 
@@ -933,8 +933,7 @@ bool CQReportDefinition::save()
 
           if (item == NULL) continue;
 
-          if (item->getCN().getObjectType()
-              == "Separator")
+          if (item->getCN().getObjectType() == "Separator")
             pList->push_back(mpReportDefinition->getSeparator().getCN());
           else
             pList->push_back(item->getCN());
@@ -948,8 +947,7 @@ bool CQReportDefinition::save()
 
           if (item == NULL) continue;
 
-          if (item->getCN().getObjectType()
-              == "Separator")
+          if (item->getCN().getObjectType() == "Separator")
             pList->push_back(mpReportDefinition->getSeparator().getCN());
           else
             pList->push_back(static_cast<CQReportListItem*>(mpFooterList->item(i, 0))->getCN());

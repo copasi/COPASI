@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -97,7 +97,7 @@ void ObjectDebug::addObjectRecursive(QTreeWidgetItem * parent, const void * ptr)
   const CDataObject * obj = static_cast<const CDataObject *>(ptr);
   QTreeWidgetItem* element;
 
-  std::string cn = obj->getCN();
+  std::string cn = obj->getStringCN();
   const CDataModel * pDM = obj->getObjectDataModel();
   const CDataObject* testObj = NULL;
 
@@ -150,7 +150,7 @@ void ObjectDebug::addObjectRecursive(QTreeWidgetItem * parent, const void * ptr)
           << flags
           << value
           << FROM_UTF8(obj->getObjectDisplayName())
-          << FROM_UTF8(obj->getCN());
+          << FROM_UTF8(obj->getStringCN());
 
   element = new MyListViewItemWithPtr((QTreeWidgetItem*)parent, obj,
                                       columns);

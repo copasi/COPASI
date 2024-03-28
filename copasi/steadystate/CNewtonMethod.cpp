@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -776,14 +776,16 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
   // For non autonomous model the first value in the distance measures time and we must treat it differently.
   if (!mpContainer->isAutonomous())
     {
+      C_FLOAT64 TargetRate = mTargetRate;
+
       if (mTargetCriterion == eTargetCriterion::Distance)
         {
           mTargetCriterion = eTargetCriterion::Rate;
-          mTargetRate = CNewtonMethod::targetFunctionRate();
+          TargetRate = CNewtonMethod::targetFunctionRate();
           mTargetCriterion = eTargetCriterion::Distance;
         }
 
-      AbsoluteDistance = RelativeDistance = *pDistance * *pDistance * mTargetRate * mTargetRate;
+      AbsoluteDistance = RelativeDistance = *pDistance * *pDistance * TargetRate * TargetRate;
       ++pDistance;
     }
 

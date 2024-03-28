@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -150,12 +150,12 @@ void CMathObject::relocate(CMathContainer * pContainer,
 }
 
 // virtual
-CCommonName CMathObject::getCN() const
+CCommonName CMathObject::getCNProtected() const
 {
   if (mpDataObject == NULL)
     return CCommonName("CMathObject: no data equivalence.");
 
-  return mpDataObject->getCN();
+  return mpDataObject->getStringCN();
 }
 
 std::string CMathObject::getObjectDisplayName() const
@@ -2270,7 +2270,7 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 {
   if (o.mpDataObject != NULL)
     {
-      os << o.mpDataObject->getCN() << std::endl;
+      os << o.mpDataObject->getStringCN() << std::endl;
     }
   else
     {
@@ -2477,7 +2477,7 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 
   if (o.mpCorrespondingProperty != NULL)
     {
-      os << o.mpCorrespondingProperty->getCN() << std::endl;
+      os << o.mpCorrespondingProperty->getCNProtected() << std::endl;
     }
   else
     {

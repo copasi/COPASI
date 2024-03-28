@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -311,7 +316,7 @@ public:
 
     //std::vector<CRegisteredCommonName>* pTable = pReport->getTableAddr();
     pHeaderAddr->push_back(CDataString("time").getCN());
-    pBodyAddr->push_back(CCommonName(pDataModel->getModel()->getValueReference()->getCN()));
+    pBodyAddr->push_back(pDataModel->getModel()->getValueReference()->getCN());
     pHeaderAddr->push_back(pReport->getSeparator().getCN());
     pBodyAddr->push_back(pReport->getSeparator().getCN());
     // create a map of all possible variables
@@ -376,14 +381,14 @@ public:
               {
                 // create a new global value with an assignment
                 std::stringstream ss;
-                ss << "dummy_modelvalue_" << dummyCount;
+                ss << "amountOf_" << *it;
                 CModelValue* pTmpMV = pDataModel->getModel()->createModelValue(ss.str());
                 ++dummyCount;
                 ss.str("");
                 assert(pTmpMV);
                 // create an assignment that takes the concentration of the
                 // metabolite and multiplies it by the compartment
-                ss << "<" << pMetab->getConcentrationReference()->getCN() << "> * <" << pMetab->getCompartment()->getValueReference()->getCN() << ">";
+                ss << "<" << pMetab->getConcentrationReference()->getStringCN() << "> * <" << pMetab->getCompartment()->getValueReference()->getStringCN() << ">";
                 pTmpMV->setStatus(CModelEntity::Status::ASSIGNMENT);
                 bool tmpRes = pTmpMV->setExpression(ss.str());
                 assert(tmpRes == true);
@@ -433,6 +438,7 @@ public:
     pTrajectoryTask->getReport().setReportDefinition(pReport);
     pTrajectoryTask->getReport().setTarget(output_filename);
     pTrajectoryTask->getReport().setAppend(false);
+    pTrajectoryTask->getReport().setConfirmOverwrite(false);
   }
 
   /**

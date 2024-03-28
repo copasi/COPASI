@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -528,14 +528,6 @@ public:
   void pushAllTransientValues();
 
   /**
-   * Retrieve the CN of the math container
-   * The math container provides values for the numerical values of model objects.
-   * For the CN mechanism to work properly it has to pretend to be the model.
-   * @return CCommonName
-   */
-  virtual CCommonName getCN() const;
-
-  /**
    * Retrieve a descendant object by its partial CN.
    * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
@@ -885,6 +877,15 @@ public:
    * @param CMathUpdateSequence * pUpdateSeqeunce
    */
   void deregisterUpdateSequence(CMathUpdateSequence * pUpdateSequence);
+
+protected:
+  /**
+   * Retrieve the CN of the math container
+   * The math container provides values for the numerical values of model objects.
+   * For the CN mechanism to work properly it has to pretend to be the model.
+   * @return CCommonName
+   */
+  virtual CCommonName getCNProtected() const override;
 
 private:
   /**

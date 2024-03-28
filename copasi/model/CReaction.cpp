@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -181,7 +181,7 @@ bool CReaction::applyData(const CData & data, CUndoData::CChangeSet & changes)
 
           for (; it != end; ++it)
             {
-              CNs.push_back(it->toString());
+              CNs.push_back(CRegisteredCommonName(it->toString(), this));
             }
 
           Success &= setParameterCNs(Name, CNs);
@@ -228,7 +228,7 @@ bool CReaction::applyData(const CData & data, CUndoData::CChangeSet & changes)
 
           for (; it != end; ++it)
             {
-              CNs.push_back(it->toString());
+              CNs.push_back(CRegisteredCommonName(it->toString(), this));
             }
 
           Success &= setParameterCNs(Name, CNs);
@@ -1357,7 +1357,7 @@ void CReaction::initObjects()
 
 std::string CReaction::getDefaultNoiseExpression() const
 {
-  return "sqrt(abs(<" + mpParticleFluxReference->getCN() + ">))";
+  return "sqrt(abs(<" + mpParticleFluxReference->getStringCN() + ">))";
 }
 
 bool CReaction::setNoiseExpression(const std::string & expression)
@@ -2146,7 +2146,7 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9, mParameterIndexToCNs[index][0].c_str());
     }
 
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ">");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getStringCN() + ">");
   return pObjectNode;
 }
 
@@ -2282,7 +2282,7 @@ std::string CReaction::getKineticLawUnit() const
 
 void CReaction::setScalingCompartmentCN(const std::string & compartmentCN)
 {
-  mScalingCompartmentCN = compartmentCN;
+  mScalingCompartmentCN = CRegisteredCommonName(compartmentCN, this);
   ContainerList Containers;
   Containers.push_back(getObjectDataModel());
 
@@ -2297,7 +2297,7 @@ const CCommonName & CReaction::getScalingCompartmentCN() const
 void CReaction::setScalingCompartment(const CCompartment * pCompartment)
 {
   mpScalingCompartment = pCompartment;
-  mScalingCompartmentCN = (mpScalingCompartment != NULL) ? mpScalingCompartment->getCN() : std::string();
+  mScalingCompartmentCN = (mpScalingCompartment != NULL) ? mpScalingCompartment->getCN() : CRegisteredCommonName();
 }
 
 const CCompartment * CReaction::getScalingCompartment() const
@@ -2455,7 +2455,7 @@ bool CReaction::setParameterObjects(const size_t & index, const std::vector< con
                 }
               else
                 {
-                  *itCN = CCommonName("");
+                  *itCN = CRegisteredCommonName();
                 }
             }
 

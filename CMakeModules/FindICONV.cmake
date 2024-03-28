@@ -40,6 +40,7 @@ FIND_PATH(ICONV_INCLUDE_DIR iconv.h
          /usr/local/include
          /opt/local/include
          ${${_PROJECT_DEPENDENCY_DIR}}/include
+         CMAKE_FIND_ROOT_PATH_BOTH
 )
 
 FIND_LIBRARY(ICONV_LIBRARIES NAMES iconv libiconv
@@ -49,6 +50,7 @@ FIND_LIBRARY(ICONV_LIBRARIES NAMES iconv libiconv
          /opt/local/lib
          ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
          ${${_PROJECT_DEPENDENCY_DIR}}/lib
+         CMAKE_FIND_ROOT_PATH_BOTH
 )
  
 IF(ICONV_INCLUDE_DIR AND ICONV_LIBRARIES) 

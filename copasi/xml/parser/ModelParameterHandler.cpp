@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,6 +20,7 @@
 #include "copasi/utilities/CCopasiMessage.h"
 
 #include "copasi/model/CModelParameter.h"
+#include "copasi/model/CModel.h"
 
 /**
  * Replace ModelParameter with the name type of the handler and implement the
@@ -83,7 +84,7 @@ CXMLHandler * ModelParameterHandler::processStart(const XML_Char * pszName,
               break;
           }
 
-        mpData->pCurrentModelParameter->setCN(std::string(CN));
+        mpData->pCurrentModelParameter->setCN(CRegisteredCommonName(CN, mpData->pModel));
 
         SimulationType = CModelEntity::XMLStatus.toEnum(pSimulationType, CModelEntity::Status::FIXED);
         mpData->pCurrentModelParameter->setSimulationType(SimulationType);

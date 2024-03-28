@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -82,7 +82,6 @@
 #include "copasi/function/CFunctionParameters.h"
 #include "copasi/core/CDataObjectReference.h"
 #include "copasi/utilities/CCopasiTree.h"
-#include "copasi/utilities/CNodeIterator.h"
 #include "copasi/utilities/CUnit.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
@@ -93,7 +92,6 @@
 
 #include "SBMLImporter.h"
 #include "SBMLUtils.h"
-#include "ConverterASTNode.h"
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/commandline/CConfigurationFile.h"
 
@@ -270,23 +268,23 @@ std::string getInitialCNForSBase(SBase* sbase, std::map<const CDataObject*, SBas
           auto obj = it->first->getObject(std::string("Reference=") + type);
 
           if (obj)
-            return obj->getCN();
+            return obj->getStringCN();
         }
 
       const CMetab *metab = dynamic_cast<const CMetab*>(it->first);
 
       if (metab != NULL)
-        return metab->getInitialConcentrationReference()->getCN();
+        return metab->getInitialConcentrationReference()->getStringCN();
 
       const CCompartment *comp = dynamic_cast<const CCompartment*>(it->first);
 
       if (comp != NULL)
-        return comp->getInitialValueReference()->getCN();
+        return comp->getInitialValueReference()->getStringCN();
 
       const CModelValue *param = dynamic_cast<const CModelValue*>(it->first);
 
       if (param != NULL)
-        return param->getInitialValueReference()->getCN();
+        return param->getInitialValueReference()->getStringCN();
     }
 
   return "";
@@ -847,7 +845,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           if (it == mParameterFluxMap.end())
             continue;
 
-          it->second->setExpression("<" + reaction.getFluxReference()->getCN() + ">");
+          it->second->setExpression("<" + reaction.getFluxReference()->getStringCN() + ">");
         }
     }
 
@@ -1378,7 +1376,7 @@ CFunction* SBMLImporter::createCFunctionFromFunctionTree(const FunctionDefinitio
 
   ConverterASTNode root(*pSBMLFunction->getMath());
 
-  if (SBMLImporter::isDelayFunctionUsed(&root))
+  if (SBMLImporter::isDelayOrRateFunctionUsed(&root))
     {
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 85, pSBMLFunction->getId().c_str());
     }
@@ -2263,7 +2261,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
             }
 
           ConverterASTNode* node = new ConverterASTNode(*kLawMath);
-          preprocessNode(node, pSBMLModel, copasi2sbmlmap, sbmlReaction);
+          preprocessNode(node, pSBMLModel, copasi2sbmlmap, sbmlReaction, true);
 
           if (node == NULL)
             {
@@ -2281,7 +2279,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
               if (compartment != NULL)
                 {
-                  // check if the division by volume can be done symbollically in the tree.
+                  // check if the division by volume can be done symbolically in the tree.
                   bool wasRemoved = this->divideByVolume(node, compartment->getSBMLId());
 
                   // if not, we have to do it manually
@@ -2376,7 +2374,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                   if (pParamObject->getObjectType() == "Parameter")
                     {
                       const_cast< CDataObject * >(pParamObject)->setObjectName("v");
-                      dynamic_cast<CEvaluationNode*>(pCallNode->getChild())->setData("<" + pParamObject->getCN() + ">");
+                      dynamic_cast<CEvaluationNode*>(pCallNode->getChild())->setData("<" + pParamObject->getStringCN() + ">");
                     }
 
                   copasiReaction->setFunction(pCFFun);
@@ -2731,6 +2729,7 @@ SBMLImporter::SBMLImporter()
   , mAvogadroCreated(false)
   , mImportCOPASIMIRIAM(true)
   , mDelayNodeMap()
+  , mReplacedRates()
   , mUsedSBMLIds()
   , mUsedSBMLIdsPopulated(false)
   , mKnownCustomUserDefinedFunctions()
@@ -2978,7 +2977,7 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               case LIBSBML_SEV_FATAL:
 
-                // treat unknown as fatal
+              // treat unknown as fatal
               default:
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
@@ -3312,7 +3311,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
         }
       else if (pParam)
         {
-          pNode->setName(pParam->getCN().c_str());
+          pNode->setName(pParam->getStringCN().c_str());
         }
       else
         {
@@ -3340,7 +3339,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
 
                     if (sbmlId == pNode->getName())
                       {
-                        pNode->setName(dynamic_cast<const CCompartment*>(it->first)->getObject(CCommonName("Reference=InitialVolume"))->getCN().c_str());
+                        pNode->setName(dynamic_cast<const CCompartment*>(it->first)->getObject(CCommonName("Reference=InitialVolume"))->getStringCN().c_str());
                         found = true;
                       }
 
@@ -3360,7 +3359,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
 
                     if (sbmlId == pNode->getName())
                       {
-                        pNode->setName(dynamic_cast<const CMetab*>(it->first)->getObject(CCommonName("Reference=InitialConcentration"))->getCN().c_str());
+                        pNode->setName(dynamic_cast<const CMetab*>(it->first)->getObject(CCommonName("Reference=InitialConcentration"))->getStringCN().c_str());
                         found = true;
                       }
 
@@ -3380,7 +3379,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
 
                     if (sbmlId == pNode->getName())
                       {
-                        pNode->setName(dynamic_cast<const CReaction*>(it->first)->getObject(CCommonName("Reference=ParticleFlux"))->getCN().c_str());
+                        pNode->setName(dynamic_cast<const CReaction*>(it->first)->getObject(CCommonName("Reference=ParticleFlux"))->getStringCN().c_str());
                         found = true;
                       }
 
@@ -3400,7 +3399,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
 
                     if (sbmlId == pNode->getName())
                       {
-                        pNode->setName(dynamic_cast<const CModelValue*>(it->first)->getValueReference()->getCN().c_str());
+                        pNode->setName(dynamic_cast<const CModelValue*>(it->first)->getValueReference()->getStringCN().c_str());
                         found = true;
                       }
 
@@ -3475,7 +3474,10 @@ void SBMLImporter::restoreFunctionDB()
     }
 }
 
-void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, Reaction* pSBMLReaction)
+void
+SBMLImporter::preprocessNode(ConverterASTNode * pNode, Model * pSBMLModel,
+                             std::map< const CDataObject *, SBase * > & copasi2sbmlmap,
+                             Reaction * pSBMLReaction, bool ignoreRate /*= false*/)
 {
   // this function goes through the tree several times.
   // this can probably be handled more intelligently
@@ -3494,7 +3496,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
 
   if (!this->mDelayFound || pSBMLReaction != NULL)
     {
-      bool result = isDelayFunctionUsed(pNode);
+      bool result = isDelayOrRateFunctionUsed(pNode);
 
       if (pSBMLReaction != NULL && result)
         {
@@ -3522,19 +3524,21 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
           // we need a map to store the replacements for local parameters
           // which occur within delay calls
           std::map<std::string, std::string> replacementMap;
-          this->replace_delay_nodes(pNode, pSBMLModel, copasi2sbmlmap, pSBMLReaction, replacementMap);
+          replaceDelayAndRateOfInReaction(pNode, pSBMLModel, copasi2sbmlmap, pSBMLReaction, replacementMap);
 
           if (!replacementMap.empty())
             {
               // replace all local parameter nodes which have been converted to global parameters
               // and that were not in delay calls
-              this->replace_name_nodes(pNode, replacementMap);
+              replace_name_nodes(pNode, replacementMap);
+
               // delete the local parameters that have been replaced from the
               // reaction
               std::map<std::string, std::string>::const_iterator it = replacementMap.begin(), endit = replacementMap.end();
+
               // starting with SBML Level 3, the parameters of a kinetic law are expressed in
               // terms of a new class called LocalParameter instead of Parameter
-              // Unfortunatelly libsbml 4.1 uses separate data structures for
+              // Unfortunately libsbml 4.1 uses separate data structures for
               // the Parameters and the LocalParameters which mandates a small
               // code change to be on the safe side
               ListOfParameters* pList = NULL;
@@ -3558,7 +3562,7 @@ void SBMLImporter::preprocessNode(ConverterASTNode* pNode, Model* pSBMLModel, st
                   ++it;
                 }
 
-              this->mReactionsWithReplacedLocalParameters.insert(pSBMLReaction->getId());
+              mReactionsWithReplacedLocalParameters.insert(pSBMLReaction->getId());
             }
         }
 
@@ -3743,8 +3747,11 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
 
               itNode->setType(AST_DIVIDE);
               itNode->setCharacter('/');
-              ConverterASTNode* pChild = new ConverterASTNode(AST_NAME);
+              char * userData = static_cast< char * >(itNode->getUserData());
+              itNode->setUserData(NULL);
+              ConverterASTNode * pChild = new ConverterASTNode(AST_NAME);
               pChild->setName(id.c_str());
+              pChild->setUserData(userData);
               itNode->addChild(pChild);
               id = (*this->mPotentialAvogadroNumbers.begin())->getId();
               pChild = new ConverterASTNode(AST_NAME);
@@ -3755,7 +3762,7 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
     }
 }
 
-bool SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pASTNode)
+bool SBMLImporter::isDelayOrRateFunctionUsed(ConverterASTNode* pASTNode)
 {
   bool result = false;
   CNodeIterator< ConverterASTNode > itNode(pASTNode);
@@ -3767,7 +3774,7 @@ bool SBMLImporter::isDelayFunctionUsed(ConverterASTNode* pASTNode)
           continue;
         }
 
-      if (itNode->getType() == AST_FUNCTION_DELAY)
+      if (itNode->getType() == AST_FUNCTION_DELAY || itNode->getType() == AST_FUNCTION_RATE_OF)
         {
           result = true;
           break;
@@ -3790,11 +3797,11 @@ void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pASTNode)
 
       if (itNode->getType() == AST_NAME_TIME)
         {
-          itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Time"))->getCN().c_str());
+          itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Time"))->getStringCN().c_str());
         }
       else if (itNode->getType() == AST_NAME_AVOGADRO)
         {
-          itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Avogadro Constant"))->getCN().c_str());
+          itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Avogadro Constant"))->getStringCN().c_str());
         }
     }
 }
@@ -3838,6 +3845,14 @@ void SBMLImporter::replaceCallNodeNames(ASTNode* pASTNode)
               itNode->setName(newName.c_str());
               this->mCreatedFunctions.insert(newName);
             }
+        }
+      else if (itNode->getType() == AST_FUNCTION_RATE_OF && itNode->getNumChildren() == 1)
+        {
+          std::string symbol = itNode->getChild(0)->getName();
+          itNode->removeChild(0);
+          itNode->setType(AST_NAME);
+          itNode->setName(symbol.c_str());
+          itNode->setUserData(strdup("RATE"));
         }
     }
 }
@@ -4863,7 +4878,7 @@ void SBMLImporter::renameMassActionParameters(CEvaluationNodeCall* pCallNode)
   if (dynamic_cast<CCopasiParameter*>(pObject))
     {
       pObject->setObjectName("k1");
-      pObjectNode->setData("<" + pObject->getCN() + ">");
+      pObjectNode->setData("<" + pObject->getStringCN() + ">");
     }
 
   pObjectNode = dynamic_cast<CEvaluationNodeObject*>(pObjectNode->getSibling());
@@ -4877,7 +4892,7 @@ void SBMLImporter::renameMassActionParameters(CEvaluationNodeCall* pCallNode)
       if (dynamic_cast<CCopasiParameter*>(pObject))
         {
           pObject->setObjectName("k2");
-          pObjectNode->setData("<" + pObject->getCN() + ">");
+          pObjectNode->setData("<" + pObject->getStringCN() + ">");
         }
     }
 }
@@ -5801,7 +5816,9 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
                   pReaction = dynamic_cast<const CReaction*>(pObject);
                   pModelEntity = dynamic_cast<const CModelEntity*>(pObject);
                   Species* pSpecies = dynamic_cast<Species*>(it->second);
+                  bool hasOnlySubstance = pSpecies && mSubstanceOnlySpecies.find(pSpecies) != mSubstanceOnlySpecies.end();
                   std::string sbmlId;
+                  haveData = haveData || itNode->getUserData() != NULL;
 
                   if (pReaction)
                     {
@@ -5814,21 +5831,27 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
 
                   if (!sbmlId.empty() && sbmlId == name)
                     {
+                      if (haveData)
+                        {
+                          if (hasOnlySubstance)
+                            itNode->setName((pObject->getStringCN() + ",Reference=ParticleNumberRate").c_str());
+                          else
+                            itNode->setName((pObject->getStringCN() + ",Reference=Rate").c_str());
+
+                          break;
+                        }
+
                       // make sure it is only one of the allowed types
                       switch (it->second->getTypeCode())
                         {
                           case SBML_COMPARTMENT:
-
                             if (!initialExpression)
                               {
-                                if (haveData)
-                                  itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
-                                else
-                                  itNode->setName((pObject->getCN() + ",Reference=Volume").c_str());
+                                itNode->setName((pObject->getStringCN() + ",Reference=Volume").c_str());
                               }
                             else
                               {
-                                itNode->setName((pObject->getCN() + ",Reference=InitialVolume").c_str());
+                                itNode->setName((pObject->getStringCN() + ",Reference=InitialVolume").c_str());
                               }
 
                             break;
@@ -5839,32 +5862,26 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
                             // instead. !!!!
                             assert(pSpecies != NULL);
 
-                            if (this->mSubstanceOnlySpecies.find(pSpecies) == this->mSubstanceOnlySpecies.end())
+                            if (!hasOnlySubstance)
                               {
                                 if (!initialExpression)
                                   {
-                                    if (haveData)
-                                      itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
-                                    else
-                                      itNode->setName((pObject->getCN() + ",Reference=Concentration").c_str());
+                                    itNode->setName((pObject->getStringCN() + ",Reference=Concentration").c_str());
                                   }
                                 else
                                   {
-                                    itNode->setName((pObject->getCN() + ",Reference=InitialConcentration").c_str());
+                                    itNode->setName((pObject->getStringCN() + ",Reference=InitialConcentration").c_str());
                                   }
                               }
                             else
                               {
                                 if (!initialExpression)
                                   {
-                                    if (haveData)
-                                      itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
-                                    else
-                                      itNode->setName((pObject->getCN() + ",Reference=ParticleNumber").c_str());
+                                    itNode->setName((pObject->getStringCN() + ",Reference=ParticleNumber").c_str());
                                   }
                                 else
                                   {
-                                    itNode->setName((pObject->getCN() + ",Reference=InitialParticleNumber").c_str());
+                                    itNode->setName((pObject->getStringCN() + ",Reference=InitialParticleNumber").c_str());
                                   }
                               }
 
@@ -5877,21 +5894,18 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
                                 CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 80, sbmlId.c_str());
                               }
 
-                            itNode->setName((pObject->getCN() + ",Reference=Flux").c_str());
+                            itNode->setName((pObject->getStringCN() + ",Reference=Flux").c_str());
                             break;
 
                           case SBML_PARAMETER:
 
                             if (!initialExpression)
                               {
-                                if (haveData)
-                                  itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
-                                else
-                                  itNode->setName((pObject->getCN() + ",Reference=Value").c_str());
+                                itNode->setName((pObject->getStringCN() + ",Reference=Value").c_str());
                               }
                             else
                               {
-                                itNode->setName((pObject->getCN() + ",Reference=InitialValue").c_str());
+                                itNode->setName((pObject->getStringCN() + ",Reference=InitialValue").c_str());
                               }
 
                             break;
@@ -6979,7 +6993,7 @@ void SBMLImporter::replace_time_with_initial_time(ASTNode* pASTNode, const CMode
           itNode->setType(AST_NAME);
           const CDataObject* pReference = pCopasiModel->getInitialValueReference();
           assert(pReference);
-          itNode->setName(pReference->getCN().c_str());
+          itNode->setName(pReference->getStringCN().c_str());
         }
     }
 }
@@ -7315,7 +7329,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
           std::string target = pObject->getKey();
 
           if (isEventAssignmentToParticleNumber && pMetab)
-            target = pMetab->getValueReference()->getCN();
+            target = pMetab->getValueReference()->getStringCN();
 
           pAssignment = new CEventAssignment(target, pCOPASIEvent);
           pAssignment->setExpressionPtr(pExpression);
@@ -7518,8 +7532,13 @@ void SBMLImporter::findDirectDependencies(const ASTNode* pNode, std::set<std::st
  * This is necessary because all kinetic laws in COPASI are function calls and
  * function definitions should not contain a call to delay.
  */
-void SBMLImporter::replace_delay_nodes(ConverterASTNode* pASTNode, Model* pModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, Reaction* pSBMLReaction, std::map<std::string, std::string>& localReplacementMap)
+void SBMLImporter::replaceDelayAndRateOfInReaction(ConverterASTNode * pASTNode, Model * pModel, std::map< const CDataObject *, SBase * > & copasi2sbmlmap, Reaction * pSBMLReaction, std::map< std::string, std::string > & localReplacementMap)
 {
+  if (pModel == NULL || mpCopasiModel == NULL)
+    {
+      fatalError();
+    }
+
   CNodeIterator< ConverterASTNode > itNode(pASTNode);
 
   while (itNode.next() != itNode.end())
@@ -7531,146 +7550,153 @@ void SBMLImporter::replace_delay_nodes(ConverterASTNode* pASTNode, Model* pModel
 
       if (itNode->getType() == AST_FUNCTION_DELAY)
         {
-          std::string formula = SBML_formulaToString(*itNode);
-          std::map<std::string, std::string>::const_iterator pos = this->mDelayNodeMap.find(formula);
-          std::string replacementId;
+          std::string prefix = "delay_replacement_parameter_";
+          std::map< std::string, std::string > & map = this->mDelayNodeMap;
+          replaceUnsupportedNodeInKinetic(itNode, map, prefix, pModel, copasi2sbmlmap, pSBMLReaction, localReplacementMap);
+        }
+      else if (itNode->getType() == AST_FUNCTION_RATE_OF)
+        {
+          std::string prefix = "rateOf_";
+          std::map< std::string, std::string > & map = this->mReplacedRates;
+          replaceUnsupportedNodeInKinetic(itNode, map, prefix, pModel, copasi2sbmlmap, pSBMLReaction, localReplacementMap);
+        }
+    }
+}
 
-          if (pos == this->mDelayNodeMap.end())
+void SBMLImporter::replaceUnsupportedNodeInKinetic(CNodeIterator< ConverterASTNode >& itNode, std::map< std::string, std::string > & map, std::string prefix, Model * pModel, std::map< const CDataObject *, SBase * > & copasi2sbmlmap, Reaction * pSBMLReaction, std::map< std::string, std::string > & localReplacementMap)
+{
+  std::string formula = SBML_formulaToString(*itNode);
+  std::map< std::string, std::string >::const_iterator pos = map.find(formula);
+  std::string replacementId;
+
+  if (pos == map.end())
+    {
+      // create a new global parameter and a rule for it
+      unsigned int index = 0;
+      std::ostringstream os;
+      os << prefix;
+      os << index;
+
+      while (this->mUsedSBMLIds.find(os.str()) != this->mUsedSBMLIds.end())
+        {
+          os.str("");
+          os << prefix;
+          ++index;
+          os << index;
+        }
+
+      Parameter * pParameter = pModel->createParameter();
+      assert(pParameter != NULL);
+
+      if (pParameter == NULL)
+        {
+          fatalError();
+        }
+
+      // mark the id as used
+      pParameter->setId(os.str());
+      pParameter->setName(os.str());
+      pParameter->setConstant(false);
+      replacementId = pParameter->getId();
+      this->mUsedSBMLIds.insert(replacementId);
+
+      // now we need to import that parameter
+      try
+        {
+          assert(mpCopasiModel);
+          this->createCModelValueFromParameter(pParameter, mpCopasiModel, copasi2sbmlmap);
+        }
+      catch (...)
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, "An unknown error has occurred while replacing a delay call in a kinetic law expression. Please report this to the authors of COPASI.");
+        }
+
+      // now we create the rule
+      AssignmentRule * pARule = pModel->createAssignmentRule();
+      assert(pARule != NULL);
+
+      if (pARule == NULL)
+        {
+          fatalError();
+        }
+
+      pARule->setVariable(pParameter->getId());
+
+      // we have to make sure that there is no local parameter referenced
+      // in the tree for the rule.
+      // If there is a local parameter, we have to convert it to a global
+      // parameter
+      // starting with SBML Level 3, the parameters of a kinetic law are expressed in
+      // terms of a new class called LocalParameter instead of Parameter
+      ListOfParameters * pList = NULL;
+
+      if (this->mLevel > 2)
+        {
+          pList = pSBMLReaction->getKineticLaw()->getListOfLocalParameters();
+        }
+      else
+        {
+          pList = pSBMLReaction->getKineticLaw()->getListOfParameters();
+        }
+
+      unsigned int i, iMax = pList->size();
+
+      if (iMax > 0)
+        {
+          std::set< std::string > localIds;
+          // first we fill the local id set
+          const Parameter * pParam = NULL;
+
+          for (i = 0; i < iMax; ++i)
             {
-              // create a new global parameter and a rule for it
-              unsigned int index = 0;
-              std::ostringstream os;
-              os << "delay_replacement_parameter_";
-              os << index;
-
-              while (this->mUsedSBMLIds.find(os.str()) != this->mUsedSBMLIds.end())
-                {
-                  os.str("");
-                  os << "delay_replacement_parameter_";
-                  ++index;
-                  os << index;
-                }
-
-              // create the global parameter
-              if (pModel == NULL)
-                {
-                  fatalError();
-                }
-
-              Parameter* pParameter = pModel->createParameter();
-              assert(pParameter != NULL);
-
-              if (pParameter == NULL)
-                {
-                  fatalError();
-                }
-
-              // mark the id as used
-              pParameter->setId(os.str());
-              pParameter->setName(os.str());
-              pParameter->setConstant(false);
-              replacementId = pParameter->getId();
-              this->mUsedSBMLIds.insert(replacementId);
-
-              // now we need to import that parameter
-              try
-                {
-                  assert(mpCopasiModel);
-                  this->createCModelValueFromParameter(pParameter, mpCopasiModel, copasi2sbmlmap);
-                }
-              catch (...)
-                {
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, "An unknown error has occurred while replacing a delay call in a kinetic law expression. Please report this to the authors of COPASI.");
-                }
-
-              // now we create the rule
-              AssignmentRule* pARule = pModel->createAssignmentRule();
-              assert(pARule != NULL);
-
-              if (pARule == NULL)
-                {
-                  fatalError();
-                }
-
-              pARule->setVariable(pParameter->getId());
-
-              // we have to make sure that there is no local parameter referenced
-              // in the tree for the rule.
-              // If there is a local parameter, we have to convert it to a global
-              // parameter
-              // starting with SBML Level 3, the parameters of a kinetic law are expressed in
-              // terms of a new class called LocalParameter instead of Parameter
-              ListOfParameters* pList = NULL;
-
-              if (this->mLevel > 2)
-                {
-                  pList = pSBMLReaction->getKineticLaw()->getListOfLocalParameters();
-                }
-              else
-                {
-                  pList = pSBMLReaction->getKineticLaw()->getListOfParameters();
-                }
-
-              unsigned int i, iMax = pList->size();
-
-              if (iMax > 0)
-                {
-                  std::set<std::string> localIds;
-                  // first we fill the local id set
-                  const Parameter* pParam = NULL;
-
-                  for (i = 0; i < iMax; ++i)
-                    {
-                      pParam = pList->get(i);
-                      assert(pParam != NULL);
-                      localIds.insert(pParam->getId());
-                    }
-
-                  // this has to be a two step process because we first have to identify
-                  // all local parameters that are used in a delay
-                  // Next we have to go over the tree again and replace all occurrences of
-                  // those parameters with the global parameters, independent of whether
-                  // they are used in a delay expression or not
-                  this->find_local_parameters_in_delay(*itNode, pSBMLReaction, pModel, localReplacementMap, localIds, copasi2sbmlmap);
-
-                  // now we have to at least replace the ones that appear in delays here already because otherwise
-                  // the import of the rule that was created for the delay replacement will fail because it can't resolve
-                  // the name of the local parameter in the rule
-                  if (!localReplacementMap.empty())
-                    {
-                      this->replace_name_nodes(*itNode, localReplacementMap);
-                    }
-                }
-
-              pARule->setMath(*itNode);
-
-              // and we need to import this rule
-              try
-                {
-                  this->importSBMLRule(pARule, copasi2sbmlmap, pModel);
-                }
-              catch (...)
-                {
-                  CCopasiMessage(CCopasiMessage::EXCEPTION, "An unknown error has occurred while replacing a delay call in a kinetic law expression. Please report this to the authors of COPASI.");
-                }
-
-              // and we add the formula id pair to the map so that we can reuse it if
-              // the same expression comes up again
-              this->mDelayNodeMap.insert(std::pair<std::string, std::string>(formula, pParameter->getId()));
-            }
-          else
-            {
-              replacementId = pos->second;
+              pParam = pList->get(i);
+              assert(pParam != NULL);
+              localIds.insert(pParam->getId());
             }
 
-          itNode->setType(AST_NAME);
-          itNode->setName(replacementId.c_str());
+          // this has to be a two step process because we first have to identify
+          // all local parameters that are used in a delay
+          // Next we have to go over the tree again and replace all occurrences of
+          // those parameters with the global parameters, independent of whether
+          // they are used in a delay expression or not
+          this->find_local_parameters_in_delay(*itNode, pSBMLReaction, pModel, localReplacementMap, localIds, copasi2sbmlmap);
 
-          while (itNode->getNumChildren() > 0)
+          // now we have to at least replace the ones that appear in delays here already because otherwise
+          // the import of the rule that was created for the delay replacement will fail because it can't resolve
+          // the name of the local parameter in the rule
+          if (!localReplacementMap.empty())
             {
-              itNode->removeChild(0);
+              this->replace_name_nodes(*itNode, localReplacementMap);
             }
         }
+
+      pARule->setMath(*itNode);
+
+      // and we need to import this rule
+      try
+        {
+          this->importSBMLRule(pARule, copasi2sbmlmap, pModel);
+        }
+      catch (...)
+        {
+          CCopasiMessage(CCopasiMessage::EXCEPTION, "An unknown error has occurred while replacing a delay call in a kinetic law expression. Please report this to the authors of COPASI.");
+        }
+
+      // and we add the formula id pair to the map so that we can reuse it if
+      // the same expression comes up again
+      map.insert(std::pair< std::string, std::string >(formula, pParameter->getId()));
+    }
+  else
+    {
+      replacementId = pos->second;
+    }
+
+  itNode->setType(AST_NAME);
+  itNode->setName(replacementId.c_str());
+
+  while (itNode->getNumChildren() > 0)
+    {
+      itNode->removeChild(0);
     }
 }
 
@@ -8009,7 +8035,7 @@ CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, 
           // either child can be the object
           const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild());
 
-          if (pChild->mainType() == CEvaluationNode::MainType::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
+          if (pChild->mainType() == CEvaluationNode::MainType::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getStringCN() + ">"))
             {
 
               pResult = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
@@ -8020,7 +8046,7 @@ CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, 
             {
               pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
 
-              if (pChild->mainType() == CEvaluationNode::MainType::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
+              if (pChild->mainType() == CEvaluationNode::MainType::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getStringCN() + ">"))
                 {
 
                   pResult = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
@@ -8031,7 +8057,7 @@ CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, 
 
       if (reverse == false)
         {
-          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ">");
+          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getStringCN() + ">");
           pResult = new CEvaluationNodeOperator(CEvaluationNode::SubType::DIVIDE, "/");
           pResult->addChild(pOrigNode->copyBranch());
           pResult->addChild(pVolumeNode);

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,6 +12,9 @@
 #define COPASI_CRegisteredCommonName
 
 #include "copasi/core/CCommonName.h"
+
+class CDataModel;
+class CObjectInterface;
 
 class CRegisteredCommonName: public CCommonName
 {
@@ -75,6 +78,13 @@ public:
   CRegisteredCommonName();
 
   /**
+   * Constructor from base class
+   * @param const std::string & name
+   * @param const CObjectInterface * pObject
+   */
+  CRegisteredCommonName(const std::string & name, const CObjectInterface * pObject);
+
+  /**
    * Copy Constructor
    * @param const CRegisteredCommonName & src
    */
@@ -84,12 +94,6 @@ public:
    * Destructor
    */
   ~CRegisteredCommonName();
-
-  /**
-   * Constructor from base class
-   * @param const std::string & name
-   */
-  CRegisteredCommonName(const std::string & name);
 
   /**
    * Enable and disable the rename handler
@@ -107,10 +111,10 @@ public:
    * Update all registered common names which contain
    * the oldCN
    * @param const std::string & oldCN
-   * @param const std::string & newCN
+   * @param const CRegisteredCommonName & newCN
    */
   static void handle(const std::string & oldCN,
-                     const std::string & newCN);
+                     const CRegisteredCommonName & newCN);
 
   /**
    * Old files (before build 171) may have common name where invalid characters have been used.
@@ -131,6 +135,8 @@ public:
   static void deregisterHandler(RenameInterface * pRenameHandler);
 
 private:
+  const CDataModel * mpDataModel;
+
   /**
    * A set which contains all registered comon names
    */

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,6 +19,7 @@
 
 #include "CXMLParser.h"
 #include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/model/CModel.h"
 
 #include "copasi/report/CReportDefinition.h"
 /**
@@ -86,7 +87,7 @@ bool ReportSectionHandler::processEnd(const XML_Char * pszName)
         break;
 
       case Object:
-        mpSectionContent->push_back(CCommonName(mpData->CharacterData));
+        mpSectionContent->push_back(CRegisteredCommonName(mpData->CharacterData, mpData->pModel));
         break;
 
       default:
