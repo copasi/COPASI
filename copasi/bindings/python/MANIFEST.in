@@ -24,4 +24,5 @@ recursive-exclude copasi-dependencies/src/NativeJIT/googletest *
 
 exclude COPASI
 exclude build*
+exclude dist*
 exclude install*
