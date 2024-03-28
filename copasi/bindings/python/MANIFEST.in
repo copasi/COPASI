@@ -9,6 +9,9 @@ recursive-exclude copasi_source/gps *
 recursive-exclude copasi_source/CopasiWS *
 recursive-exclude copasi_source/userdocs *
 recursive-exclude copasi_source/TestSuite/events *
+recursive-exclude copasi_source/dist *
+recursive-exclude copasi_source/build_* *
+recursive-exclude copasi_source/install_* *
 
 exclude copasi-dependencies/.git
 recursive-exclude copasi-dependencies/src/libexpat/testdata *
