@@ -4,6 +4,8 @@
 *.app
 *.bkp
 *.patch
+*.diff
+*.rej
 moc_*.cpp
 ui_*.h
 /build
