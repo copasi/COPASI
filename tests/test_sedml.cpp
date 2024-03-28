@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,7 +12,7 @@ extern std::string getTestFile(const std::string & fileName);
 #include <sbml/SBMLTypes.h>
 #include <sedml/SedTypes.h>
 
-TEST_CASE("exporting sedml file with non-zero initial time", "[copasi,sedml]")
+TEST_CASE("exporting sedml file with non-zero initial time", "[copasi][sedml]")
 {
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != nullptr);
@@ -67,7 +67,7 @@ TEST_CASE("exporting sedml file with non-zero initial time", "[copasi,sedml]")
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("convert sedml types and colors", "[copasi,sedml]")
+TEST_CASE("convert sedml types and colors", "[copasi][sedml]")
 {
   REQUIRE(SEDMLUtils::argbToRgba("112233") == "#112233");
   REQUIRE(SEDMLUtils::argbToRgba("#F0C800") == "#F0C800");
@@ -101,7 +101,7 @@ TEST_CASE("convert sedml types and colors", "[copasi,sedml]")
   REQUIRE(SEDMLUtils::symbolToSed((int) CPlotItem::SymbolType::Plus) == SEDML_MARKERTYPE_PLUS);
 }
 
-TEST_CASE("importing new curves and plots", "[copasi,sedml]")
+TEST_CASE("importing new curves and plots", "[copasi][sedml]")
 {
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != nullptr);
@@ -128,7 +128,7 @@ TEST_CASE("importing new curves and plots", "[copasi,sedml]")
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("importing variables with terms", "[copasi,sedml]")
+TEST_CASE("importing variables with terms", "[copasi][sedml]")
 {
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != nullptr);
@@ -141,7 +141,7 @@ TEST_CASE("importing variables with terms", "[copasi,sedml]")
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("export / import nested scan", "[copasi,sedml]")
+TEST_CASE("export / import nested scan", "[copasi][sedml]")
 {
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != nullptr);
@@ -179,7 +179,7 @@ TEST_CASE("export / import nested scan", "[copasi,sedml]")
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("Export different plot styles", "[copasi,sedml]")
+TEST_CASE("Export different plot styles", "[copasi][sedml]")
 {
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != nullptr);
@@ -204,7 +204,7 @@ TEST_CASE("Export different plot styles", "[copasi,sedml]")
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("generating variables with terms", "[copasi,sedml]")
+TEST_CASE("generating variables with terms", "[copasi][sedml]")
 {
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != nullptr);
@@ -250,7 +250,7 @@ TEST_CASE("generating variables with terms", "[copasi,sedml]")
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("importing document with remote model should fail", "[copasi,sedml]")
+TEST_CASE("importing document with remote model should fail", "[copasi][sedml]")
 {
   // generate sedml
 

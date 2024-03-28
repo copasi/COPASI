@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -9,7 +9,7 @@ extern std::string getTestFile(const std::string & fileName);
 
 #include <copasi/CopasiTypes.h>
 
-TEST_CASE("create a reaction with numerically named species", "[copasi,creation]")
+TEST_CASE("create a reaction with numerically named species", "[copasi][creation]")
 {
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != nullptr);
@@ -37,7 +37,7 @@ TEST_CASE("create a reaction with numerically named species", "[copasi,creation]
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("create a new model with invalid value", "[copasi,creation]")
+TEST_CASE("create a new model with invalid value", "[copasi][creation]")
 {
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != NULL);
@@ -56,7 +56,7 @@ TEST_CASE("create a new model with invalid value", "[copasi,creation]")
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("create a model with inhibited reaciton", "[copasi,creation]")
+TEST_CASE("create a model with inhibited reaciton", "[copasi][creation]")
 {
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != NULL);
@@ -70,7 +70,7 @@ TEST_CASE("create a model with inhibited reaciton", "[copasi,creation]")
 
   auto & vars = pFunc->getVariables();
 
-  for (auto & var : vars)
+for (auto & var : vars)
     {
       if (var.getObjectName() == "A" || var.getObjectName() == "B")
         var.setUsage(CFunctionParameter::Role::SUBSTRATE);
@@ -110,7 +110,7 @@ TEST_CASE("create a model with inhibited reaciton", "[copasi,creation]")
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("changing from global to local variable", "[copasi,creation]")
+TEST_CASE("changing from global to local variable", "[copasi][creation]")
 {
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != NULL);
@@ -148,7 +148,7 @@ TEST_CASE("changing from global to local variable", "[copasi,creation]")
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("changing initial concentrations", "[copasi,manipulation]")
+TEST_CASE("changing initial concentrations", "[copasi][manipulation]")
 {
 
   auto * dm = CRootContainer::addDatamodel();
@@ -160,7 +160,7 @@ TEST_CASE("changing initial concentrations", "[copasi,manipulation]")
   auto * pMetab = model->createMetabolite("speciesB", "compartment");
 
   // change initial concentration
-  for (auto & metab : model->getMetabolites())
+for (auto & metab : model->getMetabolites())
     {
       if (metab.getObjectDisplayName() != "speciesB")
         continue;
@@ -171,7 +171,7 @@ TEST_CASE("changing initial concentrations", "[copasi,manipulation]")
     }
 
   // retrieve metab again
-  for (auto & metab : model->getMetabolites())
+for (auto & metab : model->getMetabolites())
     {
       if (metab.getObjectDisplayName() != "speciesB")
         continue;
@@ -182,7 +182,7 @@ TEST_CASE("changing initial concentrations", "[copasi,manipulation]")
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("generating expressions", "[copasi,manipulation]")
+TEST_CASE("generating expressions", "[copasi][manipulation]")
 {
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != nullptr);
@@ -207,6 +207,50 @@ TEST_CASE("generating expressions", "[copasi,manipulation]")
     expression = gen.generateExpressionFor(model);
     REQUIRE(expression == "ABS({[X]}) + ABS({[Y]}) + ABS({[A]}) + ABS({[B]}) + ABS({[D]}) + ABS({[E]})");
   }
+}
+
+TEST_CASE("use binary min and max", "[copasi][sbml]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != NULL);
+
+  REQUIRE(dm->newModel(NULL, true));
+
+  auto * model = dm->getModel();
+  auto* p1 = model->createModelValue("one", 1);
+  auto * p2 = model->createModelValue("two", 2);
+  auto * p3 = model->createModelValue("three", 3);
+  auto * p4 = model->createModelValue("four", 4);
+
+  // n-ary min max not yet supported, but we can
+  // allow binary for now
+
+  auto *maxP = model->createModelValue("p_MAX", 0);
+  {
+    maxP->setStatus(CModelEntity::Status::ASSIGNMENT);
+    std::stringstream str;
+    str << "MAX(<" << p1->getValueReference()->getCN() << ">,"
+        //<< "<" << p2->getValueReference()->getCN() << ">,"
+        //<< "<" << p3->getValueReference()->getCN() << ">,"
+        << "<" << p4->getValueReference()->getCN() << ">)";
+
+    bool result = maxP->setExpression(str.str());
+    REQUIRE(result == true);
+  }
+  auto * minP = model->createModelValue("p_MIN", 0);
+  {
+    maxP->setStatus(CModelEntity::Status::ASSIGNMENT);
+    std::stringstream str;
+    str << "MIN(<" << p1->getValueReference()->getCN() << ">,"
+        //<< "<" << p2->getValueReference()->getCN() << ">,"
+        //<< "<" << p3->getValueReference()->getCN() << ">,"
+        << "<" << p4->getValueReference()->getCN() << ">)";
+
+    bool success = maxP->setExpression(str.str());
+    REQUIRE(success == true);
+  }
+
+  model->applyInitialValues();
 
   CRootContainer::removeDatamodel(dm);
 }

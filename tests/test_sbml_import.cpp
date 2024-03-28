@@ -12,7 +12,7 @@ extern std::string getTestFile(const std::string & fileName);
 #include <copasi/sbml/SBMLUnitSupport.h>
 #include <sbml/SBMLTypes.h>
 
-TEST_CASE("1: importing sbml files", "[copasi,sbml]")
+TEST_CASE("1: importing sbml files", "[copasi][sbml]")
 {
 
   auto * dm = CRootContainer::addDatamodel();
@@ -154,7 +154,7 @@ TEST_CASE("1: importing sbml files", "[copasi,sbml]")
 
 #include <copasi/report/CDataHandler.h>
 
-TEST_CASE("3: creating a new model testing avogadro", "[copasi,sbml]")
+TEST_CASE("3: creating a new model testing avogadro", "[copasi][sbml]")
 {
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != nullptr);
@@ -209,7 +209,7 @@ TEST_CASE("3: creating a new model testing avogadro", "[copasi,sbml]")
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("2: importing an sbml file and saving as COPASI file", "[copasi,sbml]")
+TEST_CASE("2: importing an sbml file and saving as COPASI file", "[copasi][sbml]")
 {
 
   auto * dm = CRootContainer::addDatamodel();
@@ -222,7 +222,7 @@ TEST_CASE("2: importing an sbml file and saving as COPASI file", "[copasi,sbml]"
   // create model values for amounts:
   auto * model = dm->getModel();
 
-  for (auto & metab : model->getMetabolites())
+for (auto & metab : model->getMetabolites())
     {
       std::stringstream str;
       str << metab.getObjectName() << "_amount";
@@ -259,7 +259,7 @@ TEST_CASE("2: importing an sbml file and saving as COPASI file", "[copasi,sbml]"
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("importing an SBML file multiple times", "[copasi,sbml]")
+TEST_CASE("importing an SBML file multiple times", "[copasi][sbml]")
 {
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != nullptr);
@@ -282,7 +282,7 @@ TEST_CASE("importing an SBML file multiple times", "[copasi,sbml]")
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("importing an SBML file and delete used function definition", "[copasi,sbml]")
+TEST_CASE("importing an SBML file and delete used function definition", "[copasi][sbml]")
 {
 
   auto * dm = CRootContainer::addDatamodel();
@@ -311,7 +311,7 @@ TEST_CASE("importing an SBML file and delete used function definition", "[copasi
   CRootContainer::removeDatamodel(dm);
 }
 
-TEST_CASE("SBML import / export of events with particle numbers", "[copasi,sbml]")
+TEST_CASE("SBML import / export of events with particle numbers", "[copasi][sbml]")
 {
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != nullptr);
@@ -385,7 +385,7 @@ TEST_CASE("SBML import / export of events with particle numbers", "[copasi,sbml]
 //
 //#include <copasi/math/CJitCompiler.h>
 //
-//TEST_CASE("2: importing biomodel files", "[copasi,sbml]")
+//TEST_CASE("2: importing biomodel files", "[copasi][sbml]")
 //{
 //  auto * dm = CRootContainer::addDatamodel();
 //  REQUIRE(dm != NULL);
