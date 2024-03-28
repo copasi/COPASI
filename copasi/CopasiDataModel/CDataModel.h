@@ -192,6 +192,16 @@ public:
   virtual ~CDataModel();
 
   /**
+   * resolves the given CN string in this dataModel to a
+   * registered common name
+   *
+   * @param CN the CN to resolve
+   *
+   * @return a registered common name for the CN
+   */
+  CRegisteredCommonName registeredCN(const std::string & CN) const;
+
+  /**
    * Load the model from the content which may be any supported type
    * @param const std::string & content
    * @param std::string referenceDir = pwd()

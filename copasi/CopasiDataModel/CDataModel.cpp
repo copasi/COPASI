@@ -82,12 +82,12 @@ LIBCOMBINE_CPP_NAMESPACE_USE
 
 // static
 const CEnumAnnotation< std::string, CDataModel::ContentType >
-CDataModel::ContentTypeNames({"COPASI",
-                              "GEPASI",
-                              "SBML",
-                              "SED-ML",
-                              "OMEX"
-                             });
+CDataModel::ContentTypeNames( {"COPASI",
+  "GEPASI",
+  "SBML",
+  "SED-ML",
+  "OMEX"
+});
 
 // static
 CDataModel::ContentType CDataModel::contentType(std::istream & content)
@@ -255,6 +255,11 @@ CDataModel::~CDataModel()
   mTempFolders.clear();
 
   CRegisteredCommonName::setEnabled(true);
+}
+
+CRegisteredCommonName CDataModel::registeredCN(const std::string & CN) const
+{
+  return CRegisteredCommonName(CN, this);
 }
 
 bool CDataModel::loadFromString(const std::string & content,
@@ -712,9 +717,9 @@ bool CDataModel::loadModelParameterSets(const std::string & fileName,
   CDataVectorN< CModelParameterSet > & loadedSet = parameterSetModel->getModelParameterSets();
   CCommonName loadedModelCn = parameterSetModel->getStringCN();
 
-  for (CModelParameterSet & set : loadedSet)
+for (CModelParameterSet & set : loadedSet)
     {
-      for (CModelParameter * current : dynamic_cast< CModelParameterGroup & >(set))
+for (CModelParameter * current : dynamic_cast< CModelParameterGroup & >(set))
         {
           replaceCnInGroup(current, loadedModelCn, thisModelsCn);
         }
@@ -757,7 +762,7 @@ void CDataModel::replaceCnInGroup(CModelParameter * pParam,
   if (!group)
     return;
 
-  for (CModelParameter * element : *group)
+for (CModelParameter * element : *group)
     {
       CModelParameterGroup * inside = dynamic_cast< CModelParameterGroup * >(element);
 
@@ -2042,7 +2047,7 @@ void addMessages(const std::string & title, std::stringstream & messageStream, c
 
   messageStream << "\n";
 
-  for (auto & message : messages)
+for (auto & message : messages)
     {
       auto startPos = message.getText().find_first_of("\n");
       auto text = message.getText().substr(startPos + 1);
@@ -2778,7 +2783,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Optimization],Object=Result", this));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::parameterFitting:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2807,7 +2812,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Parameter Estimation],Object=Result", this));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::lyap:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2824,7 +2829,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result", this));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::mca:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2841,7 +2846,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result", this));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::lna:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2858,7 +2863,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result", this));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::sens:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
@@ -2875,7 +2880,7 @@ CReportDefinition * CDataModel::addReport(const CTaskEnum::Task & taskType)
         pReport->getFooterAddr()->push_back(CRegisteredCommonName("CN=Root,Vector=TaskList[Sensitivities],Object=Result", this));
         break;
 
-      //**************************************************************************
+        //**************************************************************************
       case CTaskEnum::Task::tssAnalysis:
         pReport = new CReportDefinition(CTaskEnum::TaskName[taskType]);
         pReport->setTaskType(taskType);
