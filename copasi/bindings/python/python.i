@@ -177,7 +177,7 @@ import sys
 // Taken from CopasiSE.cpp
 
 // Create the root container
-CRootContainer::init(0,NULL,false);
+CRootContainer::init(0,NULL,true);
 
 %}
 
