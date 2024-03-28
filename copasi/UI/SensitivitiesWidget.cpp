@@ -323,10 +323,9 @@ SensitivitiesWidget::initCombos()
   // SubTaskChooser combo
   int i = 0;
 
-  while (CSensProblem::SubTaskName[i].length() > 0)
+  for (int i = 0; i < CSensProblem::SubTaskType::__SIZE; ++i)
     {
-      StringList.append(FROM_UTF8(CSensProblem::SubTaskName[i]));
-      ++i;
+      StringList.append(FROM_UTF8(CTaskEnum::TaskName[CSensProblem::SubTaskTypeToTask[i]]));
     }
 
   SubTaskChooser->insertItems(SubTaskChooser->count(), StringList);

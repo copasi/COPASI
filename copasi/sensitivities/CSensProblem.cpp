@@ -152,30 +152,6 @@ const CEnumAnnotation< CTaskEnum::Task, CSensProblem::SubTaskType > CSensProblem
   CTaskEnum::Task::crosssection //  CrossSection
 });
 
-const std::string CSensProblem::SubTaskName[] =
-{
-  "Evaluation",
-  "Steady State",
-  "Time Series",
-  "Parameter Estimation",
-  "Optimization",
-  "Cross Section",
-  //"Lyapunov Exponents",
-  ""
-};
-
-const char * CSensProblem::XMLSubTask[] =
-{
-  "Evaluation",
-  "SteadyState",
-  "TimeSeries",
-  "ParameterEstimation",
-  "Optimization",
-  "CrossSection",
-  //"LyapunovExponents",
-  NULL
-};
-
 //static
 void CSensProblem::createParametersInGroup(CCopasiParameterGroup * pg)
 {
