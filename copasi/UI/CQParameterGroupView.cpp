@@ -240,7 +240,7 @@ void CQParameterGroupView::modifySelectCNs(CCopasiParameterGroup & group, const 
 
   for (; itNew != endNew; ++itNew)
     {
-      group.addParameter("Reaction", CCopasiParameter::Type::CN, (*itNew)->getStringCN());
+      group.addParameter("Reaction", CCopasiParameter::Type::CN, (*itNew)->getCN());
     }
 
   mpParameterGroupDM->endResetModel();

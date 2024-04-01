@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -200,18 +200,18 @@ CExperiment::Type CExperimentObjectMap::getRole(const size_t & index) const
 }
 
 bool CExperimentObjectMap::setObjectCN(const size_t & index,
-                                       const std::string & CN)
+                                       const CRegisteredCommonName & CN)
 {
   CDataColumn * pColumn =
     dynamic_cast< CDataColumn * >(getGroup(StringPrint("%d", index)));
 
   if (pColumn)
-    return pColumn->setObjectCN((CCommonName) CN);
+    return pColumn->setObjectCN(CN);
   else
     return false;
 }
 
-std::string CExperimentObjectMap::getObjectCN(const size_t & index) const
+CRegisteredCommonName CExperimentObjectMap::getObjectCN(const size_t & index) const
 {
   const CDataColumn * pColumn =
     dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
@@ -219,7 +219,7 @@ std::string CExperimentObjectMap::getObjectCN(const size_t & index) const
   if (pColumn)
     return pColumn->getObjectCN();
   else
-    return "";
+    return CRegisteredCommonName();
 }
 
 bool CExperimentObjectMap::setScale(const size_t & index,
@@ -393,7 +393,7 @@ bool CExperimentObjectMap::CDataColumn::setRole(const CExperiment::Type & role)
 const CExperiment::Type & CExperimentObjectMap::CDataColumn::getRole() const
 {return *mpRole;}
 
-bool CExperimentObjectMap::CDataColumn::setObjectCN(const std::string & objectCN)
+bool CExperimentObjectMap::CDataColumn::setObjectCN(const CRegisteredCommonName & objectCN)
 {
   if (objectCN == "")
     {
@@ -409,18 +409,18 @@ bool CExperimentObjectMap::CDataColumn::setObjectCN(const std::string & objectCN
         *mpObjectCN = objectCN;
       else
         mpObjectCN =
-          assertParameter("Object CN", CCopasiParameter::Type::CN, (CCommonName) objectCN);
+          assertParameter("Object CN", CCopasiParameter::Type::CN, objectCN);
     }
 
   return true;
 }
 
-std::string CExperimentObjectMap::CDataColumn::getObjectCN() const
+CRegisteredCommonName CExperimentObjectMap::CDataColumn::getObjectCN() const
 {
   if (mpObjectCN != NULL)
     return *mpObjectCN;
   else
-    return "";
+    return CRegisteredCommonName();
 }
 
 bool CExperimentObjectMap::CDataColumn::setScale(const C_FLOAT64 & weight)

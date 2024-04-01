@@ -1566,7 +1566,7 @@ void CModelExpansion::replaceInEvent(CEvent* pX, const ElementsMap & emap)
       const CDataObject * pObject = emap.getDuplicateFromObject(pAssignment->getTargetObject());
 
       if (pObject != NULL)
-        pAssignment->setTargetCN(pObject->getStringCN());
+        pAssignment->setTargetCN(pObject->getCN());
     }
 }
 

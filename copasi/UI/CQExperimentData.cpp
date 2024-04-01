@@ -1554,7 +1554,7 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
 
       if (ObjectMap.getObjectCN(i) != TO_UTF8(mpTable->item((int) i, COL_OBJECT_HIDDEN)->text()))
         {
-          ObjectMap.setObjectCN(i, TO_UTF8(mpTable->item((int) i, COL_OBJECT_HIDDEN)->text()));
+          ObjectMap.setObjectCN(i, CRegisteredCommonName(TO_UTF8(mpTable->item((int) i, COL_OBJECT_HIDDEN)->text()), mpDataModel));
           Changed = true;
         }
 

@@ -292,9 +292,9 @@ CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, siz
   tmp->addParameter("Type", CCopasiParameter::Type::UINT, (unsigned C_INT32) type);
 
   if (obj)
-    tmp->addParameter("Object", CCopasiParameter::Type::CN, obj->getStringCN());
+    tmp->addParameter("Object", CCopasiParameter::Type::CN, obj->getCN());
   else
-    tmp->addParameter("Object", CCopasiParameter::Type::CN, CCommonName(""));
+    tmp->addParameter("Object", CCopasiParameter::Type::CN, CRegisteredCommonName());
 
   //create specific parameters
   if ((type == SCAN_LINEAR) || (type == SCAN_RANDOM))

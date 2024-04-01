@@ -127,7 +127,7 @@ CScanItem::CScanItem(CCopasiParameterGroup* si):
 void CScanItem::ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg)
 {
   pg->assertParameter("Number of steps", CCopasiParameter::Type::UINT, 0);
-  pg->assertParameter("Object", CCopasiParameter::Type::CN, std::string());
+  pg->assertParameter("Object", CCopasiParameter::Type::CN, CRegisteredCommonName());
 }
 
 size_t CScanItem::getNumSteps() const {return mNumSteps;}

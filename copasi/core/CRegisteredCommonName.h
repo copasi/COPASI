@@ -13,6 +13,9 @@
 
 #include "copasi/core/CCommonName.h"
 
+// Uncomment to disable the deprecated construct from std::string
+// #define DEPRECATE_CONSTRUCTOR 1
+
 class CDataModel;
 class CObjectInterface;
 
@@ -77,11 +80,13 @@ public:
    */
   CRegisteredCommonName();
 
+#ifndef DEPRECATE_CONSTRUCTOR
   /**
    * Constructor from base class
    * @param const std::string & name
    */
   CRegisteredCommonName(const std::string & name);
+#endif // DEPRECATE_CONSTRUCTOR
 
   /**
    * Constructor from base class

@@ -54,6 +54,7 @@ CRegisteredCommonName::CRegisteredCommonName()
   mSet.insert(this);
 }
 
+#ifndef DEPRECATE_CONSTRUCTOR
 CRegisteredCommonName::CRegisteredCommonName(const std::string & name)
   : CCommonName(name)
   , mpDataModel(nullptr)
@@ -65,6 +66,7 @@ CRegisteredCommonName::CRegisteredCommonName(const std::string & name)
 
   mSet.insert(this);
 }
+#endif // DEPRECATE_CONSTRUCTOR
 
 CRegisteredCommonName::CRegisteredCommonName(const std::string & name, const CObjectInterface * pObject)
   : CCommonName(name)
