@@ -26,6 +26,7 @@
 #include "copasi/utilities/CTaskFactory.h"
 #include "copasi/model/CModel.h"
 #include "copasi/function/CExpression.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 
 /**
  * Replace Task with the name type of the handler and implement the
@@ -241,7 +242,7 @@ bool TaskHandler::processEnd(const XML_Char * pszName)
                       continue;
 
                     pGroup->addParameter("Role", CCopasiParameter::Type::UINT, entry.second.first);
-                    pGroup->addParameter("Object CN", CCopasiParameter::Type::CN, CRegisteredCommonName(entry.second.second, pGroup));
+                    pGroup->addParameter("Object CN", CCopasiParameter::Type::CN, CRegisteredCommonName(entry.second.second, mpData->pDataModel));
                   }
               }
           }
