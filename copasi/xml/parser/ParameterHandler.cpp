@@ -53,7 +53,7 @@ CXMLHandler * ParameterHandler::processStart(const XML_Char * pszName,
 
   C_FLOAT64 d;
   C_INT32 i;
-  size_t ui;
+  unsigned C_INT32 ui;
   bool b;
 
   switch (mCurrentElement.first)

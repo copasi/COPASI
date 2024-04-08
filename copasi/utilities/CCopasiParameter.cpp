@@ -577,6 +577,12 @@ void CCopasiParameter::assignValue(const void * pValue)
     }
 
   assignValue(mType, mpValue, pValue);
+
+  CDataContainer * pParent = getObjectParent();
+
+  if (pParent != nullptr
+      && dynamic_cast< CCopasiParameterGroup * >(pParent) != nullptr)
+    static_cast< CCopasiParameterGroup * >(pParent)->signalChanged(this);
 }
 
 void CCopasiParameter::assignValidValues(const void * pValidValues)
