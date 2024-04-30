@@ -316,7 +316,7 @@ public:
    * @param const CRegisteredCommonName & value
    * @return bool isValidValue
    */
-  bool isValidValue(const CCommonName & value) const;
+  bool isValidValue(const CRegisteredCommonName & value) const;
 
   /**
    * Check whether the value corresponds to the type

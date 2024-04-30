@@ -199,7 +199,7 @@ void * COptProblem::getValuePointer() const
 
 void COptProblem::initializeParameter()
 {
-  mpParmSubTaskCN = assertParameter("Subtask", CCopasiParameter::Type::CN, CCommonName(""));
+  mpParmSubTaskCN = assertParameter("Subtask", CCopasiParameter::Type::CN, CRegisteredCommonName());
   mpParmObjectiveExpression = assertParameter("ObjectiveExpression", CCopasiParameter::Type::EXPRESSION, std::string(""));
   mpParmMaximize = assertParameter("Maximize", CCopasiParameter::Type::BOOL, false);
   mpParmRandomizeStartValues = assertParameter("Randomize Start Values", CCopasiParameter::Type::BOOL, false);
@@ -370,6 +370,7 @@ bool COptProblem::initializeSubtaskBeforeOutput()
         {
           mpSubTask->setMathContainer(mpContainer);
           mpSubTask->setCallBack(mProcessReport);
+
           return mpSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
         }
     }
@@ -1060,7 +1061,7 @@ size_t COptProblem::getOptConstraintSize() const
   return mpGrpConstraints->size();
 }
 
-COptItem & COptProblem::addOptConstraint(const CCommonName & objectCN)
+COptItem & COptProblem::addOptConstraint(const CRegisteredCommonName & objectCN)
 {
   CDataModel * pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
@@ -1084,7 +1085,7 @@ COptItem & COptProblem::getOptItem(const size_t & index)
 size_t COptProblem::getOptItemSize() const
 {return mpGrpItems->size();}
 
-COptItem & COptProblem::addOptItem(const CCommonName & objectCN)
+COptItem & COptProblem::addOptItem(const CRegisteredCommonName & objectCN)
 {
   CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
@@ -1155,10 +1156,8 @@ const std::string COptProblem::getObjectiveFunction()
   return *mpParmObjectiveExpression;
 }
 
-CCommonName COptProblem::setSubtaskType(const CTaskEnum::Task & subtaskType)
+CRegisteredCommonName COptProblem::setSubtaskType(const CTaskEnum::Task & subtaskType)
 {
-  CCommonName SubTaskCN;
-
   CDataVectorN< CCopasiTask > * pTasks =
     dynamic_cast< CDataVectorN< CCopasiTask > *>(getObjectAncestor("Vector"));
 
@@ -1175,23 +1174,23 @@ CCommonName COptProblem::setSubtaskType(const CTaskEnum::Task & subtaskType)
       for (; it != end; ++it)
         if (it->getType() == subtaskType)
           {
-            SubTaskCN = it->getStringCN();
-            break;
+            if (mpParmSubTaskCN != NULL)
+              {
+                *mpParmSubTaskCN = it->getCN();
+                mpSubTaskSrc = getSubTask();
+              }
+
+            return it->getCN();
           }
     }
 
-  if (mpParmSubTaskCN != NULL)
-    {
-      *mpParmSubTaskCN = SubTaskCN;
-    }
-
-  return SubTaskCN;
+  return CRegisteredCommonName();
 }
 
 CTaskEnum::Task COptProblem::getSubtaskType() const
 {
-  if (mpSubTask != NULL)
-    return mpSubTask->getType();
+  if (mpSubTaskSrc != NULL)
+    return mpSubTaskSrc->getType();
 
   return CTaskEnum::Task::UnsetTask;
 }

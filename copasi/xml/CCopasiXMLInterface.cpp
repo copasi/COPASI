@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -463,7 +463,7 @@ bool CCopasiXMLInterface::saveParameter(const CCopasiParameter & parameter)
         break;
 
       case CCopasiParameter::Type::CN:
-        Attributes.add("value", parameter.getValue< CCommonName >());
+        Attributes.add("value", parameter.getValue< CRegisteredCommonName >());
 
         if (!saveElement("Parameter", Attributes)) success = false;
 

@@ -71,7 +71,7 @@ bool CEventAssignment::applyData(const CData & data, CUndoData::CChangeSet & cha
 
   if (data.isSetProperty(CData::OBJECT_REFERENCE_CN))
     {
-      setTargetCN(data.getProperty(CData::OBJECT_REFERENCE_CN).toString());
+      setTargetCN(CRegisteredCommonName(data.getProperty(CData::OBJECT_REFERENCE_CN).toString(), this));
       compileModel = true;
     }
 
@@ -211,7 +211,7 @@ CIssue CEventAssignment::compile(CObjectInterface::ContainerList listOfContainer
   if (pEntity != nullptr)
     {
       mpTarget = pEntity->getValueObject();
-      setTargetCN(mpTarget->getStringCN());
+      setTargetCN(mpTarget->getCN());
     }
   else
     pEntity =  dynamic_cast< const CModelEntity * >(mpTarget->getObjectParent());
@@ -259,7 +259,7 @@ const CDataObject * CEventAssignment::getTargetObject() const
   return mpTarget;
 }
 
-bool CEventAssignment::setTargetCN(const std::string & targetCN)
+bool CEventAssignment::setTargetCN(const CRegisteredCommonName & targetCN)
 {
   if (targetCN != getTargetCN() &&
       mpModel != nullptr)
@@ -267,11 +267,11 @@ bool CEventAssignment::setTargetCN(const std::string & targetCN)
       mpModel->setCompileFlag(true);
     }
 
-  mTargetCN = CRegisteredCommonName(targetCN, this);
+  mTargetCN = targetCN;
   return setObjectName(targetCN);
 }
 
-const std::string & CEventAssignment::getTargetCN() const
+const CRegisteredCommonName & CEventAssignment::getTargetCN() const
 {
   //if (mTargetCN != getObjectName())
   //  setObjectName(mTargetCN);

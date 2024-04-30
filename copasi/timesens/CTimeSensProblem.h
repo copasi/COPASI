@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -60,13 +60,13 @@ public:
 
   size_t getNumParameters();
 
-  void addParameterCN(const CCommonName& cn);
+  void addParameterCN(const CRegisteredCommonName& cn);
 
-  CCommonName getParameterCN(size_t index);
+  CRegisteredCommonName getParameterCN(size_t index);
 
   void removeParameterCN(size_t index);
 
-  void removeParameterCN(const CCommonName& cn);
+  void removeParameterCN(const std::string & cn);
 
   void clearParameterCNs();
 
@@ -76,13 +76,13 @@ public:
 
   size_t getNumTargets();
 
-  void addTargetCN(const CCommonName& cn);
+  void addTargetCN(const CRegisteredCommonName& cn);
 
-  CCommonName getTargetCN(size_t index);
+  CRegisteredCommonName getTargetCN(size_t index);
 
   void removeTargetCN(size_t index);
 
-  void removeTargetCN(const CCommonName& cn);
+  void removeTargetCN(const std::string & cn);
 
   void clearTargetCNs();
 
@@ -142,7 +142,6 @@ protected:
 
   //the targets for the sensitivities
   CCopasiParameterGroup * mpTargetsGroup;
-
 };
 
 #endif // COPASI_CTimeSensProblem

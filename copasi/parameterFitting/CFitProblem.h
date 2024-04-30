@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -284,17 +284,17 @@ public:
 
   /**
    * Add a fit item to the problem.
-   * @param const CCommonName & objectCN
+   * @param const CRegisteredCommonName & objectCN
    * @return CFitItem optItemAdded
    */
-  CFitItem & addFitItem(const CCommonName & objectCN);
+  CFitItem & addFitItem(const CRegisteredCommonName & objectCN);
 
   /**
    * Add a fit constraint to the problem.
-   * @param const CCommonName & objectCN
+   * @param const CRegisteredCommonName & objectCN
    * @return CFitConstraint optItemAdded
    */
-  CFitConstraint & addFitConstraint(const CCommonName & objectCN);
+  CFitConstraint & addFitConstraint(const CRegisteredCommonName & objectCN);
 
   /**
    * Set the solution.
@@ -396,12 +396,12 @@ private:
   /**
    * A pointer to the value of the CCopasiParameter holding the Steady-State CN
    */
-  std::string * mpParmSteadyStateCN;
+  CRegisteredCommonName * mpParmSteadyStateCN;
 
   /**
    * A pointer to the value of the CCopasiParameter holding the Time Course CN
    */
-  std::string * mpParmTimeCourseCN;
+  CRegisteredCommonName * mpParmTimeCourseCN;
 
   /**
    * The experiment set to which the model is fitted.
@@ -607,7 +607,7 @@ private:
 
   CMatrix< C_FLOAT64 > mJacTimeSens;
 
-  std::string* mpParmTimeSensCN;
+  CRegisteredCommonName * mpParmTimeSensCN;
 };
 
 #endif  // COPASI_CFitProblem

@@ -288,11 +288,11 @@ void CFitProblem::initializeParameter()
   mpParmObjectiveExpression = NULL;
   *mpParmMaximize = false;
 
-  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::Type::CN, CCommonName(""));
-  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::Type::CN, CCommonName(""));
+  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::Type::CN, CRegisteredCommonName());
+  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::Type::CN, CRegisteredCommonName());
   mpCreateParameterSets = assertParameter("Create Parameter Sets", CCopasiParameter::Type::BOOL, false);
   mpUseTimeSens = assertParameter("Use Time Sens", CCopasiParameter::Type::BOOL, false);
-  mpParmTimeSensCN = assertParameter("Time-Sens", CCopasiParameter::Type::CN, CCommonName(""));;
+  mpParmTimeSensCN = assertParameter("Time-Sens", CCopasiParameter::Type::CN, CRegisteredCommonName());;
 
   assertGroup("Experiment Set");
 
@@ -333,9 +333,9 @@ bool CFitProblem::elevateChildren()
 
   // Due to a naming conflict the following parameters may have been overwritten during
   // the load of a CopasiML file we replace them with default values if that was the case.
-  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::Type::CN, CCommonName(""));
-  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::Type::CN, CCommonName(""));
-  mpParmTimeSensCN = assertParameter("Time-Sens", CCopasiParameter::Type::CN, CCommonName(""));
+  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::Type::CN, CRegisteredCommonName());
+  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::Type::CN, CRegisteredCommonName());
+  mpParmTimeSensCN = assertParameter("Time-Sens", CCopasiParameter::Type::CN, CRegisteredCommonName());
 
   CDataVectorN< CCopasiTask > * pTasks = NULL;
   CDataModel* pDataModel = getObjectDataModel();
@@ -355,7 +355,7 @@ bool CFitProblem::elevateChildren()
         for (i = 0; i < imax; i++)
           if (pTasks->operator[](i).getType() == CTaskEnum::Task::steadyState)
             {
-              *mpParmSteadyStateCN = pTasks->operator[](i).getStringCN();
+              *mpParmSteadyStateCN = pTasks->operator[](i).getCN();
               break;
             }
 
@@ -364,7 +364,7 @@ bool CFitProblem::elevateChildren()
         for (i = 0; i < imax; i++)
           if (pTasks->operator[](i).getType() == CTaskEnum::Task::timeCourse)
             {
-              *mpParmTimeCourseCN = pTasks->operator[](i).getStringCN();
+              *mpParmTimeCourseCN = pTasks->operator[](i).getCN();
               break;
             }
     }
@@ -918,7 +918,7 @@ bool CFitProblem::checkFunctionalConstraints()
   return true;
 }
 
-CFitItem & CFitProblem::addFitItem(const CCommonName & objectCN)
+CFitItem & CFitProblem::addFitItem(const CRegisteredCommonName & objectCN)
 {
   CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
@@ -931,7 +931,7 @@ CFitItem & CFitProblem::addFitItem(const CCommonName & objectCN)
   return *pItem;
 }
 
-CFitConstraint & CFitProblem::addFitConstraint(const CCommonName & objectCN)
+CFitConstraint & CFitProblem::addFitConstraint(const CRegisteredCommonName & objectCN)
 {
   CDataModel * pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);

@@ -1365,7 +1365,7 @@ const CObjectInterface * CMathContainer::getObject(const CCommonName & cn) const
 
       if (cn.getPrimary() != ModelCN.getPrimary())
         {
-          pObject = CObjectInterface::GetObjectFromCN(ListOfContainer, ModelCN + "," + cn);
+          pObject = CObjectInterface::GetObjectFromCN(ListOfContainer, CCommonName(ModelCN + "," + cn));
         }
       else
         {

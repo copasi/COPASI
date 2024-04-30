@@ -501,7 +501,7 @@ void CQEventWidget1::slotSelectObject()
   if (pObject == NULL)
     return;
 
-  if (mAssignments[mCurrentTarget].setTargetCN(pObject->getStringCN()))
+  if (mAssignments[mCurrentTarget].setTargetCN(pObject->getCN()))
     {
       // If the target key change was successful we need to update the label.
       mpLBTarget->item((int) mCurrentTarget)->setText(FROM_UTF8(pObject->getObjectDisplayName()));

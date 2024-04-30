@@ -36,6 +36,9 @@ public:
   static CObjectInterface * GetObjectFromCN(const ContainerList & listOfContainer,
       const CCommonName & objName);
 
+  static CObjectInterface * GetObjectFromCN(const ContainerList & listOfContainer,
+      const CRegisteredCommonName & objName);
+
   /**
    * Constructor
    */

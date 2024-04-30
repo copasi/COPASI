@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,6 +18,8 @@
 #include "ParameterHandler.h"
 
 #include "CXMLParser.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/utilities/CCopasiParameter.h"
 
 /**
@@ -47,12 +49,11 @@ CXMLHandler * ParameterHandler::processStart(const XML_Char * pszName,
   std::string sValue("");
   bool UnmappedKey = false;
 
-  void * pValue = NULL;
   CCopasiParameter::Type type;
 
   C_FLOAT64 d;
   C_INT32 i;
-  size_t ui;
+  unsigned C_INT32 ui;
   bool b;
 
   switch (mCurrentElement.first)
@@ -69,26 +70,28 @@ CXMLHandler * ParameterHandler::processStart(const XML_Char * pszName,
             sValue = cValue;
           }
 
+        mpData->pCurrentParameter = new CCopasiParameter(name, type);
+
         switch (type)
           {
             case CCopasiParameter::Type::DOUBLE:
               d = CCopasiXMLInterface::DBL(sValue.c_str());
-              pValue = &d;
+              mpData->pCurrentParameter->setValue(d);
               break;
 
             case CCopasiParameter::Type::UDOUBLE:
               d = CCopasiXMLInterface::DBL(sValue.c_str());
-              pValue = &d;
+              mpData->pCurrentParameter->setValue(d);
               break;
 
             case CCopasiParameter::Type::INT:
               i = strToInt(sValue.c_str());
-              pValue = &i;
+              mpData->pCurrentParameter->setValue(i);
               break;
 
             case CCopasiParameter::Type::UINT:
               ui = strToUnsignedInt(sValue.c_str());
-              pValue = &ui;
+              mpData->pCurrentParameter->setValue(ui);
               break;
 
             case CCopasiParameter::Type::BOOL:
@@ -102,19 +105,17 @@ CXMLHandler * ParameterHandler::processStart(const XML_Char * pszName,
                   b = true;
                 }
 
-              pValue = &b;
+              mpData->pCurrentParameter->setValue(b);
               break;
 
             case CCopasiParameter::Type::STRING:
             case CCopasiParameter::Type::FILE:
-            case CCopasiParameter::Type::CN:
-              pValue = &sValue;
+              mpData->pCurrentParameter->setValue(sValue);
               break;
 
             case CCopasiParameter::Type::KEY:
             {
-              if (sValue != "" &&
-                  CKeyFactory::isValidKey(sValue))
+              if (sValue != "" && CKeyFactory::isValidKey(sValue))
                 {
                   CDataObject * pObject = mpData->mKeyMap.get(sValue);
 
@@ -128,19 +129,20 @@ CXMLHandler * ParameterHandler::processStart(const XML_Char * pszName,
                     }
                 }
 
-              pValue = &sValue;
+              mpData->pCurrentParameter->setValue(sValue);
             }
             break;
+
+            case CCopasiParameter::Type::CN:
+              mpData->pCurrentParameter->setValue(CRegisteredCommonName(sValue, mpData->pDataModel));
+              break;
 
             default:
               if (cType != NULL) // otherwise missing attribute will have been logged
                 CCopasiMessage(CCopasiMessage::ERROR, MCXML + 16, name.c_str(), cType, mpParser->getCurrentLineNumber());
 
-              pValue = NULL;
               break;
           }
-
-        mpData->pCurrentParameter = new CCopasiParameter(name, type, pValue);
 
         if (UnmappedKey)
           {

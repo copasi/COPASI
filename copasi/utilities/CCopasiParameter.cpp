@@ -385,13 +385,12 @@ bool CCopasiParameter::isValidValue(const std::string & value) const
 
   if (mType != CCopasiParameter::Type::STRING &&
       mType != CCopasiParameter::Type::FILE &&
-      mType != CCopasiParameter::Type::CN &&
       mType != CCopasiParameter::Type::EXPRESSION) return false;
 
   return inValidValues(value);
 }
 
-bool CCopasiParameter::isValidValue(const CCommonName & /* value */) const
+bool CCopasiParameter::isValidValue(const CRegisteredCommonName & /* value */) const
 {
   if (mType != CCopasiParameter::Type::CN) return false;
 
@@ -578,6 +577,12 @@ void CCopasiParameter::assignValue(const void * pValue)
     }
 
   assignValue(mType, mpValue, pValue);
+
+  CDataContainer * pParent = getObjectParent();
+
+  if (pParent != nullptr
+      && dynamic_cast< CCopasiParameterGroup * >(pParent) != nullptr)
+    static_cast< CCopasiParameterGroup * >(pParent)->signalChanged(this);
 }
 
 void CCopasiParameter::assignValidValues(const void * pValidValues)

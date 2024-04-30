@@ -77,7 +77,7 @@ void CAnalyticsProblem::initializeParameter()
   mpFlagLimitOutConvergence = assertParameter("DelayOutputUntilConvergence", CCopasiParameter::Type::BOOL, false);
   mpConvergenceOutTolerance = assertParameter("OutputConvergenceTolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)1E-6);
   mpTriggerExpression = assertParameter("TriggerExpression", CCopasiParameter::Type::EXPRESSION, std::string(""));
-  mpSingleObjectCN = assertParameter("SingleVariable", CCopasiParameter::Type::CN, CRegisteredCommonName(""));
+  mpSingleObjectCN = assertParameter("SingleVariable", CCopasiParameter::Type::CN, CRegisteredCommonName());
   setOutputEvent(false);
 }
 

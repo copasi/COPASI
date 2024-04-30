@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -99,22 +99,22 @@ bool CTimeSensProblem::elevateChildren()
 
 //**********************************
 
-CCommonName CTimeSensProblem::getParameterCN(size_t index)
+CRegisteredCommonName CTimeSensProblem::getParameterCN(size_t index)
 {
   if (mpParametersGroup == NULL)
-    return CCommonName();
+    return CRegisteredCommonName();
 
   size_t numParameters = getNumParameters();
 
   if (index >= numParameters)
-    return CCommonName();
+    return CRegisteredCommonName();
 
   CCopasiParameter* current = mpParametersGroup->getParameter(index);
 
   if (current == NULL)
-    return CCommonName();
+    return CRegisteredCommonName();
 
-  return current->getValue<std::string>();
+  return current->getValue< CRegisteredCommonName >();
 }
 
 void CTimeSensProblem::removeParameterCN(size_t index)
@@ -129,7 +129,7 @@ void CTimeSensProblem::removeParameterCN(size_t index)
   mpParametersGroup->removeParameter(index);
 }
 
-void CTimeSensProblem::removeParameterCN(const CCommonName & cn)
+void CTimeSensProblem::removeParameterCN(const std::string & cn)
 {
   if (mpParametersGroup == NULL)
     return;
@@ -138,10 +138,9 @@ void CTimeSensProblem::removeParameterCN(const CCommonName & cn)
 
   for (int i = numParameters - 1; i >= 0 ; --i)
     {
-      CCommonName currentCn = getParameterCN(i);
       CCopasiParameter* current = mpParametersGroup->getParameter(i);
 
-      if (current && current->getValue<std::string>() == cn)
+      if (current && current->getValue< CRegisteredCommonName >() == cn)
         mpParametersGroup->removeParameter(i);
     }
 }
@@ -154,14 +153,13 @@ size_t CTimeSensProblem::getNumParameters()
   return mpParametersGroup->size();
 }
 
-void CTimeSensProblem::addParameterCN(const CCommonName & cn)
+void CTimeSensProblem::addParameterCN(const CRegisteredCommonName & cn)
 {
   if (mpParametersGroup == NULL)
     return;
 
   mpParametersGroup->addParameter("ParameterCN", CCopasiParameter::Type::CN, cn);
 }
-
 
 void CTimeSensProblem::clearParameterCNs()
 {
@@ -173,22 +171,22 @@ void CTimeSensProblem::clearParameterCNs()
 
 //***********************************
 
-CCommonName CTimeSensProblem::getTargetCN(size_t index)
+CRegisteredCommonName CTimeSensProblem::getTargetCN(size_t index)
 {
   if (mpTargetsGroup == NULL)
-    return CCommonName();
+    return CRegisteredCommonName();
 
   size_t numTargets = getNumTargets();
 
   if (index >= numTargets)
-    return CCommonName();
+    return CRegisteredCommonName();
 
   CCopasiParameter* current = mpTargetsGroup->getParameter(index);
 
   if (current == NULL)
-    return CCommonName();
+    return CRegisteredCommonName();
 
-  return current->getValue<std::string>();
+  return current->getValue< CRegisteredCommonName> ();
 }
 
 void CTimeSensProblem::removeTargetCN(size_t index)
@@ -203,7 +201,7 @@ void CTimeSensProblem::removeTargetCN(size_t index)
   mpTargetsGroup->removeParameter(index);
 }
 
-void CTimeSensProblem::removeTargetCN(const CCommonName & cn)
+void CTimeSensProblem::removeTargetCN(const std::string & cn)
 {
   if (mpTargetsGroup == NULL)
     return;
@@ -212,10 +210,9 @@ void CTimeSensProblem::removeTargetCN(const CCommonName & cn)
 
   for (int i = numTargets - 1; i >= 0 ; --i)
     {
-      CCommonName currentCn = getTargetCN(i);
       CCopasiParameter* current = mpTargetsGroup->getParameter(i);
 
-      if (current && current->getValue<std::string>() == cn)
+      if (current && current->getValue< CRegisteredCommonName >() == cn)
         mpTargetsGroup->removeParameter(i);
     }
 }
@@ -228,14 +225,13 @@ size_t CTimeSensProblem::getNumTargets()
   return mpTargetsGroup->size();
 }
 
-void CTimeSensProblem::addTargetCN(const CCommonName & cn)
+void CTimeSensProblem::addTargetCN(const CRegisteredCommonName & cn)
 {
   if (mpTargetsGroup == NULL)
     return;
 
   mpTargetsGroup->addParameter("TargetCN", CCopasiParameter::Type::CN, cn);
 }
-
 
 void CTimeSensProblem::clearTargetCNs()
 {
@@ -326,4 +322,3 @@ const CDataArray * CTimeSensProblem::getScaledTargetsResultAnnotated() const
 {
   return mpScaledTargetsResultAnnotation;
 }
-

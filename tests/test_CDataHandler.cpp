@@ -30,9 +30,9 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi][datahandler]")
     CCopasiMessage::clearDeque();
 
     CDataHandler inv_handler;
-    inv_handler.addDuringName( {"CN=Root,Model=The Brusselator", dm}); // this should not work and give a warning during compile, and stop it
+    inv_handler.addDuringName({"CN=Root,Model=The Brusselator", dm});  // this should not work and give a warning during compile, and stop it
 
-    REQUIRE(inv_handler.compile( {dm}) == false);
+    REQUIRE(inv_handler.compile({dm}) == false);
 
     auto text = CCopasiMessage::getAllMessageText();
     REQUIRE(text.find("CN=Root,Model=The Brusselator") != std::string::npos);
@@ -40,13 +40,13 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi][datahandler]")
     CCopasiMessage::clearDeque();
 
     CDataHandler handler;
-    handler.addDuringName(dm->registeredCN("CN=Root,Model=The Brusselator,Reference=Time"));
-    handler.addDuringName( {"CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[X],Reference=Concentration", dm});
-    handler.addDuringName( {"CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[Y],Reference=Concentration", dm});
-    handler.addDuringName( {"CN=Root,Model=The Brusselator,Vector=Reactions[R1],Reference=Flux", dm});
-    handler.addDuringName( {"CN=Root,Model=The Brusselator,Vector=Reactions[R2],Reference=Flux", dm});
-    handler.addDuringName( {"CN=Root,Model=The Brusselator,Vector=Reactions[R3],Reference=Flux", dm});
-    handler.addDuringName( {"CN=Root,Model=The Brusselator,Vector=Reactions[R4],Reference=Flux", dm});
+    handler.addDuringName({"CN=Root,Model=The Brusselator,Reference=Time", dm});
+    handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[X],Reference=Concentration", dm});
+    handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[Y],Reference=Concentration", dm});
+    handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Reactions[R1],Reference=Flux", dm});
+    handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Reactions[R2],Reference=Flux", dm});
+    handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Reactions[R3],Reference=Flux", dm});
+    handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Reactions[R4],Reference=Flux", dm});
 
     auto& task = dynamic_cast<CTrajectoryTask&>((*dm->getTaskList())["Time-Course"]);
     REQUIRE(task.initialize(CCopasiTask::OUTPUT_DURING, &handler, NULL) == true);
@@ -80,10 +80,10 @@ TEST_CASE("ensure that data handler with function evaluations can be compiled", 
   REQUIRE(dm->loadModel(getTestFile("test-data/brusselator.cps"), NULL) == true);
 
   CDataHandler handler;
-  handler.addDuringName( {"CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations", dm});
-  handler.addDuringName( {"CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value", dm});
+  handler.addDuringName({"CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations", dm});
+  handler.addDuringName({"CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value", dm});
 
-  REQUIRE(handler.compile( {dm}) == true);
+  REQUIRE(handler.compile({dm}) == true);
 
   // lets try whether it works now
 
@@ -94,16 +94,16 @@ TEST_CASE("ensure that data handler with function evaluations can be compiled", 
 
   {
     auto & item = problem->addOptItem(
-    {"CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=InitialConcentration"});
-    item.setLowerBound( {"0.0001"});
-    item.setUpperBound( {"100"});
+    {"CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=InitialConcentration", dm});
+    item.setLowerBound(0.0001);
+    item.setUpperBound(100);
     item.setStartValue(0.5);
   }
 
   {
-    auto & item = problem->addOptItem( {"CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[B],Reference=InitialConcentration"});
-    item.setLowerBound( {"0.0001"});
-    item.setUpperBound( {"100"});
+    auto & item = problem->addOptItem({"CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[B],Reference=InitialConcentration", dm});
+    item.setLowerBound(0.0001);
+    item.setUpperBound(100);
     item.setStartValue(3);
   }
 

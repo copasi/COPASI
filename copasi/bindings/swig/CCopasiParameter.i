@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -194,14 +194,14 @@
     return self->setValue(v);
   }
 
-  bool setCNValue(const CCommonName& v)
+  bool setCNValue(const CRegisteredCommonName & v)
   {
     return self->setValue(v);
   }
   
-  bool setCNValue(const std::string& v)
+  bool setCNValue(const std::string & v)
   {
-    return self->setValue(CCommonName(v));
+    return self->setValue(CRegisteredCommonName(v));
   }
 
   bool setKeyValue(const std::string& v)
