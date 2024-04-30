@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,8 +12,6 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
-
-
 
 #include "../common/local_common.cpp"
 #include "copasi/plot/CPlotSpecification.h"
@@ -41,7 +39,6 @@
 
 // Now we specify the definitions
 // for the type determination methods
-
 
 int GetType_CModelParameter(CModelParameter* pPointer)
 {
@@ -526,8 +523,6 @@ int GetType_ConstCDataObject(const CDataObject* pPointer)
   return GetType_CDataObject(const_cast<CDataObject*>(pPointer));
 }
 
-
-
 // Determine type for CCopasiParameter
 int GetType_CCopasiParameter(CCopasiParameter* pPointer)
 {
@@ -917,5 +912,5 @@ int GetType_COptTask(COptTask* pPointer)
 
 void initCopasi()
 {
-  CRootContainer::init(0, NULL, false);
+  CRootContainer::init(0, NULL, true);
 }

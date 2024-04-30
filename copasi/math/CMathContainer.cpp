@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1340,9 +1340,9 @@ void CMathContainer::pushAllTransientValues()
 }
 
 // virtual
-CCommonName CMathContainer::getCN() const
+CCommonName CMathContainer::getCNProtected() const
 {
-  return mpModel->getCN();
+  return mpModel->getStringCN();
 }
 
 // virtual
@@ -1361,11 +1361,11 @@ const CObjectInterface * CMathContainer::getObject(const CCommonName & cn) const
       ListOfContainer.push_back(mpModel);
       ListOfContainer.push_back(mpModel->getObjectDataModel());
 
-      CCommonName ModelCN = mpModel->getCN();
+      CCommonName ModelCN = mpModel->getStringCN();
 
       if (cn.getPrimary() != ModelCN.getPrimary())
         {
-          pObject = CObjectInterface::GetObjectFromCN(ListOfContainer, ModelCN + "," + cn);
+          pObject = CObjectInterface::GetObjectFromCN(ListOfContainer, CCommonName(ModelCN + "," + cn));
         }
       else
         {
@@ -2577,7 +2577,6 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
       switch (pObject->getValueType())
         {
           case CMath::ValueType::Value:
-
             switch (pObject->getSimulationType())
               {
                 case CMath::SimulationType::Fixed:
@@ -2593,8 +2592,16 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
                   if (pObject->getEntityType() != CMath::EntityType::Species)
                     {
-                      mInitialStateValueExtensive.insert(pObject);
-                      mInitialStateValueIntensive.insert(pObject);
+                      if (pObject->getPrerequisites().size() > 0)
+                        {
+                          RequestedExtensive.insert(pObject);
+                          RequestedIntensive.insert(pObject);
+                        }
+                      else
+                        {
+                          mInitialStateValueExtensive.insert(pObject);
+                          mInitialStateValueIntensive.insert(pObject);
+                        }
                     }
                   else if (pObject->isIntensiveProperty())
                     {
@@ -2649,6 +2656,20 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
                 case CMath::SimulationType::__SIZE:
                   break;
+              }
+
+            break;
+
+          case CMath::ValueType::Rate:
+            if (pObject->getPrerequisites().size() > 0)
+              {
+                RequestedExtensive.insert(pObject);
+                RequestedIntensive.insert(pObject);
+              }
+            else
+              {
+                mInitialStateValueExtensive.insert(pObject);
+                mInitialStateValueIntensive.insert(pObject);
               }
 
             break;

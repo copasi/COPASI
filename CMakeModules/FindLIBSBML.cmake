@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -33,10 +33,20 @@ endif()
 
 message (VERBOSE "Looking for ${LIBSBML_LIBRARY_NAME}")
 
-find_package(${LIBSBML_LIBRARY_NAME} CONFIG QUIET)
 
 string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
 set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
+
+find_package(${LIBSBML_LIBRARY_NAME} CONFIG QUIET
+  PATHS ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/lib64/cmake
+        ${CONAN_LIB_DIRS_LIBSBML}/cmake
+        CMAKE_FIND_ROOT_PATH_BOTH
+        NO_DEFAULT_PATH)
+
+if (NOT ${LIBSBML_LIBRARY_NAME}_FOUND)        
+  find_package(${LIBSBML_LIBRARY_NAME} CONFIG QUIET)
+endif()
 
 if (NOT ${LIBSBML_LIBRARY_NAME}_FOUND)
   find_package(${LIBSBML_LIBRARY_NAME} CONFIG QUIET
@@ -48,6 +58,7 @@ if (NOT ${LIBSBML_LIBRARY_NAME}_FOUND)
           ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
           ${${_PROJECT_DEPENDENCY_DIR}}/lib64/cmake
           ${CONAN_LIB_DIRS_LIBSBML}/cmake
+          CMAKE_FIND_ROOT_PATH_BOTH
   )
 endif()
 
@@ -111,6 +122,7 @@ find_path(LIBSBML_INCLUDE_DIR sbml/SBase.h
           /opt/csw/include   # Blastwave
           /opt/include
           /usr/freeware/include
+          CMAKE_FIND_ROOT_PATH_BOTH
     NO_DEFAULT_PATH)
 
 if (NOT LIBSBML_INCLUDE_DIR)

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -152,37 +152,13 @@ const CEnumAnnotation< CTaskEnum::Task, CSensProblem::SubTaskType > CSensProblem
   CTaskEnum::Task::crosssection //  CrossSection
 });
 
-const std::string CSensProblem::SubTaskName[] =
-{
-  "Evaluation",
-  "Steady State",
-  "Time Series",
-  "Parameter Estimation",
-  "Optimization",
-  "Cross Section",
-  //"Lyapunov Exponents",
-  ""
-};
-
-const char * CSensProblem::XMLSubTask[] =
-{
-  "Evaluation",
-  "SteadyState",
-  "TimeSeries",
-  "ParameterEstimation",
-  "Optimization",
-  "CrossSection",
-  //"LyapunovExponents",
-  NULL
-};
-
 //static
 void CSensProblem::createParametersInGroup(CCopasiParameterGroup * pg)
 {
   if (!pg)
     return;
 
-  pg->assertParameter("SingleObject", CCopasiParameter::Type::CN, CCommonName(""));
+  pg->assertParameter("SingleObject", CCopasiParameter::Type::CN, CRegisteredCommonName());
   pg->assertParameter("ObjectListType", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
 }
 
@@ -680,7 +656,7 @@ std::ostream & operator<<(std::ostream & os, const CSensProblem & o)
      << std::endl;
 
   os << "Calculation to perform: "
-     << CSensProblem::SubTaskName[o.getSubTaskType()] << std::endl
+     << CTaskEnum::TaskName[CSensProblem::SubTaskTypeToTask[o.getSubTaskType()]] << std::endl
      << std::endl;
 
   size_t i, imax = o.getNumberOfVariables();
@@ -704,7 +680,7 @@ void CSensProblem::initDebugProblem()
 {
   CSensItem item;
 
-  item.setSingleObjectCN(this->getCN());
+  item.setSingleObjectCN(this->getStringCN());
   addVariables(item);
 
   item.setListType(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -111,7 +111,7 @@ CData CModelParameter::toData() const
     {
       Data.addProperty(CData::OBJECT_NAME, mCN);
       Data.addProperty(CData::OBJECT_UUID, getUuid().str());
-      Data.addProperty(CData::OBJECT_PARENT_CN, getSet() != NULL ? getSet()->getCN() : CCommonName());
+      Data.addProperty(CData::OBJECT_PARENT_CN, getSet() != NULL ? getSet()->getStringCN() : CCommonName());
       Data.addProperty(CData::OBJECT_TYPE, TypeNames[mType]);
       Data.addProperty(CData::OBJECT_INDEX, getIndex());
     }
@@ -150,7 +150,7 @@ bool CModelParameter::applyData(const CData & data, CUndoData::CChangeSet & chan
 
   if (data.isSetProperty(CData::OBJECT_NAME))
     {
-      setCN(data.getProperty(CData::OBJECT_NAME).toString());
+      setCN(CRegisteredCommonName(data.getProperty(CData::OBJECT_NAME).toString(), getSet()));
     }
 
   if (mpParent != NULL && data.isSetProperty(CData::OBJECT_INDEX))
@@ -195,7 +195,7 @@ void CModelParameter::createUndoData(CUndoData & undoData,
       undoData.addProperty(CData::OBJECT_NAME, oldData.getProperty(CData::OBJECT_NAME), mCN);
       // The UUID of an object must never be changed.
       // undoData.addProperty(CData::OBJECT_UUID, oldData.getProperty(CData::OBJECT_UUID), getUuid().str());
-      undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), getSet() != NULL ? getSet()->getCN() : CCommonName());
+      undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), getSet() != NULL ? getSet()->getStringCN() : CCommonName());
       undoData.addProperty(CData::OBJECT_TYPE, oldData.getProperty(CData::OBJECT_TYPE), TypeNames[mType]);
       undoData.addProperty(CData::OBJECT_INDEX, oldData.getProperty(CData::OBJECT_INDEX), getIndex());
     }
@@ -382,7 +382,7 @@ CValidatedUnit CModelParameter::getUnit(const CCore::Framework & framework) cons
 }
 
 // virtual
-void CModelParameter::setCN(const CCommonName & cn)
+void CModelParameter::setCN(const CRegisteredCommonName & cn)
 {
   mCN = cn;
 }
@@ -797,7 +797,7 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
                     assert(ModelValue.size() == 1);
 
                     const CModelValue * pModelValue = dynamic_cast< const CModelValue * >(ModelValue[0]);
-                    static_cast< CModelParameterReactionParameter * >(this)->setGlobalQuantityCN(pModelValue != NULL ? pModelValue->getInitialValueReference()->getCN() : CDataString("not found").getCN());
+                    static_cast< CModelParameterReactionParameter * >(this)->setGlobalQuantityCN(pModelValue != NULL ? pModelValue->getInitialValueReference()->getStringCN() : CDataString("not found").getStringCN());
                   }
               }
 
@@ -1007,13 +1007,13 @@ void CModelParameterSpecies::compile()
 }
 
 // virtual
-void CModelParameterSpecies::setCN(const CCommonName & cn)
+void CModelParameterSpecies::setCN(const CRegisteredCommonName & cn)
 {
   CModelParameter::setCN(cn);
 
   // Determine the CN for the compartment.
   // "CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A]"
-  mCompartmentCN = mCN.substr(0, mCN.find(",Vector=Metabolites"));
+  mCompartmentCN = CRegisteredCommonName(mCN.substr(0, mCN.find(",Vector=Metabolites")), getSet());
 }
 
 // virtual

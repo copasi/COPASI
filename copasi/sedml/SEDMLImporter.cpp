@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1340,7 +1340,7 @@ void SEDMLImporter::importTask(
         if (code == SEDML_SIMULATION_STEADYSTATE)
           {
             pProblem->setSubtask(CTaskEnum::Task::steadyState);
-            pProblem->setOutputInSubtask(false);
+            pProblem->setOutputSpecification(CScanProblem::OutputType::subTaskDuring);
           }
         else if (code == SEDML_SIMULATION_ONESTEP || code == SEDML_SIMULATION_UNIFORMTIMECOURSE)
           {
@@ -1460,7 +1460,7 @@ SEDMLImporter::convertSimpleFunctionalRange(SedFunctionalRange * frange, SedRepe
 
 bool applyValueToParameterSet(CModelParameterSet & set, CDataObject * obj, double newValue)
 {
-  const CModelParameter * pParameter = set.getModelParameter(obj->getCN());
+  const CModelParameter * pParameter = set.getModelParameter(obj->getStringCN());
 
   if (pParameter != NULL)
     {
@@ -1530,7 +1530,6 @@ CModel * SEDMLImporter::importModel(const std::string & modelId)
                    "Currently, only local files are supported. Please resolve the remote source '%s' first before importing the SED-ML document.",
                    modelSource.c_str()
                   );
-
 
   SedModel * referencedModel = mpSEDMLDocument->getModel(modelSource);
 

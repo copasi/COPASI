@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -50,7 +50,7 @@
   {
     std::vector<CRegisteredCommonName>* items = self->getBodyAddr();
     if (items == NULL || index < 0 || (int)items->size() <= index) 
-      return CRegisteredCommonName("");
+      return CRegisteredCommonName();
     return items->at(index);
   }
 
@@ -72,7 +72,7 @@
   {
     std::vector<CRegisteredCommonName>* items = self->getHeaderAddr();
     if (items == NULL || index < 0 || (int)items->size() <= index) 
-      return CRegisteredCommonName("");
+      return CRegisteredCommonName();
     return items->at(index);
   }
 
@@ -94,7 +94,7 @@
   {
     std::vector<CRegisteredCommonName>* items = self->getFooterAddr();
     if (items == NULL || index < 0 || (int)items->size() <= index) 
-      return CRegisteredCommonName("");
+      return CRegisteredCommonName();
     return items->at(index);
   }
   
@@ -117,7 +117,7 @@
   {
     std::vector<CRegisteredCommonName>* items = self->getTableAddr();
     if (items == NULL || index < 0 || (int)items->size() <= index) 
-      return CRegisteredCommonName("");
+      return CRegisteredCommonName();
     return items->at(index);
   }
 
@@ -131,22 +131,22 @@
 
   void addHeaderItem(std::string item)
   {
-    self->getHeaderAddr()->push_back(CRegisteredCommonName(item));
+    self->getHeaderAddr()->push_back(CRegisteredCommonName(item, self->getObjectDataModel()));
   }
   
   void addFooterItem(std::string item)
   {
-    self->getFooterAddr()->push_back(CRegisteredCommonName(item));
+    self->getFooterAddr()->push_back(CRegisteredCommonName(item, self->getObjectDataModel()));
   }
   
   void addBodyItem(std::string item)
   {
-    self->getBodyAddr()->push_back(CRegisteredCommonName(item));
+    self->getBodyAddr()->push_back(CRegisteredCommonName(item, self->getObjectDataModel()));
   }
   
   void addTableItem(std::string item)
   {
-    self->getTableAddr()->push_back(CRegisteredCommonName(item));
+    self->getTableAddr()->push_back(CRegisteredCommonName(item, self->getObjectDataModel()));
   }
   
 

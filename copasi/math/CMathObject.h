@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,12 +68,6 @@ public:
    */
   void relocate(CMathContainer * pContainer,
                 const std::vector< CMath::sRelocate > & relocations);
-
-  /**
-   * Retrieve the CN of the object
-   * @return CCommonName
-   */
-  virtual CCommonName getCN() const override;
 
   /**
    * Retrieve the display name of the object
@@ -296,6 +290,13 @@ public:
    * @param CMath::DelayData & Delays
    */
   void appendDelays(CMath::DelayData & Delays) const;
+
+protected:
+  /**
+   * Retrieve the CN of the object
+   * @return CCommonName
+   */
+  virtual CCommonName getCNProtected() const override;
 
 private:
   void calculateExpression();

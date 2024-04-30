@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,7 +37,7 @@
 #include "copasi/utilities/CCopasiParameter.h"
 
 #include "copasi/undo/CData.h"
-#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CDataObjectReference.h"
@@ -390,7 +390,7 @@ bool CCopasiParameter::isValidValue(const std::string & value) const
   return inValidValues(value);
 }
 
-bool CCopasiParameter::isValidValue(const CCommonName & /* value */) const
+bool CCopasiParameter::isValidValue(const CRegisteredCommonName & /* value */) const
 {
   if (mType != CCopasiParameter::Type::CN) return false;
 
@@ -504,7 +504,7 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
 }
 
 // virtual
-CCommonName CCopasiParameter::getCN() const
+CCommonName CCopasiParameter::getCNProtected() const
 {
   CDataContainer * pObjectParent = getObjectParent();
   CCopasiParameterGroup * pGroup;
@@ -512,10 +512,10 @@ CCommonName CCopasiParameter::getCN() const
   if (pObjectParent != NULL &&
       (pGroup = dynamic_cast< CCopasiParameterGroup * >(pObjectParent)) != NULL)
     {
-      return pObjectParent->getCN() + "," + CCommonName::escape(getObjectType()) + "=" + CCommonName::escape(pGroup->getUniqueParameterName(this));
+      return pObjectParent->getStringCN() + "," + CCommonName::escape(getObjectType()) + "=" + CCommonName::escape(pGroup->getUniqueParameterName(this));
     }
 
-  return CDataObject::getCN();
+  return CDataObject::getCNProtected();
 }
 
 void * CCopasiParameter::getValuePointer() const
@@ -577,6 +577,12 @@ void CCopasiParameter::assignValue(const void * pValue)
     }
 
   assignValue(mType, mpValue, pValue);
+
+  CDataContainer * pParent = getObjectParent();
+
+  if (pParent != nullptr
+      && dynamic_cast< CCopasiParameterGroup * >(pParent) != nullptr)
+    static_cast< CCopasiParameterGroup * >(pParent)->signalChanged(this);
 }
 
 void CCopasiParameter::assignValidValues(const void * pValidValues)

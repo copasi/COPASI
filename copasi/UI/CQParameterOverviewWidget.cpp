@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -79,7 +79,7 @@ CQParameterOverviewWidget::~CQParameterOverviewWidget()
 }
 
 // virtual
-bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
 
   if (objectType == ListViews::ObjectType::MODEL && action == ListViews::DELETE)
@@ -306,7 +306,7 @@ void CQParameterOverviewWidget::buildSelectionList()
 {
   // We build the selection for the global parameters for kinetic constants.
   const CModelParameterGroup *pGlobalQuantities =
-    static_cast< const CModelParameterGroup * >(mpParameterSetCopy->getModelParameter(CDataString("Initial Global Quantities").getCN()));
+    static_cast< const CModelParameterGroup * >(mpParameterSetCopy->getModelParameter(CDataString("Initial Global Quantities").getStringCN()));
 
   CModelParameterGroup::const_iterator it = pGlobalQuantities->begin();
   CModelParameterGroup::const_iterator end = pGlobalQuantities->end();
@@ -446,7 +446,7 @@ void CQParameterOverviewWidget::slotBtnCopy()
 
   CUndoData UndoData(CUndoData::Type::INSERT, pNew->toData());
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", pNew->getCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", pNew->getStringCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", pNew->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
@@ -582,7 +582,7 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
 
       CUndoData UndoData(CUndoData::Type::INSERT, pNew->toData());
       ListViews::addUndoMetaData(this, UndoData);
-      UndoData.addMetaDataProperty("Widget Object CN (after)", pNew->getCN());
+      UndoData.addMetaDataProperty("Widget Object CN (after)", pNew->getStringCN());
       UndoData.addMetaDataProperty("Widget Object Name (after)", pNew->getObjectName());
 
       slotNotifyChanges(mpDataModel->recordData(UndoData));

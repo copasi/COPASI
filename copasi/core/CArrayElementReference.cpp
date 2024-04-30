@@ -1,4 +1,4 @@
-// Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -48,7 +48,7 @@ bool CArrayElementReference::applyData(const CData & data, CUndoData::CChangeSet
   if (data.isSetProperty(CData::ARRAY_ELEMENT_INDEX))
     {
       const std::vector< CDataValue > & Index = data.getProperty(CData::ARRAY_ELEMENT_INDEX).toDataValues();
-      mIndex.resize(Index.size());
+      mIndex.clear();
 
       std::vector< CDataValue >::const_iterator it = Index.begin();
       std::vector< CDataValue >::const_iterator end = Index.end();
@@ -56,7 +56,7 @@ bool CArrayElementReference::applyData(const CData & data, CUndoData::CChangeSet
 
       for (; it != end; ++it, ++itIndex)
         {
-          *itIndex = it->toString();
+          mIndex.push_back(CRegisteredCommonName(it->toString(), this));
         }
     }
 
@@ -69,10 +69,13 @@ CArrayElementReference::CArrayElementReference(const std::vector< std::string > 
   : CDataObject("Value", pParent, "ElementReference",
                 flag | CDataObject::Reference | CDataObject::NonUniqueName | CDataObject::ValueDbl),
     //    mpReference(NULL),
-    mIndex(index.begin(), index.end()),
+    mIndex(),
     mIgnoreUpdateObjectName(false)
 {
   assert(pParent != NULL);
+
+  for (const std::string & CN : index)
+    mIndex.push_back(CRegisteredCommonName(CN, this));
 
   updateObjectName();
 }
@@ -155,13 +158,13 @@ std::string CArrayElementReference::getObjectDisplayName() const
     return "Array" + getObjectName();
 }
 
-CCommonName CArrayElementReference::getCN() const
+CCommonName CArrayElementReference::getCNProtected() const
 {
   const_cast< CArrayElementReference * >(this)->updateObjectName();
 
   if (getObjectParent())
     {
-      return getObjectParent()->getCN() + getObjectName();
+      return getObjectParent()->getStringCN() + getObjectName();
     }
   else
     return "Array" + getObjectName();

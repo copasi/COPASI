@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -364,7 +364,7 @@ bool CQTimeSensWidget::loadTaskProtected()
         }
 
       QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
-      pItem->setData(Qt::UserRole, FROM_UTF8(pObject->getCN()));
+      pItem->setData(Qt::UserRole, FROM_UTF8(pObject->getStringCN()));
       mpListParameters->addItem(pItem);
     }
 
@@ -393,7 +393,7 @@ bool CQTimeSensWidget::loadTaskProtected()
         }
 
       QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
-      pItem->setData(Qt::UserRole, FROM_UTF8(pObject->getCN()));
+      pItem->setData(Qt::UserRole, FROM_UTF8(pObject->getStringCN()));
       mpListTargets->addItem(pItem);
     }
 
@@ -511,7 +511,7 @@ void CQTimeSensWidget::updateIntervals()
 }
 
 // virtual
-bool CQTimeSensWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQTimeSensWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   TaskWidget::updateProtected(objectType, action, cn);
 
@@ -572,10 +572,10 @@ void CQTimeSensWidget::slotAddParameter()
         continue;
 
       QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(item->getObjectDisplayName()));
-      pItem->setData(Qt::UserRole, FROM_UTF8(item->getCN()));
+      pItem->setData(Qt::UserRole, FROM_UTF8(item->getStringCN()));
       mpListParameters->addItem(pItem);
 
-      mpTimeSensProblem->addParameterCN(item->getCN());
+      mpTimeSensProblem->addParameterCN(item->getStringCN());
     }
 }
 
@@ -613,10 +613,10 @@ void CQTimeSensWidget::slotAddTarget()
         continue;
 
       QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(item->getObjectDisplayName()));
-      pItem->setData(Qt::UserRole, FROM_UTF8(item->getCN()));
+      pItem->setData(Qt::UserRole, FROM_UTF8(item->getStringCN()));
       mpListTargets->addItem(pItem);
 
-      mpTimeSensProblem->addTargetCN(item->getCN());
+      mpTimeSensProblem->addTargetCN(item->getStringCN());
     }
 }
 

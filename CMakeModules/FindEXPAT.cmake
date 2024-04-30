@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -34,6 +34,7 @@ find_path(EXPAT_INCLUDE_DIR expat.h
     PATHS $ENV{EXPAT_DIR}/include
             $ENV{EXPAT_DIR}
             ${${_PROJECT_DEPENDENCY_DIR}}/include
+            CMAKE_FIND_ROOT_PATH_BOTH
             NO_DEFAULT_PATH)
 
 if (NOT EXPAT_INCLUDE_DIR)
@@ -48,6 +49,7 @@ find_path(EXPAT_INCLUDE_DIR expat.h
           /opt/csw/include   # Blastwave
           /opt/include
           /usr/freeware/include
+          CMAKE_FIND_ROOT_PATH_BOTH
           NO_DEFAULT_PATH)
 endif ()
 
@@ -64,6 +66,7 @@ find_library(EXPAT_LIBRARY
           ${${_PROJECT_DEPENDENCY_DIR}}/lib64
           ${${_PROJECT_DEPENDENCY_DIR}}/lib
           ${${_PROJECT_DEPENDENCY_DIR}}
+          CMAKE_FIND_ROOT_PATH_BOTH
           NO_DEFAULT_PATH)
 
 if (NOT EXPAT_LIBRARY)
@@ -81,6 +84,7 @@ find_library(EXPAT_LIBRARY
           /opt/csw/lib   # Blastwave
           /opt/lib
           /usr/freeware/lib64
+          CMAKE_FIND_ROOT_PATH_BOTH
           NO_DEFAULT_PATH)
 endif()
 

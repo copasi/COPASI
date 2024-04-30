@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -10,6 +10,8 @@ LIBSBML_CPP_NAMESPACE_BEGIN
 class Model;
 class UnitDefinition;
 LIBSBML_CPP_NAMESPACE_END
+
+#include <sbml/UnitKind.h>
 
 #include "copasi/core/CFlags.h"
 

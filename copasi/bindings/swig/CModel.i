@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -32,6 +32,7 @@
 
 #include <copasi/utilities/CUnitComponent.h>
 #include <copasi/utilities/CUnit.h>
+#include <copasi/utilities/CUnitDefinition.h>
 #include <copasi/utilities/CValidatedUnit.h>
 #include <copasi/utilities/CUnitValidator.h>
 #include "copasi/math/CMathObject.h"
@@ -150,6 +151,7 @@ typedef std::map< std::string, double > StringDoubleMap;
 
 %include <copasi/utilities/CUnitComponent.h>
 %include <copasi/utilities/CUnit.h>
+%include <copasi/utilities/CUnitDefinition.h>
 %include <copasi/utilities/CValidatedUnit.h>
 %include <copasi/utilities/CUnitValidator.h>
 %include "copasi/math/CMathObject.h"
@@ -310,12 +312,12 @@ typedef std::map< std::string, double > StringDoubleMap;
      return $self->compileIfNecessary(NULL);
    }
    
-   void updateInitialValues(const std::vector<CDataObject*>& v)
+   void updateInitialValues(const std::vector<CDataObject*>& v, bool refreshParameterSet=true)
    {
      std::set<const CDataObject*> changedObjects;
      changedObjects.insert(v.begin(),v.end());
 		 
-		 $self->updateInitialValues(changedObjects);
+		 $self->updateInitialValues(changedObjects, refreshParameterSet);
    };
    
    CModelValue* getModelValue(const std::string& name)

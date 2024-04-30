@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -14,6 +14,9 @@
 
 #include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CDataObject.h"
+#include "copasi/core/CDataContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/core/CRootContainer.h"
 
 using std::string;
 
@@ -44,20 +47,38 @@ void CRegisteredCommonName::Rename::operator()(const std::string & oldCN,
   return (*mMethod)(oldCN, newCN);
 }
 
-CRegisteredCommonName::CRegisteredCommonName() :
-  CCommonName()
+CRegisteredCommonName::CRegisteredCommonName()
+  : CCommonName()
+  , mpDataModel(nullptr)
 {
   mSet.insert(this);
 }
 
-CRegisteredCommonName::CRegisteredCommonName(const std::string & name) :
-  CCommonName(name)
+#ifndef DEPRECATE_CONSTRUCTOR
+CRegisteredCommonName::CRegisteredCommonName(const std::string & name)
+  : CCommonName(name)
+  , mpDataModel(nullptr)
+{
+  const CDataObject * pObject = CObjectInterface::DataObject(CRootContainer::getRoot()->getObject(name));
+
+  if (pObject != nullptr)
+    mpDataModel = pObject->getObjectDataModel();
+
+  mSet.insert(this);
+}
+#endif // DEPRECATE_CONSTRUCTOR
+
+CRegisteredCommonName::CRegisteredCommonName(const std::string & name, const CObjectInterface * pObject)
+  : CCommonName(name)
+  , mpDataModel(CObjectInterface::DataObject(pObject) != nullptr
+                ? CObjectInterface::DataObject(pObject)->getObjectDataModel() : nullptr)
 {
   mSet.insert(this);
 }
 
-CRegisteredCommonName::CRegisteredCommonName(const CRegisteredCommonName & src) :
-  CCommonName(src)
+CRegisteredCommonName::CRegisteredCommonName(const CRegisteredCommonName & src)
+  : CCommonName(src)
+  , mpDataModel(src.mpDataModel)
 {
   mSet.insert(this);
 }
@@ -67,8 +88,13 @@ CRegisteredCommonName::~CRegisteredCommonName()
   mSet.erase(this);
 }
 
+const CDataModel * CRegisteredCommonName::getDataModel() const
+{
+  return mpDataModel;
+}
+
 // static
-void CRegisteredCommonName::handle(const std::string & oldCN, const std::string & newCN)
+void CRegisteredCommonName::handle(const std::string & oldCN, const CRegisteredCommonName & newCN)
 {
   if (mEnabled)
     {
@@ -88,8 +114,10 @@ void CRegisteredCommonName::handle(const std::string & oldCN, const std::string 
 
           // We need to make sure that we not change partial names
           if ((currentSize == oldSize ||
-               (currentSize > oldSize && (**it)[oldSize] == ',')) &&
-              oldCN.compare(0, oldSize, **it, 0, oldSize) == 0)
+               (currentSize > oldSize && (**it)[oldSize] == ','))
+              && (newCN.mpDataModel == nullptr
+                  || newCN.mpDataModel == (*it)->mpDataModel)
+              && oldCN.compare(0, oldSize, **it, 0, oldSize) == 0)
             {
               Renamed.insert(std::make_pair(**it, *it));
               (*it)->replace(0, oldSize, newCN);

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -123,7 +123,6 @@ void CReportDefinition::createUndoData(CUndoData & undoData,
   undoData.addProperty(CData::REPORT_IS_TABLE, oldData.getProperty(CData::REPORT_IS_TABLE), mTable);
   undoData.addProperty(CData::REPORT_SHOW_TITLE, oldData.getProperty(CData::REPORT_SHOW_TITLE), mbTitle);
   undoData.addProperty(CData::REPORT_PRECISION, oldData.getProperty(CData::REPORT_PRECISION), mPrecision);
-
 
   return;
 }
@@ -279,7 +278,7 @@ void CReportDefinition::addTableElement(const CDataObject * pObject)
   if ((mHeaderVector.size() == 0) && (mBodyVector.size() == 0))
     isFirst = true;
 
-  CCommonName SeparatorCN(mSeparator.getCN());
+  CRegisteredCommonName SeparatorCN(mSeparator.getCN());
   CCommonName Title;
 
   if (!pObject) return;
@@ -294,32 +293,23 @@ void CReportDefinition::addTableElement(const CDataObject * pObject)
     }
 
   // Determine column title
-  if (pObject->getObjectParent())
+  if (mbTitle)
     {
-      if (pObject->getObjectType() == "Separator")
+      if (pObject->getObjectParent())
         {
-          Title = "Separator=" + pObject->getCN().getObjectName();
+          if (pObject->getObjectType() == "Separator")
+            mHeaderVector.push_back(CRegisteredCommonName("Separator=" + pObject->getStringCN().getObjectName(), pObject));
+          else
+            mHeaderVector.push_back(CRegisteredCommonName(pObject->getStringCN() + ",Property=DisplayName", pObject));
         }
       else
-        {
-          Title = pObject->getCN() + ",Property=DisplayName";
-        }
+        mHeaderVector.push_back(CRegisteredCommonName(CDataString(pObject->getObjectName()).getStringCN(), pObject));
     }
-  else
-    Title =
-      CDataString(pObject->getObjectName()).getCN();
-
-  if (mbTitle)
-    mHeaderVector.push_back(Title);
 
   if (pObject->getObjectType() == "Separator")
-    {
-      mBodyVector.push_back("Separator=" + pObject->getCN().getObjectName());
-    }
+    mBodyVector.push_back(CRegisteredCommonName("Separator=" + pObject->getStringCN().getObjectName(), pObject));
   else
-    {
-      mBodyVector.push_back(pObject->getCN());
-    }
+    mBodyVector.push_back(CRegisteredCommonName(pObject->getStringCN(), pObject));
 
   return;
 }

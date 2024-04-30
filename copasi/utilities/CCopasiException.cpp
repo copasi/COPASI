@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,15 +32,23 @@
 #include "copasi/copasi.h"
 #include "CCopasiException.h"
 
-CCopasiException::CCopasiException(void):
-  mMessage()
+CCopasiException::CCopasiException(void)
+  : std::exception()
+  , mMessage()
 {}
 
-CCopasiException::CCopasiException(const CCopasiMessage & message):
-  mMessage(message)
+CCopasiException::CCopasiException(const CCopasiMessage & message)
+  : std::exception()
+  , mMessage(message)
 {}
 
 CCopasiException::~CCopasiException(void) {}
 
 const CCopasiMessage & CCopasiException::getMessage() const
 {return mMessage;}
+
+const char*
+CCopasiException::what() const throw()
+{
+  return mMessage.getText().c_str();
+}

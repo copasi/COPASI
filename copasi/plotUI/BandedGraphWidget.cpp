@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -264,9 +264,9 @@ BandedGraphWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original 
   C_FLOAT64 lineWidth = (C_FLOAT64) mpSpinBoxWidth->value();
   std::string color = TO_UTF8(mpBoxColor->currentText());
 
-  CCommonName xName = mpObjectX ? mpObjectX->getCN() : CCommonName("");
-  CCommonName yName1 = mpObjectYone ? mpObjectYone->getCN() : CCommonName("");
-  CCommonName yName2 = mpObjectYtwo ? mpObjectYtwo->getCN() : (mpObjectYone ? mpObjectYone->getCN() : CCommonName(""));
+  CRegisteredCommonName xName = mpObjectX ? mpObjectX->getCN() : CRegisteredCommonName();
+  CRegisteredCommonName yName1 = mpObjectYone ? mpObjectYone->getCN() : CRegisteredCommonName();
+  CRegisteredCommonName yName2 = mpObjectYtwo ? mpObjectYtwo->getCN() : (mpObjectYone ? mpObjectYone->getCN() : CRegisteredCommonName());
 
   C_INT32 Activity = 0;
 

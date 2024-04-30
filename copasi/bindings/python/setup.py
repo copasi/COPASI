@@ -22,6 +22,10 @@ def prepend_variables(args, variables):
   return args
 
 def get_python_include():
+  temp = os.getenv('PYTHON_INCLUDE_DIR')
+  if temp:
+    return temp
+
   path = sysconfig.get_paths()['include']
   if exists(path): 
     return path
@@ -70,10 +74,10 @@ def get_dir_if_exists(variable, default):
   return value
 
 global SRC_DIR
-SRC_DIR = get_dir_if_exists('COPASI_SRC_DIR', abspath('.'))
+SRC_DIR = get_dir_if_exists('COPASI_SRC_DIR', './copasi_source')
 global DEP_DIR
-DEP_DIR = get_dir_if_exists('COPASI_DEP_DIR', '../copasi-dependencies/')
-DEP_SRC_DIR = get_dir_if_exists('COPASI_DEP_SRC', '../copasi-dependencies/')
+DEP_DIR = get_dir_if_exists('COPASI_DEP_DIR', './copasi-dependencies/')
+DEP_SRC_DIR = get_dir_if_exists('COPASI_DEP_SRC', './copasi-dependencies/')
 DEP_DIR32 = get_dir_if_exists('COPASI_DEP_DIR_32', '../win_copasi_dependencies_32/')
 DEP_DIR64 = get_dir_if_exists('COPASI_DEP_DIR_64', '../win_copasi_dependencies_64/')
 
@@ -232,7 +236,8 @@ class CMakeBuild(build_ext):
                              '-DBUILD_zlib=ON',
                              '-DBUILD_archive=OFF',
                              '-DBUILD_NativeJIT=' + enable_jit,
-                             '-DBUILD_clapack=' + enable_clapack
+                             '-DBUILD_clapack=' + enable_clapack,
+                             '-DBUILD_uuid=ON'
                            ]
                          )
                self.spawn(['cmake', '--build', '.'] + build_args)
@@ -246,6 +251,15 @@ class CMakeBuild(build_ext):
             '-DPYTHON_INCLUDE_DIR=' + get_python_include(),
             '-DENABLE_JIT=' + enable_jit
         ]
+
+        if 'emscripten' in suffix:
+          copasi_args += [                                      
+            '-DDATAVALUE_NEEDS_SIZE_T_MEMBERS=1' ,
+            '-DDISABLE_STACK_PROTECTOR=ON', 
+            '-DF2C_INTEGER=int',
+            '-DF2C_LOGICAL=int',
+            '-DDISABLE_CORE_OBJECT_LIBRARY=ON',
+          ]
 
         copasi_args = prepend_variables(copasi_args, [
           'SWIG_DIR',
@@ -273,6 +287,14 @@ class CMakeBuild(build_ext):
         elif is_win:
           if DEP_DIR64:
             cmake_args.append('-DCOPASI_DEPENDENCY_DIR=' + DEP_DIR64)
+
+        if enable_clapack:
+          # we need to replace the headers in the dependencydir/include
+          for header in ['f2c.h', 'blaswrap.h']:
+            src = os.path.join(SRC_DIR, 'copasi', 'lapack', header)
+            dst = os.path.join(DEP_DIR, 'include', header)
+            if exists(src) and exists(dst):
+              shutil.copyfile(src, dst)
 
         os.chdir(build_temp)
         self.spawn(['cmake', SRC_DIR] + cmake_args)

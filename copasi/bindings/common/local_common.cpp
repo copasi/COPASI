@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -71,6 +71,8 @@
 #include "copasi/steadystate/CMCAProblem.h"
 #include "copasi/steadystate/CMCATask.h"
 #include <copasi/utilities/CopasiTime.h>
+#include <copasi/utilities/CUnitDefinition.h>
+#include <copasi/utilities/CSlider.h>
 
 typedef CDataVector<CEvent> EventVector;
 typedef CDataVectorN<CEvent> EventVectorN;
@@ -112,6 +114,9 @@ typedef CDataVector<CEvaluationTree> CEvaluationTreeVector;
 
 typedef CMatrixInterface<CMatrix<C_FLOAT64> > AnnotatedFloatMatrix;
 typedef CDataVectorN<CDataModel> CDataModelVectorN;
+
+typedef CDataVector<CUnitDefinition> CUnitDefinitionVector;
+typedef CDataVectorN<CUnitDefinition> CUnitDefinitionVectorN;
 
 #include "copasi/commandline/COptions.h"
 #include "copasi/core/CRootContainer.h"

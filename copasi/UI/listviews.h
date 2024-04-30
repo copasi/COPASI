@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -244,7 +244,7 @@ public:
   void updateMIRIAMResourceContents();
   void commit();
 
-  void switchToOtherWidget(const WidgetType & id, const CCommonName & cn, const int & tabIndex = -1);
+  void switchToOtherWidget(const WidgetType & id, const CRegisteredCommonName & cn, const int & tabIndex = -1);
 
   WidgetType getCurrentItemId();
   CopasiWidget* findWidgetFromId(const WidgetType & id) const;
@@ -261,7 +261,7 @@ public:
   void clearCurrentWidget();
 
   const CCommonName & getCurrentItemCN() const;
-  const CCommonName & getCurrentItemRegisteredCN() const;
+  const CRegisteredCommonName & getCurrentItemRegisteredCN() const;
 
   //TODO these are convenience methods used by SliderDialog. They should be
   //replaced by something more generic.
@@ -284,7 +284,7 @@ public:
 
 signals:
   void signalFolderChanged(const QModelIndex & index);
-  void signalNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  void signalNotify(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn);
   void signalResetCache();
 
 private:
@@ -296,16 +296,16 @@ public slots:
   void slotFolderChanged(const QModelIndex & index);
 
 private slots:
-  bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn);
+  bool slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn);
   void slotSort(const QModelIndex & index1, const QModelIndex & index2);
-  void slotSwitchWidget(ListViews::WidgetType widgetType, const CCommonName & cn, int tabIndex);
+  void slotSwitchWidget(ListViews::WidgetType widgetType, const CRegisteredCommonName & cn, int tabIndex);
 
 private:
-  bool updateCurrentWidget(ObjectType objectType, Action action, const CCommonName & cn);
+  bool updateCurrentWidget(ObjectType objectType, Action action, const CRegisteredCommonName & cn);
 
   void notifyChildWidgets(ObjectType objectType,
                           Action action,
-                          const CCommonName & cn);
+                          const CRegisteredCommonName & cn);
 
   DataModelGUI * mpDataModelGUI;
   CDataModel * mpDataModel;

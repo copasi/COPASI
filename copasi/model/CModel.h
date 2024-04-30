@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -508,9 +508,10 @@ public:
   /**
    * Update all initial values.
    * @param const CCore::Framework & framework
+   * @param refreshParameterSet (default: true) if true the active parameter set is refreshed
    * @return bool success
    */
-  bool updateInitialValues(const CCore::Framework & framework);
+  bool updateInitialValues(const CCore::Framework & framework, bool refreshParameterSet = true);
 
   /**
    * Copy the current state value to the initial state
@@ -1030,11 +1031,12 @@ public:
    * number is updated by default unless itself is in the list of changed objects. In
    * that case the initial concentration is updated.
    *
-   * @param std::set< const CDataObject * > & changedObjects
-
+   * @param changedObjects object references that were changed
+   * @param refreshParameterSet (default: true) if true the active parameter set is refreshed
+   *
    * @see buildInitialRefreshSequence(std::set< const CDataObject * > & changedObjects)
    */
-  void updateInitialValues(std::set< const CDataObject * > & changedObjects);
+  void updateInitialValues(std::set< const CDataObject * > & changedObjects, bool refreshParameterSet = true);
 
   /**
    * Builds and executes the the update sequence used to calculate all initial
@@ -1042,11 +1044,12 @@ public:
    * number is updated by default unless itself is in the list of changed objects. In
    * that case the initial concentration is updated.
    *
-   * @param std::set< const CDataObject * > & changedObjects
-
+   * @param changedObject the object reference that was changed
+   * @param refreshParameterSet (default: true) if true the active parameter set is refreshed
+   *
    * @see updateInitialValues(std::set< const CDataObject * > & changedObjects)
    */
-  void updateInitialValues(const CDataObject * changedObject);
+  void updateInitialValues(const CDataObject * changedObject, bool refreshParameterSet = true);
 
   /**
    * Initialize a vector of individual absolute tolerances

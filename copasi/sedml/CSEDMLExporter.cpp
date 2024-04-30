@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -287,7 +287,7 @@ bool CSEDMLExporter::exportNthScanItem(CScanProblem * pProblem,
           std::vector< std::string > elems;
           ResultParser::split(values, std::string(",; |\n\t\r"), elems);
 
-for (std::string & number : elems)
+          for (std::string & number : elems)
             {
               range->addValue(ResultParser::saveToDouble(number));
             }
@@ -303,7 +303,7 @@ for (std::string & number : elems)
           range->setType(log ? "log" : "linear");
         }
 
-      const CRegisteredCommonName & cn = (current->getParameter("Object")->getValue< CCommonName >());
+      const CRegisteredCommonName & cn = (current->getParameter("Object")->getValue< CRegisteredCommonName >());
       const CDataObject * pObject = static_cast< const CDataObject * >(mpDataModel->getObject(cn));
 
       if (pObject == NULL)
@@ -597,7 +597,7 @@ CSEDMLExporter::exportAlgorithm(SedAlgorithm * alg,
         break;
     }
 
-for (const auto & entry : SEDMLUtils::PARAMETER_KISAO_MAP)
+  for (const auto & entry : SEDMLUtils::PARAMETER_KISAO_MAP)
     {
       const CCopasiParameter * pParameter = pMethod->getParameter(entry.second);
 
@@ -757,7 +757,7 @@ CSEDMLExporter::getParameterValueAsString(const CCopasiParameter * pParameter)
         break;
 
       case CCopasiParameter::Type::BOOL:
-        str << pParameter->getValue< bool >() ? "true" : "false";
+        str << (pParameter->getValue< bool >() ? "true" : "false");
         break;
 
       case CCopasiParameter::Type::STRING:
@@ -798,7 +798,7 @@ CSEDMLExporter::exportReport(const CReportDefinition * def)
     {
       CRegisteredCommonName & current = body[i];
 
-      if (current == def->getSeparator().getCN())
+      if (current == def->getSeparator().getStringCN())
         continue;
 
       const CDataObject * object = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(current));
@@ -813,7 +813,7 @@ CSEDMLExporter::exportReport(const CReportDefinition * def)
           CCopasiMessage(CCopasiMessage::WARNING, "SED-ML: Can't export report '%s' variable '%s', as no xpath expression for it could be generated.", name.c_str(), object->getObjectDisplayName().c_str());
         }
 
-      if (object->getCN() == mTimeCN)
+      if (object->getStringCN() == mTimeCN)
         pPDGen = mpCurrentTime;
       else
         pPDGen = createDataGenerator(
@@ -937,7 +937,7 @@ void CSEDMLExporter::exportPlotItem(const CPlotItem * pPlotItem, size_t i, size_
   // first resolve all elements needed
   std::vector< std::pair< const CDataObject *, VariableInfo > > resolvedElements;
 
-for (auto & channel : pPlotItem->getChannels())
+  for (auto & channel : pPlotItem->getChannels())
     {
       const CDataObject * object = CObjectInterface::DataObject(mpDataModel->getObjectFromCN(channel));
 
@@ -1142,7 +1142,7 @@ void CSEDMLExporter::setCurrentTime(std::string & taskId)
     return;
 
   const CDataObject * pTime = static_cast< const CDataObject * >(mpDataModel->getModel()->getObject(CCommonName("Reference=Time")));
-  mTimeCN = pTime->getCN();
+  mTimeCN = pTime->getStringCN();
   auto it = mDataGenerators.find(std::make_pair(taskId, VariableInfo(pTime)));
 
   if (it != mDataGenerators.end())

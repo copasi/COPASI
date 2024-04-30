@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,7 +51,7 @@ CopasiWidget::CopasiWidget(QWidget *parent, const char *name, Qt::WindowFlags f)
   initContext();
 }
 
-bool CopasiWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CopasiWidget::update(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   // Assure that the object still exists
   CObjectInterface::ContainerList List;
@@ -85,7 +85,7 @@ bool CopasiWidget::leave()
   return true;
 }
 
-bool CopasiWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CopasiWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   return false;
 }
@@ -126,7 +126,7 @@ void CopasiWidget::refresh()
   enter(mObjectCN);
 }
 
-bool CopasiWidget::enter(const CCommonName & cn)
+bool CopasiWidget::enter(const CRegisteredCommonName & cn)
 {
   if (mpListView == NULL)
     {
@@ -164,7 +164,7 @@ bool CopasiWidget::enterProtected()
 void CopasiWidget::setFramework(int framework)
 {mFramework = framework;}
 
-bool CopasiWidget::protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CopasiWidget::protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   bool notifyRun = false;
 

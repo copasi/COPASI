@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,22 +34,21 @@
 
 CQReportListItem::CQReportListItem(const std::string & cn, CDataModel * pDataModel):
   QTableWidgetItem(),
-  mCN(cn)
+  mCN(CRegisteredCommonName(cn, pDataModel))
 {
   refreshText(pDataModel);
 }
 
 CQReportListItem::CQReportListItem(const CDataObject * pObject):
   QTableWidgetItem(),
-  mCN("")
+  mCN()
 {
   setObject(pObject);
 }
 
 CQReportListItem::~CQReportListItem() {}
 
-const CCommonName &
-CQReportListItem::getCN() const
+const CRegisteredCommonName & CQReportListItem::getCN() const
 {
   return mCN;
 }

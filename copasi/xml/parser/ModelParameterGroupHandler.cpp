@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,6 +19,7 @@
 #include "CXMLParser.h"
 #include "copasi/utilities/CCopasiMessage.h"
 
+#include "copasi/model/CModel.h"
 #include "copasi/model/CModelParameterGroup.h"
 
 /**
@@ -56,7 +57,7 @@ CXMLHandler * ModelParameterGroupHandler::processStart(const XML_Char * pszName,
 
         {
           CModelParameterGroup * pModelParameterGroup = new CModelParameterGroup(mpData->ModelParameterGroupStack.top(), Type);
-          pModelParameterGroup->setCN(std::string(CN));
+          pModelParameterGroup->setCN(CRegisteredCommonName(CN, mpData->pModel));
           mpData->ModelParameterGroupStack.push(pModelParameterGroup);
         }
         break;

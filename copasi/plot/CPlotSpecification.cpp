@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -213,7 +213,7 @@ CPlotItem* CPlotSpecification::createItem(const std::string & name, CPlotItem::T
 
 bool CPlotSpecification::hasItem(const std::string & name)
 {
-for (auto & item : items)
+  for (auto & item : items)
     if (item.getObjectName() == name)
       return true;
 
@@ -254,7 +254,7 @@ bool CPlotSpecification::has3D() const
 {
   bool bHas3D = false;
 
-for (auto & it : getItems())
+  for (auto & it : getItems())
     {
       auto plotType = it.getType();
 

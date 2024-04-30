@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -53,16 +53,7 @@
 %ignore CCopasiTask::getMethod() const;
 
 // SWIG does not wrap this correctly in JAVA 
-%ignore CCopasiTask::eOutputFlagBase;
-%ignore CCopasiTask::NO_OUTPUT;
-%ignore CCopasiTask::OUTPUT;
-%ignore CCopasiTask::OUTPUT_BEFORE;
-%ignore CCopasiTask::OUTPUT_DURING;
-%ignore CCopasiTask::OUTPUT_AFTER;
-%ignore CCopasiTask::OUTPUT_SE;
-%ignore CCopasiTask::OUTPUT_UI;
-%ignore CCopasiTask::ONLY_TIME_SERIES;
-
+%ignore CCopasiTask::OutputFlagBase;
 #endif // SWIGJAVA || SWIGCSHARP                      
 
 
@@ -85,29 +76,7 @@
 %include "copasi/utilities/CTaskEnum.h"
 %include "copasi/utilities/CCopasiTask.h"
 
-#if (defined SWIGJAVA || defined SWIGCSHARP)                    
-%rename (NO_OUTPUT) CCopasiTask::NO_OUTPUT;
-%rename (OUTPUT_BEFORE) CCopasiTask::OUTPUT_BEFORE;
-%rename (OUTPUT_DURING) CCopasiTask::OUTPUT_DURING;
-%rename (OUTPUT_AFTER) CCopasiTask::OUTPUT_AFTER;
-%rename (OUTPUT) CCopasiTask::OUTPUT;
-%rename (OUTPUT_SE) CCopasiTask::OUTPUT_SE;
-%rename (OUTPUT_UI) CCopasiTask::OUTPUT_UI;
-%rename (ONLY_TIME_SERIES) CCopasiTask::ONLY_TIME_SERIES;
-#endif //SWIGJAVA || SWIGCSHARP                      
-
-
 %extend CCopasiTask{
-  
-  static const unsigned int CCopasiTask::NO_OUTPUT=0;
-  static const unsigned int CCopasiTask::OUTPUT_BEFORE=1;
-  static const unsigned int CCopasiTask::OUTPUT_DURING=2;
-  static const unsigned int CCopasiTask::OUTPUT_AFTER=4;
-  static const unsigned int CCopasiTask::OUTPUT=50;
-  static const unsigned int CCopasiTask::OUTPUT_SE=55;
-  static const unsigned int CCopasiTask::OUTPUT_UI=119;
-  static const unsigned int CCopasiTask::ONLY_TIME_SERIES=71;
-
   virtual bool setCallBack(CProcessReport *pHandler)
   {
     return self->setCallBack(CProcessReportLevel(pHandler));
@@ -137,7 +106,7 @@
       return self->Warning;
     }
   
-    bool initializeRaw(int outputFlags)
+    bool initializeRaw(CCopasiTask::OutputFlag outputFlags)
     {
         bool success;
         CDataModel* pDataModel=self->getObjectDataModel();
@@ -146,7 +115,7 @@
         // Initialize the task
         try
         {
-          success = self->initialize((CCopasiTask::OutputFlag)outputFlags, pDataModel, NULL);
+          success = self->initialize(outputFlags, pDataModel, NULL);
         }
         
         catch (CCopasiException &)
@@ -159,14 +128,14 @@
         return success;
     }
 
-    bool initializeRawWithOutputHandler(int outputFlags, COutputHandler *pHandler)
+    bool initializeRawWithOutputHandler(CCopasiTask::OutputFlag outputFlags, COutputHandler *pHandler)
     {
         bool success;
 
         // Initialize the task
         try
         {
-          success = self->initialize((CCopasiTask::OutputFlag)outputFlags, pHandler, NULL);
+          success = self->initialize(outputFlags, pHandler, NULL);
         }
         
         catch (CCopasiException &)
@@ -179,7 +148,7 @@
         return success;
     }
 
-    bool initialize(int outputFlags)
+    bool initialize(CCopasiTask::OutputFlag outputFlags)
     {
          bool success = true;
         CCopasiMessage::clearDeque();
@@ -189,7 +158,7 @@
         // Initialize the task
         try
         {
-          if (!self->initialize((CCopasiTask::OutputFlag)outputFlags, pDataModel, NULL))
+          if (!self->initialize(outputFlags, pDataModel, NULL))
           {
             throw CCopasiException(CCopasiMessage::peekLastMessage());
           }
@@ -233,7 +202,7 @@
         return success;
     }
 
-    bool processWithOutputFlags(bool useInitialValues, int outputFlags) 
+    bool processWithOutputFlags(bool useInitialValues, CCopasiTask::OutputFlag outputFlags) 
       {
         bool success = true;
         
@@ -247,7 +216,7 @@
         // Initialize the task
         try
         {
-          if (!self->initialize((CCopasiTask::OutputFlag)outputFlags, pDataModel, NULL))
+          if (!self->initialize(outputFlags, pDataModel, NULL))
           {
             throw CCopasiException(CCopasiMessage::peekLastMessage());
           }

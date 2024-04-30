@@ -1,0 +1,10 @@
+{
+   suppress_ilaenv_
+   Memcheck:Cond
+   fun:ilaenv_
+}
+{
+   suppress_s_cmp
+   Memcheck:Cond
+   fun:s_cmp
+}

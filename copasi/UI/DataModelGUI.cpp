@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <cmath>
 
@@ -402,7 +402,7 @@ void  DataModelGUI::loadFunctionDB(const std::string & fileName)
   if (pFunctionDB == NULL) return;
 
   if (pFunctionDB->load(fileName))
-    emit notify(ListViews::ObjectType::FUNCTION, ListViews::DELETE, std::string());
+    emit notify(ListViews::ObjectType::FUNCTION, ListViews::DELETE, CRegisteredCommonName());
 }
 
 void DataModelGUI::saveModelParameterSets(const std::string & fileName)
@@ -414,7 +414,7 @@ void DataModelGUI::loadModelParameterSets(const std::string & fileName)
 {
   if (mpDataModel->loadModelParameterSets(fileName, mpProgressBar))
     {
-      emit notify(ListViews::ObjectType::MODELPARAMETERSET, ListViews::ADD, std::string());
+      emit notify(ListViews::ObjectType::MODELPARAMETERSET, ListViews::ADD, CRegisteredCommonName());
     }
 }
 
@@ -776,7 +776,7 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
 
 //************Model-View Architecture*****************************************
 
-bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   // The GUI is inactive whenever a progress bar exist. We wait with updates
   // until then.
@@ -853,7 +853,7 @@ void DataModelGUI::notifyChanges(const CUndoData::CChangeSet & changes)
                 }
             }
 
-          notify(ObjectType, Action, MappedCN);
+          notify(ObjectType, Action, CRegisteredCommonName(MappedCN, mpDataModel));
         }
 
       std::pair< const CUndoData *, bool > LastExecution = mpDataModel->getUndoStack()->getLastExecution();
@@ -874,7 +874,11 @@ void DataModelGUI::notifyChanges(const CUndoData::CChangeSet & changes)
               CN = MetaData.getProperty("Widget Object CN (before)").toString();
             }
 
-          emit this->signalSwitchWidget(Id, CN, TabIndex);
+          if (CN.find("CN=Root,FunctionDB=FunctionDB") == 0
+              || CN.find("CN=Root,Vector=Units list") == 0)
+            emit this->signalSwitchWidget(Id, CRegisteredCommonName(CN, nullptr), TabIndex);
+          else
+            emit this->signalSwitchWidget(Id, CRegisteredCommonName(CN, mpDataModel), TabIndex);
         }
     }
 }

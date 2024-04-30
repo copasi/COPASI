@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -31,7 +31,7 @@ if (NOT (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY) OR NOT ZLIB_FOUND)
     find_path(ZLIB_INCLUDE_DIR zlib.h zlib/zlib.h
 	    PATHS $ENV{ZLIB_DIR}/include
 	          $ENV{ZLIB_DIR}
-            ${${_PROJECT_DEPENDENCY_DIR}}/include
+              ${${_PROJECT_DEPENDENCY_DIR}}/include
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/include        # Fink
@@ -39,7 +39,8 @@ if (NOT (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY) OR NOT ZLIB_FOUND)
 	          /opt/csw/include   # Blastwave
 	          /opt/include
 	          /usr/freeware/include
-            NO_DEFAULT_PATH)
+              CMAKE_FIND_ROOT_PATH_BOTH
+              NO_DEFAULT_PATH)
 
     if (NOT ZLIB_INCLUDE_DIR)
         find_path(ZLIB_INCLUDE_DIR zlib.h zlib/zlib.h)
@@ -50,8 +51,9 @@ if (NOT (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY) OR NOT ZLIB_FOUND)
 	    PATHS $ENV{ZLIB_DIR}/lib
 	          $ENV{ZLIB_DIR}/lib-dbg
 	          $ENV{ZLIB_DIR}
-            ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
-            ${${_PROJECT_DEPENDENCY_DIR}}
+              ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+              ${${_PROJECT_DEPENDENCY_DIR}}/lib
+              ${${_PROJECT_DEPENDENCY_DIR}}
 	          ~/Library/Frameworks
 	          /Library/Frameworks
 	          /sw/lib        # Fink

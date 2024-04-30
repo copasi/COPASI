@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 // Properties, Inc., University of Heidelberg, and University of 
 // of Connecticut School of Medicine. 
@@ -635,7 +640,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
   			  }
   			  break;
   		  case CCopasiParameter.Type_CN:
-  			  CRegisteredCommonName on=new CRegisteredCommonName(value);
+  			  CRegisteredCommonName on=new CRegisteredCommonName(value, this.mTask.getObjectDataModel());
   			  p.setCNValue(on);
   			  break;
   		  case CCopasiParameter.Type_KEY:

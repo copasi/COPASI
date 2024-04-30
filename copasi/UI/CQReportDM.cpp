@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -232,7 +232,7 @@ bool CQReportDM::removeRows(int position, int rows, const QModelIndex & parent)
       if (mFetched > 0)
         --mFetched;
 
-      std::string deletedKey = pReport->getCN();
+      CRegisteredCommonName deletedKey = pReport->getCN();
       pReportList->remove(pReport);
       emit notifyGUI(ListViews::ObjectType::REPORT, ListViews::DELETE, deletedKey);
     }

@@ -1,17 +1,24 @@
-/* Begin CVS Header
-   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CIndexedPriorityQueue.h,v $
-   $Revision: 1.18 $
-   $Name:  $
-   $Author: shoops $
-   $Date: 2011/03/07 19:34:54 $
-   End CVS Header */
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -155,7 +162,7 @@ public:
   void updateNode(const size_t index, const C_FLOAT64 key);
 
   /**
-   * Overloads the [] operator. Gives the index´th element on the heap
+   * Overloads the [] operator. Gives the indexÂ´th element on the heap
    * @return Returns the key
    */
   C_FLOAT64 operator[](const size_t pos) const
@@ -213,14 +220,14 @@ private:
    * @param pos The current node position
    * @return The left child position
    */
-  size_t leftChild(const size_t pos) const {return 2*pos + 1;}
+  size_t leftChild(const size_t pos) const {return 2 * pos + 1;}
 
   /**
    * Provide the position in the heap of the right child of the current node.
    * @param pos The current node position
    * @return The right child position
    */
-  size_t rightChild(const size_t pos) const {return 2*pos + 2;}
+  size_t rightChild(const size_t pos) const {return 2 * pos + 2;}
 
 private:
   // Members

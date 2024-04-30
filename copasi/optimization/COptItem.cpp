@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,7 +37,7 @@
 #include "copasi/core/CDataContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRegisteredCommonName.h"
-#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/utilities/utility.h"
 
@@ -131,13 +131,13 @@ void * COptItem::getValuePointer() const
 
 void COptItem::initializeParameter()
 {
-  mpParmObjectCN = assertParameter("ObjectCN", CCopasiParameter::Type::CN, CCommonName(""));
-  mpParmLowerBound = assertParameter("LowerBound", CCopasiParameter::Type::CN, CCommonName("1e-06"));
-  mpParmUpperBound = assertParameter("UpperBound", CCopasiParameter::Type::CN, CCommonName("1e+06"));
+  mpParmObjectCN = assertParameter("ObjectCN", CCopasiParameter::Type::CN, CRegisteredCommonName());
+  mpParmLowerBound = assertParameter("LowerBound", CCopasiParameter::Type::CN, CRegisteredCommonName("1e-06", nullptr));
+  mpParmUpperBound = assertParameter("UpperBound", CCopasiParameter::Type::CN, CRegisteredCommonName("1e+06", nullptr));
   mpParmStartValue = assertParameter("StartValue", CCopasiParameter::Type::DOUBLE, NaN);
 }
 
-bool COptItem::setObjectCN(const CCommonName & objectCN)
+bool COptItem::setObjectCN(const CRegisteredCommonName & objectCN)
 {
   const CDataObject * pObject = CObjectInterface::DataObject(getObjectFromCN(objectCN));
 
@@ -154,7 +154,7 @@ bool COptItem::setObjectCN(const CCommonName & objectCN)
 const CObjectInterface * COptItem::getObject() const
 {return mpObject;}
 
-const CCommonName COptItem::getObjectCN() const
+const CRegisteredCommonName & COptItem::getObjectCN() const
 {return *mpParmObjectCN;}
 
 std::string COptItem::getObjectDisplayName() const
@@ -173,7 +173,7 @@ std::string COptItem::getObjectDisplayName() const
   return mpObject->getObjectDisplayName();
 }
 
-bool COptItem::setLowerBound(const CCommonName & lowerBound)
+bool COptItem::setLowerBound(const CRegisteredCommonName & lowerBound)
 {
   if (lowerBound[0] == '-' &&
       lowerBound[lowerBound.length() - 1] == '%' &&
@@ -183,7 +183,7 @@ bool COptItem::setLowerBound(const CCommonName & lowerBound)
       C_FLOAT64 StartValue = getStartValue();
 
       LowerBound << StartValue + fabs(StartValue) * strToDouble(lowerBound.c_str(), NULL) / 100.0;
-      *mpParmLowerBound = LowerBound.str();
+      *mpParmLowerBound =  CRegisteredCommonName(LowerBound.str(), nullptr);
 
       return true;
     }
@@ -195,10 +195,18 @@ bool COptItem::setLowerBound(const CCommonName & lowerBound)
   return compileLowerBound(CDataContainer::EmptyList);
 }
 
-const std::string COptItem::getLowerBound() const
+bool COptItem::setLowerBound(const C_FLOAT64 & lowerBound)
+{
+  std::stringstream LowerBound;
+  LowerBound << lowerBound;
+
+  return setLowerBound(CRegisteredCommonName(LowerBound.str(), nullptr));
+}
+
+const CRegisteredCommonName & COptItem::getLowerBound() const
 {return *mpParmLowerBound;}
 
-bool COptItem::setUpperBound(const CCommonName & upperBound)
+bool COptItem::setUpperBound(const CRegisteredCommonName & upperBound)
 {
   if (upperBound[0] == '+' &&
       upperBound[upperBound.length() - 1] == '%' &&
@@ -208,7 +216,7 @@ bool COptItem::setUpperBound(const CCommonName & upperBound)
       C_FLOAT64 StartValue = getStartValue();
 
       UpperBound << StartValue + fabs(StartValue) * strToDouble(upperBound.c_str(), NULL) / 100.0;
-      *mpParmUpperBound = UpperBound.str();
+      *mpParmUpperBound = CRegisteredCommonName(UpperBound.str(), nullptr);
 
       return true;
     }
@@ -220,7 +228,15 @@ bool COptItem::setUpperBound(const CCommonName & upperBound)
   return compileUpperBound(CDataContainer::EmptyList);
 }
 
-const std::string COptItem::getUpperBound() const
+bool COptItem::setUpperBound(const C_FLOAT64 & upperBound)
+{
+  std::stringstream UpperBound;
+  UpperBound << upperBound;
+
+  return setUpperBound(CRegisteredCommonName(UpperBound.str(), nullptr));
+}
+
+const CRegisteredCommonName & COptItem::getUpperBound() const
 {return *mpParmUpperBound;}
 
 bool COptItem::setStartValue(const C_FLOAT64 & value)

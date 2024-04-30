@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -10,17 +10,18 @@
 
 #include "CQDependencyWidget.h"
 
-#include <copasi/model/CModel.h>
-#include <copasi/model/CModelValue.h>
-#include <copasi/model/CChemEqInterface.h>
+#include "copasi/model/CModel.h"
+#include "copasi/model/CModelValue.h"
+#include "copasi/model/CChemEqInterface.h"
 
-#include <copasi/function/CExpression.h>
+#include "copasi/function/CExpression.h"
 
-#include <copasi/UI/qtUtilities.h>
-#include <copasi/UI/copasiui3window.h>
+#include "copasi/UI/qtUtilities.h"
+#include "copasi/UI/copasiui3window.h"
 
-#include <copasi/core/CRootContainer.h>
-#include <copasi/commandline/CConfigurationFile.h>
+#include "copasi/core/CRootContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/commandline/CConfigurationFile.h"
 
 CQDependencyWidget::CQDependencyWidget(QWidget *parent, const char *name, Qt::WindowFlags f)
   : CopasiWidget(parent, name, f)
@@ -92,7 +93,7 @@ void CQDependencyWidget::updateFromDependencies(std::set< const CDataObject * > 
     {
       const CDataObject *pObject = *it;
       QTableWidgetItem *item = new QTableWidgetItem(FROM_UTF8(pObject->getObjectName()) + ":");
-      item->setData(Qt::UserRole, FROM_UTF8(pObject->getCN()));
+      item->setData(Qt::UserRole, FROM_UTF8(pObject->getStringCN()));
       mpTable->setItem(i, 0, item);
       mpTable->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(getDetailsFor(pObject, elements))));
     }
@@ -226,9 +227,9 @@ CQDependencyWidget::rowDoubleClicked(int row, int)
 
   if (mpListView == NULL)
     {
-      CopasiUI3Window::getMainWindow()->getMainWidget()->switchToOtherWidget(ListViews::WidgetType::NotFound, cn);
+      CopasiUI3Window::getMainWindow()->getMainWidget()->switchToOtherWidget(ListViews::WidgetType::NotFound, CRegisteredCommonName(cn, this->mpDataModel));
       return;
     }
 
-  mpListView->switchToOtherWidget(ListViews::WidgetType::NotFound, cn);
+  mpListView->switchToOtherWidget(ListViews::WidgetType::NotFound, CRegisteredCommonName(cn, this->mpDataModel));
 }

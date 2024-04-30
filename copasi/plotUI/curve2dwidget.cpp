@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -212,8 +212,8 @@ bool Curve2DWidget::SaveToCurveSpec(CPlotItem * curve, const CPlotItem *original
 
   if (mpCheckAfter->isChecked()) Activity += COutputInterface::AFTER;
 
-  CCommonName xName = mpObjectX ? mpObjectX->getCN() : CCommonName("");
-  CCommonName yName = mpObjectY ? mpObjectY->getCN() : CCommonName("");
+  CRegisteredCommonName xName = mpObjectX ? mpObjectX->getCN() : CRegisteredCommonName();
+  CRegisteredCommonName yName = mpObjectY ? mpObjectY->getCN() : CRegisteredCommonName();
 
   bool changed = false;
 

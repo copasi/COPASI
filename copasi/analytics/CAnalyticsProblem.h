@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,6 +17,8 @@
 #define CANALYTICSPROBLEM_H
 
 #include "copasi/trajectory/CTrajectoryProblem.h"
+
+class CRegisteredCommonName;
 
 class CAnalyticsProblem : public CTrajectoryProblem
 {
@@ -269,7 +271,7 @@ private:
    * this member variable is mapped to a CCopasiParameter
    */
   std::string * mpTriggerExpression;
-  std::string * mpSingleObjectCN;
+  CRegisteredCommonName * mpSingleObjectCN;
   bool * mpFlagPositiveDirection;
   C_FLOAT64 * mpThreshold;
 };

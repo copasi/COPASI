@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -160,9 +160,9 @@ public:
 
   /**
    * Set the CN of the object represented by the parameter
-   * @param const CCommonName & cn
+   * @param const CRegisteredCommonName & cn
    */
-  virtual void setCN(const CCommonName & cn);
+  virtual void setCN(const CRegisteredCommonName & cn);
 
   /**
    * Retrieve the CN of the object represented by the parameter
@@ -403,7 +403,9 @@ private:
 
 class CModelParameterSpecies : public CModelParameter
 {
+#ifndef SWIG
   friend CModelParameterCompartment::~CModelParameterCompartment();
+#endif
 
 public:
   /**
@@ -455,9 +457,9 @@ public:
 
   /**
    * Set the CN of the object represented by the parameter
-   * @param const CCommonName & cn
+   * @param const CRegisteredCommonName & cn
    */
-  virtual void setCN(const CCommonName & cn);
+  virtual void setCN(const CRegisteredCommonName & cn);
 
   /**
    * Set the value of the parameter based on the current framework

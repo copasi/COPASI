@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /**
  *  CScanProblem class.
@@ -36,8 +36,14 @@
 #include <copasi/utilities/CCopasiTask.h>
 #include <copasi/core/CDataVector.h>
 
-//#include "copasi/model/CModel.h"
-//#include "copasi/model/CState.h"
+// static
+const CEnumAnnotation< std::string, CScanProblem::OutputType > CScanProblem::OutputTypeName(
+{
+  "none",
+  "subTaskBefore",
+  "subTaskDuring",
+  "subTaskAfter"
+});
 
 /**
  *  Default constructor.
@@ -68,6 +74,20 @@ CScanProblem::CScanProblem(const CScanProblem & src,
 CScanProblem::~CScanProblem()
 {}
 
+// virtual
+bool CScanProblem::elevateChildren()
+{
+  CCopasiParameter * pParameter = getParameter("Output in subtask");
+
+  if (pParameter != nullptr)
+    {
+      setValue("Subtask Output", OutputTypeName[pParameter->getValue< bool >() ? OutputType::subTaskDuring : OutputType::subTaskNone]);
+      pdelete(pParameter);
+    }
+
+  return CCopasiProblem::elevateChildren();
+}
+
 void CScanProblem::initializeParameter()
 {
   assertParameter("Subtask", CCopasiParameter::Type::UINT, (unsigned C_INT32) CTaskEnum::Task::timeCourse);
@@ -75,7 +95,7 @@ void CScanProblem::initializeParameter()
   addGroup("ScanItems");
   mpScanItems = dynamic_cast<CCopasiParameterGroup*>(getParameter("ScanItems"));
 
-  assertParameter("Output in subtask", CCopasiParameter::Type::BOOL, true);
+  assertParameter("Subtask Output", CCopasiParameter::Type::STRING, OutputTypeName[OutputType::subTaskDuring]);
   assertParameter("Adjust initial conditions", CCopasiParameter::Type::BOOL, false);
   assertParameter("Continue on Error", CCopasiParameter::Type::BOOL, false);
 }
@@ -106,17 +126,90 @@ void CScanProblem::setSubtask(CTaskEnum::Task type)
 }
 
 CTaskEnum::Task CScanProblem::getSubtask() const
-{return (CTaskEnum::Task) getValue< unsigned C_INT32 >("Subtask");}
+{
+  return (CTaskEnum::Task) getValue< unsigned C_INT32 >("Subtask");
+}
+
+bool CScanProblem::getOutputInSubtask() const
+{
+  return getOutputSpecification() == CScanProblem::OutputType::subTaskDuring;
+}
 
 //************************************
 
-void CScanProblem::setOutputInSubtask(bool ois)
+CScanProblem::OutputFlags CScanProblem::getOutputSpecification() const
 {
-  setValue("Output in subtask", ois);
+  OutputFlags OutputSpecification;
+
+  size_t pos = 0;
+  std::string Flags = getValue< std::string >("Subtask Output");
+
+  while ((pos = Flags.find("|")) != std::string::npos)
+    {
+      OutputSpecification |= OutputTypeName.toEnum(Flags.substr(0, pos));
+      Flags.erase(0, pos + 1);
+    }
+
+  OutputSpecification |= OutputTypeName.toEnum(Flags);
+
+  return OutputSpecification;
 }
 
-const bool & CScanProblem::getOutputInSubtask() const
-{return getValue< bool >("Output in subtask");}
+std::string CScanProblem::getOutputSpecificationString() const
+{
+  std::string Flags;
+  std::string Separator;
+  auto outputSpecification = getOutputSpecification();
+
+  for (const std::string & token : outputSpecification.getAnnotations(OutputTypeName))
+    {
+      Flags += Separator + token;
+      Separator = "|";
+    }
+
+  return Flags;
+}
+
+void CScanProblem::setOutputInSubtask(bool outputDuring)
+{
+  setOutputSpecification(CScanProblem::OutputType::subTaskDuring);
+}
+
+void CScanProblem::setOutputSpecification(const CScanProblem::OutputFlags & outputSpecification)
+{
+  std::string Flags;
+  std::string Separator;
+
+  for (const std::string & token : outputSpecification.getAnnotations(OutputTypeName))
+    {
+      Flags += Separator + token;
+      Separator = "|";
+    }
+
+  setOutputSpecification(Flags);
+}
+
+void CScanProblem::setOutputSpecification(const std::string & specification)
+{
+  if (specification.empty())
+    setValue("Subtask Output", OutputTypeName[OutputType::subTaskNone]);
+  else
+    setValue("Subtask Output", specification);
+}
+
+void CScanProblem::setOutputSpecification(const std::vector< std::string > & specification)
+{
+  std::string Flags;
+  std::string Separator;
+
+  for (const std::string & token : specification)
+    {
+      Flags += Separator + token;
+      Separator = "|";
+    }
+
+  setOutputSpecification(Flags);
+}
 
 //************************************
 
@@ -201,7 +294,7 @@ CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, siz
   if (obj)
     tmp->addParameter("Object", CCopasiParameter::Type::CN, obj->getCN());
   else
-    tmp->addParameter("Object", CCopasiParameter::Type::CN, CCommonName(""));
+    tmp->addParameter("Object", CCopasiParameter::Type::CN, CRegisteredCommonName());
 
   //create specific parameters
   if ((type == SCAN_LINEAR) || (type == SCAN_RANDOM))
@@ -229,9 +322,9 @@ CCopasiParameterGroup* CScanProblem::createScanItem(CScanProblem::Type type, siz
     }
 
   if (type == SCAN_PARAMETER_SET)
-  {
+    {
       tmp->addParameter("ParameterSet CNs", CCopasiParameter::Type::GROUP);
-  }
+    }
 
   return tmp;
 }

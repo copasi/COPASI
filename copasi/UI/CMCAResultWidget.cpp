@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -81,7 +81,7 @@ bool CMCAResultWidget::saveToBackend()
 
 bool CMCAResultWidget::updateProtected(ListViews::ObjectType objectType,
                                        ListViews::Action action,
-                                       const CCommonName & cn)
+                                       const CRegisteredCommonName & cn)
 {
   if (objectType == ListViews::ObjectType::MODEL && action == ListViews::ADD)
     mCentralWidget->loadAll(NULL);

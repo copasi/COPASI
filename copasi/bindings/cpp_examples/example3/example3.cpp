@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -84,8 +89,8 @@ int main(int argc, char** argv)
       // the body will contain the actual timecourse data
       std::vector<CRegisteredCommonName>* pHeader = pReport->getHeaderAddr();
       std::vector<CRegisteredCommonName>* pBody = pReport->getBodyAddr();
-      pBody->push_back(CCommonName(pDataModel->getModel()->getCN() + ",Reference=Time"));
-      pBody->push_back(CRegisteredCommonName(pReport->getSeparator().getCN()));
+      pBody->push_back(pDataModel->getModel()->getObject("Reference=Time")->getCN());
+      pBody->push_back(pReport->getSeparator().getCN());
       pHeader->push_back(CDataString("time").getCN());
       pHeader->push_back(pReport->getSeparator().getCN());
 

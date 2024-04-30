@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -80,7 +80,7 @@ public:
   /*
    * set the variable
    */
-  void setSingleObjectCN(const std::string& cn);
+  void setSingleObjectCN(const CRegisteredCommonName & cn);
   void setSingleObjectCN(const CDataObject* pObject);
   const C_FLOAT64& getThreshold() const;
   void setThreshold(const C_FLOAT64 &threshold);
@@ -270,7 +270,7 @@ private:
    * this member variable is mapped to a CCopasiParameter
    */
   std::string * mpTriggerExpression;
-  std::string * mSingleObjectCN;
+  CRegisteredCommonName * mpSingleObjectCN;
   bool * mpFlagPositiveDirection;
   C_FLOAT64 * mpThreshold;
 };

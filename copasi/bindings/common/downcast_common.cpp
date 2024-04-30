@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -42,8 +42,13 @@
 #include <copasi/model/CModelParameterSet.h>
 
 #include <copasi/utilities/CopasiTime.h>
+#include <copasi/utilities/CUnitDefinition.h>
+#include <copasi/utilities/CSlider.h>
 
 #include <copasi/CopasiTaskTypes.h>
+
+typedef CDataVector<CUnitDefinition> CUnitDefinitionVector;
+typedef CDataVectorN<CUnitDefinition> CUnitDefinitionVectorN;
 
 // CArrayInterface
 struct swig_type_info*
@@ -285,7 +290,7 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
     }
   else if (dynamic_cast<ReportItemVector*>(container))
     {
-#ifdef SWIGPERL
+#if defined(SWIGPERL) || SWIG_VERSION >= 0x040200
       pInfo = SWIGTYPE_p_std__vectorT_CRegisteredCommonName_t;
 #else
       pInfo = SWIGTYPE_p_std__vectorT_CRegisteredCommonName_std__allocatorT_CRegisteredCommonName_t_t;
@@ -293,7 +298,7 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
     }
   else if (dynamic_cast<ParameterVector*>(container))
     {
-#ifdef SWIGPERL
+#if defined(SWIGPERL) || SWIG_VERSION >= 0x040200
       pInfo = SWIGTYPE_p_std__vectorT_CCopasiParameter_p_t;
 #else
       pInfo = SWIGTYPE_p_std__vectorT_CCopasiParameter_p_std__allocatorT_CCopasiParameter_p_t_t;
@@ -301,7 +306,7 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
     }
   else if (dynamic_cast<CFunctionStdVector*>(container))
     {
-#ifdef SWIGPERL
+#if defined(SWIGPERL) || SWIG_VERSION >= 0x040200
       pInfo = SWIGTYPE_p_std__vectorT_CFunction_p_t;
 #else
       pInfo = SWIGTYPE_p_std__vectorT_CFunction_p_std__allocatorT_CFunction_p_t_t;
@@ -311,7 +316,6 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
     {
       pInfo = SWIGTYPE_p_CDataVectorT_CChemEqElement_t;
     }
-
   else if (dynamic_cast<CEvaluationTree*>(container))
     {
       pInfo = GetDowncastSwigTypeForCEvaluationTree(static_cast<CEvaluationTree*>(container));
@@ -355,6 +359,22 @@ GetDowncastSwigTypeForCDataContainer(CDataContainer* container)
   else if (dynamic_cast<CFittingPoint*>(container))
     {
       pInfo = SWIGTYPE_p_CFittingPoint;
+    }
+  else if (dynamic_cast<CUnitDefinitionVectorN*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorNT_CUnitDefinition_t;
+    }
+  else if (dynamic_cast<CUnitDefinitionVector*>(container))
+    {
+      pInfo = SWIGTYPE_p_CDataVectorT_CUnitDefinition_t;
+    }
+  else if (dynamic_cast<CUnitDefinition*>(container))
+    {
+      pInfo = SWIGTYPE_p_CUnitDefinition;
+    }
+  else if (dynamic_cast<CSlider*>(container))
+    {
+      pInfo = SWIGTYPE_p_CSlider;
     }
 
   return pInfo;
@@ -423,6 +443,10 @@ GetDowncastSwigTypeForCDataObject(CDataObject* object)
   else if (dynamic_cast<CReportDefinition*>(object))
     {
       pInfo = SWIGTYPE_p_CReportDefinition;
+    }
+  else if (dynamic_cast<CUnitDefinition*>(object))
+    {
+      pInfo = SWIGTYPE_p_CUnitDefinition;
     }
   else if (dynamic_cast<CDataString*>(object))
     {

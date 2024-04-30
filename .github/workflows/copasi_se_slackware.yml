@@ -1,0 +1,74 @@
+name: Build OpenMP (slackware)
+
+on: 
+  push:
+    paths:
+        - "**"
+        - "!.github/**"
+        - ".github/workflows/copasi_se_slackware.yml"
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    name: slackware
+    runs-on: ubuntu-latest
+    container: andy5995/slackware-build-essential:15.0
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Create Build Environment
+      run: |
+        cmake --version
+        curl -L https://github.com/copasi/copasi-dependencies/releases/latest/download/slackware.zip -o slackware.zip
+        unzip -n -qq slackware.zip -d dependencies
+
+    - name: install libuuid (static)
+      run: |
+           curl -L -O http://downloads.sourceforge.net/libuuid/libuuid-1.0.3.tar.gz 
+           tar -zxf libuuid-1.0.3.tar.gz
+           cd libuuid-1.0.3
+           ./configure --disable-dependency-tracking --with-pic --enable-static=yes --enable-shared=no
+           make
+           make install
+           rm /usr/local/lib/libuuid.la
+
+    - name: Update COPASI Version
+      shell: bash
+      run: |
+        git config --global --add safe.directory $PWD
+        ./gitTools/UpdateCopasiVersion --force
+        cat ./copasi/CopasiVersion.h
+
+    - name: Configure COPASI
+      shell: bash
+      run: |
+        cmake -B build_copasi -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCOPASI_INSTALL_C_API=ON -DBUILD_TESTS=ON -DBUILD_GUI=OFF -DCOPASI_DEPENDENCY_DIR=./dependencies/ -DCMAKE_INSTALL_PREFIX=./install/ -DENABLE_OMP=ON -S . 
+        sed -i 's/libgomp.a/libgomp.so/g' build_copasi/CMakeCache.txt
+        sed -i 's/libpthread.a/libpthread.so/g' build_copasi/CMakeCache.txt
+
+    - name: Build COPASI
+      shell: bash
+      working-directory: build_copasi
+      run: cmake --build . --config $BUILD_TYPE
+
+    - name: Install COPASI
+      shell: bash
+      working-directory: build_copasi
+      run: cmake --build . --config $BUILD_TYPE --target install
+
+    - name: binary archive
+      uses: actions/upload-artifact@v4
+      with:
+        name:
+          copasi-se-openmp-slackware
+        path: ${{github.workspace}}/install/*
+        retention-days: 10
+        if-no-files-found: error

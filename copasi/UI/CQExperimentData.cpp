@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1195,7 +1195,7 @@ void CQExperimentData::selectModelObject(const int & row)
   if (pObject)
     {
       mpTable->item(row, COL_OBJECT)->setText(FROM_UTF8(pObject->getObjectDisplayName()));
-      mpTable->item(row, COL_OBJECT_HIDDEN)->setText(FROM_UTF8(pObject->getCN()));
+      mpTable->item(row, COL_OBJECT_HIDDEN)->setText(FROM_UTF8(pObject->getStringCN()));
     }
 
   updateScales();
@@ -1360,7 +1360,6 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
           // ensure item is editable
           pItem->setFlags(pItem->flags() | Qt::ItemIsEditable);
-
         }
     }
 
@@ -1555,7 +1554,7 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
 
       if (ObjectMap.getObjectCN(i) != TO_UTF8(mpTable->item((int) i, COL_OBJECT_HIDDEN)->text()))
         {
-          ObjectMap.setObjectCN(i, TO_UTF8(mpTable->item((int) i, COL_OBJECT_HIDDEN)->text()));
+          ObjectMap.setObjectCN(i, CRegisteredCommonName(TO_UTF8(mpTable->item((int) i, COL_OBJECT_HIDDEN)->text()), mpDataModel));
           Changed = true;
         }
 

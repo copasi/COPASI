@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,7 +24,7 @@
 
 #include "copasi/model/CModel.h"
 #include "copasi/model/CReaction.h"
-#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/function/CExpression.h"
 
 CFixLocalReactionParameters::CFixLocalReactionParameters():
@@ -67,7 +67,7 @@ void CFixLocalReactionParameters::checkModel()
           // Check for all entities' expressions and initial expressions
           // whether the CN of the parameter appears in the infix.
           // Note '>' is already properly escaped in the CN
-          std::string CN = "<" + (*itParameter)->getCN() + ",Reference=Value>";
+          std::string CN = "<" + (*itParameter)->getStringCN() + ",Reference=Value>";
 
           const CModelEntity *const*ppEntity = mpModel->getStateTemplate().getEntities().array();
           const CModelEntity *const*ppEntityEnd = ppEntity + mpModel->getStateTemplate().size();
@@ -112,7 +112,7 @@ void CFixLocalReactionParameters::changeModel()
         {
           // We have a new parameter
           pParameter = itChanges->first;
-          OldCN = "<" + pParameter->getCN() + ",Reference=";
+          OldCN = "<" + pParameter->getStringCN() + ",Reference=";
 
           // Create a global quantity of type FIXED.
           std::string Name = pParameter->getObjectName();
@@ -132,7 +132,7 @@ void CFixLocalReactionParameters::changeModel()
               pModelValue = mpModel->createModelValue(NameStream.str(), pParameter->getValue< C_FLOAT64 >());
             }
 
-          NewCNBase = "<" + pModelValue->getCN() + ",Reference=";
+          NewCNBase = "<" + pModelValue->getStringCN() + ",Reference=";
 
           // If the parameter is actually used in the reaction
           // it is changed to the global quantity.

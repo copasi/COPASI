@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,11 +18,12 @@
 #include "CQTabWidget.h"
 
 #include "CQMessageBox.h"
-#include "qtUtilities.h"
 #include "CQNotes.h"
 
 #include "copasi/MIRIAMUI/CQMiriamWidget.h"
 #include "copasi/MIRIAMUI/CQRDFTreeView.h"
+
+#include "qtUtilities.h"
 
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRootContainer.h"
@@ -153,7 +154,7 @@ bool CQTabWidget::enterProtected()
   return true;
 }
 
-bool CQTabWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQTabWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   if (mIgnoreUpdates || !isVisible())
     {
@@ -290,7 +291,7 @@ bool CQTabWidget::save()
           ListViews::addUndoMetaData(this, UndoData);
 
           if (dynamic_cast< CMetab * >(mpObject))
-            UndoData.addMetaDataProperty("Widget Object Name (after)", mpObject->getObjectName() + "{" + CCommonName::compartmentNameFromCN(mpObject->getCN()) + "}");
+            UndoData.addMetaDataProperty("Widget Object Name (after)", mpObject->getObjectName() + "{" + CCommonName::compartmentNameFromCN(mpObject->getStringCN()) + "}");
           else
             UndoData.addMetaDataProperty("Widget Object Name (after)", mpObject->getObjectName());
 

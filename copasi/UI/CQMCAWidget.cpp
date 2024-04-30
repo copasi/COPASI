@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -107,7 +107,7 @@ bool CQMCAWidget::taskFinishedEvent()
   if (pResult) pResult->loadFromBackend();
 
   if (success && pResult)
-    mpListView->switchToOtherWidget(ListViews::WidgetType::MetabolicControlAnalysisResult, std::string()); //change to the results window
+    mpListView->switchToOtherWidget(ListViews::WidgetType::MetabolicControlAnalysisResult, CRegisteredCommonName()); //change to the results window
 
   return success;
 }

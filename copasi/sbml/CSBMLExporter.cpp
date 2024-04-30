@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <cmath>
 
@@ -2027,7 +2027,7 @@ void addToInitialValueMap(std::map<const std::string, Parameter*>* initialMap
   if (initialMap == NULL || pObject == NULL || pObjectParent == NULL)
     return;
 
-  const std::string& cn = pObject->getCN();
+  const std::string& cn = pObject->getStringCN();
 
   if ((*initialMap)[cn] != NULL)
     {
@@ -2060,7 +2060,7 @@ void addParticleNumberToInitialValueMap(std::map< const std::string, Parameter *
   if (initialMap == NULL || pMetab == NULL || pMetab->getCompartment() == NULL)
     return;
 
-  auto cn = pMetab->getInitialValueReference()->getCN();
+  auto cn = pMetab->getInitialValueReference()->getStringCN();
 
   if ((*initialMap)[cn] != NULL)
     {
@@ -2224,7 +2224,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
                     {
                       if (sbmlLevel < 3) // l3 supports avogadro as csymbol
                         {
-                          Parameter* param = (*initialMap)[pObject->getCN()];
+                          Parameter* param = (*initialMap)[pObject->getStringCN()];
 
                           if (!param)
                             {
@@ -2236,13 +2236,13 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
                               param->setValue(*((double*)pObject->getValuePointer()));
                               idMap.insert(std::pair<const std::string, const SBase*>(param->getId(), param));
 
-                              (*initialMap)[pObject->getCN()] = param;
+                              (*initialMap)[pObject->getStringCN()] = param;
                             }
                         }
                     }
                   else if (pObject->getObjectName() == "Quantity Conversion Factor")
                     {
-                      Parameter* param = (*initialMap)[pObject->getCN()];
+                      Parameter* param = (*initialMap)[pObject->getStringCN()];
 
                       if (!param)
                         {
@@ -2254,7 +2254,7 @@ void CSBMLExporter::checkForUnsupportedObjectReferences(
                           param->setValue(*((double*)pObject->getValuePointer()));
                           idMap.insert(std::pair<const std::string, const SBase*>(param->getId(), param));
 
-                          (*initialMap)[pObject->getCN()] = param;
+                          (*initialMap)[pObject->getStringCN()] = param;
                         }
                     }
                   else
@@ -4710,12 +4710,12 @@ void CSBMLExporter::exportEventAssignments(const CEvent& event, Event* pSBMLEven
 
           if (pNode != NULL)
             {
-            
+
               if (pMetab && pObjectReference && pObjectReference == pMetab->getValueReference())
                 {
                   // mark assignment as particle number assignment
                   pAssignment->setAnnotation("<particleNumber xmlns=\"http://copasi.org/eventAssignment\" />");
-                  
+
                   // divide by the compartment volume and the avogadro number
                   ASTNode* pDivide = new ASTNode(AST_DIVIDE);
                   ASTNode * pTimes = new ASTNode(AST_TIMES);
@@ -4841,7 +4841,7 @@ KineticLaw* CSBMLExporter::createKineticLaw(const CReaction& reaction, CDataMode
               const CCopasiParameter * pLocalParameter = dynamic_cast< const CCopasiParameter * >(pTmpObject);
               assert(pLocalParameter != NULL);
 
-              if (this->mParameterReplacementMap.find(pLocalParameter->getCN()) == this->mParameterReplacementMap.end())
+              if (this->mParameterReplacementMap.find(pLocalParameter->getStringCN()) == this->mParameterReplacementMap.end())
                 {
                   // starting with SBML Level 3, the parameters of a kinetic law are expressed in
                   // libsbml 4.1 does not handle this in a nice way,
@@ -5044,33 +5044,33 @@ CEvaluationNode* CSBMLExporter::createKineticExpression(CFunction* pFun, const s
 
           if (dynamic_cast<const CModel*>(pObject) != NULL)
             {
-              cn = "<" + pObject->getCN() + ",Reference=Time>";
+              cn = "<" + pObject->getStringCN() + ",Reference=Time>";
             }
           else if (dynamic_cast<const CCompartment*>(pObject) != NULL)
             {
-              cn = "<" + pObject->getCN() + ",Reference=Volume>";
+              cn = "<" + pObject->getStringCN() + ",Reference=Volume>";
             }
           else if (dynamic_cast<const CMetab*>(pObject) != NULL)
             {
-              cn = "<" + pObject->getCN() + ",Reference=Concentration>";
+              cn = "<" + pObject->getStringCN() + ",Reference=Concentration>";
             }
           else if (dynamic_cast<const CModelValue*>(pObject) != NULL)
             {
-              cn = "<" + pObject->getCN() + ",Reference=Value>";
+              cn = "<" + pObject->getStringCN() + ",Reference=Value>";
             }
           else if (dynamic_cast<const CReaction*>(pObject) != NULL)
             {
-              cn = "<" + pObject->getCN() + ",Reference=Flux>";
+              cn = "<" + pObject->getStringCN() + ",Reference=Flux>";
             }
           else if (dynamic_cast<const CCopasiParameter*>(pObject) != NULL)
             {
               // local parameter of a reaction
               // must set the node content to the SBML id if the parameter
-              cn = "<" + pObject->getCN() + ">";
+              cn = "<" + pObject->getStringCN() + ">";
             }
           else
             {
-              cn = "<" + pObject->getCN() + ">";
+              cn = "<" + pObject->getStringCN() + ">";
             }
 
           pFunctionCall->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, cn));
@@ -6145,7 +6145,7 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
   std::vector<CEvaluationNode*> multiplicants;
   const CDataObject* pObject = arguments[0][0];
   assert(pObject != NULL);
-  multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ",Reference=Value>"));
+  multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getStringCN() + ",Reference=Value>"));
   std::vector<const CDataObject *>::const_iterator it = arguments[1].begin(), endit = arguments[1].end();
 
   while (it != endit)
@@ -6167,14 +6167,14 @@ CEvaluationNode* CSBMLExporter::createMassActionExpression(const std::vector<std
 
           if (num == 1)
             {
-              multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ",Reference=Concentration>"));
+              multiplicants.push_back(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getStringCN() + ",Reference=Concentration>"));
             }
           else
             {
               std::ostringstream os;
               os << num;
               CEvaluationNodeOperator* pOperator = new CEvaluationNodeOperator(CEvaluationNode::SubType::POWER, "^");
-              pOperator->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ",Reference=Concentration>"));
+              pOperator->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getStringCN() + ",Reference=Concentration>"));
               pOperator->addChild(new CEvaluationNodeNumber(CEvaluationNode::SubType::DOUBLE, os.str()));
               multiplicants.push_back(pOperator);
             }
@@ -6342,11 +6342,11 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
 
                       if (pObject->getObjectName() == "InitialConcentration")
                         {
-                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
+                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getStringCN() + ">"));
                         }
                       else
                         {
-                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
+                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getStringCN() + ">"));
                         }
                     }
                   else
@@ -6359,7 +6359,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                 {
                   std::string id = addRateOfIfItDoesNotExist(mpSBMLDocument, mIdMap, "rateOf");
                   pResult = new CEvaluationNodeObject(CEvaluationNode::SubType::INVALID, "<rateOf>");
-                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pMetab->getConcentrationReference()->getCN() + ">"));
+                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pMetab->getConcentrationReference()->getStringCN() + ">"));
                   pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + id + ">"));
                 }
               else if (pObject->getObjectName() == "InitialParticleNumber" || pObject->getObjectName() == "ParticleNumber")
@@ -6374,7 +6374,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                       // copyBranch should be save here since object nodes can't
                       // have children
                       pResult->addChild(pOrigNode->copyBranch());
-                      pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + this->mpAvogadro->getCN() + ",Reference=InitialValue>"));
+                      pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + this->mpAvogadro->getStringCN() + ",Reference=InitialValue>"));
                     }
                   else
                     {
@@ -6392,11 +6392,11 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
 
                       if (pObject->getObjectName() == "InitialParticleNumber")
                         {
-                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
+                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getStringCN() + ">"));
                         }
                       else
                         {
-                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
+                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getStringCN() + ">"));
                         }
 
                       pResult = pTmpNode;
@@ -6416,7 +6416,7 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
                 {
                   std::string id = addRateOfIfItDoesNotExist(mpSBMLDocument, mIdMap, "rateOf");
                   pResult = new CEvaluationNodeObject(CEvaluationNode::SubType::INVALID, "<rateOf>");
-                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pEntity->getValueReference()->getCN() + ">"));
+                  pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pEntity->getValueReference()->getStringCN() + ">"));
                   pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + id + ">"));
                 }
             }
@@ -7594,7 +7594,7 @@ void CSBMLExporter::replace_local_parameters(ASTNode* pOrigNode, const CDataMode
               if (pLocalParameter != NULL)
                 {
                   // it must be a local parameter
-                  std::map<std::string, Parameter*>::iterator pos = this->mParameterReplacementMap.find(pLocalParameter->getCN());
+                  std::map<std::string, Parameter*>::iterator pos = this->mParameterReplacementMap.find(pLocalParameter->getStringCN());
 
                   if (pos == this->mParameterReplacementMap.end())
                     {
@@ -7623,7 +7623,7 @@ void CSBMLExporter::replace_local_parameters(ASTNode* pOrigNode, const CDataMode
                       pParameter->setId(sbmlId);
                       this->mIdMap.insert(std::pair<std::string, SBase*>(sbmlId, pParameter));
                       pParameter->setValue(pLocalParameter->getValue< C_FLOAT64 >());
-                      this->mParameterReplacementMap[pLocalParameter->getCN()] = pParameter;
+                      this->mParameterReplacementMap[pLocalParameter->getStringCN()] = pParameter;
                       pOrigNode->setName(sbmlId.c_str());
                       this->mHandledSBMLObjects.insert(pParameter);
                     }
@@ -7909,7 +7909,7 @@ CEvaluationNode* CSBMLExporter::multiplyByObject(const CEvaluationNode* pOrigNod
           // only the second child can be the object
           const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild()->getSibling());
 
-          if (pChild->mainType() == CEvaluationNode::MainType::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
+          if (pChild->mainType() == CEvaluationNode::MainType::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getStringCN() + ">"))
             {
 
               pResult = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
@@ -7919,7 +7919,7 @@ CEvaluationNode* CSBMLExporter::multiplyByObject(const CEvaluationNode* pOrigNod
 
       if (reverse == false)
         {
-          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ">");
+          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getStringCN() + ">");
           pResult = new CEvaluationNodeOperator(CEvaluationNode::SubType::MULTIPLY, "*");
           pResult->addChild(pOrigNode->copyBranch());
           pResult->addChild(pVolumeNode);

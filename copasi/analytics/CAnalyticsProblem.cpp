@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -77,7 +77,7 @@ void CAnalyticsProblem::initializeParameter()
   mpFlagLimitOutConvergence = assertParameter("DelayOutputUntilConvergence", CCopasiParameter::Type::BOOL, false);
   mpConvergenceOutTolerance = assertParameter("OutputConvergenceTolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)1E-6);
   mpTriggerExpression = assertParameter("TriggerExpression", CCopasiParameter::Type::EXPRESSION, std::string(""));
-  mpSingleObjectCN = assertParameter("SingleVariable", CCopasiParameter::Type::CN, CCommonName(""));
+  mpSingleObjectCN = assertParameter("SingleVariable", CCopasiParameter::Type::CN, CRegisteredCommonName());
   setOutputEvent(false);
 }
 

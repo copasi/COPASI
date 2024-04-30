@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,7 +46,7 @@
 CEvaluationNodeObject::CEvaluationNodeObject():
   CEvaluationNode(MainType::OBJECT, SubType::INVALID, ""),
   mpObject(NULL),
-  mRegisteredObjectCN("")
+  mRegisteredObjectCN(CRegisteredCommonName("", nullptr))
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
@@ -70,13 +70,13 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
             mSubType = SubType::AVOGADRO;
           }
 
-        mRegisteredObjectCN = mData.substr(1, mData.length() - 2);
+        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), nullptr);
 
         break;
 
       case SubType::AVOGADRO:
         mData = "<Reference=Avogadro Constant>";
-        mRegisteredObjectCN = mData.substr(1, mData.length() - 2);
+        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), nullptr);
         break;
 
       case SubType::POINTER:
@@ -88,7 +88,7 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
 CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
   CEvaluationNode(MainType::OBJECT, SubType::POINTER, "pointer"),
   mpObject(NULL),
-  mRegisteredObjectCN("")
+  mRegisteredObjectCN()
 {
   mPrecedence = PRECEDENCE_NUMBER;
   mValueType = ValueType::Number;
@@ -100,7 +100,7 @@ CEvaluationNodeObject::CEvaluationNodeObject(const C_FLOAT64 * pValue):
 CEvaluationNodeObject::CEvaluationNodeObject(const bool * pValue):
   CEvaluationNode(MainType::OBJECT, SubType::POINTER, "pointer"),
   mpObject(NULL),
-  mRegisteredObjectCN("")
+  mRegisteredObjectCN()
 {
   mPrecedence = PRECEDENCE_NUMBER;
   mValueType = ValueType::Boolean;
@@ -347,7 +347,7 @@ bool CEvaluationNodeObject::setData(const Data & data)
   mData = data;
 
   if (mSubType == SubType::CN)
-    mRegisteredObjectCN = data.substr(1, data.length() - 2);
+    mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), nullptr);
 
   return true;
 }

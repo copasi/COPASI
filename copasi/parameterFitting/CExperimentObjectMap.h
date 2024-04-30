@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,7 +28,7 @@
 #include "copasi/core/CVector.h"
 #include "copasi/parameterFitting/CExperiment.h"
 
-#include "copasi/utilities/CCopasiParameterGroup.h"
+#include "copasi/utilities/CCopasiParameter.h"
 
 class CMathContainer;
 
@@ -105,16 +105,16 @@ public:
 
     /**
      * Set the object CN of the object mapped to the column
-     * @param const std::string & objectCN
+     * @param const CRegisteredCommonName & objectCN
      * @return bool success
      */
-    bool setObjectCN(const std::string & objectCN);
+    bool setObjectCN(const CRegisteredCommonName & objectCN);
 
     /**
      * Retrieve the object CN of the object mapped to the column
      * @return std::string objctCN
      */
-    std::string getObjectCN() const;
+    CRegisteredCommonName getObjectCN() const;
 
     /**
      * Set the scaling factor for the column
@@ -145,7 +145,7 @@ public:
   private:
     CExperiment::Type *mpRole;
 
-    CCommonName *mpObjectCN;
+    CRegisteredCommonName *mpObjectCN;
 
     C_FLOAT64 *mpScale;
   };
@@ -249,18 +249,18 @@ public:
   /**
    * Set the object CN of the object mapped to the indexed column
    * @param const size_t & index
-   * @param const std::string & objectCN
+   * @param const CRegisteredCommonName & objectCN
    * @return bool success
    */
   bool setObjectCN(const size_t & index,
-                   const std::string & objectCN);
+                   const CRegisteredCommonName & objectCN);
 
   /**
    * Retrieve the object CN of the object mapped to the indexed column
    * @param const size_t & index
    * @return std::stringobjctCN
    */
-  std::string getObjectCN(const size_t & index) const;
+  CRegisteredCommonName getObjectCN(const size_t & index) const;
 
   /**
    * Set the scaling factor for the indexed column

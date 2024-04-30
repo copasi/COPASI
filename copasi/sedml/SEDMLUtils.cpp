@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -383,8 +383,8 @@ CModelValue * SEDMLUtils::createAmountMV(CModel * pModel, const CMetab * pMetab)
 
   pMV->setStatus(CModelEntity::Status::ASSIGNMENT);
   std::stringstream expr;
-  expr << "<" << pMetab->getConcentrationReference()->getCN() << "> * "
-       << "<" << pMetab->getCompartment()->getValueReference()->getCN() << ">";
+  expr << "<" << pMetab->getConcentrationReference()->getStringCN() << "> * "
+       << "<" << pMetab->getCompartment()->getValueReference()->getStringCN() << ">";
   pMV->setExpression(expr.str());
 
   return pMV;

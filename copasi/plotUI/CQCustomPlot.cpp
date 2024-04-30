@@ -1,4 +1,4 @@
-// Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -914,7 +914,7 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
           if (pObj)
             {
               mObjects.insert(pObj);
-              objectCN = pObj->getCN();
+              objectCN = pObj->getStringCN();
               mCnNameMap[objectCN] = pObj->getObjectDisplayName();
 
               objectCNs << FROM_UTF8(objectCN);
@@ -927,7 +927,7 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
 
                   if (pCurve)
                     {
-                      pCurve->setProperty("experiment_cn", FROM_UTF8(pExp->getCN()));
+                      pCurve->setProperty("experiment_cn", FROM_UTF8(pExp->getStringCN()));
                       pCurve->setProperty("experiment_name", FROM_UTF8(pExp->getObjectDisplayName()));
                     }
                 }
@@ -1419,6 +1419,7 @@ void CQCustomPlot::replot(bool resetZoom)
     }
   else
     {
+      mReplotFinished = true;
       return;
     }
 
@@ -2218,7 +2219,8 @@ void CQCustomPlot::legendClicked(QCPLegend * legend, QCPAbstractLegendItem * ite
   if (plItem != NULL && event->button() == Qt::LeftButton)
     {
       auto * pCurve = plItem->plottable();
-      showCurve(pCurve, !pCurve->visible());
+      showCurve(pCurve, !pCurve->visible(), false);
+      //replot(false);
       QCustomPlot::replot();
     }
 
@@ -2301,7 +2303,7 @@ void increaseRange(QCPAxis* axis, double lowerMultiplier = 0.95, double upperMul
   axis->setRange(range.lower * lowerMultiplier, range.upper * upperMultiplier);
 }
 
-void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on)
+void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on, bool rescale)
 {
   if (!pCurve)
     return;
@@ -2319,7 +2321,8 @@ void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on)
   if (pBuddy != mY2Map.end())
     (*pBuddy).second->setVisible(plItem->plottable()->visible());
 
-  ensureCurvesVisible();
+  if (rescale)
+    ensureCurvesVisible();
 }
 
 void CQCustomPlot::ensureCurvesVisible()

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -71,7 +71,7 @@ bool CEventAssignment::applyData(const CData & data, CUndoData::CChangeSet & cha
 
   if (data.isSetProperty(CData::OBJECT_REFERENCE_CN))
     {
-      setTargetCN(data.getProperty(CData::OBJECT_REFERENCE_CN).toString());
+      setTargetCN(CRegisteredCommonName(data.getProperty(CData::OBJECT_REFERENCE_CN).toString(), this));
       compileModel = true;
     }
 
@@ -113,7 +113,7 @@ CEventAssignment::CEventAssignment(const std::string & targetCN,
   CDataContainer(targetCN, pParent, "EventAssignment"),
   mKey(CRootContainer::getKeyFactory()->add("EventAssignment", this)),
   mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
-  mTargetCN(targetCN),
+  mTargetCN(CRegisteredCommonName(targetCN, mpModel)),
   mpTarget(nullptr),
   mpExpression(nullptr)
 {
@@ -259,7 +259,7 @@ const CDataObject * CEventAssignment::getTargetObject() const
   return mpTarget;
 }
 
-bool CEventAssignment::setTargetCN(const std::string & targetCN)
+bool CEventAssignment::setTargetCN(const CRegisteredCommonName & targetCN)
 {
   if (targetCN != getTargetCN() &&
       mpModel != nullptr)
@@ -271,7 +271,7 @@ bool CEventAssignment::setTargetCN(const std::string & targetCN)
   return setObjectName(targetCN);
 }
 
-const std::string & CEventAssignment::getTargetCN() const
+const CRegisteredCommonName & CEventAssignment::getTargetCN() const
 {
   //if (mTargetCN != getObjectName())
   //  setObjectName(mTargetCN);
@@ -599,7 +599,7 @@ std::string CEvent::getOriginFor(const DataObjectSet & deletedObjects) const
 
           for (; setIt != setEnd; ++setIt)
             {
-              if (assignment.getTargetObject()->getCN() == (*setIt)->getCN())
+              if (assignment.getTargetObject()->getStringCN() == (*setIt)->getStringCN())
                 {
 
                   Origin += Separator + "Target (" + (assignment.getTargetObject() != nullptr ? assignment.getTargetObject()->getObjectDisplayName() : "not found") + ")";

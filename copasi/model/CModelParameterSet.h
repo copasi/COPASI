@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -104,12 +104,6 @@ public:
    * Destructor
    */
   virtual ~CModelParameterSet();
-
-  /**
-   * Retrieve the CN of the object
-   * @return CCommonName
-   */
-  virtual CCommonName getCN() const;
 
   CModelParameterGroup * toGroup();
 
@@ -245,6 +239,13 @@ public:
                     const CCore::Framework & framework,
                     const std::string & mode,
                     const std::string & separator);
+
+protected:
+  /**
+   * Retrieve the CN of the object
+   * @return CCommonName
+   */
+  virtual CCommonName getCNProtected() const override;
 
 private:
   void init();

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -288,17 +288,22 @@ void CFitProblem::initializeParameter()
   mpParmObjectiveExpression = NULL;
   *mpParmMaximize = false;
 
-  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::Type::CN, CCommonName(""));
-  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::Type::CN, CCommonName(""));
+  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::Type::CN, CRegisteredCommonName());
+  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::Type::CN, CRegisteredCommonName());
   mpCreateParameterSets = assertParameter("Create Parameter Sets", CCopasiParameter::Type::BOOL, false);
   mpUseTimeSens = assertParameter("Use Time Sens", CCopasiParameter::Type::BOOL, false);
-  mpParmTimeSensCN = assertParameter("Time-Sens", CCopasiParameter::Type::CN, CCommonName(""));;
+  mpParmTimeSensCN = assertParameter("Time-Sens", CCopasiParameter::Type::CN, CRegisteredCommonName());;
 
   assertGroup("Experiment Set");
 
   assertGroup("Validation Set");
 
   elevateChildren();
+}
+
+void CFitProblem::signalMathContainerChanged()
+{
+  COptProblem::signalMathContainerChanged();
 }
 
 void CFitProblem::setCreateParameterSets(const bool & create)
@@ -328,9 +333,9 @@ bool CFitProblem::elevateChildren()
 
   // Due to a naming conflict the following parameters may have been overwritten during
   // the load of a CopasiML file we replace them with default values if that was the case.
-  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::Type::CN, CCommonName(""));
-  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::Type::CN, CCommonName(""));
-  mpParmTimeSensCN = assertParameter("Time-Sens", CCopasiParameter::Type::CN, CCommonName(""));
+  mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::Type::CN, CRegisteredCommonName());
+  mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::Type::CN, CRegisteredCommonName());
+  mpParmTimeSensCN = assertParameter("Time-Sens", CCopasiParameter::Type::CN, CRegisteredCommonName());
 
   CDataVectorN< CCopasiTask > * pTasks = NULL;
   CDataModel* pDataModel = getObjectDataModel();
@@ -882,7 +887,7 @@ bool CFitProblem::initialize()
 
       for (auto dep : dependents)
         {
-          pProblem->addTargetCN(dep->getCN());
+          pProblem->addTargetCN(dep->getStringCN());
         }
 
       mpTimeSens->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
@@ -913,7 +918,7 @@ bool CFitProblem::checkFunctionalConstraints()
   return true;
 }
 
-CFitItem & CFitProblem::addFitItem(const CCommonName & objectCN)
+CFitItem & CFitProblem::addFitItem(const CRegisteredCommonName & objectCN)
 {
   CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
@@ -926,7 +931,7 @@ CFitItem & CFitProblem::addFitItem(const CCommonName & objectCN)
   return *pItem;
 }
 
-CFitConstraint & CFitProblem::addFitConstraint(const CCommonName & objectCN)
+CFitConstraint & CFitProblem::addFitConstraint(const CRegisteredCommonName & objectCN)
 {
   CDataModel * pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
@@ -1021,7 +1026,7 @@ bool CFitProblem::calculate()
               for (auto it = map.begin(); it != map.end(); ++it)
                 {
                   reverseObjectMap[it->second] = it->first;
-                  reverseCnMap[it->second] = it->first->getCN();
+                  reverseCnMap[it->second] = it->first->getStringCN();
                 }
 
               for (size_t i = 0; i < mpOptItems->size(); ++i)

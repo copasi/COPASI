@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -132,10 +132,10 @@ public:
 
   /**
    * Set the slider object.
-   * @param const CCommonName & objectCN
+   * @param const CRegisteredCommonName & objectCN
    * @return bool success
    */
-  bool setSliderObject(const CCommonName & objectCN);
+  bool setSliderObject(const CRegisteredCommonName & objectCN);
 
   /**
    * Retrieve the slider object.

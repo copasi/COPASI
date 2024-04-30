@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -130,8 +130,8 @@ CQBrowserPaneDM::CQBrowserPaneDM(QObject * pParent):
 
   if (pListView)
     {
-      connect(pListView, SIGNAL(signalNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
-              this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
+      connect(pListView, SIGNAL(signalNotify(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)),
+              this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)));
     }
 
   connect(dynamic_cast<CopasiUI3Window *>(CopasiUI3Window::getMainWindow()), SIGNAL(signalPreferenceUpdated()), this, SLOT(slotRefreshValidityFilters()));
@@ -356,9 +356,9 @@ ListViews::WidgetType CQBrowserPaneDM::getIdFromIndex(const QModelIndex & index)
   return pNode->getId();
 }
 
-const CCommonName & CQBrowserPaneDM::getCNFromIndex(const QModelIndex & index) const
+const CRegisteredCommonName & CQBrowserPaneDM::getCNFromIndex(const QModelIndex & index) const
 {
-  static CCommonName EmptyCN;
+  static CRegisteredCommonName EmptyCN;
   CNode * pNode = nodeFromIndex(index);
 
   if (pNode == NULL) return EmptyCN;
@@ -379,7 +379,7 @@ void CQBrowserPaneDM::remove(CNode * pNode)
 }
 
 void CQBrowserPaneDM::add(const ListViews::WidgetType & id,
-                          const CCommonName & cn,
+                          const CRegisteredCommonName & cn,
                           const QString & displayRole,
                           const ListViews::WidgetType & parentId)
 {
@@ -424,16 +424,16 @@ void CQBrowserPaneDM::setGuiDM(const DataModelGUI * pDataModel)
   /*
   if (mpGuiDM)
     {
-      disconnect(mpGuiDM, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
-                 this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
+      disconnect(mpGuiDM, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)),
+                 this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)));
     }
 
   mpGuiDM = pDataModel;
 
   if (mpGuiDM)
     {
-      connect(mpGuiDM, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CCommonName &)),
-              this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CCommonName &)));
+      connect(mpGuiDM, SIGNAL(notifyView(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)),
+              this, SLOT(slotNotify(ListViews::ObjectType, ListViews::Action, const CRegisteredCommonName &)));
     }
   */
 }
@@ -465,7 +465,7 @@ void CQBrowserPaneDM::load()
   updateNode(findNodeFromId(ListViews::WidgetType::CrossSection), mpCopasiDM->getTaskList()->operator[]("Cross Section").getCN());
 
 #ifdef WITH_ANALYTICS
-  updateNode(findNodeFromId(ListViews::WidgetType::Analytics), mpCopasiDM->getTaskList()->operator[]("Analytics").getCN());
+  updateNode(findNodeFromId(ListViews::WidgetType::Analytics), mpCopasiDM->getTaskList()->operator[]("Analytics").registerCN());
 #endif // WITH_ANALYTICS
 
 #ifdef WITH_TIME_SENS
@@ -712,7 +712,7 @@ void CQBrowserPaneDM::rename(const std::string & oldCN, const std::string & newC
     }
 }
 
-bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CCommonName & cn)
+bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   if (mpCopasiDM == NULL)
     {
@@ -738,7 +738,7 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
       pNode = findNodeFromCN(cn);
     }
 
-  std::string NewCN = pNode != NULL ? pNode->getCN() : cn;
+  CRegisteredCommonName NewCN = pNode != NULL ? pNode->getCN() : cn;
 
   if (cn != NewCN)
     {
@@ -927,7 +927,7 @@ CQBrowserPaneDM::CNode * CQBrowserPaneDM::nodeFromIndex(const QModelIndex & inde
 }
 
 CQBrowserPaneDM::CNode * CQBrowserPaneDM::createNode(const ListViews::WidgetType & id,
-    const CCommonName & cn,
+    const CRegisteredCommonName & cn,
     const QString & displayRole,
     const size_t & sortOrder,
     CNode * pParent)
@@ -944,7 +944,7 @@ CQBrowserPaneDM::CNode * CQBrowserPaneDM::createNode(const ListViews::WidgetType
   return pNode;
 }
 
-void CQBrowserPaneDM::updateNode(CNode * pNode, const CCommonName & CN)
+void CQBrowserPaneDM::updateNode(CNode * pNode, const CRegisteredCommonName & CN)
 {
   if (pNode != NULL &&
       pNode->getCN() != CN)
@@ -982,7 +982,7 @@ void CQBrowserPaneDM::destroyNode(CNode * pNode)
 void CQBrowserPaneDM::createStaticDM()
 {
   size_t SortKey = 0;
-  mpRoot = createNode(ListViews::WidgetType::COPASI, std::string(), "COPASI", SortKey++, NULL);
+  mpRoot = createNode(ListViews::WidgetType::COPASI, CRegisteredCommonName(), "COPASI", SortKey++, NULL);
 
   for (const sNodeInfo * pNodeInfo = TreeInfo; pNodeInfo->parent != ListViews::WidgetType::NotFound; ++pNodeInfo)
     {
@@ -1020,7 +1020,7 @@ void CQBrowserPaneDM::createStaticDM()
 
       if (pParent != NULL)
         {
-          createNode(pNodeInfo->node, std::string(), FROM_UTF8(pNodeInfo->title), SortKey++, pParent);
+          createNode(pNodeInfo->node, CRegisteredCommonName(), FROM_UTF8(pNodeInfo->title), SortKey++, pParent);
         }
     }
 }
@@ -1115,7 +1115,7 @@ CQBrowserPaneDM::CNode::CNode():
 {}
 
 CQBrowserPaneDM::CNode::CNode(const ListViews::WidgetType & id,
-                              const CCommonName & cn,
+                              const CRegisteredCommonName & cn,
                               const QString & displayRole,
                               const size_t & sortOrder,
                               CNode * pParent):
@@ -1177,12 +1177,12 @@ QString CQBrowserPaneDM::CNode::getSortRole() const
   return QString();
 }
 
-void CQBrowserPaneDM::CNode::setCN(const CCommonName & cn)
+void CQBrowserPaneDM::CNode::setCN(const CRegisteredCommonName & cn)
 {
   mData.mCN = cn;
 }
 
-const CCommonName & CQBrowserPaneDM::CNode::getCN() const
+const CRegisteredCommonName & CQBrowserPaneDM::CNode::getCN() const
 {
   return mData.mCN;
 }

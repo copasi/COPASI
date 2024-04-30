@@ -1,4 +1,4 @@
-// Copyright (C) 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2023 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -11,10 +11,12 @@ CRandomContext::CRandomContext(const bool & parallel)
 
 CRandomContext::~CRandomContext()
 {
-  if (Base::master())
+  CRandom * pRNG = Base::master();
+
+  if (pRNG != nullptr)
     {
-      delete Base::master();
-Base: master() = NULL;
+      Base::setMaster(nullptr);
+      delete pRNG;
     }
 }
 

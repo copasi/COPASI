@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <sstream>
 #include <initializer_list>
@@ -170,7 +170,7 @@ COutputAssistant::findItemByName(const std::string& name, bool isPlot /*= true*/
   if (mMap.empty())
     initialize();
 
-for (auto & entry : mMap)
+  for (auto & entry : mMap)
     {
       if (entry.second.isPlot == isPlot && entry.second.name == name)
         return entry.first;
@@ -772,7 +772,7 @@ COutputAssistant::createDefaultOutput(
                 if (needMeasured)
                   {
                     data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Measured Value"))));
-                    ChannelX.push_back(data2->getCN());
+                    ChannelX.push_back(data2->getStringCN());
                     Names.push_back(Name + "(Measured Value)");
                     LineTypes.push_back(3);      //symbols & lines
                     SymbolSubTypes.push_back(1); //fat cross
@@ -784,7 +784,7 @@ COutputAssistant::createDefaultOutput(
                 if (needFitted)
                   {
                     data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Fitted Value"))));
-                    ChannelX.push_back(data2->getCN());
+                    ChannelX.push_back(data2->getStringCN());
                     Names.push_back(Name + "(Fitted Value)");
 
                     if (pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse)
@@ -806,7 +806,7 @@ COutputAssistant::createDefaultOutput(
                   {
                     //3
                     data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Weighted Error"))));
-                    ChannelX.push_back(data2->getCN());
+                    ChannelX.push_back(data2->getStringCN());
                     Names.push_back(Name + "(Weighted Error)");
                     LineTypes.push_back(2);      //symbols
                     SymbolSubTypes.push_back(2); //circles
@@ -835,7 +835,7 @@ COutputAssistant::createDefaultOutput(
 
             while (itItem != endItem)
               {
-                itItem->getChannels()[0] = CPlotDataChannelSpec(*itChannelX++);
+                itItem->getChannels()[0] = CPlotDataChannelSpec(CRegisteredCommonName(*itChannelX++, pDataModel));
                 itItem->setTitle(*itName++);
                 itItem->setActivity(COutputInterface::AFTER);
                 itItem->setValue("Line type", *itLineType++);
@@ -1660,6 +1660,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
         pPl->addTaskType(taskType);
         pPl->addTaskType(CTaskEnum::Task::scan);
         break;
+
       case CTaskEnum::Task::optimization:
       case CTaskEnum::Task::scan:
 #ifdef WITH_TIME_SENS
@@ -1721,7 +1722,7 @@ COutputAssistant::isOptionEnabled(
   if (!pOptions)
     return defaultValue;
 
-for (auto entry : *pOptions)
+  for (auto entry : *pOptions)
     if (entry.name == name)
       return entry.enabled;
 

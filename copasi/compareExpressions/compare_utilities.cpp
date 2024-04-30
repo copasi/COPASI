@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -431,7 +436,7 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
 
       while (it2 != endit2)
         {
-          delete(*it2);
+          delete (*it2);
           ++it2;
         }
     }
@@ -1247,7 +1252,7 @@ bool contains_necessary_mass_action_elements(const CDataVector<CChemEqElement>& 
 
               if (pItem != NULL && pItem->getType() == CNormalItem::VARIABLE)
                 {
-                  std::string cn = pItem->getName();
+                  CCommonName cn = pItem->getName();
                   pObject = CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(listOfContainers, cn));
 
                   if (pObject != NULL)

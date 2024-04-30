@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -175,7 +175,7 @@ void CQEffectDescriptionEdit::slotSelectObject()
       CQSimpleSelectionTree::Variables | CQSimpleSelectionTree::ObservedConstants | CQSimpleSelectionTree::ObservedValues, pObject);
 
   if (pObject)
-    txtObjectName->setText(FROM_UTF8(pObject->getCN()));
+    txtObjectName->setText(FROM_UTF8(pObject->getStringCN()));
 }
 
 void CQEffectDescriptionEdit::slotSelectDataObject()
@@ -195,7 +195,7 @@ void CQEffectDescriptionEdit::slotSelectDataObject()
       CQSimpleSelectionTree::NumericValues, pObject);
 
   if (pObject)
-    txtDataObject->setText(FROM_UTF8(pObject->getCN()));
+    txtDataObject->setText(FROM_UTF8(pObject->getStringCN()));
 }
 
 void CQEffectDescriptionEdit::slotSelectColorEnd()

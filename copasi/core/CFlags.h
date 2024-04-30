@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -209,6 +209,22 @@ public:
 
     return Annotations;
   }
+
+  /**
+   * Create the subset of the provided annotations for the flags which are set
+   * @param const CEnumAnnotation< AType, Enum > & annotation
+   * @param const CFlags & filter (Default: All)
+   * @return std::vector< AType > Annotations
+   */
+  template< typename AType >
+  void fromAnnotations(std::vector< AType > & annotations,
+                       const CEnumAnnotation< AType, Enum > & annotation)
+  {
+    bitset::reset();
+
+    for (const AType & a : annotations)
+      operator &= (annotation.toEnum(a));
+  }
 };
 
 /**
@@ -286,10 +302,11 @@ CFlags< Enum > operator ^ (const CFlags< Enum > & lhs, const Enum & rhs)
   return operator ^ (lhs, CFlags< Enum >(rhs));
 }
 
+#ifndef SWIG
 // static
 template< class Enum > const CFlags< Enum > CFlags< Enum >::None;
 
 // static
 template< class Enum > const CFlags< Enum > CFlags< Enum >::All(~None);
-
+#endif // SWIG
 #endif // COPASI_CFlags

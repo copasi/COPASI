@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -129,10 +129,13 @@ size_t INVALID_INDEX();
 %ignore *::end_name;
 
 %include <copasi/undo/CUndoObjectInterface.h>
-%template(CDataStdVector) std::vector<CData>;
-%include <copasi/undo/CData.h>
-%template(CDataValueStdVector) std::vector<CDataValue>;
+
+%ignore CDataValue::CDataValue(const CDataValue::Type &);
+%ignore CDataValue::CDataValue(const Type &);
 %include <copasi/undo/CDataValue.h>
+%template(CDataValueStdVector) std::vector<CDataValue>;
+%include <copasi/undo/CData.h>
+%template(CDataStdVector) std::vector<CData>;
 %include <copasi/undo/CUndoData.h>
 
 %include <copasi/core/CObjectInterface.h>
@@ -173,8 +176,11 @@ size_t INVALID_INDEX();
 %include "CReaction.i"
 %include "CModel.i"
 %include "CCopasiParameter.i"
+%include "SBMLUnitSupport.i"
+
 // enable process report 
 %feature("director") CProcessReport;
+
 %extend CProcessReport
 {
     static double getValue(const double* pValue)
@@ -235,6 +241,9 @@ size_t INVALID_INDEX();
     }
 }
 
+%rename(add) CProcessReport::operator+;
+%rename(increment) CProcessReport::operator++;
+%rename(increment) CProcessReportLevel::operator++;
 %include <copasi/utilities/CProcessReport.h>
 
 %include "CCopasiParameterGroup.i"
@@ -292,7 +301,6 @@ size_t INVALID_INDEX();
 %include "CMCAProblem.i"
 %include "CMCATask.i"
 %include "compare_utilities.i"
-%include "CRootContainer.i"
 %include "CEvent.i"
 %include "CLBase.i"
 %include "CLGraphicalObject.i"
@@ -403,6 +411,37 @@ size_t INVALID_INDEX();
 
 %include <copasi/math/CJitCompilerImplementation.h>
 
+%template(CUnitDefinitionVector) CDataVector<CUnitDefinition>;
+typedef CDataVector<CUnitDefinition> CUnitDefinitionVector;
+%template(CUnitDefinitionVectorN) CDataVectorN<CUnitDefinition>;
+typedef CDataVectorN<CUnitDefinition> CUnitDefinitionVectorN;
+%template(CUnitStdVector) std::vector< CUnit >;
+typedef std::vector< CUnit > CUnitStdVector;
+
+%{
+  #include <copasi/utilities/CUnitDefinitionDB.h>
+
+  typedef CDataVector<CUnitDefinition> CUnitDefinitionVector;
+  typedef CDataVectorN<CUnitDefinition> CUnitDefinitionVectorN;
+  typedef std::vector< CUnit > CUnitStdVector;
+%}
+
+%rename(addCopy) CUnitDefinitionDB::add(const CUnitDefinition&);
+%include <copasi/utilities/CUnitDefinitionDB.h>
+%extend CUnitDefinitionDB
+{
+    CUnitDefinitionVector * asDataVector()
+    {
+        return dynamic_cast<CUnitDefinitionVector*>($self);
+    }
+    CUnitDefinitionVectorN * asDataVectorN()
+    {
+        return dynamic_cast<CUnitDefinitionVectorN*>($self);
+    }
+}
+
+%include "CRootContainer.i"
+
 %{
 
 
@@ -456,6 +495,7 @@ size_t INVALID_INDEX();
 #include <copasi/core/CDataTimer.h>
 
 #include <copasi/math/CJitCompilerImplementation.h>
+#include <copasi/utilities/CUnitDefinitionDB.h>
 
 %}
 

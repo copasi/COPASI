@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,6 +18,7 @@
 #include "ChannelSpecHandler.h"
 #include "CXMLParser.h"
 #include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/model/CModel.h"
 
 #include "copasi/plot/CPlotItem.h"
 
@@ -51,7 +52,7 @@ CXMLHandler * ChannelSpecHandler::processStart(const XML_Char * pszName,
       case ChannelSpec:
         name = mpParser->getAttributeValue("cn", papszAttrs);
 
-        mpData->pCurrentChannelSpec = new CPlotDataChannelSpec(name);
+        mpData->pCurrentChannelSpec = new CPlotDataChannelSpec(CRegisteredCommonName(name, mpData->pModel));
         sMin = mpParser->getAttributeValue("min", papszAttrs, false);
 
         if (sMin == NULL)

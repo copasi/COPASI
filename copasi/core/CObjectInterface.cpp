@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -77,7 +77,7 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
 
       CheckDataModel &= (pDataModel != *it);
 
-      ContainerName = (*it)->getCN();
+      ContainerName = (*it)->getStringCN();
 
       while (ContainerName.getRemainder() != "")
         {
@@ -110,6 +110,23 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
   return const_cast< CObjectInterface * >(pObject);
 }
 
+// static
+CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
+    const CRegisteredCommonName & objName)
+{
+  const CDataModel * pDataModel = objName.getDataModel();
+
+  if (pDataModel != nullptr)
+    {
+      CObjectInterface::ContainerList ListOfContainer = listOfContainer;
+      ListOfContainer.push_back(pDataModel);
+
+      return GetObjectFromCN(ListOfContainer, CCommonName(objName));
+    }
+
+  return GetObjectFromCN(listOfContainer, CCommonName(objName));
+}
+
 CObjectInterface::CObjectInterface():
   mValidity(this)
 {}
@@ -121,3 +138,32 @@ CObjectInterface::CObjectInterface(const CObjectInterface & src):
 // virtual
 CObjectInterface::~CObjectInterface()
 {};
+
+CCommonName CObjectInterface::getStringCN() const
+{
+  return getCNProtected();
+}
+
+CRegisteredCommonName CObjectInterface::getCN() const
+{
+  return CRegisteredCommonName(getCNProtected(), DataObject(this));
+}
+
+bool CObjectInterface::appendPrerequisites(CObjectInterface::ObjectSet & prerequisites) const
+{
+  bool appended = false;
+
+  ObjectSet::const_iterator it = getPrerequisites().begin();
+  ObjectSet::const_iterator end = getPrerequisites().end();
+
+  for (; it != end; ++it)
+    {
+      if (prerequisites.insert(*it).second)
+        {
+          appended = true;
+          (*it)->appendPrerequisites(prerequisites);
+        }
+    }
+
+  return appended;
+}

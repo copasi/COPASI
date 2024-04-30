@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,9 @@ class CUnitDefinitionDB;
 
 class CUnitDefinition : public CDataContainer, public CUnit, public CAnnotation
 {
+#ifndef SWIG
   friend std::ostream &operator<<(std::ostream &os, const CUnitDefinition & o);
+#endif
 
 public:
   /**
@@ -83,7 +85,8 @@ public:
   */
   CUnitDefinition(const CUnitDefinition & src,
                   const CDataContainer * pParent = NO_PARENT);
-  ~CUnitDefinition();
+
+  virtual ~CUnitDefinition();
 
   virtual const std::string & getKey() const;
 
@@ -95,7 +98,7 @@ public:
 
   const std::string & getSymbol() const;
 
-  virtual CIssue setExpression(const std::string & expression);
+  CIssue setExpression(const std::string & expression);
 
   CUnitDefinition & operator=(const CUnitDefinition & src);
 

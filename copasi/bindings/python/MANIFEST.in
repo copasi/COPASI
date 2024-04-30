@@ -1,0 +1,31 @@
+include README.md
+recursive-include copasi-dependencies *
+recursive-include copasi_source *
+
+exclude copasi_source/.git
+recursive-exclude copasi_source/speed-test-suite *
+recursive-exclude copasi_source/COPASI_TestSuite *
+recursive-exclude copasi_source/gps *
+recursive-exclude copasi_source/CopasiWS *
+recursive-exclude copasi_source/userdocs *
+recursive-exclude copasi_source/TestSuite/events *
+recursive-exclude copasi_source/dist *
+recursive-exclude copasi_source/build_* *
+recursive-exclude copasi_source/install_* *
+
+exclude copasi-dependencies/.git
+recursive-exclude copasi-dependencies/src/libexpat/testdata *
+recursive-exclude copasi-dependencies/src/libSBML/src/**/test *
+recursive-exclude copasi-dependencies/src/qwt *
+recursive-exclude copasi-dependencies/src/qwt-6 *
+recursive-exclude copasi-dependencies/src/qwtplot3d-qt4 *
+recursive-exclude copasi-dependencies/src/qcustomplot *
+recursive-exclude copasi-dependencies/src/mml *
+recursive-exclude copasi-dependencies/src/raptor/tests *
+recursive-exclude copasi-dependencies/src/raptor/docs *
+recursive-exclude copasi-dependencies/src/NativeJIT/googletest *
+
+exclude COPASI
+exclude build*
+exclude dist*
+exclude install*

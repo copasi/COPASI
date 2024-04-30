@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -377,7 +377,9 @@ public:
     const CCopasiParameter * pParameter = getParameter(name);
 
     if (!pParameter)
-      __FatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION,
+                     "%s (%d) compiled: %s %s",
+                     __FILE__, __LINE__, __DATE__, __TIME__);
 
     return pParameter->getValue<CType>();
   }
@@ -392,7 +394,9 @@ public:
     CCopasiParameter * pParameter = getParameter(name);
 
     if (!pParameter)
-      __FatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION,
+                     "%s (%d) compiled: %s %s",
+                     __FILE__, __LINE__, __DATE__, __TIME__);
 
     return pParameter->getValue<CType>();
   }
@@ -407,7 +411,9 @@ public:
     const CCopasiParameter * pParameter = getParameter(index);
 
     if (!pParameter)
-      __FatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION,
+                     "%s (%d) compiled: %s %s",
+                     __FILE__, __LINE__, __DATE__, __TIME__);
 
     return pParameter->getValue<CType>();
   }
@@ -422,7 +428,9 @@ public:
     CCopasiParameter * pParameter = getParameter(index);
 
     if (!pParameter)
-      __FatalError();
+      CCopasiMessage(CCopasiMessage::EXCEPTION,
+                     "%s (%d) compiled: %s %s",
+                     __FILE__, __LINE__, __DATE__, __TIME__);
 
     return pParameter->getValue<CType>();
   }
@@ -600,6 +608,8 @@ public:
   bool haveTemplate() const;
 
   virtual void setUserInterfaceFlag(const UserInterfaceFlag & flag);
+
+  virtual void signalChanged(const CCopasiParameter * pParameter);
 
 private:
   CCopasiParameterGroup *mpElementTemplates {NULL };
