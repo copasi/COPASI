@@ -134,7 +134,11 @@ CXMLHandler * ParameterHandler::processStart(const XML_Char * pszName,
             break;
 
             case CCopasiParameter::Type::CN:
-              mpData->pCurrentParameter->setValue(CRegisteredCommonName(sValue, mpData->pDataModel));
+              if (sValue.empty())
+                mpData->pCurrentParameter->setValue(CRegisteredCommonName());
+              else
+                mpData->pCurrentParameter->setValue(CRegisteredCommonName(sValue, mpData->pDataModel));
+
               break;
 
             default:

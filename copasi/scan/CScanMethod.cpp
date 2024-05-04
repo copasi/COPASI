@@ -115,7 +115,7 @@ CScanItem::CScanItem(CCopasiParameterGroup* si):
 
   if (pProblem != NULL)
     {
-      mpObject = pProblem->getMathContainer()->getObject(si->getValue< CCommonName >("Object"));
+      mpObject = pProblem->getMathContainer()->getObject(si->getValue< CRegisteredCommonName >("Object"));
     }
 
   if (mpObject != NULL)
@@ -716,8 +716,8 @@ CScanItemParameterSet::CScanItemParameterSet(CCopasiParameterGroup * si)
       if (!parameter)
         continue;
 
-      auto cn = parameter->getValue<CCommonName>();
-      auto* pSet =  dynamic_cast<const CModelParameterSet*>(dm->getObjectFromCN(cn));
+      auto cn = parameter->getValue< CRegisteredCommonName >();
+      auto* pSet =  dynamic_cast< const CModelParameterSet * >(dm->getObjectFromCN(cn));
 
       if (!pSet)
         continue;
@@ -733,7 +733,7 @@ void CScanItemParameterSet::step()
     mFlagFinished = true;
   else
     {
-      auto* pSet = const_cast<CModelParameterSet* >(mSets[mIndex]);
+      auto* pSet = const_cast< CModelParameterSet * >(mSets[mIndex]);
       pSet->updateModel();
     }
 

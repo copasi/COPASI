@@ -174,7 +174,7 @@ void CScanWidgetRandom::load(const CCopasiParameterGroup * pItem)
   if (mpData->getValue< unsigned C_INT32 >("Type") != CScanProblem::SCAN_RANDOM)
     return;
 
-  const std::string String = mpData->getValue< std::string >("Object");
+  const std::string String = mpData->getValue< CRegisteredCommonName >("Object");
 
   if (String == "")
     mpObject = NULL;
@@ -188,7 +188,7 @@ void CScanWidgetRandom::load(const CCopasiParameterGroup * pItem)
   if (mpObject)
     lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));
   else
-    lineEditObject->setText("");
+    lineEditObject->setText("Not Found");
 
   comboBoxType->setCurrentIndex(mpData->getValue< unsigned C_INT32 >("Distribution type"));
   changeType();
@@ -211,11 +211,11 @@ bool CScanWidgetRandom::save(CCopasiParameterGroup * pItem) const
 
   if (mpObject != NULL)
     {
-      mpData->setValue("Object", mpObject->getStringCN());
+      mpData->setValue("Object", mpObject->getCN());
     }
   else
     {
-      mpData->setValue("Object", std::string(""));
+      mpData->setValue("Object", CRegisteredCommonName());
     }
 
   if (pItem != NULL)
