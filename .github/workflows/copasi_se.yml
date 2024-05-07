@@ -1,6 +1,7 @@
 name: Build and Test 
 
 on: 
+  workflow_dispatch:
   push:
     paths:
         - "**"
@@ -81,8 +82,15 @@ jobs:
         curl -L http://bqfrank.spdns.org/Files/test-suite.zip  -o test-suite.zip
         unzip -n -qq test-suite.zip
 
+    - name: Configure COPASI (mac)
+      shell: bash
+      if: matrix.platform == 'macos-latest'
+      run: |
+        cmake -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCOPASI_INSTALL_C_API=ON -DSBML_TESTSUITE_RUN=ON -DBUILD_TESTS=ON -DBUILD_GUI=OFF -DENABLE_JIT=OFF -DCOPASI_DEPENDENCY_DIR=./dependencies/ -DCMAKE_INSTALL_PREFIX=./install/  -DBUILD_SBML_TESTSUITE:BOOL=ON -DSBML_TESTSUITE_CASES_DIR:PATH=$PWD/test-suite -S .  -B ./build_copasi
+
     - name: Configure COPASI
       shell: bash
+      if: matrix.platform != 'macos-latest'
       run: |
         cmake -G Ninja -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCOPASI_INSTALL_C_API=ON -DSBML_TESTSUITE_RUN=ON -DBUILD_TESTS=ON -DBUILD_GUI=OFF -DCOPASI_DEPENDENCY_DIR=./dependencies/ -DCMAKE_INSTALL_PREFIX=./install/  -DBUILD_SBML_TESTSUITE:BOOL=ON -DSBML_TESTSUITE_CASES_DIR:PATH=$PWD/test-suite -S .  -B ./build_copasi
 
