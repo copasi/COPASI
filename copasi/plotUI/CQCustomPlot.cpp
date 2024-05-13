@@ -1,7 +1,7 @@
-// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
 #include <copasi/config.h>
 
@@ -1397,7 +1397,7 @@ bool CQCustomPlot::saveData(const std::string & filename)
 void CQCustomPlot::setCurvesVisibility(const bool & visibility)
 {
   for (int i = 0; i < this->plottableCount(); ++i)
-    showCurve(plottable(i), visibility);
+    showCurve(plottable(i), visibility, visibility);
 
   QCustomPlot::replot();
 }
@@ -2294,16 +2294,18 @@ void CQCustomPlot::displayToolTip(QCPAbstractPlottable * plottable, int dataInde
   QToolTip::hideText();
 }
 
-void increaseRange(QCPAxis* axis, double lowerMultiplier = 0.95, double upperMultiplier = 1.05)
+void increaseRange(QCPAxis* axis, double lowerMultiplier = 1.0, double upperMultiplier = 1.0)
 {
   if (!axis)
     return;
 
   QCPRange range = axis->range();
-  axis->setRange(range.lower * lowerMultiplier, range.upper * upperMultiplier);
+  double offset = fabs(range.upper - range.lower) / 100;
+  axis->setRange(range.lower - lowerMultiplier * offset, range.upper + upperMultiplier*offset);
+  
 }
 
-void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on, bool rescale)
+void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on, bool rescale /* = true */)
 {
   if (!pCurve)
     return;
