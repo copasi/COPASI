@@ -38,7 +38,7 @@ class CHistoHelper;
 class CPlotSpec2Vector;
 class CPlotSpecification;
 class CPlotSpectogram;
-class QLineEdit;
+class QSpinBox;
 class QScrollBar;
 
 class CQCustomPlot
@@ -353,7 +353,7 @@ protected:
 
   bool mHaveNewData;
   QScrollBar * mpScrollbar;
-  QLineEdit * mpMaxLegend;
+  QSpinBox * mpMaxLegend;
   QLabel * mpPosLabel;
   QCPRange mOldX;
   QCPRange mOldY;

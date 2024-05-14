@@ -25,7 +25,7 @@
 #  include <QApplication>
 # include <QScrollBar>
 # include <QStatusBar>
-# include <QLineEdit>
+# include <QSpinBox>
 
 class CHistoHelper
 {
@@ -1440,10 +1440,12 @@ void CQCustomPlot::setupStatusbar(QStatusBar * bar)
 
   if (!mpMaxLegend)
     {
-      mpMaxLegend = new QLineEdit(this);
+      mpMaxLegend = new QSpinBox(this);
       mpMaxLegend->setToolTip("Maximum number of legend items to show");
-      mpMaxLegend->setText(QString::number(9));
-      QObject::connect(mpMaxLegend, &QLineEdit::textChanged, this, &CQCustomPlot::setupLegend);
+      mpMaxLegend->setValue(9);
+      mpMaxLegend->setMinimum(1);
+      mpMaxLegend->setMaximum(1000);
+      QObject::connect(mpMaxLegend, &QSpinBox::valueChanged, this, &CQCustomPlot::setupLegend);
     }
   bar->addPermanentWidget(mpMaxLegend, 0);
 
@@ -2347,7 +2349,7 @@ void CQCustomPlot::setupLegend()
   if (!mpMaxLegend || !legend || !mpScrollbar || !mpPosLabel)
     return;
 
-  int maxItems = mpMaxLegend->text().toInt();
+  int maxItems = mpMaxLegend->value();
   if (maxItems == 0)
     return;
 
