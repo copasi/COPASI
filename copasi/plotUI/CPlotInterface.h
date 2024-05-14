@@ -1,7 +1,7 @@
-// Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
 #ifndef COPASIPLOT_INTERFACE_H
 #define COPASIPLOT_INTERFACE_H
@@ -13,6 +13,8 @@
 #include <string>
 #include "copasi/output/COutputHandler.h"
 #include "copasi/plot/CPlotSpecification.h"
+
+class QStatusBar;
 
 class CPlotInterface : public COutputInterface
 {
@@ -83,6 +85,12 @@ public:
    * @return the unit of the specified object
   */
   QString getAxisText(Axis axis, const CObjectInterface * pObjectInterface, bool returnUnit = true);
+
+  /**
+   * Optionally allows a interface to customize the status bar of the plot window
+   * @param bar 
+   */
+  virtual void setupStatusbar(QStatusBar * bar);
 };
 
 #endif // COPASIPLOT_INTERFACE_H
