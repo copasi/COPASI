@@ -351,6 +351,7 @@ protected:
   QCPLayoutGrid * mpSubLayout;
 
   bool mHaveNewData;
+  QScrollBar * mpScrollbar;
   QLineEdit * mpMaxLegend;
   QLabel * mpPosLabel;
 
