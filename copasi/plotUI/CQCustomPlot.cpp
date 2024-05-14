@@ -1407,8 +1407,12 @@ bool CQCustomPlot::saveData(const std::string & filename)
 
 void CQCustomPlot::setCurvesVisibility(const bool & visibility)
 {
+  // we want to rescale only if we are not hiding (visibility = true)
+  // and we did not moved / zoomed
+  bool shouldRescale = visibility && !wasMovedOrZoomed();
+
   for (int i = 0; i < this->plottableCount(); ++i)
-    showCurve(plottable(i), visibility, visibility);
+    showCurve(plottable(i), visibility, shouldRescale);
 
   QCustomPlot::replot();
 }
@@ -2259,7 +2263,11 @@ void CQCustomPlot::legendClicked(QCPLegend * legend, QCPAbstractLegendItem * ite
   if (plItem != NULL && event->button() == Qt::LeftButton)
     {
       auto * pCurve = plItem->plottable();
-      showCurve(pCurve, !pCurve->visible(), false);
+
+      // QWT rescales on click only if not zoomed in: 
+      bool wasMoved = wasMovedOrZoomed();
+
+      showCurve(pCurve, !pCurve->visible(), !wasMoved);
       //replot(false);
       QCustomPlot::replot();
     }
@@ -2423,6 +2431,14 @@ void CQCustomPlot::ensureCurvesVisible()
   // increase axis a little bit, so that values at border are visible
   increaseRange(xAxis);
   increaseRange(yAxis, 1);
+
+  mOldX = xAxis->range();
+  mOldY = yAxis->range();
+}
+
+bool CQCustomPlot::wasMovedOrZoomed()
+{
+  return mOldX != xAxis->range() || mOldY != yAxis->range();
 }
 
 #endif // COPASI_USE_QCUSTOMPLOT

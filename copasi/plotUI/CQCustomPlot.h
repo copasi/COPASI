@@ -203,6 +203,7 @@ private:
   std::set< std::string > getDependentObjectNames(const CDataModel & model);
   void initializeIndependentData(const CDataModel & model);
   void ensureCurvesVisible();
+  bool wasMovedOrZoomed();
 
 private slots:
   /**
@@ -354,6 +355,8 @@ protected:
   QScrollBar * mpScrollbar;
   QLineEdit * mpMaxLegend;
   QLabel * mpPosLabel;
+  QCPRange mOldX;
+  QCPRange mOldY;
 
 signals:
   void replotSignal();
