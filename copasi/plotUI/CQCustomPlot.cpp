@@ -1,7 +1,7 @@
-// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
 #include <copasi/config.h>
 
@@ -1429,6 +1429,7 @@ void CQCustomPlot::setupStatusbar(QStatusBar * bar)
 
   if (!mpPosLabel)
     mpPosLabel = new QLabel("1 / 1", this);
+
   bar->addPermanentWidget(mpPosLabel, 0);
 
   if (!mpScrollbar)
@@ -1436,6 +1437,7 @@ void CQCustomPlot::setupStatusbar(QStatusBar * bar)
       mpScrollbar = new QScrollBar(Qt::Horizontal, this);
       QObject::connect(mpScrollbar, &QScrollBar::valueChanged, this, &CQCustomPlot::setupLegend);
     }
+
   bar->addPermanentWidget(mpScrollbar, 1);
 
   if (!mpMaxLegend)
@@ -1445,10 +1447,10 @@ void CQCustomPlot::setupStatusbar(QStatusBar * bar)
       mpMaxLegend->setValue(9);
       mpMaxLegend->setMinimum(1);
       mpMaxLegend->setMaximum(1000);
-      QObject::connect(mpMaxLegend, &QSpinBox::valueChanged, this, &CQCustomPlot::setupLegend);
+      QObject::connect(mpMaxLegend, QOverload<int>::of(&QSpinBox::valueChanged), this, &CQCustomPlot::setupLegend);
     }
-  bar->addPermanentWidget(mpMaxLegend, 0);
 
+  bar->addPermanentWidget(mpMaxLegend, 0);
 
   setupLegend();
 }
@@ -2266,7 +2268,7 @@ void CQCustomPlot::legendClicked(QCPLegend * legend, QCPAbstractLegendItem * ite
     {
       auto * pCurve = plItem->plottable();
 
-      // QWT rescales on click only if not zoomed in: 
+      // QWT rescales on click only if not zoomed in:
       bool wasMoved = wasMovedOrZoomed();
 
       showCurve(pCurve, !pCurve->visible(), !wasMoved);
@@ -2350,28 +2352,35 @@ void CQCustomPlot::setupLegend()
     return;
 
   int maxItems = mpMaxLegend->value();
+
   if (maxItems == 0)
     return;
 
   int numItems = mCurves.size();
   int numPages = floor((double)numItems / (double)maxItems);
+
   if (numPages * maxItems >= numItems)
     numPages -= 1;
+
   int currentPage = mpScrollbar->value();
+
   if (currentPage > numPages)
     currentPage = numPages;
+
   mpScrollbar->setMaximum(numPages);
-  mpPosLabel->setText(QString("%1 / %2").arg(currentPage+1).arg(numPages+1));
+  mpPosLabel->setText(QString("%1 / %2").arg(currentPage + 1).arg(numPages + 1));
 
   legend->clearItems();
 
-  for (int i = (currentPage) *maxItems; i < ((currentPage+1) *maxItems) && i < numItems; ++i)
-  {
+  for (int i = (currentPage) * maxItems; i < ((currentPage + 1) *maxItems) && i < numItems; ++i)
+    {
       auto * current = mCurves[i];
+
       if (!current->addToLegend())
         continue;
 
       auto plItem = legend->itemWithPlottable(current);
+
       if (!plItem)
         continue;
 
@@ -2380,7 +2389,7 @@ void CQCustomPlot::setupLegend()
       legendFont.setItalic(!current->visible());
       legendFont.setBold(current->visible());
       plItem->setFont(legendFont);
-  }
+    }
 
   legend->setVisible(true);
 
@@ -2394,8 +2403,7 @@ void increaseRange(QCPAxis* axis, double lowerMultiplier = 1.0, double upperMult
 
   QCPRange range = axis->range();
   double offset = fabs(range.upper - range.lower) / 100;
-  axis->setRange(range.lower - lowerMultiplier * offset, range.upper + upperMultiplier*offset);
-  
+  axis->setRange(range.lower - lowerMultiplier * offset, range.upper + upperMultiplier * offset);
 }
 
 void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on, bool rescale /* = true */)
@@ -2404,6 +2412,7 @@ void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on, bool rescal
     return;
 
   auto * plItem = legend->itemWithPlottable(pCurve);
+
   if (plItem != NULL)
     {
       plItem->setVisible(true);
@@ -2411,12 +2420,12 @@ void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on, bool rescal
       legendFont.setItalic(!on);
       legendFont.setBold(on);
       plItem->setFont(legendFont);
-  
+
       assert(pCurve == plItem->plottable());
     }
 
   pCurve->setVisible(on);
-  
+
   auto pBuddy = mY2Map.find(pCurve);
 
   if (pBuddy != mY2Map.end())
