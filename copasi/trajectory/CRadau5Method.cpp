@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -178,25 +178,28 @@ CTrajectoryMethod::Status CRadau5Method::step(const double & deltaT,
   C_FLOAT64 StartTime = mTime;
   C_FLOAT64 EndTime = mTime + deltaT;
 
-  /*
-  if (mTargetTime != EndTime)
-  {
-    // We have a new end time and reset the root counter.
-    mTargetTime = EndTime;
-    mRootCounter = 0;
-  }
-  else
-  {
-    // We are called with the same end time which means a root has previously been
-    // found. We increase the root counter and check whether the limit is reached.
-    mRootCounter++;
+#ifdef DEBUG_FLOW
+  std::cout << "StartTime: " << StartTime << std::endl;
+  std::cout << "EndTime:   " << EndTime << std::endl;
+#endif // DEBUG_FLOW
 
-    if (mRootCounter > *mpMaxInternalSteps)
-      {
-        return FAILURE;
-      }
-  }
-  */
+  if (mTargetTime != EndTime)
+    {
+      // We have a new end time and reset the root counter.
+      mTargetTime = EndTime;
+      mRootCounter = 0;
+    }
+  else
+    {
+      // We are called with the same end time which means a root has previously been
+      // found. We increase the root counter and check whether the limit is reached.
+      mRootCounter++;
+
+      if (mRootCounter > *mpMaxInternalSteps)
+        {
+          return FAILURE;
+        }
+    }
 
   // The return status of the integrator.
   Status Status = NORMAL;
@@ -283,6 +286,11 @@ CTrajectoryMethod::Status CRadau5Method::step(const double & deltaT,
     }
 
   *mpContainerStateTime = mTime;
+
+#ifdef DEBUG_FLOW
+  std::cout << "State:     " << mpContainer->getState(false) << std::endl;
+  std::cout << "Rate:      " << mpContainer->getRate(false) << std::endl;
+#endif // DEBUG_FLOW
 
   return Status;
 }
@@ -399,6 +407,11 @@ void CRadau5Method::start()
   mIWork = 0;
   mIWork[1] = *mpMaxInternalSteps;
 
+#ifdef DEBUG_FLOW
+  std::cout << "State:     " << mpContainer->getState(false) << std::endl;
+  std::cout << "Rate:      " << mpContainer->getRate(false) << std::endl;
+#endif // DEBUG_FLOW
+
   return;
 }
 
@@ -468,14 +481,16 @@ void CRadau5Method::evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
   // TODO Implement me.
 }
 
-/* solout function to generate output after successfull computation for automatic step size */
+/* solout function to generate output after successful computation for automatic step size */
 void CRadau5Method::solout(C_INT * nr, double * xold, double * x, double * y, double * cont,
                            C_INT * lrc, C_INT * n, double * rpar, C_INT * ipar, C_INT * irtrn)
 {
   if (*x != *xold && *(x + 1) != *rpar)
     {
-      static_cast<Data *>((void *) ipar)->pMethod->output(x);
       *rpar = *(x + 1);
+      // Bug 3239: We have reached an internal step. However, we must not create output instead
+      // we force return of the integration routine.
+      *irtrn = -1;
     }
 }
 
