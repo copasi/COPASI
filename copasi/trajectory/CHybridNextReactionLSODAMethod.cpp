@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -102,6 +102,7 @@ void CHybridNextReactionLSODAMethod::start()
         }
     }
 
+  mLSODA.setProblem(mpProblem);
   mLSODA.setMathContainer(mpContainer);
   mLSODA.start();
 }

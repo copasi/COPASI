@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,15 +68,71 @@
  */
 CHybridMethod::CHybridMethod(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
-                             const CTaskEnum::Task & taskType):
-  CTrajectoryMethod(pParent, methodType, taskType)
+                             const CTaskEnum::Task & taskType)
+  : CTrajectoryMethod(pParent, methodType, taskType)
+  , mNumVariableMetabs(C_INVALID_INDEX)
+  , mFirstMetabIndex(C_INVALID_INDEX)
+  , mpFirstMetabValue(nullptr)
+  , mMaxSteps(MAX_STEPS)
+  , mMaxStepsReached(false)
+  , mUseRandomSeed(USE_RANDOM_SEED)
+  , mRandomSeed(RANDOM_SEED)
+  , mMaxBalance()
+  , mMaxIntBeforeStep()
+  , mReactions()
+  , mCurrentState()
+  , mSpeciesRates()
+  , mRateOffset(C_INVALID_INDEX)
+  , mUpdateSequences()
+  , mReactionFlags()
+  , mFirstReactionFlag(nullptr)
+  , mMetabFlags()
+  , mLowerStochLimit(LOWER_STOCH_LIMIT)
+  , mUpperStochLimit(UPPER_STOCH_LIMIT)
+  , mPartitioningInterval(PARTITIONING_INTERVAL)
+  , mStepsAfterPartitionSystem(0)
+  , mMetab2React()
+  , mAmu()
+  , mAmuOld()
+  , mpRandomGenerator(nullptr)
+  , mDG()
+  , mPQ()
+  , mAutomaticStepSize(false)
 {
   initializeParameter();
 }
 
 CHybridMethod::CHybridMethod(const CHybridMethod & src,
-                             const CDataContainer * pParent):
-  CTrajectoryMethod(src, pParent)
+                             const CDataContainer * pParent)
+  : CTrajectoryMethod(src, pParent)
+  , mNumVariableMetabs(src.mNumVariableMetabs)
+  , mFirstMetabIndex(src.mFirstMetabIndex)
+  , mpFirstMetabValue(nullptr)
+  , mMaxSteps(src.mMaxSteps)
+  , mMaxStepsReached(false)
+  , mUseRandomSeed(src.mUseRandomSeed)
+  , mRandomSeed(src.mRandomSeed)
+  , mMaxBalance(src.mMaxBalance)
+  , mMaxIntBeforeStep()
+  , mReactions()
+  , mCurrentState()
+  , mSpeciesRates()
+  , mRateOffset()
+  , mUpdateSequences()
+  , mReactionFlags()
+  , mFirstReactionFlag(nullptr)
+  , mMetabFlags()
+  , mLowerStochLimit(src.mLowerStochLimit)
+  , mUpperStochLimit(src.mUpperStochLimit)
+  , mPartitioningInterval(src.mPartitioningInterval)
+  , mStepsAfterPartitionSystem(0)
+  , mMetab2React()
+  , mAmu()
+  , mAmuOld()
+  , mpRandomGenerator(nullptr)
+  , mDG()
+  , mPQ()
+  , mAutomaticStepSize(src.mAutomaticStepSize)
 {
   initializeParameter();
 }
@@ -161,6 +217,9 @@ CTrajectoryMethod::Status CHybridMethod::step(const double & deltaT,
   for (i = 0; ((i < mMaxSteps) && (time < endTime)); i++)
     {
       time = doSingleStep(time, endTime);
+
+      if (mAutomaticStepSize)
+        break;
     }
 
   *mpContainerStateTime = time;
@@ -222,6 +281,8 @@ void CHybridMethod::start()
 
   mMaxStepsReached = false;
 
+  mAutomaticStepSize = mpProblem->getAutomaticStepSize();
+
   return;
 }
 
@@ -255,15 +316,25 @@ C_FLOAT64 CHybridMethod::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime)
 
       if (ds <= endTime) // ds is an absolute time value!
         {
+          bool doNotFire = false;
+
           // if there are deterministic reactions
           if (mFirstReactionFlag != NULL) // there is at least one deterministic reaction
             {
               integrateDeterministicPart(ds - currentTime);
+              doNotFire = *mpContainerStateTime != ds;
             }
 
-          mReactions[rIndex].fire();
-          *mpContainerStateTime = ds;
-          stateChange(CMath::eStateChange::State);
+          if (doNotFire)
+            {
+              ds = *mpContainerStateTime;
+            }
+          else
+            {
+              mReactions[rIndex].fire();
+              *mpContainerStateTime = ds;
+              stateChange(CMath::eStateChange::State);
+            }
 
           if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
             {
@@ -281,9 +352,12 @@ C_FLOAT64 CHybridMethod::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime)
           if (mFirstReactionFlag != NULL) // there is at least one deterministic reaction
             {
               integrateDeterministicPart(ds - currentTime);
+              ds = *mpContainerStateTime;
             }
-
-          *mpContainerStateTime = ds;
+          else
+            {
+              *mpContainerStateTime = ds;
+            }
 
           if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
             {
@@ -300,9 +374,12 @@ C_FLOAT64 CHybridMethod::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime)
       if (mFirstReactionFlag != NULL) // there is at least one deterministic reaction
         {
           integrateDeterministicPart(ds - currentTime);
+          ds = *mpContainerStateTime;
         }
-
-      *mpContainerStateTime = ds;
+      else
+        {
+          *mpContainerStateTime = ds;
+        }
 
       if (++mStepsAfterPartitionSystem >= mPartitioningInterval)
         {

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -43,6 +43,7 @@
 #include "CHybridNextReactionRKMethod.h"
 #include "copasi/math/CMathContainer.h"
 #include "copasi/math/CMathReaction.h"
+#include "copasi/sbml/SBMLImporter.h"
 
 CHybridNextReactionRKMethod::CHybridNextReactionRKMethod(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,
@@ -89,19 +90,24 @@ void CHybridNextReactionRKMethod::initializeParameter()
  */
 void CHybridNextReactionRKMethod::integrateDeterministicPart(C_FLOAT64 dt)
 {
-  C_FLOAT64 integrationTime = 0.0;
+  size_t stepCounter = 0;
+  C_FLOAT64 totalStepsTaken = stepCounter * mStepsize;
+
   CHybridStochFlag * react = NULL;
 
   // This method uses a 4th order RungeKutta-method to integrate the deterministic part of the system. Maybe a better numerical method (adaptive stepsize, lsoda, ...) should be introduced here later on
-
-  while ((dt - integrationTime) > mStepsize)
+  while (!SBMLImporter::areApproximatelyEqual(dt, totalStepsTaken, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))
     {
-      rungeKutta(mStepsize); // for the deterministic part of the system
-      integrationTime += mStepsize;
+      rungeKutta(std::min(dt - totalStepsTaken, mStepsize)); // for the deterministic part of the system
+      totalStepsTaken = stepCounter * mStepsize + std::min(dt - totalStepsTaken, mStepsize);
+
+      if (mAutomaticStepSize)
+        break;
+
+      stepCounter += 1;
     }
 
-  rungeKutta(dt - integrationTime);
-
+  *mpContainerStateTime += totalStepsTaken;
   mpContainer->updateSimulatedValues(false);
 
   return;
@@ -119,7 +125,7 @@ void CHybridNextReactionRKMethod::rungeKutta(C_FLOAT64 dt)
 {
   size_t i;
 
-  CVector< C_FLOAT64 > CurrentState = mCurrentState;
+  CVector< C_FLOAT64 > PreviousState = mCurrentState;
 
   /* k1 step: k1 = dt*f(x(n)) */
   calculateDerivative(temp); // systemState == x(n)
@@ -132,7 +138,7 @@ void CHybridNextReactionRKMethod::rungeKutta(C_FLOAT64 dt)
   /* k2 step: k2 = dt*f(x(n) + k1/2) */
   for (i = 0; i < mNumVariableMetabs; i++)
     {
-      temp[i] = k1[i] / 2.0 + CurrentState[i];
+      temp[i] = k1[i] / 2.0 + PreviousState[i];
     }
 
   mCurrentState = temp;
@@ -146,7 +152,7 @@ void CHybridNextReactionRKMethod::rungeKutta(C_FLOAT64 dt)
   /* k3 step: k3 = dt*f(x(n) + k2/2) */
   for (i = 0; i < mNumVariableMetabs; i++)
     {
-      temp[i] = k2[i] / 2.0 + CurrentState[i];
+      temp[i] = k2[i] / 2.0 + PreviousState[i];
     }
 
   mCurrentState = temp;
@@ -160,7 +166,7 @@ void CHybridNextReactionRKMethod::rungeKutta(C_FLOAT64 dt)
   /* k4 step: k4 = dt*f(x(n) + k3); */
   for (i = 0; i < mNumVariableMetabs; i++)
     {
-      temp[i] = k3[i] + CurrentState[i];
+      temp[i] = k3[i] + PreviousState[i];
     }
 
   mCurrentState = temp;
@@ -174,7 +180,7 @@ void CHybridNextReactionRKMethod::rungeKutta(C_FLOAT64 dt)
   /* Find next position: x(n+1) = x(n) + 1/6*(k1 + 2*k2 + 2*k3 + k4)  */
   for (i = 0; i < mNumVariableMetabs; i++)
     {
-      temp[i] = CurrentState[i] + (1.0 / 6.0) * (k1[i] + 2.0 * k2[i] + 2.0 * k3[i] + k4[i]);
+      temp[i] = PreviousState[i] + (1.0 / 6.0) * (k1[i] + 2.0 * k2[i] + 2.0 * k3[i] + k4[i]);
     }
 
   mCurrentState = temp;
