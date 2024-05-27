@@ -311,12 +311,15 @@ endif (APPLE)
 
 target_link_libraries(libCOPASISE-static 
   ${CROSSGUID_LIBRARY} 
-  RAPTOR::RAPTOR
   ${LIBSBML_LIBRARY_NAME} 
   EXPAT::EXPAT
   ${CLAPACK_LIBRARIES} 
   ${NATIVEJIT_LIBRARY} 
   ${CPUFEATURES_LIBRARY})
+
+  if (COPASI_USE_RAPTOR)
+    target_link_libraries(libCOPASISE-static RAPTOR::RAPTOR)
+  endif()
 
  if (EXTRA_LIBS)
    target_link_libraries(libCOPASISE-static ${EXTRA_LIBS})   
@@ -402,7 +405,11 @@ if(ENABLE_LIBCOPASISE_SHARED)
 
   target_link_libraries(libCOPASISE-shared ${LIBSEDML_LIBRARY_NAME})
 
-  target_link_libraries(libCOPASISE-shared RAPTOR::RAPTOR ${LIBSBML_LIBRARY_NAME} EXPAT::EXPAT ${CLAPACK_LIBRARIES})
+  if (COPASI_USE_RAPTOR)
+    target_link_libraries(libCOPASISE-shared RAPTOR::RAPTOR)
+  endif()
+
+  target_link_libraries(libCOPASISE-shared ${LIBSBML_LIBRARY_NAME} EXPAT::EXPAT ${CLAPACK_LIBRARIES})
   
   if (ENABLE_OMP)
     target_link_libraries(libCOPASISE-shared OpenMP::OpenMP_CXX)
