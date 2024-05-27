@@ -608,6 +608,11 @@ void CRDFGraph::updateNamespaces()
            ++itNamespace, ++itUsed)
         if (!*itUsed)
           {
+          if (itNamespace->first == "rdf") // never remove RDF namespace
+            {
+              *itUsed = true;
+              break;
+            }
             const std::string & Predicate = it->Predicate.getURI();
 
             if (Predicate.compare(0, itNamespace->second.length(), itNamespace->second) == 0)
@@ -966,6 +971,7 @@ CRDFGraph * CRDFGraph::fromString(const std::string & miriam)
 
 std::string CRDFGraph::toXmlString()
 {
+  updateNamespaces();
   auto xml = toXmlNode();
   return xml.convertXMLNodeToString(&xml);
 }
@@ -1147,10 +1153,10 @@ void treeNodeToXMLNode(TreeNode * rootNode, XMLNode & parent, const std::string 
 
 XMLNode CRDFGraph::toXmlNode()
 {
-  auto & rdfUri = mPrefix2Namespace[std::string("rdf")];
-  XMLNode node(XMLTriple("RDF", rdfUri, "rdf"), XMLAttributes());
+  auto & rdfUri = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+  XMLNode rdfNode(XMLTriple("RDF", rdfUri, "rdf"), XMLAttributes());
   for (auto & ns : mPrefix2Namespace)
-    node.addNamespace(ns.second, ns.first);
+    rdfNode.addNamespace(ns.second, ns.first);
 
   XMLAttributes desc_att = XMLAttributes();
   desc_att.add("rdf:about", getAboutNode()->getSubject().getResource());
@@ -1261,8 +1267,8 @@ XMLNode CRDFGraph::toXmlNode()
   // now write tree as XMLNode adding to description
   treeNodeToXMLNode(rootNode, description, rdfUri);
 
-  // add descroption at end (since it'll be cloned)
-  node.addChild(description);
+  // add description at end (since it'll be cloned)
+  rdfNode.addChild(description);
 
   // cleanup
   rootNode = nullptr;
@@ -1271,5 +1277,5 @@ XMLNode CRDFGraph::toXmlNode()
     delete node;
   toBeDeleted.clear();
 
-  return node;
+  return rdfNode;
 }

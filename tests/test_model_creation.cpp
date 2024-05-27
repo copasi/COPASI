@@ -286,6 +286,41 @@ TEST_CASE("set up opt problem subtype", "[copasi][optimization]")
 
 #include <copasi/config.h>
 
+#include <copasi/MIRIAM/CModelMIRIAMInfo.h>
+
+TEST_CASE("manually create miriam using libsbml", "[copasi][miriam]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != NULL);
+  dm->newModel(NULL, true);
+
+  CMIRIAMInfo * info = CAnnotation::allocateMiriamInfo(dm->getModel());
+  info->load(dm->getModel());
+
+  CCreator * pCreator = info->createCreator("");
+  pCreator->setFamilyName("LastName");
+  pCreator->setGivenName("FirstName");
+  pCreator->setEmail("email@address.com");
+  pCreator->setORG("COPASI org");
+
+  REQUIRE(info->save());
+
+  auto miriam = info->getRDFGraph()->toXmlString();
+  REQUIRE(!miriam.empty());
+
+  // now lets construct a graph from that string
+  CRDFGraph * pGraph = CRDFGraph::fromString(miriam);
+
+  // and serialize
+  auto miriam2 = pGraph->toXmlString();
+
+  REQUIRE(miriam == miriam2);
+
+  pdelete(pGraph);
+
+  CRootContainer::removeDatamodel(dm);
+}
+
 #ifdef COPASI_USE_RAPTOR
 
 
