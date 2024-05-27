@@ -274,7 +274,6 @@ else()
 
   target_link_libraries(libCOPASISE-core
     ${CROSSGUID_LIBRARY} 
-    RAPTOR::RAPTOR
     ${LIBSBML_LIBRARY_NAME} 
     ${LIBSEDML_LIBRARY_NAME}
     ${LIBCOMBINE_LIBRARY_NAME}
@@ -283,6 +282,10 @@ else()
     ${NATIVEJIT_LIBRARY} 
     ${CPUFEATURES_LIBRARY}
   )
+  
+  if (COPASI_USE_RAPTOR)
+    target_link_libraries(libCOPASISE-core RAPTOR::RAPTOR)
+  endif()
 
   add_library (libCOPASISE-static STATIC $<TARGET_OBJECTS:libCOPASISE-core>)
 

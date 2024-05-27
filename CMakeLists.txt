@@ -460,7 +460,10 @@ endif(ENABLE_OMP)
 
 # TODO raptor should be restricted to a version which is at least
 # 1.4.18, but lower then 2.0
+option(COPASI_USE_RAPTOR "Use Raptor (<2.0) for RDF support" ON)
+if (COPASI_USE_RAPTOR)
 find_package(RAPTOR REQUIRED)
+endif()
 
 # actually iconv is only needed on BSD like systems
 find_package(ICONV)

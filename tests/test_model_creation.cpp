@@ -1,7 +1,7 @@
-// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
 #include "catch.hpp"
 
@@ -254,3 +254,104 @@ TEST_CASE("use binary min and max", "[copasi][sbml]")
 
   CRootContainer::removeDatamodel(dm);
 }
+
+
+TEST_CASE("set up opt problem subtype", "[copasi][optimization]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != NULL);
+
+  REQUIRE(dm->newModel(NULL, true));
+
+  auto * model = dm->getModel();
+
+  {
+    auto & task = (*dm->getTaskList())["Optimization"];
+    auto * problem = dynamic_cast< COptProblem * >(task.getProblem());
+
+    REQUIRE(problem != NULL);
+
+    problem->setSubtaskType(CTaskEnum::Task::timeCourse);
+  }
+  {
+    auto & task = (*dm->getTaskList())["Optimization"];
+    auto * problem = dynamic_cast< COptProblem * >(task.getProblem());
+
+    REQUIRE(problem != NULL);
+    REQUIRE((problem->getSubtaskType() == CTaskEnum::Task::timeCourse));
+  }
+  
+  CRootContainer::removeDatamodel(dm);
+}
+
+#include <copasi/config.h>
+
+#ifdef COPASI_USE_RAPTOR
+
+
+#include <copasi/MIRIAM/CRDFParser.h>
+#include <copasi/MIRIAM/CRDFGraph.h>
+#include <copasi/MIRIAM/CRDFWriter.h>
+
+TEST_CASE("miriam parsing using libsbml", "[copasi][miriam]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != NULL);
+
+  REQUIRE(dm->loadModel(getTestFile("test-data/miriam.cps"), NULL) == true);
+
+  auto * model = dm->getModel();
+  REQUIRE(model != NULL);
+
+  // first a small node from metabolite
+  auto miriam = model->getMetabolites()[0].getMiriamAnnotation();
+  REQUIRE(!miriam.empty());
+
+  auto * graph1 = CRDFParser::graphFromXml(miriam);
+  auto * graph2 = CRDFGraph::fromString(miriam);
+
+  REQUIRE(graph1->getAboutNode()->getId() == graph2->getAboutNode()->getId());
+  REQUIRE(graph1->getNameSpaceMap().size() == graph2->getNameSpaceMap().size());
+  REQUIRE(graph1->getTriplets().size() == graph2->getTriplets().size());
+  REQUIRE(graph1->getBlankNodeMap().size() == graph2->getBlankNodeMap().size());
+
+  // try walking over the graph printing it
+  auto* start = graph1->getAboutNode();
+  auto incoming = graph1->getIncomingTriplets(start);
+  auto parents = graph1->getParentSubjects(start);
+
+
+  // now ensure that serializing to string works 
+  CRDFWriter writer;
+  auto * raptorSerialization = writer.write(graph2);
+  auto serialization = graph2->toXmlString();
+  
+  free(raptorSerialization);
+  pdelete(graph1);
+  pdelete(graph2);
+
+  // now the whole model node
+  miriam = model->getMiriamAnnotation();
+  REQUIRE(!miriam.empty());
+
+  graph1 = CRDFParser::graphFromXml(miriam);
+  graph2 = CRDFGraph::fromString(miriam);
+
+  REQUIRE(graph1->getAboutNode()->getId() == graph2->getAboutNode()->getId());
+  REQUIRE(graph1->getNameSpaceMap().size() == graph2->getNameSpaceMap().size());
+  REQUIRE(graph1->getTriplets().size() == graph2->getTriplets().size());
+  REQUIRE(graph1->getBlankNodeMap().size() == graph2->getBlankNodeMap().size());
+
+  raptorSerialization = writer.write(graph2);
+  serialization = graph2->toXmlString();
+
+
+  free(raptorSerialization);
+  pdelete(graph1);
+  pdelete(graph2);
+
+
+  CRootContainer::removeDatamodel(dm);
+}
+
+#endif // COPASI_USE_RAPTOR
