@@ -288,6 +288,27 @@ TEST_CASE("set up opt problem subtype", "[copasi][optimization]")
 
 #include <copasi/MIRIAM/CModelMIRIAMInfo.h>
 
+TEST_CASE("import sbml model and test miriam info", "[copasi][sbml][miriam]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != NULL);
+
+  REQUIRE(dm->importSBML(getTestFile("test-data/miriam.xml"), NULL) == true);
+
+  auto * model = dm->getModel();
+  REQUIRE(model != NULL);
+
+  CMIRIAMInfo * info = CAnnotation::allocateMiriamInfo(dm->getModel());
+  info->load(dm->getModel());
+
+  auto miriam = info->getRDFGraph()->toXmlString();
+  REQUIRE(!miriam.empty());
+
+
+  CRootContainer::removeDatamodel(dm);
+}
+
+
 TEST_CASE("manually create miriam using libsbml", "[copasi][miriam]")
 {
   auto * dm = CRootContainer::addDatamodel();

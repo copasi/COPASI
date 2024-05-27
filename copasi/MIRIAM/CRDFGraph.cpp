@@ -724,197 +724,82 @@ bool CRDFNode::removeTripletFromGraph(const CRDFTriplet & triplet) const
 }
 
 
-#include <sbml/xml/XMLInputStream.h>
 #include <sbml/xml/XMLNode.h>
 #include <sbml/xml/XMLToken.h>
-#include <sbml/xml/XMLErrorLog.h>
 
-std::string trim(const std::string & str)
-{
-  std::string s = str;
-
-  // Trim leading whitespace, newline, and carriage return characters
-  s.erase(s.begin(), std::find_if(s.begin(), s.end(), [](unsigned char ch) {
-            return !std::isspace(ch) && ch != '\n' && ch != '\r';
-          }));
-
-  // Trim trailing whitespace, newline, and carriage return characters
-  s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
-            return !std::isspace(ch) && ch != '\n' && ch != '\r';
-          }).base(),
-          s.end());
-
-  return s;
-}
-
-void addNewTokenToGraph(CRDFGraph & graph, XMLToken & next, XMLInputStream & stream, CRDFSubject & subject, const std::string & rdfUrl, const std::string & unusedPredicate = "")
+void addXmlNodeToGraph(CRDFGraph & graph, XMLNode & current, CRDFSubject & subject, const std::string & rdfUri, const std::string & unusedPredicate = "")
 {
   CRDFObject object;
   CRDFLiteral literal;
-  XMLToken current = stream.next();
-  XMLToken nextOne = stream.peek();
 
   std::string elementName = current.getName();
   std::string predicate = current.getURI() + elementName;
-  bool haveResource = current.hasAttr("resource", rdfUrl);
-  bool isBlank = !current.hasAttr("about", rdfUrl) && !haveResource;
+  bool isDescription = elementName == "Description";
+  bool isBag = elementName == "Bag";
+  if (isDescription && !unusedPredicate.empty())
+    predicate = unusedPredicate;
+  bool haveResource = current.hasAttr("resource", rdfUri);
+  bool haveText = current.getNumChildren() == 1 && current.getChild(0).isText();
+  bool isBlank = !current.hasAttr("about", rdfUri) && !haveResource && !haveText;
 
-  if (elementName == "Description" && current.isStart())
-    {
-      object.setType(CRDFObject::BLANK_NODE);
-      object.setBlankNodeId(graph.generatedNodeId());
-      graph.addTriplet(subject, unusedPredicate.empty() ? predicate : unusedPredicate, object);
-
-      CRDFSubject newSubject;
-      newSubject.setType(CRDFSubject::BLANK_NODE);
-      newSubject.setBlankNodeId(object.getBlankNodeID());
-
-      while (stream.isGood())
-        {
-          stream.skipText();
-          auto token = stream.peek();
-          if (token.isEndFor(current))
-            {
-              stream.next();
-              break;
-            }
-          addNewTokenToGraph(graph, token, stream, newSubject, rdfUrl);
-        }
-      return;
-    }
-  else if (elementName == "Bag" && current.isStart())
+  if (haveResource)
     {
       object.setType(CRDFObject::RESOURCE);
-      object.setResource(predicate, false);
-      predicate = current.getURI() + "type";
-
+      object.setResource(current.getAttrValue("resource", rdfUri), false);
       graph.addTriplet(subject, predicate, object);
-
-      std::string dataType = current.getAttrValue("datatype", rdfUrl);
-      std::string language = current.getAttrValue("lang", rdfUrl);
-      while (stream.isGood())
-        {
-          // grab literals first
-          std::string text;
-          while (stream.isGood() && stream.peek().isText())
-            {
-              text += stream.next().getCharacters();
-            }
-
-          text = trim(text);
-
-          if (!text.empty())
-            {
-              object.setType(CRDFObject::LITERAL);
-              if (!dataType.empty())
-                {
-                  literal.setType(CRDFLiteral::TYPED);
-                  literal.setDataType(dataType);
-                }
-              else
-                {
-                  literal.setType(CRDFLiteral::PLAIN);
-                  literal.setLanguage(language);
-                }
-              literal.setLexicalData(text);
-              object.setLiteral(literal);
-              graph.addTriplet(subject, predicate, object);
-            }
-
-          //grab the next element
-          XMLToken child = stream.peek();
-
-          // break when done
-          if (child.isEndFor(current))
-            break;
-
-          isBlank = !child.hasAttr("resource", rdfUrl);
-          addNewTokenToGraph(graph, child, stream, subject, rdfUrl);
-        }
-      stream.skipText();
-      XMLToken pos = stream.peek();
-      if (pos.isEndFor(current))
-        stream.next();
-      return;
     }
-  else if (haveResource && current.isStart())
+  else if (haveText)
     {
-      object.setType(CRDFObject::RESOURCE);
-      object.setResource(current.getAttrValue("resource", rdfUrl), false);
+      std::string dataType = current.getAttrValue("datatype", rdfUri);
+      std::string language = current.getAttrValue("lang", rdfUri);
+
+      object.setType(CRDFObject::LITERAL);
+      if (!dataType.empty())
+        {
+          literal.setType(CRDFLiteral::TYPED);
+          literal.setDataType(dataType);
+        }
+      else
+        {
+          literal.setType(CRDFLiteral::PLAIN);
+          literal.setLanguage(language);
+        }
+      literal.setLexicalData(current.getChild(0).getCharacters());
+      object.setLiteral(literal);
       graph.addTriplet(subject, predicate, object);
-      return;
     }
   else
     {
-      std::string dataType = current.getAttrValue("datatype", rdfUrl);
-      std::string language = current.getAttrValue("lang", rdfUrl);
 
-      while (stream.isGood())
+      if (isBag)
         {
-          // grab literals first
-          std::string text;
-          while (stream.isGood() && stream.peek().isText())
+          object.setType(CRDFObject::RESOURCE);
+          object.setResource(predicate, false);
+          predicate = current.getURI() + "type";
+
+          graph.addTriplet(subject, predicate, object);
+        }
+
+      if (isBlank && !isDescription && !isBag)
+        {
+          object.setType(CRDFObject::BLANK_NODE);
+          object.setBlankNodeId(graph.generatedNodeId());
+          graph.addTriplet(subject, predicate, object);
+
+          CRDFSubject newSubject;
+          newSubject.setType(CRDFSubject::BLANK_NODE);
+          newSubject.setBlankNodeId(object.getBlankNodeID());
+
+          for (int i = 0; i < current.getNumChildren(); ++i)
             {
-              text += stream.next().getCharacters();
+              addXmlNodeToGraph(graph, current.getChild(i), newSubject, rdfUri, predicate);
             }
-
-          text = trim(text);
-
-          if (!text.empty())
+        }
+      else
+        {
+          for (int i = 0; i < current.getNumChildren(); ++i)
             {
-              object.setType(CRDFObject::LITERAL);
-              if (!dataType.empty())
-                {
-                  literal.setType(CRDFLiteral::TYPED);
-                  literal.setDataType(dataType);
-                }
-              else
-                {
-                  literal.setType(CRDFLiteral::PLAIN);
-                  literal.setLanguage(language);
-                }
-              literal.setLexicalData(text);
-              object.setLiteral(literal);
-              graph.addTriplet(subject, predicate, object);
-            }
-
-          //grab the next element
-          XMLToken child1 = stream.peek();
-
-          // break when done
-          if (child1.isEndFor(current))
-            {
-              stream.next();
-              break;
-            }
-
-          if (child1.isStart())
-            {
-              if (child1.getName() == "Bag")
-                {
-                  object.setType(CRDFObject::BLANK_NODE);
-                  object.setBlankNodeId(graph.generatedNodeId());
-                  graph.addTriplet(subject, predicate, object);
-
-                  CRDFSubject newSubject;
-                  newSubject.setType(CRDFSubject::BLANK_NODE);
-                  newSubject.setBlankNodeId(object.getBlankNodeID());
-                  addNewTokenToGraph(graph, child1, stream, newSubject, rdfUrl);
-
-                  stream.skipText();
-                  XMLToken pos = stream.peek();
-                  if (pos.isEndFor(child1))
-                    stream.next();
-                }
-              else
-                {
-                  addNewTokenToGraph(graph, child1, stream, subject, rdfUrl, predicate);
-
-                  stream.skipText();
-                  XMLToken pos = stream.peek();
-                  if (pos.isEndFor(child1))
-                    stream.next();
-                }
+              addXmlNodeToGraph(graph, current.getChild(i), subject, rdfUri, predicate);
             }
         }
     }
@@ -924,47 +809,38 @@ CRDFGraph * CRDFGraph::fromString(const std::string & miriam)
 {
   CRDFGraph * graph = new CRDFGraph();
 
-  XMLErrorLog log1;
-  XMLInputStream stream(miriam.c_str(), false, "", &log1);
+  XMLNode * content = XMLNode::convertStringToXMLNode(miriam);
 
-  if ((stream.peek().isStart()) && (stream.peek().getName() == "RDF"))
+  std::string rdfUri;
+
+  for (int i = 0; i < content->getNamespaces().getLength(); ++i)
     {
-      XMLToken rdfToken = stream.next();
-      std::string rdfUrl = rdfToken.getURI();
+      std::string prefix = content->getNamespaces().getPrefix(i);
+      std::string uri = content->getNamespaces().getURI(i);
+      graph->addNameSpace(prefix, uri);
 
-      for (int i = 0; i < rdfToken.getNamespaces().getLength(); ++i)
-        {
-          std::string prefix = rdfToken.getNamespaces().getPrefix(i);
-          std::string uri = rdfToken.getNamespaces().getURI(i);
-          graph->addNameSpace(prefix, uri);
-        }
+      if (prefix == "rdf")
+        rdfUri = uri;
+    }
 
-      stream.skipText();
-      rdfToken = stream.next();
-      // ensure that this is the description token
-      if (rdfToken.getName() == "Description" && rdfToken.hasAttr("about", rdfUrl))
+  if (content->getNumChildren() > 0)
+    {
+      XMLNode & desc = content->getChild("Description");
+      std::string about = desc.getAttrValue("about", rdfUri);
+
+      for (int i = 0; i < desc.getNumChildren(); ++i)
         {
-          std::string about = rdfToken.getAttrValue("about", rdfUrl);
 
           CRDFSubject subject;
           subject.setType(CRDFSubject::RESOURCE);
           subject.setResource(about, true);
 
-          while (stream.isGood())
-            {
-              stream.skipText();
-              //grab the next element
-              XMLToken next = stream.peek();
-
-              // break when done
-              if (next.isEndFor(rdfToken))
-                break;
-
-              // otherwise add new triple
-              addNewTokenToGraph(*graph, next, stream, subject, rdfUrl);
-            }
+          addXmlNodeToGraph(*graph, desc.getChild(i), subject, rdfUri);
         }
     }
+
+  pdelete(content);
+
   graph->guessGraphRoot();
   return graph;
 }
