@@ -1049,6 +1049,9 @@ XMLNode CRDFGraph::toXmlNode()
     rdfNode.addNamespace(ns.second, ns.first);
 
   XMLAttributes desc_att = XMLAttributes();
+  if (getAboutNode() == NULL)
+    return rdfNode;
+
   desc_att.add("rdf:about", getAboutNode()->getSubject().getResource());
 
   std::map< const CRDFNode *, XMLNode * > mNodeMap;
