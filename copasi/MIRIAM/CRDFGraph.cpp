@@ -809,7 +809,21 @@ CRDFGraph * CRDFGraph::fromString(const std::string & miriam)
 {
   CRDFGraph * graph = new CRDFGraph();
 
-  XMLNode * content = XMLNode::convertStringToXMLNode(miriam);
+  XMLNamespaces ns; 
+  ns.add("http://www.copasi.org/RDF/MiriamTerms#", "CopasiMT");
+  ns.add("http://purl.org/dc/terms/", "dcterms");
+  ns.add("http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdf");
+  ns.add("http://www.w3.org/2001/vcard-rdf/3.0#", "vCard");
+  ns.add("http://biomodels.net/biology-qualifiers/", "bqbiol");
+  ns.add("http://biomodels.net/model-qualifiers/", "bqmodel");
+
+  XMLNode * content = XMLNode::convertStringToXMLNode(miriam, &ns);
+
+  if (content == NULL)
+  {
+    // content is invalid or empty, return graph as is
+    return graph;
+  }
 
   std::string rdfUri;
 

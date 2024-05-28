@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <cmath>
 
@@ -7085,8 +7085,19 @@ bool CSBMLExporter::updateMIRIAMAnnotation(const CDataObject* pCOPASIObject, SBa
 
           // the convertStringToXMLNode has changed behavior between libsbml 3 and libsbml 4
           // in libsbml it creates a dummy node and in libsbml 4 it doesn't
-          XMLNode* pMIRIAMNode = XMLNode::convertStringToXMLNode(miriamAnnotationString);
-          assert(pMIRIAMNode != NULL);
+          XMLNamespaces ns;
+          ns.add("http://www.copasi.org/RDF/MiriamTerms#", "CopasiMT");
+          ns.add("http://purl.org/dc/terms/", "dcterms");
+          ns.add("http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdf");
+          ns.add("http://www.w3.org/2001/vcard-rdf/3.0#", "vCard");
+          ns.add("http://biomodels.net/biology-qualifiers/", "bqbiol");
+          ns.add("http://biomodels.net/model-qualifiers/", "bqmodel");
+
+          XMLNode* pMIRIAMNode = XMLNode::convertStringToXMLNode(miriamAnnotationString, &ns);
+          if (pMIRIAMNode == NULL)
+          {
+            return false;
+          }
 
           if (pCOPASIAnnotation == NULL)
             {
