@@ -918,6 +918,28 @@ bool CFitProblem::checkFunctionalConstraints()
   return true;
 }
 
+C_FLOAT64 CFitProblem::getFunctionalConstraintsViolation()
+{
+  C_FLOAT64 L2norm = 0.0;
+
+  std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
+  std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
+
+  if (!mpConstraintItems->empty())
+    mCounters.ConstraintCounter++;
+
+  for (; it != end; ++it)
+    {
+      C_FLOAT64 Violation = (*it)->getConstraintViolation();
+      L2norm += Violation * Violation;
+    }
+
+  if (L2norm > 0.0)
+    mCounters.FailedConstraintCounter++;
+
+  return sqrt(L2norm);
+}
+
 CFitItem & CFitProblem::addFitItem(const CRegisteredCommonName & objectCN)
 {
   CDataModel* pDataModel = getObjectDataModel();
