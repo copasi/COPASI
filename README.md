@@ -12,7 +12,7 @@ means to visualize data in customizable plots, histograms and animations of
 network diagrams. 
 ([list of features](http://copasi.org/Support/Features/)). 
 
-Follow us on [Mastodon](https://fosstodon.org/@copasi). 
+**Home page**: [https://copasi.org](https://copasi.org)  |  Follow us on [Mastodon](https://fosstodon.org/@copasi). 
 
 ### Download COPASI
 Precompiled versions of COPASI are available for all operating systems on the 
