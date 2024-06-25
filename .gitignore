@@ -83,3 +83,5 @@ python_copasi.egg-info
 /copasi-dependencies
 TestSuite/distribution/out.txt
 .~lock*
+
+tests/opt.cps

@@ -70,10 +70,14 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
             mSubType = SubType::AVOGADRO;
           }
 
+        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), nullptr);
+
         break;
 
       case SubType::AVOGADRO:
         mData = "<Reference=Avogadro Constant>";
+        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), nullptr);
+
         break;
 
       case SubType::POINTER:
