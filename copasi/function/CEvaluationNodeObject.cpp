@@ -57,7 +57,7 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
 {
   mPrecedence = PRECEDENCE_NUMBER;
   mValueType = ValueType::Number;
-
+  
   switch (subType)
     {
       case SubType::INVALID:
@@ -70,13 +70,10 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
             mSubType = SubType::AVOGADRO;
           }
 
-        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), nullptr);
-
         break;
 
       case SubType::AVOGADRO:
         mData = "<Reference=Avogadro Constant>";
-        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), nullptr);
         break;
 
       case SubType::POINTER:
@@ -139,6 +136,7 @@ CIssue CEvaluationNodeObject::compile()
             return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
           }
 
+        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), mpTree);
         mpObject = mpTree->getNodeObject(mRegisteredObjectCN);
 
         const CDataObject * pDataObject = CObjectInterface::DataObject(mpObject);
@@ -227,7 +225,8 @@ CIssue CEvaluationNodeObject::compile()
             return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
           }
 
-        mpObject = mpTree->getNodeObject(mData.substr(1, mData.length() - 2));
+        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), mpTree);
+        mpObject = mpTree->getNodeObject(mRegisteredObjectCN);
 
         if (mpObject != NULL)
           {
@@ -332,6 +331,7 @@ const CEvaluationNode::Data & CEvaluationNodeObject::getData() const
   switch (mSubType)
     {
       case SubType::CN:
+      case SubType::AVOGADRO:
         const_cast< CEvaluationNodeObject * >(this)->mData = "<" + mRegisteredObjectCN + ">";
         break;
 
