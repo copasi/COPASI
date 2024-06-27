@@ -140,6 +140,7 @@ CIssue CEvaluationNodeObject::compile()
             return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
           }
 
+        getData();
         mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), mpTree);
         mpObject = mpTree->getNodeObject(mRegisteredObjectCN);
 
@@ -163,7 +164,7 @@ CIssue CEvaluationNodeObject::compile()
               {
                 mpObject = pObject;
                 mRegisteredObjectCN = mpObject->getCN();
-                mData = getData();
+                getData();
               }
 
             if (pDataObject->hasFlag(CDataObject::ValueDbl))
@@ -186,8 +187,6 @@ CIssue CEvaluationNodeObject::compile()
 
             return CIssue(CIssue::eSeverity::Error, CIssue::eKind::ValueNotFound);
           }
-
-        mData = "<" + mRegisteredObjectCN + ">";
       }
       break;
 
@@ -229,6 +228,7 @@ CIssue CEvaluationNodeObject::compile()
             return CIssue(CIssue::eSeverity::Error, CIssue::eKind::StructureInvalid);
           }
 
+        getData();
         mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), mpTree);
         mpObject = mpTree->getNodeObject(mRegisteredObjectCN);
 
@@ -362,6 +362,7 @@ std::string CEvaluationNodeObject::getInfix(const std::vector< std::string > & /
   switch (mSubType)
     {
       case SubType::CN:
+      case SubType::AVOGADRO:
         return "<" + mRegisteredObjectCN + ">";
         break;
 
