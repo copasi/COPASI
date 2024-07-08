@@ -710,7 +710,8 @@ bool CFitProblem::initialize()
           for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
             {
               mExperimentConstraints(i, j) = pConstraint;
-              ObjectSet[i].insert(pConstraint->getObject());
+              if (pConstraint->getObject())
+                ObjectSet[i].insert(pConstraint->getObject());
             }
         }
       else
@@ -721,7 +722,8 @@ bool CFitProblem::initialize()
                 return false;
 
               mExperimentConstraints(Index, j) = pConstraint;
-              ObjectSet[Index].insert(pConstraint->getObject());
+              if (pConstraint->getObject())
+                ObjectSet[Index].insert(pConstraint->getObject());
             };
         }
     }
