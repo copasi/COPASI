@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -128,12 +128,12 @@ private:
              C_FLOAT64 & qd0,
              C_FLOAT64 & qd1);
 
-  void prC_INT322(C_INT32 n,
-                  C_FLOAT64 x[],
-                  C_INT32 prin,
-                  C_FLOAT64 fx,
-                  C_INT32 nf,
-                  C_INT32 nl);
+  void print2(C_INT32 n,
+              C_FLOAT64 x[],
+              C_INT32 prin,
+              C_FLOAT64 fx,
+              C_INT32 nf,
+              C_INT32 nl);
 
   void quad(C_INT32 n,
             FPraxis * f,
@@ -159,9 +159,9 @@ private:
 
   C_FLOAT64 r8_uniform_01(C_INT32 & seed);
 
-  void r8mat_prC_INT32(C_INT32 m, C_INT32 n, C_FLOAT64 a[], std::string title);
+  void r8mat_print(C_INT32 m, C_INT32 n, C_FLOAT64 a[], std::string title);
 
-  void r8mat_prC_INT32_some(C_INT32 m, C_INT32 n, C_FLOAT64 a[], C_INT32 ilo, C_INT32 jlo, C_INT32 ihi, C_INT32 jhi, std::string title);
+  void r8mat_print_some(C_INT32 m, C_INT32 n, C_FLOAT64 a[], C_INT32 ilo, C_INT32 jlo, C_INT32 ihi, C_INT32 jhi, std::string title);
 
   void r8mat_transpose_in_place(C_INT32 n, C_FLOAT64 a[]);
 
@@ -173,7 +173,7 @@ private:
 
   C_FLOAT64 r8vec_norm(C_INT32 n, C_FLOAT64 a[]);
 
-  void r8vec_prC_INT32(C_INT32 n, C_FLOAT64 a[], std::string title);
+  void r8vec_print(C_INT32 n, C_FLOAT64 a[], std::string title);
 
   void svsort(C_INT32 n, C_FLOAT64 d[], C_FLOAT64 v[]);
 

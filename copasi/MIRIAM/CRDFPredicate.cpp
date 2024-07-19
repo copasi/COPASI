@@ -1,22 +1,22 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 #include "copasi/copasi.h"
 
@@ -87,6 +87,68 @@ const std::string CRDFPredicate::PredicateURI[] =
   "any", // any
   "end" // end
 };
+
+const std::string CRDFPredicate::PredicatePrefix[] =
+  {
+    "CopasiMT:encodes",       // copasi_encodes
+    "CopasiMT:hasPart",       // copasi_hasPart
+    "CopasiMT:hasVersion",    // copasi_hasVersion
+    "CopasiMT:is",            // copasi_is
+    "CopasiMT:isDescribedBy", // copasi_isDescribedBy
+    "CopasiMT:isEncodedBy",   // copasi_isEncodedBy
+    "CopasiMT:isHomologTo",   // copasi_isHomologTo
+    "CopasiMT:isPartOf",      // copasi_isPartOf
+    "CopasiMT:isVersionOf",   // copasi_isVersionOf
+    "CopasiMT:occursIn",      // copasi_occursIn
+    // "CopasiMT:modification", // copasi_modification
+    "bqbiol:encodes",                // bqbiol_encodes
+    "bqbiol:hasPart",                // bqbiol_hasPart
+    "bqbiol:hasProperty",            // bqbiol_hasProperty
+    "bqbiol:hasVersion",             // bqbiol_hasVersion
+    "bqbiol:is",                     // bqbiol_is
+    "bqbiol:isDescribedBy",          // bqbiol_isDescribedBy
+    "bqbiol:isEncodedBy",            // bqbiol_isEncodedBy
+    "bqbiol:isHomologTo",            // bqbiol_isHomologTo
+    "bqbiol:isPartOf",               // bqbiol_isPartOf
+    "bqbiol:isPropertyOf",           // bqbiol_isPropertyOf
+    "bqbiol:isVersionOf",            // bqbiol_isVersionOf
+    "bqbiol:occursIn",               // copasi_occursIn
+    "bqbiol:hasTaxon",               // copasi_hasTaxon
+    "bqmodel:is",                    // bqmodel_is
+    "bqmodel:isDerivedFrom",         // bqmodel_isDerivedFrom
+    "bqmodel:isDescribedBy",         // bqmodel_isDescribedBy
+    "bqmodel:isInstanceOf",          // bqmodel_isInstanceOf
+    "bqmodel:isDescribedBy",         // bqmodel_hasInstance
+    "dc:creator",                    // dc_creator
+    "dcterms:creator",               // dcterms_creator
+    "dcterms:bibliographicCitation", // dcterms_bibliographicCitation
+    // "dcterms:contributor", // dcterms_contributor
+    "dcterms:created",     // dcterms_created
+    "dcterms:description", // dcterms_description,
+    // "dcterms:license", // dcterms_license
+    "dcterms:modified", // dcterms_modified
+    // "dcterms:rights", // dcterms_rights
+    // "dcterms:rightsHolder", // dcterms_rightsHolder
+    "dcterms:W3CDTF",   // dcterms_W3CDTF
+    "vCard:EMAIL",      // vcard_EMAIL
+    "vCard:Family",     // vcard_Family
+    "vCard:Given",      // vcard_Given
+    "vCard:N",          // vcard_N
+    "vCard:ORG",        // vcard_ORG
+    "vCard:Orgname",    // vcard_Orgname
+    "rdf:type",         // rdf_type,
+    "rdf:li",           // rdf_li
+    "rdf:li",           // rdf__n
+    "rdf:subject",      //rdf_subject
+    "rdf:predicate",    //rdf_predicate
+    "rdf:object",       //rdf_object
+    "CopasiMT:unknown", // unknown
+    // For internal use
+    "about", // about
+    "any",   // any
+    "end"    // end
+};
+
 
 // static
 std::map< std::string, CRDFPredicate::ePredicateType > CRDFPredicate::URI2Predicate;
@@ -559,6 +621,14 @@ void CRDFPredicate::createAllowedLocationsAbsolute(const CRDFPredicate::ePredica
           AbsoluteList.push_back(Absolute);
         }
     }
+}
+
+std::string CRDFPredicate::getElementNameForType(ePredicateType type)
+{
+  if (type < copasi_encodes || type >= unknown)
+    return std::string();
+  
+  return PredicatePrefix[type];
 }
 
 void CRDFPredicate::initialize()

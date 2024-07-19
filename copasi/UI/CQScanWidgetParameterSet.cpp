@@ -104,7 +104,7 @@ bool CQScanWidgetParameterSet::save(CCopasiParameterGroup * pItem) const
 
   for (auto & p : mSelection)
     {
-      group->addParameter(std::to_string(count++), CCopasiParameter::Type::CN, p.second->getStringCN());
+      group->addParameter(std::to_string(count++), CCopasiParameter::Type::CN, p.second->CObjectInterface::getCN());
     }
 
   if (pItem != NULL)

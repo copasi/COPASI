@@ -50,7 +50,7 @@ jobs:
     - name: Configure COPASI
       shell: bash
       run: |
-        cmake -B build_copasi -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCOPASI_INSTALL_C_API=ON -DBUILD_TESTS=ON -DBUILD_GUI=OFF -DCOPASI_DEPENDENCY_DIR=./dependencies/ -DCMAKE_INSTALL_PREFIX=./install/ -DENABLE_OMP=ON -S . 
+        cmake -B build_copasi -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCOPASI_INSTALL_C_API=ON -DBUILD_TESTS=ON -DBUILD_GUI=OFF -DCOPASI_DEPENDENCY_DIR=./dependencies/ -DCMAKE_INSTALL_PREFIX=./install/ -DENABLE_OMP=ON  -DENABLE_JIT=OFF  -S . 
         sed -i 's/libgomp.a/libgomp.so/g' build_copasi/CMakeCache.txt
         sed -i 's/libpthread.a/libpthread.so/g' build_copasi/CMakeCache.txt
 

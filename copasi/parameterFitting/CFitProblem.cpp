@@ -710,7 +710,8 @@ bool CFitProblem::initialize()
           for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
             {
               mExperimentConstraints(i, j) = pConstraint;
-              ObjectSet[i].insert(pConstraint->getObject());
+              if (pConstraint->getObject())
+                ObjectSet[i].insert(pConstraint->getObject());
             }
         }
       else
@@ -721,7 +722,8 @@ bool CFitProblem::initialize()
                 return false;
 
               mExperimentConstraints(Index, j) = pConstraint;
-              ObjectSet[Index].insert(pConstraint->getObject());
+              if (pConstraint->getObject())
+                ObjectSet[Index].insert(pConstraint->getObject());
             };
         }
     }
@@ -916,6 +918,28 @@ bool CFitProblem::checkFunctionalConstraints()
       }
 
   return true;
+}
+
+C_FLOAT64 CFitProblem::getFunctionalConstraintsViolation()
+{
+  C_FLOAT64 L2norm = 0.0;
+
+  std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
+  std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
+
+  if (!mpConstraintItems->empty())
+    mCounters.ConstraintCounter++;
+
+  for (; it != end; ++it)
+    {
+      C_FLOAT64 Violation = (*it)->getConstraintViolation();
+      L2norm += Violation * Violation;
+    }
+
+  if (L2norm > 0.0)
+    mCounters.FailedConstraintCounter++;
+
+  return sqrt(L2norm);
 }
 
 CFitItem & CFitProblem::addFitItem(const CRegisteredCommonName & objectCN)

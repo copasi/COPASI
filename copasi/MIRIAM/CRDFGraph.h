@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifndef COPASI_CRDFGraph
 #define COPASI_CRDFGraph
@@ -31,6 +31,8 @@
 
 #include "copasi/MIRIAM/CRDFTriplet.h"
 #include "copasi/MIRIAM/CRDFNode.h"
+
+#include <sbml/xml/XMLNode.h>
 
 class CRDFObject;
 class CRDFSubject;
@@ -59,6 +61,22 @@ public:
    * Destructor
    */
   ~CRDFGraph();
+
+  /**
+   * Creates a new Graph by parsing the given XML string using libSBML
+   * 
+   * @param miriam COPASI miriam structure
+   * @return the resulting graph
+   */
+  static CRDFGraph* fromString(const std::string & miriam);
+
+  /**
+   * 
+   * @return xml string serialization of this graph
+   */
+  std::string toXmlString();
+
+  XMLNode toXmlNode();
 
   /**
    * Retrieve the about/top node of the graph.

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -223,6 +223,8 @@ bool COptMethodSRES::mutate()
       // calculate its fitness
       Continue = evaluate(**it);
       *pValue++ = mEvaluationValue;
+      *pPhi = mProblemContext.master()->getFunctionalConstraintsViolation();
+      *pPhi *= *pPhi;
       *pPhi++ = phi(i);
     }
 
@@ -232,44 +234,31 @@ bool COptMethodSRES::mutate()
 // select mPopulationSize individuals
 void COptMethodSRES::select()
 {
-  size_t i, j;
-  size_t TotalPopulation = mIndividuals.size();
-  bool wasSwapped;
-  size_t sweepNum = TotalPopulation;  // This is default based on paper
-
   // Selection Method for Stochastic Ranking
   // stochastic ranking "bubble sort"
 
-  for (i = 0; i < sweepNum; i++) // Here sweepNum is optimal number of sweeps from paper
+  // We use the bubble sort in the reverse direction. This will assure that within mPopulationSize iteration
+  // we have properly sorted the top mPopulationSize individuals.
+  for (size_t i = 0; i < mPopulationSize; i++)
     {
-      wasSwapped = false;
-
-      // :TODO: since we are only interested in mPopulationSize highest ranked
-      // individuals the upper limit of the loop can be improved.
-      for (j = 0; j < TotalPopulation - 1; j++)  // lambda is number of individuals
+      for (size_t j = mIndividuals.size() - 1; j > 0; --j)
         {
-          if ((mPhi[j] == 0 && mPhi[j + 1] == 0) || // within bounds
-              (mRandomContext.master()->getRandomOO() < mPf))      // random chance to compare values outside bounds
+          if (mPhi[j] == 0.0 && mPhi[j - 1] == 0.0)
             {
-              // compare obj fcn using mValue alternative code
-              if (mValues[j] > mValues[j + 1])
-                {
-                  swap(j, j + 1);
-                  wasSwapped = true;
-                }
+              if (mValues[j] < mValues[j - 1])
+                swap(j, j - 1);
             }
-          else
+          else if (mPhi[j] != 0.0 && mPhi[j - 1] != 0.0)
             {
-              if (mPhi[j] > mPhi[j + 1]) // j further outside then j+1
-                {
-                  swap(j, j + 1);
-                  wasSwapped = true;
-                }
+              if (mValues[j] + mPhi[j] < mValues[j - 1] + mPhi[j - 1])
+                swap(j, j - 1);
+            }
+          else if (mRandomContext.master()->getRandomOO() < mPf)      // random chance to compare values outside bounds
+            {
+              if (mValues[j] < mValues[j - 1])
+                swap(j, j - 1);
             }
         }
-
-      // if nothing was swapped, then they're ordered!
-      if (wasSwapped == false) break;
     }
 }
 
@@ -376,6 +365,8 @@ bool COptMethodSRES::creation(size_t first)
 
       Continue = evaluate(**it);
       *pValue++ = mEvaluationValue;
+      *pPhi = mProblemContext.master()->getFunctionalConstraintsViolation();
+      *pPhi *= *pPhi;
       *pPhi++ = phi(0);
 
       ++it;
@@ -493,6 +484,8 @@ bool COptMethodSRES::creation(size_t first)
       // calculate its fitness
       Continue = evaluate(**it);
       *pValue++ = mEvaluationValue;
+      *pPhi = mProblemContext.master()->getFunctionalConstraintsViolation();
+      *pPhi *= *pPhi;
       *pPhi++ = phi(i);
     }
 
@@ -663,7 +656,6 @@ bool COptMethodSRES::optimise()
 
   // initialise the population
   Continue = creation(0);
-  mProblemContext.master()->setSolution(mValues[0], *mIndividuals[0], true);
 
   // get the index of the fittest
   BestIndex = fittest();

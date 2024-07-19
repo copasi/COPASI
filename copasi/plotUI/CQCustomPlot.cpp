@@ -23,6 +23,9 @@
 #  include "copasi/parameterFitting/CExperimentSet.h"
 
 #  include <QApplication>
+# include <QScrollBar>
+# include <QStatusBar>
+# include <QSpinBox>
 
 class CHistoHelper
 {
@@ -173,6 +176,9 @@ CQCustomPlot::CQCustomPlot(QWidget * parent)
   , mDefaultTicker(NULL)
   , mpSubLayout(NULL)
   , mHaveNewData(true)
+  , mpScrollbar(NULL)
+  , mpMaxLegend(NULL)
+  , mpPosLabel(NULL)
 {
 }
 
@@ -197,6 +203,9 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
   , mDefaultTicker(NULL)
   , mpSubLayout(NULL)
   , mHaveNewData(true)
+  , mpScrollbar(NULL)
+  , mpMaxLegend(NULL)
+  , mpPosLabel(NULL)
 {
   // Size the vectors to be able to store information for all activities.
   mData.resize(ActivitySize);
@@ -803,11 +812,11 @@ bool CQCustomPlot::initFromSpec(const CPlotSpecification * plotspec)
       yAxis2->setLabel("Percent %");
     }
 
-  legend->setVisible(true);
+  legend->setVisible(false);
   legend->setWrap(3);
   legend->setColumnSpacing(3);
   legend->setRowSpacing(1);
-  legend->setFillOrder(QCPLegend::foColumnsFirst, true);
+  legend->setFillOrder(QCPLegend::foColumnsFirst, false);
   legend->setBorderPen(QPen(Qt::NoPen));
 
   if (!mpSubLayout)
@@ -819,6 +828,8 @@ bool CQCustomPlot::initFromSpec(const CPlotSpecification * plotspec)
       plotLayout()->addElement(count, 0, mpSubLayout);
       plotLayout()->setRowStretchFactor(count, 0.01);
     }
+
+  setupLegend();
 
   mIgnoreUpdate = false;
 
@@ -1396,8 +1407,12 @@ bool CQCustomPlot::saveData(const std::string & filename)
 
 void CQCustomPlot::setCurvesVisibility(const bool & visibility)
 {
+  // we want to rescale only if we are not hiding (visibility = true)
+  // and we did not moved / zoomed
+  bool shouldRescale = visibility && !wasMovedOrZoomed();
+
   for (int i = 0; i < this->plottableCount(); ++i)
-    showCurve(plottable(i), visibility);
+    showCurve(plottable(i), visibility, shouldRescale);
 
   QCustomPlot::replot();
 }
@@ -1405,6 +1420,39 @@ void CQCustomPlot::setCurvesVisibility(const bool & visibility)
 void CQCustomPlot::replot()
 {
   replot(false);
+}
+
+void CQCustomPlot::setupStatusbar(QStatusBar * bar)
+{
+  if (!bar)
+    return;
+
+  if (!mpPosLabel)
+    mpPosLabel = new QLabel("1 / 1", this);
+
+  bar->addPermanentWidget(mpPosLabel, 0);
+
+  if (!mpScrollbar)
+    {
+      mpScrollbar = new QScrollBar(Qt::Horizontal, this);
+      QObject::connect(mpScrollbar, &QScrollBar::valueChanged, this, &CQCustomPlot::setupLegend);
+    }
+
+  bar->addPermanentWidget(mpScrollbar, 1);
+
+  if (!mpMaxLegend)
+    {
+      mpMaxLegend = new QSpinBox(this);
+      mpMaxLegend->setToolTip("Maximum number of legend items to show");
+      mpMaxLegend->setValue(9);
+      mpMaxLegend->setMinimum(1);
+      mpMaxLegend->setMaximum(1000);
+      QObject::connect(mpMaxLegend, QOverload<int>::of(&QSpinBox::valueChanged), this, &CQCustomPlot::setupLegend);
+    }
+
+  bar->addPermanentWidget(mpMaxLegend, 0);
+
+  setupLegend();
 }
 
 void CQCustomPlot::replot(bool resetZoom)
@@ -2219,7 +2267,11 @@ void CQCustomPlot::legendClicked(QCPLegend * legend, QCPAbstractLegendItem * ite
   if (plItem != NULL && event->button() == Qt::LeftButton)
     {
       auto * pCurve = plItem->plottable();
-      showCurve(pCurve, !pCurve->visible(), false);
+
+      // QWT rescales on click only if not zoomed in:
+      bool wasMoved = wasMovedOrZoomed();
+
+      showCurve(pCurve, !pCurve->visible(), !wasMoved);
       //replot(false);
       QCustomPlot::replot();
     }
@@ -2294,32 +2346,90 @@ void CQCustomPlot::displayToolTip(QCPAbstractPlottable * plottable, int dataInde
   QToolTip::hideText();
 }
 
-void increaseRange(QCPAxis* axis, double lowerMultiplier = 0.95, double upperMultiplier = 1.05)
+void CQCustomPlot::setupLegend()
+{
+  if (!mpMaxLegend || !legend || !mpScrollbar || !mpPosLabel)
+    return;
+
+  int maxItems = mpMaxLegend->value();
+
+  if (maxItems == 0)
+    return;
+
+  int numItems = mCurves.size();
+  int numPages = floor((double)numItems / (double)maxItems);
+
+  if (numPages * maxItems >= numItems)
+    numPages -= 1;
+
+  int currentPage = mpScrollbar->value();
+
+  if (currentPage > numPages)
+    currentPage = numPages;
+
+  mpScrollbar->setMaximum(numPages);
+  mpPosLabel->setText(QString("%1 / %2").arg(currentPage + 1).arg(numPages + 1));
+
+  legend->clearItems();
+
+  for (int i = (currentPage) * maxItems; i < ((currentPage + 1) *maxItems) && i < numItems; ++i)
+    {
+      auto * current = mCurves[i];
+
+      if (!current->addToLegend())
+        continue;
+
+      auto plItem = legend->itemWithPlottable(current);
+
+      if (!plItem)
+        continue;
+
+      // mark as bold
+      QFont legendFont = plItem->font();
+      legendFont.setItalic(!current->visible());
+      legendFont.setBold(current->visible());
+      plItem->setFont(legendFont);
+    }
+
+  legend->setVisible(true);
+
+  QCustomPlot::replot();
+}
+
+void increaseRange(QCPAxis* axis, double lowerMultiplier = 1.0, double upperMultiplier = 1.0)
 {
   if (!axis)
     return;
 
   QCPRange range = axis->range();
-  axis->setRange(range.lower * lowerMultiplier, range.upper * upperMultiplier);
+  double offset = fabs(range.upper - range.lower) / 100;
+  axis->setRange(range.lower - lowerMultiplier * offset, range.upper + upperMultiplier * offset);
 }
 
-void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on, bool rescale)
+void CQCustomPlot::showCurve(QCPAbstractPlottable * pCurve, bool on, bool rescale /* = true */)
 {
   if (!pCurve)
     return;
 
   auto * plItem = legend->itemWithPlottable(pCurve);
-  pCurve->setVisible(on);
-  plItem->setVisible(true);
 
-  QFont legendFont = plItem->font();
-  legendFont.setItalic(!on);
-  legendFont.setBold(on);
-  plItem->setFont(legendFont);
-  auto pBuddy = mY2Map.find(plItem->plottable());
+  if (plItem != NULL)
+    {
+      plItem->setVisible(true);
+      QFont legendFont = plItem->font();
+      legendFont.setItalic(!on);
+      legendFont.setBold(on);
+      plItem->setFont(legendFont);
+
+      assert(pCurve == plItem->plottable());
+    }
+
+  pCurve->setVisible(on);
+
+  auto pBuddy = mY2Map.find(pCurve);
 
   if (pBuddy != mY2Map.end())
-    (*pBuddy).second->setVisible(plItem->plottable()->visible());
+    (*pBuddy).second->setVisible(pCurve->visible());
 
   if (rescale)
     ensureCurvesVisible();
@@ -2332,6 +2442,14 @@ void CQCustomPlot::ensureCurvesVisible()
   // increase axis a little bit, so that values at border are visible
   increaseRange(xAxis);
   increaseRange(yAxis, 1);
+
+  mOldX = xAxis->range();
+  mOldY = yAxis->range();
+}
+
+bool CQCustomPlot::wasMovedOrZoomed()
+{
+  return mOldX != xAxis->range() || mOldY != yAxis->range();
 }
 
 #endif // COPASI_USE_QCUSTOMPLOT

@@ -111,6 +111,12 @@ public:
   virtual bool checkFunctionalConstraints() override;
 
   /**
+   * Retrieve the L2 norm of functional constraint violation.
+   * @result C_FLOAT64 violation
+   */
+  virtual C_FLOAT64 getFunctionalConstraintsViolation() override;
+
+  /**
    * This is the output method for any object. The default implementation
    * provided with CDataObject uses the ostream operator<< of the object
    * to print the object.To override this default behavior one needs to
