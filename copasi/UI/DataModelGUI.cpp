@@ -784,6 +784,7 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
 
   // update all initial value
   if (action != ListViews::RENAME && // not needed after rename
+      !(action == ListViews::CHANGE && objectType == ListViews::ObjectType::TASK) && // not needed after task change
       !(action == ListViews::ADD && objectType == ListViews::ObjectType::MODEL) // not needed when model was loaded
      )
     {
