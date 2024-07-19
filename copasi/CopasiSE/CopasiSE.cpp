@@ -214,6 +214,11 @@ int main(int argc, char *argv[])
   COptions::getValue("License", License);
 
   COptions::getValue("ReportFile", ReportFileName);
+  // should a report filename be given, ensure that 
+  // it is an absolute path
+  if (!ReportFileName.empty())
+    CDirEntry::makePathAbsolute(ReportFileName, COptions::getPWD());
+
   COptions::getValue("ScheduledTask", ScheduledTask);
   COptions::getValue("SedmlTask", SedmlTask);
   COptions::getValue("PrintSedMLTasks", PrintSedMLTasks);
