@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,12 +18,14 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include <raptor.h>
 #include <string.h>
 #include <stdlib.h>
 
 #include "copasi/copasi.h"
 
+#ifdef COPASI_USE_RAPTOR
+
+#include <raptor.h>
 #include "CRaptorInit.h"
 
 // static
@@ -55,3 +57,5 @@ bool CRaptorInit::isLocalURI(raptor_uri * pURI)
 
   return isLocal;
 }
+
+#endif // COPASI_USE_RAPTOR

@@ -693,6 +693,22 @@ bool COptProblem::checkParametricConstraints()
   return true;
 }
 
+C_FLOAT64 COptProblem::getParametricConstraintsViolation()
+{
+  C_FLOAT64 L2norm = 0.0;
+
+  std::vector< COptItem * >::const_iterator it = mpOptItems->begin();
+  std::vector< COptItem * >::const_iterator end = mpOptItems->end();
+
+  for (; it != end; ++it)
+    {
+      C_FLOAT64 Violation = (*it)->getConstraintViolation();
+      L2norm += Violation * Violation;
+    }
+
+  return sqrt(L2norm);
+}
+
 bool COptProblem::checkFunctionalConstraints()
 {
   // Make sure the constraint values are up to date.
@@ -712,6 +728,31 @@ bool COptProblem::checkFunctionalConstraints()
       }
 
   return true;
+}
+
+C_FLOAT64 COptProblem::getFunctionalConstraintsViolation()
+{
+  C_FLOAT64 L2norm = 0.0;
+
+  // Make sure the constraint values are up to date.
+  mpContainer->applyUpdateSequence(mUpdateConstraints);
+
+  std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
+  std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
+
+  if (!mpConstraintItems->empty())
+    mCounters.ConstraintCounter++;
+
+  for (; it != end; ++it)
+    {
+      C_FLOAT64 Violation = (*it)->getConstraintViolation();
+      L2norm += Violation * Violation;
+    }
+
+  if (L2norm > 0.0)
+    mCounters.FailedConstraintCounter++;
+
+  return sqrt(L2norm);
 }
 
 // virtual

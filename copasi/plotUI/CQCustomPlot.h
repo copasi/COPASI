@@ -1,7 +1,7 @@
-// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
 #ifndef COPASI_CQCUSTOMPLOT_H
 #define COPASI_CQCUSTOMPLOT_H
@@ -38,6 +38,8 @@ class CHistoHelper;
 class CPlotSpec2Vector;
 class CPlotSpecification;
 class CPlotSpectogram;
+class QSpinBox;
+class QScrollBar;
 
 class CQCustomPlot
   : public QCustomPlot
@@ -127,6 +129,12 @@ public:
    */
   virtual QString getSaveFilters() override;
 
+  /**
+   * Add scrollbar to status bar
+   * @param bar 
+   */
+  virtual void setupStatusbar(QStatusBar * bar) override;
+
 public slots:
   virtual void replot() override;
   virtual void replot(bool resetZoom);
@@ -135,6 +143,8 @@ public slots:
   virtual void toggleLogY(bool logY) override;
   virtual void render(QPainter *, QRect) override;
   virtual void resetZoom() override;
+
+  void setupLegend();
 
 protected:
   void toggleLog(QCPAxis * axis, bool useLog);
@@ -193,6 +203,7 @@ private:
   std::set< std::string > getDependentObjectNames(const CDataModel & model);
   void initializeIndependentData(const CDataModel & model);
   void ensureCurvesVisible();
+  bool wasMovedOrZoomed();
 
 private slots:
   /**
@@ -341,6 +352,11 @@ protected:
   QCPLayoutGrid * mpSubLayout;
 
   bool mHaveNewData;
+  QScrollBar * mpScrollbar;
+  QSpinBox * mpMaxLegend;
+  QLabel * mpPosLabel;
+  QCPRange mOldX;
+  QCPRange mOldY;
 
 signals:
   void replotSignal();

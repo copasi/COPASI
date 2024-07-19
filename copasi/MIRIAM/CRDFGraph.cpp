@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #include <iostream>
 #include <fstream>
@@ -608,6 +608,11 @@ void CRDFGraph::updateNamespaces()
            ++itNamespace, ++itUsed)
         if (!*itUsed)
           {
+          if (itNamespace->first == "rdf") // never remove RDF namespace
+            {
+              *itUsed = true;
+              break;
+            }
             const std::string & Predicate = it->Predicate.getURI();
 
             if (Predicate.compare(0, itNamespace->second.length(), itNamespace->second) == 0)
@@ -716,4 +721,454 @@ bool CRDFNode::addTripletToGraph(const CRDFTriplet & triplet) const
 bool CRDFNode::removeTripletFromGraph(const CRDFTriplet & triplet) const
 {
   return mGraph.removeTriplet(triplet);
+}
+
+
+#include <sbml/xml/XMLNode.h>
+#include <sbml/xml/XMLToken.h>
+
+void addXmlNodeToGraph(CRDFGraph & graph, XMLNode & current, CRDFSubject & subject, const std::string & rdfUri, const std::string & unusedPredicate = "")
+{
+  CRDFObject object;
+  CRDFLiteral literal;
+
+  std::string elementName = current.getName();
+  std::string predicate = current.getURI() + elementName;
+  bool isDescription = elementName == "Description";
+  bool isBag = elementName == "Bag";
+  if (isDescription && !unusedPredicate.empty())
+    predicate = unusedPredicate;
+  bool haveResource = current.hasAttr("resource", rdfUri);
+  bool haveText = current.getNumChildren() == 1 && current.getChild(0).isText();
+  bool isBlank = !current.hasAttr("about", rdfUri) && !haveResource && !haveText;
+
+  if (haveResource)
+    {
+      object.setType(CRDFObject::RESOURCE);
+      object.setResource(current.getAttrValue("resource", rdfUri), false);
+      graph.addTriplet(subject, predicate, object);
+    }
+  else if (haveText)
+    {
+      std::string dataType = current.getAttrValue("datatype", rdfUri);
+      std::string language = current.getAttrValue("lang", rdfUri);
+
+      object.setType(CRDFObject::LITERAL);
+      if (!dataType.empty())
+        {
+          literal.setType(CRDFLiteral::TYPED);
+          literal.setDataType(dataType);
+        }
+      else
+        {
+          literal.setType(CRDFLiteral::PLAIN);
+          literal.setLanguage(language);
+        }
+      literal.setLexicalData(current.getChild(0).getCharacters());
+      object.setLiteral(literal);
+      graph.addTriplet(subject, predicate, object);
+    }
+  else
+    {
+
+      if (isBag)
+        {
+          object.setType(CRDFObject::RESOURCE);
+          object.setResource(predicate, false);
+          predicate = current.getURI() + "type";
+
+          graph.addTriplet(subject, predicate, object);
+        }
+
+      if (isBlank && !isDescription && !isBag)
+        {
+          object.setType(CRDFObject::BLANK_NODE);
+          object.setBlankNodeId(graph.generatedNodeId());
+          graph.addTriplet(subject, predicate, object);
+
+          CRDFSubject newSubject;
+          newSubject.setType(CRDFSubject::BLANK_NODE);
+          newSubject.setBlankNodeId(object.getBlankNodeID());
+
+          for (int i = 0; i < current.getNumChildren(); ++i)
+            {
+              addXmlNodeToGraph(graph, current.getChild(i), newSubject, rdfUri, predicate);
+            }
+        }
+      else
+        {
+          for (int i = 0; i < current.getNumChildren(); ++i)
+            {
+              addXmlNodeToGraph(graph, current.getChild(i), subject, rdfUri, predicate);
+            }
+        }
+    }
+}
+
+CRDFGraph * CRDFGraph::fromString(const std::string & miriam)
+{
+  CRDFGraph * graph = new CRDFGraph();
+
+  XMLNamespaces ns; 
+  ns.add("http://www.copasi.org/RDF/MiriamTerms#", "CopasiMT");
+  ns.add("http://purl.org/dc/terms/", "dcterms");
+  ns.add("http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdf");
+  ns.add("http://www.w3.org/2001/vcard-rdf/3.0#", "vCard");
+  ns.add("http://biomodels.net/biology-qualifiers/", "bqbiol");
+  ns.add("http://biomodels.net/model-qualifiers/", "bqmodel");
+
+  XMLNode * content = XMLNode::convertStringToXMLNode(miriam, &ns);
+
+  if (content == NULL)
+  {
+    // content is invalid or empty, return graph as is
+    return graph;
+  }
+
+  std::string rdfUri;
+
+  for (int i = 0; i < content->getNamespaces().getLength(); ++i)
+    {
+      std::string prefix = content->getNamespaces().getPrefix(i);
+      std::string uri = content->getNamespaces().getURI(i);
+      graph->addNameSpace(prefix, uri);
+
+      if (prefix == "rdf")
+        rdfUri = uri;
+    }
+
+  if (content->getNumChildren() > 0)
+    {
+      XMLNode & desc = content->getChild("Description");
+      std::string about = desc.getAttrValue("about", rdfUri);
+
+      for (int i = 0; i < desc.getNumChildren(); ++i)
+        {
+
+          CRDFSubject subject;
+          subject.setType(CRDFSubject::RESOURCE);
+          subject.setResource(about, true);
+
+          addXmlNodeToGraph(*graph, desc.getChild(i), subject, rdfUri);
+        }
+    }
+
+  pdelete(content);
+
+  graph->guessGraphRoot();
+  return graph;
+}
+
+std::string CRDFGraph::toXmlString()
+{
+  updateNamespaces();
+  auto xml = toXmlNode();
+  return xml.convertXMLNodeToString(&xml);
+}
+
+struct TreeNode
+{
+  std::string elementName;
+  std::string resource;
+  std::string literal;
+  std::string dataType;
+  std::string language;
+  bool isBlank;
+  std::vector< TreeNode * > children;
+
+  bool needBag()
+  {
+    if (children.size() == 1 && children[0]->isBlank)
+      for (TreeNode * child : children[0]->children)
+        {
+          if (child->elementName == "rdf:type")
+            return true;
+          if (child->elementName == "rdf:li")
+            return true;
+        }
+    return false;
+  }
+
+  bool needDescription()
+  {
+    for (TreeNode * child : children)
+      {
+        if (child->isBlank)
+          return true;
+      }
+    return false;
+  }
+
+  bool isResourceOnly()
+  {
+    return literal.empty() && !resource.empty() && children.empty();
+  }
+
+  XMLNode * createNode()
+  {
+    int pos = elementName.find(':');
+    if (pos == std::string::npos)
+      return NULL;
+
+    XMLNode * node = new XMLNode(XMLTriple(elementName.substr(pos + 1), "", elementName.substr(0, pos)), XMLAttributes());
+    return node;
+  }
+
+  void addLiteralToNode(XMLNode * node)
+  {
+    if (!dataType.empty())
+      {
+        node->addAttr("rdf:datatype", dataType);
+      }
+    if (!language.empty())
+      {
+        node->addAttr("rdf:lang", language);
+      }
+
+    if (!literal.empty())
+      {
+        node->addChild(XMLNode(literal.c_str()));
+      }
+  }
+
+  void addResourceToNode(XMLNode * node)
+  {
+    node->addAttr("rdf:resource", resource);
+  }
+};
+
+TreeNode * searchTreeByElementName(TreeNode * node, const std::string & elementName)
+{
+  if (node->elementName == elementName)
+    {
+      return node;
+    }
+  for (TreeNode * child : node->children)
+    {
+      TreeNode * result = searchTreeByElementName(child, elementName);
+      if (result != nullptr)
+        {
+          return result;
+        }
+    }
+  return nullptr;
+}
+
+TreeNode * searchTreeByResource(TreeNode * node, const std::string & resource)
+{
+  if (node->resource == resource)
+    {
+      return node;
+    }
+  for (TreeNode * child : node->children)
+    {
+      TreeNode * result = searchTreeByResource(child, resource);
+      if (result != nullptr)
+        {
+          return result;
+        }
+    }
+  return nullptr;
+}
+
+void treeNodeToXMLNode(TreeNode * rootNode, XMLNode & parent, const std::string & rdfUri)
+{
+  if (rootNode->isResourceOnly())
+    {
+      rootNode->addResourceToNode(&parent);
+    }
+  else if (!rootNode->literal.empty())
+    {
+      rootNode->addLiteralToNode(&parent);
+    }
+
+  for (auto * node : rootNode->children)
+    {
+      if (node->elementName == "rdf:type")
+        continue;
+
+      XMLNode * xmlNode = node->createNode();
+      if (xmlNode == NULL)
+        continue;
+
+      if (node->isResourceOnly())
+        {
+          node->addResourceToNode(xmlNode);
+        }
+      else if (!node->literal.empty())
+        {
+          node->addLiteralToNode(xmlNode);
+        }
+      else
+        {
+          if (node->needBag())
+            {
+              XMLNode * bagNode = new XMLNode(XMLTriple("Bag", rdfUri, "rdf"), XMLAttributes());
+              for (auto * child : node->children)
+                {
+                  if (child->elementName == "rdf:type")
+                    continue;
+                  treeNodeToXMLNode(child, *bagNode, rdfUri);
+                }
+              xmlNode->addChild(*bagNode);
+            }
+          else if (node->needDescription())
+            {
+              XMLNode * descriptionNode = new XMLNode(XMLTriple("Description", rdfUri, "rdf"), XMLAttributes());
+              for (auto * child : node->children)
+                {
+                  if (child->elementName == "rdf:type")
+                    continue;
+                  treeNodeToXMLNode(child, *descriptionNode, rdfUri);
+                }
+              xmlNode->addChild(*descriptionNode);
+            }
+          else
+            {
+              for (auto * child : node->children)
+                {
+                  if (child->elementName == "rdf:type")
+                    continue;
+                  treeNodeToXMLNode(child, *xmlNode, rdfUri);
+                }
+            }
+        }
+
+      // add at end, since libSBML copies the node
+      parent.addChild(*xmlNode);
+      // which means we have to delete this one
+      delete xmlNode;
+    }
+}
+
+XMLNode CRDFGraph::toXmlNode()
+{
+  auto & rdfUri = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
+  XMLNode rdfNode(XMLTriple("RDF", rdfUri, "rdf"), XMLAttributes());
+  for (auto & ns : mPrefix2Namespace)
+    rdfNode.addNamespace(ns.second, ns.first);
+
+  XMLAttributes desc_att = XMLAttributes();
+  if (getAboutNode() == NULL)
+    return rdfNode;
+
+  desc_att.add("rdf:about", getAboutNode()->getSubject().getResource());
+
+  std::map< const CRDFNode *, XMLNode * > mNodeMap;
+
+  XMLNode description(XMLTriple("Description", rdfUri, "rdf"), desc_att);
+
+  mNodeMap[getAboutNode()] = &description;
+
+  std::map< std::string, TreeNode * > nodeMap;
+  std::vector< TreeNode * > toBeDeleted;
+
+  TreeNode * rootNode = new TreeNode();
+  toBeDeleted.push_back(rootNode);
+  rootNode->resource = getAboutNode()->getSubject().getResource();
+  rootNode->isBlank = false;
+  nodeMap[rootNode->resource] = rootNode;
+
+  // Create tree nodes for each RDF node
+  for (const auto & triplet : mTriplets)
+    {
+      if (!triplet.pSubject)
+        continue;
+
+      TreeNode * node = searchTreeByResource(rootNode,
+                                             triplet.pSubject->getSubject().getType() == CRDFSubject::RESOURCE
+                                               ? triplet.pSubject->getSubject().getResource()
+                                               : triplet.pSubject->getSubject().getBlankNodeID());
+      if (!node && triplet.pSubject->getSubject().getType() == CRDFSubject::BLANK_NODE)
+        node = nodeMap[triplet.pSubject->getSubject().getBlankNodeID()];
+
+      if (node == nullptr)
+        {
+          node = new TreeNode();
+          toBeDeleted.push_back(node);
+          if (triplet.pSubject->getSubject().getType() == CRDFSubject::RESOURCE)
+            {
+              node->resource = triplet.pSubject->getSubject().getResource();
+              node->isBlank = false;
+            }
+          else
+            {
+              node->resource = triplet.pSubject->getSubject().getBlankNodeID();
+              node->isBlank = true;
+            }
+
+          nodeMap[node->resource] = node;
+        }
+
+      // add predicate
+      std::string name = CRDFPredicate::getElementNameForType(triplet.Predicate.getType());
+      if (name.empty())
+        continue;
+
+      TreeNode * predicateNode = new TreeNode();
+      toBeDeleted.push_back(predicateNode);
+      predicateNode->elementName = name;
+      node->children.push_back(predicateNode);
+
+      // and object
+      if (!triplet.pObject)
+        continue;
+      const CRDFObject & Object = triplet.pObject->getObject();
+      switch (Object.getType())
+        {
+        case CRDFObject::RESOURCE:
+          {
+            TreeNode * objectNode = new TreeNode();
+            toBeDeleted.push_back(objectNode);
+            objectNode->resource = Object.getResource();
+            objectNode->isBlank = false;
+            predicateNode->children.push_back(objectNode);
+          }
+          break;
+
+        case CRDFObject::BLANK_NODE:
+          {
+            TreeNode * objectNode = nodeMap[Object.getBlankNodeID()];
+            if (objectNode == nullptr)
+              objectNode = searchTreeByResource(rootNode, Object.getBlankNodeID());
+            if (objectNode == nullptr)
+              {
+                objectNode = new TreeNode();
+                toBeDeleted.push_back(objectNode);
+                objectNode->resource = Object.getBlankNodeID();
+                objectNode->isBlank = true;
+                if (!objectNode->resource.empty())
+                  nodeMap[objectNode->resource] = objectNode;
+              }
+            predicateNode->children.push_back(objectNode);
+          }
+          break;
+
+        case CRDFObject::LITERAL:
+          {
+            TreeNode * objectNode = new TreeNode();
+            triplet.pSubject->getSubject().getBlankNodeID();
+            objectNode->literal = Object.getLiteral().getLexicalData();
+            objectNode->dataType = Object.getLiteral().getDataType();
+            objectNode->language = Object.getLiteral().getLanguage();
+            predicateNode->children.push_back(objectNode);
+          }
+          break;
+        }
+    }
+
+  // now write tree as XMLNode adding to description
+  treeNodeToXMLNode(rootNode, description, rdfUri);
+
+  // add description at end (since it'll be cloned)
+  rdfNode.addChild(description);
+
+  // cleanup
+  rootNode = nullptr;
+  nodeMap.clear();
+  for (TreeNode * node : toBeDeleted)
+    delete node;
+  toBeDeleted.clear();
+
+  return rdfNode;
 }

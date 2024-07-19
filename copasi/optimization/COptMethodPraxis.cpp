@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,6 +31,7 @@
 
 #include "copasi/parameterFitting/CFitProblem.h"
 #include "copasi/core/CDataObjectReference.h"
+#include "copasi/sbml/SBMLImporter.h"
 
 COptMethodPraxis::COptMethodPraxis(const CDataContainer * pParent,
                                    const CTaskEnum::Method & methodType,
@@ -133,6 +134,7 @@ bool COptMethodPraxis::optimise()
   // Report the first value as the current best
   mBestValue = evaluate();
   mBest = mCurrent;
+  mCountWithinTolerance = 0;
   mContinue = mProblemContext.master()->setSolution(mBestValue, mBest, true);
 
   // We found a new best value lets report it.
@@ -211,10 +213,28 @@ const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT32 & n)
         mBest[i] = x[i];
 
       mBestValue = mEvaluationValue;
+      mCountWithinTolerance = 0;
       mContinue = mProblemContext.master()->setSolution(mBestValue, mBest, true);
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
+    }
+  else if (SBMLImporter::areApproximatelyEqual(mBestValue, mEvaluationValue, mTolerance))
+    {
+      double Norm = 0;
+      double tmp;
+
+      for (i = 0; i < n; i++)
+        {
+          tmp = mBest[i] - x[i];
+          Norm += tmp * tmp;
+        }
+
+      if (sqrt(Norm) < mTolerance)
+        {
+          ++mCountWithinTolerance;
+          mContinue &= (mCountWithinTolerance < 100);
+        }
     }
 
   mpParentTask->output(COutputInterface::MONITORING);

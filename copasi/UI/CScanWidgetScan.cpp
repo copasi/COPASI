@@ -203,7 +203,7 @@ void CScanWidgetScan::load(const CCopasiParameterGroup * pItem)
     slotIntervalsChecked();
 
   lineEditNumber->setText(QString::number(mpData->getValue< C_INT32 >("Number of steps")));
-  std::string tmpString = mpData->getValue< std::string >("Object");
+  std::string tmpString = mpData->getValue< CRegisteredCommonName >("Object");
 
   if (tmpString == "")
     mpObject = NULL;
@@ -217,7 +217,7 @@ void CScanWidgetScan::load(const CCopasiParameterGroup * pItem)
   if (mpObject)
     lineEditObject->setText(FROM_UTF8(mpObject->getObjectDisplayName()));
   else
-    lineEditObject->setText("");
+    lineEditObject->setText("Not Found");
 
   lineEditMin->setText(convertToQString(mpData->getValue< C_FLOAT64 >("Minimum")));
   lineEditMax->setText(convertToQString(mpData->getValue< C_FLOAT64 >("Maximum")));
@@ -237,11 +237,11 @@ bool CScanWidgetScan::save(CCopasiParameterGroup * pItem) const
 
   if (mpObject != NULL)
     {
-      mpData->setValue("Object", mpObject->getStringCN());
+      mpData->setValue("Object", mpObject->getCN());
     }
   else
     {
-      mpData->setValue("Object", std::string(""));
+      mpData->setValue("Object", CRegisteredCommonName());
     }
 
   if (!mpData->getParameter("Values"))

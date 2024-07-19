@@ -1082,9 +1082,14 @@ bool CDataModel::newModel(CProcessReport * pProcessReport,
   // set content type to COPASI
   mData.mContentType = ContentType::COPASI;
 
-  CRegisteredCommonName::setEnabled(false);
-  commonAfterLoad(pProcessReport, deleteOldData);
-  CRegisteredCommonName::setEnabled(true);
+  if (CRegisteredCommonName::isEnabled())
+    {
+      CRegisteredCommonName::setEnabled(false);
+      commonAfterLoad(pProcessReport, deleteOldData);
+      CRegisteredCommonName::setEnabled(true);
+    }
+  else
+    commonAfterLoad(pProcessReport, deleteOldData);
 
   return true;
 }

@@ -1,18 +1,29 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/MIRIAM/CRaptorInit.h,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2009/01/07 18:58:54 $
-// End CVS Header
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
 #ifndef COPASI_CRaptorInit
 #define COPASI_CRaptorInit
+
+#include <copasi/copasi.h>
+
+#ifdef COPASI_USE_RAPTOR
 
 class CRaptorInit
   {
@@ -45,5 +56,7 @@ class CRaptorInit
   };
 
 #define pRaptorFreeUri(p) {if (p) {raptor_free_uri(p); p = NULL;}}
+
+#endif // COPASI_USE_RAPTOR
 
 #endif // COPASI_CRaptorInit

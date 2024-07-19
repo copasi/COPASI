@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 /*!
     \file AboutDialog.cpp
@@ -85,7 +85,7 @@ const char *AboutDialog::text =
   "<li>libSBML %5</li>"
   "<li>libSEDML %6</li>"
   "<li>libCombine %7</li>"
-  "<li>raptor %8</li>"
+  "%8"
   "<li>Systems Biology Workbench %9</li>"
   "<li>CLAPACK 3.0, LAPACK 3.1.0, or Intel Math Kernel Library</li>"
   "<li>LSODA and LSODAR from ODEPACK</li>"
@@ -99,6 +99,11 @@ const char *AboutDialog::text =
 
 QString AboutDialog::getDefaultVersionText()
 {
+  QString raptorVersion;
+  #ifdef COPASI_USE_RAPTOR
+  raptorVersion = QString("<li>raptor %1</li>").arg(COPASI_RAPTOR_VERSION);
+  #endif
+
   return QString(AboutDialog::text)
          .arg(FROM_UTF8(CVersion::VERSION.getVersion() + omp_info()()))            // 1
          .arg(QT_VERSION_STR)                                       // 2
@@ -107,7 +112,7 @@ QString AboutDialog::getDefaultVersionText()
          .arg(COPASI_LIBSBML_VERSION)                               // 5
          .arg(COPASI_LIBSEDML_VERSION)                              // 6
          .arg(COPASI_LIBCOMBINE_VERSION)                            // 7
-         .arg(COPASI_RAPTOR_VERSION)                                // 8
+         .arg(raptorVersion)                                        // 8
          .arg(COPASI_SBW_VERSION)                                   // 9
          .arg(CJitCompiler::JitEnabled() ? "enabled" : "disabled"); //10
 }

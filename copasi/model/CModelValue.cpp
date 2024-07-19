@@ -430,14 +430,16 @@ std::string CModelEntity::getExpression() const
 
 CExpression* CModelEntity::getExpressionPtr()
 {
-  if (mpExpression != NULL) mpExpression->updateInfix();
+  if (mpExpression != NULL) 
+    mpExpression->updateInfix();
 
   return mpExpression;
 }
 
 const CExpression* CModelEntity::getExpressionPtr() const
 {
-  if (mpExpression != NULL) mpExpression->updateInfix();
+  if (mpExpression != NULL) 
+    mpExpression->updateInfix();
 
   return mpExpression;
 }
