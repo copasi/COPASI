@@ -816,6 +816,8 @@ void CopasiUI3Window::createMenuBar()
 
   mpTools->addAction(mpaCheckModel);
   mpTools->addAction("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
+  mpTools->addAction("Convert ODEs -> Reactions", this, SLOT(slotConvertODEsToReactions()));
+  mpTools->addAction("Convert Reactions -> ODEs", this, SLOT(slotConvertReactionsToODEs()));
   mpTools->addAction("Create &Events For Timeseries Experiment", this, SLOT(slotCreateEventsForTimeseries()));
   mpTools->addAction("&Remove SBML Ids from model", this, SLOT(slotClearSbmlIds()));
   mpTools->addAction(mpaParameterEstimationResult);
@@ -1997,6 +1999,63 @@ void CopasiUI3Window::slotConvertToIrreversible()
 
   mpDataModel->changed();
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, CRegisteredCommonName());
+}
+
+void CopasiUI3Window::slotConvertODEsToReactions()
+{
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+
+  if (!pModel)
+    return;
+
+  mpDataModelGUI->commit();
+  mpListView->resetCache();
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, CRegisteredCommonName());
+  CCopasiMessage::clearDeque();
+
+  if (!mpDataModel->convertODEsToReactions())
+    {
+      // Display error messages.
+      CQMessageBox::information(this, "Conversion Failed",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default,
+                                QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+    }
+
+  mpDataModel->changed();
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, CRegisteredCommonName());
+  mpListView->resetCache();
+}
+
+
+void CopasiUI3Window::slotConvertReactionsToODEs()
+{
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+
+  if (!pModel)
+    return;
+
+  mpDataModelGUI->commit();
+  mpListView->resetCache();
+  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, CRegisteredCommonName());
+  CCopasiMessage::clearDeque();
+
+  if (!mpDataModel->convertReactionsToODEs())
+    {
+      // Display error messages.
+      CQMessageBox::information(this, "Conversion Failed",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default,
+                                QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+    }
+
+  mpDataModel->changed();
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, CRegisteredCommonName());
+  mpListView->resetCache();
 }
 
 void CopasiUI3Window::slotShowSliders(bool flag)

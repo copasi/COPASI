@@ -259,6 +259,17 @@ public:
                   CProcessReport *pProcessReport = NULL,
                   const bool & deleteOldData = true);
 
+  
+  /**
+   * Infers Reactions from the ODE's in this model.
+   */
+  bool convertODEsToReactions();
+
+  /**
+   * Converts Reactions in this model to ODEs
+   */
+  bool convertReactionsToODEs();
+
   std::string exportSBMLToString(CProcessReport * pProcessReport, int sbmlLevel, int sbmlVersion);
 
   bool exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport  * pProcessReport = NULL);

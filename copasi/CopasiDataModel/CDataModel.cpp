@@ -3682,3 +3682,55 @@ const CDataObject * CDataModel::findObjectByDisplayName(const std::string & disp
 
   return NULL;
 }
+
+
+#include <sbml/SBMLDocument.h>
+#include <sbml/conversion/ConversionProperties.h>
+
+/*
+ * Infers Reactions from the ODE's in this model.
+ */
+bool
+CDataModel::convertODEsToReactions()
+{
+  std::string sbml = exportSBMLToString(NULL, 3, 1);
+  
+  auto *doc = readSBMLFromString(sbml.c_str());
+
+  ConversionProperties props;
+  props.addOption("inferReactions", true,
+                  "Infer reactions from rateRules in the model");
+  if (doc->convert(props) != LIBSBML_OPERATION_SUCCESS)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "Couldn't infer reactions: %s", doc->getErrorLog()->toString().c_str());
+      return false;
+    }
+
+  std::string newSBML = writeSBMLToString(doc);
+  delete doc;
+  return importSBMLFromString(newSBML.c_str());
+}
+
+/*
+ * Converts Reactions in this model to ODEs
+ */
+bool 
+CDataModel::convertReactionsToODEs()
+{
+  std::string sbml = exportSBMLToString(NULL, 3, 1);
+  
+  auto *doc = readSBMLFromString(sbml.c_str());
+
+  ConversionProperties props;
+  props.addOption("replaceReactions", true,
+                 "Replace reactions with rateRules" );      
+  if (doc->convert(props) != LIBSBML_OPERATION_SUCCESS)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "Couldn't infer reactions: %s", doc->getErrorLog()->toString().c_str());
+      return false;
+    }
+
+  std::string newSBML = writeSBMLToString(doc);
+  delete doc;
+  return importSBMLFromString(newSBML.c_str());
+}

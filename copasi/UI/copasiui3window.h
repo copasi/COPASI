@@ -254,6 +254,8 @@ protected slots:
   void slotPreferences();
   void slotPreferencesAccepted();
   void slotConvertToIrreversible();
+  void slotConvertODEsToReactions();
+  void slotConvertReactionsToODEs();
   void slotCreateEventsForTimeseries();
 
   void listViewsFolderChanged(const QModelIndex & index);
