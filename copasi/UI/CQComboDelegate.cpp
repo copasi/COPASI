@@ -149,34 +149,42 @@ bool CQComboDelegate::isCommitOnSelect() const
 
 QSize CQComboDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
-  QModelIndex  SourceIndex = index;
-  const QAbstractItemModel *pModel = index.model();
+  return QItemDelegate::sizeHint(option, index);
 
-  while (pModel != NULL && pModel->inherits("QSortFilterProxyModel"))
-    {
-      SourceIndex = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(SourceIndex);
-      pModel = SourceIndex.model();
-    }
+  //// ISSUE 3250: The code below is called for every combobox, filling it repeatedly 
+  //// with all items, which turns out to be too expensive, for little to know benefit
 
-  QWidget * pEditor = mEditorToIndex.key(SourceIndex, NULL);
+  //QModelIndex  SourceIndex = index;
+  //const QAbstractItemModel *pModel = index.model();
 
-  if (pEditor != NULL)
-    return pEditor->sizeHint();
+  //while (pModel != NULL && pModel->inherits("QSortFilterProxyModel"))
+  //  {
+  //    SourceIndex = static_cast< const QSortFilterProxyModel *>(pModel)->mapToSource(SourceIndex);
+  //    pModel = SourceIndex.model();
+  //  }
 
-  QComboBox *pTmp = new QComboBox();
+  //QWidget * pEditor = mEditorToIndex.key(SourceIndex, NULL);
 
-  pTmp->setAutoFillBackground(true);
+  //if (pEditor != NULL)
+  //  return pEditor->sizeHint();
 
-  if (!getItems(SourceIndex).empty())
-    {
-      pTmp->addItems(getItems(SourceIndex));
-    }
+  //QComboBox *pTmp = new QComboBox();
 
-  QSize SizeHint = pTmp->sizeHint();
+  //pTmp->setAutoFillBackground(true);
 
-  delete pTmp;
+  //auto items = getItems(SourceIndex);
 
-  return SizeHint; // QItemDelegate::sizeHint(option, index);
+  //if (!items.empty())
+  //  {
+  //    // limit to include only 5 items to speed things up
+  //    pTmp->addItems(items.sliced(0, qMin(5, items.size())));
+  //  }
+
+  //QSize SizeHint = pTmp->sizeHint();
+
+  //delete pTmp;
+
+  //return SizeHint; // QItemDelegate::sizeHint(option, index);
 }
 
 void CQComboDelegate::setCommitOnSelect(bool commitOnSelect)
