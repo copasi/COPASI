@@ -576,7 +576,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
       if (sbmlParameter == NULL)
         {
-          fatalError();
+          continue;
         }
 
       try
@@ -585,7 +585,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           std::string sbmlId = getOriginalSBMLId(sbmlParameter, type);
 
           // don't import parameter if it is one of our special ones instead get the cn to the target
-          if (!sbmlId.empty())
+          if (mImportInitialValues  && !sbmlId.empty())
             {
               Species* species = sbmlModel->getSpecies(sbmlId);
 
@@ -5629,6 +5629,12 @@ void SBMLImporter::importRuleForModelEntity(const Rule* rule, const CModelEntity
     }
 }
 
+void SBMLImporter::setDataModel(CDataModel * pDM)
+{
+  mpDataModel = pDM;
+  mpCopasiModel = pDM->getModel();
+}
+
 void SBMLImporter::checkRuleMathConsistency(const Rule* pRule, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   // only check if Level2 Version1
@@ -6997,7 +7003,13 @@ void SBMLImporter::replace_time_with_initial_time(ASTNode* pASTNode, const CMode
         }
     }
 }
-void SBMLImporter::importEvents(Model* pSBMLModel, CModel* pCopasiModel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
+
+void SBMLImporter::setImportInitialValueAnnotation(bool parseInitialValues)
+{
+  mImportInitialValues = parseInitialValues;
+}
+
+void SBMLImporter::importEvents(Model * pSBMLModel, CModel * pCopasiModel, std::map< const CDataObject *, SBase * > & copasi2sbmlmap)
 {
   unsigned int i, iMax = pSBMLModel->getNumEvents();
 

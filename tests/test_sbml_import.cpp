@@ -378,6 +378,46 @@ TEST_CASE("SBML import / export of events with particle numbers", "[copasi][sbml
   CRootContainer::removeDatamodel(dm);
 }
 
+TEST_CASE("importing sbml files with initial value annotations", "[copasi][sbml]")
+{
+
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != NULL);
+  dm->newModel(NULL, true);
+
+  auto * model = dm->getModel();
+  auto * mv1 = model->createModelValue("A", 1);
+  auto * mv2 = model->createModelValue("B");
+
+  std::stringstream str; 
+  str << "1 / <" << mv1->getInitialValueReference()->getCN() << ">";
+
+  mv2->setStatus(CModelEntity::Status::ASSIGNMENT);
+  REQUIRE(mv2->setExpression(str.str()).isSuccess());
+
+  model->compileIfNecessary(NULL);
+
+  std::string sbml = dm->exportSBMLToString(NULL, 2, 4);
+
+  {
+    // if imported as initial expressions, we should have 2 model values
+    REQUIRE(dm->importSBMLFromString(sbml, NULL, true, true, true));
+    REQUIRE(dm->getModel()->getNumModelValues() == 2);
+
+  }
+
+  {
+    // if imported without changing expressions we ought to have 3
+    REQUIRE(dm->importSBMLFromString(sbml, NULL, true, true, false));
+    REQUIRE(dm->getModel()->getNumModelValues() == 3);
+
+  }
+
+
+  CRootContainer::removeDatamodel(dm);
+}
+
+
 //#include <filesystem>
 //#include <copasi/utilities/CCopasiException.h>
 //

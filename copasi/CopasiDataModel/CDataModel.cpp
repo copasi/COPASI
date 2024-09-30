@@ -1096,7 +1096,9 @@ bool CDataModel::newModel(CProcessReport * pProcessReport,
 
 bool CDataModel::importSBMLFromString(const std::string & sbmlDocumentText,
                                       CProcessReport * pProcessReport,
-                                      const bool & deleteOldData)
+                                      const bool & deleteOldData,
+                                      bool importMiriam /*= true*/,
+                                      bool importInitialValues /*= false*/)
 {
   // During load no objects will be renamed;
   CRegisteredCommonName::setEnabled(false);
@@ -1108,8 +1110,9 @@ bool CDataModel::importSBMLFromString(const std::string & sbmlDocumentText,
   SBMLImporter importer;
   // Right now we always import the COPASI MIRIAM annotation if it is there.
   // Later this will be configurable by the user in the preferences dialog
-  importer.setImportCOPASIMIRIAM(true);
+  importer.setImportCOPASIMIRIAM(importMiriam);
   importer.setImportHandler(pProcessReport);
+  importer.setImportInitialValueAnnotation(importInitialValues);
   //mCopasi2SBMLMap.clear();
   CModel * pModel = NULL;
 
@@ -1177,7 +1180,9 @@ bool CDataModel::importSBMLFromString(const std::string & sbmlDocumentText,
 
 bool CDataModel::importSBML(const std::string & fileName,
                             CProcessReport * pProcessReport,
-                            const bool & deleteOldData)
+                            const bool & deleteOldData,
+                            bool importMiriam /*= true*/,
+                            bool importInitialValues /*= false*/)
 {
   // During load no objects will be renamed;
   CRegisteredCommonName::setEnabled(false);
@@ -1194,8 +1199,10 @@ bool CDataModel::importSBML(const std::string & fileName,
   SBMLImporter importer;
   // Right now we always import the COPASI MIRIAM annotation if it is there.
   // Later this will be settable by the user in the preferences dialog
-  importer.setImportCOPASIMIRIAM(true);
+  importer.setImportCOPASIMIRIAM(importMiriam);
   importer.setImportHandler(pProcessReport);
+  importer.setImportInitialValueAnnotation(importInitialValues);
+
 
   CModel * pModel = NULL;
 
@@ -2382,7 +2389,7 @@ bool CDataModel::importSEDML(const std::string & fileName,
   // Later this will be settable by the user in the preferences dialog
   // Later this will be settable by the user in the preferences dialog
   //   importer.setImportCOPASIMIRIAM(true);
-  importer.setImportHandler(pProcessReport);
+  importer.setImportHandler(pProcessReport);  
 
   CModel * pModel = NULL;
 

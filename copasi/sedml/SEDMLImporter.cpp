@@ -1563,6 +1563,7 @@ CModel * SEDMLImporter::importModel(const std::string & modelId)
       // Later this will be settable by the user in the preferences dialog
       importer.setImportCOPASIMIRIAM(true);
       importer.setImportHandler(mpProcessReport);
+      importer.setImportInitialValueAnnotation(false);
 
       mpCopasiModel = NULL;
 

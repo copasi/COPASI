@@ -166,6 +166,13 @@ protected:
   SbmlProgressCallback *mpSbmlCallback;
 
   /**
+   * flag controlling whether to import previously exported 
+   * initial values as initial values. 
+   */
+  bool mImportInitialValues = {false};
+
+
+  /**
    * This utility functions adds a new step to the progress dialog (if present)
    * @param globalStep the global steps that have been completed
    * @param currentTotal the total for current task
@@ -244,6 +251,7 @@ protected:
   void importSBMLRule(const Rule* sbmlRule,
                       std::map<const CDataObject*, SBase*>& copasi2sbmlmap,
                       Model* pSBMLModel);
+public:
 
   /**
    * Imports the given AssignmentRule which is for a global parameter.
@@ -253,6 +261,21 @@ protected:
                                 CModelEntity::Status ruleType,
                                 std::map<const CDataObject*, SBase*>& copasi2sbmlmap,
                                 Model* pSBMLModel);
+
+  /**
+   * sets the datamodel to be used by the importer
+   */
+  void setDataModel(CDataModel * pDM);
+
+  /** 
+   * changes the behavior how initial values are imported back in. 
+   * by default initial values in expressions will not be translated
+   * into initial values. 
+   *
+   */
+  void setImportInitialValueAnnotation(bool parseInitialValues);
+
+protected:
 
   /**
    * Imports all events
@@ -300,6 +323,8 @@ protected:
       CModel* copasiModel,
       std::map<const CDataObject*, SBase*>& copasi2sbmlmap);
 
+
+public:
   /**
    * Creates and returns a COPASI CReaction object from the given SBML
    * Reaction object.
@@ -307,7 +332,7 @@ protected:
   CReaction* createCReactionFromReaction(Reaction* sbmlReaction,
                                          Model* sbmlModel,
                                          CModel* cmodel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap);
-
+protected:
   /**
    * Creates a map of each parameter of the function definition and its
    * corresponding parameter in the function call.

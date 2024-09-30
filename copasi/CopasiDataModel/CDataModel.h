@@ -253,11 +253,15 @@ public:
 
   bool importSBMLFromString(const std::string & sbmlDocumentText,
                             CProcessReport *pProcessReport = NULL,
-                            const bool & deleteOldData = true);
+                            const bool & deleteOldData = true,
+                            bool importMiriam = true, 
+                            bool importInitialValues = false);
 
   bool importSBML(const std::string & fileName,
                   CProcessReport *pProcessReport = NULL,
-                  const bool & deleteOldData = true);
+                  const bool & deleteOldData = true,
+                  bool importMiriam = true,
+                  bool importInitialValues = false);
 
   
   /**
