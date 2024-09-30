@@ -3647,7 +3647,7 @@ const CDataObject * CDataModel::findObjectByDisplayName(const std::string & disp
 
   // try for local reaction parameters
 
-  pos = displayString.find(")");
+  pos = displayString.rfind(")");
 
   if (pos != std::string::npos && (displayString.size() > (pos + 2)))
     {

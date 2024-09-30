@@ -123,3 +123,24 @@ TEST_CASE("ensure that data handler with function evaluations can be compiled", 
   dm->saveModel("opt.cps", NULL, true);
   CRootContainer::removeDatamodel(dm);
 }
+
+
+TEST_CASE("Test resolving of reactions with )", "[copasi][datahandler]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != nullptr);
+
+  REQUIRE(dm->loadModel(getTestFile("test-data/brusselator.cps"), NULL) == true);
+
+  auto * model = dm->getModel();
+  auto* reaction = model->createReaction("Reaction with spaces and (steps)");
+  reaction->setReactionScheme("A -> D");
+  model->compileIfNecessary(NULL);
+
+  // try and retrieve the reaction by display name: 
+  auto fluxName = reaction->getFluxReference()->getObjectDisplayName();
+  auto* obj = dm->findObjectByDisplayName(fluxName);
+  REQUIRE(obj != nullptr);
+
+  CRootContainer::removeDatamodel(dm);
+}
