@@ -2010,8 +2010,15 @@ void CopasiUI3Window::slotConvertODEsToReactions()
     return;
 
   mpDataModelGUI->commit();
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
+                         mpDataModel->getModel()->getCN());
+  mpListView->clearCurrentWidget();
+  mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
   mpListView->resetCache();
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, CRegisteredCommonName());
+
+  if (this->mpSliders)
+    this->mpSliders->reset();
+
   CCopasiMessage::clearDeque();
 
   if (!mpDataModel->convertODEsToReactions())
@@ -2025,7 +2032,7 @@ void CopasiUI3Window::slotConvertODEsToReactions()
     }
 
   mpDataModel->changed();
-  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, CRegisteredCommonName());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, CRegisteredCommonName());  
   mpListView->resetCache();
 }
 
@@ -2039,8 +2046,15 @@ void CopasiUI3Window::slotConvertReactionsToODEs()
     return;
 
   mpDataModelGUI->commit();
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
+                         mpDataModel->getModel()->getCN());
+  mpListView->clearCurrentWidget();
+  mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
   mpListView->resetCache();
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, CRegisteredCommonName());
+
+  if (this->mpSliders)
+    this->mpSliders->reset();
+
   CCopasiMessage::clearDeque();
 
   if (!mpDataModel->convertReactionsToODEs())
@@ -2054,7 +2068,7 @@ void CopasiUI3Window::slotConvertReactionsToODEs()
     }
 
   mpDataModel->changed();
-  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, CRegisteredCommonName());
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, CRegisteredCommonName());
   mpListView->resetCache();
 }
 
