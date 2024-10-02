@@ -48,6 +48,9 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi][datahandler]")
     handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Reactions[R3],Reference=Flux", dm});
     handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Reactions[R4],Reference=Flux", dm});
 
+    // add test to verify that array element references can be correctly resolved
+    handler.addDuringName({"CN=Root,Vector=TaskList[Metabolic Control Analysis],Method=MCA Method (Reder),Array=Scaled elasticities[(R1)][X]", dm});
+
     auto& task = dynamic_cast<CTrajectoryTask&>((*dm->getTaskList())["Time-Course"]);
     REQUIRE(task.initialize(CCopasiTask::OUTPUT_DURING, &handler, NULL) == true);
     REQUIRE(task.process(true) == true);
@@ -56,7 +59,7 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi][datahandler]")
     auto & data = handler.getDuringData();
 
     REQUIRE(data.size() > 0);
-    REQUIRE(data[0].size() == 7);
+    REQUIRE(data[0].size() == 8);
 
     {
       REQUIRE(task.initialize(CCopasiTask::ONLY_TIME_SERIES, dm, NULL) == true);
