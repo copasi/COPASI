@@ -2259,6 +2259,8 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
   numMessagesBefore = CCopasiMessage::size();
 
+  bool loadedModelFromSedml = loadedModel;
+
   if (loadedModel == false && sbml_content != NULL)
     {
       loadedModel = this->importSBML(destinationDir + "/" + sbml_content->getLocation(), pProgressReport, deleteOldData);
@@ -2289,7 +2291,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
     {
       addMessages("Messages from attempted SED-ML file import: ", messageStream, importSedMLMessages);
 
-      if (sbml_content)
+      if (!loadedModelFromSedml && sbml_content)
         {
           messageStream << "Attempting to import the SBML file instead." << std::endl;
         }
