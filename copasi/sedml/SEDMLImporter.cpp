@@ -176,18 +176,31 @@ void SEDMLImporter::updateCopasiTaskForSimulation(
         SedUniformTimeCourse * tc = static_cast< SedUniformTimeCourse * >(sedmlsim);
         double outputStartTime = tc->getOutputStartTime();
         double outputEndTime = tc->getOutputEndTime();
+        double initialTime = tc->getInitialTime();
         int numberOfPoints = tc->getNumberOfPoints();
         tProblem->setOutputStartTime(outputStartTime);
 
         // set the models initial time to the initial time of the simulation
         if (mpCopasiModel)
           {
-            mpCopasiModel->setInitialTime(tc->getInitialTime());
+            mpCopasiModel->setInitialTime(initialTime);
             mpCopasiModel->updateInitialValues(mpCopasiModel->getInitialValueReference());
           }
 
-        tProblem->setDuration(outputEndTime - outputStartTime);
-        tProblem->setStepNumber(numberOfPoints);
+        tProblem->setDuration(outputEndTime - initialTime);
+        
+        // in COPASI the number of points calculated will be for the total duration of
+        // initialTime ... ouputEndTime, so if the outputStartTime is not equal to the 
+        // initial time, the number of points will differ so we have to adjust: 
+
+        if (outputStartTime != initialTime)
+          {
+            tProblem->setStepSize((outputEndTime-outputStartTime)/numberOfPoints);
+          }
+        else
+          {
+            tProblem->setStepNumber(numberOfPoints);
+          }
 
         // TODO read kisao terms
         if (tc->isSetAlgorithm())

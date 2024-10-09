@@ -67,6 +67,60 @@ TEST_CASE("exporting sedml file with non-zero initial time", "[copasi][sedml]")
   CRootContainer::removeDatamodel(dm);
 }
 
+
+TEST_CASE("exporting sedml file with non-zero start time", "[copasi][sedml]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != nullptr);
+
+  dm->newModel(NULL, true);
+
+  auto * model = dm->getModel();
+
+  auto * r = model->createReaction("R1");
+  r->setReactionScheme("A -> B");
+
+  auto & task = dynamic_cast< CTrajectoryTask & >((*dm->getTaskList())["Time-Course"]);
+  task.setScheduled(true);
+  auto * problem = dynamic_cast< CTrajectoryProblem * >(task.getProblem());
+  REQUIRE(problem != nullptr);
+
+  problem->setOutputStartTime(5);
+  problem->setDuration(10);
+  problem->setStepNumber(40);
+
+  std::string sedml = dm->exportSEDMLToString(NULL, 1, 4);
+
+  // also reset the task values, to see that hey are updated correctly
+  problem->setDuration(1);
+  problem->setStepNumber(10);
+
+  auto * doc = readSedMLFromString(sedml.c_str());
+  REQUIRE(doc->getNumErrors(LIBSEDML_SEV_ERROR) == 0);
+
+  auto * sim = dynamic_cast< SedUniformTimeCourse * >(doc->getSimulation(0));
+  REQUIRE(sim != nullptr);
+  REQUIRE(sim->getInitialTime() == 0);
+  REQUIRE(sim->getOutputStartTime() == 5);
+  REQUIRE(sim->getOutputEndTime() == 10);
+  REQUIRE(sim->getNumberOfPoints() == 20);
+
+  SEDMLImporter imp;
+  imp.setDataModel(dm);
+  imp.initializeContent();
+  imp.setSEDMLDocument(doc);
+  imp.setCopasiModel(model);
+  imp.updateCopasiTaskForSimulation(sim, dm->getTaskList());
+
+  REQUIRE(problem->getOutputStartTime() == 5);
+  REQUIRE(problem->getDuration() == 10);
+  REQUIRE(problem->getStepNumber() == 40);
+
+  delete doc;
+
+  CRootContainer::removeDatamodel(dm);
+}
+
 TEST_CASE("convert sedml types and colors", "[copasi][sedml]")
 {
   REQUIRE(SEDMLUtils::argbToRgba("112233") == "#112233");
