@@ -472,8 +472,12 @@ void ListViews::resetCache()
 #define CREATE_WIDGET(variable, stackwidget, Type, parent)\
   if (!variable)\
     {\
+      QScrollArea * scroll = new QScrollArea;\
       variable = new Type(parent);\
-      stackwidget->addWidget(variable);\
+      scroll->setWidget(variable);\
+      scroll->setWidgetResizable(true);\
+      stackwidget->addWidget(scroll);\
+      parent->mScrollMap[variable] = scroll;\
     }
 
 #define CREATE_TAB_WIDGET(variable, stackwidget, objectType, Type, parent)\
@@ -1214,7 +1218,16 @@ void ListViews::slotFolderChanged(const QModelIndex & index)
   mCurrentItemCN = itemCN;
   mCurrentItemRegisteredCN = itemCN;
   mpCurrentWidget = newWidget;
-  mpStackedWidget->setCurrentWidget(mpCurrentWidget);
+
+  if (mpStackedWidget->indexOf(mpCurrentWidget) == -1 && mScrollMap.find(mpCurrentWidget) != mScrollMap.end())
+    {
+      QScrollArea * parent = mScrollMap[mpCurrentWidget];
+      mpStackedWidget->setCurrentWidget(parent);
+    }
+  else
+    {
+      mpStackedWidget->setCurrentWidget(mpCurrentWidget);
+    }
 
   mpTreeView->scrollTo(index);
 
