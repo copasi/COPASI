@@ -45,6 +45,9 @@ public slots:
   void slotParameterNumberChanged(int number);
   void slotConstraintNumberChanged(int number);
   virtual void slotEditExpression();
+  void slotIncreaseTabHeight();
+  void slotDecreaseTabHeight();
+
 
 protected:
   CQFittingItemWidget * mpCurrentList;

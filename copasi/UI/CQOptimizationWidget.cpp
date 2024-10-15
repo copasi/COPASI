@@ -242,7 +242,43 @@ void CQOptimizationWidget::init()
   connect(mpConstraints, SIGNAL(numberChanged(int)), this, SLOT(slotConstraintNumberChanged(int)));
 
   mpCurrentList = mpParameters;
+
+  // add 2 more tab pages that when clicked will increase / decrease the height of the tab widget
+  QToolButton * tb = new QToolButton();
+  tb->setText("+");
+  QObject::connect(tb, SIGNAL(clicked()), this, SLOT(slotIncreaseTabHeight()));
+  // Add empty, not enabled tab to tabWidget
+  mpTabWidget->addTab(new QLabel("Add height by pressing \"+\""), QString());
+  mpTabWidget->setTabEnabled(2, false);
+  // Add tab button to current tab. Button will be enabled, but tab -- not
+  mpTabWidget->tabBar()->setTabButton(2, QTabBar::RightSide, tb);
+
+  tb = new QToolButton();
+  tb->setText("-");
+  QObject::connect(tb, SIGNAL(clicked()), this, SLOT(slotDecreaseTabHeight()));
+  // Add empty, not enabled tab to tabWidget
+  mpTabWidget->addTab(new QLabel("Remove height by pressing \"-\""), QString());
+  mpTabWidget->setTabEnabled(3, false);
+  // Add tab button to current tab. Button will be enabled, but tab -- not
+  mpTabWidget->tabBar()->setTabButton(3, QTabBar::RightSide, tb);
 }
+
+void CQOptimizationWidget::slotIncreaseTabHeight()
+{
+  auto height = mpTabWidget->height();
+  height += 100;
+  mpTabWidget->setMinimumHeight(height);
+}
+
+void CQOptimizationWidget::slotDecreaseTabHeight()
+{
+  auto height = mpTabWidget->height();
+  if (height < 300)
+    return;
+  height -= 100;
+  mpTabWidget->setMinimumHeight(height);
+}
+
 
 void CQOptimizationWidget::destroy()
 {}
