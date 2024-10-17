@@ -128,9 +128,9 @@ void CQPlotsWidget::slotBtnNewClicked()
   updateDeleteBtns();
 }
 
-void CQPlotsWidget::slotBtnDeleteClicked()
+void CQPlotsWidget::slotBtnDeleteClicked(bool needFocus)
 {
-  if (mpTblPlots->hasFocus())
+  if (!needFocus || mpTblPlots->hasFocus())
     {deleteSelectedPlots();}
 
   updateDeleteBtns();
@@ -281,7 +281,7 @@ void CQPlotsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 void CQPlotsWidget::keyPressEvent(QKeyEvent *ev)
 {
   if (ev->key() == Qt::Key_Delete)
-    slotBtnDeleteClicked();
+    slotBtnDeleteClicked(true);
   else if (ev->key() == Qt::Key_C &&
            (ev->modifiers() & Qt::ControlModifier))
     {
