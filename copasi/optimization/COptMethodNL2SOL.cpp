@@ -15,7 +15,6 @@
 #include "copasi/parameterFitting/CFitProblem.h"
 #include "COptItem.h"
 #include "COptTask.h"
-#include "FminBrent.h"
 
 COptMethodNL2SOL::COptMethodNL2SOL(const CDataContainer * pParent,
                                    const CTaskEnum::Method & methodType,

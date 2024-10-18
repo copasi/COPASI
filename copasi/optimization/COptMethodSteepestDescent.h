@@ -28,8 +28,6 @@
 #include "copasi/core/CVector.h"
 #include "copasi/optimization/COptMethod.h"
 
-class FDescent;
-
 class COptMethodSteepestDescent: public COptMethod
 {
   // Operations
@@ -163,11 +161,6 @@ private :
    * The gradient vector for the objective function
    */
   CVector < C_FLOAT64 > mGradient;
-
-  /**
-   * Functor pointing to the descent method.
-   */
-  FDescent * mpDescent;
 
   /**
       * The current iteration
