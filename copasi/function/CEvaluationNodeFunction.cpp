@@ -29,6 +29,7 @@
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 #include "copasi/utilities/CValidatedUnit.h"
+#include "copasi/utilities/CBalanceTree.h"
 
 #include "copasi/randomGenerator/CRandom.h"
 
@@ -60,22 +61,55 @@ C_FLOAT64 CEvaluationNodeFunction::rpoisson(C_FLOAT64 mu)
 }
 
 // static
-C_FLOAT64 CEvaluationNodeFunction::max(C_FLOAT64 x1, C_FLOAT64 x2)
+C_FLOAT64 CEvaluationNodeFunction::max(CEvaluationNodeFunction * pNode)
 {
-  return std::max(x1, x2);
+  return pNode->max();
+}
+
+C_FLOAT64 CEvaluationNodeFunction::max()
+{
+  CEvaluationNode * pChild = static_cast< CEvaluationNode * >(getChild());
+
+  if (pChild == nullptr)
+    return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+
+  C_FLOAT64 Result = *pChild->getValuePointer();
+
+  while ((pChild = static_cast<CEvaluationNode *>(pChild->getSibling())) != nullptr)
+    if (Result < *pChild->getValuePointer())
+      Result = *pChild->getValuePointer();
+
+  return Result;
 }
 
 // static
-C_FLOAT64 CEvaluationNodeFunction::min(C_FLOAT64 x1, C_FLOAT64 x2)
+C_FLOAT64 CEvaluationNodeFunction::min(CEvaluationNodeFunction * pNode)
 {
-  return std::min(x1, x2);
+  return pNode->min();
+}
+
+C_FLOAT64 CEvaluationNodeFunction::min()
+{
+  CEvaluationNode * pChild = static_cast< CEvaluationNode * >(getChild());
+
+  if (pChild == nullptr)
+    return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+
+  C_FLOAT64 Result = *pChild->getValuePointer();
+
+  while ((pChild = static_cast<CEvaluationNode *>(pChild->getSibling())) != nullptr)
+    if (Result > *pChild->getValuePointer())
+      Result = *pChild->getValuePointer();
+
+  return Result;
 }
 
 CEvaluationNodeFunction::CEvaluationNodeFunction():
   CEvaluationNode(MainType::FUNCTION, SubType::INVALID, ""),
-  mpFunction(NULL),
+  mpFunction1(NULL),
   mpFunction2(NULL),
   mpFunction4(NULL),
+  mpFunction(NULL),
   mpArgNode1(NULL),
   mpArgNode2(NULL),
   mpArgNode3(NULL),
@@ -91,9 +125,10 @@ CEvaluationNodeFunction::CEvaluationNodeFunction():
 CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
     const Data & data):
   CEvaluationNode(MainType::FUNCTION, subType, data),
-  mpFunction(NULL),
+  mpFunction1(NULL),
   mpFunction2(NULL),
   mpFunction4(NULL),
+  mpFunction(NULL),
   mpArgNode1(NULL),
   mpArgNode2(NULL),
   mpArgNode3(NULL),
@@ -108,147 +143,147 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
   switch (subType)
     {
       case SubType::LOG:
-        mpFunction = log;
+        mpFunction1 = log;
         break;
 
       case SubType::LOG10:
-        mpFunction = log10;
+        mpFunction1 = log10;
         break;
 
       case SubType::EXP:
-        mpFunction = exp;
+        mpFunction1 = exp;
         break;
 
       case SubType::SIN:
-        mpFunction = sin;
+        mpFunction1 = sin;
         break;
 
       case SubType::COS:
-        mpFunction = cos;
+        mpFunction1 = cos;
         break;
 
       case SubType::TAN:
-        mpFunction = tan;
+        mpFunction1 = tan;
         break;
 
       case SubType::SEC:
-        mpFunction = sec;
+        mpFunction1 = sec;
         break;
 
       case SubType::CSC:
-        mpFunction = csc;
+        mpFunction1 = csc;
         break;
 
       case SubType::COT:
-        mpFunction = cot;
+        mpFunction1 = cot;
         break;
 
       case SubType::SINH:
-        mpFunction = sinh;
+        mpFunction1 = sinh;
         break;
 
       case SubType::COSH:
-        mpFunction = cosh;
+        mpFunction1 = cosh;
         break;
 
       case SubType::TANH:
-        mpFunction = tanh;
+        mpFunction1 = tanh;
         break;
 
       case SubType::SECH:
-        mpFunction = sech;
+        mpFunction1 = sech;
         break;
 
       case SubType::CSCH:
-        mpFunction = csch;
+        mpFunction1 = csch;
         break;
 
       case SubType::COTH:
-        mpFunction = coth;
+        mpFunction1 = coth;
         break;
 
       case SubType::ARCSIN:
-        mpFunction = asin;
+        mpFunction1 = asin;
         break;
 
       case SubType::ARCCOS:
-        mpFunction = acos;
+        mpFunction1 = acos;
         break;
 
       case SubType::ARCTAN:
-        mpFunction = atan;
+        mpFunction1 = atan;
         break;
 
       case SubType::ARCSEC:
-        mpFunction = arcsec;
+        mpFunction1 = arcsec;
         break;
 
       case SubType::ARCCSC:
-        mpFunction = arccsc;
+        mpFunction1 = arccsc;
         break;
 
       case SubType::ARCCOT:
-        mpFunction = arccot;
+        mpFunction1 = arccot;
         break;
 
       case SubType::ARCSINH:
-        mpFunction = asinh;
+        mpFunction1 = asinh;
         break;
 
       case SubType::ARCCOSH:
-        mpFunction = acosh;
+        mpFunction1 = acosh;
         break;
 
       case SubType::ARCTANH:
-        mpFunction = atanh;
+        mpFunction1 = atanh;
         break;
 
       case SubType::ARCSECH:
-        mpFunction = asech;
+        mpFunction1 = asech;
         break;
 
       case SubType::ARCCSCH:
-        mpFunction = acsch;
+        mpFunction1 = acsch;
         break;
 
       case SubType::ARCCOTH:
-        mpFunction = acoth;
+        mpFunction1 = acoth;
         break;
 
       case SubType::SIGN:
-        mpFunction = sign;
+        mpFunction1 = sign;
         break;
 
       case SubType::SQRT:
-        mpFunction = sqrt;
+        mpFunction1 = sqrt;
         break;
 
       case SubType::ABS:
-        mpFunction = fabs;
+        mpFunction1 = fabs;
         break;
 
       case SubType::FLOOR:
-        mpFunction = floor;
+        mpFunction1 = floor;
         break;
 
       case SubType::CEIL:
-        mpFunction = ceil;
+        mpFunction1 = ceil;
         break;
 
       case SubType::FACTORIAL:
-        mpFunction = factorial;
+        mpFunction1 = factorial;
         break;
 
       case SubType::MINUS:
-        mpFunction = minus;
+        mpFunction1 = minus;
         break;
 
       case SubType::PLUS:
-        mpFunction = plus;
+        mpFunction1 = plus;
         break;
 
       case SubType::NOT:
-        mpFunction = copasiNot;
+        mpFunction1 = copasiNot;
         break;
 
       case SubType::RUNIFORM:
@@ -268,7 +303,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
         break;
 
       case SubType::RPOISSON:
-        mpFunction = rpoisson;
+        mpFunction1 = rpoisson;
 
         if (!mpRandom)
           mpRandom = CRandom::createGenerator();
@@ -284,15 +319,15 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
         break;
 
       case SubType::MAX:
-        mpFunction2 = max;
+        mpFunction = max;
         break;
 
       case SubType::MIN:
-        mpFunction2 = min;
+        mpFunction = min;
         break;
 
       default:
-        mpFunction = NULL;
+        mpFunction1 = NULL;
         fatalError();
         break;
     }
@@ -302,7 +337,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
 
 CEvaluationNodeFunction::CEvaluationNodeFunction(const CEvaluationNodeFunction & src):
   CEvaluationNode(src),
-  mpFunction(src.mpFunction),
+  mpFunction1(src.mpFunction1),
   mpFunction2(src.mpFunction2),
   mpFunction4(src.mpFunction4),
   mpArgNode1(src.mpArgNode1),
@@ -329,6 +364,9 @@ CIssue CEvaluationNodeFunction::compile()
   success &= mpArgNode1->setValueType(mValueType);
 
   if (mpFunction)
+    return CIssue::Success;
+
+  if (mpFunction1)
     {
       if (mpArgNode1->getSibling() == NULL)
         return CIssue::Success;
@@ -385,9 +423,18 @@ std::string CEvaluationNodeFunction::getInfix(const std::vector< std::string > &
         case SubType::RUNIFORM:
         case SubType::RNORMAL:
         case SubType::RGAMMA:
+          return mData + "(" + children[0] + "," + children[1] + ")";
+
         case SubType::MAX:
         case SubType::MIN:
-          return mData + "(" + children[0] + "," + children[1] + ")";
+          {
+            std::string Arguments = BalanceTree< std::string >::create(children, [](const std::string & first, const std::string & second)
+            {
+              return first + "," + second;
+            });
+
+            return mData + "(" + Arguments + ")";
+          }
 
         case SubType::RPOISSON:
           return mData + "(" + children[0] + ")";
@@ -415,9 +462,18 @@ std::string CEvaluationNodeFunction::getDisplayString(const std::vector< std::st
         case SubType::RUNIFORM:
         case SubType::RNORMAL:
         case SubType::RGAMMA:
+          return mData + "(" + children[0] + "," + children[1] + ")";
+
         case SubType::MAX:
         case SubType::MIN:
-          return mData + "(" + children[0] + "," + children[1] + ")";
+          {
+            std::string Arguments = BalanceTree< std::string >::create(children, [](const std::string & first, const std::string & second)
+            {
+              return first + "," + second;
+            });
+            
+            return mData + "(" + Arguments + ")";
+          }
 
         case SubType::RPOISSON:
           return mData + "(" + children[0] + ")";
@@ -623,9 +679,18 @@ std::string CEvaluationNodeFunction::getCCodeString(const std::vector< std::stri
           case SubType::RUNIFORM:
           case SubType::RNORMAL:
           case SubType::RGAMMA:
+            return data + "(" + children[0] + "," + children[1] + ")";
+
           case SubType::MAX:
           case SubType::MIN:
-            return data + "(" + children[0] + "," + children[1] + ")";
+            {
+              std::string Arguments = BalanceTree< std::string >::create(children, [](const std::string & first, const std::string & second)
+              {
+                return first + "," + second;
+              });
+              
+              return mData + "(" + Arguments + ")";
+            }
 
           default:
             return data + "(" + children[0] + ")";
@@ -715,9 +780,18 @@ std::string CEvaluationNodeFunction::getBerkeleyMadonnaString(const std::vector<
           case SubType::RUNIFORM:
           case SubType::RNORMAL:
           case SubType::RGAMMA:
+            return data + "(" + children[0] + "," + children[1] + ")";
+
           case SubType::MAX:
           case SubType::MIN:
-            return data + "(" + children[0] + "," + children[1] + ")";
+            {
+              std::string Arguments = BalanceTree< std::string >::create(children, [](const std::string & first, const std::string & second)
+              {
+                return first + "," + second;
+              });
+              
+              return mData + "(" + Arguments + ")";
+            }
 
           default:
             return data + "(" + children[0] + ")";
@@ -809,9 +883,18 @@ std::string CEvaluationNodeFunction::getXPPString(const std::vector< std::string
           case SubType::RUNIFORM:
           case SubType::RNORMAL:
           case SubType::RGAMMA:
+            return data + "(" + children[0] + "," + children[1] + ")";
+
           case SubType::MAX:
           case SubType::MIN:
-            return data + "(" + children[0] + "," + children[1] + ")";
+            {
+              std::string Arguments = BalanceTree< std::string >::create(children, [](const std::string & first, const std::string & second)
+              {
+                return first + "," + second;
+              });
+              
+              return mData + "(" + Arguments + ")";
+            }
 
           default:
             return data + "(" + children[0] + ")";
@@ -1795,8 +1878,6 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
       case SubType::RUNIFORM:
       case SubType::RNORMAL:
       case SubType::RGAMMA:
-      case SubType::MAX:
-      case SubType::MIN:
         out << "<mrow>" << std::endl;
 
         out << "<mi>" << mData << "</mi>" << std::endl;
@@ -1813,6 +1894,28 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
         out << "</mrow>" << std::endl;
         out << "<mo>) </mo>" << std::endl;
 
+        out << "</mrow>" << std::endl;
+        out << "</mrow>" << std::endl;
+        break;
+
+      case SubType::MAX:
+      case SubType::MIN:
+        out << "<mrow>" << std::endl;
+
+        out << "<mi>" << mData << "</mi>" << std::endl;
+        out << "<mrow>" << std::endl;
+        out << "<mo>(</mo>" << std::endl;
+
+        {
+          std::string Arguments = BalanceTree< std::string >::create(children, [](const std::string & first, const std::string & second)
+          {
+            return "<mrow>\n" + first + "<mo> , </mo>\n" +  second + "</mrow>\n";
+          });
+               
+          out << Arguments;
+        }
+
+        out << "<mo>) </mo>" << std::endl;
         out << "</mrow>" << std::endl;
         out << "</mrow>" << std::endl;
         break;
