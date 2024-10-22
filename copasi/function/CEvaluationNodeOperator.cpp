@@ -92,6 +92,11 @@ CEvaluationNodeOperator::CEvaluationNodeOperator(const SubType & subType,
         mpOperator = &CEvaluationNodeOperator::s_remainder;
         break;
 
+      case SubType::QUOTIENT:
+        mPrecedence = PRECEDENCE_OPERATOR_REMAINDER;
+        mpOperator = &CEvaluationNodeOperator::s_quotient;
+        break;
+
       default:
         break;
     }
@@ -178,6 +183,13 @@ void CEvaluationNodeOperator::s_remainder()
   mValue = fmod(*mpLeftValue, *mpRightValue);
 }
 
+void CEvaluationNodeOperator::s_quotient()
+{
+  // Definition: A = quotient * B + remainder 
+  //          => quotient = (A - remainder)/B
+  mValue = (*mpLeftValue - fmod(*mpLeftValue, *mpRightValue)) / *mpRightValue;
+}
+
 void CEvaluationNodeOperator::s_invalid()
 {
   mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -195,14 +207,16 @@ std::string CEvaluationNodeOperator::getInfix(const std::vector< std::string > &
       else
         Infix = children[0];
 
-      if (SubType::REMAINDER == (mSubType))
+      if (SubType::REMAINDER == mSubType
+          || SubType::QUOTIENT == mSubType)
         {
           Infix += " ";
         }
 
       Infix += mData;
 
-      if (SubType::REMAINDER == (mSubType))
+      if (SubType::REMAINDER == mSubType
+          || SubType::QUOTIENT == mSubType)
         {
           Infix += " ";
         }
@@ -230,14 +244,16 @@ std::string CEvaluationNodeOperator::getDisplayString(const std::vector< std::st
       else
         DisplayString = children[0];
 
-      if (SubType::REMAINDER == (mSubType))
+      if (SubType::REMAINDER == mSubType
+          || SubType::QUOTIENT == mSubType)
         {
           DisplayString += " ";
         }
 
       DisplayString += mData;
 
-      if (SubType::REMAINDER == (mSubType))
+      if (SubType::REMAINDER == mSubType
+          || SubType::QUOTIENT == mSubType)
         {
           DisplayString += " ";
         }
@@ -267,6 +283,9 @@ std::string CEvaluationNodeOperator::getCCodeString(const std::vector< std::stri
       if (subType == SubType::REMAINDER)
         DisplayString = "fmod(";
 
+      if (subType == SubType::QUOTIENT)
+        DisplayString = "(int)(";
+
       if (subType == SubType::MODULUS)
         DisplayString = "(int)";
 
@@ -279,6 +298,7 @@ std::string CEvaluationNodeOperator::getCCodeString(const std::vector< std::stri
         {
           case SubType::POWER:
           case SubType::REMAINDER:
+          case SubType::QUOTIENT:
             DisplayString += ",";
             break;
 
@@ -297,7 +317,8 @@ std::string CEvaluationNodeOperator::getCCodeString(const std::vector< std::stri
         DisplayString += children[1];
 
       if (subType == SubType::POWER ||
-          subType == SubType::REMAINDER)
+          subType == SubType::REMAINDER ||
+          subType == SubType::QUOTIENT)
         DisplayString += ")";
 
       return DisplayString;
@@ -350,6 +371,9 @@ std::string CEvaluationNodeOperator::getXPPString(const std::vector< std::string
           subType == SubType::REMAINDER)
         DisplayString = "mod(";
 
+      if (subType == SubType::QUOTIENT)
+        DisplayString = "flr(";
+
       if (*mpLeftNode < * (CEvaluationNode *)this)
         DisplayString += "(" + children[0] + ")";
       else
@@ -360,6 +384,10 @@ std::string CEvaluationNodeOperator::getXPPString(const std::vector< std::string
           case SubType::MODULUS:
           case SubType::REMAINDER:
             DisplayString += ",";
+            break;
+
+          case SubType::QUOTIENT:
+            DisplayString += "/";
             break;
 
           default:
@@ -373,7 +401,8 @@ std::string CEvaluationNodeOperator::getXPPString(const std::vector< std::string
         DisplayString += children[1];
 
       if (subType == SubType::MODULUS ||
-          subType == SubType::REMAINDER)
+          subType == SubType::REMAINDER ||
+          subType == SubType::QUOTIENT)
         DisplayString += ")";
 
       return DisplayString;
@@ -422,9 +451,9 @@ CEvaluationNode * CEvaluationNodeOperator::fromAST(const ASTNode * pASTNode, con
         data = "^";
         break;
 
-      case AST_FUNCTION_REM:
-        subType = SubType::REMAINDER;
-        data = "mod";
+      case AST_FUNCTION_QUOTIENT:
+        subType = SubType::QUOTIENT;
+        data = "quot";
         break;
 
       default:
@@ -528,6 +557,10 @@ ASTNode* CEvaluationNodeOperator::toAST(const CDataModel* pDataModel) const
       case SubType::REMAINDER:
         // replace this with a more complex subtree
         CEvaluationNodeOperator::createModuloTree(this, node, pDataModel);
+        break;
+
+      case SubType::QUOTIENT:
+        node->setType(AST_FUNCTION_QUOTIENT);
         break;
 
       case SubType::PLUS:
@@ -1664,6 +1697,31 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
         if (flag) out << "</mfenced>" << std::endl;
 
         out << "<mo>" << "mod" << "</mo>" << std::endl;
+
+        flag = !(*(CEvaluationNode *)this < *mpRightNode);
+
+        if (flag) out << "<mfenced>" << std::endl;
+
+        out << children[1];
+
+        if (flag) out << "</mfenced>" << std::endl;
+
+        out << "</mrow>" << std::endl;
+        break;
+
+      case SubType::QUOTIENT:
+        out << "<mrow>" << std::endl;
+
+        //do we need "()" ?
+        flag = (*mpLeftNode < * (CEvaluationNode *)this);
+
+        if (flag) out << "<mfenced>" << std::endl;
+
+        out << children[0];
+
+        if (flag) out << "</mfenced>" << std::endl;
+
+        out << "<mo>" << "quotient" << "</mo>" << std::endl;
 
         flag = !(*(CEvaluationNode *)this < *mpRightNode);
 

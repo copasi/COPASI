@@ -120,6 +120,7 @@ const CEnumAnnotation< std::string, CEvaluationNode::SubType > CEvaluationNode::
   "Power",
   "Rationale",
   "Remainder",
+  "Quotient", //     QUOTIENT
   "Rgamma",
   "Rnormal",
   "Rpoisson",

@@ -184,6 +184,7 @@ private:
   void s_plus();
   void s_minus();
   void s_remainder();
+  void s_quotient();
   void s_invalid();
 
 // Attributes

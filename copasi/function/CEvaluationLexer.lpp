@@ -557,6 +557,14 @@ ID       (\"([^\\\"]|\\.)*\"|[a-z_A-Z][a-z_A-Z0-9]*)
   return TOKEN_OPERATOR_REMAINDER;
 %}
 
+<sOPERATOR>"quot"   %{
+  BEGIN(sSIGNorVALUE); 
+  mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::QUOTIENT,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_OPERATOR_REMAINDER;
+%}
+
 <sOPERATOR>"+"   %{
   BEGIN(sSIGNorVALUE);
   mpNode = new CEvaluationNodeOperator(CEvaluationNode::SubType::PLUS,

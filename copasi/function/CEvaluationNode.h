@@ -120,6 +120,7 @@ public:
     NE,
     TAN,
     REMAINDER,
+    QUOTIENT,
     GT,
     SEC,
     CSC,

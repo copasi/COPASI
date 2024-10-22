@@ -6,6 +6,8 @@
 #ifndef COPASI_CJitCompilerImplementation
 #define COPASI_CJitCompilerImplementation
 
+#include <cmath>
+
 #include "copasi/math/CJitCompiler.h"
 
 #if (defined USE_JIT) && defined (JIT_IMPLEMENTATION)
@@ -85,6 +87,10 @@ private:
       return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
     return (C_FLOAT64)(((C_INT32) x) % ((C_INT32) y));
+  }
+  static inline C_FLOAT64 __jit_quotient(C_FLOAT64 x, C_FLOAT64 y)
+  {
+    return (x - fmod(x, y)) / y;
   }
   static inline C_FLOAT64 __jit_max(C_FLOAT64 x, C_FLOAT64 y){return x > y ? x : y;}
   static inline C_FLOAT64 __jit_min(C_FLOAT64 x, C_FLOAT64 y){return x < y ? x : y;}

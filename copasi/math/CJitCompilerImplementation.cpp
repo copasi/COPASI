@@ -485,6 +485,13 @@ CJitCompilerImplementation::Node * CJitCompilerImplementation::compile(const CEv
       }
       break;
 
+      case CEvaluationNode::SubType::QUOTIENT:
+      {
+        auto & Function = mpExpression->Immediate< F2 >(__jit_quotient);
+        pNodeJIT = &mpExpression->Call(Function, *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[0]), *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[1]));
+      }
+      break;
+
       default:
         break;
     }
