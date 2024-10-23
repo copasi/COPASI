@@ -1103,11 +1103,17 @@ void CQArrayAnnotationsWidget::fillBarChart()
 #endif
 }
 
+#include <QBackingStore>
+
 bool CQArrayAnnotationsWidget::createBarChart()
 {
-  if (!mWithBarChart) return false;
+  if (!mWithBarChart)
+    return false;
 
 #ifdef WITH_QT5_VISUALIZATION
+
+  if (!backingStore()->window()->supportsOpenGL())
+    return false;
 
   m_graph = new Q3DBars();
 
