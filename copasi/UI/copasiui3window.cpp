@@ -87,6 +87,7 @@
 #include "copasi/model/CModelExpansion.h"
 #include "copasi/UI/CQCheckModelWindow.h"
 #include <copasi/UI/CQBrowserPane.h>
+#include <copasi/UI/CQExternalToolDialog.h>
 
 #include "copasi/model/CModelExpansion.h"
 
@@ -113,6 +114,9 @@
 #include <copasi/UI/CQOptPopulation.h>
 
 #include <copasi/UI/CQParameterEstimationResult.h>
+
+#include <copasi/UI/CQExternalToolDialog.h>
+#include <copasi/UI/CQExternalTools.h>
 
 #include <qwt_global.h>
 
@@ -346,6 +350,8 @@ CopasiUI3Window::CopasiUI3Window():
   , mpPopulationDisplay(NULL)
   , mAutoUpdateCheck(false)
   , mActionStack()
+  , mpaShowExternalToolDialog(NULL)
+  , mpExternaltools(new CQExternalTools)
 {
   // There can only be one
   pMainWindow = this;
@@ -415,6 +421,8 @@ CopasiUI3Window::CopasiUI3Window():
 
   QTimer::singleShot(10, this, SLOT(slotAutoCheckForUpdates()));
   connect(this, SIGNAL(signalDefferedLoadFile(QString)), this, SLOT(slotDefferedLoadFile(QString)));
+
+  mpExternaltools->init(mpTools, mpaShowExternalToolDialog);
 }
 
 CopasiUI3Window::~CopasiUI3Window()
@@ -445,6 +453,7 @@ CopasiUI3Window::~CopasiUI3Window()
   mpDataModelGUI->deregisterListView(mpListView);
   pdelete(mpDataModelGUI);
   pdelete(mpListView);
+  pdelete(mpExternaltools);
 }
 
 void CopasiUI3Window::createActions()
@@ -580,6 +589,9 @@ void CopasiUI3Window::createActions()
 #endif
   mpaParameterEstimationResult = new QAction("Load Parameter Estimation Protocol", this);
   connect(mpaParameterEstimationResult, SIGNAL(triggered()), this, SLOT(slotLoadParameterEstimationProtocol()));
+
+  mpaShowExternalToolDialog = new QAction("External Tools...", this);
+  connect(mpaShowExternalToolDialog, &QAction::triggered, this, &CopasiUI3Window::slotConfigureExternalTools);
 }
 
 void
@@ -827,6 +839,8 @@ void CopasiUI3Window::createMenuBar()
   mpSBWAction = mpTools->addMenu(mpSBWMenu);
 #endif // COPASI_SBW_INTEGRATION
   mpTools->addSeparator();
+  mpTools->addAction(mpaShowExternalToolDialog);
+  mpTools->addSeparator();  
   mpTools->addAction(mpaUpdateMIRIAM);
   mpTools->addAction("&Preferences", this, SLOT(slotPreferences()));
   mpTools->addAction(mpaFontSelectionDialog);
@@ -3881,6 +3895,18 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
   // open url
   connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFromUrlFinished(bool)));
   mpDataModelGUI->downloadFileFromUrl(TO_UTF8(url), TmpFileName);
+}
+
+void CopasiUI3Window::slotConfigureExternalTools()
+{
+  CQExternalToolDialog dlg;
+  dlg.init(mpExternaltools);
+  if (dlg.exec() == QDialog::Accepted)
+    {
+      dlg.saveTools(true);
+      mpExternaltools->init(mpTools, mpaShowExternalToolDialog);
+    }
+
 }
 
 void CopasiUI3Window::activateElement(const std::string& activate)

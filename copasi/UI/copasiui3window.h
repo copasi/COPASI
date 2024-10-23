@@ -79,6 +79,7 @@ class CModelVersionHierarchy;
 class CQOptPopulation;
 class CDataModel;
 class CUndoStack;
+class CQExternalTools;
 
 enum CopasiUIActions
 {
@@ -200,6 +201,8 @@ public slots:
 
   void slotFileOpen(QString file = QString());
   void slotFileOpenFromUrl(QString url = QString());
+
+  void slotConfigureExternalTools();
 
   void slotHandleCopasiScheme(const QUrl& url);
 
@@ -494,6 +497,11 @@ private:
   bool mAutoUpdateCheck;
 
   std::deque< std::pair < CopasiUIActions, std::string > > mActionStack;
+
+  QAction * mpaShowExternalToolDialog;
+
+
+  CQExternalTools * mpExternaltools;
 
 #ifdef COPASI_SBW_INTEGRATION
 public:
