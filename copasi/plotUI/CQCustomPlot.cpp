@@ -2372,7 +2372,7 @@ void CQCustomPlot::setupLegend()
 
   legend->clearItems();
 
-  for (int i = (currentPage) * maxItems; i < ((currentPage + 1) *maxItems) && i < numItems; ++i)
+  for (int i = (currentPage) * maxItems; i < ((currentPage + 1) *maxItems) && i < numItems && i >=0; ++i)
     {
       auto * current = mCurves[i];
 
