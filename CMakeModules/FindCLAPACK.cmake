@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -112,10 +112,14 @@ if (NOT LAPACK_FOUND)
     set(BLA_VENDOR "Intel (MKL)")
 
     if (UNIX)
-      if (COPASI_BUILD_TYPE EQUAL "32bit")
+      if ((COPASI_BUILD_TYPE EQUAL "32bit") AND EXISTS $ENV{MKLROOT}/lib/ia32)
         set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/ia32/libmkl_intel.a $ENV{MKLROOT}/lib/ia32/libmkl_core.a $ENV{MKLROOT}/lib/ia32/libmkl_sequential.a -Wl,--end-group -lpthread -lm -ldl")
-      elseif (COPASI_BUILD_TYPE EQUAL "64bit")
+      elseif (COPASI_BUILD_TYPE EQUAL "64bit" AND EXISTS $ENV{MKLROOT}/lib/intel64)
         set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/intel64/libmkl_intel_lp64.a $ENV{MKLROOT}/lib/intel64/libmkl_core.a $ENV{MKLROOT}/lib/intel64/libmkl_sequential.a -Wl,--end-group -lpthread -lm -ldl")
+      elseif(EXISTS "$ENV{MKLROOT}/lib" AND EXISTS "$ENV{MKLROOT}/lib/libmkl_intel_lp64.a")
+        set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/libmkl_intel_lp64.a $ENV{MKLROOT}/lib/libmkl_core.a $ENV{MKLROOT}/lib/libmkl_sequential.a -Wl,--end-group -lpthread -lm -ldl")
+      elseif(EXISTS $ENV{MKLROOT}/lib AND EXISTS $ENV{MKLROOT}/lib/libmkl_intel.a)
+        set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/libmkl_intel.a $ENV{MKLROOT}/lib/libmkl_core.a $ENV{MKLROOT}/lib/libmkl_sequential.a -Wl,--end-group -lpthread -lm -ldl")
       endif ()
     else ()
       if (COPASI_BUILD_TYPE EQUAL "32bit")
