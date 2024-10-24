@@ -509,12 +509,14 @@ if(BUILD_GUI)
            DOC "Path to the uic executable"
            PATHS ${Qt6Widgets_DIR}/../../../bin/
                  ${Qt6Widgets_DIR}/../../../share/qt/libexec/
+                 ${Qt6Widgets_DIR}/../../../libexec/qt6/
            )
 
     if (NOT EXISTS "${Qt6Widgets_UIC_EXECUTABLE}")
       message(FATAL_ERROR "Need UIC executable to compile GUI, it should be in: 
           ${Qt6Widgets_DIR}/../../../bin
           ${Qt6Widgets_DIR}/../../../share/qt/libexec
+          ${Qt6Widgets_DIR}/../../../libexec/qt6/
           ")
     endif()
   endif()
