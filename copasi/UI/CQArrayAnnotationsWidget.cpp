@@ -1111,10 +1111,6 @@ bool CQArrayAnnotationsWidget::createBarChart()
     return false;
 
 #ifdef WITH_QT5_VISUALIZATION
-
-  if (!backingStore()->window()->supportsOpenGL())
-    return false;
-
   m_graph = new Q3DBars();
 
   m_container = QWidget::createWindowContainer(m_graph);
