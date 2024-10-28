@@ -1103,24 +1103,21 @@ void CQArrayAnnotationsWidget::fillBarChart()
 #endif
 }
 
-#include <QBackingStore>
-
 bool CQArrayAnnotationsWidget::createBarChart()
 {
   if (!mWithBarChart)
     return false;
 
 #ifdef WITH_QT5_VISUALIZATION
+
   m_graph = new Q3DBars();
-
-  m_container = QWidget::createWindowContainer(m_graph);
-
   if (!m_graph->hasContext())
   {
     pdelete(m_graph);
-    pdelete(m_container);
     return false;
   }
+
+  m_container = QWidget::createWindowContainer(m_graph);
 
   mpStack->addWidget(m_container);
 
