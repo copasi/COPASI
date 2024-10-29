@@ -1271,7 +1271,7 @@ void ensureAllArgsAreBeingUsedInFunctionDefinition(const FunctionDefinition* sbm
   for (unsigned int i = 0; i < sbmlFunction->getNumArguments(); ++i)
     str << sbmlFunction->getArgument(i)->getName() << ", ";
 
-  char* formula = SBML_formulaToString(sbmlFunction->getBody());
+  char* formula = SBML_formulaToL3String(sbmlFunction->getBody());
   str << formula;
 
   std::vector<std::string>::iterator it;
@@ -1282,7 +1282,7 @@ void ensureAllArgsAreBeingUsedInFunctionDefinition(const FunctionDefinition* sbm
   str << ")";
 
   // update the function definition
-  const_cast<FunctionDefinition*>(sbmlFunction)->setMath(SBML_parseFormula(str.str().c_str()));
+  const_cast<FunctionDefinition*>(sbmlFunction)->setMath(SBML_parseL3Formula(str.str().c_str()));
 
   // free the formula
   free(formula);
@@ -2322,7 +2322,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
           /* Create a new user defined CKinFunction */
           if (!sbmlId2CopasiCN(node, copasi2sbmlmap, copasiReaction->getParameters(), sbmlReaction))
             {
-              CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 27, copasiReaction->getObjectName().c_str());
+              CCopasiMessage(CCopasiMessage::ERROR, MCSBML + 27, copasiReaction->getObjectName().c_str());
             }
 
           CEvaluationNode* pExpressionTreeRoot = CEvaluationTree::fromAST(node, false);
@@ -2565,6 +2565,13 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                                                             copasiReaction->isReversible() ? TriTrue : TriFalse))
                                 {
                                   pNonconstFun->setReversible(TriUnspecified);
+
+                                  if (pNonconstFun->getInfix() == "@")
+                                    {
+                                      // set infix to something more usable which even though 
+                                      // invalid, may help others to fix this
+                                      pNonconstFun->setInfix(SBML_formulaToL3String(kLawMath));
+                                    }
                                 }
 
                               if (CRootContainer::getFunctionList()->loadedFunctions().size() > ExistingFunctions)
@@ -7577,7 +7584,7 @@ void SBMLImporter::replaceDelayAndRateOfInReaction(ConverterASTNode * pASTNode, 
 
 void SBMLImporter::replaceUnsupportedNodeInKinetic(CNodeIterator< ConverterASTNode >& itNode, std::map< std::string, std::string > & map, std::string prefix, Model * pModel, std::map< const CDataObject *, SBase * > & copasi2sbmlmap, Reaction * pSBMLReaction, std::map< std::string, std::string > & localReplacementMap)
 {
-  std::string formula = SBML_formulaToString(*itNode);
+  std::string formula = SBML_formulaToL3String(*itNode);
   std::map< std::string, std::string >::const_iterator pos = map.find(formula);
   std::string replacementId;
 
