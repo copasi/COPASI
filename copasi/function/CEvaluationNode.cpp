@@ -919,6 +919,9 @@ CValidatedUnit CEvaluationNode::setUnit(const CMathContainer & /* container */,
   std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itTargetUnit = targetUnits.find(const_cast< CEvaluationNode * >(this));
   std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itCurrentUnit = currentUnits.find(const_cast< CEvaluationNode * >(this));
 
+  if (itTargetUnit == targetUnits.end() || itCurrentUnit == currentUnits.end())
+    return CValidatedUnit();
+
   CValidatedUnit Result(CValidatedUnit::merge(itTargetUnit->second, itCurrentUnit->second));
 
   if (Result.conflict() &&

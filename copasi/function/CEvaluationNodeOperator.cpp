@@ -1742,6 +1742,10 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
 CValidatedUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container,
     const std::vector< CValidatedUnit > & units) const
 {
+
+  if (units.empty())
+    return CValidatedUnit(CBaseUnit::undefined, true);
+
   switch (mSubType)
     {
       case SubType::POWER:
@@ -1804,16 +1808,19 @@ CValidatedUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container
       break;
 
       case SubType::MULTIPLY:
+        if (units.size() > 1)
         return units[0] * units[1];
         break;
 
       case SubType::DIVIDE:
       case SubType::MODULUS:
+        if (units.size() > 1)
         return units[0] * units[1].exponentiate(-1);
         break;
 
       case SubType::PLUS:
       case SubType::MINUS:
+        if (units.size() > 1)
         return CValidatedUnit::merge(units[0], units[1]);
         break;
 
@@ -1879,6 +1886,9 @@ CValidatedUnit CEvaluationNodeOperator::setUnit(const CMathContainer & container
         std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itLeft = currentUnits.find(mpLeftNode);
         std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itRight = currentUnits.find(mpRightNode);
 
+        if (itRight == currentUnits.end())
+          break;
+
         if (itLeft->second.isUndefined() ||
             mpLeftNode->getChild() != NULL)
           {
@@ -1890,8 +1900,7 @@ CValidatedUnit CEvaluationNodeOperator::setUnit(const CMathContainer & container
             targetUnits[mpLeftNode].setConflict(Result.conflict());
           }
 
-        if (itRight->second.isUndefined()  ||
-            mpRightNode->getChild() != NULL)
+        if (itRight->second.isUndefined() || mpRightNode->getChild() != NULL)
           {
             targetUnits[mpRightNode] = Result * itLeft->second.exponentiate(-1.0);
           }
@@ -1908,6 +1917,9 @@ CValidatedUnit CEvaluationNodeOperator::setUnit(const CMathContainer & container
       {
         std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itLeft = currentUnits.find(mpLeftNode);
         std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itRight = currentUnits.find(mpRightNode);
+
+        if (itRight == currentUnits.end() || mpRightNode == NULL)
+          break;
 
         if (itLeft->second.isUndefined() ||
             mpLeftNode->getChild() != NULL)
