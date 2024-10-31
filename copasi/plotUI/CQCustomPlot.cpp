@@ -232,6 +232,7 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
     this->xAxis->setProperty("axis_label", action->data());
     this->updateSteadyStateInfo(type);
     this->mSelectedIndependent = "";
+    this->mHaveNewData = true;
 
     if (type == X_AXIS_VALUE)
       {
