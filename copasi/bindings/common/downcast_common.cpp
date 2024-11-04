@@ -418,7 +418,10 @@ GetDowncastSwigTypeForMethod(CCopasiMethod* method)
     {
       pInfo = SWIGTYPE_p_CSensMethod;
     }
-
+  else if (dynamic_cast<CLNAMethod*>(method))
+    {
+      pInfo = SWIGTYPE_p_CLNAMethod;
+    }
   return pInfo;
 }
 
@@ -579,6 +582,10 @@ GetDowncastSwigTypeForProblem(CCopasiProblem* problem)
     {
       pInfo = SWIGTYPE_p_CSensProblem;
     }
+  else if (dynamic_cast<CTimeSensProblem*>(problem))
+    {
+      pInfo = SWIGTYPE_p_CTimeSensProblem;
+    }
 
   return pInfo;
 }
@@ -632,6 +639,10 @@ GetDowncastSwigTypeForTask(CCopasiTask* task)
   else if (dynamic_cast<CSensTask*>(task))
     {
       pInfo = SWIGTYPE_p_CSensTask;
+    }
+  else if (dynamic_cast<CTimeSensTask*>(task))
+    {
+      pInfo = CTimeSensTask;
     }
 
   return pInfo;
