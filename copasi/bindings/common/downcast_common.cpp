@@ -558,6 +558,10 @@ GetDowncastSwigTypeForProblem(CCopasiProblem* problem)
     {
       pInfo = GetDowncastSwigTypeForCOptProblem(static_cast<COptProblem*>(problem));
     }
+  else if (dynamic_cast<CTimeSensProblem*>(problem))
+    {
+      pInfo = SWIGTYPE_p_CTimeSensProblem;
+    }
   else if (dynamic_cast<CTrajectoryProblem*>(problem))
     {
       pInfo = SWIGTYPE_p_CTrajectoryProblem;
@@ -581,10 +585,6 @@ GetDowncastSwigTypeForProblem(CCopasiProblem* problem)
   else if (dynamic_cast<CSensProblem*>(problem))
     {
       pInfo = SWIGTYPE_p_CSensProblem;
-    }
-  else if (dynamic_cast<CTimeSensProblem*>(problem))
-    {
-      pInfo = SWIGTYPE_p_CTimeSensProblem;
     }
 
   return pInfo;
@@ -616,6 +616,10 @@ GetDowncastSwigTypeForTask(CCopasiTask* task)
     {
       pInfo = SWIGTYPE_p_CLNATask;
     }
+  else if (dynamic_cast<CTimeSensTask*>(task))
+    {
+      pInfo = SWIGTYPE_p_CTimeSensTask;
+    }
   else if (dynamic_cast<CTrajectoryTask*>(task))
     {
       pInfo = SWIGTYPE_p_CTrajectoryTask;
@@ -639,10 +643,6 @@ GetDowncastSwigTypeForTask(CCopasiTask* task)
   else if (dynamic_cast<CSensTask*>(task))
     {
       pInfo = SWIGTYPE_p_CSensTask;
-    }
-  else if (dynamic_cast<CTimeSensTask*>(task))
-    {
-      pInfo = SWIGTYPE_p_CTimeSensTask;
     }
 
   return pInfo;
