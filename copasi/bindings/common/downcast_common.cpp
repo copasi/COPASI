@@ -642,7 +642,7 @@ GetDowncastSwigTypeForTask(CCopasiTask* task)
     }
   else if (dynamic_cast<CTimeSensTask*>(task))
     {
-      pInfo = CTimeSensTask;
+      pInfo = SWIGTYPE_p_CTimeSensTask;
     }
 
   return pInfo;
