@@ -274,6 +274,11 @@ public:
    */
   bool convertReactionsToODEs();
 
+  /** 
+   * Converts all local parameters to global ones.
+   */
+  bool convertParametersToGlobal();
+
   std::string exportSBMLToString(CProcessReport * pProcessReport, int sbmlLevel, int sbmlVersion);
 
   bool exportSBML(const std::string & fileName, bool overwriteFile = false, int sbmlLevel = 2, int sbmlVersion = 1, bool exportIncomplete = false, bool exportCOPASIMIRIAM = true, CProcessReport  * pProcessReport = NULL);

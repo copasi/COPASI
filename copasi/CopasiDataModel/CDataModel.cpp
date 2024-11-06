@@ -3735,7 +3735,29 @@ CDataModel::convertReactionsToODEs()
                  "Replace reactions with rateRules" );      
   if (doc->convert(props) != LIBSBML_OPERATION_SUCCESS)
     {
-      CCopasiMessage(CCopasiMessage::ERROR, "Couldn't infer reactions: %s", doc->getErrorLog()->toString().c_str());
+      CCopasiMessage(CCopasiMessage::ERROR, "Couldn't convert reactions to ODEs: %s", doc->getErrorLog()->toString().c_str());
+      return false;
+    }
+
+  std::string newSBML = writeSBMLToString(doc);
+  delete doc;
+  return importSBMLFromString(newSBML.c_str());
+}
+
+
+bool 
+CDataModel::convertParametersToGlobal()
+{
+  std::string sbml = exportSBMLToString(NULL, 3, 1);
+
+  auto * doc = readSBMLFromString(sbml.c_str());
+
+  ConversionProperties props;
+  props.addOption("promoteLocalParameters", true,
+                  "Promotes all Local Parameters to Global ones");
+  if (doc->convert(props) != LIBSBML_OPERATION_SUCCESS)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "Couldn't promote local parameters: %s", doc->getErrorLog()->toString().c_str());
       return false;
     }
 

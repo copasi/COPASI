@@ -830,6 +830,7 @@ void CopasiUI3Window::createMenuBar()
   mpTools->addAction("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
   mpTools->addAction("Convert ODEs -> Reactions", this, SLOT(slotConvertODEsToReactions()));
   mpTools->addAction("Convert Reactions -> ODEs", this, SLOT(slotConvertReactionsToODEs()));
+  mpTools->addAction("Convert local to global Parmeters", this, SLOT(slotPromoteLocalParameters()));
   mpTools->addAction("Create &Events For Timeseries Experiment", this, SLOT(slotCreateEventsForTimeseries()));
   mpTools->addAction("&Remove SBML Ids from model", this, SLOT(slotClearSbmlIds()));
   mpTools->addAction(mpaParameterEstimationResult);
@@ -2072,6 +2073,41 @@ void CopasiUI3Window::slotConvertReactionsToODEs()
   CCopasiMessage::clearDeque();
 
   if (!mpDataModel->convertReactionsToODEs())
+    {
+      // Display error messages.
+      CQMessageBox::information(this, "Conversion Failed",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default,
+                                QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+    }
+
+  mpDataModel->changed();
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, CRegisteredCommonName());
+  mpListView->resetCache();
+}
+
+void CopasiUI3Window::slotPromoteLocalParameters()
+{
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+
+  if (!pModel)
+    return;
+
+  mpDataModelGUI->commit();
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
+                         mpDataModel->getModel()->getCN());
+  mpListView->clearCurrentWidget();
+  mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
+  mpListView->resetCache();
+
+  if (this->mpSliders)
+    this->mpSliders->reset();
+
+  CCopasiMessage::clearDeque();
+
+  if (!mpDataModel->convertParametersToGlobal())
     {
       // Display error messages.
       CQMessageBox::information(this, "Conversion Failed",
