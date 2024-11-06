@@ -101,6 +101,16 @@
        <property name="text">
         <string>Use Time Sens</string>
        </property>
+       <property name="visible">
+        <bool>false</bool>
+       </property>  
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mpCheckDisplayPopulation">
+       <property name="text">
+        <string>Display Population</string>
+       </property>
       </widget>
      </item>
     </layout>

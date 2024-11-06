@@ -283,6 +283,8 @@ bool CQFittingWidget::loadTaskProtected()
   mpConstraints->setExperimentSet(const_cast<const CExperimentSet *&>(mpExperimentSet));
   mpConstraints->setCrossValidationSet(const_cast<const CCrossValidationSet *&>(mpCrossValidationSet));
 
+  mpCheckDisplayPopulation->setChecked(pTask->getProblem()->getParameter("DisplayPoplations")->getValue< bool >());
+
   mChanged = false;
 
   return true;
@@ -296,6 +298,8 @@ bool CQFittingWidget::runTask()
   if (!pTask) return false;
 
   mnParamterSetsBeforeRun = pTask->getObjectDataModel()->getModel()->getModelParameterSets().size();
+
+  pTask->getProblem()->getParameter("DisplayPoplations")->setValue(mpCheckDisplayPopulation->isChecked());
 
   if (!commonBeforeRunTask()) return false;
 

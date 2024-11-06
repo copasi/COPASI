@@ -208,6 +208,9 @@ void COptProblem::initializeParameter()
   mpGrpItems = assertGroup("OptimizationItemList");
   mpGrpConstraints = assertGroup("OptimizationConstraintList");
 
+  // only used by the GUI to display more information on opt methods during runs
+  assertParameter("DisplayPoplations", CCopasiParameter::Type::BOOL, false);
+
   elevateChildren();
 }
 

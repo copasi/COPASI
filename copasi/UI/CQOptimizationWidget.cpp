@@ -157,6 +157,8 @@ bool CQOptimizationWidget::loadTaskProtected()
 
   mpConstraints->load(mpDataModel, pProblem->getGroup("OptimizationConstraintList"), NULL, NULL);
 
+  mpCheckDisplayPopulation->setChecked(pTask->getProblem()->getParameter("DisplayPoplations")->getValue< bool >());
+
   mChanged = false;
 
   return true;
@@ -174,6 +176,8 @@ bool CQOptimizationWidget::runTask()
     dynamic_cast< COptTask * >(mpObject);
 
   if (!pTask) return false;
+
+  pTask->getProblem()->getParameter("DisplayPoplations")->setValue(mpCheckDisplayPopulation->isChecked());
 
   if (!commonBeforeRunTask()) return false;
 
