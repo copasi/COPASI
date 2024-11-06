@@ -121,6 +121,7 @@ void CQPreferenceDialog::initTabsFromSettings(QSettings& settings)
     settings.beginGroup(mainGroup);
     auto tab = new QWidget();
     auto layout = new QFormLayout(tab);
+    layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
     tab->setLayout(layout);
     tabWidget->insertTab(0, tab, mainGroup);
 
@@ -147,8 +148,6 @@ void CQPreferenceDialog::initTabsFromSettings(QSettings& settings)
           pNode = dynamic_cast< CCopasiParameterGroup * >(pNode)->getParameter(paramName.toStdString());
       
       auto tooltip = settings.value("tooltip").toString();
-      if (!tooltip.isEmpty())
-        std::cout << tooltip.toStdString();
 
       if (type == "string")
       {
