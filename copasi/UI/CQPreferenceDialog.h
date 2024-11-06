@@ -27,7 +27,11 @@
 
 #include "copasi/UI/ui_CQPreferenceDialog.h"
 
+#include <QSettings>
+#include <map>
+
 class CConfigurationFile;
+class CCopasiParameter;
 
 class CQPreferenceDialog : public QDialog, public Ui::CQPreferenceDialog
 {
@@ -39,15 +43,19 @@ public:
 
 private:
   void init();
+  void initTabsFromSettings(QSettings& settings);
+  
 
 protected slots:
 
 private slots:
   virtual void slotBtnOk();
   virtual void slotBtnCancel();
+  virtual void slotPropertyChanged();
 
 private:
   CConfigurationFile * mpConfiguration;
+  std::map<QWidget*, CCopasiParameter*> mWidgetToParameter;
 };
 
 #endif // CQPREFERENCEDIALOG_H
