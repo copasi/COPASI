@@ -1256,7 +1256,7 @@ extern "C"
 #  if defined (HAVE_CLAPACK_H) && !defined(HAVE_APPLE) && !defined(COPASI_OVERWRITE_USE_LAPACK)
 #   include <clapack.h>
 #  else
-#    if !defined(HAVE_APPLE)
+#    if !defined(HAVE_APPLE) && !defined(USE_MKL)
 #     include "copasi/lapack/lapack.h"
 #    endif
 #  endif

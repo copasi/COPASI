@@ -126,15 +126,19 @@ if (NOT LAPACK_FOUND)
         set(LAPACK_LIBRARIES "-Wl,--start-group ${MKLROOT}/lib/libmkl_intel.a ${MKLROOT}/lib/libmkl_core.a ${MKLROOT}/lib/libmkl_sequential.a -Wl,--end-group -lpthread -lm -ldl")
       endif ()
     else ()
-      if (COPASI_BUILD_TYPE EQUAL "32bit")
+      if (COPASI_BUILD_TYPE EQUAL "32bit" AND EXISTS "${MKLROOT}/lib/ia32/")
         set(LAPACK_LIBRARIES "${MKLROOT}/lib/ia32/mkl_intel_c.lib" "${MKLROOT}/lib/ia32/mkl_core.lib" "${MKLROOT}/lib/ia32/mkl_sequential.lib")
-      elseif (COPASI_BUILD_TYPE EQUAL "64bit")
+      elseif (COPASI_BUILD_TYPE EQUAL "64bit" AND EXISTS "${MKLROOT}/lib/intel64/" )
         set(LAPACK_LIBRARIES "${MKLROOT}/lib/intel64/mkl_intel_lp64.lib" "${MKLROOT}/lib/intel64/mkl_core.lib" "${MKLROOT}/lib/intel64/mkl_sequential.lib")
+      elseif (EXISTS "${MKLROOT}/lib/mkl_intel_lp64.lib")
+        set(LAPACK_LIBRARIES "${MKLROOT}/lib/mkl_intel_lp64.lib" "${MKLROOT}/lib/mkl_core.lib" "${MKLROOT}/lib/mkl_sequential.lib")        
+        set(CLAPACK_INCLUDE_DIR ${MKLROOT}/include)
       endif ()
     endif ()
 
     add_definitions(-DHAVE_MKL)
     set(LAPACK_FOUND "Yes")
+    set(USE_MKL 1)
     
   endif ()
 endif ()
@@ -297,9 +301,9 @@ find_path(CLAPACK_INCLUDE_DIR clapack.h
 endif(NOT CLAPACK_INCLUDE_DIR)
 
 
-if (CLAPACK_INCLUDE_DIR)
+if (CLAPACK_INCLUDE_DIR AND NOT DEFINED MKLROOT)
   add_definitions(-DHAVE_CLAPACK_H)
-endif (CLAPACK_INCLUDE_DIR)
+endif (CLAPACK_INCLUDE_DIR AND NOT DEFINED MKLROOT)
 
 if (NOT CLAPACK_INCLUDE_DIR)
   find_path(CLAPACK_INCLUDE_DIR lapack.h
