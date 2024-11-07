@@ -49,10 +49,12 @@
 
 %template(ObjectStdVector) std::vector<CDataObject*>;
 typedef std::vector<CDataObject*> ObjectStdVector;
+#if (!defined SWIGJAVA)
 %template(StringUnitMap) std::map< std::string, CUnit >;
 typedef std::map< std::string, CUnit > StringUnitMap;
 %template(StringDoubleMap) std::map< std::string, double >;
 typedef std::map< std::string, double > StringDoubleMap;
+#endif
 
 %ignore CUnit::getSymbolComponents;
 %ignore CUnit::SymbolComponent;

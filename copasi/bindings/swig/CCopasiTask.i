@@ -70,8 +70,10 @@
 %warnfilter(325) CDescription;
 %warnfilter(325) CResult;
 
+#if (!defined SWIGJAVA)
 %template(TaskSubTypeVector) std::vector<CTaskEnum::Task>;
 %template(MethodSubTypeVector) std::vector<CTaskEnum::Method>;
+#endif
 
 %include "copasi/utilities/CTaskEnum.h"
 %include "copasi/utilities/CCopasiTask.h"

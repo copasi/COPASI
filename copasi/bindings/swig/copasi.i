@@ -78,6 +78,7 @@ LIBCOMBINE_CPP_NAMESPACE_USE
 #include "local.cpp"
 
 #include <copasi/core/CCore.h>
+#include <copasi/CopasiTypes.h>
 
 /**
  * This method is used to get the C_INVALID_INDEX

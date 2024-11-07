@@ -116,7 +116,9 @@ namespace std {
 
 #if !defined(SWIGR) && !defined(SWIGPERL) && !defined(SWIGOCTAVE)
 %template(DataObjectSet) set< const CDataObject * >;
+#if (!defined SWIGJAVA)
 %template(DataObjectMap) map< const CDataObject *, const CDataObject * >;
+#endif
 %template(DataObjectVector) vector< const CDataObject * >;
 %template(VectorOfDataObjectVector) vector< vector< const CDataObject * > >;
 #endif // !defined(SWIGR) && !defined(SWIGPERL) && !defined(SWIGOCTAVE)
