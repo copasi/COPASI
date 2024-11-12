@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -13,6 +13,9 @@
 # Properties, Inc., University of Heidelberg, and The University 
 # of Manchester. 
 # All rights reserved. 
+
+
+
 
 # Echo all bash commands to ease debugging
 set -x
@@ -31,6 +34,20 @@ EOF
 ) 
 GUID=$(echo $GUID | sed 'y/abcdef/ABCDEF/')
 productcode=${GUID:0:8}-${GUID:8:4}-${GUID:12:4}-${GUID:16:4}-${GUID:20:12}
+
+# if NO_COPY environment variable is set, skip the copy step
+if [ -n "${NO_COPY}" ]; then
+    echo "Skipping copy step"
+    cd ${SOURCE}/InnoSetup
+
+    workdir=${SOURCE}/InnoSetup
+    workdir=${workdir//\\/\\\\}
+
+    stagedir="${SETUP_DIR}/package"
+    sstagedir=${stagedir//\\/\\\\}
+    goto :SKIP_COPY
+fi
+
 
 [ -e ${SETUP_DIR}/package ] && rm -rf ${SETUP_DIR}/package
 mkdir ${SETUP_DIR}/package
@@ -98,6 +115,8 @@ workdir=${workdir//\\/\\\\}
 
 stagedir=$(cygpath -wa "${SETUP_DIR}/package")
 stagedir=${stagedir//\\/\\\\}
+
+:SKIP_COPY
 
 #   modify product code, product version, and package name
 sed -e '/#define MyAppVersion/s/".*"/"'${MyAppVersion}'"/' \
