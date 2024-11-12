@@ -1,4 +1,14 @@
-// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1048,7 +1058,7 @@ extern "C"
 # define zhetri_ ZHETRI
 # define zhetrs_ ZHETRS
 # define zhgeqz_ ZHGEQZ
-# define zhpcon_ ZHPCONLAPACK_INCLUDE_DIR
+# define zhpcon_ ZHPCON
 # define zhpev_ ZHPEV
 # define zhpevd_ ZHPEVD
 # define zhpevx_ ZHPEVX
