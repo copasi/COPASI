@@ -17,6 +17,9 @@
 
 
 
+
+
+
 # Echo all bash commands to ease debugging
 set -x
 
@@ -45,78 +48,79 @@ if [ -n "${NO_COPY}" ]; then
 
     stagedir="${SETUP_DIR}/package"
     sstagedir=${stagedir//\\/\\\\}
-    goto :SKIP_COPY
+
+else
+
+    [ -e ${SETUP_DIR}/package ] && rm -rf ${SETUP_DIR}/package
+    mkdir ${SETUP_DIR}/package
+    pushd ${SETUP_DIR}/package
+
+    # Create directory structure
+    tar -xvf ${BUILD_ROOT}/src/windows.tgz
+
+    # Copy README
+    cp ${SOURCE}/README.Win32 README.txt
+    chmod 644 README.txt
+
+    # Copy license
+    cp ${SOURCE}/copasi/ArtisticLicense.txt LICENSE.txt
+    chmod 644 LICENSE.txt
+
+    # Copy configuration resources
+    mkdir -p share/copasi/config
+    cp ${SOURCE}/copasi/MIRIAM/MIRIAMResources.xml share/copasi/config
+    chmod 444 share/copasi/config/*
+
+    # Copy examples
+    mkdir -p share/copasi/examples
+    cp ${SOURCE}/TestSuite/distribution/* share/copasi/examples
+    chmod 444 share/copasi/examples/*
+    chmod 777 share/copasi/examples
+
+    # Copy icons
+    mkdir -p share/copasi/icons
+    cp ${SOURCE}/copasi/UI/icons/Copasi.ico share/copasi/icons
+    cp ${SOURCE}/copasi/UI/icons/CopasiDoc.ico share/copasi/icons
+    chmod 644 share/copasi/icons/*
+
+    # Copy wizard resource
+    mkdir -p share/copasi/doc/html
+    cp ${SOURCE}/copasi/wizard/help_html/*.html share/copasi/doc/html
+    chmod 644 share/copasi/doc/html/*.html
+
+    mkdir -p share/copasi/doc/html/figures
+    cp ${SOURCE}/copasi/wizard/help_html/figures/*.png \
+        share/copasi/doc/html/figures
+    chmod 644 share/copasi/doc/html/figures/*.png
+
+    # 32 bit files
+    cp "${BUILD_32_MD}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/32
+    chmod 755 bin/32/CopasiUI.exe
+    cp "${BUILD_32_MT}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/32
+    chmod 755 bin/32/CopasiSE.exe
+    cp ${SOURCE}/InnoSetup/qt.conf bin/32
+    chmod 644 bin/32/qt.conf
+
+    # 64 bit files
+    cp "${BUILD_64_MD}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/64
+    chmod 755 bin/64/CopasiUI.exe
+    cp "${BUILD_64_MT}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/64
+    chmod 755 bin/64/CopasiSE.exe
+    cp ${SOURCE}/InnoSetup/qt.conf bin/64
+    chmod 644 bin/64/qt.conf
+
+    # Execute InnoSetup to create Installation package
+    cd ${SOURCE}/InnoSetup
+
+    workdir=$(cygpath -wa .)
+    workdir=${workdir//\\/\\\\}
+
+    stagedir=$(cygpath -wa "${SETUP_DIR}/package")
+    stagedir=${stagedir//\\/\\\\}
+
 fi
 
 
-[ -e ${SETUP_DIR}/package ] && rm -rf ${SETUP_DIR}/package
-mkdir ${SETUP_DIR}/package
-pushd ${SETUP_DIR}/package
-
-# Create directory structure
-tar -xvf ${BUILD_ROOT}/src/windows.tgz
-
-# Copy README
-cp ${SOURCE}/README.Win32 README.txt
-chmod 644 README.txt
-
-# Copy license
-cp ${SOURCE}/copasi/ArtisticLicense.txt LICENSE.txt
-chmod 644 LICENSE.txt
-
-# Copy configuration resources
-mkdir -p share/copasi/config
-cp ${SOURCE}/copasi/MIRIAM/MIRIAMResources.xml share/copasi/config
-chmod 444 share/copasi/config/*
-
-# Copy examples
-mkdir -p share/copasi/examples
-cp ${SOURCE}/TestSuite/distribution/* share/copasi/examples
-chmod 444 share/copasi/examples/*
-chmod 777 share/copasi/examples
-
-# Copy icons
-mkdir -p share/copasi/icons
-cp ${SOURCE}/copasi/UI/icons/Copasi.ico share/copasi/icons
-cp ${SOURCE}/copasi/UI/icons/CopasiDoc.ico share/copasi/icons
-chmod 644 share/copasi/icons/*
-
-# Copy wizard resource
-mkdir -p share/copasi/doc/html
-cp ${SOURCE}/copasi/wizard/help_html/*.html share/copasi/doc/html
-chmod 644 share/copasi/doc/html/*.html
-
-mkdir -p share/copasi/doc/html/figures
-cp ${SOURCE}/copasi/wizard/help_html/figures/*.png \
-    share/copasi/doc/html/figures
-chmod 644 share/copasi/doc/html/figures/*.png
-
-# 32 bit files
-cp "${BUILD_32_MD}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/32
-chmod 755 bin/32/CopasiUI.exe
-cp "${BUILD_32_MT}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/32
-chmod 755 bin/32/CopasiSE.exe
-cp ${SOURCE}/InnoSetup/qt.conf bin/32
-chmod 644 bin/32/qt.conf
-
-# 64 bit files
-cp "${BUILD_64_MD}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiUI/CopasiUI.exe"  bin/64
-chmod 755 bin/64/CopasiUI.exe
-cp "${BUILD_64_MT}/build/COPASI.${DIR_SUFFIX}/copasi/CopasiSE/CopasiSE.exe"  bin/64
-chmod 755 bin/64/CopasiSE.exe
-cp ${SOURCE}/InnoSetup/qt.conf bin/64
-chmod 644 bin/64/qt.conf
-
-# Execute InnoSetup to create Installation package
-cd ${SOURCE}/InnoSetup
-
-workdir=$(cygpath -wa .)
-workdir=${workdir//\\/\\\\}
-
-stagedir=$(cygpath -wa "${SETUP_DIR}/package")
-stagedir=${stagedir//\\/\\\\}
-
-:SKIP_COPY
 
 #   modify product code, product version, and package name
 sed -e '/#define MyAppVersion/s/".*"/"'${MyAppVersion}'"/' \
