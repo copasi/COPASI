@@ -20,6 +20,9 @@
 
 
 
+
+
+
 # Echo all bash commands to ease debugging
 set -x
 
@@ -44,10 +47,19 @@ if [ -n "${NO_COPY}" ]; then
     cd ${SOURCE}/InnoSetup
 
     workdir=${SOURCE}/InnoSetup
+    workdir=$(echo "$workdir" | sed 's/\//\\/g')
+    workdir=$(echo "$workdir" | sed 's/^\\c\\/C:\\/')
+    workdir=$(echo "$workdir" | sed 's/^\\d\\/D:\\/')
+    workdir=$(echo "$workdir" | sed 's/^\\e\\/E:\\/')
     workdir=${workdir//\\/\\\\}
 
-    stagedir="${SETUP_DIR}/package"
-    sstagedir=${stagedir//\\/\\\\}
+    stagedir=${SETUP_DIR}/package
+    stagedir=$(echo "$stagedir" | sed 's/\//\\/g')
+    stagedir=$(echo "$stagedir" | sed 's/^\\c\\/C:\\/')
+    stagedir=$(echo "$stagedir" | sed 's/^\\d\\/D:\\/')
+    stagedir=$(echo "$stagedir" | sed 's/^\\e\\/E:\\/')
+
+    stagedir=${stagedir//\\/\\\\}
 
 else
 
