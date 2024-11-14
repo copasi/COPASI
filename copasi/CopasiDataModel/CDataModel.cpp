@@ -3362,11 +3362,6 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
   if (mOldData.pCurrentSEDMLDocument == mData.pCurrentSEDMLDocument)
     mOldData.pCurrentSEDMLDocument = NULL;
 
-  if (mData.pModel && mData.pModel->compileIfNecessary(pProcessReport))
-    {
-      mData.pModel->getActiveModelParameterSet().updateModel();
-    }
-
   // We need to initialize all the task so that results are available
 
   // We suppress all errors and warnings

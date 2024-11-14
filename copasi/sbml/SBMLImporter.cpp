@@ -6217,7 +6217,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CDataOb
   mChangedObjects.insert(CObjectInterface::DataObject(pModel->getObject(std::string("Reference=Avogadro Constant"))));
   mChangedObjects.insert(CObjectInterface::DataObject(pModel->getObject(std::string("Reference=Quantity Conversion Factor"))));
 
-  pModel->updateInitialValues(mChangedObjects, false);
+  pModel->updateInitialValues(mChangedObjects, true);
 
   return true;
 }
