@@ -23,7 +23,7 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi][datahandler]")
 
     // change the initial time
     dm->getModel()->setInitialTime(20);
-    dm->getModel()->updateInitialValues(dm->getModel()->getInitialValueReference());
+    dm->getModel()->updateInitialValues(dm->getModel()->getInitialValueReference(), false);
     dm->getModel()->forceCompile(NULL);
     dm->getModel()->applyInitialValues();
 
@@ -127,7 +127,6 @@ TEST_CASE("ensure that data handler with function evaluations can be compiled", 
   CRootContainer::removeDatamodel(dm);
 }
 
-
 TEST_CASE("Test resolving of reactions with )", "[copasi][datahandler]")
 {
   auto * dm = CRootContainer::addDatamodel();
@@ -140,7 +139,7 @@ TEST_CASE("Test resolving of reactions with )", "[copasi][datahandler]")
   reaction->setReactionScheme("A -> D");
   model->compileIfNecessary(NULL);
 
-  // try and retrieve the reaction by display name: 
+  // try and retrieve the reaction by display name:
   auto fluxName = reaction->getFluxReference()->getObjectDisplayName();
   auto* obj = dm->findObjectByDisplayName(fluxName);
   REQUIRE(obj != nullptr);

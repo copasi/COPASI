@@ -74,7 +74,7 @@ bool CCompartment::applyData(const CData & data, CUndoData::CChangeSet & changes
     {
       const CData & Data = data.getProperty(CData::INITIAL_VALUE).toData();
       mIValue = Data.getProperty(CData::VALUE).toDouble();
-      mpModel->updateInitialValues(CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
+      mpModel->updateInitialValues(CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers), false);
       changes.add({CUndoData::Type::CHANGE, "State", mpModel->getStringCN(), mpModel->getStringCN()});
     }
 

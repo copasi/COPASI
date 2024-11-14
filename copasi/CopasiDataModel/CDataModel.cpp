@@ -922,7 +922,7 @@ bool CDataModel::saveModel(const std::string & fileName, CProcessReport * pProce
       mData.pModel->compileIfNecessary(pProcessReport);
 
       // Assure that the parameter set reflects all changes made to the model.
-      mData.pModel->getActiveModelParameterSet().refreshFromModel(false);
+      mData.pModel->refreshActiveParameterSet();
     }
 
   catch (...)
@@ -1012,7 +1012,7 @@ std::string CDataModel::saveModelToString(CProcessReport * pProcessReport)
       mData.pModel->compileIfNecessary(pProcessReport);
 
       // Assure that the parameter set reflects all changes made to the model.
-      mData.pModel->getActiveModelParameterSet().refreshFromModel(false);
+      mData.pModel->refreshActiveParameterSet();
     }
 
   catch (...)
@@ -1202,7 +1202,6 @@ bool CDataModel::importSBML(const std::string & fileName,
   importer.setImportCOPASIMIRIAM(importMiriam);
   importer.setImportHandler(pProcessReport);
   importer.setImportInitialValueAnnotation(importInitialValues);
-
 
   CModel * pModel = NULL;
 
@@ -2391,7 +2390,7 @@ bool CDataModel::importSEDML(const std::string & fileName,
   // Later this will be settable by the user in the preferences dialog
   // Later this will be settable by the user in the preferences dialog
   //   importer.setImportCOPASIMIRIAM(true);
-  importer.setImportHandler(pProcessReport);  
+  importer.setImportHandler(pProcessReport);
 
   CModel * pModel = NULL;
 
@@ -3419,7 +3418,7 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
           CCopasiMessage(CCopasiMessage::WARNING, validity.getIssueMessages().c_str());
         }
 
-      mData.pModel->updateInitialValues(CCore::Framework::ParticleNumbers);
+      mData.pModel->updateInitialValues(CCore::Framework::ParticleNumbers, false);
     }
 
   changed(false);
@@ -3466,12 +3465,12 @@ bool CDataModel::changeModelParameter(CDataObject * element, double value)
           bool isInitialConcentration = pRef->getObjectName() == "InitialConcentration" && pRef->getObjectDataModel() != NULL && pRef->getObjectDataModel()->getModel() != NULL;
 
           if (isInitialConcentration)
-            pRef->getObjectDataModel()->getModel()->updateInitialValues(pRef);
+            pRef->getObjectDataModel()->getModel()->updateInitialValues(pRef, false);
 
           *static_cast< double * >(pRef->getValuePointer()) = value;
 
           if (isInitialConcentration)
-            pRef->getObjectDataModel()->getModel()->updateInitialValues(pRef);
+            pRef->getObjectDataModel()->getModel()->updateInitialValues(pRef, false);
 
           return true;
         }
@@ -3537,6 +3536,7 @@ void CDataModel::reparameterizeFromIniFile(const std::string & fileName)
     }
 
   getModel()->compileIfNecessary(NULL); // compile if needed
+  getModel()->refreshActiveParameterSet();
 }
 
 const CDataObject * CDataModel::findObjectByDisplayName(const std::string & displayString) const
@@ -3692,7 +3692,6 @@ const CDataObject * CDataModel::findObjectByDisplayName(const std::string & disp
   return NULL;
 }
 
-
 #include <sbml/SBMLDocument.h>
 #include <sbml/conversion/ConversionProperties.h>
 
@@ -3703,12 +3702,13 @@ bool
 CDataModel::convertODEsToReactions()
 {
   std::string sbml = exportSBMLToString(NULL, 3, 1);
-  
+
   auto *doc = readSBMLFromString(sbml.c_str());
 
   ConversionProperties props;
   props.addOption("inferReactions", true,
                   "Infer reactions from rateRules in the model");
+
   if (doc->convert(props) != LIBSBML_OPERATION_SUCCESS)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "Couldn't infer reactions: %s", doc->getErrorLog()->toString().c_str());
@@ -3723,16 +3723,17 @@ CDataModel::convertODEsToReactions()
 /*
  * Converts Reactions in this model to ODEs
  */
-bool 
+bool
 CDataModel::convertReactionsToODEs()
 {
   std::string sbml = exportSBMLToString(NULL, 3, 1);
-  
+
   auto *doc = readSBMLFromString(sbml.c_str());
 
   ConversionProperties props;
   props.addOption("replaceReactions", true,
-                 "Replace reactions with rateRules" );      
+                  "Replace reactions with rateRules");
+
   if (doc->convert(props) != LIBSBML_OPERATION_SUCCESS)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "Couldn't convert reactions to ODEs: %s", doc->getErrorLog()->toString().c_str());
@@ -3744,8 +3745,7 @@ CDataModel::convertReactionsToODEs()
   return importSBMLFromString(newSBML.c_str());
 }
 
-
-bool 
+bool
 CDataModel::convertParametersToGlobal()
 {
   std::string sbml = exportSBMLToString(NULL, 3, 1);
@@ -3755,6 +3755,7 @@ CDataModel::convertParametersToGlobal()
   ConversionProperties props;
   props.addOption("promoteLocalParameters", true,
                   "Promotes all Local Parameters to Global ones");
+
   if (doc->convert(props) != LIBSBML_OPERATION_SUCCESS)
     {
       CCopasiMessage(CCopasiMessage::ERROR, "Couldn't promote local parameters: %s", doc->getErrorLog()->toString().c_str());

@@ -1,4 +1,4 @@
-// Copyright (C) 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2023 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -6,7 +6,6 @@
 #include "CQMarchingSquares.h"
 
 #if defined(COPASI_USE_QCUSTOMPLOT)
-
 
 void CQMarchingSquares::levelPaths::openPoligon(double x, double y)
 {
@@ -86,6 +85,8 @@ QPointF CQMarchingSquares::IsoCell::normalizedPointCCW(side cellSide)
       case TOP:
         return QPointF(_top, 1);
     }
+
+  return QPointF();
 }
 
 /**

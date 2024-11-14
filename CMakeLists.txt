@@ -938,6 +938,7 @@ message(STATUS "-----------------------------------------------------------
    Vendor               = ${BLA_VENDOR}
    LAPACK Libs          = ${CLAPACK_LIBRARIES}
    LAPACK LDFLAGS       = ${CLAPACK_LINKER_FLAGS}
+   LAPACK include       = ${CLAPACK_INCLUDE_DIR}
 
    crossguid Libs       = ${CROSSGUID_LIBRARY}
    cross include        = ${CROSSGUID_INCLUDE_DIR}

@@ -399,10 +399,11 @@ void CQParameterOverviewWidget::slotBtnNew()
   if (answer == QMessageBox::Save)
     {
       // Save the parameter set to a new or existing set
+      pModel->refreshActiveParameterSet();
       saveParameterSet(&pModel->getActiveModelParameterSet());
     }
 
-  // TODO CRITICAL We need to record all changes to the model
+  // We need to record all changes to the model
   pSetToApply->updateModel();
 
   // Notify the GUI that the model state has changed.

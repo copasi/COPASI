@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -104,7 +104,7 @@ C_FLOAT64 COptMethodPS::evaluate()
 
   // evaluate the fitness
   if (!pOptProblem->calculate())
-#pragma omp critical
+#pragma omp critical (ps_evaluate_continue)
     mContinue = false;
 
   C_FLOAT64 EvaluationValue;
@@ -117,7 +117,7 @@ C_FLOAT64 COptMethodPS::evaluate()
 
   if (mProblemContext.isThread(&pOptProblem))
     {
-#pragma omp critical
+#pragma omp critical (ps_evaluate_increment_counters)
       mProblemContext.master()->incrementCounters(pOptProblem->getCounters());
 
       pOptProblem->resetCounters();
@@ -198,7 +198,7 @@ bool COptMethodPS::move(const size_t & index)
     {
       Improved = true;
 
-#pragma omp critical
+#pragma omp critical (ps_move_best_value)
       {
         mImprovements[index] = EvaluationValue;
 
@@ -340,7 +340,7 @@ bool COptMethodPS::create(const size_t & index)
   memcpy(mBestPositions[index], mIndividuals[index]->array(), sizeof(C_FLOAT64) * mVariableSize);
 
   if (mBestValues[index] < mBestValue)
-#pragma omp critical
+#pragma omp critical (ps_create_best_value)
     {
       // and store that value
       mBestIndex = index;

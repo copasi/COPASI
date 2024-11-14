@@ -184,18 +184,18 @@ void SEDMLImporter::updateCopasiTaskForSimulation(
         if (mpCopasiModel)
           {
             mpCopasiModel->setInitialTime(initialTime);
-            mpCopasiModel->updateInitialValues(mpCopasiModel->getInitialValueReference());
+            mpCopasiModel->updateInitialValues(mpCopasiModel->getInitialValueReference(), false);
           }
 
         tProblem->setDuration(outputEndTime - initialTime);
-        
+
         // in COPASI the number of points calculated will be for the total duration of
-        // initialTime ... ouputEndTime, so if the outputStartTime is not equal to the 
-        // initial time, the number of points will differ so we have to adjust: 
+        // initialTime ... ouputEndTime, so if the outputStartTime is not equal to the
+        // initial time, the number of points will differ so we have to adjust:
 
         if (outputStartTime != initialTime)
           {
-            tProblem->setStepSize((outputEndTime-outputStartTime)/numberOfPoints);
+            tProblem->setStepSize((outputEndTime - outputStartTime) / numberOfPoints);
           }
         else
           {
@@ -1608,6 +1608,7 @@ CModel * SEDMLImporter::importModel(const std::string & modelId)
   // apply possible changes to the model
   if (sedmlModel != NULL && sedmlModel->getNumChanges() > 0)
     {
+      mpCopasiModel->refreshActiveParameterSet();
       CModelParameterSet & set = mpCopasiModel->getActiveModelParameterSet();
       bool valueChanged = false;
 
