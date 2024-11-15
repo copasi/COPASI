@@ -256,7 +256,7 @@ CEvaluationNode * CEvaluationNodeChoice::fromAST(const ASTNode * pASTNode, const
   return pNode;
 }
 
-ASTNode* CEvaluationNodeChoice::toAST(const CDataModel* pDataModel) const
+ASTNode * CEvaluationNodeChoice::toAST(const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
   ASTNode* node = new ASTNode(AST_FUNCTION_PIECEWISE);
   const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
@@ -267,9 +267,9 @@ ASTNode* CEvaluationNodeChoice::toAST(const CDataModel* pDataModel) const
   assert(child3 != NULL);
   // the condition is the second child to the AST node but the first child in
   // the CEvaluationNode
-  node->addChild(child2->toAST(pDataModel));
-  node->addChild(child1->toAST(pDataModel));
-  node->addChild(child3->toAST(pDataModel));
+  node->addChild(child2->toAST(pDataModel, sbmlLevel, sbmlVersion));
+  node->addChild(child1->toAST(pDataModel, sbmlLevel, sbmlVersion));
+  node->addChild(child3->toAST(pDataModel, sbmlLevel, sbmlVersion));
   return node;
 }
 

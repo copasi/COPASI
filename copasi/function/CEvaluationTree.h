@@ -180,7 +180,7 @@ public:
    * Converts a CEvaluationTree to an ASTNode based tree.
    * @return ASTNode* root node of the tree.
    */
-  virtual ASTNode* toAST(const CDataModel* pDataModel) const;
+  virtual ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const;
 
   /**
    * Set the infix description of the tree and compile it.

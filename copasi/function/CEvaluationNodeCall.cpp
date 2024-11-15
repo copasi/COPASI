@@ -462,7 +462,7 @@ CEvaluationNode * CEvaluationNodeCall::fromAST(const ASTNode * pASTNode, const s
   return pNode;
 }
 
-ASTNode* CEvaluationNodeCall::toAST(const CDataModel* pDataModel) const
+ASTNode * CEvaluationNodeCall::toAST(const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
   ASTNode* pNode = NULL;
 
@@ -479,7 +479,7 @@ ASTNode* CEvaluationNodeCall::toAST(const CDataModel* pDataModel) const
 
   while (child)
     {
-      pNode->addChild(child->toAST(pDataModel));
+      pNode->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
       child = static_cast<const CEvaluationNode*>(child->getSibling());
     }
 

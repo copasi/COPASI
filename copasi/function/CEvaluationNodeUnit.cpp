@@ -70,7 +70,7 @@ std::string CEvaluationNodeUnit::getXPPString(const std::vector< std::string > &
 }
 
 // virtual
-ASTNode* CEvaluationNodeUnit::toAST(const CDataModel* pDataModel) const
+ASTNode* CEvaluationNodeUnit::toAST(const CDataModel* pDataModel, int, int) const
 {
   // TODO CRITICAL Implement me!
   fatalError();

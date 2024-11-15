@@ -444,7 +444,7 @@ CEvaluationNode * CEvaluationNodeObject::fromAST(const ASTNode * pASTNode, const
   return pNode;
 }
 
-ASTNode* CEvaluationNodeObject::toAST(const CDataModel* pDataModel) const
+ASTNode * CEvaluationNodeObject::toAST(const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
   ASTNode* node = new ASTNode();
   node->setType(AST_NAME);
@@ -461,7 +461,7 @@ ASTNode* CEvaluationNodeObject::toAST(const CDataModel* pDataModel) const
       if (sibling == NULL) fatalError();
 
       node->setName(sibling->getObjectCN().c_str());
-      node->addChild(child->toAST(pDataModel));
+      node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
       return node;
     }
 

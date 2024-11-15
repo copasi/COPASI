@@ -120,7 +120,7 @@ public:
    * Create a new ASTNode corresponding to this delay node.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  ASTNode* toAST(const CDataModel* pDataModel) const override;
+  ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const override;
 
   /**
    * Build the MathML string

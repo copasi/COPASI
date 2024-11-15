@@ -603,7 +603,7 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
   return pNode;
 }
 
-ASTNode* CEvaluationNodeLogical::toAST(const CDataModel* pDataModel) const
+ASTNode * CEvaluationNodeLogical::toAST(const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
   SubType subType = (SubType)this->subType();
   ASTNode* node = new ASTNode();
@@ -658,8 +658,8 @@ ASTNode* CEvaluationNodeLogical::toAST(const CDataModel* pDataModel) const
     {
       const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
       const CEvaluationNode* child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
-      node->addChild(child1->toAST(pDataModel));
-      node->addChild(child2->toAST(pDataModel));
+      node->addChild(child1->toAST(pDataModel, sbmlLevel, sbmlVersion));
+      node->addChild(child2->toAST(pDataModel, sbmlLevel, sbmlVersion));
     }
 
   return node;

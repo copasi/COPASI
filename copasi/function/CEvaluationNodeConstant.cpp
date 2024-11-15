@@ -230,7 +230,7 @@ CEvaluationNode * CEvaluationNodeConstant::fromAST(const ASTNode * pASTNode, con
   return new CEvaluationNodeConstant(subType, data);
 }
 
-ASTNode* CEvaluationNodeConstant::toAST(const CDataModel* /*pDataModel*/) const
+ASTNode* CEvaluationNodeConstant::toAST(const CDataModel* /*pDataModel*/, int, int) const
 {
   SubType subType = (SubType)this->subType();
   ASTNode* node = new ASTNode();

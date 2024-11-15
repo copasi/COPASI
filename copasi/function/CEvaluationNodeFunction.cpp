@@ -918,6 +918,7 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
   std::string data = "";
 
   bool allowTwo = false;
+  bool allowN = false;
 
   if (type == AST_FUNCTION_ROOT)
     {
@@ -1144,12 +1145,14 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
         subType = SubType::MAX;
         data = "max";
         allowTwo = iMax == 2;
+        allowN = true;
         break;
 
       case AST_FUNCTION_MIN:
         subType = SubType::MIN;
         data = "min";
         allowTwo = iMax == 2;
+        allowN = true;
         break;
 
       default:
@@ -1158,7 +1161,7 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
         break;
     }
 
-  if (!allowTwo)
+  if (!allowTwo && !allowN)
     {
       assert(iMax == 1);
     }
@@ -1167,16 +1170,20 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
 
   if (!children.empty())
     {
-      pNode->addChild(children[0]);
+      int maxChildren =
+        allowN ? children.size() : allowTwo ? 2
+                                            : 1;
 
-      if (allowTwo)
-        pNode->addChild(children[1]);
+      for (int i = 0; i < maxChildren; ++i)
+        {
+          pNode->addChild(children[i]);
+        }
     }
 
   return pNode;
 }
 
-ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
+ASTNode * CEvaluationNodeFunction::toAST(const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
   SubType subType = (SubType)this->subType();
   ASTNode* node = new ASTNode();
@@ -1333,7 +1340,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         // the node will be replaced by its only child
         needFirstArg = false;
         delete node;
-        node = dynamic_cast<const CEvaluationNode*>(this->getChild())->toAST(pDataModel);
+        node = dynamic_cast<const CEvaluationNode*>(this->getChild())->toAST(pDataModel, sbmlLevel, sbmlVersion);
         break;
 
       case SubType::NOT:
@@ -1347,8 +1354,8 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         node->setName("RUNIFORM");
         const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
         const CEvaluationNode* sibling = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-        node->addChild(child->toAST(pDataModel));
-        node->addChild(sibling->toAST(pDataModel));
+        node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+        node->addChild(sibling->toAST(pDataModel, sbmlLevel, sbmlVersion));
       }
       break;
 
@@ -1359,8 +1366,8 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         node->setName("RNORMAL");
         const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
         const CEvaluationNode* sibling = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-        node->addChild(child->toAST(pDataModel));
-        node->addChild(sibling->toAST(pDataModel));
+        node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+        node->addChild(sibling->toAST(pDataModel, sbmlLevel, sbmlVersion));
       }
       break;
 
@@ -1371,8 +1378,8 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         node->setName("RGAMMA");
         const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
         const CEvaluationNode* sibling = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-        node->addChild(child->toAST(pDataModel));
-        node->addChild(sibling->toAST(pDataModel));
+        node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+        node->addChild(sibling->toAST(pDataModel, sbmlLevel, sbmlVersion));
       }
       break;
 
@@ -1382,31 +1389,57 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         node->setType(AST_FUNCTION);
         node->setName("RPOISSON");
         const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-        node->addChild(child->toAST(pDataModel));
+        node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
       }
       break;
 
       case SubType::MAX:
-      {
-        needFirstArg = false;
-        node->setType(AST_FUNCTION);
-        node->setName("MAX");
-        const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-        const CEvaluationNode* sibling = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-        node->addChild(child->toAST(pDataModel));
-        node->addChild(sibling->toAST(pDataModel));
+        {
+          needFirstArg = false;
+          if (sbmlLevel == 3 && sbmlVersion > 1)
+            {
+              node->setType(AST_FUNCTION_MAX);
+              const CEvaluationNode * child = dynamic_cast< const CEvaluationNode * >(this->getChild());
+              while (child != NULL)
+              {
+                node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+                child = dynamic_cast< const CEvaluationNode * > (child->getSibling());
+              }
+            }
+          else
+            {
+              node->setType(AST_FUNCTION);
+              node->setName("MAX");
+              const CEvaluationNode * child = dynamic_cast< const CEvaluationNode * >(this->getChild());
+              const CEvaluationNode * sibling = dynamic_cast< const CEvaluationNode * >(child->getSibling());
+              node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+              node->addChild(sibling->toAST(pDataModel, sbmlLevel, sbmlVersion));
+            }        
       }
       break;
 
       case SubType::MIN:
       {
         needFirstArg = false;
-        node->setType(AST_FUNCTION);
-        node->setName("MIN");
-        const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-        const CEvaluationNode* sibling = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-        node->addChild(child->toAST(pDataModel));
-        node->addChild(sibling->toAST(pDataModel));
+        if (sbmlLevel == 3 && sbmlVersion > 1)
+          {
+            node->setType(AST_FUNCTION_MIN);
+            const CEvaluationNode * child = dynamic_cast< const CEvaluationNode * >(this->getChild());
+            while (child != NULL)
+              {
+                node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+                child = dynamic_cast< const CEvaluationNode * >(child->getSibling());
+              }
+          }
+        else
+          {
+            node->setType(AST_FUNCTION);
+            node->setName("MIN");
+            const CEvaluationNode * child = dynamic_cast< const CEvaluationNode * >(this->getChild());
+            const CEvaluationNode * sibling = dynamic_cast< const CEvaluationNode * >(child->getSibling());
+            node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+            node->addChild(sibling->toAST(pDataModel, sbmlLevel, sbmlVersion));
+          }
       }
       break;
       // :TODO: Bug 894: Implement me.
@@ -1432,7 +1465,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
       if (needFirstArg)
         {
           const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-          node->addChild(child->toAST(pDataModel));
+          node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
         }
     }
 

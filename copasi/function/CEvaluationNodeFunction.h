@@ -180,7 +180,7 @@ public:
    * Create a new ASTNode corresponding to this FunctionNode.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode* toAST(const CDataModel* pDataModel) const override;
+  virtual ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const override;
 
   /**
    * Create a simplified node for an operatorNode with children from vector (if not exist, = NULL),

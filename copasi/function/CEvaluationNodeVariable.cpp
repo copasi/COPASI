@@ -107,7 +107,7 @@ CValidatedUnit CEvaluationNodeVariable::getUnit(const CMathContainer & /* contai
   return CValidatedUnit();
 }
 
-ASTNode* CEvaluationNodeVariable::toAST(const CDataModel* /*pDataModel*/) const
+ASTNode* CEvaluationNodeVariable::toAST(const CDataModel* /*pDataModel*/, int, int) const
 {
   ASTNode* node = new ASTNode();
   node->setType(AST_NAME);

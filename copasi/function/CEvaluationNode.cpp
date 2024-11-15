@@ -587,7 +587,7 @@ CEvaluationNode* CEvaluationNode::simplifyNode(const std::vector<CEvaluationNode
   return newnode;
 }
 
-ASTNode* CEvaluationNode::toAST(const CDataModel* /*pDataModel*/) const
+ASTNode* CEvaluationNode::toAST(const CDataModel* /*pDataModel*/, int, int) const
 {
   return new ASTNode();
 }

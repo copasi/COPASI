@@ -456,6 +456,12 @@ CEvaluationNode * CEvaluationNodeOperator::fromAST(const ASTNode * pASTNode, con
         data = "quot";
         break;
 
+      case AST_FUNCTION_REM:
+        subType = SubType::REMAINDER;
+        data = "%";
+        break;
+
+
       default:
         subType = SubType::INVALID;
         fatalError();
@@ -534,10 +540,11 @@ CEvaluationNode * CEvaluationNodeOperator::fromAST(const ASTNode * pASTNode, con
   return pNode;
 }
 
-ASTNode* CEvaluationNodeOperator::toAST(const CDataModel* pDataModel) const
+ASTNode * CEvaluationNodeOperator::toAST(const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
   SubType subType = (SubType)this->subType();
   ASTNode* node = new ASTNode();
+  bool skipChildren = false;
 
   switch (subType)
     {
@@ -556,7 +563,15 @@ ASTNode* CEvaluationNodeOperator::toAST(const CDataModel* pDataModel) const
       case SubType::MODULUS:
       case SubType::REMAINDER:
         // replace this with a more complex subtree
-        CEvaluationNodeOperator::createModuloTree(this, node, pDataModel);
+        if (sbmlLevel == 3 && sbmlVersion > 1)
+        {
+            node->setType(AST_FUNCTION_REM);
+        }
+        else
+          {
+            CEvaluationNodeOperator::createModuloTree(this, node, pDataModel, sbmlLevel, sbmlVersion);
+            skipChildren = true;
+          }
         break;
 
       case SubType::QUOTIENT:
@@ -576,12 +591,12 @@ ASTNode* CEvaluationNodeOperator::toAST(const CDataModel* pDataModel) const
     }
 
   // for all but S_INVALID and S_MODULUS two children have to be converted
-  if (subType != SubType::INVALID && subType != SubType::MODULUS)
+  if (subType != SubType::INVALID && !skipChildren)
     {
       const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
       const CEvaluationNode* child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
-      node->addChild(child1->toAST(pDataModel));
-      node->addChild(child2->toAST(pDataModel));
+      node->addChild(child1->toAST(pDataModel, sbmlLevel, sbmlVersion));
+      node->addChild(child2->toAST(pDataModel, sbmlLevel, sbmlVersion));
     }
 
   return node;
@@ -1444,7 +1459,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
     }
 }
 
-bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pNode, ASTNode* pASTNode, const CDataModel* pDataModel) const
+bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator * pNode, ASTNode * pASTNode, const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
   bool result = false;
 
@@ -1468,14 +1483,14 @@ bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pN
               ASTNode* pASTNodeTrue = new ASTNode();
               pASTNodeTrue->setType(AST_MINUS);
               ASTNode* tmpASTNode = new ASTNode(AST_DIVIDE);
-              tmpASTNode->addChild(x->toAST(pDataModel));
-              tmpASTNode->addChild(y->toAST(pDataModel));
+              tmpASTNode->addChild(x->toAST(pDataModel, sbmlLevel, sbmlVersion));
+              tmpASTNode->addChild(y->toAST(pDataModel, sbmlLevel, sbmlVersion));
               ASTNode* tmpASTNode2 = new ASTNode(AST_FUNCTION_CEILING);
               tmpASTNode2->addChild(tmpASTNode);
               tmpASTNode = new ASTNode(AST_TIMES);
-              tmpASTNode->addChild(y->toAST(pDataModel));
+              tmpASTNode->addChild(y->toAST(pDataModel, sbmlLevel, sbmlVersion));
               tmpASTNode->addChild(tmpASTNode2);
-              pASTNodeTrue->addChild(x->toAST(pDataModel));
+              pASTNodeTrue->addChild(x->toAST(pDataModel, sbmlLevel, sbmlVersion));
               pASTNodeTrue->addChild(tmpASTNode);
               pASTNode->addChild(pASTNodeTrue);
               // now comes the condition
@@ -1489,7 +1504,7 @@ bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pN
               // <
               tmpASTNode = new ASTNode(AST_RELATIONAL_LT);
               // x
-              tmpASTNode->addChild(x->toAST(pDataModel));
+              tmpASTNode->addChild(x->toAST(pDataModel, sbmlLevel, sbmlVersion));
               // 0
               tmpASTNode2 = new ASTNode(AST_INTEGER);
               tmpASTNode2->setValue(0);
@@ -1499,7 +1514,7 @@ bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pN
               // <
               tmpASTNode = new ASTNode(AST_RELATIONAL_LT);
               // y
-              tmpASTNode->addChild(y->toAST(pDataModel));
+              tmpASTNode->addChild(y->toAST(pDataModel, sbmlLevel, sbmlVersion));
               // 0
               tmpASTNode2 = new ASTNode(AST_INTEGER);
               tmpASTNode2->setValue(0);
@@ -1511,14 +1526,14 @@ bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pN
               ASTNode* pASTNodeFalse = new ASTNode();
               pASTNodeFalse->setType(AST_MINUS);
               tmpASTNode = new ASTNode(AST_DIVIDE);
-              tmpASTNode->addChild(x->toAST(pDataModel));
-              tmpASTNode->addChild(y->toAST(pDataModel));
+              tmpASTNode->addChild(x->toAST(pDataModel, sbmlLevel, sbmlVersion));
+              tmpASTNode->addChild(y->toAST(pDataModel, sbmlLevel, sbmlVersion));
               tmpASTNode2 = new ASTNode(AST_FUNCTION_FLOOR);
               tmpASTNode2->addChild(tmpASTNode);
               tmpASTNode = new ASTNode(AST_TIMES);
-              tmpASTNode->addChild(y->toAST(pDataModel));
+              tmpASTNode->addChild(y->toAST(pDataModel, sbmlLevel, sbmlVersion));
               tmpASTNode->addChild(tmpASTNode2);
-              pASTNodeFalse->addChild(x->toAST(pDataModel));
+              pASTNodeFalse->addChild(x->toAST(pDataModel, sbmlLevel, sbmlVersion));
               pASTNodeFalse->addChild(tmpASTNode);
               pASTNode->addChild(pASTNodeFalse);
               result = true;

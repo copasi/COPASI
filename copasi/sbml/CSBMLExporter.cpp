@@ -7324,7 +7324,7 @@ ASTNode* CSBMLExporter::convertToASTNode(const CEvaluationNode* pOrig, CDataMode
   // functions that have an SBML id
   // if they don't, we have to set one
   this->setFunctionSBMLIds(pOrig, dataModel);
-  ASTNode* pResult = pOrig->toAST(&dataModel);
+  ASTNode* pResult = pOrig->toAST(&dataModel, mSBMLLevel, mSBMLVersion);
 
   adjustNames(pResult, mpSBMLDocument, mIdMap);
 

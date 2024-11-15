@@ -836,9 +836,9 @@ void CEvaluationTree::initObjects()
   addObjectReference("Value", mValue);
 }
 
-ASTNode* CEvaluationTree::toAST(const CDataModel* pDataModel) const
+ASTNode * CEvaluationTree::toAST(const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
-  return mpRootNode->toAST(pDataModel);
+  return mpRootNode->toAST(pDataModel, sbmlLevel, sbmlVersion);
 }
 
 bool CEvaluationTree::hasCircularDependency() const
