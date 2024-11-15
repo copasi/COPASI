@@ -317,10 +317,18 @@ void CQExternalTool::execute()
       arg = cpsFile;
     }
 
-    if (arg == "$sbmlFile")
+    if (arg.startsWith("$sbmlFile"))
     {
+      int sbmlLevel = 3;
+      int sbmlVersion = 2;
+      if (arg.at(arg.length() - 4) == 'L' && arg.at(arg.length() - 2) == 'V')
+      {
+          sbmlLevel = QString(arg.at(arg.length() - 3)).toInt();
+        sbmlVersion = QString(arg.at(arg.length() - 1)).toInt();
+        }
+
       auto sbmlFile = saveDir + "/temp.sbml";
-      auto sbml = dm->exportSBMLToString(NULL, 3, 1);
+      auto sbml = dm->exportSBMLToString(NULL, sbmlLevel, sbmlVersion);
 
       QFile file(sbmlFile);
       if (file.open(QIODevice::WriteOnly))
