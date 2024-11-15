@@ -3572,8 +3572,6 @@ SBMLImporter::preprocessNode(ConverterASTNode * pNode, Model * pSBMLModel,
               mReactionsWithReplacedLocalParameters.insert(pSBMLReaction->getId());
             }
         }
-
-      this->mDelayFound = result;
     }
 
   this->replaceCallNodeNames(pNode);
@@ -3783,6 +3781,7 @@ bool SBMLImporter::isDelayOrRateFunctionUsed(ConverterASTNode* pASTNode)
 
       if (itNode->getType() == AST_FUNCTION_DELAY || itNode->getType() == AST_FUNCTION_RATE_OF)
         {
+          mDelayFound = mDelayFound || itNode->getType() == AST_FUNCTION_DELAY;
           result = true;
           break;
         }
