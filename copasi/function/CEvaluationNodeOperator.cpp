@@ -494,7 +494,7 @@ CEvaluationNode * CEvaluationNodeOperator::fromAST(const ASTNode * pASTNode, con
         }
     }
   // handle binary operators (POWER,/)
-  else if (type == AST_DIVIDE || type == AST_POWER || type == AST_FUNCTION_POWER || type == AST_FUNCTION_REM)
+  else if (type == AST_DIVIDE || type == AST_POWER || type == AST_FUNCTION_POWER || type == AST_FUNCTION_REM || type == AST_FUNCTION_QUOTIENT)
     {
       switch (pASTNode->getNumChildren())
         {
