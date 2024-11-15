@@ -168,6 +168,10 @@ std::string addRateOfIfItDoesNotExist(SBMLDocument* pSBMLDocument,
                                       std::map<std::string, const SBase*>& idMap,
                                       const char* id)
 {
+  // don't add for l3v2
+  if (!pSBMLDocument || (pSBMLDocument->getLevel() == 3 && pSBMLDocument->getVersion() > 1))
+    return "";
+
   std::string newId = hasFunctionDefinitionForURI(pSBMLDocument,
                       "http://sbml.org/annotations/symbols",
                       "symbols",

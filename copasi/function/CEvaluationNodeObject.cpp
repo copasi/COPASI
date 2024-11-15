@@ -451,17 +451,27 @@ ASTNode * CEvaluationNodeObject::toAST(const CDataModel * pDataModel, int sbmlLe
 
   if (mRegisteredObjectCN == "rateOf" || mData == "<rateOf>")
     {
-      node->setType(AST_FUNCTION);
-      const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+      const CEvaluationNode * child = dynamic_cast< const CEvaluationNode * >(this->getChild());
+      if (child == NULL)
+        fatalError();
 
-      if (child == NULL) fatalError();
+      if (sbmlLevel == 3 && sbmlVersion > 1)
+        {
+          node->setType(AST_FUNCTION_RATE_OF);
+          node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+        }
+      else
+        {
+          node->setType(AST_FUNCTION);
 
-      const CEvaluationNodeObject* sibling = dynamic_cast<const CEvaluationNodeObject*>(this->getChild()->getSibling());
+          const CEvaluationNodeObject * sibling = dynamic_cast< const CEvaluationNodeObject * >(this->getChild()->getSibling());
 
-      if (sibling == NULL) fatalError();
+          if (sibling == NULL)
+            fatalError();
 
-      node->setName(sibling->getObjectCN().c_str());
-      node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+          node->setName(sibling->getObjectCN().c_str());
+          node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+        }
       return node;
     }
 
