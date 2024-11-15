@@ -25,7 +25,7 @@ TEST_CASE("exporting sedml file with non-zero initial time", "[copasi][sedml]")
   r->setReactionScheme("A -> B");
 
   model->setInitialTime(10.0);
-  model->updateInitialValues(model->getInitialValueReference());
+  model->updateInitialValues(model->getInitialValueReference(), false);
 
   auto & task = dynamic_cast<CTrajectoryTask&>((*dm->getTaskList())["Time-Course"]);
   task.setScheduled(true);
@@ -41,7 +41,7 @@ TEST_CASE("exporting sedml file with non-zero initial time", "[copasi][sedml]")
 
   // now lets try and read it back in ensuring that the initial time is being set.
   model->setInitialTime(0.0);
-  model->updateInitialValues(model->getInitialValueReference());
+  model->updateInitialValues(model->getInitialValueReference(), false);
   // also reset the task values, to see that hey are updated correctly
   problem->setDuration(1);
   problem->setStepNumber(10);
@@ -66,7 +66,6 @@ TEST_CASE("exporting sedml file with non-zero initial time", "[copasi][sedml]")
 
   CRootContainer::removeDatamodel(dm);
 }
-
 
 TEST_CASE("exporting sedml file with non-zero start time", "[copasi][sedml]")
 {
@@ -315,7 +314,6 @@ TEST_CASE("importing document with remote model should fail", "[copasi][sedml]")
   model->setSource("urn:miriam:biomodels.db:BIOMD0000000005");
   auto sedml = writeSedMLToStdString(doc);
   delete doc;
-
 
   auto * dm = CRootContainer::addDatamodel();
   REQUIRE(dm != nullptr);

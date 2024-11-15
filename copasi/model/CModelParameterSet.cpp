@@ -203,6 +203,41 @@ CModelParameterSet::CModelParameterSet(const CModelParameterSet & src,
   compile();
 }
 
+CModelParameterSet::CModelParameterSet(CModel * pModel,
+                                       const CDataContainer * pParent):
+  CDataContainer("No Name", pParent, "ModelParameterSet"),
+  CAnnotation(),
+  CModelParameterGroup(NULL, CModelParameter::Type::Set),
+  mKey(CRootContainer::getKeyFactory()->add("ModelParameterSet", this)),
+  mpModel(pModel),
+  mpTimes(NULL),
+  mpCompartments(NULL),
+  mpSpecies(NULL),
+  mpModelValues(NULL),
+  mpReactions(NULL)
+{
+  initMiriamAnnotation(mKey);
+
+  // Create the proper structure that fits the parameter overview in the GUI
+  mpTimes = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
+  mpTimes->setCN(CDataString("Initial Time").getCN());
+
+  mpCompartments = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
+  mpCompartments->setCN(CDataString("Initial Compartment Sizes").getCN());
+
+  mpSpecies = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
+  mpSpecies->setCN(CDataString("Initial Species Values").getCN());
+
+  mpModelValues = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
+  mpModelValues->setCN(CDataString("Initial Global Quantities").getCN());
+
+  mpReactions = static_cast< CModelParameterGroup * >(CModelParameterGroup::add(Type::Group));
+  mpReactions->setCN(CDataString("Kinetic Parameters").getCN());
+  setObjectParent(pParent);
+
+  createFromModel();
+}
+
 // virtual
 CModelParameterSet::~CModelParameterSet()
 {
@@ -299,7 +334,8 @@ bool CModelParameterSet::setObjectParent(const CDataContainer * pParent)
 {
   bool success = CDataObject::setObjectParent(pParent);
 
-  mpModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
+  if (mpModel == nullptr)
+    mpModel = dynamic_cast< CModel * >(getObjectAncestor("Model"));
 
   return success;
 }
@@ -464,7 +500,7 @@ bool CModelParameterSet::updateModel()
 
   bool success = CModelParameterGroup::updateModel();
 
-  mpModel->updateInitialValues(CCore::Framework::ParticleNumbers);
+  mpModel->updateInitialValues(CCore::Framework::ParticleNumbers, true);
 
   return success;
 }

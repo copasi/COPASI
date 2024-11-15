@@ -132,10 +132,10 @@ if (NOT LAPACK_FOUND)
         set(LAPACK_LIBRARIES "${MKLROOT}/lib/intel64/mkl_intel_lp64.lib" "${MKLROOT}/lib/intel64/mkl_core.lib" "${MKLROOT}/lib/intel64/mkl_sequential.lib")
       elseif (EXISTS "${MKLROOT}/lib/mkl_intel_lp64.lib")
         set(LAPACK_LIBRARIES "${MKLROOT}/lib/mkl_intel_lp64.lib" "${MKLROOT}/lib/mkl_core.lib" "${MKLROOT}/lib/mkl_sequential.lib")        
-        set(CLAPACK_INCLUDE_DIR ${MKLROOT}/include)
       endif ()
     endif ()
 
+    set(CLAPACK_INCLUDE_DIR ${MKLROOT}/include)
     add_definitions(-DHAVE_MKL)
     set(LAPACK_FOUND "Yes")
     set(USE_MKL 1)
@@ -326,7 +326,7 @@ if (NOT CLAPACK_INCLUDE_DIR)
 endif (NOT CLAPACK_INCLUDE_DIR)
 
 if (NOT CLAPACK_INCLUDE_DIR)
-  set(CLAPACK_INCLUDE_DIR "${COPASI_SOURCE_DIR}")
+  set(CLAPACK_INCLUDE_DIR "${COPASI_SOURCE_DIR}/copasi/lapack")
 endif (NOT CLAPACK_INCLUDE_DIR)
 
 

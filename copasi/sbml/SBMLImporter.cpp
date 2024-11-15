@@ -2568,7 +2568,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
                                   if (pNonconstFun->getInfix() == "@")
                                     {
-                                      // set infix to something more usable which even though 
+                                      // set infix to something more usable which even though
                                       // invalid, may help others to fix this
                                       pNonconstFun->setInfix(SBML_formulaToL3String(kLawMath));
                                     }
@@ -6217,7 +6217,7 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CDataOb
   mChangedObjects.insert(CObjectInterface::DataObject(pModel->getObject(std::string("Reference=Avogadro Constant"))));
   mChangedObjects.insert(CObjectInterface::DataObject(pModel->getObject(std::string("Reference=Quantity Conversion Factor"))));
 
-  pModel->updateInitialValues(mChangedObjects);
+  pModel->updateInitialValues(mChangedObjects, true);
 
   return true;
 }

@@ -214,7 +214,8 @@ int main(int argc, char *argv[])
   COptions::getValue("License", License);
 
   COptions::getValue("ReportFile", ReportFileName);
-  // should a report filename be given, ensure that 
+
+  // should a report filename be given, ensure that
   // it is an absolute path
   if (!ReportFileName.empty())
     CDirEntry::makePathAbsolute(ReportFileName, COptions::getPWD());
@@ -625,8 +626,8 @@ int exportParametersToIniFile()
 
   if (!pDataModel || !pDataModel->getModel()) return -2;
 
-  pDataModel->getModel()->getActiveModelParameterSet().
-  saveToStream(fs, CCore::Framework::Concentration, "ini", "");
+  pDataModel->getModel()->refreshActiveParameterSet();
+  pDataModel->getModel()->getActiveModelParameterSet().saveToStream(fs, CCore::Framework::Concentration, "ini", "");
 
   fs.close();
 
