@@ -82,6 +82,10 @@ public:
                     (*mpLeftValue < 0.5 && *mpRightValue > 0.5)) ? 1.0 : 0.0;
           break;
 
+        case SubType::IMPLIES:
+          mValue = (*mpLeftValue < 0.5 || *mpRightValue > 0.5) ? 1.0 : 0.0;
+          break;
+
         case SubType::AND:
           mValue = (*mpLeftValue > 0.5 &&
                     *mpRightValue > 0.5) ? 1.0 : 0.0;

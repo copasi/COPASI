@@ -877,6 +877,13 @@ CJitCompilerImplementation::Node * CJitCompilerImplementation::compile(const CEv
       }
       break;
 
+      case CEvaluationNode::SubType::IMPLIES:
+        {
+          auto & Function = mpExpression->Immediate< B2B >(__jit_implies);
+          pNodeJIT = &mpExpression->Call(Function, *static_cast< NativeJIT::Node< bool > * >(context[0]), *static_cast< NativeJIT::Node< bool > * >(context[1]));
+        }
+        break;
+
       case CEvaluationNode::SubType::AND:
       {
         pNodeJIT = &mpExpression->And(*static_cast< NativeJIT::Node< bool > * >(context[0]), *static_cast< NativeJIT::Node< bool > * >(context[1]));

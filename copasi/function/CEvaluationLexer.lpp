@@ -162,6 +162,14 @@ ID       (\"([^\\\"]|\\.)*\"|[a-z_A-Z][a-z_A-Z0-9]*)
   return TOKEN_LOGICAL_XOR;
 %}
 
+<sOPERATOR>"implies"   %{
+  BEGIN(sSIGNorVALUE); 
+  mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::IMPLIES,
+                                       yytext);
+  COMMON_ACTION;
+  return TOKEN_LOGICAL_XOR;
+%}
+
 <sOPERATOR>(or|OR|\|\|)   %{
   BEGIN(sSIGNorVALUE); 
   mpNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::OR,

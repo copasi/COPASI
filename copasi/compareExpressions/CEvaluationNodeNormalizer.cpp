@@ -546,6 +546,7 @@ CEvaluationNode* CEvaluationNodeNormalizer::normalizeCEvaluationNodeLogical(cons
           case CEvaluationNode::SubType::NE:
           case CEvaluationNode::SubType::LT:
           case CEvaluationNode::SubType::LE:
+          case CEvaluationNode::SubType::IMPLIES:
             pResult = new CEvaluationNodeLogical(pNode->subType(), pNode->getData());
             pTmpResult = CEvaluationNodeNormalizer::normalize(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));
 

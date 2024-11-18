@@ -60,6 +60,10 @@ CEvaluationNodeLogical::CEvaluationNodeLogical(const SubType & subType,
         mPrecedence = PRECEDENCE_LOGIG_XOR;
         break;
 
+      case SubType::IMPLIES:
+        mPrecedence = PRECEDENCE_LOGIG_XOR;
+        break;
+
       case SubType::AND:
         mPrecedence = PRECEDENCE_LOGIG_AND;
         break;
@@ -125,6 +129,7 @@ CIssue CEvaluationNodeLogical::compile()
       case SubType::OR:
       case SubType::XOR:
       case SubType::AND:
+      case SubType::IMPLIES:
         Result &= mpLeftNode->setValueType(ValueType::Boolean);
         Result &= mpRightNode->setValueType(ValueType::Boolean);
         break;
@@ -424,6 +429,7 @@ CValidatedUnit CEvaluationNodeLogical::getUnit(const CMathContainer & /* contain
       case SubType::OR:
       case SubType::XOR:
       case SubType::AND:
+      case SubType::IMPLIES:
         if (!(units[0] == CBaseUnit::dimensionless) ||
             !(units[1] == CBaseUnit::dimensionless))
           {
@@ -460,6 +466,7 @@ CValidatedUnit CEvaluationNodeLogical::setUnit(const CMathContainer & container,
       case SubType::OR:
       case SubType::XOR:
       case SubType::AND:
+      case SubType::IMPLIES:
         targetUnits[mpLeftNode] = CValidatedUnit(CBaseUnit::dimensionless, false);
         targetUnits[mpRightNode] = CValidatedUnit(CBaseUnit::dimensionless, false);
         break;
@@ -505,6 +512,11 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
       case AST_LOGICAL_OR:
         subType = SubType::OR;
         data = "or";
+        break;
+
+      case AST_LOGICAL_IMPLIES:
+        subType = SubType::IMPLIES;
+        data = "implies";
         break;
 
       case AST_LOGICAL_XOR:
@@ -588,6 +600,7 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
       case SubType::GT:
       case SubType::LE:
       case SubType::LT:
+      case SubType::IMPLIES:
         // all these are binary
         assert(iMax == 2);
         pNode = new CEvaluationNodeLogical(subType, data);
@@ -620,6 +633,10 @@ ASTNode * CEvaluationNodeLogical::toAST(const CDataModel * pDataModel, int sbmlL
 
       case SubType::XOR:
         node->setType(AST_LOGICAL_XOR);
+        break;
+
+      case SubType::IMPLIES:
+        node->setType(AST_LOGICAL_IMPLIES);
         break;
 
       case SubType::EQ:
@@ -691,6 +708,10 @@ std::string CEvaluationNodeLogical::getMMLString(const std::vector< std::string 
 
           case SubType::XOR:
             data = " xor ";
+            break;
+
+          case SubType::IMPLIES:
+            data = " implies ";
             break;
 
           case SubType::EQ:

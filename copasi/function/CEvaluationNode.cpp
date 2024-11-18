@@ -97,6 +97,7 @@ const CEnumAnnotation< std::string, CEvaluationNode::SubType > CEvaluationNode::
   "Ge",
   "Gt",
   "If",
+  "Implies", // IMPLIES
   "Infinity",
   "Integer",
   "Invalid",

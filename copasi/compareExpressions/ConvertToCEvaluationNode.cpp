@@ -2514,6 +2514,19 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
                 pResult = createLogical(pAndNode);
                 delete pAndNode;
                 break;
+              
+              case CEvaluationNode::SubType::IMPLIES:
+                // replace A implies B by NOT(A) OR B
+                pA = dynamic_cast< const CEvaluationNode * >(pNode->getChild());
+                pB = dynamic_cast< const CEvaluationNode * >(pA->getSibling());
+                pNotNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::NOT, "NOT");
+                pNotNode->addChild(pA->copyBranch());
+                pOrNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::OR, "OR");
+                pOrNode->addChild(pNotNode);
+                pOrNode->addChild(pB->copyBranch());
+                pResult = createLogical(pOrNode);
+                delete pOrNode;
+                break;
 
               case CEvaluationNode::SubType::AND:
                 pLeftLogical = createLogical(dynamic_cast<const CEvaluationNode*>(pNode->getChild()));

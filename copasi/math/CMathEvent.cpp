@@ -809,6 +809,7 @@ CEvaluationNode * CMathEvent::CTrigger::compile(const CEvaluationNode * pTrigger
                 case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::AND):
                 case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::OR):
                 case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::XOR):
+                case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::IMPLIES):
                   pNode = compileAND(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
@@ -884,6 +885,10 @@ CEvaluationNode * CMathEvent::CTrigger::compileAND(const CEvaluationNode * pTrig
 
       case CEvaluationNode::SubType::XOR:
         pNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::XOR, "XOR");
+        break;
+
+      case CEvaluationNode::SubType::IMPLIES:
+        pNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::IMPLIES, "IMPLIES");
         break;
 
       default:

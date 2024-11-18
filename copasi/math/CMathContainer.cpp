@@ -1846,6 +1846,7 @@ CEvaluationNode * CMathContainer::copyBranch(const CEvaluationNode * pNode,
           case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::MODULUS):
           case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::REMAINDER):
           case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::QUOTIENT):
+          case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::IMPLIES):
 
             if (replaceDiscontinuousNodes)
               {
@@ -4728,6 +4729,7 @@ void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree,
           case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::MODULUS):
           case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::REMAINDER):
           case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::QUOTIENT):
+          case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::IMPLIES):
             createDiscontinuityDataEvent(*itNode);
             break;
 
@@ -4782,6 +4784,7 @@ std::string CMathContainer::createDiscontinuityTriggerInfix(const CEvaluationNod
 
       case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::REMAINDER):
       case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::QUOTIENT):
+      case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::IMPLIES):
         TriggerInfix = "sin(PI*(" + static_cast< const CEvaluationNode * >(pNode->getChild())->buildInfix() + ")/(";
         TriggerInfix += static_cast< const CEvaluationNode * >(pNode->getChild()->getSibling())->buildInfix() + ")) > 0";
         break;

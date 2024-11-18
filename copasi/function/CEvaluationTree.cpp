@@ -798,6 +798,7 @@ CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode, bool isFunc
               case AST_RELATIONAL_LEQ:
               case AST_RELATIONAL_LT:
               case AST_RELATIONAL_NEQ:
+              case AST_LOGICAL_IMPLIES:
                 pResultNode = CEvaluationNodeLogical::fromAST(*itNode, itNode.context());
                 break;
 

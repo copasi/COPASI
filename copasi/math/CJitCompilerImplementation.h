@@ -95,6 +95,7 @@ private:
   static inline C_FLOAT64 __jit_max(C_FLOAT64 x, C_FLOAT64 y){return x > y ? x : y;}
   static inline C_FLOAT64 __jit_min(C_FLOAT64 x, C_FLOAT64 y){return x < y ? x : y;}
   static inline bool __jit_xor(bool x, bool y) {return (x || y) && (x != y);}
+  static inline bool __jit_implies(bool x, bool y) {return !x || y;}
   static inline bool __jit_eq(bool x, bool y) {return x == y;}
   static inline bool __jit_eq(C_FLOAT64 x, C_FLOAT64 y) {return x == y;}
   static inline bool __jit_neq(bool x, bool y) {return x != y;}

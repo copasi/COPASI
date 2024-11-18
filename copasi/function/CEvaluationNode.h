@@ -104,6 +104,7 @@ public:
     EXP,
     True,
     XOR,
+    IMPLIES,
     RATIONALE,
     AND,
     CLOSE,
