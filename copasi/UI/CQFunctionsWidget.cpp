@@ -122,7 +122,7 @@ void CQFunctionsWidget::deleteSelectedFunctions()
 
 void CQFunctionsWidget::slotBtnClearClicked()
 {
-  int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all non-built-in, non-mass-acion, Functions?",
+  int ret = CQMessageBox::question(this, tr("Confirm Delete"), "Delete all non-built-in, non-mass-action, Functions?",
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 
   if (ret == QMessageBox::Yes)
