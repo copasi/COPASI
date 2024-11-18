@@ -104,9 +104,9 @@ void CQSpeciesWidget::slotBtnNewClicked()
   updateDeleteBtns();
 }
 
-void CQSpeciesWidget::slotBtnDeleteClicked()
+void CQSpeciesWidget::slotBtnDeleteClicked(bool needFocus)
 {
-  if (mpTblSpecies->hasFocus())
+  if (!needFocus || mpTblSpecies->hasFocus())
     {deleteSelectedSpecies();}
 
   updateDeleteBtns();
@@ -264,7 +264,7 @@ void CQSpeciesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 void CQSpeciesWidget::keyPressEvent(QKeyEvent *ev)
 {
   if (ev->key() == Qt::Key_Delete)
-    slotBtnDeleteClicked();
+    slotBtnDeleteClicked(true);
   else if (ev->key() == Qt::Key_C && (ev->modifiers() & Qt::ControlModifier))
     {
       QModelIndexList selRows = mpTblSpecies->selectionModel()->selectedRows(0);

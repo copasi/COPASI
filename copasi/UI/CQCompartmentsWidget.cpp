@@ -97,9 +97,9 @@ void CQCompartmentsWidget::slotBtnNewClicked()
   updateDeleteBtns();
 }
 
-void CQCompartmentsWidget::slotBtnDeleteClicked()
+void CQCompartmentsWidget::slotBtnDeleteClicked(bool needFocus)
 {
-  if (mpTblCompartments->hasFocus())
+  if (!needFocus || mpTblCompartments->hasFocus())
     {deleteSelectedCompartments();}
 
   updateDeleteBtns();
@@ -264,7 +264,7 @@ void CQCompartmentsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 void CQCompartmentsWidget::keyPressEvent(QKeyEvent *ev)
 {
   if (ev->key() == Qt::Key_Delete)
-    slotBtnDeleteClicked();
+    slotBtnDeleteClicked(true);
   else if (ev->key() == Qt::Key_C && (ev->modifiers() & Qt::ControlModifier))
     {
       QModelIndexList selRows = mpTblCompartments->selectionModel()->selectedRows(0);

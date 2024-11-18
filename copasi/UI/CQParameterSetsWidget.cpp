@@ -93,9 +93,9 @@ void CQParameterSetsWidget::slotBtnNewClicked()
     }
 }
 
-void CQParameterSetsWidget::slotBtnDeleteClicked()
+void CQParameterSetsWidget::slotBtnDeleteClicked(bool needFocus)
 {
-  if (mpTblParameterSets->hasFocus())
+  if (!needFocus || mpTblParameterSets->hasFocus())
     {deleteSelected();}
 
   updateDeleteBtns();
@@ -273,7 +273,7 @@ void CQParameterSetsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 void CQParameterSetsWidget::keyPressEvent(QKeyEvent *ev)
 {
   if (ev->key() == Qt::Key_Delete)
-    slotBtnDeleteClicked();
+    slotBtnDeleteClicked(true);
   else if (ev->key() == Qt::Key_C && (ev->modifiers() & Qt::ControlModifier))
     {
       QModelIndexList selRows = mpTblParameterSets->selectionModel()->selectedRows(0);

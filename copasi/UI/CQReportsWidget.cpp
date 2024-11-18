@@ -84,9 +84,9 @@ void CQReportsWidget::slotBtnNewClicked()
   updateDeleteBtns();
 }
 
-void CQReportsWidget::slotBtnDeleteClicked()
+void CQReportsWidget::slotBtnDeleteClicked(bool needFocus)
 {
-  if (mpTblReports->hasFocus())
+  if (!needFocus || mpTblReports->hasFocus())
     {deleteSelectedReports();}
 
   updateDeleteBtns();
@@ -235,7 +235,7 @@ void CQReportsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 void CQReportsWidget::keyPressEvent(QKeyEvent *ev)
 {
   if (ev->key() == Qt::Key_Delete)
-    slotBtnDeleteClicked();
+    slotBtnDeleteClicked(true);
   else if (ev->key() == Qt::Key_C && (ev->modifiers() & Qt::ControlModifier))
     {
       QModelIndexList selRows = mpTblReports->selectionModel()->selectedRows(0);

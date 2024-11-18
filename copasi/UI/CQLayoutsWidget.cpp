@@ -317,9 +317,9 @@ void CQLayoutsWidget::slotBtnNewClicked()
 }
 
 // virtual
-void CQLayoutsWidget::slotBtnDeleteClicked()
+void CQLayoutsWidget::slotBtnDeleteClicked(bool needFocus)
 {
-  if (mpTblLayouts->hasFocus())
+  if (!needFocus || mpTblLayouts->hasFocus())
     {deleteSelectedLayouts();}
 }
 

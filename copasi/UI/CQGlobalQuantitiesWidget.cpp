@@ -96,9 +96,9 @@ void CQGlobalQuantitiesWidget::slotBtnNewClicked()
   updateDeleteBtns();
 }
 
-void CQGlobalQuantitiesWidget::slotBtnDeleteClicked()
+void CQGlobalQuantitiesWidget::slotBtnDeleteClicked(bool needFocus)
 {
-  if (mpTblGlobalQuantities->hasFocus())
+  if (!needFocus || mpTblGlobalQuantities->hasFocus())
     {deleteSelectedGlobalQuantities();}
 
   updateDeleteBtns();
@@ -257,7 +257,7 @@ void CQGlobalQuantitiesWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 void CQGlobalQuantitiesWidget::keyPressEvent(QKeyEvent *ev)
 {
   if (ev->key() == Qt::Key_Delete)
-    slotBtnDeleteClicked();
+    slotBtnDeleteClicked(true);
   else if (ev->key() == Qt::Key_C && (ev->modifiers() & Qt::ControlModifier))
     {
       QModelIndexList selRows = mpTblGlobalQuantities->selectionModel()->selectedRows(0);
