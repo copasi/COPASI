@@ -614,7 +614,7 @@ CMathContainer::~CMathContainer()
   setObjectParent(NULL);
 }
 
-bool CMathContainer::operator == (const CMathContainer & rhs)
+bool CMathContainer::operator == (const CMathContainer & rhs) const
 {
   return mpModel == rhs.mpModel && mCompileTime == rhs.mCompileTime;
 }

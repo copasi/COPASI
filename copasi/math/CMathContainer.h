@@ -162,9 +162,9 @@ public:
   virtual ~CMathContainer();
 
   /**
-   * Check whether 2 container would genereate equivalent results
+   * Check whether 2 container would generate equivalent results
    */
-  bool operator == (const CMathContainer & rhs);
+  bool operator == (const CMathContainer & rhs) const;
 
   /**
    *

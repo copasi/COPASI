@@ -110,7 +110,7 @@ public:
    */
   bool operator != (const CFlags< Enum > & rhs) const
   {
-    return bitset::operator != ((bitset) rhs);
+    return !(bitset::operator == ((bitset) rhs));
   }
 
   /**
