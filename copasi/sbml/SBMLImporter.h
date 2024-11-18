@@ -359,7 +359,7 @@ protected:
    * This function replaces the AST_FUNCTION_POWER ASTNodes in a ASTNode tree
    * with the AST_POWER node.
    */
-  void replacePowerFunctionNodes(ASTNode* node);
+  //void replacePowerFunctionNodes(ASTNode* node);
 
   /**
    * This functions replaces all species nodes for species that are in the substanceOnlySpeciesVector.
@@ -371,13 +371,13 @@ protected:
    * Replaces all occurrences of the log function with two arguments by
    * a division of two separate calls to log.
    */
-  void replaceLog(ConverterASTNode* sourceNode);
+  //void replaceLog(ConverterASTNode* sourceNode);
 
   /**
    * Replaces all occurrences of the root function with two arguments by
    * a call to the power function with the inverse of the first argument.
    */
-  void replaceRoot(ConverterASTNode* sourceNode);
+  //void replaceRoot(ConverterASTNode* sourceNode);
 
   /**
    * Replaces the ids of named nodes in an ASTNode tree with
@@ -616,7 +616,7 @@ protected:
   /**
    * Creates a function definition for the delay function.
    */
-  void createDelayFunctionDefinition();
+  //void createDelayFunctionDefinition();
 
   /**
    * This method goes through the list of global parameters and tries to find
