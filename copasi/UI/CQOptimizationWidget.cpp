@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -115,6 +115,12 @@ bool CQOptimizationWidget::saveTaskProtected()
       pProblem->setCalculateStatistics(mpCheckStatistics->isChecked());
     }
 
+  if (mpCheckDisplayPopulation->isChecked() != pProblem->getParameter("DisplayPoplations")->getValue< bool >())
+    {
+      mChanged = true;
+      pProblem->getParameter("DisplayPoplations")->setValue(mpCheckStatistics->isChecked());
+    }
+
   mChanged |= mpParameters->save(NULL, NULL);
   mChanged |= mpConstraints->save(NULL, NULL);
 
@@ -150,14 +156,13 @@ bool CQOptimizationWidget::loadTaskProtected()
 
   mpCheckRandomize->setChecked(pProblem->getRandomizeStartValues());
   mpCheckStatistics->setChecked(pProblem->getCalculateStatistics());
+  mpCheckDisplayPopulation->setChecked(pProblem->getParameter("DisplayPoplations")->getValue< bool >());
 
   mpBoxSubtask->setCurrentIndex(mpBoxSubtask->findText(FROM_UTF8(CTaskEnum::TaskName[pProblem->getSubtaskType()])));
 
   mpParameters->load(mpDataModel, pProblem->getGroup("OptimizationItemList"), NULL, NULL);
 
   mpConstraints->load(mpDataModel, pProblem->getGroup("OptimizationConstraintList"), NULL, NULL);
-
-  mpCheckDisplayPopulation->setChecked(pTask->getProblem()->getParameter("DisplayPoplations")->getValue< bool >());
 
   mChanged = false;
 
@@ -176,8 +181,6 @@ bool CQOptimizationWidget::runTask()
     dynamic_cast< COptTask * >(mpObject);
 
   if (!pTask) return false;
-
-  pTask->getProblem()->getParameter("DisplayPoplations")->setValue(mpCheckDisplayPopulation->isChecked());
 
   if (!commonBeforeRunTask()) return false;
 
@@ -256,14 +259,13 @@ void CQOptimizationWidget::init()
   QObject::connect(tb, SIGNAL(clicked()), this, SLOT(slotIncreaseTabHeight()));
   pGroupLayout->addWidget(tb);
 
-
   tb = new QToolButton();
   tb->setText("-");
   QObject::connect(tb, SIGNAL(clicked()), this, SLOT(slotDecreaseTabHeight()));
   pGroupLayout->addWidget(tb);
-  
+
   pGroupLayout->setContentsMargins(0, 0, 0, 0);
-  
+
   mpTabWidget->setCornerWidget(pGroup);
 }
 
@@ -277,12 +279,13 @@ void CQOptimizationWidget::slotIncreaseTabHeight()
 void CQOptimizationWidget::slotDecreaseTabHeight()
 {
   auto height = mpTabWidget->height();
+
   if (height < 300)
     return;
+
   height -= 100;
   mpTabWidget->setMinimumHeight(height);
 }
-
 
 void CQOptimizationWidget::destroy()
 {}

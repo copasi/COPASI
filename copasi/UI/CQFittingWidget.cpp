@@ -217,6 +217,12 @@ bool CQFittingWidget::saveTaskProtected()
       pProblem->setCalculateStatistics(mpCheckStatistics->isChecked());
     }
 
+  if (mpCheckDisplayPopulation->isChecked() != pProblem->getParameter("DisplayPoplations")->getValue< bool >())
+    {
+      mChanged = true;
+      pProblem->getParameter("DisplayPoplations")->setValue(mpCheckStatistics->isChecked());
+    }
+
   if (mpUseTimeSens->isChecked() != pProblem->getUseTimeSens())
     {
       mChanged = true;
@@ -273,6 +279,7 @@ bool CQFittingWidget::loadTaskProtected()
   mpCheckRandomize->setChecked(pProblem->getRandomizeStartValues());
   mpCreateParameterSets->setChecked(pProblem->getCreateParameterSets());
   mpCheckStatistics->setChecked(pProblem->getCalculateStatistics());
+  mpCheckDisplayPopulation->setChecked(pProblem->getParameter("DisplayPoplations")->getValue< bool >());
   mpUseTimeSens->setChecked(pProblem->getUseTimeSens());
 
   mpParameters->load(mpDataModel, pProblem->getGroup("OptimizationItemList"), &mExperimentKeyMap, &mCrossValidationKeyMap);
@@ -282,8 +289,6 @@ bool CQFittingWidget::loadTaskProtected()
   mpConstraints->load(mpDataModel, pProblem->getGroup("OptimizationConstraintList"), &mExperimentKeyMap, &mCrossValidationKeyMap);
   mpConstraints->setExperimentSet(const_cast<const CExperimentSet *&>(mpExperimentSet));
   mpConstraints->setCrossValidationSet(const_cast<const CCrossValidationSet *&>(mpCrossValidationSet));
-
-  mpCheckDisplayPopulation->setChecked(pTask->getProblem()->getParameter("DisplayPoplations")->getValue< bool >());
 
   mChanged = false;
 
@@ -298,8 +303,6 @@ bool CQFittingWidget::runTask()
   if (!pTask) return false;
 
   mnParamterSetsBeforeRun = pTask->getObjectDataModel()->getModel()->getModelParameterSets().size();
-
-  pTask->getProblem()->getParameter("DisplayPoplations")->setValue(mpCheckDisplayPopulation->isChecked());
 
   if (!commonBeforeRunTask()) return false;
 
@@ -395,7 +398,6 @@ void CQFittingWidget::init()
   pGroupLayout->setContentsMargins(0, 0, 0, 0);
 
   mpTabWidget->setCornerWidget(pGroup);
-
 }
 
 void CQFittingWidget::slotIncreaseTabHeight()
@@ -405,12 +407,13 @@ void CQFittingWidget::slotIncreaseTabHeight()
   mpTabWidget->setMinimumHeight(height);
 }
 
-
 void CQFittingWidget::slotDecreaseTabHeight()
 {
   auto height = mpTabWidget->height();
+
   if (height < 300)
     return;
+
   height -= 100;
   mpTabWidget->setMinimumHeight(height);
 }
