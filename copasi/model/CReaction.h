@@ -35,6 +35,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
 
 #include "copasi/model/CAnnotation.h"
 #include "copasi/model/CMetab.h"

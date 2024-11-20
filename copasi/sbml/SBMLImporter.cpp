@@ -3287,148 +3287,147 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
 bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, SBase*>& copasi2sbmlmap, CCopasiParameterGroup& pParamGroup,
                                    SBase* pParentObject)
 {
-  // TODO CRITICAL We need to use a node iterator
-
+  CNodeIterator< ASTNode > itNode(pNode);
+  itNode.setProcessingModes(CNodeIteratorMode::Before);
   bool success = true;
-  unsigned int i, iMax = pNode->getNumChildren();
 
-  if (pNode->getType() == AST_NAME)
+  while (itNode.next() != itNode.end())
     {
-      Reaction* pParentReaction = dynamic_cast<Reaction*>(pParentObject);
-      Compartment* pSBMLCompartment = NULL;
-      Species* pSBMLSpecies = NULL;
-      Reaction* pSBMLReaction = NULL;
-      Parameter* pSBMLParameter = NULL;
-      std::string sbmlId;
-      std::string name = pNode->getName();
-      CCopasiParameter* pParam = pParamGroup.getParameter(name);
-
-      std::map<std::string, double>::const_iterator speciesReference = mSBMLSpeciesReferenceIds.find(name);
-
-      // replace species references only in case we don't have a local parameter
-      // that shadows it
-      if (speciesReference  != mSBMLSpeciesReferenceIds.end()
-          && (pParentReaction == NULL
-              || pParentReaction->getKineticLaw() == NULL
-              || pParentReaction->getKineticLaw()->getParameter(name) == NULL))
+      if (*itNode == NULL)
         {
-          // replace the name with the value
-          pNode->setType(AST_REAL);
-          pNode->setValue(speciesReference->second);
+          continue;
         }
-      else if (pParam)
-        {
-          pNode->setName(pParam->getStringCN().c_str());
-        }
-      else
-        {
-          std::map<const CDataObject*, SBase*>::iterator it = copasi2sbmlmap.begin();
-          std::map<const CDataObject*, SBase*>::iterator endIt = copasi2sbmlmap.end();
-          bool found = false;
 
-          while (it != endIt)
+      if (itNode->getType() == AST_NAME)
+        {
+          Reaction * pParentReaction = dynamic_cast< Reaction * >(pParentObject);
+          Compartment * pSBMLCompartment = NULL;
+          Species * pSBMLSpecies = NULL;
+          Reaction * pSBMLReaction = NULL;
+          Parameter * pSBMLParameter = NULL;
+          std::string sbmlId;
+          std::string name = itNode->getName();
+          CCopasiParameter * pParam = pParamGroup.getParameter(name);
+
+          std::map< std::string, double >::const_iterator speciesReference = mSBMLSpeciesReferenceIds.find(name);
+
+          // replace species references only in case we don't have a local parameter
+          // that shadows it
+          if (speciesReference != mSBMLSpeciesReferenceIds.end()
+              && (pParentReaction == NULL
+                  || pParentReaction->getKineticLaw() == NULL
+                  || pParentReaction->getKineticLaw()->getParameter(name) == NULL))
             {
-              int type = it->second->getTypeCode();
+              // replace the name with the value
+              itNode->setType(AST_REAL);
+              itNode->setValue(speciesReference->second);
+            }
+          else if (pParam)
+            {
+              itNode->setName(pParam->getStringCN().c_str());
+            }
+          else
+            {
+              std::map< const CDataObject *, SBase * >::iterator it = copasi2sbmlmap.begin();
+              std::map< const CDataObject *, SBase * >::iterator endIt = copasi2sbmlmap.end();
+              bool found = false;
 
-              switch (type)
+              while (it != endIt)
                 {
-                  case SBML_COMPARTMENT:
-                    pSBMLCompartment = dynamic_cast<Compartment*>(it->second);
+                  int type = it->second->getTypeCode();
 
-                    if (this->mLevel == 1)
-                      {
-                        sbmlId = pSBMLCompartment->getName();
-                      }
-                    else
-                      {
-                        sbmlId = pSBMLCompartment->getId();
-                      }
+                  switch (type)
+                    {
+                      case SBML_COMPARTMENT:
+                        pSBMLCompartment = dynamic_cast< Compartment * >(it->second);
 
-                    if (sbmlId == pNode->getName())
-                      {
-                        pNode->setName(dynamic_cast<const CCompartment*>(it->first)->getObject(CCommonName("Reference=InitialVolume"))->getStringCN().c_str());
-                        found = true;
-                      }
+                        if (this->mLevel == 1)
+                          {
+                            sbmlId = pSBMLCompartment->getName();
+                          }
+                        else
+                          {
+                            sbmlId = pSBMLCompartment->getId();
+                          }
 
-                    break;
+                        if (sbmlId == itNode->getName())
+                          {
+                            itNode->setName(dynamic_cast< const CCompartment * >(it->first)->getObject(CCommonName("Reference=InitialVolume"))->getStringCN().c_str());
+                            found = true;
+                          }
 
-                  case SBML_SPECIES:
-                    pSBMLSpecies = dynamic_cast<Species*>(it->second);
+                        break;
 
-                    if (this->mLevel == 1)
-                      {
-                        sbmlId = pSBMLSpecies->getName();
-                      }
-                    else
-                      {
-                        sbmlId = pSBMLSpecies->getId();
-                      }
+                      case SBML_SPECIES:
+                        pSBMLSpecies = dynamic_cast< Species * >(it->second);
 
-                    if (sbmlId == pNode->getName())
-                      {
-                        pNode->setName(dynamic_cast<const CMetab*>(it->first)->getObject(CCommonName("Reference=InitialConcentration"))->getStringCN().c_str());
-                        found = true;
-                      }
+                        if (this->mLevel == 1)
+                          {
+                            sbmlId = pSBMLSpecies->getName();
+                          }
+                        else
+                          {
+                            sbmlId = pSBMLSpecies->getId();
+                          }
 
-                    break;
+                        if (sbmlId == itNode->getName())
+                          {
+                            itNode->setName(dynamic_cast< const CMetab * >(it->first)->getObject(CCommonName("Reference=InitialConcentration"))->getStringCN().c_str());
+                            found = true;
+                          }
 
-                  case SBML_REACTION:
-                    pSBMLReaction = dynamic_cast<Reaction*>(it->second);
+                        break;
 
-                    if (this->mLevel == 1)
-                      {
-                        sbmlId = pSBMLReaction->getName();
-                      }
-                    else
-                      {
-                        sbmlId = pSBMLReaction->getId();
-                      }
+                      case SBML_REACTION:
+                        pSBMLReaction = dynamic_cast< Reaction * >(it->second);
 
-                    if (sbmlId == pNode->getName())
-                      {
-                        pNode->setName(dynamic_cast<const CReaction*>(it->first)->getObject(CCommonName("Reference=ParticleFlux"))->getStringCN().c_str());
-                        found = true;
-                      }
+                        if (this->mLevel == 1)
+                          {
+                            sbmlId = pSBMLReaction->getName();
+                          }
+                        else
+                          {
+                            sbmlId = pSBMLReaction->getId();
+                          }
 
-                    break;
+                        if (sbmlId == itNode->getName())
+                          {
+                            itNode->setName(dynamic_cast< const CReaction * >(it->first)->getObject(CCommonName("Reference=ParticleFlux"))->getStringCN().c_str());
+                            found = true;
+                          }
 
-                  case SBML_PARAMETER:
-                    pSBMLParameter = dynamic_cast<Parameter*>(it->second);
+                        break;
 
-                    if (this->mLevel == 1)
-                      {
-                        sbmlId = pSBMLParameter->getName();
-                      }
-                    else
-                      {
-                        sbmlId = pSBMLParameter->getId();
-                      }
+                      case SBML_PARAMETER:
+                        pSBMLParameter = dynamic_cast< Parameter * >(it->second);
 
-                    if (sbmlId == pNode->getName())
-                      {
-                        pNode->setName(dynamic_cast<const CModelValue*>(it->first)->getValueReference()->getStringCN().c_str());
-                        found = true;
-                      }
+                        if (this->mLevel == 1)
+                          {
+                            sbmlId = pSBMLParameter->getName();
+                          }
+                        else
+                          {
+                            sbmlId = pSBMLParameter->getId();
+                          }
 
-                    break;
+                        if (sbmlId == itNode->getName())
+                          {
+                            itNode->setName(dynamic_cast< const CModelValue * >(it->first)->getValueReference()->getStringCN().c_str());
+                            found = true;
+                          }
 
-                  default:
-                    break;
+                        break;
+
+                      default:
+                        break;
+                    }
+
+                  ++it;
                 }
 
-              ++it;
+              if (!found)
+                success = false;
             }
-
-          if (!found) success = false;
-        }
-    }
-
-  for (i = 0; i < iMax; ++i)
-    {
-      if (!this->sbmlId2CopasiCN(pNode->getChild(i), copasi2sbmlmap, pParamGroup, pParentObject))
-        {
-          success = false;
-          break;
         }
     }
 
