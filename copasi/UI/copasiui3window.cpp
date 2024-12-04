@@ -38,6 +38,8 @@
 #include <QtCore/QThread>
 #include <QFontDialog>
 #include <QtCore/QDateTime>
+#include <QProcess>
+
 
 #include <QByteArray>
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
@@ -748,6 +750,12 @@ void CopasiUI3Window::createMenuBar()
 {
   QMenu *pFileMenu = menuBar()->addMenu("&File");
   pFileMenu->addAction(mpaNew);
+  #ifdef Q_OS_MACOS
+  QAction *pOpenNewWindow = new QAction("New Window", this);
+  pOpenNewWindow->setToolTip("Open a new COPASI instance");
+  QObject::connect(pOpenNewWindow, SIGNAL(triggered()), this, SLOT(slotStartNewInstance()));
+  pFileMenu->addAction(pOpenNewWindow);
+  #endif
   pFileMenu->addAction(mpaOpen);
   pFileMenu->addAction(mpaOpenFromUrl);
   mpMenuExamples = pFileMenu->addMenu("Examples");
@@ -4206,6 +4214,11 @@ void CopasiUI3Window::slotHandleCopasiScheme(const QUrl& url)
 
   performNextAction();
 #endif
+}
+
+void CopasiUI3Window::slotStartNewInstance()
+{
+  QProcess::startDetached(qApp->applicationFilePath());
 }
 
 void CopasiUI3Window::slotCheckForUpdate()

@@ -206,6 +206,8 @@ public slots:
 
   void slotHandleCopasiScheme(const QUrl& url);
 
+  void slotStartNewInstance();
+
 public:
   /**
    * performs the next action from the action stack
