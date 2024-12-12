@@ -176,7 +176,7 @@ void CSensProblem::copySensItemToParameterGroup(const CSensItem * si, CCopasiPar
   if (si->isSingleObject())
     cn = si->getSingleObjectCN();
 
-  pg->setValue("SingleObject", cn);
+  pg->setValue("SingleObject", CRegisteredCommonName(cn));
   pg->setValue("ObjectListType", (unsigned C_INT32) si->getListType());
 }
 
@@ -680,7 +680,7 @@ void CSensProblem::initDebugProblem()
 {
   CSensItem item;
 
-  item.setSingleObjectCN(this->getStringCN());
+  item.setSingleObjectCN(CRegisteredCommonName(this->getStringCN()));
   addVariables(item);
 
   item.setListType(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
