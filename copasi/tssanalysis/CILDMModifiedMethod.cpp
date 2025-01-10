@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -229,7 +229,7 @@ void CILDMModifiedMethod::step(const double & deltaT)
 
   /* If complex eigenvalues */
   //BUG 873
-  if (mR(dim - 1, dim - 1) == mR(dim - 2 , dim - 2))
+  if (mR(dim - 1, dim - 1) == mR(dim - 2, dim - 2))
     if (dim == 2)
       {
         slow = dim;
@@ -288,7 +288,7 @@ integration:
           fast = fast - 1;
           slow = dim - fast;
 
-          if ((fast >= 1) && (mR(slow - 1, slow - 1) == mR(slow , slow)))
+          if ((fast >= 1) && (mR(slow - 1, slow - 1) == mR(slow, slow)))
             fast = fast - 1;
 
           slow = dim - fast;
@@ -399,7 +399,7 @@ integration:
                   re.resize(dim);
 
                   C_FLOAT64 eps;
-                  eps = 1 / fabs(mR(dim - k - 1 , dim - k - 1));
+                  eps = 1 / fabs(mR(dim - k - 1, dim - k - 1));
 
                   // stop criterion for slow reaction modes
 
@@ -524,7 +524,7 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
   index_temp.resize(dim);
 
   C_FLOAT64 eps;
-  eps = 1 / fabs(mR(dim - fast , dim - fast));
+  eps = 1 / fabs(mR(dim - fast, dim - fast));
   //eps = fabs(mR(dim - fast - 1, dim - fast - 1)) / fabs(mR(dim - fast , dim - fast));
 
   mat_anal_fast_space(slow);
@@ -563,7 +563,6 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
       x_help[j] = mY_initial[j] * mNumber2Concentration;
     }
 
-  // Model.calculateDerivativesX(dxdt.array());
   calculateDerivatives(x_help.array(), dxdt.array(), true);
 
   info_newton = 0;

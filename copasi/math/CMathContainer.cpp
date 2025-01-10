@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -800,7 +800,8 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
   C_FLOAT64 * pAtol = Atol.array();
   C_FLOAT64 * pAtolEnd = pAtol + Atol.size();
   const C_FLOAT64 * pInitialValue = mInitialState.array() + mSize.nFixed;
-  const CMathObject * pObject = getMathObject(getState(reduced).array());
+  const CMathObject * pObject = getMathObject(pInitialValue);
+  const C_FLOAT64 Quantity2NumberFactor = * (C_FLOAT64 *) mpQuantity2NumberFactor->getValuePointer();
 
   for (; pAtol != pAtolEnd; ++pAtol, ++pObject, ++pInitialValue)
     {
@@ -812,12 +813,7 @@ CVector< C_FLOAT64 > CMathContainer::initializeAtolVector(const C_FLOAT64 & atol
         {
           case CMath::EntityType::Species:
           {
-            const CMetab * pMetab = static_cast< const CMetab * >(pObject->getDataObject()->getObjectParent());
-            std::map< const CDataObject *, CMathObject * >::const_iterator itFound
-              = mDataObject2MathObject.find(pMetab->getCompartment()->getInitialValueReference());
-
-            C_FLOAT64 Limit = fabs(* (C_FLOAT64 *) itFound->second->getValuePointer()) *
-                              * (C_FLOAT64 *) mpQuantity2NumberFactor->getValuePointer();
+            C_FLOAT64 Limit = fabs(*pObject->getCompartmentValue()) * Quantity2NumberFactor;
 
             if (InitialValue != 0.0)
               *pAtol *= std::min(Limit, InitialValue);
@@ -3143,6 +3139,8 @@ void CMathContainer::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                        const bool & reduced,
                                        const bool & includeTime)
 {
+  CVector< C_FLOAT64 > State = getState(false);
+
   size_t Rows = getState(reduced).size() - mSize.nFixedEventTargets - 1;
   size_t Columns = getState(reduced).size() - mSize.nFixedEventTargets - (includeTime ? 0 : 1);
   jacobian.resize(Rows, Columns);
@@ -3212,6 +3210,7 @@ void CMathContainer::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
     }
 
   updateSimulatedValues(reduced);
+  setState(State);
 }
 
 void CMathContainer::calculateJacobianDependencies(CMatrix< C_INT32 > & jacobianDependencies,

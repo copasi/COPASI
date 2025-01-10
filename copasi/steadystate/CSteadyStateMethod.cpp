@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -214,8 +214,6 @@ bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution) const
 
 bool CSteadyStateMethod::allPositive()
 {
-  mpContainer->updateSimulatedValues(true);
-
   const C_FLOAT64 * pValue = mContainerState.array();
   const C_FLOAT64 * pValueEnd = pValue + mContainerState.size();
   pValue += mpContainer->getCountFixedEventTargets() + 1; // + 1 for time
@@ -294,9 +292,13 @@ void CSteadyStateMethod::doJacobian(CMatrix< C_FLOAT64 > & jacobian,
                                     CMatrix< C_FLOAT64 > & jacobianX)
 {
   mpContainer->setState(mSteadyState);
-
   mpContainer->calculateJacobian(jacobian, *mpDerivationFactor, false);
+
+  mpContainer->setState(mSteadyState);
   mpContainer->calculateJacobian(jacobianX, *mpDerivationFactor, true);
+
+  mpContainer->setState(mSteadyState);
+  mpContainer->updateSimulatedValues(false);
 }
 
 C_FLOAT64 CSteadyStateMethod::getStabilityResolution()
@@ -306,7 +308,7 @@ C_FLOAT64 CSteadyStateMethod::getStabilityResolution()
   return *pTmp;
 }
 
-void CSteadyStateMethod::calculateJacobian(const C_FLOAT64 & oldMaxRate, const bool & reduced)
+void CSteadyStateMethod::calculateJacobian(const bool & reduced)
 {
   if (reduced)
     {

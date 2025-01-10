@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -347,7 +347,7 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
 #endif
 
   mpContainer->setState(mSteadyState);
-  mpContainer->updateSimulatedValues(true);
+  mpContainer->updateSimulatedValues(false);
   mpContainer->updateTransientDataValues();
   mpContainer->pushAllTransientValues();
 
@@ -419,7 +419,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   os << std::endl;
 
   A.mpContainer->setState(A.mSteadyState);
-  A.mpContainer->updateSimulatedValues(true);
+  A.mpContainer->updateSimulatedValues(false);
   A.mpContainer->updateTransientDataValues();
   A.mpContainer->pushAllTransientValues();
 
