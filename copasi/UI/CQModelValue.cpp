@@ -97,6 +97,9 @@ void CQModelValue::slotBtnNew()
 
 void CQModelValue::slotBtnCopy()
 {
+  if (!mpDataModel || !mpObject)
+    return;
+
   std::string name = "quantity";
   int i = 1;
 

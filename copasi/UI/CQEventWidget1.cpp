@@ -118,6 +118,9 @@ void CQEventWidget1::slotBtnNew()
 
 void CQEventWidget1::slotBtnCopy()
 {
+  if (!mpDataModel || !mpObject)
+    return;
+
   std::string name = "event";
   int i = 1;
 
