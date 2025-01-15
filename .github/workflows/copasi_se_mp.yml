@@ -37,13 +37,7 @@ jobs:
 
     - name: install libuuid (static)
       run: |
-           curl -L -O http://downloads.sourceforge.net/libuuid/libuuid-1.0.3.tar.gz 
-           tar -zxf libuuid-1.0.3.tar.gz
-           cd libuuid-1.0.3
-           ./configure --disable-dependency-tracking --with-pic --enable-static=yes --enable-shared=no
-           make
-           make install
-           rm /usr/local/lib/libuuid.la
+           yum install -y libuuid-devel
 
     - name: Update COPASI Version
       run: ./gitTools/UpdateCopasiVersion --force
