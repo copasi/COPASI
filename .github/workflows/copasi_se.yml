@@ -53,8 +53,8 @@ jobs:
       working-directory: ${{github.workspace}}/dependencies/lib/cmake
       run: |
         sed -i 's|/home/runner/work/copasi-dependencies/copasi-dependencies/install/|${_IMPORT_PREFIX}/|g'  *.cmake
-        apt update
-        apt install -y libuuid-dev
+        sudo apt update
+        sudo apt install -y libuuid-dev
 
     - name: Patch dependencies (mac)
       shell: bash
