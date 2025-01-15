@@ -54,7 +54,7 @@ jobs:
       run: |
         sed -i 's|/home/runner/work/copasi-dependencies/copasi-dependencies/install/|${_IMPORT_PREFIX}/|g'  *.cmake
         sudo apt update
-        sudo apt install -y libuuid-dev
+        sudo apt install -y uuid-dev
 
     - name: Patch dependencies (mac)
       shell: bash
