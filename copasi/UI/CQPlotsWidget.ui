@@ -252,7 +252,6 @@
     <slot>slotBtnClearClicked()</slot>
     <slot>slotBtnActivateAllClicked()</slot>
     <slot>slotBtnDeactivateAllClicked()</slot>
-    <slot>slotSelectionChanged()</slot>
     <slot>slotDoubleClicked(QModelIndex)</slot>
     <slot>dataChanged(QModelIndex, QModelIndex)</slot>
     <slot>slotFilterChanged()</slot>

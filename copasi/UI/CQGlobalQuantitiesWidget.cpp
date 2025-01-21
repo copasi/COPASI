@@ -76,7 +76,6 @@ CQGlobalQuantitiesWidget::CQGlobalQuantitiesWidget(QWidget *parent, const char *
   connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-  connect(mpTblGlobalQuantities, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 /*
@@ -93,15 +92,12 @@ CQGlobalQuantitiesWidget::~CQGlobalQuantitiesWidget()
 void CQGlobalQuantitiesWidget::slotBtnNewClicked()
 {
   mpGlobalQuantityDM->insertRow(mpGlobalQuantityDM->rowCount() - 1, QModelIndex());
-  updateDeleteBtns();
 }
 
 void CQGlobalQuantitiesWidget::slotBtnDeleteClicked(bool needFocus)
 {
   if (!needFocus || mpTblGlobalQuantities->hasFocus())
     {deleteSelectedGlobalQuantities();}
-
-  updateDeleteBtns();
 }
 
 void CQGlobalQuantitiesWidget::deleteSelectedGlobalQuantities()
@@ -134,7 +130,6 @@ void CQGlobalQuantitiesWidget::slotBtnClearClicked()
       mpGlobalQuantityDM->clear();
     }
 
-  updateDeleteBtns();
 }
 
 bool CQGlobalQuantitiesWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
@@ -175,7 +170,6 @@ bool CQGlobalQuantitiesWidget::enterProtected()
   mpTblGlobalQuantities->setModel(NULL);
   mpTblGlobalQuantities->setModel(mpProxyModel);
 
-  updateDeleteBtns();
   mpTblGlobalQuantities->horizontalHeader()->restoreState(State);
   blockSignals(false);
 
@@ -189,39 +183,6 @@ bool CQGlobalQuantitiesWidget::enterProtected()
   return true;
 }
 
-void CQGlobalQuantitiesWidget::updateDeleteBtns()
-{
-  bool selected = false;
-  QModelIndexList selRows = mpTblGlobalQuantities->selectionModel()->selectedRows();
-
-  if (selRows.size() == 0)
-    selected = false;
-  else
-    {
-      if (selRows.size() == 1)
-        {
-          if (mpGlobalQuantityDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
-            selected = false;
-          else
-            selected = true;
-        }
-      else
-        selected = true;
-    }
-
-  mpBtnDelete->setEnabled(selected);
-
-  if (mpProxyModel->rowCount() - 1)
-    mpBtnClear->setEnabled(true);
-  else
-    mpBtnClear->setEnabled(false);
-}
-
-void CQGlobalQuantitiesWidget::slotSelectionChanged()
-{
-  updateDeleteBtns();
-}
-
 void CQGlobalQuantitiesWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
     const QModelIndex &C_UNUSED(bottomRight))
 {
@@ -229,8 +190,6 @@ void CQGlobalQuantitiesWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
     {
       mpTblGlobalQuantities->resizeColumnsToContents();
     }
-
-  updateDeleteBtns();
 }
 
 void CQGlobalQuantitiesWidget::slotDoubleClicked(const QModelIndex proxyIndex)

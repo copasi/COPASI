@@ -94,7 +94,6 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget *parent)
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
   connect(mpPushButtonDelegate, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotShowLayout(const QModelIndex &)));
-  connect(mpTblLayouts, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 // virtual
@@ -169,11 +168,6 @@ void CQLayoutsWidget::deleteSelectedLayouts()
   mpLayoutsDM->removeRows(mappedSelRows);
 }
 
-void CQLayoutsWidget::updateDeleteBtns()
-{
-  mpBtnDelete->setEnabled(mpTblLayouts->selectionModel()->selectedRows().size() > 0);
-  mpBtnClear->setEnabled(mpProxyModel->rowCount() > 0);
-}
 
 // virtual
 bool CQLayoutsWidget::enterProtected()
@@ -214,7 +208,6 @@ bool CQLayoutsWidget::enterProtected()
         }
     }
 
-  updateDeleteBtns();
   mpTblLayouts->horizontalHeader()->restoreState(State);
   blockSignals(false);
 
@@ -336,11 +329,6 @@ void CQLayoutsWidget::slotBtnClearClicked()
     }
 }
 
-// virtual
-void CQLayoutsWidget::slotSelectionChanged()
-{
-  updateDeleteBtns();
-}
 
 // virtual
 void CQLayoutsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
@@ -362,7 +350,6 @@ void CQLayoutsWidget::dataChanged(const QModelIndex & /* topLeft */,
       mpTblLayouts->resizeColumnsToContents();
     }
 
-  updateDeleteBtns();
   showButtons();
 }
 

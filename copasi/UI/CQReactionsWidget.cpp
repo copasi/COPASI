@@ -77,7 +77,6 @@ CQReactionsWidget::CQReactionsWidget(QWidget *parent, const char *name)
   connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-  connect(mpTblReactions, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
   CopasiUI3Window   *pWindow = dynamic_cast<CopasiUI3Window * >(parent->parent());
 }
 
@@ -94,7 +93,6 @@ CQReactionsWidget::~CQReactionsWidget()
 void CQReactionsWidget::slotBtnNewClicked()
 {
   mpReactionDM->insertRow(mpReactionDM->rowCount() - 1, QModelIndex());
-  updateDeleteBtns();
 }
 
 void CQReactionsWidget::slotBtnDeleteClicked(bool needFocus)
@@ -102,7 +100,6 @@ void CQReactionsWidget::slotBtnDeleteClicked(bool needFocus)
   if (!needFocus || mpTblReactions->hasFocus())
     {deleteSelectedReactions();}
 
-  updateDeleteBtns();
 }
 
 void CQReactionsWidget::slotBtnClearClicked()
@@ -115,7 +112,6 @@ void CQReactionsWidget::slotBtnClearClicked()
       mpReactionDM->clear();
     }
 
-  updateDeleteBtns();
 }
 
 bool CQReactionsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
@@ -152,7 +148,6 @@ bool CQReactionsWidget::enterProtected()
   mpTblReactions->setModel(NULL);
   mpTblReactions->setModel(mpProxyModel);
 
-  updateDeleteBtns();
   mpTblReactions->horizontalHeader()->restoreState(State);
   blockSignals(false);
 
@@ -167,38 +162,6 @@ bool CQReactionsWidget::enterProtected()
   return true;
 }
 
-void CQReactionsWidget::updateDeleteBtns()
-{
-  bool selected = false;
-  QModelIndexList selRows = mpTblReactions->selectionModel()->selectedRows();
-
-  if (selRows.size() == 0)
-    selected = false;
-  else
-    {
-      if (selRows.size() == 1)
-        {
-          if (mpReactionDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
-            selected = false;
-          else
-            selected = true;
-        }
-      else
-        selected = true;
-    }
-
-  mpBtnDelete->setEnabled(selected);
-
-  if (mpProxyModel->rowCount() - 1)
-    mpBtnClear->setEnabled(true);
-  else
-    mpBtnClear->setEnabled(false);
-}
-
-void CQReactionsWidget::slotSelectionChanged()
-{
-  updateDeleteBtns();
-}
 
 void CQReactionsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                     const QModelIndex &C_UNUSED(bottomRight))
@@ -209,7 +172,6 @@ void CQReactionsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
     }
 
   setFramework(mFramework);
-  updateDeleteBtns();
 }
 
 void CQReactionsWidget::slotDoubleClicked(const QModelIndex proxyIndex)

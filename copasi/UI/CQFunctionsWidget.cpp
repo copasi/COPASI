@@ -87,16 +87,13 @@ CQFunctionsWidget::~CQFunctionsWidget()
 
 void CQFunctionsWidget::slotBtnNewClicked()
 {
-  mpFunctionDM->insertRow(mpFunctionDM->rowCount(), QModelIndex());
-  updateDeleteBtns();
+  mpFunctionDM->insertRow(mpFunctionDM->rowCount(), QModelIndex());  
 }
 
 void CQFunctionsWidget::slotBtnDeleteClicked(bool needFocus)
 {
   if (!needFocus || mpTblFunctions->hasFocus())
     {deleteSelectedFunctions();}
-
-  updateDeleteBtns();
 }
 
 void CQFunctionsWidget::deleteSelectedFunctions()
@@ -117,7 +114,6 @@ void CQFunctionsWidget::deleteSelectedFunctions()
     {return;}
 
   mpFunctionDM->removeRows(mappedSelRows);
-  updateDeleteBtns();
 }
 
 void CQFunctionsWidget::slotBtnClearClicked()
@@ -140,8 +136,6 @@ void CQFunctionsWidget::slotBtnClearClicked()
 
       mpFunctionDM->removeRows(mappedSelRows);
     }
-
-  updateDeleteBtns();
 }
 
 bool CQFunctionsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
@@ -170,7 +164,6 @@ bool CQFunctionsWidget::enterProtected()
   mpTblFunctions->setModel(NULL);
   mpTblFunctions->setModel(mpProxyModel);
 
-  updateDeleteBtns();
   mpTblFunctions->horizontalHeader()->restoreState(State);
   blockSignals(false);
 
@@ -184,36 +177,6 @@ bool CQFunctionsWidget::enterProtected()
   return true;
 }
 
-void CQFunctionsWidget::updateDeleteBtns()
-{
-  bool selected = false;
-  QModelIndexList selRows = mpTblFunctions->selectionModel()->selectedRows();
-
-  if (selRows.size() == 0)
-    selected = false;
-  else
-    {
-      if (selRows.size() == 1)
-        {
-          QModelIndex index = mpProxyModel->mapToSource(selRows[0]);
-
-          if (mpFunctionDM->isDefaultRow(index) || mpFunctionDM->isFunctionReadOnly(index))
-            selected = false;
-          else
-            selected = true;
-        }
-      else
-        selected = true;
-    }
-
-  mpBtnDelete->setEnabled(selected);
-
-  if (mpProxyModel->rowCount() - 1)
-    mpBtnClear->setEnabled(true);
-  else
-    mpBtnClear->setEnabled(false);
-}
-
 void CQFunctionsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                     const QModelIndex &C_UNUSED(bottomRight))
 {
@@ -221,8 +184,6 @@ void CQFunctionsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
     {
       mpTblFunctions->resizeColumnsToContents();
     }
-
-  updateDeleteBtns();
 }
 
 void CQFunctionsWidget::slotDoubleClicked(const QModelIndex proxyIndex)

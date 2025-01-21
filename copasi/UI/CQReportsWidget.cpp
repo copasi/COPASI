@@ -65,7 +65,6 @@ CQReportsWidget::CQReportsWidget(QWidget *parent, const char *name)
   connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-  connect(mpTblReports, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 /*
@@ -81,15 +80,12 @@ CQReportsWidget::~CQReportsWidget()
 void CQReportsWidget::slotBtnNewClicked()
 {
   mpReportDM->insertRow(mpReportDM->rowCount() - 1, QModelIndex());
-  updateDeleteBtns();
 }
 
 void CQReportsWidget::slotBtnDeleteClicked(bool needFocus)
 {
   if (!needFocus || mpTblReports->hasFocus())
     {deleteSelectedReports();}
-
-  updateDeleteBtns();
 }
 
 void CQReportsWidget::deleteSelectedReports()
@@ -122,7 +118,6 @@ void CQReportsWidget::slotBtnClearClicked()
       mpReportDM->clear();
     }
 
-  updateDeleteBtns();
 }
 
 bool CQReportsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
@@ -151,7 +146,6 @@ bool CQReportsWidget::enterProtected()
   mpTblReports->setModel(NULL);
   mpTblReports->setModel(mpProxyModel);
 
-  updateDeleteBtns();
   mpTblReports->horizontalHeader()->restoreState(State);
   blockSignals(false);
 
@@ -166,39 +160,6 @@ bool CQReportsWidget::enterProtected()
   return true;
 }
 
-void CQReportsWidget::updateDeleteBtns()
-{
-  bool selected = false;
-  QModelIndexList selRows = mpTblReports->selectionModel()->selectedRows();
-
-  if (selRows.size() == 0)
-    selected = false;
-  else
-    {
-      if (selRows.size() == 1)
-        {
-          if (mpReportDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
-            selected = false;
-          else
-            selected = true;
-        }
-      else
-        selected = true;
-    }
-
-  mpBtnDelete->setEnabled(selected);
-
-  if (mpProxyModel->rowCount() - 1)
-    mpBtnClear->setEnabled(true);
-  else
-    mpBtnClear->setEnabled(false);
-}
-
-void CQReportsWidget::slotSelectionChanged()
-{
-  updateDeleteBtns();
-}
-
 void CQReportsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                   const QModelIndex &C_UNUSED(bottomRight))
 {
@@ -208,7 +169,6 @@ void CQReportsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
     }
 
   setFramework(mFramework);
-  updateDeleteBtns();
 }
 
 void CQReportsWidget::slotDoubleClicked(const QModelIndex proxyIndex)

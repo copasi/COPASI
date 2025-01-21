@@ -58,7 +58,6 @@ private:
   CQPushButtonDelegate * mpPushButtonDelegate;
 
   void deleteSelectedLayouts();
-  void updateDeleteBtns();
   virtual bool enterProtected();
   virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
   virtual bool leaveProtected();
@@ -77,7 +76,6 @@ protected slots:
   virtual void slotBtnNewClicked();
   virtual void slotBtnDeleteClicked(bool needFocus=false);
   virtual void slotBtnClearClicked();
-  virtual void slotSelectionChanged();
   virtual void slotDoubleClicked(const QModelIndex proxyIndex);
   virtual void dataChanged(const QModelIndex& topLeft,
                            const QModelIndex& bottomRight);

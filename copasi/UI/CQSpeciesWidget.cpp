@@ -83,7 +83,6 @@ CQSpeciesWidget::CQSpeciesWidget(QWidget *parent, const char *name)
   connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-  connect(mpTblSpecies, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 /*
@@ -101,7 +100,6 @@ CQSpeciesWidget::~CQSpeciesWidget()
 void CQSpeciesWidget::slotBtnNewClicked()
 {
   mpSpecieDM->insertRow(mpSpecieDM->rowCount() - 1, QModelIndex());
-  updateDeleteBtns();
 }
 
 void CQSpeciesWidget::slotBtnDeleteClicked(bool needFocus)
@@ -109,7 +107,6 @@ void CQSpeciesWidget::slotBtnDeleteClicked(bool needFocus)
   if (!needFocus || mpTblSpecies->hasFocus())
     {deleteSelectedSpecies();}
 
-  updateDeleteBtns();
 }
 
 void CQSpeciesWidget::deleteSelectedSpecies()
@@ -142,7 +139,6 @@ void CQSpeciesWidget::slotBtnClearClicked()
       mpSpecieDM->clear();
     }
 
-  updateDeleteBtns();
 }
 
 bool CQSpeciesWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
@@ -178,7 +174,6 @@ bool CQSpeciesWidget::enterProtected()
   mpTblSpecies->setModel(NULL);
   mpTblSpecies->setModel(mpProxyModel);
 
-  updateDeleteBtns();
   mpTblSpecies->horizontalHeader()->restoreState(State);
   blockSignals(false);
 
@@ -194,38 +189,6 @@ bool CQSpeciesWidget::enterProtected()
   return true;
 }
 
-void CQSpeciesWidget::updateDeleteBtns()
-{
-  bool selected = false;
-  QModelIndexList selRows = mpTblSpecies->selectionModel()->selectedRows();
-
-  if (selRows.size() == 0)
-    selected = false;
-  else
-    {
-      if (selRows.size() == 1)
-        {
-          if (mpSpecieDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
-            selected = false;
-          else
-            selected = true;
-        }
-      else
-        selected = true;
-    }
-
-  mpBtnDelete->setEnabled(selected);
-
-  if (mpProxyModel->rowCount() - 1)
-    mpBtnClear->setEnabled(true);
-  else
-    mpBtnClear->setEnabled(false);
-}
-
-void CQSpeciesWidget::slotSelectionChanged()
-{
-  updateDeleteBtns();
-}
 
 void CQSpeciesWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                   const QModelIndex &C_UNUSED(bottomRight))
@@ -237,7 +200,6 @@ void CQSpeciesWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
 
   setFramework(mFramework);
   refreshCompartments();
-  updateDeleteBtns();
 }
 
 void CQSpeciesWidget::slotDoubleClicked(const QModelIndex proxyIndex)

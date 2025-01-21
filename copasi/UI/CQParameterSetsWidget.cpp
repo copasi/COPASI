@@ -69,7 +69,6 @@ CQParameterSetsWidget::CQParameterSetsWidget(QWidget *parent, const char *name)
   connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-  connect(mpTblParameterSets, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 /*
@@ -85,7 +84,6 @@ CQParameterSetsWidget::~CQParameterSetsWidget()
 void CQParameterSetsWidget::slotBtnNewClicked()
 {
   mpParameterSetsDM->insertRow(mpParameterSetsDM->rowCount(), QModelIndex());
-  updateDeleteBtns();
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
@@ -98,7 +96,6 @@ void CQParameterSetsWidget::slotBtnDeleteClicked(bool needFocus)
   if (!needFocus || mpTblParameterSets->hasFocus())
     {deleteSelected();}
 
-  updateDeleteBtns();
 }
 
 void CQParameterSetsWidget::deleteSelected()
@@ -129,9 +126,7 @@ void CQParameterSetsWidget::slotBtnClearClicked()
   if (ret == QMessageBox::Yes)
     {
       mpParameterSetsDM->clear();
-    }
-
-  updateDeleteBtns();
+    }  
 }
 
 bool CQParameterSetsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
@@ -182,10 +177,7 @@ bool CQParameterSetsWidget::enterProtected()
   //Set Model for the TableView
   mpTblParameterSets->setModel(NULL);
   mpTblParameterSets->setModel(mpProxyModel);
-  connect(mpTblParameterSets->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged()));
 
-  updateDeleteBtns();
   mpTblParameterSets->horizontalHeader()->restoreState(State);
   blockSignals(false);
 
@@ -200,42 +192,6 @@ bool CQParameterSetsWidget::enterProtected()
   return true;
 }
 
-void CQParameterSetsWidget::updateDeleteBtns()
-{
-  bool selected = false;
-
-  if (mpTblParameterSets->selectionModel() != NULL)
-    {
-      QModelIndexList selRows = mpTblParameterSets->selectionModel()->selectedRows();
-
-      if (selRows.size() == 0)
-        selected = false;
-      else
-        {
-          if (selRows.size() == 1)
-            {
-              if (mpParameterSetsDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
-                selected = false;
-              else
-                selected = true;
-            }
-          else
-            selected = true;
-        }
-    }
-
-  mpBtnDelete->setEnabled(selected);
-
-  if (mpProxyModel->rowCount() - 1)
-    mpBtnClear->setEnabled(true);
-  else
-    mpBtnClear->setEnabled(false);
-}
-
-void CQParameterSetsWidget::slotSelectionChanged()
-{
-  updateDeleteBtns();
-}
 
 void CQParameterSetsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                         const QModelIndex &C_UNUSED(bottomRight))
@@ -246,7 +202,6 @@ void CQParameterSetsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
     }
 
   setFramework(mFramework);
-  updateDeleteBtns();
 }
 
 void CQParameterSetsWidget::slotDoubleClicked(const QModelIndex proxyIndex)

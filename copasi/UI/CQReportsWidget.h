@@ -42,7 +42,6 @@ private:
   CQReportDM* mpReportDM;
   CQSortFilterProxyModel *mpProxyModel;
   void deleteSelectedReports();
-  void updateDeleteBtns();
 
 signals:
   void initFilter();
@@ -57,7 +56,6 @@ protected slots:
   virtual void slotBtnNewClicked();
   virtual void slotBtnDeleteClicked(bool needFocus=false);
   virtual void slotBtnClearClicked();
-  virtual void slotSelectionChanged();
   virtual void slotDoubleClicked(const QModelIndex proxyIndex);
   virtual void dataChanged(const QModelIndex& topLeft,
                            const QModelIndex& bottomRight);
