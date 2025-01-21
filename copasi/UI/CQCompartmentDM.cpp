@@ -373,23 +373,24 @@ bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex& index)
   if (rows.isEmpty())
     return false;
 
-  // Build the list of pointers to items to be deleted
+  // Build the list of items to be deleted
   // before actually deleting any item.
-  QList <CCompartment *> Compartments;
-  QModelIndexList::const_iterator i;
-
-  for (i = rows.begin(); i != rows.end(); ++i)
-    if (i->isValid()
-        && !isDefaultRow(*i))
+  QList <std::string> names;
+  
+  for (const auto& index : rows)
+    if (index.isValid()
+        && !isDefaultRow(index))
       {
-        Compartments.append(&mpCompartments->operator[](i->row()));
+        names.append(mpCompartments->operator[](index.row()).getObjectName());
       }
 
-  QList< CCompartment * >::const_iterator j;
-
-  for (j = Compartments.begin(); j != Compartments.end(); ++j)
+  for (const auto& name : names)
     {
-      CCompartment * pCompartment = *j;
+      auto index = mpCompartments->getIndex(name);
+      if (index == C_INVALID_INDEX)
+        continue;
+
+      CCompartment * pCompartment = &mpCompartments->operator[](name);
 
       QMessageBox::StandardButton choice =
         CQMessageBox::confirmDelete(ListViews::ancestor(this), "compartment",
@@ -398,7 +399,7 @@ bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex& index)
 
       if (choice == QMessageBox::Ok)
         {
-          removeRows(mpCompartments->getIndex(pCompartment->getObjectName()), 1);
+          removeRows(index, 1);
         }
     }
 

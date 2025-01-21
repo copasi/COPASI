@@ -583,23 +583,23 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex & parent)
   if (rows.isEmpty())
     return false;
 
-  //Build the list of pointers to items to be deleted
+  //Build the list of items to be deleted
   //before actually deleting any item.
-  QList <CMetab *> Species;
-  QModelIndexList::const_iterator i;
+  QList <std::string> names;
+  
+  size_t numSpecies = mpMetabolites->size();
 
-  for (i = rows.begin(); i != rows.end(); ++i)
+  for (const auto& index : rows)
     {
-      if (i->isValid()
-          && !isDefaultRow(*i))
-        Species.append(&mpMetabolites->operator[](i->row()));
+      if (index.isValid() && !isDefaultRow(index))
+        names.append(mpMetabolites->operator[](index.row()).getStringCN());
     }
-
-  QList< CMetab * >::const_iterator j;
-
-  for (j = Species.begin(); j != Species.end(); ++j)
+  
+  for (auto& objectCn : names)
     {
-      CMetab * pSpecies = *j;
+      CMetab* pSpecies = const_cast< CMetab* >( dynamic_cast<const CMetab*> (mpMetabolites->getObjectDataModel()->getObject(CRegisteredCommonName(objectCn))));
+      if (!pSpecies)
+        continue;
 
       QMessageBox::StandardButton choice =
         CQMessageBox::confirmDelete(ListViews::ancestor(this), "species",
@@ -611,6 +611,6 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex & parent)
           removeRows(mpMetabolites->getIndex(pSpecies), 1);
         }
     }
-
+  
   return true;
 }
