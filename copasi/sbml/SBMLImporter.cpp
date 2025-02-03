@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -2240,16 +2240,37 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
 
           while (!(reactionId = SBMLImporter::findIdInASTTree(kLawMath, mReactions)).empty())
             {
+              // Issue 3277: first check if we already have a parameter for this reaction
+              auto existing = mParameterFluxMap.find(reactionId);
+              if (existing != mParameterFluxMap.end() && existing->second != NULL)
+                {
+                  std::map<std::string, std::string> map;
+                  map[reactionId] = existing->second->getObjectName();
+                  replace_name_nodes(kLawMath, map);
+
+                  // we already have a parameter for this reaction, so we can skip the creation of a new one
+                  continue;
+                }
+
               std::string newParameterId = "rateOf_" + reactionId;
 
               Parameter* sbmlParameter = pSBMLModel->createParameter();
               sbmlParameter->setId(newParameterId);
               sbmlParameter->setValue(0);
 
-              CModelValue* parameter = this->mpCopasiModel->createModelValue(newParameterId);
-              parameter->setSBMLId(newParameterId);
-              parameter->setStatus(CModelEntity::Status::ASSIGNMENT);
-              parameter->setInitialExpression("0");
+              auto index = this->mpCopasiModel->getModelValues().getIndex(newParameterId);
+
+              CModelValue* parameter = NULL;
+
+              if (index != C_INVALID_INDEX)
+                parameter = &mpCopasiModel->getModelValues()[index];
+              else
+              {
+                parameter = this->mpCopasiModel->createModelValue(newParameterId);
+                parameter->setSBMLId(newParameterId);
+                parameter->setStatus(CModelEntity::Status::ASSIGNMENT);
+                parameter->setInitialExpression("0");
+              }
 
               mParameterFluxMap[reactionId] = parameter;
 
