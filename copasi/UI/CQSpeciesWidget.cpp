@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -106,7 +106,6 @@ void CQSpeciesWidget::slotBtnDeleteClicked(bool needFocus)
 {
   if (!needFocus || mpTblSpecies->hasFocus())
     {deleteSelectedSpecies();}
-
 }
 
 void CQSpeciesWidget::deleteSelectedSpecies()
@@ -127,6 +126,7 @@ void CQSpeciesWidget::deleteSelectedSpecies()
     {return;}
 
   mpSpecieDM->removeRows(mappedSelRows);
+  enterProtected();
 }
 
 void CQSpeciesWidget::slotBtnClearClicked()
@@ -138,7 +138,6 @@ void CQSpeciesWidget::slotBtnClearClicked()
     {
       mpSpecieDM->clear();
     }
-
 }
 
 bool CQSpeciesWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
@@ -188,7 +187,6 @@ bool CQSpeciesWidget::enterProtected()
 
   return true;
 }
-
 
 void CQSpeciesWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                   const QModelIndex &C_UNUSED(bottomRight))

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -99,7 +99,6 @@ void CQReactionsWidget::slotBtnDeleteClicked(bool needFocus)
 {
   if (!needFocus || mpTblReactions->hasFocus())
     {deleteSelectedReactions();}
-
 }
 
 void CQReactionsWidget::slotBtnClearClicked()
@@ -111,7 +110,6 @@ void CQReactionsWidget::slotBtnClearClicked()
     {
       mpReactionDM->clear();
     }
-
 }
 
 bool CQReactionsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
@@ -161,7 +159,6 @@ bool CQReactionsWidget::enterProtected()
 
   return true;
 }
-
 
 void CQReactionsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                     const QModelIndex &C_UNUSED(bottomRight))
@@ -282,4 +279,5 @@ void CQReactionsWidget::deleteSelectedReactions()
     {return;}
 
   mpReactionDM->removeRows(mappedSelRows);
+  enterProtected();
 }

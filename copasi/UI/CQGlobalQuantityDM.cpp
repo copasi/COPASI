@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -378,12 +378,11 @@ bool CQGlobalQuantityDM::removeRows(QModelIndexList rows, const QModelIndex& ind
 
   for (i = rows.begin(); i != rows.end(); ++i)
     if (i->isValid()
-        && !isDefaultRow(*i))
+        && !isDefaultRow(*i) && i->row() < (int) mpGlobalQuantities->size())
       {
         names.append(mpGlobalQuantities->operator[](i->row()).getObjectName());
       }
 
-  
   for (auto&  objName : names)
     {
       auto index = mpGlobalQuantities->getIndex(objName);

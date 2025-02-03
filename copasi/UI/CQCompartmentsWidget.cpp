@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -119,6 +119,7 @@ void CQCompartmentsWidget::deleteSelectedCompartments()
     {return;}
 
   mpCompartmentDM->removeRows(mappedSelRows);
+  enterProtected();
 }
 
 void CQCompartmentsWidget::slotBtnClearClicked()

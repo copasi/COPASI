@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -586,18 +586,18 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex & parent)
   //Build the list of items to be deleted
   //before actually deleting any item.
   QList <std::string> names;
-  
+
   size_t numSpecies = mpMetabolites->size();
 
   for (const auto& index : rows)
     {
-      if (index.isValid() && !isDefaultRow(index))
+      if (index.isValid() && !isDefaultRow(index) && index.row() < (int) mpMetabolites->size())
         names.append(mpMetabolites->operator[](index.row()).getStringCN());
     }
-  
+
   for (auto& objectCn : names)
     {
-      CMetab* pSpecies = const_cast< CMetab* >( dynamic_cast<const CMetab*> (mpMetabolites->getObjectDataModel()->getObject(CRegisteredCommonName(objectCn))));
+      CMetab* pSpecies = const_cast< CMetab* >(dynamic_cast<const CMetab*> (mpMetabolites->getObjectDataModel()->getObject(CRegisteredCommonName(objectCn))));
       if (!pSpecies)
         continue;
 
@@ -611,6 +611,6 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex & parent)
           removeRows(mpMetabolites->getIndex(pSpecies), 1);
         }
     }
-  
+
   return true;
 }
