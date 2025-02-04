@@ -86,7 +86,7 @@ void CQTrajectoryWidget::init()
   mpEditDuration->setValidator(mpValidatorDuration);
 
   mpValidatorIntervalSize = new CQValidatorDouble(mpEditIntervalSize);
-  mpValidatorIntervalSize->setRange(0, std::numeric_limits< double >::max());
+  //mpValidatorIntervalSize->setRange(0, std::numeric_limits< double >::max());
   mpEditIntervalSize->setValidator(mpValidatorIntervalSize);
 
   mpValidatorIntervals = new CQValidatorInt(mpEditIntervals);
