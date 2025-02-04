@@ -191,9 +191,10 @@ public:
 
   /**
    * Save the configuration file.
+   * @param saveMiriam boolean indicating whether to save the MIRIAM information (default: false)
    * @return bool success
    */
-  virtual bool save();
+  virtual bool save(bool saveMiriam = false);
 
   /**
    * Load the configuration file.

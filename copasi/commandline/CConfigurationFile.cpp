@@ -302,14 +302,26 @@ void CConfigurationFile::initializeParameter()
   elevateChildren();
 }
 
-bool CConfigurationFile::save()
+bool CConfigurationFile::save(bool saveMiriam)
 {
   std::string ConfigFile;
   COptions::getValue("ConfigFile", ConfigFile);
 
+  CConfigurationFile copyWithoutMiriam(*this);
+
+  const CCopasiParameterGroup * pMiriam = dynamic_cast< const CCopasiParameterGroup * >(copyWithoutMiriam.getParameter("MIRIAM Resources"));
+  if (pMiriam && saveMiriam)
+  {
+    CConfigurationFile::CXML XML;
+    XML.setConfiguration(*pMiriam);
+    XML.CCopasiXMLInterface::save(ConfigFile + std::string(".miriam"), CDirEntry::dirName(ConfigFile));
+  }
+
+  copyWithoutMiriam.removeParameter("MIRIAM Resources");
+
   CConfigurationFile::CXML XML;
 
-  XML.setConfiguration(*this);
+  XML.setConfiguration(copyWithoutMiriam);
 
   bool success = XML.CCopasiXMLInterface::save(ConfigFile, CDirEntry::dirName(ConfigFile));
 
@@ -331,6 +343,26 @@ bool CConfigurationFile::load()
       initializeParameter();
     }
 
+  std::string configMIRIAMResourceFile(ConfigFile + std::string(".miriam"));
+  bool haveConfigMiriam = CDirEntry::exist(configMIRIAMResourceFile);
+  if (haveConfigMiriam)
+  {
+      CConfigurationFile::CXML XMLMIRIAMResource;
+
+      if (XMLMIRIAMResource.CCopasiXMLInterface::load(configMIRIAMResourceFile,
+                                                      configMIRIAMResourceFile))
+        {
+          const CCopasiParameterGroup * group = XMLMIRIAMResource.getConfiguration().getGroup("MIRIAM Resources");
+
+          if (group == NULL)
+            return false;
+
+          *mpRecentMIRIAMResources = *group;
+          mpRecentMIRIAMResources->initializeParameter();
+        }
+    
+  }
+
   if (mpRecentMIRIAMResources->getResourceList().size() == 0)
     {
       // We load the default MIRIAM resources, which are part of the COPASI installation.
@@ -349,6 +381,11 @@ bool CConfigurationFile::load()
 
           *mpRecentMIRIAMResources = *group;
           mpRecentMIRIAMResources->initializeParameter();
+
+          if (!haveConfigMiriam)
+          {
+              XMLMIRIAMResource.CCopasiXMLInterface::save(configMIRIAMResourceFile, configMIRIAMResourceFile);
+          }
         }
       else
         success = false;

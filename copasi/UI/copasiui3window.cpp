@@ -2665,7 +2665,7 @@ void CopasiUI3Window::slotUpdateMIRIAMFinished(bool success)
   */
   if (success)
     {
-      CRootContainer::getConfiguration()->save();
+      CRootContainer::getConfiguration()->save(true);
       CMIRIAMResourceObject::setMIRIAMResources(
         &CRootContainer::getConfiguration()->getRecentMIRIAMResources());
       mpDataModelGUI->updateMIRIAMResourceContents();
