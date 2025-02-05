@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -193,12 +193,12 @@ bool CODEExporter::exportToStream(const CDataModel* pDataModel, std::ostream & o
   // NOTE: this does not change the order in the file
   if (!exportTitleData(pDataModel->getModel(), os)) return false;
 
-  os << std::endl << exportTitleString(INITIAL) << std::endl << initial.str() << exportClosingString(INITIAL);
-  os << std::endl << exportTitleString(FIXED) << std::endl << fixed.str() << exportClosingString(FIXED);
-  os << std::endl << exportTitleString(ASSIGNMENT) << std::endl << assignment.str() << exportClosingString(ASSIGNMENT);
-  os << std::endl << exportTitleString(HEADERS) << std::endl << headers.str() << exportClosingString(HEADERS);
-  os << std::endl << exportTitleString(FUNCTIONS) << std::endl << functions.str() << exportClosingString(FUNCTIONS);
-  os << std::endl << exportTitleString(ODEs) << std::endl << ode.str() << exportClosingString(ODEs);
+  os << "\n" << exportTitleString(INITIAL) << "\n" << initial.str() << exportClosingString(INITIAL);
+  os << "\n" << exportTitleString(FIXED) << "\n" << fixed.str() << exportClosingString(FIXED);
+  os << "\n" << exportTitleString(ASSIGNMENT) << "\n" << assignment.str() << exportClosingString(ASSIGNMENT);
+  os << "\n" << exportTitleString(HEADERS) << "\n" << headers.str() << exportClosingString(HEADERS);
+  os << "\n" << exportTitleString(FUNCTIONS) << "\n" << functions.str() << exportClosingString(FUNCTIONS);
+  os << "\n" << exportTitleString(ODEs) << "\n" << ode.str() << exportClosingString(ODEs);
 
   if (!exportClosingData(pDataModel->getModel(), os)) return false;
 
@@ -460,7 +460,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(const CMo
                       && pObject->getObjectName() != "InitialVolume"
                       && pObject->getObjectName() != "Rate")
                     {
-                      result << std::endl << getSingleLineComment() << "WARNING : reference to property other than transient volume for compartment \"" << pObjectParent->getObjectName() << "\" in expression  for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << "\n" << getSingleLineComment() << "WARNING : reference to property other than transient volume for compartment \"" << pObjectParent->getObjectName() << "\" in expression  for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else if (typeString == "Metabolite")
@@ -472,7 +472,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(const CMo
                       && pObject->getObjectName() != "Rate")
                     {
 
-                      result << std::endl << getSingleLineComment() << "WARNING : reference to property other than transient concentration, initial concentration or concentrations rate for metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << "\n" << getSingleLineComment() << "WARNING : reference to property other than transient concentration, initial concentration or concentrations rate for metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
 
                   CMetab* metab;
@@ -481,7 +481,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(const CMo
                   if ((metab->getStatus() == CModelEntity::Status::REACTIONS &&  metab->isDependent()) && pObject->getObjectName() == "Rate")
                     {
 
-                      result << std::endl << getSingleLineComment() <<  "WARNING : reference to rate of dependent (defined from moiety)  metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << "\n" << getSingleLineComment() <<  "WARNING : reference to rate of dependent (defined from moiety)  metabolite \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else if (typeString == "ModelValue")
@@ -491,7 +491,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(const CMo
                       && pObject->getObjectName() != "Rate")
                     {
 
-                      result << std::endl << getSingleLineComment() << "WARNING : reference to property other than transient value, initial value or rate for \"" << typeString << "\" \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << "\n" << getSingleLineComment() << "WARNING : reference to property other than transient value, initial value or rate for \"" << typeString << "\" \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else if (typeString == "Model")
@@ -500,7 +500,7 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(const CMo
                   if (pObject->getObjectName() != "Time" && pObject->getObjectName() != "Initial Time" && pObject->getObjectName() != "Avogadro Constant")
                     {
 
-                      result << std::endl << getSingleLineComment() << "WARNING : reference to property other than initial time or transient time for model \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << "\n" << getSingleLineComment() << "WARNING : reference to property other than initial time or transient time for model \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else if (typeString == "Parameter")
@@ -509,24 +509,24 @@ std::string CODEExporter::isModelEntityExpressionODEExporterCompatible(const CMo
                   if (pObject->getObjectName() != "Value")
                     {
 
-                      result << std::endl << getSingleLineComment() << "WARNING : reference to property other than initial time or transient time for model \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << "\n" << getSingleLineComment() << "WARNING : reference to property other than initial time or transient time for model \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else if (typeString == "Reaction")
                 {
                   if (pObject->getObjectName() != "Flux")
                     {
-                      result << std::endl << getSingleLineComment() << "WARNING : reference to property other than Flux for Reaction \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
+                      result << "\n" << getSingleLineComment() << "WARNING : reference to property other than Flux for Reaction \"" << pObjectParent->getObjectName() << "\" in expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\".";
                     }
                 }
               else
                 {
-                  result << std::endl << getSingleLineComment() << "WARNING : expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\" contains reference to a value in object \"" << pObjectParent->getObjectName() << "\" of type \"" << typeString << "\" which is not supported in this ODE exporter Version.";
+                  result << "\n" << getSingleLineComment() << "WARNING : expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\" contains reference to a value in object \"" << pObjectParent->getObjectName() << "\" of type \"" << typeString << "\" which is not supported in this ODE exporter Version.";
                 }
             }
           else
             {
-              result << std::endl << getSingleLineComment() << "WARNING : expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\" contains reference to a object named \"" << pObject->getObjectName() << "\" of type \"" << pObject->getObjectType() << "\" which is not supported in this ODE exporter Version.";
+              result << "\n" << getSingleLineComment() << "WARNING : expression for \"" << tmp->getObjectType() << "\" \"" << tmp->getObjectName() << "\" contains reference to a object named \"" << pObject->getObjectName() << "\" of type \"" << pObject->getObjectType() << "\" which is not supported in this ODE exporter Version.";
             }
         }
     }
@@ -877,7 +877,6 @@ bool CODEExporter::preprocess(const CModel* copasiModel)
             {
               std::string name = translateObjectName(current->getObjectName());
               NameMap[current->getKey()] = name;
-
             }
         }
     }
@@ -1536,11 +1535,11 @@ bool CODEExporter::exportKineticFunction(const CReaction* reac)
   std::string str1 = expression.str();
   std::string str2 = comments.str();
 
-  //functions << std::endl;
+  //functions << "\n";
 
   if (!exportSingleObject(functions, name, str1, str2)) return false;
 
-  //functions << std::endl;
+  //functions << "\n";
 
   return true;
 }
@@ -1629,11 +1628,11 @@ bool CODEExporter::exportSingleFunction(CEvaluationNode* pNode, const std::strin
 
               expression = getDisplayFunctionString(tmpfunc);
 
-              //functions << std::endl;
+              //functions << "\n";
 
               if (!exportSingleObject(functions, name, expression, comments)) return false;
 
-              //functions << std::endl;
+              //functions << "\n";
             }
 
           ++treeIt;

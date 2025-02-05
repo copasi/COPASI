@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -153,7 +153,7 @@ void CReport::separate(const Activity & /* activity */)
 {
   if (!mpOstream) return;
 
-  (*mpOstream) << std::endl;
+  (*mpOstream) << "\n";
   mState = Compiled;
 }
 
@@ -218,7 +218,7 @@ void CReport::printHeader()
 
   for (; it != end; ++it)(*it)->print(mpOstream);
 
-  (*mpOstream) << std::endl;
+  (*mpOstream) << "\n";
 }
 
 void CReport::printBody()
@@ -272,7 +272,7 @@ void CReport::printBody()
       (*it)->print(mpOstream);
     }
 
-  (*mpOstream) << std::endl;
+  (*mpOstream) << "\n";
 }
 
 void CReport::printFooter()
@@ -321,7 +321,7 @@ void CReport::printFooter()
 
   for (; it != end; ++it)(*it)->print(mpOstream);
 
-  (*mpOstream) << std::endl;
+  (*mpOstream) << "\n";
 }
 
 // Compile the List of Report Objects;

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -402,7 +402,7 @@ void CLayout::exportToDotFile(std::ostream & os) const
         }
     }
 
-  os << "}" << std::endl;
+  os << "}" << "\n";
 }
 
 void CLayout::writeDotNode(std::ostream & os, const std::string & id,

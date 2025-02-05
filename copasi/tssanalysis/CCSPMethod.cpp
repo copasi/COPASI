@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -144,7 +144,6 @@ void CCSPMethod::smnorm(C_INT n, CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > 
 
   return;
 }
-
 
 void CCSPMethod::sminverse(C_INT n, const CMatrix< C_FLOAT64 > & A, CMatrix< C_FLOAT64 > & B)
 {
@@ -802,9 +801,7 @@ C_INT CCSPMethod::isBlockDiagonal(C_INT N, C_INT M, const CMatrix< C_FLOAT64 > &
           imaxl = i ; jmaxl = j;
         }
 
-
 #endif
-
 
   C_INT result;
   result = 1;
@@ -2240,61 +2237,61 @@ CCSPMethod::printResult(std::ostream * ostream) const
 
   const CDataVector< CReaction > & reacs = Model.getReactions();
 
-  os << std::endl;
-  os << " Radical Pointer: whenever is not a small number, species k is said to be CSP radical" << std::endl;
-  os << std::endl;
+  os << "\n";
+  os << " Radical Pointer: whenever is not a small number, species k is said to be CSP radical" << "\n";
+  os << "\n";
 
-  os << " Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, " << std::endl;
-  os << " the r-th reaction is said to be a fast reaction  " << std::endl;
-  os << std::endl;
+  os << " Fast Reaction Pointer of the m-th reaction  mode : whenever is not a small number, " << "\n";
+  os << " the r-th reaction is said to be a fast reaction  " << "\n";
+  os << "\n";
 
-  os << " Participation Index : is a measure of participation of the r-th elementary reaction " << std::endl;
-  os << " to the balancing act of the i-th mode " << std::endl;
-  os << std::endl;
+  os << " Participation Index : is a measure of participation of the r-th elementary reaction " << "\n";
+  os << " to the balancing act of the i-th mode " << "\n";
+  os << "\n";
 
-  os << " Importance Index: is a measure of relative importance of the contribution of r-th elementary " << std::endl;
-  os << " reaction to the current reaction rate of i-th species   " << std::endl;
-  os << std::endl;
+  os << " Importance Index: is a measure of relative importance of the contribution of r-th elementary " << "\n";
+  os << " reaction to the current reaction rate of i-th species   " << "\n";
+  os << "\n";
 
-  os << " Species:" << std::endl;
+  os << " Species:" << "\n";
 
   for (i = 0; i < mDim; i++)
-    os << "    " << Model.getStateTemplate().beginIndependent()[i]->getObjectName() << std::endl;
+    os << "    " << Model.getStateTemplate().beginIndependent()[i]->getObjectName() << "\n";
 
-  os << std::endl;
+  os << "\n";
 
-  os << " Reactions:" << std::endl;
+  os << " Reactions:" << "\n";
 
   for (r = 0; r < (C_INT)reacs.size(); r++)
-    os << "    " << reacs[r].getObjectName() << std::endl;
+    os << "    " << reacs[r].getObjectName() << "\n";
 
-  os << std::endl;
+  os << "\n";
 
   C_INT32 stepNumber = (int)mVec_SlowModes.size();
 
   for (istep = 0; istep < stepNumber; istep++)
     {
 
-      os << std::endl;
+      os << "\n";
       os << "**************** Time step " << istep + 1
          << ": " << getTimeForStep(istep)
          << " " << Model.getTimeUnitName()
-         << " **************************  " << std::endl;
-      os << std::endl;
+         << " **************************  " << "\n";
+      os << "\n";
 
-      os << "Number of fast modes: " << mVec_SlowModes[istep] << std::endl;
-      os << std::endl;
+      os << "Number of fast modes: " << mVec_SlowModes[istep] << "\n";
+      os << "\n";
 
-      os << "Time scales:" << std::endl;
+      os << "Time scales:" << "\n";
 
       for (i = 0; i < mDim; i++)
         {
           os << "   " << mVec_TimeScale[istep][i];
         }
 
-      os << std::endl << std::endl;
+      os << "\n" << "\n";
 
-      os << "Radical Pointer:" << std::endl;
+      os << "Radical Pointer:" << "\n";
       {
         M = mVec_SlowModes[istep];
 
@@ -2303,13 +2300,13 @@ CCSPMethod::printResult(std::ostream * ostream) const
             for (m = 0; m < M; m++)
               os << "   " << mVec_mRadicalPointer[istep][i][m];
 
-            os << std::endl;
+            os << "\n";
           }
 
-        os << std::endl;
+        os << "\n";
       }
 
-      os << "Participation Index:" << std::endl;
+      os << "Participation Index:" << "\n";
 
       for (r = 0; r < (C_INT)reacs.size(); r++)
         {
@@ -2317,12 +2314,12 @@ CCSPMethod::printResult(std::ostream * ostream) const
           for (i = 0; i < mDim; i++)
             os << "   " << mVec_mParticipationIndex[istep][r][i];
 
-          os << std::endl;
+          os << "\n";
         }
 
-      os << std::endl;
+      os << "\n";
 
-      os << "Importance Index:" << std::endl;
+      os << "Importance Index:" << "\n";
 
       for (r = 0; r < (C_INT)reacs.size(); r++)
         {
@@ -2330,9 +2327,9 @@ CCSPMethod::printResult(std::ostream * ostream) const
           for (i = 0; i < mDim; i++)
             os << "   " << mVec_mImportanceIndex[istep][r][i];
 
-          os << std::endl;
+          os << "\n";
         }
 
-      os << std::endl;
+      os << "\n";
     }
 }

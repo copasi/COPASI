@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -258,24 +258,24 @@ std::string CEvaluationNodeDelay::getMMLString(const std::vector< std::string > 
   switch (mSubType)
     {
       case SubType::DELAY:
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
 
-        out << "<mi>" << mData << "</mi>" << std::endl;
-        out << "<mrow>" << std::endl;
-        out << "<mo> (</mo>" << std::endl;
-        out << "<mrow>" << std::endl;
+        out << "<mi>" << mData << "</mi>" << "\n";
+        out << "<mrow>" << "\n";
+        out << "<mo> (</mo>" << "\n";
+        out << "<mrow>" << "\n";
 
         out << children[0];
 
-        out << "<mo> , </mo>" << std::endl;
+        out << "<mo> , </mo>" << "\n";
 
         out << children[1];
 
-        out << "</mrow>" << std::endl;
-        out << "<mo>) </mo>" << std::endl;
+        out << "</mrow>" << "\n";
+        out << "<mo>) </mo>" << "\n";
 
-        out << "</mrow>" << std::endl;
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
+        out << "</mrow>" << "\n";
         break;
 
       default:

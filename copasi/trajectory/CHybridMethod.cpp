@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -909,27 +909,27 @@ void CHybridMethod::removeDeterministicReaction(size_t rIndex)
  */
 std::ostream & operator<<(std::ostream & os, const CHybridStochFlag & d)
 {
-  os << "CHybridStochFlag " << std::endl;
-  os << "  mIndex: " << d.mIndex << " mValue: " << d.mValue << std::endl;
+  os << "CHybridStochFlag " << "\n";
+  os << "  mIndex: " << d.mIndex << " mValue: " << d.mValue << "\n";
 
   if (d.mpPrev != NULL)
-    os << "  prevIndex: " << d.mpPrev->mIndex << " prevPointer: " << d.mpPrev << std::endl;
+    os << "  prevIndex: " << d.mpPrev->mIndex << " prevPointer: " << d.mpPrev << "\n";
   else
-    os << "  prevPointer: NULL" << std::endl;
+    os << "  prevPointer: NULL" << "\n";
 
   if (d.mpNext != NULL)
-    os << "  nextIndex: " << d.mpNext->mIndex << " nextPointer: " << d.mpNext << std::endl;
+    os << "  nextIndex: " << d.mpNext->mIndex << " nextPointer: " << d.mpNext << "\n";
   else
-    os << "  nextPointer: NULL" << std::endl;
+    os << "  nextPointer: NULL" << "\n";
 
   return os;
 }
 
 std::ostream & operator<<(std::ostream & os, const CHybridBalance & d)
 {
-  os << "CHybridBalance" << std::endl;
+  os << "CHybridBalance" << "\n";
   os << "  mIndex: " << d.mIndex << " mMultiplicity: " << d.mMultiplicity
-     << std::endl;
+     << "\n";
   return os;
 }
 

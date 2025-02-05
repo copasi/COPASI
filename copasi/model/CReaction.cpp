@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1463,24 +1463,24 @@ const bool & CReaction::hasNoise() const
 
 std::ostream & operator<<(std::ostream &os, const CReaction & d)
 {
-  os << "CReaction:  " << d.getObjectName() << std::endl;
-  os << "   SBML id:  " << d.mSBMLId << std::endl;
+  os << "CReaction:  " << d.getObjectName() << "\n";
+  os << "   SBML id:  " << d.mSBMLId << "\n";
 
-  os << "   mChemEq " << std::endl;
+  os << "   mChemEq " << "\n";
   os << d.mChemEq;
 
   if (d.mpFunction)
-    os << "   *mpFunction " << d.mpFunction->getObjectName() << std::endl;
+    os << "   *mpFunction " << d.mpFunction->getObjectName() << "\n";
   else
-    os << "   mpFunction == 0 " << std::endl;
+    os << "   mpFunction == 0 " << "\n";
 
-  //os << "   mParameterDescription: " << std::endl << d.mParameterDescription;
-  os << "   mFlux: " << d.mFlux << std::endl;
+  //os << "   mParameterDescription: " << "\n" << d.mParameterDescription;
+  os << "   mFlux: " << d.mFlux << "\n";
 
-  os << "   parameter group:" << std::endl;
+  os << "   parameter group:" << "\n";
   os << d.mParameters;
 
-  os << "   key map:" << std::endl;
+  os << "   key map:" << "\n";
   size_t i, j;
 
   for (i = 0; i < d.mParameterIndexToCNs.size(); ++i)
@@ -1490,10 +1490,10 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
       for (j = 0; j < d.mParameterIndexToCNs[i].size(); ++j)
         os << d.mParameterIndexToCNs[i][j] << ", ";
 
-      os << std::endl;
+      os << "\n";
     }
 
-  os << "----CReaction" << std::endl;
+  os << "----CReaction" << "\n";
 
   return os;
 }

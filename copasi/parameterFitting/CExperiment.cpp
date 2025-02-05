@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1428,12 +1428,12 @@ void CExperiment::printResult(std::ostream * ostream) const
 {
   std::ostream & os = *ostream;
 
-  os << "File Name:\t" << getFileName() << std::endl;
-  os << "Experiment:\t" << getObjectName() << std::endl;
+  os << "File Name:\t" << getFileName() << "\n";
+  os << "Experiment:\t" << getObjectName() << "\n";
 
-  os << "Mean:\t" << mMean << std::endl;
-  os << "Objective Value:\t" << mObjectiveValue << std::endl;
-  os << "Root Mean Square:\t" << mRMS << std::endl;
+  os << "Mean:\t" << mMean << "\n";
+  os << "Objective Value:\t" << mObjectiveValue << "\n";
+  os << "Root Mean Square:\t" << mRMS << "\n";
 
   size_t i, imax = mNumDataRows;
   size_t j, jmax = mDataDependent.numCols();
@@ -1461,7 +1461,7 @@ void CExperiment::printResult(std::ostream * ostream) const
         os << Name << "(Weighted Error)\t";
       }
 
-  os << "Objective Value\tRoot Mean Square" << std::endl << std::endl;
+  os << "Objective Value\tRoot Mean Square" << "\n" << "\n";
 
   C_FLOAT64 * pDataDependentCalculated = mpDataDependentCalculated;
 
@@ -1480,7 +1480,7 @@ void CExperiment::printResult(std::ostream * ostream) const
             os << mScale(i, j) *(*pDataDependentCalculated - mDataDependent(i, j)) << "\t";
           }
 
-        os << mRowObjectiveValue[i] << "\t" << mRowRMS[i] << std::endl;
+        os << mRowObjectiveValue[i] << "\t" << mRowRMS[i] << "\n";
       }
   else
     for (i = 0; i < imax; i++)
@@ -1513,7 +1513,7 @@ void CExperiment::printResult(std::ostream * ostream) const
             os << "NaN";
           }
 
-        os << std::endl;
+        os << "\n";
       }
 
   os << "Objective Value";
@@ -1529,7 +1529,7 @@ void CExperiment::printResult(std::ostream * ostream) const
         os << "\t\t\tNaN";
     }
 
-  os << std::endl;
+  os << "\n";
 
   os << "Root Mean Square";
 
@@ -1544,7 +1544,7 @@ void CExperiment::printResult(std::ostream * ostream) const
         os << "\t\t\tNaN";
     }
 
-  os << std::endl;
+  os << "\n";
 
   os << "Weight";
 
@@ -1559,7 +1559,7 @@ void CExperiment::printResult(std::ostream * ostream) const
         os << "\t\t\tNaN";
     }
 
-  os << std::endl;
+  os << "\n";
 
   return;
 }

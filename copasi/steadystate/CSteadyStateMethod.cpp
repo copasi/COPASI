@@ -205,8 +205,10 @@ bool CSteadyStateMethod::isEquilibrium(const C_FLOAT64 & resolution) const
       const C_FLOAT64 & ParticleFlux = pReaction->getParticleFluxObject()->getValue();
 
       for (; pBalance != pBalanceEnd; ++pBalance)
-        if (fabs(pBalance->second * ParticleFlux) / std::max(*pBalance->first, mAtol[pBalance->first - pBase]) > resolution)
-          return false;
+        {
+          if (fabs(pBalance->second * ParticleFlux) / std::max(*pBalance->first, mAtol[pBalance->first - pBase]) > resolution)
+            return false;
+        }
     }
 
   return true;

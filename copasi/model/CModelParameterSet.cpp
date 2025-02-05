@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -605,7 +605,7 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
                     os << value << " " << itNode->getUnit(framework).getExpression();
                 }
 
-              os << std::endl;
+              os << "\n";
             }
         }
     }
@@ -632,7 +632,7 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
             }
         }
 
-      os << std::endl;
+      os << "\n";
 
       itNode = CNodeIterator< const CModelParameter >(this);
       itNode.setProcessingModes(CNodeIteratorMode::After);
@@ -651,7 +651,7 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
             }
         }
 
-      os << std::endl;
+      os << "\n";
     }
   else if (mode == "ini")
     {
@@ -679,30 +679,30 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
                     {
                       if (framework == CCore::Framework::Concentration)
                         os << pMetab->getInitialConcentrationReference()->getObjectDisplayName()
-                           << " = " << itNode->getValue(framework) << std::endl;
+                           << " = " << itNode->getValue(framework) << "\n";
                       else
                         os << pMetab->getInitialValueReference()->getObjectDisplayName()
-                           << " = " << itNode->getValue(framework) << std::endl;
+                           << " = " << itNode->getValue(framework) << "\n";
                     }
                   else if (pComp != NULL)
                     {
                       os << pComp->getInitialValueReference()->getObjectDisplayName()
-                         << " = " << itNode->getValue(framework) << std::endl;
+                         << " = " << itNode->getValue(framework) << "\n";
                     }
                   else if (pParam != NULL)
                     {
                       os << pParam->getInitialValueReference()->getObjectDisplayName()
-                         << " = " << itNode->getValue(framework) << std::endl;
+                         << " = " << itNode->getValue(framework) << "\n";
                     }
                   else
                     {
-                      os << current->getObjectDisplayName() << " = " << itNode->getValue(framework) << std::endl;
+                      os << current->getObjectDisplayName() << " = " << itNode->getValue(framework) << "\n";
                     }
                 }
             }
         }
 
-      os << std::endl;
+      os << "\n";
     }
 
   else

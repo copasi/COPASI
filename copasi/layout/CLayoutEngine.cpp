@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -230,44 +230,6 @@ void CLayoutEngine::stepIntegration()
     {
       mVariables[i] += dt / 6 * (mRhs[i] + 2 * mRhsA[i] + 2 * mRhsB[i] + mRhsC[i]);
     }
-
-  //LSODA
-  /*
-
-    C_FLOAT64 EndTime = mTime + dt;
-    C_INT ITOL = 1; // mRtol scalar, mAtol scalar
-    C_INT one = 1;
-    long int two = 2;
-    long int three = 3;
-    double reltol = 0.1;
-    double abstol = 0.5;
-
-    C_INT DSize = mDWork.size();
-    C_INT ISize = mIWork.size();
-
-    //std::cout << "jhhjk" << &mVariables[0] << std::endl;
-
-    mLSODA(&EvalF, //  1. evaluate F
-           &mData.dim, //  2. number of variables
-           &mVariables[0], //  3. the array of current concentrations
-           &mTime, //  4. the current time
-           &EndTime, //  5. the final time
-           &ITOL, //  6. error control
-           &reltol, //  7. relative tolerance array
-           &abstol, //  8. absolute tolerance array
-           &two, //  9. output by overshoot & interpolation
-           &mLsodaStatus, // 10. the state control variable
-           &one, // 11. further options (one)
-           &mDWork[0], // 12. the double work array
-           &DSize, // 13. the double work array size
-           &mIWork[0], // 14. the int work array
-           &ISize, // 15. the int work array size
-           NULL, // 16. evaluate J (not given)
-           &two);        // 17. the type of jacobian calculate (2)
-
-    if (mLsodaStatus != 2)
-      std::cout << mLsodaStatus << std::endl;
-  */
 
   mpLayout->setState(mVariables);
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1352,16 +1352,16 @@ void COptProblem::printResult(std::ostream * ostream) const
       return;
     }
 
-  os << "    Objective Function Value:\t" << mSolutionValue << std::endl;
+  os << "    Objective Function Value:\t" << mSolutionValue << "\n";
 
   CCopasiTimeVariable CPUTime = const_cast<COptProblem *>(this)->mCPUTime.getElapsedTime();
 
-  os << "    Function Evaluations:\t" << mCounters.Counter << std::endl;
+  os << "    Function Evaluations:\t" << mCounters.Counter << "\n";
   os << "    CPU Time [s]:\t"
      << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
-     << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
-  os << "    Evaluations/Second [1/s]:\t" << mCounters.Counter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << std::endl;
-  os << std::endl;
+     << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << "\n";
+  os << "    Evaluations/Second [1/s]:\t" << mCounters.Counter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << "\n";
+  os << "\n";
 
   std::vector< COptItem * >::const_iterator itItem =
     mpOptItems->begin();
@@ -1373,31 +1373,31 @@ void COptProblem::printResult(std::ostream * ostream) const
   for (i = 0; itItem != endItem; ++itItem, i++)
     {
       os << "    " << (*itItem)->getObjectDisplayName() << ": "
-         << mSolutionVariables[i] << std::endl;
+         << mSolutionVariables[i] << "\n";
     }
 }
 
 std::ostream &operator<<(std::ostream &os, const COptProblem & o)
 {
-  os << "Problem Description:" << std::endl;
+  os << "Problem Description:" << "\n";
 
-  os << "Subtask: " << std::endl;
+  os << "Subtask: " << "\n";
 
   if (o.mpSubTask)
     o.mpSubTask->getDescription().print(&os);
   else
     os << "No Subtask specified.";
 
-  os << std::endl;
+  os << "\n";
 
   if (o.mpObjectiveExpression)
     {
-      os << "Objective Function:" << std::endl;
-      os << "    " << o.mpObjectiveExpression->getDisplayString() << std::endl;
+      os << "Objective Function:" << "\n";
+      os << "    " << o.mpObjectiveExpression->getDisplayString() << "\n";
       os << std:: endl;
     }
 
-  os << "List of Optimization Items:" << std::endl;
+  os << "List of Optimization Items:" << "\n";
 
   std::vector< COptItem * >::const_iterator itItem =
     o.mpOptItems->begin();
@@ -1405,16 +1405,16 @@ std::ostream &operator<<(std::ostream &os, const COptProblem & o)
     o.mpOptItems->end();
 
   for (; itItem != endItem; ++itItem)
-    os << "    " << **itItem << std::endl;
+    os << "    " << **itItem << "\n";
 
-  os << std::endl;
-  os << "List of Constraint Items:" << std::endl;
+  os << "\n";
+  os << "List of Constraint Items:" << "\n";
 
   itItem = o.mpConstraintItems->begin();
   endItem = o.mpConstraintItems->end();
 
   for (; itItem != endItem; ++itItem)
-    os << "    " << **itItem << std::endl;
+    os << "    " << **itItem << "\n";
 
   return os;
 }

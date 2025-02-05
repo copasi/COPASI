@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -126,11 +126,11 @@ void CLNAProblem::printResult(std::ostream * ostream) const
 //print the description
 std::ostream &operator<<(std::ostream &os, const CLNAProblem & o)
 {
-  os << "Problem Description:" << std::endl;
+  os << "Problem Description:" << "\n";
 
   if (o.isSteadyStateRequested())
     {
-      os << "Calculation of a steady state is requested before the LNA." << std::endl << std::endl;
+      os << "Calculation of a steady state is requested before the LNA." << "\n" << "\n";
 
       if (o.getSubTask())
         {
@@ -138,15 +138,15 @@ std::ostream &operator<<(std::ostream &os, const CLNAProblem & o)
         }
       else
         {
-          os << "However an error occurred. Please report this as a bug." << std::endl;
+          os << "However an error occurred. Please report this as a bug." << "\n";
         }
     }
   else
     {
-      os << "LNA is performed on the current state (which is not necessarily a steady state)." << std::endl;
+      os << "LNA is performed on the current state (which is not necessarily a steady state)." << "\n";
     }
 
-  os << std::endl;
+  os << "\n";
 
   return os;
 }

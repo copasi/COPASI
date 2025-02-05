@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -347,15 +347,15 @@ std::ostream &operator<<(std::ostream &os, const CDataArray & o)
   for (i = 0; i < o.dimensionality(); ++i)
     displaynames.push_back(o.getAnnotationsString(i));
 
-  os << o.getObjectName() << std::endl;
-  os << o.getDescription() << std::endl;
+  os << o.getObjectName() << "\n";
+  os << o.getDescription() << "\n";
 
   CArrayInterface::index_type arraysize = o.array()->size();
 
   if (o.dimensionality() == 0)
     {
       //only one scalar value
-      os << (*o.array())[arraysize] << std::endl;
+      os << (*o.array())[arraysize] << "\n";
     }
   else
     {

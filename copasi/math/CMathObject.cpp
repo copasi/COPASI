@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -2270,100 +2270,100 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 {
   if (o.mpDataObject != NULL)
     {
-      os << o.mpDataObject->getStringCN() << std::endl;
+      os << o.mpDataObject->getStringCN() << "\n";
     }
   else
     {
-      os << "Data Object = NULL" << std::endl;
+      os << "Data Object = NULL" << "\n";
     }
 
-  os << "  Pointer:                " << &o << std::endl;
+  os << "  Pointer:                " << &o << "\n";
   os << "  Value Type:             ";
 
   switch (o.mValueType)
     {
       case CMath::ValueType::Undefined:
-        os << "ValueTypeUndefined" << std::endl;
+        os << "ValueTypeUndefined" << "\n";
         break;
 
       case CMath::ValueType::Value:
-        os << "Value" << std::endl;
+        os << "Value" << "\n";
         break;
 
       case CMath::ValueType::Rate:
-        os << "ValueRate" << std::endl;
+        os << "ValueRate" << "\n";
         break;
 
       case CMath::ValueType::ParticleFlux:
-        os << "ParticleFlux" << std::endl;
+        os << "ParticleFlux" << "\n";
         break;
 
       case CMath::ValueType::Flux:
-        os << "Flux" << std::endl;
+        os << "Flux" << "\n";
         break;
 
       case CMath::ValueType::Propensity:
-        os << "Propensity" << std::endl;
+        os << "Propensity" << "\n";
         break;
 
       case CMath::ValueType::Noise:
-        os << "Noise" << std::endl;
+        os << "Noise" << "\n";
         break;
 
       case CMath::ValueType::ParticleNoise:
-        os << "ParticleNoise" << std::endl;
+        os << "ParticleNoise" << "\n";
         break;
 
       case CMath::ValueType::TotalMass:
-        os << "TotalMass" << std::endl;
+        os << "TotalMass" << "\n";
         break;
 
       case CMath::ValueType::DependentMass:
-        os << "DependentMass" << std::endl;
+        os << "DependentMass" << "\n";
         break;
 
       case CMath::ValueType::Discontinuous:
-        os << "Discontinuous" << std::endl;
+        os << "Discontinuous" << "\n";
         break;
 
       case CMath::ValueType::EventDelay:
-        os << "EventDelay" << std::endl;
+        os << "EventDelay" << "\n";
         break;
 
       case CMath::ValueType::EventPriority:
-        os << "EventPriority" << std::endl;
+        os << "EventPriority" << "\n";
         break;
 
       case CMath::ValueType::EventAssignment:
-        os << "EventAssignment" << std::endl;
+        os << "EventAssignment" << "\n";
         break;
 
       case CMath::ValueType::EventTrigger:
-        os << "EventTrigger" << std::endl;
+        os << "EventTrigger" << "\n";
         break;
 
       case CMath::ValueType::EventRoot:
-        os << "EventRoot" << std::endl;
+        os << "EventRoot" << "\n";
         break;
 
       case CMath::ValueType::EventRootState:
-        os << "EventRootState" << std::endl;
+        os << "EventRootState" << "\n";
         break;
 
       case CMath::ValueType::DelayValue:
-        os << "DelayValue" << std::endl;
+        os << "DelayValue" << "\n";
         break;
 
       case CMath::ValueType::DelayLag:
-        os << "DelayLag" << std::endl;
+        os << "DelayLag" << "\n";
         break;
 
       case CMath::ValueType::TransitionTime:
-        os << "TransitionTime" << std::endl;
+        os << "TransitionTime" << "\n";
         break;
 
       case CMath::ValueType::__SIZE:
-        os << "***ENUM RANGE" << std::endl;
+        os << "***ENUM RANGE" << "\n";
         break;
     }
 
@@ -2372,43 +2372,43 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
   switch (o.mSimulationType)
     {
       case CMath::SimulationType::Undefined:
-        os << "SimulationTypeUndefined" << std::endl;
+        os << "SimulationTypeUndefined" << "\n";
         break;
 
       case CMath::SimulationType::Fixed:
-        os << "Fixed" << std::endl;
+        os << "Fixed" << "\n";
         break;
 
       case CMath::SimulationType::EventTarget:
-        os << "EventTarget" << std::endl;
+        os << "EventTarget" << "\n";
         break;
 
       case CMath::SimulationType::Time:
-        os << "Time" << std::endl;
+        os << "Time" << "\n";
         break;
 
       case CMath::SimulationType::ODE:
-        os << "ODE" << std::endl;
+        os << "ODE" << "\n";
         break;
 
       case CMath::SimulationType::Independent:
-        os << "Independent" << std::endl;
+        os << "Independent" << "\n";
         break;
 
       case CMath::SimulationType::Dependent:
-        os << "Dependent" << std::endl;
+        os << "Dependent" << "\n";
         break;
 
       case CMath::SimulationType::Assignment:
-        os << "Assignment" << std::endl;
+        os << "Assignment" << "\n";
         break;
 
       case CMath::SimulationType::Conversion:
-        os << "Conversion" << std::endl;
+        os << "Conversion" << "\n";
         break;
 
       case CMath::SimulationType::__SIZE:
-        os << "***ENUM RANGE" << std::endl;
+        os << "***ENUM RANGE" << "\n";
         break;
     };
 
@@ -2417,84 +2417,84 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
   switch (o.mEntityType)
     {
       case CMath::EntityType::Undefined:
-        os << "EntityTypeUndefined" << std::endl;
+        os << "EntityTypeUndefined" << "\n";
         break;
 
       case CMath::EntityType::Model:
-        os << "Model" << std::endl;
+        os << "Model" << "\n";
         break;
 
       case CMath::EntityType::Analysis:
-        os << "Analysis" << std::endl;
+        os << "Analysis" << "\n";
         break;
 
       case CMath::EntityType::GlobalQuantity:
-        os << "GlobalQuantity" << std::endl;
+        os << "GlobalQuantity" << "\n";
         break;
 
       case CMath::EntityType::Compartment:
-        os << "Compartment" << std::endl;
+        os << "Compartment" << "\n";
         break;
 
       case CMath::EntityType::Species:
-        os << "Species" << std::endl;
+        os << "Species" << "\n";
         break;
 
       case CMath::EntityType::LocalReactionParameter:
-        os << "LocalReactionParameter" << std::endl;
+        os << "LocalReactionParameter" << "\n";
         break;
 
       case CMath::EntityType::StoichiometricCoefficients:
-        os << "StoichiometricCoefficients" << std::endl;
+        os << "StoichiometricCoefficients" << "\n";
         break;
 
       case CMath::EntityType::Reaction:
-        os << "Reaction" << std::endl;
+        os << "Reaction" << "\n";
         break;
 
       case CMath::EntityType::Moiety:
-        os << "Moiety" << std::endl;
+        os << "Moiety" << "\n";
         break;
 
       case CMath::EntityType::Event:
-        os << "Event" << std::endl;
+        os << "Event" << "\n";
         break;
 
       case CMath::EntityType::Delay:
-        os << "Delay" << std::endl;
+        os << "Delay" << "\n";
         break;
 
       case CMath::EntityType::__SIZE:
-        os << "***ENUM RANGE" << std::endl;
+        os << "***ENUM RANGE" << "\n";
         break;
     };
 
-  os << "  Is Intensive Property:  " << (o.mIsIntensiveProperty ? "true" : "false") << std::endl;
+  os << "  Is Intensive Property:  " << (o.mIsIntensiveProperty ? "true" : "false") << "\n";
 
-  os << "  Is Initial Value:       " << (o.mIsInitialValue ? "true" : "false") << std::endl;
+  os << "  Is Initial Value:       " << (o.mIsInitialValue ? "true" : "false") << "\n";
 
   os << "  Corresponding Property: ";
 
   if (o.mpCorrespondingProperty != NULL)
     {
-      os << o.mpCorrespondingProperty->getCNProtected() << std::endl;
+      os << o.mpCorrespondingProperty->getCNProtected() << "\n";
     }
   else
     {
-      os << "NULL" << std::endl;
+      os << "NULL" << "\n";
     }
 
-  os << "  Value:                  " << *o.mpValue << " (" << o.mpValue << ")" << std::endl;
+  os << "  Value:                  " << *o.mpValue << " (" << o.mpValue << ")" << "\n";
 
   os << "  Expression:             ";
 
   if (o.mpExpression != NULL)
     {
-      os << o.mpExpression->getRoot()->buildInfix() << std::endl;
+      os << o.mpExpression->getRoot()->buildInfix() << "\n";
     }
   else
     {
-      os << "NULL" << std::endl;
+      os << "NULL" << "\n";
     }
 
   // CObjectInterface::ObjectSet mPrerequisites;

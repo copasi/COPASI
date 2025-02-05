@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -286,13 +286,13 @@ void CLyapTask::printResult(std::ostream * ostream) const
   //     CCopasiTimeVariable CPUTime = const_cast<COptProblem *>(this)->mCPUTime.getElapsedTime();
   //     os << "    CPU Time [s]:\t"
   //     << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
-  //     << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
+  //     << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << "\n";
 
-  os << "Lyapunov Exponents:" << std::endl;
+  os << "Lyapunov Exponents:" << "\n";
 
   if (!mpLyapProblem) //this means that task was not yet executed
     {
-      os << "No results available." << std::endl;
+      os << "No results available." << "\n";
       return;
     }
 
@@ -301,10 +301,10 @@ void CLyapTask::printResult(std::ostream * ostream) const
   for (i = 0; i < imax; ++i)
     os << mExponents[i] << " ";
 
-  os << std::endl;
+  os << "\n";
 
   if (mpLyapProblem->divergenceRequested())
-    os << std::endl << "Average divergence: " << mAverageDivergence << std::endl;
+    os << "\n" << "Average divergence: " << mAverageDivergence << "\n";
 }
 
 bool CLyapTask::resultAvailable() const

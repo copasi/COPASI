@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -119,7 +119,6 @@ void CQtChartsPlot::setSymbol(QT_CHARTS_NAMESPACE::QAbstractSeries * pCurve, CPl
 
   if (c == NULL)
     return;
-
 }
 
 QString CQtChartsPlot::titleText() const
@@ -341,7 +340,7 @@ bool CQtChartsPlot::initFromSpec(const CPlotSpecification * plotspec)
 
               //    case CPlotItem::SymbolType::None:
               //      break;
-              //  }
+              //}
             }
         } //2d curves and banded graphs
 
@@ -356,7 +355,7 @@ bool CQtChartsPlot::initFromSpec(const CPlotSpecification * plotspec)
 
       //      c.setAlpha(alpha);
       //      pCurve->setBrush(c);
-      //    }
+      //}
 
       //  if (pCurve->getType() == CPlotItem::histoItem1d)
       //    {
@@ -367,7 +366,7 @@ bool CQtChartsPlot::initFromSpec(const CPlotSpecification * plotspec)
       //      pCurve->setCurveAttribute(QwtPlotCurve::Inverted);
 
       //      needRight = true;
-      //    }
+      //}
     }
 
   chart()->createDefaultAxes();
@@ -525,7 +524,6 @@ bool CQtChartsPlot::compile(CObjectInterface::ContainerList listOfContainer)
             }
         }
     }
-
 
   mNextPlotTime = CCopasiTimeVariable::getCurrentWallTime();
   mReplotFinished = true;
@@ -712,7 +710,6 @@ void CQtChartsPlot::updateCurves(const size_t & activity)
       chart()->axisX()->setRange(x_min, x_max);
       chart()->axisY()->setRange(y_min, y_max);
     }
-
 }
 
 void CQtChartsPlot::resizeCurveData(const size_t & activity)
@@ -928,7 +925,7 @@ bool CQtChartsPlot::saveData(const std::string & filename)
               fs << "\t";
             }
 
-          fs << std::endl;
+          fs << "\n";
         }
     }
 
@@ -980,7 +977,7 @@ bool CQtChartsPlot::saveData(const std::string & filename)
               fs << "\t";
             }
 
-          fs << std::endl;
+          fs << "\n";
         }
     }
 
@@ -1032,7 +1029,7 @@ bool CQtChartsPlot::saveData(const std::string & filename)
               fs << "\t";
             }
 
-          fs << std::endl;
+          fs << "\n";
         }
     }
 
@@ -1055,7 +1052,7 @@ bool CQtChartsPlot::saveData(const std::string & filename)
               FirstHistogram = false;
             }
 
-          fs << mSaveHistogramObjects[HistogramIndex] << std::endl;
+          fs << mSaveHistogramObjects[HistogramIndex] << "\n";
 
           auto * curve = dynamic_cast< QXYSeries * >(*itCurves);
 

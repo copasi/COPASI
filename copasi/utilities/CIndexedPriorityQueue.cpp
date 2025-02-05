@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -295,22 +295,22 @@ std::ostream & operator<<(std::ostream &os, const CIndexedPriorityQueue & d)
 {
   size_t i;
 
-  os << "PQ: " << std::endl;
+  os << "PQ: " << "\n";
 
   std::vector <PQNode>::const_iterator it;
-  os << "  mHeap: " << std::endl;
+  os << "  mHeap: " << "\n";
 
   for (it = d.mHeap.begin(); it != d.mHeap.end(); it++)
-    os << *it << std::endl;
+    os << *it << "\n";
 
-  os << "  mIndexPointer: " << std::endl;
+  os << "  mIndexPointer: " << "\n";
 
   for (i = 0; i < d.mIndexPointer.size(); i++)
     os << d.mIndexPointer[i] << " ";
 
-  os << std::endl;
+  os << "\n";
 
-  os << std::endl;
+  os << "\n";
 
   return os;
 }

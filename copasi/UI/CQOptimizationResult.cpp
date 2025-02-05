@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -222,20 +222,20 @@ void CQOptimizationResult::slotSave(void)
   if (file.fail()) return;
 
   // The global result and statistics
-  file << "Objective Value" << std::endl;
-  file << mpProblem->getSolutionValue() << std::endl;
+  file << "Objective Value" << "\n";
+  file << mpProblem->getSolutionValue() << "\n";
 
-  file << "Function Evaluations\tCPU Time [s]\tEvaluations/second [1/s]" << std::endl;
+  file << "Function Evaluations\tCPU Time [s]\tEvaluations/second [1/s]" << "\n";
   const size_t & FunctionEvaluations = mpProblem->getFunctionEvaluations();
   const C_FLOAT64 & ExecutionTime = mpProblem->getExecutionTime();
   file << FunctionEvaluations << "\t";
   file << ExecutionTime << "\t";
-  file << FunctionEvaluations / ExecutionTime << std::endl << std::endl;
+  file << FunctionEvaluations / ExecutionTime << "\n" << "\n";
 
   // Set up the parameters table
-  file << "Parameters:" << std::endl;
+  file << "Parameters:" << "\n";
   file << TO_UTF8(toTsvString(mpParameters->model(), true, false))
-       << std::endl;
+       << "\n";
 
   // log
   const COptMethod * pMethod = dynamic_cast<const COptMethod *>(mpTask->getMethod());
@@ -243,17 +243,17 @@ void CQOptimizationResult::slotSave(void)
   if (pMethod)
     {
 
-      file << std::endl;
+      file << "\n";
 
       // Set up log output
-      file << "Method Log:" << std::endl;
+      file << "Method Log:" << "\n";
 
       file << pMethod->getMethodLog().getPlainLog().c_str();
 
-      file << std::endl;
+      file << "\n";
     }
 
-  file << std::endl;
+  file << "\n";
 }
 
 void CQOptimizationResult::slotUpdateModel()

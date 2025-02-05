@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -752,23 +752,23 @@ std::ostream &operator<<(std::ostream &os,
 {
   const CCopasiTask & Task = *static_cast<const CCopasiTask *>(o.getObjectParent());
 
-  os << Task.getObjectName() << " Task" << std::endl << std::endl;
+  os << Task.getObjectName() << " Task" << "\n" << "\n";
 
   if (Task.getProblem())
     {
       Task.getProblem()->print(&os);
-      os << std::endl;
+      os << "\n";
     }
   else
-    os << "No Problem Specified!" << std::endl;
+    os << "No Problem Specified!" << "\n";
 
   if (Task.getMethod())
     {
       Task.getMethod()->print(&os);
-      os << std::endl;
+      os << "\n";
     }
   else
-    os << "No Method Specified!" << std::endl;
+    os << "No Method Specified!" << "\n";
 
   return os;
 }
@@ -792,15 +792,15 @@ std::ostream &operator<<(std::ostream &os,
 {
   const CCopasiTask & Task = *static_cast<const CCopasiTask *>(o.getObjectParent());
 
-  os << Task.getObjectName() << " Result:" << std::endl << std::endl;
+  os << Task.getObjectName() << " Result:" << "\n" << "\n";
 
   if (Task.getProblem())
     {
       Task.getProblem()->printResult(&os);
-      os << std::endl;
+      os << "\n";
     }
   else
-    os << "No Problem Specified!" << std::endl;
+    os << "No Problem Specified!" << "\n";
 
   return os;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -60,11 +60,11 @@
 #ifdef DEBUG_UI
 std::ostream & operator<<(std::ostream & os, const QTextCursor & d)
 {
-  os << "Position:        " << d.position() << std::endl;
-  os << "Selection Start: " << d.selectionStart() << std::endl;
-  os << "Selection End:   " << d.selectionEnd() << std::endl;
-  os << "Anchor:          " << d.anchor() << std::endl;
-  os << "Selected Text:   " << TO_UTF8(d.selectedText()) << std::endl;
+  os << "Position:        " << d.position() << "\n";
+  os << "Selection Start: " << d.selectionStart() << "\n";
+  os << "Selection End:   " << d.selectionEnd() << "\n";
+  os << "Anchor:          " << d.anchor() << "\n";
+  os << "Selected Text:   " << TO_UTF8(d.selectedText()) << "\n";
   return os;
 }
 #endif // DEBUG_UI

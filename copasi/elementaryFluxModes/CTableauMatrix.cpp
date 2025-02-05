@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -177,7 +177,7 @@ bool CTableauMatrix::isValid(const CTableauLine * src)
 
 std::ostream & operator << (std::ostream & os, const CTableauMatrix & m)
 {
-  os << "Tableau Matrix: Number of Lines = " << m.mLine.size() << std::endl;
+  os << "Tableau Matrix: Number of Lines = " << m.mLine.size() << "\n";
   std::list< const CTableauLine * >::const_iterator i;
 
   for (i = m.mLine.begin(); i != m.mLine.end(); i++)

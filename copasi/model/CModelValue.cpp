@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -430,7 +430,7 @@ std::string CModelEntity::getExpression() const
 
 CExpression* CModelEntity::getExpressionPtr()
 {
-  if (mpExpression != NULL) 
+  if (mpExpression != NULL)
     mpExpression->updateInfix();
 
   return mpExpression;
@@ -438,7 +438,7 @@ CExpression* CModelEntity::getExpressionPtr()
 
 const CExpression* CModelEntity::getExpressionPtr() const
 {
-  if (mpExpression != NULL) 
+  if (mpExpression != NULL)
     mpExpression->updateInfix();
 
   return mpExpression;
@@ -1019,10 +1019,10 @@ const std::string CModelValue::getUnits() const
 
 std::ostream & operator<<(std::ostream &os, const CModelValue & d)
 {
-  os << "    ++++CModelValue: " << d.getObjectName() << std::endl;
-  os << "        mValue " << d.mValue << " mIValue " << d.mIValue << std::endl;
-  os << "        mRate " << d.mRate << " mStatus " << CModelEntity::StatusName[d.getStatus()] << std::endl;
-  os << "    ----CModelValue " << std::endl;
+  os << "    ++++CModelValue: " << d.getObjectName() << "\n";
+  os << "        mValue " << d.mValue << " mIValue " << d.mIValue << "\n";
+  os << "        mRate " << d.mRate << " mStatus " << CModelEntity::StatusName[d.getStatus()] << "\n";
+  os << "    ----CModelValue " << "\n";
 
   return os;
 }

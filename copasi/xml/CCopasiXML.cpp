@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -125,16 +125,16 @@ bool CCopasiXML::save(std::ostream & os,
   bool success = true;
 
   *mpOstream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-             << std::endl;
+             << "\n";
 
   *mpOstream << "<!-- generated with COPASI "
              << CVersion::VERSION.getVersion()
              << " (http://www.copasi.org) at "
              << UTCTimeStamp()
              << " -->"
-             << std::endl;
+             << "\n";
 
-  *mpOstream << "<?oxygen RNGSchema=\"http://www.copasi.org/static/schema/CopasiML.rng\" type=\"xml\"?>" << std::endl;
+  *mpOstream << "<?oxygen RNGSchema=\"http://www.copasi.org/static/schema/CopasiML.rng\" type=\"xml\"?>" << "\n";
 
   CXMLAttributeList Attributes;
   Attributes.add("xmlns", "http://www.copasi.org/static/schema");
@@ -189,16 +189,16 @@ bool CCopasiXML::saveModelParameterSets(std::ostream & os, const std::string & r
   bool success = true;
 
   *mpOstream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-             << std::endl;
+             << "\n";
 
   *mpOstream << "<!-- generated with COPASI "
              << CVersion::VERSION.getVersion()
              << " (http://www.copasi.org) at "
              << UTCTimeStamp()
              << " -->"
-             << std::endl;
+             << "\n";
 
-  *mpOstream << "<?oxygen RNGSchema=\"http://www.copasi.org/static/schema/CopasiML.rng\" type=\"xml\"?>" << std::endl;
+  *mpOstream << "<?oxygen RNGSchema=\"http://www.copasi.org/static/schema/CopasiML.rng\" type=\"xml\"?>" << "\n";
 
   CXMLAttributeList Attributes;
   Attributes.add("xmlns", "http://www.copasi.org/static/schema");
@@ -1109,7 +1109,7 @@ bool CCopasiXML::saveModel()
       *mpOstream << (DBL)(*ppEntity)->getInitialValue() << " ";
     }
 
-  *mpOstream << std::endl;
+  *mpOstream << "\n";
 
   endSaveElement("InitialState");
 
@@ -1184,7 +1184,7 @@ bool CCopasiXML::saveAnnotation(const CAnnotation * pAnnotation)
   if (pAnnotation->getMiriamAnnotation() != "")
     {
       startSaveElement("MiriamAnnotation");
-      *mpOstream << pAnnotation->getMiriamAnnotation() << std::endl;
+      *mpOstream << pAnnotation->getMiriamAnnotation() << "\n";
       endSaveElement("MiriamAnnotation");
     }
 
@@ -1210,7 +1210,7 @@ bool CCopasiXML::saveAnnotation(const CAnnotation * pAnnotation)
           Attributes.setValue(0, (*it).first);
 
           startSaveElement("UnsupportedAnnotation", Attributes);
-          *mpOstream << (*it).second << std::endl;
+          *mpOstream << (*it).second << "\n";
           endSaveElement("UnsupportedAnnotation");
         }
 

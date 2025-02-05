@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -282,7 +282,7 @@ std::string CEvaluationNodeNumber::getMMLString(const std::vector< std::string >
   std::ostringstream out;
 
   //or use mValue instead?
-  out << "<mn>" << mData << "</mn>" << std::endl;
+  out << "<mn>" << mData << "</mn>" << "\n";
 
   return out.str();
 }

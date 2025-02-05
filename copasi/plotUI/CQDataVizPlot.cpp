@@ -1,4 +1,4 @@
-// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -889,7 +889,7 @@ bool CQDataVizPlot::saveData(const std::string & filename)
               fs << "\t";
             }
 
-          fs << std::endl;
+          fs << "\n";
         }
     }
 
@@ -941,7 +941,7 @@ bool CQDataVizPlot::saveData(const std::string & filename)
               fs << "\t";
             }
 
-          fs << std::endl;
+          fs << "\n";
         }
     }
 
@@ -993,7 +993,7 @@ bool CQDataVizPlot::saveData(const std::string & filename)
               fs << "\t";
             }
 
-          fs << std::endl;
+          fs << "\n";
         }
     }
 
@@ -1004,9 +1004,9 @@ bool CQDataVizPlot::saveData(const std::string & filename)
       QSurface3DSeries * surface = qobject_cast< QSurface3DSeries * > (curve.second);
       QScatter3DSeries * scatter = qobject_cast< QScatter3DSeries * >(curve.second);
 
-      fs << std::endl
-         << std::endl
-         << " FROM PROXY " << std::endl;
+      fs << "\n"
+         << "\n"
+         << " FROM PROXY " << "\n";
 
       if (surface)
         {
@@ -1023,7 +1023,7 @@ bool CQDataVizPlot::saveData(const std::string & filename)
                      << "\t";
                 }
 
-              fs << std::endl;
+              fs << "\n";
             }
         }
     }

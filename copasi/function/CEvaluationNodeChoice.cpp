@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -284,38 +284,38 @@ std::string CEvaluationNodeChoice::getMMLString(const std::vector< std::string >
 
   if (const_cast<CEvaluationNodeChoice *>(this)->compile())
     {
-      out << "<mrow>" << std::endl;
-      out << "<mo> {</mo>" << std::endl;
-      out << "<mtable>" << std::endl;
+      out << "<mrow>" << "\n";
+      out << "<mo> {</mo>" << "\n";
+      out << "<mtable>" << "\n";
 
-      out << "<mtr>" << std::endl;
+      out << "<mtr>" << "\n";
 
-      out << "<mtd>" << std::endl;
+      out << "<mtd>" << "\n";
       out << children[0];
-      out << "<mo> , </mo>" << std::endl;
-      out << "</mtd>" << std::endl;
+      out << "<mo> , </mo>" << "\n";
+      out << "</mtd>" << "\n";
 
-      out << "<mtd>" << std::endl;
+      out << "<mtd>" << "\n";
       out << children[1];
 
-      out << "</mtd>" << std::endl;
+      out << "</mtd>" << "\n";
 
-      out << "</mtr>" << std::endl;
+      out << "</mtr>" << "\n";
 
-      out << "<mtr>" << std::endl;
+      out << "<mtr>" << "\n";
 
-      out << "<mtd>" << std::endl;
-      out << "<mo> else, </mo>" << std::endl;
+      out << "<mtd>" << "\n";
+      out << "<mo> else, </mo>" << "\n";
 
-      out << "</mtd>" << std::endl;
-      out << "<mtd>" << std::endl;
+      out << "</mtd>" << "\n";
+      out << "<mtd>" << "\n";
       out << children[2];
-      out << "</mtd>" << std::endl;
+      out << "</mtd>" << "\n";
 
-      out << "</mtr>" << std::endl;
+      out << "</mtr>" << "\n";
 
-      out << "</mtable>" << std::endl;
-      out << "</mrow>" << std::endl;
+      out << "</mtable>" << "\n";
+      out << "</mrow>" << "\n";
     }
 
   return out.str();

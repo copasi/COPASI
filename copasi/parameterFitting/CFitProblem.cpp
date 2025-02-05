@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1452,17 +1452,17 @@ void CFitProblem::printResult(std::ostream * ostream) const
       return;
     }
 
-  os << "Objective Function Value:\t" << mSolutionValue << std::endl;
-  os << "Standard Deviation:\t" << mSD << std::endl;
+  os << "Objective Function Value:\t" << mSolutionValue << "\n";
+  os << "Standard Deviation:\t" << mSD << "\n";
 
   CCopasiTimeVariable CPUTime = const_cast<CFitProblem *>(this)->mCPUTime.getElapsedTime();
 
-  os << "Function Evaluations:\t" << mCounters.Counter << std::endl;
+  os << "Function Evaluations:\t" << mCounters.Counter << "\n";
   os << "CPU Time [s]:\t"
      << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
-     << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << std::endl;
-  os << "Evaluations/Second [1/s]:\t" << mCounters.Counter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << std::endl;
-  os << std::endl;
+     << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << "\n";
+  os << "Evaluations/Second [1/s]:\t" << mCounters.Counter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << "\n";
+  os << "\n";
 
   std::vector< COptItem * >::const_iterator itItem =
     mpOptItems->begin();
@@ -1474,7 +1474,7 @@ void CFitProblem::printResult(std::ostream * ostream) const
 
   size_t i, j;
 
-  os << "\tParameter\tValue\tGradient\tStandard Deviation" << std::endl;
+  os << "\tParameter\tValue\tGradient\tStandard Deviation" << "\n";
 
   for (i = 0; itItem != endItem; ++itItem, i++)
     {
@@ -1512,49 +1512,49 @@ void CFitProblem::printResult(std::ostream * ostream) const
           os << "\t" << std::numeric_limits<C_FLOAT64>::quiet_NaN();
         }
 
-      os << std::endl;
+      os << "\n";
     }
 
-  os << std::endl;
+  os << "\n";
 
   size_t k, kmax = mpExperimentSet->getExperimentCount();
 
   for (k = 0; k < kmax; k++)
     {
       mpExperimentSet->getExperiment(k)->printResult(ostream);
-      os << std::endl;
+      os << "\n";
     }
 
   if (*mpParmCalculateStatistics)
     {
-      os << "Fisher Information Matrix:" << std::endl;
-      os << "  " << mFisher << std::endl;
+      os << "Fisher Information Matrix:" << "\n";
+      os << "  " << mFisher << "\n";
 
-      os << "FIM Eigenvalues:" << std::endl;
-      os << "  " << mFisherEigenvalues << std::endl;
+      os << "FIM Eigenvalues:" << "\n";
+      os << "  " << mFisherEigenvalues << "\n";
 
-      os << "FIM Eigenvectors corresponding to Eigenvalues:" << std::endl;
-      os << "  " << mFisherEigenvectors << std::endl;
+      os << "FIM Eigenvectors corresponding to Eigenvalues:" << "\n";
+      os << "  " << mFisherEigenvectors << "\n";
 
-      os << "Fisher Information Matrix (scaled):" << std::endl;
-      os << "  " << mFisherScaled << std::endl;
+      os << "Fisher Information Matrix (scaled):" << "\n";
+      os << "  " << mFisherScaled << "\n";
 
-      os << "FIM Eigenvalues (scaled):" << std::endl;
-      os << "  " << mFisherScaledEigenvalues << std::endl;
+      os << "FIM Eigenvalues (scaled):" << "\n";
+      os << "  " << mFisherScaledEigenvalues << "\n";
 
-      os << "FIM Eigenvectors (scaled) corresponding to Eigenvalues:" << std::endl;
-      os << "  " << mFisherScaledEigenvectors << std::endl;
+      os << "FIM Eigenvectors (scaled) corresponding to Eigenvalues:" << "\n";
+      os << "  " << mFisherScaledEigenvectors << "\n";
 
-      os << "Correlation Matrix:" << std::endl;
-      os << "  " << mCorrelation << std::endl;
+      os << "Correlation Matrix:" << "\n";
+      os << "  " << mCorrelation << "\n";
     }
 }
 
 std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
 {
-  os << "Problem Description:" << std::endl;
+  os << "Problem Description:" << "\n";
 
-  os << "Subtask: " << std::endl;
+  os << "Subtask: " << "\n";
 
   if (o.mpSteadyState)
     o.mpSteadyState->getDescription().print(&os);
@@ -1568,8 +1568,8 @@ std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
   if (!o.mpTrajectory && !o.mpSteadyState)
     os << "No Subtask specified.";
 
-  os << std::endl;
-  os << "List of Fitting Items:" << std::endl;
+  os << "\n";
+  os << "List of Fitting Items:" << "\n";
 
   std::vector< COptItem * >::const_iterator itItem =
     o.mpOptItems->begin();
@@ -1577,16 +1577,16 @@ std::ostream &operator<<(std::ostream &os, const CFitProblem & o)
     o.mpOptItems->end();
 
   for (; itItem != endItem; ++itItem)
-    os << "    " << *static_cast<CFitItem *>(*itItem) << std::endl;
+    os << "    " << *static_cast<CFitItem *>(*itItem) << "\n";
 
-  os << std::endl;
-  os << "List of Constraint Items:" << std::endl;
+  os << "\n";
+  os << "List of Constraint Items:" << "\n";
 
   itItem = o.mpConstraintItems->begin();
   endItem = o.mpConstraintItems->end();
 
   for (; itItem != endItem; ++itItem)
-    os << "    " << *static_cast<CFitItem *>(*itItem) << std::endl;
+    os << "    " << *static_cast<CFitItem *>(*itItem) << "\n";
 
   return os;
 }

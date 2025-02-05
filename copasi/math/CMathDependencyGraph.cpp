@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -608,8 +608,8 @@ void CMathDependencyGraph::relocate(const CMathContainer * pContainer,
 
 void CMathDependencyGraph::exportDOTFormat(std::ostream & os, const std::string & name) const
 {
-  os << "digraph " << name << " {" << std::endl;
-  os << "rankdir=LR;" << std::endl;
+  os << "digraph " << name << " {" << "\n";
+  os << "rankdir=LR;" << "\n";
 
   mObject2Index.clear();
 
@@ -637,11 +637,11 @@ void CMathDependencyGraph::exportDOTFormat(std::ostream & os, const std::string 
           os << (((*itDep)->isChanged()) ? "\\nC" : "\\no");
           os << (((*itDep)->isRequested()) ? "R" : "o");
           os << "\"";
-          os << ";" << std::endl;
+          os << ";" << "\n";
         }
     }
 
-  os << "}" << std::endl;
+  os << "}" << "\n";
 }
 
 // static

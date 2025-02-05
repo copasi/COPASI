@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -185,7 +185,7 @@ void CEvaluationNodeOperator::s_remainder()
 
 void CEvaluationNodeOperator::s_quotient()
 {
-  // Definition: A = quotient * B + remainder 
+  // Definition: A = quotient * B + remainder
   //          => quotient = (A - remainder)/B
   mValue = (*mpLeftValue - fmod(*mpLeftValue, *mpRightValue)) / *mpRightValue;
 }
@@ -460,7 +460,6 @@ CEvaluationNode * CEvaluationNodeOperator::fromAST(const ASTNode * pASTNode, con
         subType = SubType::REMAINDER;
         data = "%";
         break;
-
 
       default:
         subType = SubType::INVALID;
@@ -1569,17 +1568,17 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
     {
       case SubType::PLUS:
 
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
         out << children[0];
-        out << "<mo>" << "+" << "</mo>" << std::endl;
+        out << "<mo>" << "+" << "</mo>" << "\n";
         out << children[1];
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
         break;
 
       case SubType::MINUS:
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
         out << children[0];
-        out << "<mo>" << "-" << "</mo>" << std::endl;
+        out << "<mo>" << "-" << "</mo>" << "\n";
 
         type = (mpRightNode->mainType() | mpRightNode->subType());
 
@@ -1588,17 +1587,17 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
                 || ((mpRightNode->mainType() == CEvaluationNode::MainType::CALL) && expand)
                );
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[1];
 
-        if (flag) out << "</mfenced>" << std::endl; // ???
+        if (flag) out << "</mfenced>" << "\n"; // ???
 
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
         break;
 
       case SubType::MULTIPLY:
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
 
         //do we need "()" ?
         type = (mpLeftNode->mainType() | mpLeftNode->subType());
@@ -1608,13 +1607,13 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
                 || ((mpLeftNode->mainType() == MainType::CALL) && expand)
                );
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
+        out << "<mo>" << "&CenterDot;" << "</mo>" << "\n";
 
         type = (mpRightNode->mainType() | mpRightNode->subType());
 
@@ -1623,32 +1622,32 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
                 || ((mpRightNode->mainType() == CEvaluationNode::MainType::CALL) && expand)
                );
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[1];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
 
         break;
 
       case SubType::DIVIDE:
-        out << "<mfrac>" << std::endl;
+        out << "<mfrac>" << "\n";
 
-        //out << "<mrow>" << std::endl;
+        //out << "<mrow>" << "\n";
         out << children[0];
-        //out << "</mrow>" << std::endl;
+        //out << "</mrow>" << "\n";
 
-        //out << "<mrow>" << std::endl;
+        //out << "<mrow>" << "\n";
         out << children[1];
-        //out << "</mrow>" << std::endl;
+        //out << "</mrow>" << "\n";
 
-        out << "</mfrac>" << std::endl;
+        out << "</mfrac>" << "\n";
         break;
 
       case SubType::POWER:
-        out << "<msup>" << std::endl;
+        out << "<msup>" << "\n";
 
         type = (mpLeftNode->mainType() | mpLeftNode->subType());
 
@@ -1661,92 +1660,92 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
                 || ((mpLeftNode->mainType() == CEvaluationNode::MainType::CALL) && expand)
                );
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
         out << children[1];
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
 
-        out << "</msup>" << std::endl;
+        out << "</msup>" << "\n";
         break;
 
       case SubType::MODULUS:
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
 
         //do we need "()" ?
         flag = true;
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "<mo>" << "%" << "</mo>" << std::endl;
+        out << "<mo>" << "%" << "</mo>" << "\n";
 
         flag = true;
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[1];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
         break;
 
       case SubType::REMAINDER:
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
 
         //do we need "()" ?
         flag = (*mpLeftNode < * (CEvaluationNode *)this);
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "<mo>" << "mod" << "</mo>" << std::endl;
+        out << "<mo>" << "mod" << "</mo>" << "\n";
 
         flag = !(*(CEvaluationNode *)this < *mpRightNode);
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[1];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
         break;
 
       case SubType::QUOTIENT:
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
 
         //do we need "()" ?
         flag = (*mpLeftNode < * (CEvaluationNode *)this);
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "<mo>" << "quotient" << "</mo>" << std::endl;
+        out << "<mo>" << "quotient" << "</mo>" << "\n";
 
         flag = !(*(CEvaluationNode *)this < *mpRightNode);
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[1];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
         break;
     }
 

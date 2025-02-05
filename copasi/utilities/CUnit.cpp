@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1035,8 +1035,8 @@ void CUnit::setDimensionLess(double multiplier, double scale, double exponent)
 // friend
 std::ostream &operator<<(std::ostream &os, const CUnit & o)
 {
-  os << "Expression: " << o.mExpression << std::endl;
-  os << "Components: " << std::endl;
+  os << "Expression: " << o.mExpression << "\n";
+  os << "Components: " << "\n";
 
   std::set< CUnitComponent >::const_iterator it = o.mComponents.begin();
   std::set< CUnitComponent >::const_iterator end = o.mComponents.end();

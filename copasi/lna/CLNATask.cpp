@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -207,9 +207,9 @@ const CTaskEnum::Method * CLNATask::getValidMethods() const
 
 std::ostream &operator<<(std::ostream &os, const CLNATask & C_UNUSED(A))
 {
-  os << std::endl;
+  os << "\n";
 
-  os << std::endl;
+  os << "\n";
 
   return os;
 }
@@ -233,44 +233,44 @@ void CLNATask::printResult(std::ostream * ostream) const
     {
       if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::found)
         {
-          os << "A steady state was found. All coefficients are shown." << std::endl;
+          os << "A steady state was found. All coefficients are shown." << "\n";
           showSS = true;
         }
 
       if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::foundEquilibrium)
         {
-          os << "An equilibrium steady state was found. All coefficients are shown." << std::endl;
+          os << "An equilibrium steady state was found. All coefficients are shown." << "\n";
           showSS = true;
         }
 
       if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::foundNegative)
         {
-          os << "Invalid steady state found (negative concentrations)." << std::endl;
+          os << "Invalid steady state found (negative concentrations)." << "\n";
           showSS = true;
         }
 
       if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::notFound)
         {
-          os << "No steady state found." << std::endl;
+          os << "No steady state found." << "\n";
         }
     }
   else
     {
-      os << "No steady state calculation was requested." << std::endl;
+      os << "No steady state calculation was requested." << "\n";
     }
 
-  os << std::endl;
-  os << *pMethod->getCovarianceMatrixAnn() << std::endl;
+  os << "\n";
+  os << *pMethod->getCovarianceMatrixAnn() << "\n";
 
   if (showSS)
     {
       if (!pProblem->getSubTask())
         {
-          os << "Problem with steady state calculation. Please report as bug!" << std::endl;
+          os << "Problem with steady state calculation. Please report as bug!" << "\n";
           return;
         }
 
-      os << "Results of the steady state subtask (the state for which the LNA was performed):" << std::endl;
+      os << "Results of the steady state subtask (the state for which the LNA was performed):" << "\n";
       os << *static_cast< CSteadyStateTask *>(pProblem->getSubTask());
     }
 }

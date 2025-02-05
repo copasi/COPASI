@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,7 +57,7 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
 {
   mPrecedence = PRECEDENCE_NUMBER;
   mValueType = ValueType::Number;
-  
+
   switch (subType)
     {
       case SubType::INVALID:
@@ -601,7 +601,7 @@ std::string CEvaluationNodeObject::getMMLString(const std::vector< std::string >
 
   const CDataObject * pDataObject = CObjectInterface::DataObject(mpObject);
 
-  out << CMathMl::getMMLName(pDataObject) << std::endl;
+  out << CMathMl::getMMLName(pDataObject) << "\n";
 
   return out.str();
 }

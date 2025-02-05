@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -667,7 +667,7 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
         break;
 
       case CDataValue::DATA:
-        os << std::endl << o.toData();
+        os << "\n" << o.toData();
         break;
 
       case CDataValue::DATA_VALUES:
@@ -676,7 +676,7 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
         std::vector< CDataValue >::const_iterator end = o.toDataValues().end();
 
         for (; it != end; ++it)
-          os << std::endl << *it;
+          os << "\n" << *it;
       }
       break;
 
@@ -686,7 +686,7 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
         std::vector< CData >::const_iterator end = o.toDataVector().end();
 
         for (; it != end; ++it)
-          os << std::endl << *it;
+          os << "\n" << *it;
       }
       break;
 

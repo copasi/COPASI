@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -364,7 +364,7 @@ void CStepMatrix::compact()
 
 std::ostream & operator << (std::ostream & os, const CStepMatrix & m)
 {
-  os << m.mPivot << std::endl;
+  os << m.mPivot << "\n";
 
   CZeroSet::CIndex Bit;
 
@@ -373,7 +373,7 @@ std::ostream & operator << (std::ostream & os, const CStepMatrix & m)
 
   for (it = m.begin(); it != end; ++it)
     {
-      os << **it << std::endl;
+      os << **it << "\n";
     }
 
   return os;

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -171,12 +171,12 @@ std::string Expression2PresentationMMLUnits::getMathML(const CSBMLunitInformatio
 void Expression2PresentationMMLUnits::writeMathMLBox(std::ostream & out, const std::string & a, const std::string & b,
     const std::string & color, size_t l) const
 {
-  out << SPC(l) << "<mstyle background=\"" << color << "\"><mfrac linethickness=\"0\">" << std::endl;
+  out << SPC(l) << "<mstyle background=\"" << color << "\"><mfrac linethickness=\"0\">" << "\n";
   out << a;
-  out << SPC(l + 1) << "<mstyle scriptlevel=\"+1\">" << std::endl;
-  out << SPC(l + 2) << b << std::endl;
-  out << SPC(l + 1) << "</mstyle>" << std::endl;
-  out << SPC(l) << "</mfrac></mstyle>" << std::endl;
+  out << SPC(l + 1) << "<mstyle scriptlevel=\"+1\">" << "\n";
+  out << SPC(l + 2) << b << "\n";
+  out << SPC(l + 1) << "</mstyle>" << "\n";
+  out << SPC(l) << "</mfrac></mstyle>" << "\n";
 
   //formating is done so that it looks best when a is already indented nicely while b
   //is just a one line string
@@ -185,17 +185,17 @@ void Expression2PresentationMMLUnits::writeMathMLBox(std::ostream & out, const s
 void Expression2PresentationMMLUnits::writeMathMLBox(std::ostream & out, const std::string & a, const std::string & b, const std::string & c,
     const std::string & color, size_t l) const
 {
-  out << SPC(l) << "<mstyle background=\"" << color << "\"><mtable rowspacing=\"0.1 ex\">" << std::endl;
-  out << SPC(l + 1) << "<mtr><mtd>" << std::endl;
+  out << SPC(l) << "<mstyle background=\"" << color << "\"><mtable rowspacing=\"0.1 ex\">" << "\n";
+  out << SPC(l + 1) << "<mtr><mtd>" << "\n";
   out << a;
-  out << SPC(l + 1) << "</mtd></mtr>" << std::endl;
-  out << SPC(l + 1) << "<mtr><mtd><mstyle scriptlevel=\"+1\">" << std::endl;
-  out << SPC(l + 2) << b << std::endl;
-  out << SPC(l + 1) << "</mstyle></mtd></mtr>" << std::endl;
-  out << SPC(l + 1) << "<mtr><mtd><mstyle scriptlevel=\"+1\">" << std::endl;
-  out << SPC(l + 2) << c << std::endl;
-  out << SPC(l + 1) << "</mstyle></mtd></mtr>" << std::endl;
-  out << SPC(l) << "</mtable></mstyle>" << std::endl;
+  out << SPC(l + 1) << "</mtd></mtr>" << "\n";
+  out << SPC(l + 1) << "<mtr><mtd><mstyle scriptlevel=\"+1\">" << "\n";
+  out << SPC(l + 2) << b << "\n";
+  out << SPC(l + 1) << "</mstyle></mtd></mtr>" << "\n";
+  out << SPC(l + 1) << "<mtr><mtd><mstyle scriptlevel=\"+1\">" << "\n";
+  out << SPC(l + 2) << c << "\n";
+  out << SPC(l + 1) << "</mstyle></mtd></mtr>" << "\n";
+  out << SPC(l) << "</mtable></mstyle>" << "\n";
 
   //formating is done so that it looks best when a is already indented nicely while b
   //is just a one line string

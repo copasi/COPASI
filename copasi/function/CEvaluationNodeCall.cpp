@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -633,12 +633,12 @@ std::string CEvaluationNodeCall::getMMLString(const std::vector< std::string > &
 
         if (!expand || !mpFunction)
           {
-            out << "<mrow>" << std::endl;
+            out << "<mrow>" << "\n";
 
-            out << "<mi>" << CMathMl::fixName(quote(mData, "-+^*/%(){},\t\r\n")) << "</mi>" << std::endl;
-            out << "<mrow>" << std::endl;
-            out << "<mo>(</mo>" << std::endl;
-            out << "<mrow>" << std::endl;
+            out << "<mi>" << CMathMl::fixName(quote(mData, "-+^*/%(){},\t\r\n")) << "</mi>" << "\n";
+            out << "<mrow>" << "\n";
+            out << "<mo>(</mo>" << "\n";
+            out << "<mrow>" << "\n";
 
             if (it != end)
               {
@@ -647,15 +647,15 @@ std::string CEvaluationNodeCall::getMMLString(const std::vector< std::string > &
 
             for (; it != end; ++it)
               {
-                out << "<mo> , </mo>" << std::endl;
+                out << "<mo> , </mo>" << "\n";
                 out << *it;
               }
 
-            out << "</mrow>" << std::endl;
-            out << "<mo>) </mo>" << std::endl;
+            out << "</mrow>" << "\n";
+            out << "<mo>) </mo>" << "\n";
 
-            out << "</mrow>" << std::endl;
-            out << "</mrow>" << std::endl;
+            out << "</mrow>" << "\n";
+            out << "</mrow>" << "\n";
           }
         else
           {
@@ -668,9 +668,9 @@ std::string CEvaluationNodeCall::getMMLString(const std::vector< std::string > &
                 Variables.push_back(Variable);
               }
 
-            out << "<mfenced>" << std::endl;
+            out << "<mfenced>" << "\n";
             out << mpFunction->writeMathML(Variables, expand, expand);
-            out << "</mfenced>" << std::endl;
+            out << "</mfenced>" << "\n";
           }
       }
       break;

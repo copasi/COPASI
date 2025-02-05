@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1469,17 +1469,17 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
   for (istep = 0; istep < stepNumber; istep++)
     {
 
-      os << std::endl;
+      os << "\n";
       os << "**************** Time step " << istep + 1
          << ": " << getTimeForStep(istep)
          << " " << Model.getTimeUnitName()
-         <<  " **************************  " << std::endl;
+         <<  " **************************  " << "\n";
 
-      os << std::endl;
+      os << "\n";
 
-      os << "Contribution of species to modes" << std::endl;
+      os << "Contribution of species to modes" << "\n";
 
-      os << "Rows : contribution to  mode (TS - corresponding timescale)" << std::endl;
+      os << "Rows : contribution to  mode (TS - corresponding timescale)" << "\n";
       os << "Columns: species  ";
 
       for (j = 0; j < mDim; j++)
@@ -1487,7 +1487,7 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
           os << "   " << Model.getMetabolitesX()[j].getObjectName();
         }
 
-      os << std::endl;
+      os << "\n";
 
       for (i = 0; i < mDim; i++)
         {
@@ -1503,15 +1503,15 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
           for (j = 0; j < mDim; j++)
             os << " " << mVec_mVslow[istep][i][j];
 
-          os << std::endl;
+          os << "\n";
         }
 
-      os << std::endl;
+      os << "\n";
 
-      os << "Modes distribution for species" << std::endl;
+      os << "Modes distribution for species" << "\n";
 
-      os << "Rows: Mode distribution for each species" << std::endl;
-      os << "Columns: Modes (TS - corresponding  timescale)" << std::endl;
+      os << "Rows: Mode distribution for each species" << "\n";
+      os << "Columns: Modes (TS - corresponding  timescale)" << "\n";
 
       for (i = 0; i < mDim; i++)
         {
@@ -1525,7 +1525,7 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
           os << timeScale << ")";
         }
 
-      os << std::endl;
+      os << "\n";
 
       for (j = 0; j < mDim; j++)
         {
@@ -1534,67 +1534,67 @@ void CILDMMethod::printResult(std::ostream * ostream) const // temporary tabs ar
           for (i = 0; i < mDim; i++)
             os << "  " << mVec_mVslowMetab[istep][j][i];
 
-          os << std::endl;
+          os << "\n";
         }
 
-      os << std::endl;
+      os << "\n";
 
-      os << "Slow space" << std::endl;
+      os << "Slow space" << "\n";
 
-      os << "Rows: Species" << std::endl;
-      os << "Column: Contribution to slow space" << std::endl;
+      os << "Rows: Species" << "\n";
+      os << "Column: Contribution to slow space" << "\n";
 
       os << "  " << mVec_SlowModes[istep];
       os << " slow; ";
 
       os << mDim - mVec_SlowModes[istep];
       os << " fast";
-      os << std::endl;
+      os << "\n";
 
       for (j = 0; j < mDim; j++)
         {
           os << "  " << Model.getMetabolitesX()[j].getObjectName();
           os << "  " << mVec_mVslowSpace[istep][j];
 
-          os << std::endl;
+          os << "\n";
         }
 
-      os << std::endl;
-      os << "Fast space" << std::endl;
+      os << "\n";
+      os << "Fast space" << "\n";
 
-      os << "Rows: Species" << std::endl;
-      os << "Column: Contribution to fast space" << std::endl;
+      os << "Rows: Species" << "\n";
+      os << "Column: Contribution to fast space" << "\n";
 
       os << "  " << mVec_SlowModes[istep];
       os << " slow; ";
 
       os << mDim - mVec_SlowModes[istep];
       os << " fast";
-      os << std::endl;
+      os << "\n";
 
       for (j = 0; j < mDim; j++)
         {
           os << "  " << Model.getMetabolitesX()[j].getObjectName();
           os << "  " << mVec_mVfastSpace[istep][j];
 
-          os << std::endl;
+          os << "\n";
         }
 
-      os << std::endl;
-      os << "Reactions slow space" << std::endl;
+      os << "\n";
+      os << "Reactions slow space" << "\n";
 
-      os << "Rows: Reactions" << std::endl;
-      os << "Column: Contribution to slow space " << std::endl;
+      os << "Rows: Reactions" << "\n";
+      os << "Column: Contribution to slow space " << "\n";
 
       for (j = 0; j < (C_INT32) Model.getReactions().size(); j++)
         {
           os << "  "  << Model.getReactions()[j].getObjectName();
           os << "  "  << mVec_mReacSlowSpace[istep][j];
 
-          os << std::endl;
+          os << "\n";
         }
 
-      os << std::endl;
+      os << "\n";
     }
 
   return;

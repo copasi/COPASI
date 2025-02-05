@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -609,16 +609,16 @@ void CSensProblem::printResult(std::ostream * ostream) const
 {
   std::ostream & os = *ostream;
 
-  //os << "Sensitivities result." << std::endl;
+  //os << "Sensitivities result." << "\n";
   if (mpResultAnnotation != NULL)
-    os << *mpResultAnnotation << std::endl;
+    os << *mpResultAnnotation << "\n";
 
   if (mpScaledResultAnnotation != NULL)
-    os << *mpScaledResultAnnotation << std::endl;
+    os << *mpScaledResultAnnotation << "\n";
 
   if (collapsRequested()
       && mpCollapsedResultAnnotation != NULL)
-    os << *mpCollapsedResultAnnotation << std::endl;
+    os << *mpCollapsedResultAnnotation << "\n";
 }
 
 /**
@@ -649,23 +649,23 @@ std::string CSensItem::print(const CDataModel * pDataModel) const
 
 std::ostream & operator<<(std::ostream & os, const CSensProblem & o)
 {
-  os << "Function(s) to be derived:" << std::endl;
+  os << "Function(s) to be derived:" << "\n";
   const CDataModel * pDataModel = o.getObjectDataModel();
   assert(pDataModel != NULL);
-  os << o.getTargetFunctions().print(pDataModel) << std::endl
-     << std::endl;
+  os << o.getTargetFunctions().print(pDataModel) << "\n"
+     << "\n";
 
   os << "Calculation to perform: "
-     << CTaskEnum::TaskName[CSensProblem::SubTaskTypeToTask[o.getSubTaskType()]] << std::endl
-     << std::endl;
+     << CTaskEnum::TaskName[CSensProblem::SubTaskTypeToTask[o.getSubTaskType()]] << "\n"
+     << "\n";
 
   size_t i, imax = o.getNumberOfVariables();
 
   for (i = 0; i < imax; ++i)
     {
-      os << "Variable(s) for " << i + 1 << ". derivation:" << std::endl;
-      os << o.getVariables(i).print(pDataModel) << std::endl
-         << std::endl;
+      os << "Variable(s) for " << i + 1 << ". derivation:" << "\n";
+      os << o.getVariables(i).print(pDataModel) << "\n"
+         << "\n";
     }
 
   return os;

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,7 +39,6 @@
 #include <QFontDialog>
 #include <QtCore/QDateTime>
 #include <QProcess>
-
 
 #include <QByteArray>
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
@@ -750,12 +749,12 @@ void CopasiUI3Window::createMenuBar()
 {
   QMenu *pFileMenu = menuBar()->addMenu("&File");
   pFileMenu->addAction(mpaNew);
-  #ifdef Q_OS_MACOS
+#ifdef Q_OS_MACOS
   QAction *pOpenNewWindow = new QAction("New Window", this);
   pOpenNewWindow->setToolTip("Open a new COPASI instance");
   QObject::connect(pOpenNewWindow, SIGNAL(triggered()), this, SLOT(slotStartNewInstance()));
   pFileMenu->addAction(pOpenNewWindow);
-  #endif
+#endif
   pFileMenu->addAction(mpaOpen);
   pFileMenu->addAction(mpaOpenFromUrl);
   mpMenuExamples = pFileMenu->addMenu("Examples");
@@ -849,7 +848,7 @@ void CopasiUI3Window::createMenuBar()
 #endif // COPASI_SBW_INTEGRATION
   mpTools->addSeparator();
   mpTools->addAction(mpaShowExternalToolDialog);
-  mpTools->addSeparator();  
+  mpTools->addSeparator();
   mpTools->addAction(mpaUpdateMIRIAM);
   mpTools->addAction("&Preferences", this, SLOT(slotPreferences()));
   mpTools->addAction(mpaFontSelectionDialog);
@@ -2055,10 +2054,9 @@ void CopasiUI3Window::slotConvertODEsToReactions()
     }
 
   mpDataModel->changed();
-  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, CRegisteredCommonName());  
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, CRegisteredCommonName());
   mpListView->resetCache();
 }
-
 
 void CopasiUI3Window::slotConvertReactionsToODEs()
 {
@@ -3950,7 +3948,6 @@ void CopasiUI3Window::slotConfigureExternalTools()
       dlg.saveTools(true);
       mpExternaltools->init(mpTools, mpaShowExternalToolDialog);
     }
-
 }
 
 void CopasiUI3Window::activateElement(const std::string& activate)
@@ -4002,7 +3999,7 @@ void CopasiUI3Window::removeReportTargets()
 
       if (!target.empty())
         {
-          str << "  task: " << task.getObjectName() << " target: " << target << std::endl;
+          str << "  task: " << task.getObjectName() << " target: " << target << "\n";
           task.getReport().setTarget("");
         }
     }
@@ -4427,10 +4424,10 @@ void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
   else
     {
       std::stringstream str;
-      str << "COPASI failed to download the file from " << std::endl
-          << std::endl
-          << mpDataModelGUI->getLastDownloadUrl() << std::endl
-          << std::endl
+      str << "COPASI failed to download the file from " << "\n"
+          << "\n"
+          << mpDataModelGUI->getLastDownloadUrl() << "\n"
+          << "\n"
           << CCopasiMessage::getAllMessageText();
 
       CQMessageBox::critical(this, "Download Failed",

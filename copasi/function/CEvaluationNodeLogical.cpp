@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -746,27 +746,27 @@ std::string CEvaluationNodeLogical::getMMLString(const std::vector< std::string 
             break;
         }
 
-      out << "<mrow>" << std::endl;
+      out << "<mrow>" << "\n";
 
       flag = ((*mpLeftNode < * (CEvaluationNode *)this));
 
-      if (flag) out << "<mfenced>" << std::endl;
+      if (flag) out << "<mfenced>" << "\n";
 
       out << children[0];
 
-      if (flag) out << "</mfenced>" << std::endl;
+      if (flag) out << "</mfenced>" << "\n";
 
-      out << "<mo>" << data << "</mo>" << std::endl;
+      out << "<mo>" << data << "</mo>" << "\n";
 
       flag = ((*(CEvaluationNode *)this < *mpRightNode));
 
-      if (!flag) out << "<mfenced>" << std::endl;
+      if (!flag) out << "<mfenced>" << "\n";
 
       out << children[1];
 
-      if (!flag) out << "</mfenced>" << std::endl;
+      if (!flag) out << "</mfenced>" << "\n";
 
-      out << "</mrow>" << std::endl;
+      out << "</mrow>" << "\n";
     }
 
   return out.str();

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1099,12 +1099,12 @@ CCommonName CModelParameterSpecies::getCompartmentCN() const
 
 std::ostream & operator<<(std::ostream & os, const CModelParameter & o)
 {
-  os << "Model Parameter:" << std::endl;
-  os << "  Type:       " << CModelParameter::TypeNames[o.mType] << std::endl;
-  os << "  CN:         " << o.mCN << std::endl;
-  os << "  Value:      " << o.mValue << std::endl;
-  os << "  Expression: " << o.getInitialExpression() << std::endl;
-  os << "  Diff:       " << CModelParameter::CompareResultNames[o.mCompareResult] << std::endl;
+  os << "Model Parameter:" << "\n";
+  os << "  Type:       " << CModelParameter::TypeNames[o.mType] << "\n";
+  os << "  CN:         " << o.mCN << "\n";
+  os << "  Value:      " << o.mValue << "\n";
+  os << "  Expression: " << o.getInitialExpression() << "\n";
+  os << "  Diff:       " << CModelParameter::CompareResultNames[o.mCompareResult] << "\n";
 
   return os;
 }

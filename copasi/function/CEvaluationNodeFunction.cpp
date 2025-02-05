@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -471,7 +471,7 @@ std::string CEvaluationNodeFunction::getDisplayString(const std::vector< std::st
             {
               return first + "," + second;
             });
-            
+
             return mData + "(" + Arguments + ")";
           }
 
@@ -688,7 +688,7 @@ std::string CEvaluationNodeFunction::getCCodeString(const std::vector< std::stri
               {
                 return first + "," + second;
               });
-              
+
               return mData + "(" + Arguments + ")";
             }
 
@@ -789,7 +789,7 @@ std::string CEvaluationNodeFunction::getBerkeleyMadonnaString(const std::vector<
               {
                 return first + "," + second;
               });
-              
+
               return mData + "(" + Arguments + ")";
             }
 
@@ -892,7 +892,7 @@ std::string CEvaluationNodeFunction::getXPPString(const std::vector< std::string
               {
                 return first + "," + second;
               });
-              
+
               return mData + "(" + Arguments + ")";
             }
 
@@ -1414,7 +1414,7 @@ ASTNode * CEvaluationNodeFunction::toAST(const CDataModel * pDataModel, int sbml
               const CEvaluationNode * sibling = dynamic_cast< const CEvaluationNode * >(child->getSibling());
               node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
               node->addChild(sibling->toAST(pDataModel, sbmlLevel, sbmlVersion));
-            }        
+            }
       }
       break;
 
@@ -1794,7 +1794,7 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
   const CEvaluationNode * pParent = static_cast<const CEvaluationNode *>(getParent());
 
-  out << "<mrow>" << std::endl;
+  out << "<mrow>" << "\n";
 
   switch (mSubType)
     {
@@ -1807,11 +1807,11 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
                 || ((mpArgNode1->mainType() == MainType::CALL) && expand));
       }
 
-      if (flag) out << "<mfenced>" << std::endl;
+      if (flag) out << "<mfenced>" << "\n";
 
       out << children[0];
 
-      if (flag) out << "</mfenced>" << std::endl;
+      if (flag) out << "</mfenced>" << "\n";
 
       break;
 
@@ -1824,169 +1824,169 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
             flag1 |= ((pParent->mainType() | pParent->subType()) == (MainType::OPERATOR | SubType::POWER));
 
-            if (flag1) out << "<mfenced>" << std::endl;
+            if (flag1) out << "<mfenced>" << "\n";
 
-            if (flag1) out << "<mrow>" << std::endl;
+            if (flag1) out << "<mrow>" << "\n";
           }
 
-        out << "<mo>" << "-" << "</mo>" << std::endl;
+        out << "<mo>" << "-" << "</mo>" << "\n";
 
-        if (!flag) out << "<mfenced>" << std::endl;
+        if (!flag) out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (!flag) out << "</mfenced>" << std::endl;
+        if (!flag) out << "</mfenced>" << "\n";
 
-        if (flag1) out << "</mrow>" << std::endl;
+        if (flag1) out << "</mrow>" << "\n";
 
-        if (flag1) out << "</mfenced>" << std::endl;
+        if (flag1) out << "</mfenced>" << "\n";
 
         break;
 
       case SubType::FACTORIAL:
 
-        if (!flag) out << "<mfenced>" << std::endl;
+        if (!flag) out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (!flag) out << "</mfenced>" << std::endl;
+        if (!flag) out << "</mfenced>" << "\n";
 
-        out << "<mo>" << "!" << "</mo>" << std::endl;
+        out << "<mo>" << "!" << "</mo>" << "\n";
 
         break;
 
       case SubType::SQRT:
       case SubType::ABS:
 
-        out << ldata << std::endl;
+        out << ldata << "\n";
 
         out << children[0];
 
-        out << rdata << std::endl;
+        out << rdata << "\n";
 
         break;
 
       case SubType::EXP:
 
-        out << "<msup>" << std::endl;
-        out << "<mo> e  </mo>" << std::endl;
+        out << "<msup>" << "\n";
+        out << "<mo> e  </mo>" << "\n";
 
         out << children[0];
 
-        out << "</msup>" << std::endl;
+        out << "</msup>" << "\n";
 
         break;
 
       case SubType::LOG10:
 
-        out << "<msub>" << std::endl;
-        out << "<mo>" << "log" << "</mo>" << std::endl;
-        out << "<mn>" << "10" << "</mn>" << std::endl;
+        out << "<msub>" << "\n";
+        out << "<mo>" << "log" << "</mo>" << "\n";
+        out << "<mn>" << "10" << "</mn>" << "\n";
 
-        out << "</msub>" << std::endl;
+        out << "</msub>" << "\n";
 
         if (flag)
-          out << "<mspace width=\"0.3em\"/>" << std::endl;
+          out << "<mspace width=\"0.3em\"/>" << "\n";
         else
-          out << "<mfenced>" << std::endl;
+          out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (!flag) out << "</mfenced>" << std::endl;
+        if (!flag) out << "</mfenced>" << "\n";
 
         break;
 
       case SubType::CEIL:
       case SubType::FLOOR:
-        out << "<mi> " << data << " </mi>" << std::endl;
+        out << "<mi> " << data << " </mi>" << "\n";
 
-        out << "<mfenced>" << std::endl;
+        out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        out << "</mfenced>" << std::endl;
+        out << "</mfenced>" << "\n";
 
         break;
 
       case SubType::RUNIFORM:
       case SubType::RNORMAL:
       case SubType::RGAMMA:
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
 
-        out << "<mi>" << mData << "</mi>" << std::endl;
-        out << "<mrow>" << std::endl;
-        out << "<mo>(</mo>" << std::endl;
-        out << "<mrow>" << std::endl;
+        out << "<mi>" << mData << "</mi>" << "\n";
+        out << "<mrow>" << "\n";
+        out << "<mo>(</mo>" << "\n";
+        out << "<mrow>" << "\n";
 
         out << children[0];
 
-        out << "<mo> , </mo>" << std::endl;
+        out << "<mo> , </mo>" << "\n";
 
         out << children[1];
 
-        out << "</mrow>" << std::endl;
-        out << "<mo>) </mo>" << std::endl;
+        out << "</mrow>" << "\n";
+        out << "<mo>) </mo>" << "\n";
 
-        out << "</mrow>" << std::endl;
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
+        out << "</mrow>" << "\n";
         break;
 
       case SubType::MAX:
       case SubType::MIN:
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
 
-        out << "<mi>" << mData << "</mi>" << std::endl;
-        out << "<mrow>" << std::endl;
-        out << "<mo>(</mo>" << std::endl;
+        out << "<mi>" << mData << "</mi>" << "\n";
+        out << "<mrow>" << "\n";
+        out << "<mo>(</mo>" << "\n";
 
         {
           std::string Arguments = BalanceTree< std::string >::create(children, [](const std::string & first, const std::string & second)
           {
             return "<mrow>\n" + first + "<mo> , </mo>\n" +  second + "</mrow>\n";
           });
-               
+
           out << Arguments;
         }
 
-        out << "<mo>) </mo>" << std::endl;
-        out << "</mrow>" << std::endl;
-        out << "</mrow>" << std::endl;
+        out << "<mo>) </mo>" << "\n";
+        out << "</mrow>" << "\n";
+        out << "</mrow>" << "\n";
         break;
 
       case SubType::RPOISSON:
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
 
-        out << "<mi>" << mData << "</mi>" << std::endl;
-        out << "<mrow>" << std::endl;
-        out << "<mo>(</mo>" << std::endl;
-        out << "<mrow>" << std::endl;
+        out << "<mi>" << mData << "</mi>" << "\n";
+        out << "<mrow>" << "\n";
+        out << "<mo>(</mo>" << "\n";
+        out << "<mrow>" << "\n";
 
         out << children[0];
 
-        out << "</mrow>" << std::endl;
-        out << "<mo>) </mo>" << std::endl;
+        out << "</mrow>" << "\n";
+        out << "<mo>) </mo>" << "\n";
 
-        out << "</mrow>" << std::endl;
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
+        out << "</mrow>" << "\n";
         break;
 
       default:
 
-        out << "<mi> " << data << " </mi>" << std::endl;
+        out << "<mi> " << data << " </mi>" << "\n";
 
         if (flag)
-          out << "<mspace width=\"0.3em\"/>" << std::endl;
+          out << "<mspace width=\"0.3em\"/>" << "\n";
         else
-          out << "<mfenced>" << std::endl;
+          out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (!flag) out << "</mfenced>" << std::endl;
+        if (!flag) out << "</mfenced>" << "\n";
 
         break;
     }
 
-  out << "</mrow>" << std::endl;
+  out << "</mrow>" << "\n";
 
   return out.str();
 }

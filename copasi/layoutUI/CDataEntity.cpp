@@ -1,22 +1,24 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layoutUI/CDataEntity.cpp,v $
-//   $Revision: 1.15 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 21:10:43 $
-// End CVS Header
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -80,7 +82,7 @@ C_FLOAT64 CDataEntity::getOrigValueForSpecies(std::string nodeKey)
 
 std::ostream & operator<<(std::ostream &os, const CDataEntity & de)
 {
-  os << "time: " << de.mTime << "  size: " << std::endl;
+  os << "time: " << de.mTime << "  size: " << "\n";
   std::map<std::string, C_FLOAT64>::const_iterator it1;
   std::map<std::string, C_FLOAT64>::const_iterator it2;
 
@@ -89,13 +91,13 @@ std::ostream & operator<<(std::ostream &os, const CDataEntity & de)
       it2 = de.mOrigValueMap.find((*it1).first);
 
       if (it2 != de.mOrigValueMap.end())
-        os << (*it1).first << "  : " << (*it1).second << "  orig: " << (*it2).second << std::endl;
+        os << (*it1).first << "  : " << (*it1).second << "  orig: " << (*it2).second << "\n";
       else
-        os << (*it1).first << "  : " << (*it1).second << "  orig: not found" << std::endl;
+        os << (*it1).first << "  : " << (*it1).second << "  orig: not found" << "\n";
     }
 
   //for (int i=0;i<gn.mConnectedCurveIndices.size();i++)
-  // os << gn.mConnectedCurveIndices[i] << std::endl;;
+  // os << gn.mConnectedCurveIndices[i] << "\n";;
 
   return os;
 }
