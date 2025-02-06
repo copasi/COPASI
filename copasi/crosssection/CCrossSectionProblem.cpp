@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -91,7 +91,7 @@ CCrossSectionProblem::~CCrossSectionProblem()
 
 std::ostream &operator<<(std::ostream &os, const CCrossSectionProblem & o)
 {
-  os << "Cross Section Problem description: Not implemented yet." << std::endl;
+  os << "Cross Section Problem description: Not implemented yet." << "\n";
   const CDataModel* pDataModel = o.getObjectDataModel();
   assert(pDataModel != NULL);
 
