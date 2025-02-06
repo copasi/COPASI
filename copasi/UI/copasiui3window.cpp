@@ -1641,7 +1641,7 @@ void CopasiUI3Window::slotPreferencesAccepted()
 {
   emit signalPreferenceUpdated();
   // save settings
-  CRootContainer::getConfiguration()->save();
+  mpDataModelGUI->saveConfiguration(false);
 }
 
 void CopasiUI3Window::slotTutorialWizard()
@@ -2663,7 +2663,7 @@ void CopasiUI3Window::slotUpdateMIRIAMFinished(bool success)
   */
   if (success)
     {
-      CRootContainer::getConfiguration()->save(true);
+      mpDataModelGUI->saveConfiguration(true);
       CMIRIAMResourceObject::setMIRIAMResources(
         &CRootContainer::getConfiguration()->getRecentMIRIAMResources());
       mpDataModelGUI->updateMIRIAMResourceContents();
@@ -2761,7 +2761,7 @@ void CopasiUI3Window::slotFontSelection()
   if (ok)
     {
       CRootContainer::getConfiguration()->setApplicationFont(TO_UTF8(Font.toString()));
-      CRootContainer::getConfiguration()->save();
+      mpDataModelGUI->saveConfiguration(false);
 
       qApp->setFont(Font);
       // The stylesheet (set in CQCopasiApplication.cpp) is apparently overriding
@@ -2821,7 +2821,7 @@ void CopasiUI3Window::slotAutoCheckForUpdates()
 
       CRootContainer::getConfiguration()->getCheckForUpdates().setEnabled(result == QMessageBox::StandardButton::Yes);
       CRootContainer::getConfiguration()->getCheckForUpdates().setConfirmedCheckForUpdate(true);
-      CRootContainer::getConfiguration()->save();
+      mpDataModelGUI->saveConfiguration(false);
     }
 
   if (!CRootContainer::getConfiguration()->getCheckForUpdates().checkRequired()) return;
@@ -4311,7 +4311,7 @@ void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
           CRootContainer::getConfiguration()->getCheckForUpdates().skipVersion(Latest))
         {
           mAutoUpdateCheck = false;
-          CRootContainer::getConfiguration()->save();
+          mpDataModelGUI->saveConfiguration(false);
 
           return;
         }
@@ -4368,7 +4368,7 @@ void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
         }
 
       mAutoUpdateCheck = false;
-      CRootContainer::getConfiguration()->save();
+      mpDataModelGUI->saveConfiguration(false);
     }
   else if (mpDataModelGUI->getLastDownloadUrl() != "https://api.github.com/repos/copasi/COPASI/releases/latest")
     {

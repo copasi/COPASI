@@ -311,13 +311,14 @@ bool CConfigurationFile::save(bool saveMiriam)
 
   const CCopasiParameterGroup * pMiriam = dynamic_cast< const CCopasiParameterGroup * >(copyWithoutMiriam.getParameter("MIRIAM Resources"));
   std::string miriamConfigFile = ConfigFile + std::string(".miriam");
-  saveMiriam = saveMiriam  || (!CDirEntry::exist(miriamConfigFile) && mpRecentMIRIAMResources->getResourceList().size() > 0);
+  saveMiriam |= (!CDirEntry::exist(miriamConfigFile) && mpRecentMIRIAMResources->getResourceList().size() > 0);
+
   if (pMiriam && saveMiriam)
-  {
-    CConfigurationFile::CXML XML;
-    XML.setConfiguration(*pMiriam);
-    XML.CCopasiXMLInterface::save(miriamConfigFile, CDirEntry::dirName(ConfigFile));
-  }
+    {
+      CConfigurationFile::CXML XML;
+      XML.setConfiguration(*pMiriam);
+      XML.CCopasiXMLInterface::save(miriamConfigFile, CDirEntry::dirName(ConfigFile));
+    }
 
   copyWithoutMiriam.removeParameter("MIRIAM Resources");
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -99,7 +99,7 @@ DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel):
   mpDataModel(pDataModel),
   mListViews(),
   mFramework(0),
-  mpThread(NULL),
+  mRunningThreads(),
   mpProgressBar(NULL),
   mSuccess(false),
   mSBMLImportString(),
@@ -125,6 +125,7 @@ DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel):
   , mSEDMLExportCOPASIMIRIAM(true)
   , mOptions()
   , mIgnoreNextFile(false)
+  , mSaveMIRIAM(false)
 {
   mpOutputHandlerPlot = new COutputHandlerPlot();
   mpDataModel->addInterface(mpOutputHandlerPlot);
@@ -163,9 +164,10 @@ void DataModelGUI::addModel(const std::string & fileName)
   mSuccess = true;
   mFileName = fileName;
 
-  mpThread = new CQThread(this, &DataModelGUI::addModelRun);
-  connect(mpThread, SIGNAL(finished()), this, SLOT(addModelFinished()));
-  mpThread->start();
+  CQThread *pThread = new CQThread(this, &DataModelGUI::addModelRun);
+  connect(pThread, SIGNAL(finished()), this, SLOT(addModelFinished()));
+  mRunningThreads["addModelRun"] = pThread;
+  pThread->start();
 }
 
 void DataModelGUI::addModelRun()
@@ -182,9 +184,8 @@ void DataModelGUI::addModelFinished()
       //linkDataModelToGUI();
     }
 
-  disconnect(mpThread, SIGNAL(finished()), this, SLOT(addModelFinished()));
-
-  threadFinished();
+  disconnect(mRunningThreads["addModelRun"], SIGNAL(finished()), this, SLOT(addModelFinished()));
+  threadFinished("addModelRun");
 }
 
 bool DataModelGUI::createModel()
@@ -206,9 +207,10 @@ void DataModelGUI::loadModel(const std::string & fileName)
   mSuccess = true;
   mFileName = fileName;
 
-  mpThread = new CQThread(this, &DataModelGUI::loadModelRun);
-  connect(mpThread, SIGNAL(finished()), this, SLOT(loadModelFinished()));
-  mpThread->start();
+  CQThread *pThread = new CQThread(this, &DataModelGUI::loadModelRun);
+  connect(pThread, SIGNAL(finished()), this, SLOT(loadModelFinished()));
+  mRunningThreads["loadModelRun"] = pThread;
+  pThread->start();
 }
 
 void DataModelGUI::downloadFileFromUrl(const std::string & url, const std::string& destination, bool withProgress)
@@ -292,9 +294,8 @@ void DataModelGUI::loadModelFinished()
       linkDataModelToGUI();
     }
 
-  disconnect(mpThread, SIGNAL(finished()), this, SLOT(loadModelFinished()));
-
-  threadFinished();
+  disconnect(mRunningThreads["loadModelRun"], SIGNAL(finished()), this, SLOT(loadModelFinished()));
+  threadFinished("loadModelRun");
 }
 
 void DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
@@ -305,9 +306,10 @@ void DataModelGUI::saveModel(const std::string & fileName, bool overwriteFile)
   mFileName = fileName;
   mOverWrite = overwriteFile;
 
-  mpThread = new CQThread(this, &DataModelGUI::saveModelRun);
-  connect(mpThread, SIGNAL(finished()), this, SLOT(saveModelFinished()));
-  mpThread->start();
+  CQThread *pThread = new CQThread(this, &DataModelGUI::saveModelRun);
+  connect(pThread, SIGNAL(finished()), this, SLOT(saveModelFinished()));
+  mRunningThreads["saveModelRun"] = pThread;
+  pThread->start();
 }
 
 void DataModelGUI::saveModelRun()
@@ -336,9 +338,9 @@ void DataModelGUI::saveModelFinished()
       addRecentFile(mFileName);
     }
 
-  disconnect(mpThread, SIGNAL(finished()), this, SLOT(saveModelFinished()));
+  disconnect(mRunningThreads["saveModelRun"], SIGNAL(finished()), this, SLOT(saveModelFinished()));
 
-  threadFinished();
+  threadFinished("saveModelRun");
 }
 
 void DataModelGUI::importSBMLFromString(const std::string & sbmlDocumentText)
@@ -348,9 +350,10 @@ void DataModelGUI::importSBMLFromString(const std::string & sbmlDocumentText)
   mSuccess = true;
   mSBMLImportString = sbmlDocumentText;
 
-  mpThread = new CQThread(this, &DataModelGUI::importSBMLFromStringRun);
-  connect(mpThread, SIGNAL(finished()), this, SLOT(importSBMLFromStringFinished()));
-  mpThread->start();
+  CQThread *pThread = new CQThread(this, &DataModelGUI::importSBMLFromStringRun);
+  mRunningThreads["importSBMLFromStringRun"] = pThread;
+  connect(pThread, SIGNAL(finished()), this, SLOT(importSBMLFromStringFinished()));
+  pThread->start();
 }
 
 void DataModelGUI::importSBMLFromStringRun()
@@ -381,9 +384,8 @@ void DataModelGUI::importSBMLFromStringFinished()
       linkDataModelToGUI();
     }
 
-  disconnect(mpThread, SIGNAL(finished()), this, SLOT(importSBMLFromStringFinished()));
-
-  threadFinished();
+  disconnect(mRunningThreads["importSBMLFromStringRun"], SIGNAL(finished()), this, SLOT(importSBMLFromStringFinished()));
+  threadFinished("importSBMLFromStringRun");
 }
 
 void  DataModelGUI::saveFunctionDB(const std::string & fileName)
@@ -424,9 +426,10 @@ void DataModelGUI::importSBML(const std::string & fileName)
 
   mSuccess = true;
   mFileName = fileName;
-  mpThread = new CQThread(this, &DataModelGUI::importSBMLRun);
-  connect(mpThread, SIGNAL(finished()), this, SLOT(importSBMLFinished()));
-  mpThread->start();
+  CQThread *pThread = new CQThread(this, &DataModelGUI::importSBMLRun);
+  connect(pThread, SIGNAL(finished()), this, SLOT(importSBMLFinished()));
+  mRunningThreads["importSBMLRun"] = pThread;
+  pThread->start();
 }
 
 void DataModelGUI::importSBMLRun()
@@ -454,9 +457,8 @@ void DataModelGUI::importSBMLFinished()
       linkDataModelToGUI();
     }
 
-  disconnect(mpThread, SIGNAL(finished()), this, SLOT(importSBMLFinished()));
-
-  threadFinished();
+  disconnect(mRunningThreads["importSBMLRun"], SIGNAL(finished()), this, SLOT(importSBMLFinished()));
+  threadFinished("importSBMLRun");
 }
 
 void DataModelGUI::exportSBMLToString(std::string & sbmlDocumentText)
@@ -466,9 +468,10 @@ void DataModelGUI::exportSBMLToString(std::string & sbmlDocumentText)
   mSuccess = true;
   mpSBMLExportString = & sbmlDocumentText;
 
-  mpThread = new CQThread(this, &DataModelGUI::exportSBMLToStringRun);
-  connect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLToStringFinished()));
-  mpThread->start();
+  CQThread *pThread = new CQThread(this, &DataModelGUI::exportSBMLToStringRun);
+  connect(pThread, SIGNAL(finished()), this, SLOT(exportSBMLToStringFinished()));
+  mRunningThreads["exportSBMLToStringRun"] = pThread;
+  pThread->start();
 }
 
 void DataModelGUI::exportSBMLToStringRun()
@@ -487,23 +490,25 @@ void DataModelGUI::exportSBMLToStringRun()
 
 void DataModelGUI::exportSBMLToStringFinished()
 {
-  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLToStringFinished()));
-
-  threadFinished();
+  disconnect(mRunningThreads["exportSBMLToStringRun"], SIGNAL(finished()), this, SLOT(exportSBMLToStringFinished()));
+  threadFinished("exportSBMLToStringRun");
 }
 
 bool
 DataModelGUI::isBusy() const
 {
-  return mpThread != NULL;
+  return mpProgressBar != NULL;
 }
 
-void DataModelGUI::threadFinished()
+void DataModelGUI::threadFinished(const std::string & thread)
 {
-  if (mpThread != NULL)
+  std::map< std::string, CQThread * >::iterator found = mRunningThreads.find(thread);
+
+  if (found != mRunningThreads.end()
+      && found->second != NULL)
     {
-      mpThread->deleteLater();
-      mpThread = NULL;
+      found->second->deleteLater();
+      found->second = NULL;
     }
 
   if (mpProgressBar != NULL)
@@ -528,9 +533,10 @@ void DataModelGUI::exportSBML(const std::string & fileName, bool overwriteFile, 
   mSBMLExportIncomplete = exportIncomplete;
   mSBMLExportCOPASIMIRIAM = exportCOPASIMIRIAM;
 
-  mpThread = new CQThread(this, &DataModelGUI::exportSBMLRun);
-  connect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
-  mpThread->start();
+  CQThread *pThread = new CQThread(this, &DataModelGUI::exportSBMLRun);
+  connect(pThread, SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
+  mRunningThreads["exportSBMLRun"] = pThread;
+  pThread->start();
 }
 
 void DataModelGUI::exportSBMLRun()
@@ -554,9 +560,8 @@ void DataModelGUI::exportSBMLFinished()
       addRecentFile(mFileName);
     }
 
-  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
-
-  threadFinished();
+  disconnect(mRunningThreads["exportSBMLRun"], SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
+  threadFinished("exportSBMLRun");
 }
 
 void DataModelGUI::exportMathModel(const std::string & fileName, const std::string & filter, bool overwriteFile)
@@ -568,9 +573,10 @@ void DataModelGUI::exportMathModel(const std::string & fileName, const std::stri
   mOverWrite = overwriteFile;
   mExportFormat = filter;
 
-  mpThread = new CQThread(this, &DataModelGUI::exportMathModelRun);
-  connect(mpThread, SIGNAL(finished()), this, SLOT(exportMathModelFinished()));
-  mpThread->start();
+  CQThread *pThread = new CQThread(this, &DataModelGUI::exportMathModelRun);
+  connect(pThread, SIGNAL(finished()), this, SLOT(exportMathModelFinished()));
+  mRunningThreads["exportMathModelRun"] = pThread;
+  pThread->start();
 }
 
 void DataModelGUI::exportMathModelRun()
@@ -604,9 +610,8 @@ const std::string& DataModelGUI::getLastDownloadDestination() const
 
 void DataModelGUI::exportMathModelFinished()
 {
-  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportMathModelFinished()));
-
-  threadFinished();
+  disconnect(mRunningThreads["exportMathModelRun"], SIGNAL(finished()), this, SLOT(exportMathModelFinished()));
+  threadFinished("exportMathModelRun");
 }
 
 void DataModelGUI::miriamDownloadFinished(QNetworkReply* reply)
@@ -695,8 +700,7 @@ void DataModelGUI::downloadFinished(QNetworkReply *reply)
     }
 
   reply->deleteLater();
-
-  threadFinished();
+  threadFinished("");
 }
 
 void DataModelGUI::miriamDownloadProgress(qint64 received, qint64 total)
@@ -970,7 +974,7 @@ void DataModelGUI::addRecentFile(const std::string & file)
         break;
     }
 
-  CRootContainer::getConfiguration()->save();
+  saveConfiguration(false);
 }
 
 /**
@@ -1094,9 +1098,10 @@ void DataModelGUI::exportShinyArchive(const std::string & fileName, bool overwri
   mFileName = fileName;
   mOverWrite = overwriteFile;
 
-  mpThread = new CQThread(this, &DataModelGUI::exportShinyArchiveRun);
-  connect(mpThread, SIGNAL(finished()), this, SLOT(exportShinyFinished()));
-  mpThread->start();
+  CQThread *pThread = new CQThread(this, &DataModelGUI::exportShinyArchiveRun);
+  connect(pThread, SIGNAL(finished()), this, SLOT(exportShinyFinished()));
+  mRunningThreads["exportShinyArchiveRun"] = pThread;
+  pThread->start();
 }
 
 void DataModelGUI::exportShinyArchiveRun()
@@ -1120,9 +1125,8 @@ void DataModelGUI::exportShinyArchiveRun()
 void DataModelGUI::exportShinyFinished()
 {
 
-  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportShinyFinished()));
-
-  threadFinished();
+  disconnect(mRunningThreads["exportShinyArchiveRun"], SIGNAL(finished()), this, SLOT(exportShinyFinished()));
+  threadFinished("exportShinyArchiveRun");
 }
 
 void DataModelGUI::openCombineArchive(const std::string & fileName, const SedmlImportOptions * pOptions)
@@ -1137,9 +1141,10 @@ void DataModelGUI::openCombineArchive(const std::string & fileName, const SedmlI
   else
     mOptions = SedmlImportOptions();
 
-  mpThread = new CQThread(this, &DataModelGUI::openCombineArchiveRun);
-  connect(mpThread, SIGNAL(finished()), this, SLOT(importCombineFinished()));
-  mpThread->start();
+  CQThread *pThread = new CQThread(this, &DataModelGUI::openCombineArchiveRun);
+  connect(pThread, SIGNAL(finished()), this, SLOT(importCombineFinished()));
+  mRunningThreads["openCombineArchiveRun"] = pThread;
+  pThread->start();
 }
 
 void DataModelGUI::exportCombineArchive(const std::string & fileName, bool overwriteFile)
@@ -1150,9 +1155,10 @@ void DataModelGUI::exportCombineArchive(const std::string & fileName, bool overw
   mFileName = fileName;
   mOverWrite = overwriteFile;
 
-  mpThread = new CQThread(this, &DataModelGUI::exportCombineArchiveRun);
-  connect(mpThread, SIGNAL(finished()), this, SLOT(exportCombineFinished()));
-  mpThread->start();
+  CQThread *pThread = new CQThread(this, &DataModelGUI::exportCombineArchiveRun);
+  connect(pThread, SIGNAL(finished()), this, SLOT(exportCombineFinished()));
+  mRunningThreads["exportCombineArchiveRun"] = pThread;
+  pThread->start();
 }
 
 void DataModelGUI::openCombineArchiveRun()
@@ -1198,17 +1204,15 @@ void DataModelGUI::importCombineFinished()
       linkDataModelToGUI();
     }
 
-  disconnect(mpThread, SIGNAL(finished()), this, SLOT(importCombineFinished()));
-
-  threadFinished();
+  disconnect(mRunningThreads["openCombineArchiveRun"], SIGNAL(finished()), this, SLOT(importCombineFinished()));
+  threadFinished("openCombineArchiveRun");
 }
 
 void DataModelGUI::exportCombineFinished()
 {
 
-  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
-
-  threadFinished();
+  disconnect(mRunningThreads["exportCombineArchiveRun"], SIGNAL(finished()), this, SLOT(exportSBMLFinished()));
+  threadFinished("exportCombineArchiveRun");
 }
 
 void DataModelGUI::importSEDML(const std::string & fileName, const SedmlImportOptions * pOptions)
@@ -1223,9 +1227,10 @@ void DataModelGUI::importSEDML(const std::string & fileName, const SedmlImportOp
   else
     mOptions = SedmlImportOptions();
 
-  mpThread = new CQThread(this, &DataModelGUI::importSEDMLRun);
-  connect(mpThread, SIGNAL(finished()), this, SLOT(importSEDMLFinished()));
-  mpThread->start();
+  CQThread *pThread = new CQThread(this, &DataModelGUI::importSEDMLRun);
+  connect(pThread, SIGNAL(finished()), this, SLOT(importSEDMLFinished()));
+  mRunningThreads["importSEDMLRun"] = pThread;
+  pThread->start();
 }
 
 void DataModelGUI::importSEDMLRun()
@@ -1251,9 +1256,8 @@ void DataModelGUI::importSEDMLFinished()
       linkDataModelToGUI();
     }
 
-  disconnect(mpThread, SIGNAL(finished()), this, SLOT(importSEDMLFinished()));
-
-  threadFinished();
+  disconnect(mRunningThreads["importSEDMLRun"], SIGNAL(finished()), this, SLOT(importSEDMLFinished()));
+  threadFinished("importSEDMLRun");
 }
 
 void DataModelGUI::exportSEDML(const std::string & fileName, bool overwriteFile, int sedmlLevel, int sedmlVersion, bool exportIncomplete, bool exportCOPASIMIRIAM)
@@ -1268,9 +1272,10 @@ void DataModelGUI::exportSEDML(const std::string & fileName, bool overwriteFile,
   mSEDMLExportIncomplete = exportIncomplete;
   mSEDMLExportCOPASIMIRIAM = exportCOPASIMIRIAM;
 
-  mpThread = new CQThread(this, &DataModelGUI::exportSEDMLRun);
-  connect(mpThread, SIGNAL(finished()), this, SLOT(exportSEDMLFinished()));
-  mpThread->start();
+  CQThread *pThread = new CQThread(this, &DataModelGUI::exportSEDMLRun);
+  connect(pThread, SIGNAL(finished()), this, SLOT(exportSEDMLFinished()));
+  mRunningThreads["importSEDMLRun"] = pThread;
+  pThread->start();
 }
 
 void DataModelGUI::exportSEDMLFinished()
@@ -1280,9 +1285,8 @@ void DataModelGUI::exportSEDMLFinished()
       addRecentFile(mFileName);
     }
 
-  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSEDMLFinished()));
-
-  threadFinished();
+  disconnect(mRunningThreads["importSEDMLRun"], SIGNAL(finished()), this, SLOT(exportSEDMLFinished()));
+  threadFinished("importSEDMLRun");
 }
 
 void DataModelGUI::exportSEDMLToString(std::string & sedmlDocumentText)
@@ -1292,9 +1296,10 @@ void DataModelGUI::exportSEDMLToString(std::string & sedmlDocumentText)
   mSuccess = true;
   mpSEDMLExportString = & sedmlDocumentText;
 
-  mpThread = new CQThread(this, &DataModelGUI::exportSEDMLToStringRun);
-  connect(mpThread, SIGNAL(finished()), this, SLOT(exportSEDMLToStringFinished()));
-  mpThread->start();
+  CQThread *pThread = new CQThread(this, &DataModelGUI::exportSEDMLToStringRun);
+  connect(pThread, SIGNAL(finished()), this, SLOT(exportSEDMLToStringFinished()));
+  mRunningThreads["exportSEDMLToStringRun"] = pThread;
+  pThread->start();
 }
 
 void DataModelGUI::exportSEDMLToStringRun()
@@ -1313,9 +1318,8 @@ void DataModelGUI::exportSEDMLToStringRun()
 
 void DataModelGUI::exportSEDMLToStringFinished()
 {
-  disconnect(mpThread, SIGNAL(finished()), this, SLOT(exportSEDMLToStringFinished()));
-
-  threadFinished();
+  disconnect(mRunningThreads["exportSEDMLToStringRun"], SIGNAL(finished()), this, SLOT(exportSEDMLToStringFinished()));
+  threadFinished("exportSEDMLToStringRun");
 }
 
 void DataModelGUI::exportSEDMLRun()
@@ -1330,4 +1334,34 @@ void DataModelGUI::exportSEDMLRun()
     {
       mSuccess = false;
     }
+}
+
+void DataModelGUI::saveConfiguration(bool saveMIRIAM)
+{
+  mSaveMIRIAM = saveMIRIAM;
+
+  CQThread *pThread = new CQThread(this, &DataModelGUI::saveConfigurationRun);
+  connect(pThread, SIGNAL(finished()), this, SLOT(slotSaveConfigurationFinished()));
+  mRunningThreads["saveConfigurationRun"] = pThread;
+  pThread->start();
+}
+
+void DataModelGUI::saveConfigurationRun()
+{
+
+  try
+    {
+      mSuccess = CRootContainer::getConfiguration()->save(mSaveMIRIAM);
+    }
+
+  catch (...)
+    {
+      mSuccess = false;
+    }
+}
+
+void DataModelGUI::slotSaveConfigurationFinished()
+{
+  disconnect(mRunningThreads["saveConfigurationRun"], SIGNAL(finished()), this, SLOT(slotSaveConfigurationFinished()));
+  threadFinished("saveConfigurationRun");
 }

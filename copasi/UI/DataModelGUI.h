@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -129,7 +129,7 @@ public slots:
   void importCombineFinished();
   void exportCombineFinished();
   void exportShinyFinished();
-
+  void slotSaveConfigurationFinished();
   void addModelFinished();
 
   void miriamDownloadFinished(QNetworkReply*);
@@ -160,6 +160,8 @@ public:
   void setFramework(int framework);
   void updateMIRIAMResourceContents();
   void commit();
+  void saveConfiguration(bool updateMIRIAM);
+  void saveConfigurationRun();
 
   /**
    * if this flag is set, the next loaded / imported file will not be
@@ -170,7 +172,7 @@ public:
 
 protected:
 private:
-  void threadFinished();
+  void threadFinished(const std::string & thread);
 
 signals:
   void updateCompleteView();
@@ -184,7 +186,8 @@ private:
   std::set< ListViews * > mListViews;
   int mFramework;
 
-  CQThread * mpThread;
+  std::map< std::string, CQThread * > mRunningThreads;
+
   CProgressBar * mpProgressBar;
   bool mSuccess;
   std::string mSBMLImportString;
@@ -213,6 +216,7 @@ private:
   SedmlImportOptions mOptions;
 
   bool mIgnoreNextFile;
+  bool mSaveMIRIAM;
 };
 
 #endif
