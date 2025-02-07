@@ -97,11 +97,11 @@ void COptions::init(C_INT argc, char *argv[])
 
 #endif
 
+  std::string Self;
   if (argc > 0)
-    setValue("Self", Utf8[0]);
-  else
-    setValue("Self", std::string(""));
+    Self = Utf8[0];
 
+  setValue("Self", Self);
   setValue("PWD", getPWD());
 
   // First we must clean up the command line by
@@ -213,17 +213,33 @@ void COptions::init(C_INT argc, char *argv[])
   if (!CDirEntry::exist(exampleDir))
     exampleDir = CopasiDir + "/Contents/Resources/examples";
 
-  setValue("ExampleDir", exampleDir);
-  setValue("WizardDir", CopasiDir + "/Contents/Resources/doc/html");
+  std::string wizardDir = CopasiDir + "/Contents/Resources/doc/html";
+  
 #elif WIN32
   setValue("DefaultConfigDir", CopasiDir + "\\share\\copasi\\config");
-  setValue("ExampleDir", CopasiDir + "\\share\\copasi\\examples");
-  setValue("WizardDir", CopasiDir + "\\share\\copasi\\doc\\html");
+  std::string exampleDir = CopasiDir + "\\share\\copasi\\examples";
+  std::string wizardDir = CopasiDir + "\\share\\copasi\\doc\\html";
 #else // All Unix flavors have the same installation structure.
   setValue("DefaultConfigDir", CopasiDir + "/share/copasi/config");
-  setValue("ExampleDir", CopasiDir + "/share/copasi/examples");
-  setValue("WizardDir", CopasiDir + "/share/copasi/doc/html");
+  std::string exampleDir = CopasiDir + "/share/copasi/examples";
+  if (!CDirEntry::exist(exampleDir) && CDirEntry::exist("/usr/share/copasi/examples"))
+    exampleDir = "/usr/share/copasi/examples";
+
+  std::string wizardDir = CopasiDir + "/share/copasi/doc/html";
+  
 #endif
+
+  if (!CDirEntry::exist(exampleDir) && CDirEntry::exist(CDirEntry::dirName(Self) + std::string("../share/copasi/examples")))
+    exampleDir = CDirEntry::dirName(Self) + std::string("/../share/copasi/examples");
+  if (!CDirEntry::exist(exampleDir) && CDirEntry::exist(CDirEntry::dirName(Self) + std::string("../../share/copasi/examples")))
+    exampleDir = CDirEntry::dirName(Self) + std::string("/../../share/copasi/examples");
+  setValue("ExampleDir", exampleDir);
+  
+  if (!CDirEntry::exist(wizardDir) && CDirEntry::exist(CDirEntry::dirName(Self) + std::string("../share/copasi/doc/html")))
+    wizardDir = CDirEntry::dirName(Self) + std::string("/../share/copasi/doc/html");
+  if (!CDirEntry::exist(wizardDir) && CDirEntry::exist(CDirEntry::dirName(Self) + std::string("../../share/copasi/doc/html")))
+    wizardDir = CDirEntry::dirName(Self) + std::string("/../../share/copasi/doc/html");
+  setValue("WizardDir", wizardDir);
 
   /* Create manually for each option except for:
      CopasiDir, ConfigFile, Home, and Default
