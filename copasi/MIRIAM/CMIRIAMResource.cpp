@@ -36,7 +36,6 @@
 #include "copasi/utilities/CDirEntry.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/commandline/CConfigurationFile.h"
-#include "copasi/xml/CGroupXML.h"
 
 #include <sbml/xml/XMLNode.h>
 #include <sbml/xml/XMLAttributes.h>
@@ -299,31 +298,6 @@ const CMIRIAMResources & CMIRIAMResources::operator=(const CCopasiParameterGroup
   initializeParameter();
 
   return *this;
-}
-
-bool CMIRIAMResources::save()
-{
-  std::string FileName = COptions::getConfigDir() + CDirEntry::Separator + "MIRIAMResources.xml";
-  CGroupXML XML(*this);
-
-  bool success = XML.CCopasiXMLInterface::save(FileName, CDirEntry::dirName(FileName));
-
-  return success;
-}
-
-bool CMIRIAMResources::load()
-{
-  std::string FileName = COptions::getConfigDir() + CDirEntry::Separator + "MIRIAMResources.xml";
-
-  CMIRIAMResource Loaded;
-  CGroupXML XML(Loaded);
-
-  bool success = XML.CCopasiXMLInterface::save(FileName, CDirEntry::dirName(FileName));
-
-  if (success)
-    *this = Loaded;
-
-  return success;
 }
 
 void CMIRIAMResources::createDisplayNameMap()

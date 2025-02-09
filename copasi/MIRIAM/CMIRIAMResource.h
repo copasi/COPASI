@@ -264,18 +264,6 @@ public:
   virtual bool elevateChildren();
 
   /**
-   * Save the configuration file.
-   * @return bool success
-   */
-  virtual bool save();
-
-  /**
-   * Load the configuration file.
-   * @return bool success
-   */
-  virtual bool load();
-
-  /**
    * Assignment operator
    * @param const CCopasiParameterGroup & rhs
    * @return const CMIRIAMResources & self

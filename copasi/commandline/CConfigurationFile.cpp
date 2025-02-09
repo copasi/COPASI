@@ -34,6 +34,7 @@
 #include "copasi/MIRIAM/CConstants.h"
 
 #include "copasi/xml/parser/CXMLParser.h"
+#include "copasi/xml/CGroupXML.h"
 
 CRecentFiles::CRecentFiles(const std::string & name,
                            const CDataContainer * pParent):
@@ -117,7 +118,7 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   , mpRecentFiles(NULL)
   , mpRecentSBMLFiles(NULL)
   , mpRecentSEDMLFiles(NULL)
-  , mpRecentMIRIAMResources(NULL)
+  , mRecentMIRIAMResources("MIRIAM Resources", pParent)
   , mpApplicationFont(NULL)
   , mpValidateUnits(NULL)
   , mpDisplayIssueSeverity(NULL)
@@ -151,7 +152,7 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   , mpRecentFiles(NULL)
   , mpRecentSBMLFiles(NULL)
   , mpRecentSEDMLFiles(NULL)
-  , mpRecentMIRIAMResources(NULL)
+  , mRecentMIRIAMResources(src.mRecentMIRIAMResources, pParent)
   , mpApplicationFont(NULL)
   , mpValidateUnits(NULL)
   , mpDisplayIssueSeverity(NULL)
@@ -201,16 +202,20 @@ bool CConfigurationFile::elevateChildren()
 
   if (!mpRecentSEDMLFiles) success = false;
 
-  mpRecentMIRIAMResources =
-    elevate<CMIRIAMResources, CCopasiParameterGroup>(getGroup("MIRIAM Resources"));
-  CMIRIAMResourceObject::setMIRIAMResources(mpRecentMIRIAMResources);
-
-  if (!mpRecentMIRIAMResources) success = false;
-
   mpCheckForUpdates =
     elevate<CCheckForUpdates, CCopasiParameterGroup>(getGroup("Check for Updates"));
 
   if (!mpCheckForUpdates) success = false;
+
+  // We need to make sure that the contained group "MIRIAM Resources" is converted to mRecentMIRIAMResources
+  CCopasiParameterGroup *pMIRIAMResources = getGroup("MIRIAM Resources");
+
+  if (mRecentMIRIAMResources.getResourceList().size() == 0
+      && pMIRIAMResources != nullptr)
+    {
+      mRecentMIRIAMResources = *pMIRIAMResources;
+      removeParameter(pMIRIAMResources);
+    }
 
   return success;
 }
@@ -233,9 +238,6 @@ void CConfigurationFile::initializeParameter()
 
   CCopasiParameter* pParm = getParameter("Application Font");
   pParm->setUserInterfaceFlag(pParm->getUserInterfaceFlag() & ~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::eUserInterfaceFlag::editable));
-
-  pParm = assertGroup("MIRIAM Resources");
-  pParm->setUserInterfaceFlag(pParm->getUserInterfaceFlag() & ~CCopasiParameter::UserInterfaceFlag(CCopasiParameter::eUserInterfaceFlag::basic));
 
   mpDisplayIssueSeverity = assertGroup("Display Issue Severity");
   mpDisplayIssueKinds = assertGroup("Display Issue Kinds");
@@ -307,26 +309,15 @@ bool CConfigurationFile::save(bool saveMiriam)
   std::string ConfigFile;
   COptions::getValue("ConfigFile", ConfigFile);
 
-  CConfigurationFile copyWithoutMiriam(*this);
-
-  const CCopasiParameterGroup * pMiriam = dynamic_cast< const CCopasiParameterGroup * >(copyWithoutMiriam.getParameter("MIRIAM Resources"));
   std::string miriamConfigFile = ConfigFile + std::string(".miriam");
-  saveMiriam |= (!CDirEntry::exist(miriamConfigFile) && mpRecentMIRIAMResources->getResourceList().size() > 0);
+  saveMiriam |= (!CDirEntry::exist(miriamConfigFile) && mRecentMIRIAMResources.getResourceList().size() > 0);
 
-  if (pMiriam && saveMiriam)
+  if (saveMiriam)
     {
-      CConfigurationFile::CXML XML;
-      XML.setConfiguration(*pMiriam);
-      XML.CCopasiXMLInterface::save(miriamConfigFile, CDirEntry::dirName(ConfigFile));
+      CGroupXML(mRecentMIRIAMResources).CCopasiXMLInterface::save(miriamConfigFile, CDirEntry::dirName(ConfigFile));
     }
 
-  copyWithoutMiriam.removeParameter("MIRIAM Resources");
-
-  CConfigurationFile::CXML XML;
-
-  XML.setConfiguration(copyWithoutMiriam);
-
-  bool success = XML.CCopasiXMLInterface::save(ConfigFile, CDirEntry::dirName(ConfigFile));
+  bool success = CGroupXML(*this).CCopasiXMLInterface::save(ConfigFile, CDirEntry::dirName(ConfigFile));
 
   return success;
 }
@@ -336,58 +327,48 @@ bool CConfigurationFile::load()
   std::string ConfigFile;
   COptions::getValue("ConfigFile", ConfigFile);
 
-  CConfigurationFile::CXML XML;
-
-  bool success = XML.CCopasiXMLInterface::load(ConfigFile, ConfigFile);
+  CCopasiParameterGroup Configuration("Configuration");
+  bool success = CGroupXML(Configuration).CCopasiXMLInterface::load(ConfigFile, ConfigFile);
 
   if (success)
-    {
-      *this = XML.getConfiguration();
-      initializeParameter();
-    }
+    *this = Configuration;
 
   std::string configMIRIAMResourceFile(ConfigFile + std::string(".miriam"));
   bool haveConfigMiriam = CDirEntry::exist(configMIRIAMResourceFile);
+
   if (haveConfigMiriam)
-  {
-      CConfigurationFile::CXML XMLMIRIAMResource;
+    {
+      CCopasiParameterGroup MIRIAMResources("MIRIAM Resources");
 
-      if (XMLMIRIAMResource.CCopasiXMLInterface::load(configMIRIAMResourceFile,
-                                                      configMIRIAMResourceFile))
-        {
-          const CCopasiParameterGroup * group = XMLMIRIAMResource.getConfiguration().getGroup("MIRIAM Resources");
+      if (CGroupXML(MIRIAMResources).CCopasiXMLInterface::load(configMIRIAMResourceFile, configMIRIAMResourceFile))
+        mRecentMIRIAMResources = MIRIAMResources;
+      else
+        return false;
+    }
 
-          if (group == NULL)
-            return false;
-
-          *mpRecentMIRIAMResources = *group;
-          mpRecentMIRIAMResources->initializeParameter();
-        }
-  }
-
-  if (mpRecentMIRIAMResources->getResourceList().size() == 0)
+  if (mRecentMIRIAMResources.getResourceList().size() == 0)
     {
       // We load the default MIRIAM resources, which are part of the COPASI installation.
       std::string MIRIAMResourceFile;
       COptions::getValue("DefaultConfigDir", MIRIAMResourceFile);
       MIRIAMResourceFile += CDirEntry::Separator + "MIRIAMResources.xml";
 
-      CConfigurationFile::CXML XMLMIRIAMResource;
+      CCopasiParameterGroup Configuration("Configuration");
 
-      if (XMLMIRIAMResource.CCopasiXMLInterface::load(MIRIAMResourceFile,
-          MIRIAMResourceFile))
+      if (CGroupXML(Configuration).CCopasiXMLInterface::load(MIRIAMResourceFile,
+                                                             MIRIAMResourceFile))
         {
-          const CCopasiParameterGroup* group = XMLMIRIAMResource.getConfiguration().getGroup("MIRIAM Resources");
+          const CCopasiParameterGroup *pGroup = Configuration.getGroup("MIRIAM Resources");
 
-          if (group == NULL) return false;
+          if (pGroup == nullptr)
+            return false;
 
-          *mpRecentMIRIAMResources = *group;
-          mpRecentMIRIAMResources->initializeParameter();
+          mRecentMIRIAMResources = *pGroup;
 
           if (!haveConfigMiriam)
-          {
-              XMLMIRIAMResource.CCopasiXMLInterface::save(configMIRIAMResourceFile, configMIRIAMResourceFile);
-          }
+            {
+              CGroupXML(mRecentMIRIAMResources).CCopasiXMLInterface::save(configMIRIAMResourceFile, configMIRIAMResourceFile);
+            }
         }
       else
         success = false;
@@ -412,20 +393,30 @@ const CConfigurationFile & CConfigurationFile::operator=(const CConfigurationFil
 }
 
 CRecentFiles & CConfigurationFile::getRecentFiles()
-{return *mpRecentFiles;}
+{
+  return *mpRecentFiles;
+}
 
 CRecentFiles & CConfigurationFile::getRecentSBMLFiles()
-{return *mpRecentSBMLFiles;}
+{
+  return *mpRecentSBMLFiles;
+}
 
 //TODO SEDML
 CRecentFiles & CConfigurationFile::getRecentSEDMLFiles()
-{return *mpRecentSEDMLFiles;}
+{
+  return *mpRecentSEDMLFiles;
+}
 
 CMIRIAMResources & CConfigurationFile::getRecentMIRIAMResources()
-{return *mpRecentMIRIAMResources;}
+{
+  return mRecentMIRIAMResources;
+}
 
 void CConfigurationFile::setRecentMIRIAMResources(const CMIRIAMResources & miriamResources)
-{* mpRecentMIRIAMResources = miriamResources;}
+{
+  mRecentMIRIAMResources = miriamResources;
+}
 
 const std::string CConfigurationFile::getApplicationFont() const
 {
@@ -571,111 +562,6 @@ void CConfigurationFile::setValidateUnits(bool validateUnits)
 {
   *mpValidateUnits = validateUnits;
 }
-
-CConfigurationFile::CXML::CXML():
-  CCopasiXMLInterface(),
-  mConfiguration("Configuration")
-{
-  mConfiguration.assertGroup("Recent Files");
-  mConfiguration.assertGroup("Recent SBML Files");
-  mConfiguration.assertGroup("MIRIAM Resources");
-  mConfiguration.assertGroup("Recent SEDML Files");
-}
-
-CConfigurationFile::CXML::~CXML()
-{}
-
-bool CConfigurationFile::CXML::save(std::ostream & os,
-                                    const std::string & relativeTo)
-{
-  mPWD = relativeTo;
-
-  os.imbue(std::locale::classic());
-  os.precision(std::numeric_limits<double>::digits10 + 2);
-
-  mpOstream = &os;
-
-  *mpOstream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-             << "\n";
-
-  *mpOstream << "<!-- generated with COPASI "
-             << CVersion::VERSION.getVersion()
-             << " (http://www.copasi.org) at "
-             << UTCTimeStamp()
-             << " -->"
-             << "\n";
-
-  saveParameter(mConfiguration);
-
-  return true;
-}
-
-bool CConfigurationFile::CXML::load(std::istream & is,
-                                    const std::string & relativeTo)
-{
-  mPWD = relativeTo;
-
-  is.imbue(std::locale::classic());
-  is.precision(std::numeric_limits<double>::digits10 + 2);
-
-  mpIstream = &is;
-  bool success = true;
-  bool done = false;
-
-  CVersion Version;
-  CXMLParser Parser(Version);
-
-#define BUFFER_SIZE 0xfffe
-  char * pBuffer = new char[BUFFER_SIZE + 1];
-
-  while (!done)
-    {
-      mpIstream->get(pBuffer, BUFFER_SIZE, 0);
-
-      if (mpIstream->eof()) done = true;
-
-      if (mpIstream->fail() && !done)
-        {
-          std::string ConfigFile;
-          COptions::getValue("ConfigFile", ConfigFile);
-          CCopasiMessage Message(CCopasiMessage::WARNING, MCConfiguration + 2, ConfigFile.c_str());
-
-          done = true;
-          success = false;
-        }
-
-      if (!Parser.parse(pBuffer, -1, done))
-        {
-          CCopasiMessage Message(CCopasiMessage::RAW, MCXML + 2,
-                                 Parser.getCurrentLineNumber(),
-                                 Parser.getCurrentColumnNumber(),
-                                 Parser.getErrorString());
-          done = true;
-          success = false;
-        }
-    }
-
-  delete [] pBuffer;
-#undef BUFFER_SIZE
-
-  if (success && Parser.getCurrentGroup() != NULL)
-    {
-      mConfiguration = * Parser.getCurrentGroup();
-      mConfiguration.setObjectName("Configuration");
-
-      delete Parser.getCurrentGroup();
-    }
-  else
-    mConfiguration.clear();
-
-  return success;
-}
-
-void CConfigurationFile::CXML::setConfiguration(const CCopasiParameterGroup & configuration)
-{mConfiguration = configuration;}
-
-const CCopasiParameterGroup & CConfigurationFile::CXML::getConfiguration() const
-{return mConfiguration;}
 
 // set and get for the current author added by Peyman
 const std::string & CConfigurationFile::getCurrentAuthorGivenName() const

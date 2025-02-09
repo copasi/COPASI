@@ -186,9 +186,13 @@ private:
   std::set< ListViews * > mListViews;
   int mFramework;
 
-  std::map< std::string, CQThread * > mRunningThreads;
+  struct sThreadData {
+    CQThread * pThread = nullptr;
+    CProgressBar * pProgressBar = nullptr;
+  };
 
-  CProgressBar * mpProgressBar;
+  std::map< std::string, sThreadData > mRunningThreads;
+
   bool mSuccess;
   std::string mSBMLImportString;
   std::string *mpSBMLExportString;
@@ -204,6 +208,7 @@ private:
   CMIRIAMResources* mpMiriamResources;
   unsigned int mDownloadedBytes;
   unsigned int mDownloadedTotalBytes;
+  std::string mDownloadThread;
   size_t mUpdateItem;
 
   //SEDML

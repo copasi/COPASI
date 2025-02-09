@@ -17,7 +17,7 @@
 
 CGroupXML::CGroupXML(CCopasiParameterGroup & group)
   : CCopasiXMLInterface()
-  , mConfiguration(group)
+  , mGroup(group)
 {}
 
 CGroupXML::~CGroupXML()
@@ -43,7 +43,7 @@ bool CGroupXML::save(std::ostream & os,
              << " -->"
              << "\n";
 
-  saveParameter(mConfiguration);
+  saveParameter(mGroup);
 
   return true;
 }
@@ -94,15 +94,15 @@ bool CGroupXML::load(std::istream & is,
   delete [] pBuffer;
 #undef BUFFER_SIZE
 
-  if (success && Parser.getCurrentGroup() != NULL)
+  if (success
+      && Parser.getCurrentGroup() != NULL
+      && mGroup.getObjectName() == Parser.getCurrentGroup()->getObjectName())
     {
-      mConfiguration = * Parser.getCurrentGroup();
-      mConfiguration.setObjectName("Configuration");
-
+      mGroup = *Parser.getCurrentGroup();
       delete Parser.getCurrentGroup();
     }
   else
-    mConfiguration.clear();
+    mGroup.clear();
 
   return success;
 }

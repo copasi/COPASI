@@ -52,7 +52,7 @@
     /**
      * A reference to the CCopasiParameterGroup containing the information
      */
-    CCopasiParameterGroup & mConfiguration;
+    CCopasiParameterGroup & mGroup;
   };
 
 #endif // CGroupXML

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -479,62 +479,6 @@ private:
   // Attributes
 private:
   /**
-   * Class dealing with the loading and writing of the XML configuration
-   * file.
-   */
-  class CXML : public CCopasiXMLInterface
-  {
-    // Operations
-  public:
-    /**
-     * Constructor
-     */
-    CXML();
-
-    /**
-     * Destructor
-     */
-    ~CXML();
-
-    /**
-     * Save information to a given ostream.
-     * @param std::ostream & os
-     * @param const std::string & relativeTo
-     * @return bool success
-     */
-    virtual bool save(std::ostream & os,
-                      const std::string & relativeTo);
-
-    /**
-     * Load information from a given istream.
-     * @param std::istream & is
-     * @param const std::string & relativeTo
-     * @return bool success
-     */
-    virtual bool load(std::istream & is,
-                      const std::string & relativeTo);
-
-    /**
-     * Set the configuration contents
-     * @param const CConfigurationFile & configuration
-     */
-    void setConfiguration(const CCopasiParameterGroup & configuration);
-
-    /**
-     * Retrieve the configuration contents
-     * @return const CConfigurationFile & configuration
-     */
-    const CCopasiParameterGroup & getConfiguration() const;
-
-    // Attributes
-  private:
-    /**
-     * A pointer to the CCopasiParameterGroup containing the information
-     */
-    CCopasiParameterGroup mConfiguration;
-  };
-
-  /**
    * A pointer to the list of recent files
    */
   CRecentFiles * mpRecentFiles;
@@ -553,7 +497,7 @@ private:
   /**
    * A pointer to the list of MIRIAM Resources
    */
-  CMIRIAMResources * mpRecentMIRIAMResources;
+  CMIRIAMResources  mRecentMIRIAMResources;
 
   /**
    * A pointer to the application font

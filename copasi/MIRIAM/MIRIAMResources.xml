@@ -19,6 +19,7 @@
 <!-- and The University of Manchester. -->
 <!-- All rights reserved. -->
 
+<ParameterGroup name="Configuration">
   <ParameterGroup name="MIRIAM Resources">
     <Parameter name="LastUpdateDate" type="unsignedInteger" value="1738608731"/>
     <Parameter name="Frequency" type="unsignedInteger" value="0"/>
@@ -7962,3 +7963,4 @@
       </ParameterGroup>
     </ParameterGroup>
   </ParameterGroup>
+</ParameterGroup>
