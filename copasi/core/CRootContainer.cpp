@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,7 +28,8 @@
 #include "copasi/utilities/CUnitDefinition.h"
 #include "copasi/utilities/CUnitDefinitionDB.h"
 
-#include <copasi/MIRIAM/CRDFGraphConverter.h>
+#include "copasi/MIRIAM/CConstants.h"
+#include "copasi/MIRIAM/CRDFGraphConverter.h"
 
 extern CDataVector< CLGlobalRenderInformation > * DEFAULT_STYLES;
 
@@ -92,7 +93,7 @@ void CRootContainer::init(int argc, char *argv[], const bool & withGUI)
   COptions::init(argc, argv);
 
   CRegisteredCommonName::setEnabled(false);
-  
+
   CCopasiMessage::setIsGUI(withGUI);
 
   if (pRootContainer == NULL)
@@ -132,6 +133,8 @@ void CRootContainer::initializeChildren()
 
   mpConfiguration = new CConfigurationFile;
   mpConfiguration->load();
+
+  CMIRIAMResourceObject::setMIRIAMResources(&mpConfiguration->getRecentMIRIAMResources());
 
   mpUndefined = new CFunction("undefined", this);
   mpUndefined->setInfix("nan");
