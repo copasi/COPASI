@@ -27,11 +27,11 @@
 #include "CConfigurationFile.h"
 #include "COptions.h"
 
+#include "copasi/core/CRootContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/utilities/CVersion.h"
 #include "copasi/utilities/utility.h"
 #include "copasi/utilities/CDirEntry.h"
-#include "copasi/MIRIAM/CConstants.h"
 
 #include "copasi/xml/parser/CXMLParser.h"
 #include "copasi/xml/CGroupXML.h"
@@ -118,7 +118,6 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
   , mpRecentFiles(NULL)
   , mpRecentSBMLFiles(NULL)
   , mpRecentSEDMLFiles(NULL)
-  , mRecentMIRIAMResources("MIRIAM Resources", pParent)
   , mpApplicationFont(NULL)
   , mpValidateUnits(NULL)
   , mpDisplayIssueSeverity(NULL)
@@ -152,7 +151,6 @@ CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
   , mpRecentFiles(NULL)
   , mpRecentSBMLFiles(NULL)
   , mpRecentSEDMLFiles(NULL)
-  , mRecentMIRIAMResources(src.mRecentMIRIAMResources, pParent)
   , mpApplicationFont(NULL)
   , mpValidateUnits(NULL)
   , mpDisplayIssueSeverity(NULL)
@@ -207,13 +205,13 @@ bool CConfigurationFile::elevateChildren()
 
   if (!mpCheckForUpdates) success = false;
 
-  // We need to make sure that the contained group "MIRIAM Resources" is converted to mRecentMIRIAMResources
+  // We need to make sure that the contained group "MIRIAM Resources" is converted to CRootContainer::getMiriamResources()
   CCopasiParameterGroup *pMIRIAMResources = getGroup("MIRIAM Resources");
 
-  if (mRecentMIRIAMResources.getResourceList().size() == 0
+  if (CRootContainer::getMiriamResources().getResourceList().size() == 0
       && pMIRIAMResources != nullptr)
     {
-      mRecentMIRIAMResources = *pMIRIAMResources;
+      CRootContainer::getMiriamResources() = *pMIRIAMResources;
       removeParameter(pMIRIAMResources);
     }
 
@@ -310,11 +308,12 @@ bool CConfigurationFile::save(bool saveMiriam)
   COptions::getValue("ConfigFile", ConfigFile);
 
   std::string miriamConfigFile = ConfigFile + std::string(".miriam");
-  saveMiriam |= (!CDirEntry::exist(miriamConfigFile) && mRecentMIRIAMResources.getResourceList().size() > 0);
+  saveMiriam |= (!CDirEntry::exist(miriamConfigFile)
+                 && CRootContainer::getMiriamResources().getResourceList().size() > 0);
 
   if (saveMiriam)
     {
-      CGroupXML(mRecentMIRIAMResources).CCopasiXMLInterface::save(miriamConfigFile, CDirEntry::dirName(ConfigFile));
+      CGroupXML(CRootContainer::getMiriamResources()).CCopasiXMLInterface::save(miriamConfigFile, CDirEntry::dirName(ConfigFile));
     }
 
   bool success = CGroupXML(*this).CCopasiXMLInterface::save(ConfigFile, CDirEntry::dirName(ConfigFile));
@@ -341,12 +340,12 @@ bool CConfigurationFile::load()
       CCopasiParameterGroup MIRIAMResources("MIRIAM Resources");
 
       if (CGroupXML(MIRIAMResources).CCopasiXMLInterface::load(configMIRIAMResourceFile, configMIRIAMResourceFile))
-        mRecentMIRIAMResources = MIRIAMResources;
+        CRootContainer::getMiriamResources() = MIRIAMResources;
       else
         return false;
     }
 
-  if (mRecentMIRIAMResources.getResourceList().size() == 0)
+  if (CRootContainer::getMiriamResources().getResourceList().size() == 0)
     {
       // We load the default MIRIAM resources, which are part of the COPASI installation.
       std::string MIRIAMResourceFile;
@@ -363,11 +362,11 @@ bool CConfigurationFile::load()
           if (pGroup == nullptr)
             return false;
 
-          mRecentMIRIAMResources = *pGroup;
+          CRootContainer::getMiriamResources() = *pGroup;
 
           if (!haveConfigMiriam)
             {
-              CGroupXML(mRecentMIRIAMResources).CCopasiXMLInterface::save(configMIRIAMResourceFile, configMIRIAMResourceFile);
+              CGroupXML(CRootContainer::getMiriamResources()).CCopasiXMLInterface::save(configMIRIAMResourceFile, configMIRIAMResourceFile);
             }
         }
       else
@@ -406,16 +405,6 @@ CRecentFiles & CConfigurationFile::getRecentSBMLFiles()
 CRecentFiles & CConfigurationFile::getRecentSEDMLFiles()
 {
   return *mpRecentSEDMLFiles;
-}
-
-CMIRIAMResources & CConfigurationFile::getRecentMIRIAMResources()
-{
-  return mRecentMIRIAMResources;
-}
-
-void CConfigurationFile::setRecentMIRIAMResources(const CMIRIAMResources & miriamResources)
-{
-  mRecentMIRIAMResources = miriamResources;
 }
 
 const std::string CConfigurationFile::getApplicationFont() const

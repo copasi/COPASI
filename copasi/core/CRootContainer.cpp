@@ -41,16 +41,17 @@ extern CRootContainer * pRootContainer;
  * The only way to create a root container is through the static init
  * method.
  */
-CRootContainer::CRootContainer(const bool & withGUI):
-  CDataContainer("Root", NULL, "CN", CDataObject::Root),
-  mKeyFactory(),
-  mpUnknownResource(NULL),
-  mpFunctionList(NULL),
-  mpUnitDefinitionList(NULL),
-  mpConfiguration(NULL),
-  mpDataModelList(NULL),
-  mWithGUI(withGUI),
-  mpUndefined(NULL)
+CRootContainer::CRootContainer(const bool & withGUI)
+  : CDataContainer("Root", NULL, "CN", CDataObject::Root)
+  , mKeyFactory()
+  , mpUnknownResource(NULL)
+  , mpMIRIAMResources(NULL)
+  , mpFunctionList(NULL)
+  , mpUnitDefinitionList(NULL)
+  , mpConfiguration(NULL)
+  , mpDataModelList(NULL)
+  , mWithGUI(withGUI)
+  , mpUndefined(NULL)
 {}
 
 // Destructor
@@ -68,6 +69,9 @@ CRootContainer::~CRootContainer()
 
   // delete the unkown resource
   pdelete(mpUnknownResource);
+
+  // delete the MIRIAM resources
+  pdelete(mpMIRIAMResources);
 
   // delete the model list
   pdelete(mpDataModelList);
@@ -126,6 +130,9 @@ void CRootContainer::initializeChildren()
   mpUnknownResource->setMIRIAMDisplayName("-- select --");
   mpUnknownResource->setMIRIAMURI("urn:miriam:unknown");
 
+  mpMIRIAMResources = new CMIRIAMResources;
+  CMIRIAMResourceObject::setMIRIAMResources(mpMIRIAMResources);
+
   mpFunctionList = new CFunctionDB("FunctionDB", this);
   mpFunctionList->load();
 
@@ -133,8 +140,6 @@ void CRootContainer::initializeChildren()
 
   mpConfiguration = new CConfigurationFile;
   mpConfiguration->load();
-
-  CMIRIAMResourceObject::setMIRIAMResources(&mpConfiguration->getRecentMIRIAMResources());
 
   mpUndefined = new CFunction("undefined", this);
   mpUndefined->setInfix("nan");
@@ -251,6 +256,12 @@ CKeyFactory* CRootContainer::getKeyFactory()
 const CMIRIAMResource & CRootContainer::getUnknownMiriamResource()
 {
   return *pRootContainer->mpUnknownResource;
+}
+
+// static
+CMIRIAMResources & CRootContainer::getMiriamResources()
+{
+  return *pRootContainer->mpMIRIAMResources;
 }
 
 // static

@@ -69,10 +69,10 @@ void CMIRIAMResources::isCitation(void * pData, void * /* pCallee */)
 // static
 bool CMIRIAMResources::isCitation(const std::string & uri)
 {
-  size_t Index = CRootContainer::getConfiguration()->getRecentMIRIAMResources().getMIRIAMResourceIndex(uri);
+  size_t Index = CRootContainer::getMiriamResources().getMIRIAMResourceIndex(uri);
 
   if (Index != C_INVALID_INDEX &&
-      CRootContainer::getConfiguration()->getRecentMIRIAMResources().getMIRIAMResource(Index).getMIRIAMCitation())
+      CRootContainer::getMiriamResources().getMIRIAMResource(Index).getMIRIAMCitation())
     {
       return true;
     }

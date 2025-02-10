@@ -2664,8 +2664,6 @@ void CopasiUI3Window::slotUpdateMIRIAMFinished(bool success)
   if (success)
     {
       mpDataModelGUI->saveConfiguration(true);
-      CMIRIAMResourceObject::setMIRIAMResources(
-        &CRootContainer::getConfiguration()->getRecentMIRIAMResources());
       mpDataModelGUI->updateMIRIAMResourceContents();
       this->checkPendingMessages();
     }
@@ -2683,8 +2681,7 @@ void CopasiUI3Window::slotUpdateMIRIAM()
 
   try
     {
-      success = mpDataModelGUI->updateMIRIAM(
-                  CRootContainer::getConfiguration()->getRecentMIRIAMResources());
+      success = mpDataModelGUI->updateMIRIAM(CRootContainer::getMiriamResources());
     }
   catch (...)
     {

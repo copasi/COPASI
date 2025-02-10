@@ -231,14 +231,6 @@ public:
   CRecentFiles & getRecentSEDMLFiles();
 
   /**
-   * Retrieve the list of recent MIRIAM Resources
-   * @return CMIRIAMResources & recentMIRIAMResources
-   */
-  CMIRIAMResources & getRecentMIRIAMResources();
-
-  void setRecentMIRIAMResources(const CMIRIAMResources & miriamResources);
-
-  /**
    * Retrieve the application font.
    * @return const std::string & applicationFont
    */
@@ -493,11 +485,6 @@ private:
    * A pointer to the list of recent files
    */
   CRecentFiles * mpRecentSEDMLFiles;
-
-  /**
-   * A pointer to the list of MIRIAM Resources
-   */
-  CMIRIAMResources  mRecentMIRIAMResources;
 
   /**
    * A pointer to the application font

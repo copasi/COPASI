@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,7 +36,6 @@
 #define COL_NAME 0
 #define COL_VALUE 1
 
-
 #include <QApplication>
 
 /*
@@ -66,8 +65,6 @@ CQPreferenceDialog::~CQPreferenceDialog()
     {
       delete mpConfiguration;
       mpConfiguration = NULL;
-      // restore pointer to miriam resources
-      CMIRIAMResourceObject::setMIRIAMResources(&CRootContainer::getConfiguration()->getRecentMIRIAMResources());
     }
 }
 
@@ -79,7 +76,6 @@ CQPreferenceDialog::~CQPreferenceDialog()
 #include <QSpinBox>
 #include <QFile>
 #include <QFormLayout>
-
 
 void CQPreferenceDialog::slotPropertyChanged()
 {
@@ -93,7 +89,7 @@ void CQPreferenceDialog::slotPropertyChanged()
 
   if (auto edit = dynamic_cast<QLineEdit*>(widget))
   {
-    parameter->setValue(edit->text().toStdString());    
+    parameter->setValue(edit->text().toStdString());
   }
   else if (auto edit = dynamic_cast<QCheckBox*>(widget))
   {
@@ -107,7 +103,7 @@ void CQPreferenceDialog::slotPropertyChanged()
 
 void CQPreferenceDialog::initTabsFromSettings(QSettings& settings)
 {
-  // the ini file will have groups for each tab, each tab should 
+  // the ini file will have groups for each tab, each tab should
   // have a form layout with the name of the setting as the key
   // and the value as the value
 
@@ -125,7 +121,7 @@ void CQPreferenceDialog::initTabsFromSettings(QSettings& settings)
     tab->setLayout(layout);
     tabWidget->insertTab(0, tab, mainGroup);
 
-    // each group has child elements with keys: 
+    // each group has child elements with keys:
     // - name: the name of the setting
     // - type: the type of the setting
     // - parameter: the parameter of the COPASI setting to change
@@ -140,20 +136,20 @@ void CQPreferenceDialog::initTabsFromSettings(QSettings& settings)
       auto type = settings.value("type").toString();
       auto parameter = settings.value("parameter").toString();
       auto value = settings.value("value");
-      
+
       auto param_path = parameter.split(".");
       CCopasiParameter * pNode = mpConfiguration;
       for (auto paramName : param_path)
         if (pNode && dynamic_cast< CCopasiParameterGroup * >(pNode))
           pNode = dynamic_cast< CCopasiParameterGroup * >(pNode)->getParameter(paramName.toStdString());
-      
+
       auto tooltip = settings.value("tooltip").toString();
 
       if (type == "string")
       {
         auto edit = new QLineEdit(value.toString());
         edit->setToolTip(tooltip);
-        
+
         if (pNode)
           edit->setText(FROM_UTF8(pNode->getValue<std::string>()));
         layout->addRow(name, edit);
@@ -183,7 +179,7 @@ void CQPreferenceDialog::initTabsFromSettings(QSettings& settings)
 
         connect(edit, QOverload<int>::of(&QSpinBox::valueChanged), this, &CQPreferenceDialog::slotPropertyChanged);
         mWidgetToParameter[edit] = pNode;
-      }      
+      }
       else
       {
         CQMessageBox::warning(this, "Error", "Unknown type: " + type);
@@ -210,7 +206,6 @@ void CQPreferenceDialog::init()
   mpTreeView->setAdvanced(false);
   mpTreeView->pushGroup(mpConfiguration);
 
-
   // initialize other tabs from config file
   auto copasiDir = COptions::getConfigDir();
   auto preferenceConfigFile = copasiDir + "/preferences.ini";
@@ -228,10 +223,9 @@ void CQPreferenceDialog::init()
             outFile.write(file.readAll());
             outFile.close();
           }
-        file.close();        
+        file.close();
       }
   }
-
 
   QSettings settings(preferenceConfigFile.c_str(), QSettings::IniFormat, this);
   initTabsFromSettings(settings);
@@ -263,8 +257,6 @@ void CQPreferenceDialog::slotBtnCancel()
 
       delete mpConfiguration;
       mpConfiguration = NULL;
-      // restore pointer to miriam resources
-      CMIRIAMResourceObject::setMIRIAMResources(&CRootContainer::getConfiguration()->getRecentMIRIAMResources());
     }
 
   done(0);
