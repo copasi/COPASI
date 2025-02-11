@@ -3084,8 +3084,10 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
             "In order to import this model in COPASI, it has to be flattened, however flattening is "
             "not possible because of the following errors:\n" + sbmlDoc->getErrorLog()->toString();
 
+          #if LIBSBML_HAS_PACKAGE_COMP
           // escape potential percent signs that would lead to an error when passed to CCopasiMessage
           CPrefixNameTransformer::replaceStringInPlace(message, "%", "%%");
+          #endif //LIBSBML_HAS_PACKAGE_COMP
 
           CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
         }
