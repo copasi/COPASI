@@ -99,7 +99,7 @@ if (SBW_INCLUDE_DIR AND SBW_LIBRARY)
     
     int main()
     {
-      printf(SBWGetVersion());
+      printf(\"%s\", SBWGetVersion());
       return 0;
     }
     
