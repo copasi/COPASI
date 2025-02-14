@@ -672,6 +672,8 @@ void CCheckForUpdates::setConfirmedCheckForUpdate(bool flag)
 
 bool CCheckForUpdates::needToConfirmCheckForUpdate() const
 {
+  if (COptions::compareValue("SkipCheckForUpdate", true))
+    return false;
   return (CVersion().setVersion(*mpConfirmedCheck) < CVersion::VERSION);
 }
 

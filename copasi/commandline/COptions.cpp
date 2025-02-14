@@ -110,6 +110,7 @@ void COptions::init(C_INT argc, char *argv[])
   // The default settings for SBW related options
   setValue("SBWRegister", false);
   setValue("SBWModule", false);
+  setValue("SkipCheckForUpdate", false);
 
   char **ArgV = new char * [argc];
   C_INT ArgC = 0;
@@ -120,6 +121,8 @@ void COptions::init(C_INT argc, char *argv[])
         setValue("SBWRegister", true);
       else if (Utf8[i] == "-sbwmodule")
         setValue("SBWModule", true);
+      else if (Utf8[i] == "--skip-update-check")
+        setValue("SkipCheckForUpdate", true);
       else
         {
           ArgV[ArgC] = strdup(Utf8[i].c_str());
