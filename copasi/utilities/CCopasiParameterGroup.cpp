@@ -47,8 +47,9 @@ CCopasiParameterGroup::CCopasiParameterGroup():
 {}
 
 CCopasiParameterGroup::CCopasiParameterGroup(const CCopasiParameterGroup & src,
-    const CDataContainer * pParent):
-  CCopasiParameter(src, pParent),
+    const CDataContainer * pParent,
+    const std::string & objectType):
+  CCopasiParameter(src, pParent, objectType),
   mpElementTemplates(NULL)
 {
   operator=(src);
@@ -810,26 +811,6 @@ CCopasiParameter::Type CCopasiParameterGroup::getType(const size_t & index) cons
   if (pParameter) return pParameter->getType();
 
   return CCopasiParameter::Type::INVALID;
-}
-
-std::string CCopasiParameterGroup::getKey(const std::string & name) const
-{
-  CCopasiParameter * pParameter =
-    const_cast< CCopasiParameterGroup * >(this)->getParameter(name);
-
-  if (pParameter) return pParameter->getKey();
-
-  return "Not Found";
-}
-
-std::string CCopasiParameterGroup::getKey(const size_t & index) const
-{
-  CCopasiParameter * pParameter =
-    const_cast< CCopasiParameterGroup * >(this)->getParameter(index);
-
-  if (pParameter) return pParameter->getKey();
-
-  return "Not Found";
 }
 
 const std::string & CCopasiParameterGroup::getName(const size_t & index) const

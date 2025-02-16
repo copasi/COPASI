@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -156,7 +156,6 @@ C_INT CLSODAR::operator()(evalF f, C_INT *neq, double *y, double
   double big;
   C_INT kgo;
   double ayi;
-  std::string msg;
   double hmx;
   C_INT irt;
   double tol, sum;
@@ -1677,14 +1676,11 @@ L62:
 
   dlsa01_1.insufr = 2;
   dls001_1.lewt = len1c + 1;
-  msg = "DLSODAR-  Warning.. RWORK length is sufficient for now, but ";
-  mxerrwd(msg, &c__60, &c__103, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  Warning.. RWORK length is sufficient for now, but ", &c__60, &c__103, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "      may not be later.  Integration will proceed anyway.   ";
-  mxerrwd(msg, &c__60, &c__103, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("      may not be later.  Integration will proceed anyway.   ", &c__60, &c__103, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "      Length needed is LENRW = I1, while LRW = I2.";
-  mxerrwd(msg, &c__50, &c__103, &c__0, &c__2, &lenrw, lrw, &c__0, &c_b76, &
+  mxerrwd("      Length needed is LENRW = I1, while LRW = I2.", &c__50, &c__103, &c__0, &c__2, &lenrw, lrw, &c__0, &c_b76, &
           c_b76, (C_INT)60);
 L65:
   dls001_1.lsavf = dls001_1.lewt + dls001_1.n;
@@ -1697,14 +1693,11 @@ L65:
     }
 
   dlsa01_1.insufi = 2;
-  msg = "DLSODAR-  Warning.. IWORK length is sufficient for now, but ";
-  mxerrwd(msg, &c__60, &c__104, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  Warning.. IWORK length is sufficient for now, but ", &c__60, &c__104, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "      may not be later.  Integration will proceed anyway.   ";
-  mxerrwd(msg, &c__60, &c__104, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("      may not be later.  Integration will proceed anyway.   ", &c__60, &c__104, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "      Length needed is LENIW = I1, while LIW = I2.";
-  mxerrwd(msg, &c__50, &c__104, &c__0, &c__2, &leniw, liw, &c__0, &c_b76, &
+  mxerrwd("      Length needed is LENIW = I1, while LIW = I2.", &c__50, &c__104, &c__0, &c__2, &leniw, liw, &c__0, &c_b76, &
           c_b76, (C_INT)60);
 L70:
   /* Check RTOL and ATOL for legality. ------------------------------------ */
@@ -2220,14 +2213,11 @@ L280:
       goto L290;
     }
 
-  msg = "DLSODAR-  Warning..Internal T(=R1) and H(=R2) are ";
-  mxerrwd(msg, &c__50, &c__101, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  Warning..Internal T(=R1) and H(=R2) are ", &c__50, &c__101, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "      such that in the machine, T + H = T on the next step  ";
-  mxerrwd(msg, &c__60, &c__101, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("      such that in the machine, T + H = T on the next step  ", &c__60, &c__101, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "     (H = step size). Solver will continue anyway.";
-  mxerrwd(msg, &c__50, &c__101, &c__0, &c__0, &c__0, &c__0, &c__2, &
+  mxerrwd("     (H = step size). Solver will continue anyway.", &c__50, &c__101, &c__0, &c__0, &c__0, &c__0, &c__2, &
           dls001_1.tn, &dls001_1.h__, (C_INT)60);
 
   if (dls001_1.nhnil < dls001_1.mxhnil)
@@ -2235,11 +2225,9 @@ L280:
       goto L290;
     }
 
-  msg = "DLSODAR-  Above warning has been issued I1 times. ";
-  mxerrwd(msg, &c__50, &c__102, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  Above warning has been issued I1 times. ", &c__50, &c__102, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "     It will not be issued again for this problem.";
-  mxerrwd(msg, &c__50, &c__102, &c__0, &c__1, &dls001_1.mxhnil, &c__0, &
+  mxerrwd("     It will not be issued again for this problem.", &c__50, &c__102, &c__0, &c__1, &dls001_1.mxhnil, &c__0, &
           c__0, &c_b76, &c_b76, (C_INT)60);
 L290:
   /* ----------------------------------------------------------------------- */
@@ -2302,20 +2290,17 @@ L300:
 
   if (dls001_1.meth == 2)
     {
-      msg = "DLSODAR- A switch to the BDF (stiff) method has occurred";
-      mxerrwd(msg, &c__60, &c__105, &c__0, &c__0, &c__0, &c__0, &c__0, &
+      mxerrwd("DLSODAR- A switch to the BDF (stiff) method has occurred", &c__60, &c__105, &c__0, &c__0, &c__0, &c__0, &c__0, &
               c_b76, &c_b76, (C_INT)60);
     }
 
   if (dls001_1.meth == 1)
     {
-      msg = "DLSODAR- A switch to the Adams (nonstiff) method occurred";
-      mxerrwd(msg, &c__60, &c__106, &c__0, &c__0, &c__0, &c__0, &c__0, &
+      mxerrwd("DLSODAR- A switch to the Adams (nonstiff) method occurred", &c__60, &c__106, &c__0, &c__0, &c__0, &c__0, &c__0, &
               c_b76, &c_b76, (C_INT)60);
     }
 
-  msg = "     at T = R1,  tentative step size H = R2,  step NST = I1";
-  mxerrwd(msg, &c__60, &c__107, &c__0, &c__1, &dls001_1.nst, &c__0, &c__2, &
+  mxerrwd("     at T = R1,  tentative step size H = R2,  step NST = I1", &c__60, &c__107, &c__0, &c__1, &dls001_1.nst, &c__0, &c__2, &
           dls001_1.tn, &dls001_1.h__, (C_INT)60);
 L310:
 
@@ -2468,73 +2453,59 @@ L425:
   /* ----------------------------------------------------------------------- */
   /* The maximum number of steps was taken before reaching TOUT. ---------- */
 L500:
-  msg = "DLSODAR-  At current T (=R1), MXSTEP (=I1) steps  ";
-  mxerrwd(msg, &c__50, &c__201, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  At current T (=R1), MXSTEP (=I1) steps  ", &c__50, &c__201, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "      taken on this call before reaching TOUT     ";
-  mxerrwd(msg, &c__50, &c__201, &c__0, &c__1, &dls001_1.mxstep, &c__0, &
+  mxerrwd("      taken on this call before reaching TOUT     ", &c__50, &c__201, &c__0, &c__1, &dls001_1.mxstep, &c__0, &
           c__1, &dls001_1.tn, &c_b76, (C_INT)60);
   *istate = -1;
   goto L580;
   /* EWT(i) .le. 0.0 for some i (not at start of problem). ---------------- */
 L510:
   ewti = rwork[dls001_1.lewt + i__ - 1];
-  msg = "DLSODAR-  At T(=R1), EWT(I1) has become R2 .le. 0.";
-  mxerrwd(msg, &c__50, &c__202, &c__0, &c__1, &i__, &c__0, &c__2, &
+  mxerrwd("DLSODAR-  At T(=R1), EWT(I1) has become R2 .le. 0.", &c__50, &c__202, &c__0, &c__1, &i__, &c__0, &c__2, &
           dls001_1.tn, &ewti, (C_INT)60);
   *istate = -6;
   goto L580;
   /* Too much accuracy requested for machine precision. ------------------- */
 L520:
-  msg = "DLSODAR-  At T (=R1), too much accuracy requested ";
-  mxerrwd(msg, &c__50, &c__203, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  At T (=R1), too much accuracy requested ", &c__50, &c__203, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "      for precision of machine..  See TOLSF (=R2) ";
-  mxerrwd(msg, &c__50, &c__203, &c__0, &c__0, &c__0, &c__0, &c__2, &
+  mxerrwd("      for precision of machine..  See TOLSF (=R2) ", &c__50, &c__203, &c__0, &c__0, &c__0, &c__0, &c__2, &
           dls001_1.tn, &tolsf, (C_INT)60);
   rwork[14] = tolsf;
   *istate = -2;
   goto L580;
   /* KFLAG = -1.  Error test failed repeatedly or with ABS(H) = HMIN. ----- */
 L530:
-  msg = "DLSODAR-  At T(=R1), step size H(=R2), the error  ";
-  mxerrwd(msg, &c__50, &c__204, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  At T(=R1), step size H(=R2), the error  ", &c__50, &c__204, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "      test failed repeatedly or with ABS(H) = HMIN";
-  mxerrwd(msg, &c__50, &c__204, &c__0, &c__0, &c__0, &c__0, &c__2, &
+  mxerrwd("      test failed repeatedly or with ABS(H) = HMIN", &c__50, &c__204, &c__0, &c__0, &c__0, &c__0, &c__2, &
           dls001_1.tn, &dls001_1.h__, (C_INT)60);
   *istate = -4;
   goto L560;
   /* KFLAG = -2.  Convergence failed repeatedly or with ABS(H) = HMIN. ---- */
 L540:
-  msg = "DLSODAR-  At T (=R1) and step size H (=R2), the   ";
-  mxerrwd(msg, &c__50, &c__205, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  At T (=R1) and step size H (=R2), the   ", &c__50, &c__205, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "      corrector convergence failed repeatedly     ";
-  mxerrwd(msg, &c__50, &c__205, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("      corrector convergence failed repeatedly     ", &c__50, &c__205, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "      or with ABS(H) = HMIN   ";
-  mxerrwd(msg, &c__30, &c__205, &c__0, &c__0, &c__0, &c__0, &c__2, &
+  mxerrwd("      or with ABS(H) = HMIN   ", &c__30, &c__205, &c__0, &c__0, &c__0, &c__0, &c__2, &
           dls001_1.tn, &dls001_1.h__, (C_INT)60);
   *istate = -5;
   goto L560;
   /* RWORK length too small to proceed. ----------------------------------- */
 L550:
-  msg = "DLSODAR- At current T(=R1), RWORK length too small";
-  mxerrwd(msg, &c__50, &c__206, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR- At current T(=R1), RWORK length too small", &c__50, &c__206, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "      to proceed.  The integration was otherwise successful.";
-  mxerrwd(msg, &c__60, &c__206, &c__0, &c__0, &c__0, &c__0, &c__1, &
+  mxerrwd("      to proceed.  The integration was otherwise successful.", &c__60, &c__206, &c__0, &c__0, &c__0, &c__0, &c__1, &
           dls001_1.tn, &c_b76, (C_INT)60);
   *istate = -7;
   goto L580;
   /* IWORK length too small to proceed. ----------------------------------- */
 L555:
-  msg = "DLSODAR- At current T(=R1), IWORK length too small";
-  mxerrwd(msg, &c__50, &c__207, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR- At current T(=R1), IWORK length too small", &c__50, &c__207, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "      to proceed.  The integration was otherwise successful.";
-  mxerrwd(msg, &c__60, &c__207, &c__0, &c__0, &c__0, &c__0, &c__1, &
+  mxerrwd("      to proceed.  The integration was otherwise successful.", &c__60, &c__207, &c__0, &c__0, &c__0, &c__0, &c__1, &
           dls001_1.tn, &c_b76, (C_INT)60);
   *istate = -7;
   goto L580;
@@ -2594,8 +2565,7 @@ L580:
   /* is a negative ISTATE, the run is aborted (apparent infinite loop). */
   /* ----------------------------------------------------------------------- */
 L601:
-  msg = "DLSODAR-  ISTATE(=I1) illegal.";
-  mxerrwd(msg, &c__30, &c__1, &c__0, &c__1, istate, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  ISTATE(=I1) illegal.", &c__30, &c__1, &c__0, &c__1, istate, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
 
   if (*istate < 0)
@@ -2605,172 +2575,137 @@ L601:
 
   goto L700;
 L602:
-  msg = "DLSODAR-  ITASK (=I1) illegal.";
-  mxerrwd(msg, &c__30, &c__2, &c__0, &c__1, itask, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  ITASK (=I1) illegal.", &c__30, &c__2, &c__0, &c__1, itask, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
   goto L700;
 L603:
-  msg = "DLSODAR-  ISTATE.gt.1 but DLSODAR not initialized.";
-  mxerrwd(msg, &c__50, &c__3, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  ISTATE.gt.1 but DLSODAR not initialized.", &c__50, &c__3, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
   goto L700;
 L604:
-  msg = "DLSODAR-  NEQ (=I1) .lt. 1    ";
-  mxerrwd(msg, &c__30, &c__4, &c__0, &c__1, &neq[1], &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  NEQ (=I1) .lt. 1    ", &c__30, &c__4, &c__0, &c__1, &neq[1], &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
   goto L700;
 L605:
-  msg = "DLSODAR-  ISTATE = 3 and NEQ increased (I1 to I2).";
-  mxerrwd(msg, &c__50, &c__5, &c__0, &c__2, &dls001_1.n, &neq[1], &c__0, &
+  mxerrwd("DLSODAR-  ISTATE = 3 and NEQ increased (I1 to I2).", &c__50, &c__5, &c__0, &c__2, &dls001_1.n, &neq[1], &c__0, &
           c_b76, &c_b76, (C_INT)60);
   goto L700;
 L606:
-  msg = "DLSODAR-  ITOL (=I1) illegal. ";
-  mxerrwd(msg, &c__30, &c__6, &c__0, &c__1, itol, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  ITOL (=I1) illegal. ", &c__30, &c__6, &c__0, &c__1, itol, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
   goto L700;
 L607:
-  msg = "DLSODAR-  IOPT (=I1) illegal. ";
-  mxerrwd(msg, &c__30, &c__7, &c__0, &c__1, iopt, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  IOPT (=I1) illegal. ", &c__30, &c__7, &c__0, &c__1, iopt, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
   goto L700;
 L608:
-  msg = "DLSODAR-  JT (=I1) illegal.   ";
-  mxerrwd(msg, &c__30, &c__8, &c__0, &c__1, jt, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  JT (=I1) illegal.   ", &c__30, &c__8, &c__0, &c__1, jt, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
   goto L700;
 L609:
-  msg = "DLSODAR-  ML (=I1) illegal: .lt.0 or .ge.NEQ (=I2)";
-  mxerrwd(msg, &c__50, &c__9, &c__0, &c__2, &ml, &neq[1], &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  ML (=I1) illegal: .lt.0 or .ge.NEQ (=I2)", &c__50, &c__9, &c__0, &c__2, &ml, &neq[1], &c__0, &c_b76, &
           c_b76, (C_INT)60);
   goto L700;
 L610:
-  msg = "DLSODAR-  MU (=I1) illegal: .lt.0 or .ge.NEQ (=I2)";
-  mxerrwd(msg, &c__50, &c__10, &c__0, &c__2, &mu, &neq[1], &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  MU (=I1) illegal: .lt.0 or .ge.NEQ (=I2)", &c__50, &c__10, &c__0, &c__2, &mu, &neq[1], &c__0, &c_b76, &
           c_b76, (C_INT)60);
   goto L700;
 L611:
-  msg = "DLSODAR-  IXPR (=I1) illegal. ";
-  mxerrwd(msg, &c__30, &c__11, &c__0, &c__1, &dlsa01_1.ixpr, &c__0, &c__0, &
+  mxerrwd("DLSODAR-  IXPR (=I1) illegal. ", &c__30, &c__11, &c__0, &c__1, &dlsa01_1.ixpr, &c__0, &c__0, &
           c_b76, &c_b76, (C_INT)60);
   goto L700;
 L612:
-  msg = "DLSODAR-  MXSTEP (=I1) .lt. 0 ";
-  mxerrwd(msg, &c__30, &c__12, &c__0, &c__1, &dls001_1.mxstep, &c__0, &c__0,
+  mxerrwd("DLSODAR-  MXSTEP (=I1) .lt. 0 ", &c__30, &c__12, &c__0, &c__1, &dls001_1.mxstep, &c__0, &c__0,
           &c_b76, &c_b76, (C_INT)60);
   goto L700;
 L613:
-  msg = "DLSODAR-  MXHNIL (=I1) .lt. 0 ";
-  mxerrwd(msg, &c__30, &c__13, &c__0, &c__1, &dls001_1.mxhnil, &c__0, &c__0,
+  mxerrwd("DLSODAR-  MXHNIL (=I1) .lt. 0 ", &c__30, &c__13, &c__0, &c__1, &dls001_1.mxhnil, &c__0, &c__0,
           &c_b76, &c_b76, (C_INT)60);
   goto L700;
 L614:
-  msg = "DLSODAR-  TOUT (=R1) behind T (=R2)     ";
-  mxerrwd(msg, &c__40, &c__14, &c__0, &c__0, &c__0, &c__0, &c__2, tout, t, (
+  mxerrwd("DLSODAR-  TOUT (=R1) behind T (=R2)     ", &c__40, &c__14, &c__0, &c__0, &c__0, &c__0, &c__2, tout, t, (
             C_INT)60);
-  msg = "      Integration direction is given by H0 (=R1)  ";
-  mxerrwd(msg, &c__50, &c__14, &c__0, &c__0, &c__0, &c__0, &c__1, &h0, &
+  mxerrwd("      Integration direction is given by H0 (=R1)  ", &c__50, &c__14, &c__0, &c__0, &c__0, &c__0, &c__1, &h0, &
           c_b76, (C_INT)60);
   goto L700;
 L615:
-  msg = "DLSODAR-  HMAX (=R1) .lt. 0.0 ";
-  mxerrwd(msg, &c__30, &c__15, &c__0, &c__0, &c__0, &c__0, &c__1, &hmax, &
+  mxerrwd("DLSODAR-  HMAX (=R1) .lt. 0.0 ", &c__30, &c__15, &c__0, &c__0, &c__0, &c__0, &c__1, &hmax, &
           c_b76, (C_INT)60);
   goto L700;
 L616:
-  msg = "DLSODAR-  HMIN (=R1) .lt. 0.0 ";
-  mxerrwd(msg, &c__30, &c__16, &c__0, &c__0, &c__0, &c__0, &c__1, &
+  mxerrwd("DLSODAR-  HMIN (=R1) .lt. 0.0 ", &c__30, &c__16, &c__0, &c__0, &c__0, &c__0, &c__1, &
           dls001_1.hmin, &c_b76, (C_INT)60);
   goto L700;
 L617:
-  msg = "DLSODAR-  RWORK length needed, LENRW(=I1), exceeds LRW(=I2) ";
-  mxerrwd(msg, &c__60, &c__17, &c__0, &c__2, &lenrw, lrw, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  RWORK length needed, LENRW(=I1), exceeds LRW(=I2) ", &c__60, &c__17, &c__0, &c__2, &lenrw, lrw, &c__0, &c_b76, &
           c_b76, (C_INT)60);
   goto L700;
 L618:
-  msg = "DLSODAR-  IWORK length needed, LENIW(=I1), exceeds LIW(=I2) ";
-  mxerrwd(msg, &c__60, &c__18, &c__0, &c__2, &leniw, liw, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  IWORK length needed, LENIW(=I1), exceeds LIW(=I2) ", &c__60, &c__18, &c__0, &c__2, &leniw, liw, &c__0, &c_b76, &
           c_b76, (C_INT)60);
   goto L700;
 L619:
-  msg = "DLSODAR-  RTOL(I1) is R1 .lt. 0.0       ";
-  mxerrwd(msg, &c__40, &c__19, &c__0, &c__1, &i__, &c__0, &c__1, &rtoli, &
+  mxerrwd("DLSODAR-  RTOL(I1) is R1 .lt. 0.0       ", &c__40, &c__19, &c__0, &c__1, &i__, &c__0, &c__1, &rtoli, &
           c_b76, (C_INT)60);
   goto L700;
 L620:
-  msg = "DLSODAR-  ATOL(I1) is R1 .lt. 0.0       ";
-  mxerrwd(msg, &c__40, &c__20, &c__0, &c__1, &i__, &c__0, &c__1, &atoli, &
+  mxerrwd("DLSODAR-  ATOL(I1) is R1 .lt. 0.0       ", &c__40, &c__20, &c__0, &c__1, &i__, &c__0, &c__1, &atoli, &
           c_b76, (C_INT)60);
   goto L700;
 L621:
   ewti = rwork[dls001_1.lewt + i__ - 1];
-  msg = "DLSODAR-  EWT(I1) is R1 .le. 0.0        ";
-  mxerrwd(msg, &c__40, &c__21, &c__0, &c__1, &i__, &c__0, &c__1, &ewti, &
+  mxerrwd("DLSODAR-  EWT(I1) is R1 .le. 0.0        ", &c__40, &c__21, &c__0, &c__1, &i__, &c__0, &c__1, &ewti, &
           c_b76, (C_INT)60);
   goto L700;
 L622:
-  msg = "DLSODAR- TOUT(=R1) too close to T(=R2) to start integration.";
-  mxerrwd(msg, &c__60, &c__22, &c__0, &c__0, &c__0, &c__0, &c__2, tout, t, (
+  mxerrwd("DLSODAR- TOUT(=R1) too close to T(=R2) to start integration.", &c__60, &c__22, &c__0, &c__0, &c__0, &c__0, &c__2, tout, t, (
             C_INT)60);
   goto L700;
 L623:
-  msg = "DLSODAR-  ITASK = I1 and TOUT (=R1) behind TCUR - HU (= R2) ";
-  mxerrwd(msg, &c__60, &c__23, &c__0, &c__1, itask, &c__0, &c__2, tout, &tp,
+  mxerrwd("DLSODAR-  ITASK = I1 and TOUT (=R1) behind TCUR - HU (= R2) ", &c__60, &c__23, &c__0, &c__1, itask, &c__0, &c__2, tout, &tp,
           (C_INT)60);
   goto L700;
 L624:
-  msg = "DLSODAR-  ITASK = 4 or 5 and TCRIT (=R1) behind TCUR (=R2)  ";
-  mxerrwd(msg, &c__60, &c__24, &c__0, &c__0, &c__0, &c__0, &c__2, &tcrit, &
+  mxerrwd("DLSODAR-  ITASK = 4 or 5 and TCRIT (=R1) behind TCUR (=R2)  ", &c__60, &c__24, &c__0, &c__0, &c__0, &c__0, &c__2, &tcrit, &
           dls001_1.tn, (C_INT)60);
   goto L700;
 L625:
-  msg = "DLSODAR-  ITASK = 4 or 5 and TCRIT (=R1) behind TOUT (=R2)  ";
-  mxerrwd(msg, &c__60, &c__25, &c__0, &c__0, &c__0, &c__0, &c__2, &tcrit,
+  mxerrwd("DLSODAR-  ITASK = 4 or 5 and TCRIT (=R1) behind TOUT (=R2)  ", &c__60, &c__25, &c__0, &c__0, &c__0, &c__0, &c__2, &tcrit,
           tout, (C_INT)60);
   goto L700;
 L626:
-  msg = "DLSODAR-  At start of problem, too much accuracy  ";
-  mxerrwd(msg, &c__50, &c__26, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  At start of problem, too much accuracy  ", &c__50, &c__26, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "      requested for precision of machine..  See TOLSF (=R1) ";
-  mxerrwd(msg, &c__60, &c__26, &c__0, &c__0, &c__0, &c__0, &c__1, &tolsf, &
+  mxerrwd("      requested for precision of machine..  See TOLSF (=R1) ", &c__60, &c__26, &c__0, &c__0, &c__0, &c__0, &c__1, &tolsf, &
           c_b76, (C_INT)60);
   rwork[14] = tolsf;
   goto L700;
 L627:
-  msg = "DLSODAR-  Trouble in DINTDY. ITASK = I1, TOUT = R1";
-  mxerrwd(msg, &c__50, &c__27, &c__0, &c__1, itask, &c__0, &c__1, tout, &
+  mxerrwd("DLSODAR-  Trouble in DINTDY. ITASK = I1, TOUT = R1", &c__50, &c__27, &c__0, &c__1, itask, &c__0, &c__1, tout, &
           c_b76, (C_INT)60);
   goto L700;
 L628:
-  msg = "DLSODAR-  MXORDN (=I1) .lt. 0 ";
-  mxerrwd(msg, &c__30, &c__28, &c__0, &c__1, &dlsa01_1.mxordn, &c__0, &c__0,
+  mxerrwd("DLSODAR-  MXORDN (=I1) .lt. 0 ", &c__30, &c__28, &c__0, &c__1, &dlsa01_1.mxordn, &c__0, &c__0,
           &c_b76, &c_b76, (C_INT)60);
   goto L700;
 L629:
-  msg = "DLSODAR-  MXORDS (=I1) .lt. 0 ";
-  mxerrwd(msg, &c__30, &c__29, &c__0, &c__1, &dlsa01_1.mxords, &c__0, &c__0,
+  mxerrwd("DLSODAR-  MXORDS (=I1) .lt. 0 ", &c__30, &c__29, &c__0, &c__1, &dlsa01_1.mxords, &c__0, &c__0,
           &c_b76, &c_b76, (C_INT)60);
   goto L700;
 L630:
-  msg = "DLSODAR-  NG (=I1) .lt. 0     ";
-  mxerrwd(msg, &c__30, &c__30, &c__0, &c__1, ng, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  NG (=I1) .lt. 0     ", &c__30, &c__30, &c__0, &c__1, ng, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
   goto L700;
 L631:
-  msg = "DLSODAR-  NG changed (from I1 to I2) illegally,   ";
-  mxerrwd(msg, &c__50, &c__31, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  NG changed (from I1 to I2) illegally,   ", &c__50, &c__31, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "      i.e. not immediately after a root was found.";
-  mxerrwd(msg, &c__50, &c__31, &c__0, &c__2, &dlsr01_1.ngc, ng, &c__0, &
+  mxerrwd("      i.e. not immediately after a root was found.", &c__50, &c__31, &c__0, &c__2, &dlsr01_1.ngc, ng, &c__0, &
           c_b76, &c_b76, (C_INT)60);
   goto L700;
 L632:
-  msg = "DLSODAR-  One or more components of g has a root  ";
-  mxerrwd(msg, &c__50, &c__32, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  One or more components of g has a root  ", &c__50, &c__32, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  msg = "      too near to the initial point.    ";
-  mxerrwd(msg, &c__40, &c__32, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("      too near to the initial point.    ", &c__40, &c__32, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
   *istate = -33;
   return 0;
@@ -2780,8 +2715,7 @@ L700:
   return 0;
 
 L800:
-  msg = "DLSODAR-  Run aborted.. apparent infinite loop.   ";
-  mxerrwd(msg, &c__50, &c__303, &c__2, &c__0, &c__0, &c__0, &c__0, &c_b76, &
+  mxerrwd("DLSODAR-  Run aborted.. apparent infinite loop.   ", &c__50, &c__303, &c__2, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
   return 0;
   /* ----------------------- End of Subroutine DLSODAR --------------------- */

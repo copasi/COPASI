@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -172,19 +177,23 @@ CKeyFactory::~CKeyFactory() {}
 std::string CKeyFactory::add(const std::string & prefix,
                              CDataObject * pObject)
 {
-  std::map< std::string, CKeyFactory::HashTable >::iterator it =
-    mKeyTable.find(prefix);
-
-  if (it == mKeyTable.end())
-    {
-      std::pair<std::map< std::string, CKeyFactory::HashTable >::iterator, bool> ret =
-        mKeyTable.insert(std::map< std::string, CKeyFactory::HashTable >::value_type(prefix, CKeyFactory::HashTable()));
-
-      it = ret.first;
-    }
-
   std::stringstream key;
-  key << prefix + "_" << it->second.add(pObject);
+
+#pragma omp critical
+  {
+    std::map< std::string, CKeyFactory::HashTable >::iterator it =
+      mKeyTable.find(prefix);
+
+    if (it == mKeyTable.end())
+      {
+        std::pair< std::map< std::string, CKeyFactory::HashTable >::iterator, bool > ret =
+          mKeyTable.insert(std::map< std::string, CKeyFactory::HashTable >::value_type(prefix, CKeyFactory::HashTable()));
+
+        it = ret.first;
+      }
+
+    key << prefix + "_" << it->second.add(pObject);
+  }
 
   return key.str();
 }

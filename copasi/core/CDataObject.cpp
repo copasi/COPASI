@@ -84,11 +84,12 @@ CDataObject::CDataObject(const std::string & name,
 }
 
 CDataObject::CDataObject(const CDataObject & src,
-                         const CDataContainer * pParent)
+                         const CDataContainer * pParent,
+                         const std::string & objectType)
   : CObjectInterface(src)
   , CUndoObjectInterface(src)
   , mObjectName(src.mObjectName)
-  , mObjectType(src.mObjectType)
+  , mObjectType(objectType.empty() ? src.mObjectType : objectType)
   , mpObjectParent(src.mpObjectParent)
   , mObjectDisplayName()
   , mpObjectDisplayName(NULL)
@@ -282,21 +283,26 @@ bool CDataObject::setObjectName(const std::string & name)
 
   std::string OldName = mObjectName;
 
-  std::string oldCN = this->getCNProtected();
-  mObjectName = Name;
-
-  std::set< CDataContainer * >::iterator it = mReferences.begin();
-  std::set< CDataContainer * >::iterator end = mReferences.end();
-
-  for (; it != end; ++it)
-    (*it)->objectRenamed(this, OldName);
-
-  if (CRegisteredCommonName::isEnabled() &&
-      mpObjectParent != NULL)
+  if (OldName.empty())
     {
-      CRegisteredCommonName::handle(oldCN, getCN());
+      mObjectName = Name;
     }
+  else
+    {
+      std::string oldCN = this->getCNProtected();
+      mObjectName = Name;
 
+      std::set< CDataContainer * >::iterator it = mReferences.begin();
+      std::set< CDataContainer * >::iterator end = mReferences.end();
+
+      for (; it != end; ++it)
+        (*it)->objectRenamed(this, OldName);
+
+      if (CRegisteredCommonName::isEnabled() && mpObjectParent != NULL)
+        {
+          CRegisteredCommonName::handle(oldCN, getCN());
+        }
+    }
   return true;
 }
 

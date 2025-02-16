@@ -910,9 +910,10 @@ bool CCopasiXML::saveModel()
 
               for (j = 0; j < jmax; j++)
                 {
-                  Attr.setValue(0, pParamList->getKey(j));
-                  Attr.setValue(1, pParamList->getName(j));
-                  Attr.setValue(2, pParamList->getValue< C_FLOAT64 >(j));
+                  const CCopasiParameter * pParameter = pParamList->getParameter(j);
+                  Attr.setValue(0, pParameter->getKey());
+                  Attr.setValue(1, pParameter->getObjectName());
+                  Attr.setValue(2, pParameter->getValue< C_FLOAT64 >());
 
                   saveElement("Constant", Attr);
                 }

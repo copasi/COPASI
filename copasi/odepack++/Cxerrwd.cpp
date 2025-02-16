@@ -43,7 +43,7 @@ void Cxerrwd::setOstream(std::ostream & os)
 void Cxerrwd::enablePrint(const bool & print)
 {mPrint = print;}
 
-void Cxerrwd::operator()(const std::string & msg, const C_INT *, const C_INT *, const C_INT
+void Cxerrwd::operator()(const char * msg, const C_INT *, const C_INT *, const C_INT
                          *level, const C_INT *ni, const C_INT *i1, const C_INT *i2, const C_INT *nr,
                          const double *r1, const double *r2, C_INT)
 {

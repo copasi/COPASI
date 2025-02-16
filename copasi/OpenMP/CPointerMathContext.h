@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,21 +47,9 @@ void CPointerMathContext< Data >::setMathContext(CMathContext & Context)
       Base::master()->setMathContainer(Context.master());
 
       if (Base::size() > 1)
-        {
-          Data ** pIt = Base::beginThread();
-          Data ** pEnd = Base::endThread();
-          CMathContainer ** pContainer = Context.beginThread();
-
-          for (; pIt != pEnd; ++pIt, ++pContainer)
-            {
-              if (*pIt != NULL
-                  && *pContainer != NULL
-                  && (*pIt)->getMathContainer() == *pContainer)
-                continue;
-
-              (*pIt)->setMathContainer(*pContainer);
-            }
-        }
+#pragma omp parallel for
+        for (size_t i = 0; i < Base::size(); ++i)
+          Base::threadData()[i]->setMathContainer(Context.Base::threadData()[i]);
     }
 }
 

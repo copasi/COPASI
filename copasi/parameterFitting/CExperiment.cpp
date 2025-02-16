@@ -189,7 +189,7 @@ CExperiment::CExperiment(const CExperiment & src,
 
 CExperiment::CExperiment(const CCopasiParameterGroup & group,
                          const CDataContainer * pParent):
-  CCopasiParameterGroup(group, static_cast< const CDataContainer * >((pParent != NULL) ? pParent : group.getObjectDataModel())),
+  CCopasiParameterGroup(group, static_cast< const CDataContainer * >((pParent != NULL) ? pParent : group.getObjectDataModel()), "Experiment"),
   mpFileName(NULL),
   mpFirstRow(NULL),
   mpLastRow(NULL),
@@ -234,7 +234,6 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
   mExtendedTimeSeriesSize(0)
 {
   mStorageIt = mExtendedTimeSeries.array();
-
   initializeParameter();
 }
 
@@ -272,10 +271,7 @@ CExperiment & CExperiment::operator = (const CExperiment & rhs)
 
 void CExperiment::initializeParameter()
 {
-  CRootContainer::getKeyFactory()->remove(mKey);
-  mKey = CRootContainer::getKeyFactory()->add("Experiment", this);
-
-  *assertParameter("Key", CCopasiParameter::Type::KEY, mKey) = mKey;
+  *assertParameter("Key", CCopasiParameter::Type::KEY, std::string()) = getKey();
 
   mpFileName = assertParameter("File Name", CCopasiParameter::Type::FILE, std::string(""));
   mpFirstRow = assertParameter("First Row", CCopasiParameter::Type::UINT, (unsigned C_INT32) InvalidIndex);

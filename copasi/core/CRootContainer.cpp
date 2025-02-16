@@ -27,9 +27,14 @@
 #include "copasi/layout/CLGlobalRenderInformation.h"
 #include "copasi/utilities/CUnitDefinition.h"
 #include "copasi/utilities/CUnitDefinitionDB.h"
+#include "copasi/utilities/CDirEntry.h"
 
 #include "copasi/MIRIAM/CConstants.h"
 #include "copasi/MIRIAM/CRDFGraphConverter.h"
+
+#ifdef USE_OMP
+// #include "copasi/OpenMP/CLogger.h"
+#endif // USE_OMP
 
 extern CDataVector< CLGlobalRenderInformation > * DEFAULT_STYLES;
 
@@ -94,7 +99,15 @@ CRootContainer::~CRootContainer()
  */
 void CRootContainer::init(int argc, char *argv[], const bool & withGUI)
 {
+  CCopasiMessage::init();
   COptions::init(argc, argv);
+
+#ifdef USE_OMP
+  // CLogger::init();
+  // CLogger::setTask();
+  // CLogger::setLevel(CLogger::LogLevel::trace);
+  // CLogger::setLogDir(COptions::getPWD() + CDirEntry::Separator + "COPASI");
+#endif // USE_OMP
 
   CRegisteredCommonName::setEnabled(false);
 

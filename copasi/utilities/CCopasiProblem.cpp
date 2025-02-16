@@ -85,7 +85,7 @@ CCopasiProblem::~CCopasiProblem() {}
 
 CCopasiProblem * CCopasiProblem::copy() const
 {
-  return CProblemFactory::copy(this, this);
+  return CProblemFactory::copy(this, NULL);
 }
 
 const CTaskEnum::Task & CCopasiProblem::getType() const {return mType;}
