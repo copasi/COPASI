@@ -131,14 +131,15 @@ bool CKeyFactory::HashTable::addFix(const size_t & index,
   while (index >= mSize)
     {
       mTable.resize(mSize * 2, true);
-      memset(mTable.array() + mSize, 0,
-             mSize * sizeof(CDataObject *));
+      memset(mTable.array() + mSize, 0, mSize * sizeof(CDataObject *));
       mSize *= 2;
     }
 
-  if (mTable[index]) return false;
+  if (mTable[index])
+    return false;
 
   mTable[index] = pObject;
+
   return true;
 }
 
@@ -179,7 +180,7 @@ std::string CKeyFactory::add(const std::string & prefix,
 {
   std::stringstream key;
 
-#pragma omp critical
+#pragma omp critical (key_factory_access)
   {
     std::map< std::string, CKeyFactory::HashTable >::iterator it =
       mKeyTable.find(prefix);
@@ -207,18 +208,25 @@ bool CKeyFactory::addFix(const std::string & key, CDataObject * pObject)
   std::string Prefix = key.substr(0, pos);
   size_t index = atoi(key.substr(pos + 1).c_str());
 
-  std::map< std::string, CKeyFactory::HashTable >::iterator it =
-    mKeyTable.find(Prefix);
+  bool success = false;
 
-  if (it == mKeyTable.end())
-    {
-      std::pair<std::map< std::string, CKeyFactory::HashTable >::iterator, bool> ret =
-        mKeyTable.insert(std::map< std::string, CKeyFactory::HashTable >::value_type(Prefix, CKeyFactory::HashTable()));
+#pragma omp critical(key_factory_access)
+  {
+    std::map< std::string, CKeyFactory::HashTable >::iterator it =
+      mKeyTable.find(Prefix);
 
-      it = ret.first;
-    }
+    if (it == mKeyTable.end())
+      {
+        std::pair< std::map< std::string, CKeyFactory::HashTable >::iterator, bool > ret =
+          mKeyTable.insert(std::map< std::string, CKeyFactory::HashTable >::value_type(Prefix, CKeyFactory::HashTable()));
 
-  return it->second.addFix(index, pObject);
+        it = ret.first;
+      }
+
+    success = it->second.addFix(index, pObject);
+  }
+
+  return success;
 }
 
 bool CKeyFactory::remove(const std::string & key)
@@ -238,29 +246,42 @@ bool CKeyFactory::remove(const std::string & key)
   if (pos + 1 < key.length())
     index = atoi(key.substr(pos + 1).c_str());
 
-  std::map< std::string, CKeyFactory::HashTable >::iterator it =
-    mKeyTable.find(Prefix);
+  bool success = false;
 
-  if (it == mKeyTable.end()) return false;
+#pragma omp critical (key_factory_access)
+  {
+    std::map< std::string, CKeyFactory::HashTable >::iterator it =
+      mKeyTable.find(Prefix);
 
-  return it->second.remove(index);
+    if (it != mKeyTable.end())
+      success = it->second.remove(index);
+  }
+
+  return success;
 }
 
 CDataObject * CKeyFactory::get(const std::string & key)
 {
-  if (key.length() == 0) return NULL;
+  if (key.empty())
+    return NULL;
 
-  size_t pos = key.length() - 1; //TODO !!!pos can be invalid (-1); not anymore, but look for other errors like this
+  size_t pos = key.length() - 1;
 
-  while (isDigit(key[pos]) && pos) --pos;
+  while (isDigit(key[pos]) && pos)
+    --pos;
 
   std::string Prefix = key.substr(0, pos);
   size_t index = atoi(key.substr(pos + 1).c_str());
 
-  std::map< std::string, CKeyFactory::HashTable >::iterator it =
-    mKeyTable.find(Prefix);
+  CDataObject * pObject = nullptr;
 
-  if (it == mKeyTable.end()) return NULL;
+#pragma omp critical(key_factory_access)
+  {
+    std::map< std::string, CKeyFactory::HashTable >::iterator it = mKeyTable.find(Prefix);
 
-  return it->second.get(index);
+    if (it != mKeyTable.end())
+      pObject = it->second.get(index);
+  }
+
+  return pObject;
 }

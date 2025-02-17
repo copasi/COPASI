@@ -718,7 +718,8 @@ bool CCopasiParameterGroup::remove(CDataObject * pObject)
 {
   bool success = CCopasiParameter::remove(pObject);
 
-  if (success)
+  if (success
+      && dynamic_cast< CCopasiParameter * >(pObject) != nullptr)
     {
       // elements contains CCopasiParameter *, we therefore must compare it to the same type.
       CCopasiParameter * pParameter = static_cast< CCopasiParameter * >(pObject);
