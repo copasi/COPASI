@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <iostream>
 #include <fstream>
@@ -723,7 +723,6 @@ bool CRDFNode::removeTripletFromGraph(const CRDFTriplet & triplet) const
   return mGraph.removeTriplet(triplet);
 }
 
-
 #include <sbml/xml/XMLNode.h>
 #include <sbml/xml/XMLToken.h>
 
@@ -809,7 +808,7 @@ CRDFGraph * CRDFGraph::fromString(const std::string & miriam)
 {
   CRDFGraph * graph = new CRDFGraph();
 
-  XMLNamespaces ns; 
+  XMLNamespaces ns;
   ns.add("http://www.copasi.org/RDF/MiriamTerms#", "CopasiMT");
   ns.add("http://purl.org/dc/terms/", "dcterms");
   ns.add("http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdf");
@@ -875,6 +874,13 @@ struct TreeNode
   std::string language;
   bool isBlank;
   std::vector< TreeNode * > children;
+
+  ~TreeNode()
+  {
+    for (TreeNode * pNode : children)
+      if (pNode != nullptr)
+        delete pNode;
+  }
 
   bool needBag()
   {
@@ -1003,25 +1009,31 @@ void treeNodeToXMLNode(TreeNode * rootNode, XMLNode & parent, const std::string 
         {
           if (node->needBag())
             {
-              XMLNode * bagNode = new XMLNode(XMLTriple("Bag", rdfUri, "rdf"), XMLAttributes());
+              XMLNode bagNode(XMLTriple("Bag", rdfUri, "rdf"), XMLAttributes());
+
               for (auto * child : node->children)
                 {
                   if (child->elementName == "rdf:type")
                     continue;
-                  treeNodeToXMLNode(child, *bagNode, rdfUri);
+
+                  treeNodeToXMLNode(child, bagNode, rdfUri);
                 }
-              xmlNode->addChild(*bagNode);
+
+              xmlNode->addChild(bagNode);
             }
           else if (node->needDescription())
             {
-              XMLNode * descriptionNode = new XMLNode(XMLTriple("Description", rdfUri, "rdf"), XMLAttributes());
+              XMLNode descriptionNode(XMLTriple("Description", rdfUri, "rdf"), XMLAttributes());
+
               for (auto * child : node->children)
                 {
                   if (child->elementName == "rdf:type")
                     continue;
-                  treeNodeToXMLNode(child, *descriptionNode, rdfUri);
+
+                  treeNodeToXMLNode(child, descriptionNode, rdfUri);
                 }
-              xmlNode->addChild(*descriptionNode);
+
+              xmlNode->addChild(descriptionNode);
             }
           else
             {
@@ -1029,6 +1041,7 @@ void treeNodeToXMLNode(TreeNode * rootNode, XMLNode & parent, const std::string 
                 {
                   if (child->elementName == "rdf:type")
                     continue;
+
                   treeNodeToXMLNode(child, *xmlNode, rdfUri);
                 }
             }
@@ -1147,6 +1160,7 @@ XMLNode CRDFGraph::toXmlNode()
         case CRDFObject::LITERAL:
           {
             TreeNode * objectNode = new TreeNode();
+            toBeDeleted.push_back(objectNode);
             triplet.pSubject->getSubject().getBlankNodeID();
             objectNode->literal = Object.getLiteral().getLexicalData();
             objectNode->dataType = Object.getLiteral().getDataType();
@@ -1164,11 +1178,8 @@ XMLNode CRDFGraph::toXmlNode()
   rdfNode.addChild(description);
 
   // cleanup
+  delete rootNode;
   rootNode = nullptr;
-  nodeMap.clear();
-  for (TreeNode * node : toBeDeleted)
-    delete node;
-  toBeDeleted.clear();
 
   return rdfNode;
 }
