@@ -272,6 +272,9 @@ CCopasiParameter::~CCopasiParameter()
       && CRootContainer::getRoot() != nullptr)
     CRootContainer::getKeyFactory()->remove(mKey);
 
+  if (dynamic_cast< CCopasiParameterGroup * >(getObjectParent()) != nullptr)
+    static_cast< CCopasiParameterGroup * >(getObjectParent())->remove(this);
+
   deleteValue(mType, mpValue);
   deleteValue(mType, mpDefault);
   deleteValidValues(mType, mpValidValues);
