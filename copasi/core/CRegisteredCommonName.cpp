@@ -51,7 +51,7 @@ CRegisteredCommonName::CRegisteredCommonName()
   : CCommonName()
   , mpDataModel(nullptr)
 {
-#pragma omp critical
+#pragma omp critical (cregisteredcommonname_access)
   mSet.insert(this);
 }
 
@@ -65,7 +65,7 @@ CRegisteredCommonName::CRegisteredCommonName(const std::string & name)
   if (pObject != nullptr)
     mpDataModel = pObject->getObjectDataModel();
 
-#pragma omp critical
+#pragma omp critical (cregisteredcommonname_access)
   mSet.insert(this);
 }
 #endif // DEPRECATE_CONSTRUCTOR
@@ -75,7 +75,7 @@ CRegisteredCommonName::CRegisteredCommonName(const std::string & name, const COb
   , mpDataModel(CObjectInterface::DataObject(pObject) != nullptr
                 ? CObjectInterface::DataObject(pObject)->getObjectDataModel() : nullptr)
 {
-#pragma omp critical
+#pragma omp critical (cregisteredcommonname_access)
   mSet.insert(this);
 }
 
@@ -83,13 +83,13 @@ CRegisteredCommonName::CRegisteredCommonName(const CRegisteredCommonName & src)
   : CCommonName(src)
   , mpDataModel(src.mpDataModel)
 {
-#pragma omp critical
+#pragma omp critical (cregisteredcommonname_access)
   mSet.insert(this);
 }
 
 CRegisteredCommonName::~CRegisteredCommonName()
 {
-#pragma omp critical
+#pragma omp critical (cregisteredcommonname_access)
   mSet.erase(this);
 }
 

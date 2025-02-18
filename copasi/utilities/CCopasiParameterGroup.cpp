@@ -706,6 +706,16 @@ bool CCopasiParameterGroup::removeParameter(CCopasiParameter * pParameter)
   if (pParameter != NULL &&
       pParameter->getObjectParent() == this)
     {
+      index_iterator it = static_cast< elements * >(mpValue)->begin();
+      index_iterator end = static_cast< elements * >(mpValue)->end();
+
+      for (; it != end; ++it)
+        if (*it == pParameter)
+          {
+            static_cast< elements * >(mpValue)->erase(it, it + 1);
+            break;
+          }
+
       delete pParameter;
       return true;
     }
