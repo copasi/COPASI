@@ -42,6 +42,7 @@ jobs:
     - name: install libasan
       run: |
            yum install -y libasan
+           yum install -y devtoolset-8-libasan-devel
 
     - name: Update COPASI Version
       run: ./gitTools/UpdateCopasiVersion --force
