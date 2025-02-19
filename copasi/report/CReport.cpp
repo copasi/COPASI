@@ -153,7 +153,7 @@ void CReport::separate(const Activity & /* activity */)
 {
   if (!mpOstream) return;
 
-  (*mpOstream) << "\n";
+  (*mpOstream) << std::endl;
   mState = Compiled;
 }
 
@@ -218,7 +218,7 @@ void CReport::printHeader()
 
   for (; it != end; ++it)(*it)->print(mpOstream);
 
-  (*mpOstream) << "\n";
+  (*mpOstream) << std::endl;
 }
 
 void CReport::printBody()
@@ -272,7 +272,7 @@ void CReport::printBody()
       (*it)->print(mpOstream);
     }
 
-  (*mpOstream) << "\n";
+  (*mpOstream) << std::endl;
 }
 
 void CReport::printFooter()
@@ -321,7 +321,7 @@ void CReport::printFooter()
 
   for (; it != end; ++it)(*it)->print(mpOstream);
 
-  (*mpOstream) << "\n";
+  (*mpOstream) << std::endl;
 }
 
 // Compile the List of Report Objects;
