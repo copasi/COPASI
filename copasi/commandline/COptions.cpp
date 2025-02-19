@@ -27,7 +27,7 @@
 
 #include "copasi/copasi.h"
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 # ifndef WIN32_LEAN_AND_MEAN
 # define WIN32_LEAN_AND_MEAN
 # endif // WIN32_LEAN_AND_MEAN
@@ -73,7 +73,7 @@ void COptions::init(C_INT argc, char *argv[])
   std::string * Utf8 = new std::string[argc];
   C_INT i;
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
   // We cannot use the commandline arguments provided by main as they are not sufficient
   // to encode unicode data.
   CLocaleString::lchar * CommandLine = GetCommandLineW();
@@ -319,7 +319,7 @@ std::string COptions::getCopasiDir(void)
 
   CopasiDir = getEnvironmentVariable("COPASIDIR");
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 
   if (CopasiDir == "")
     {
@@ -424,7 +424,7 @@ std::string COptions::getHome(void)
 
   Home = getEnvironmentVariable("HOME");
 
-#ifdef WIN32
+#if defined(WIN32)
 
   if (Home == "")
     Home = getEnvironmentVariable("HOMEDRIVE")

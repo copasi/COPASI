@@ -27,7 +27,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 # include <io.h>
 # include <direct.h>
 typedef struct _stat STAT;
@@ -244,7 +244,7 @@ std::string CDirEntry::createTmpName(const std::string & dir,
       TmpName += suffix;
     }
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 
   while ((FD = _wcreat(CLocaleString::fromUtf8(TmpName).c_str(), _S_IREAD | _S_IWRITE)) == 0);
 
@@ -299,7 +299,7 @@ bool CDirEntry::move(const std::string & from,
 
   if (isDir(To)) return false;
 
-#ifdef WIN32
+#if defined(WIN32)
 
   // The target must not exist under WIN32 for rename to succeed.
   if (exist(To) && !remove(To))
@@ -332,7 +332,7 @@ bool CDirEntry::remove(const std::string & path)
   if (isDir(path))
     return (rmdir(CLocaleString::fromUtf8(path).c_str()) == 0);
   else if (isFile(path))
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
     return (_wremove(CLocaleString::fromUtf8(path).c_str()) == 0);
 
 #else
@@ -350,7 +350,7 @@ bool CDirEntry::removeFiles(const std::string & pattern,
 
   PatternList = compilePattern(pattern);
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 
   // We want the same pattern matching behavior for all platforms.
   // Therefore, we do not use the MS provided one and list all files instead.

@@ -11,7 +11,7 @@
 #ifndef COPASI_CDataVector
 #define COPASI_CDataVector
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 # pragma warning (disable: 4786)
 #endif  // WIN32
 

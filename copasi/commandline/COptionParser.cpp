@@ -35,7 +35,7 @@
  * cxx_source_file variable.
  */
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 #pragma warning (disable: 4786)
 #define strcasecmp _stricmp
 #endif

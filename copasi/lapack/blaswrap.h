@@ -119,7 +119,7 @@ extern "C"
 # undef max
 #endif // max
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 # if _MSC_VER < 1600
 #  define min _cpp_min
 #  define max _cpp_max

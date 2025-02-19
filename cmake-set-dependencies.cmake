@@ -31,7 +31,7 @@ if (COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
 
 # we have a dependencies directory and get to overwrite all the dependencies
 
-if (NOT UNIX OR CYGWIN)
+if ((NOT UNIX OR CYGWIN) AND NOT MINGW)
 
 # dependencies for windows
 

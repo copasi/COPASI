@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 # ifndef WIN32_LEAN_AND_MEAN
 # define WIN32_LEAN_AND_MEAN
 # endif // WIN32_LEAN_AND_MEAN
@@ -62,7 +62,7 @@ const char * findLocale()
 // static
 CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
 {
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
   int size;
 
   size = MultiByteToWideChar(CP_UTF8, // code page
@@ -161,9 +161,7 @@ CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
   return Result;
 #endif // SunOS || Linux
 
-#ifdef Darwin
   return CLocaleString(utf8.c_str());
-#endif
 }
 
 CLocaleString::CLocaleString():
@@ -223,7 +221,7 @@ std::string CLocaleString::toUtf8() const
       return "";
     }
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
   int size;
 
   size = WideCharToMultiByte(CP_UTF8, // code page
@@ -326,10 +324,8 @@ std::string CLocaleString::toUtf8() const
   return Result;
 #endif // SunOS || Linux
 
-#ifdef Darwin
   std::string Result = mpStr;
   return Result;
-#endif // Darwin
 }
 
 const CLocaleString::lchar * CLocaleString::c_str() const

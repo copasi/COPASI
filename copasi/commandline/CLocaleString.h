@@ -19,7 +19,7 @@
 class CLocaleString
 {
 public:
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
   typedef wchar_t lchar;
 #else
   typedef char lchar;
