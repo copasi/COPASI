@@ -161,7 +161,9 @@ CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
   return Result;
 #endif // SunOS || Linux
 
+#if !defined(WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
   return CLocaleString(utf8.c_str());
+#endif
 }
 
 CLocaleString::CLocaleString():
@@ -324,8 +326,11 @@ std::string CLocaleString::toUtf8() const
   return Result;
 #endif // SunOS || Linux
 
+
+#if !defined(WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
   std::string Result = mpStr;
   return Result;
+#endif
 }
 
 const CLocaleString::lchar * CLocaleString::c_str() const
