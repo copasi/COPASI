@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <cmath>
 
@@ -3424,10 +3424,16 @@ CSBMLExporter::addInitialAssignmentsToModel(const CDataModel &dataModel)
               math << sbmlId << " * "
                    << mAvogadroId << " * "
                    << pComp->getSBMLId();
-              ia->setMath(SBML_parseFormula(math.str().c_str()));
+              ASTNode * pNode = SBML_parseFormula(math.str().c_str());
+              ia->setMath(pNode);
+              pdelete(pNode);
             }
           else
-            ia->setMath(SBML_parseFormula(sbmlId.c_str()));
+            {
+              ASTNode * pNode = SBML_parseFormula(sbmlId.c_str());
+              ia->setMath(pNode);
+              pdelete(pNode);
+            }
 
           ia->setUserData((void*)"1");
         }
@@ -8110,6 +8116,7 @@ XMLNode* CSBMLExporter::createSBMLNotes(const std::string& notes_string)
         {
           // create an XMLNode
           XMLNode* pNotes = XMLNode::convertStringToXMLNode(notes_string);
+
           assert(pNotes != NULL);
 
           if (pNotes != NULL)
@@ -8166,7 +8173,9 @@ XMLNode* CSBMLExporter::createSBMLNotes(const std::string& notes_string)
                                   Head.insertChild(0, *pTitle);
                                   delete pTitle;
 
-                                  pResult->removeChild(pResult->getIndex("head"));
+                                  XMLNode * pRemove = pResult->removeChild(pResult->getIndex("head"));
+                                  pdelete(pRemove);
+
                                   pResult->insertChild(0, Head);
                                 }
                             }
@@ -8192,6 +8201,7 @@ XMLNode* CSBMLExporter::createSBMLNotes(const std::string& notes_string)
                             }
 
                           delete pNotes;
+
                           pResult->unsetEnd();
                           assert(pResult->isEnd() == false);
                         }

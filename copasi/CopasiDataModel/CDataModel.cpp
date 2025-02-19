@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -237,11 +237,9 @@ CDataModel::~CDataModel()
   CRegisteredCommonName::setEnabled(false);
 
   // Make sure that the old data is deleted
-  deleteOldData();
-
+  mOldData.clear();
   // Delete the current data
-  mOldData = mData;
-  deleteOldData();
+  mData.clear();
 
   pdelete(pOldMetabolites);
 
@@ -2611,20 +2609,7 @@ CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile,
 
 void CDataModel::deleteOldData()
 {
-  pdelete(mOldData.pModel);
-  pdelete(mOldData.pTaskList);
-  pdelete(mOldData.pReportDefinitionList);
-  pdelete(mOldData.pPlotDefinitionList);
-  pdelete(mOldData.pListOfLayouts);
-  pdelete(mOldData.pGUI);
-  pdelete(mOldData.pCurrentSBMLDocument);
-  pdelete(mOldData.mpUndoStack);
-
-  pdelete(mOldData.pCurrentSEDMLDocument);
-
-#ifdef COPASI_Versioning
-  pdelete(mOldData.mpModelVersionHierarchy);
-#endif // COPASI_Versioning
+  mOldData.clear();
 }
 
 const CModel * CDataModel::getModel() const
@@ -3198,7 +3183,6 @@ CDataModel::CContent & CDataModel::CContent::operator=(const CContent & rhs)
       mSBMLFileName = rhs.mSBMLFileName;
       mReferenceDir = rhs.mReferenceDir;
       mCopasi2SBMLMap = rhs.mCopasi2SBMLMap;
-
       pCurrentSEDMLDocument = rhs.pCurrentSEDMLDocument;
       mCopasi2SEDMLMap = rhs.mCopasi2SEDMLMap;
       mSEDMLFileName = rhs.mSEDMLFileName;
@@ -3216,12 +3200,30 @@ bool CDataModel::CContent::isValid() const
   return (pModel != NULL && pTaskList != NULL && pReportDefinitionList != NULL && pPlotDefinitionList != NULL && pListOfLayouts != NULL && mpUndoStack != NULL && pGUI != NULL);
 }
 
+void CDataModel::CContent::clear()
+{
+  pdelete(pModel);
+  pdelete(pTaskList);
+  pdelete(pReportDefinitionList);
+  pdelete(pPlotDefinitionList);
+  pdelete(pListOfLayouts);
+  pdelete(pGUI);
+  pdelete(pCurrentSBMLDocument);
+  pdelete(mpUndoStack);
+
+  pdelete(pCurrentSEDMLDocument);
+
+#ifdef COPASI_Versioning
+  pdelete(mpModelVersionHierarchy);
+#endif // COPASI_Versioning
+}
+
 void CDataModel::pushData()
 {
   // make sure the old data has been deleted.
   assert(mOldData.pModel == NULL && mOldData.pTaskList == NULL && mOldData.pReportDefinitionList == NULL && mOldData.pPlotDefinitionList == NULL && mOldData.pListOfLayouts == NULL && mOldData.pGUI == NULL);
 
-  assert(mOldData.pCurrentSEDMLDocument == NULL);
+  assert(mOldData.pCurrentSBMLDocument == NULL && mOldData.pCurrentSEDMLDocument == NULL);
 
 #ifdef COPASI_Versioning
   assert(mOldData.mpModelVersionHierarchy == NULL);

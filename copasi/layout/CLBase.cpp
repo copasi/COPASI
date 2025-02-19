@@ -1,4 +1,14 @@
-// Copyright (C) 2010 - 2013 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -28,7 +38,9 @@ CLPoint::CLPoint(const Point& p) :
 
 Point CLPoint::getSBMLPoint() const
 {
-  Point p(new LayoutPkgNamespaces(), mX, mY, mZ);
+  LayoutPkgNamespaces NameSpaces;
+
+  Point p(&NameSpaces, mX, mY, mZ);
   return p;
 }
 
@@ -42,7 +54,9 @@ CLDimensions::CLDimensions(const Dimensions& d) :
 
 Dimensions CLDimensions::getSBMLDimensions() const
 {
-  Dimensions d(new LayoutPkgNamespaces()
+  LayoutPkgNamespaces NameSpaces;
+
+  Dimensions d(&NameSpaces
                , mWidth
                , mHeight
                , mDepth
@@ -59,7 +73,9 @@ CLBoundingBox::CLBoundingBox(const BoundingBox & bb)
 
 BoundingBox CLBoundingBox::getSBMLBoundingBox() const
 {
-  return BoundingBox(new LayoutPkgNamespaces(), "", mPosition.getX(), mPosition.getY(),
+  LayoutPkgNamespaces NameSpaces;
+
+  return BoundingBox(&NameSpaces, "", mPosition.getX(), mPosition.getY(),
                      mDimensions.getWidth(), mDimensions.getHeight());
 }
 

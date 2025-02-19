@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1066,6 +1066,8 @@ SEDMLImporter::parseSEDML(const std::string & sedmlDocumentText,
 
   if (pSEDMLDocument->getListOfModels() == NULL)
     {
+      pdelete(pSEDMLDocument);
+
       CCopasiMessage Message(CCopasiMessage::ERROR, MCSEDML + 2);
 
       if (mpProcessReport != NULL)
@@ -1147,6 +1149,8 @@ void SEDMLImporter::updateContent(CDataModel::CContent & data, CDataModel & dm)
   data.pCurrentSEDMLDocument = mpSEDMLDocument;
   data.mCopasi2SEDMLMap = mContent.mCopasi2SEDMLMap;
   data.mContentType = CDataModel::ContentType::SEDML;
+
+  initializeContent();
 }
 
 void SEDMLImporter::importTasks(CDataVectorN< CCopasiTask > * pTaskList)
@@ -1278,7 +1282,16 @@ void SEDMLImporter::importTask(
                       vrange = convertSimpleFunctionalRange(frange, repeat);
                   }
 
-                if (SBML_formulaToString(sv->getMath()) != sv->getRange())
+                char * pFormula = SBML_formulaToString(sv->getMath());
+                std::string Formula;
+
+                if (pFormula != nullptr)
+                  {
+                    Formula = pFormula;
+                    free(pFormula);
+                  }
+
+                if (Formula != sv->getRange())
                   {
                     CCopasiMessage(CCopasiMessage::WARNING,
                                    "This version of COPASI only supports setValue elements that apply range values.");
@@ -1691,6 +1704,10 @@ void SEDMLImporter::restoreFunctionDB()
  */
 SEDMLImporter::~SEDMLImporter()
 {
+  pdelete(mContent.pTaskList);
+  pdelete(mContent.pReportDefinitionList);
+  pdelete(mContent.pPlotDefinitionList);
+
   mReportMap.clear();
 }
 

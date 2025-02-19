@@ -3084,10 +3084,10 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
             "In order to import this model in COPASI, it has to be flattened, however flattening is "
             "not possible because of the following errors:\n" + sbmlDoc->getErrorLog()->toString();
 
-          #if LIBSBML_HAS_PACKAGE_COMP
+#if LIBSBML_HAS_PACKAGE_COMP
           // escape potential percent signs that would lead to an error when passed to CCopasiMessage
           CPrefixNameTransformer::replaceStringInPlace(message, "%", "%%");
-          #endif //LIBSBML_HAS_PACKAGE_COMP
+#endif //LIBSBML_HAS_PACKAGE_COMP
 
           CCopasiMessage(CCopasiMessage::EXCEPTION, message.c_str());
         }
@@ -4345,6 +4345,9 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
 
       if (!result)
         {
+          for (CEvaluationNodeObject * pNode : *v)
+            pdelete(pNode);
+
           v->clear();
         }
     }
@@ -8022,7 +8025,10 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(Model* pModel, std::map<std::st
               // make sure all ids are unique
               assert(ids.find(pSpeciesReference->getId()) == ids.end());
 
-              double stoichiometry = SBMLTransforms::evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel);
+              ASTNode * pNode = SBML_parseFormula(pSpeciesReference->getId().c_str());
+              double stoichiometry = SBMLTransforms::evaluateASTNode(pNode, pModel);
+              pdelete(pNode);
+
               ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(),
                          stoichiometry));
               // update stoichiometry
@@ -8043,7 +8049,10 @@ void SBMLImporter::updateSBMLSpeciesReferenceIds(Model* pModel, std::map<std::st
               // make sure all ids are unique
               assert(ids.find(pSpeciesReference->getId()) == ids.end());
 
-              double stoichiometry = SBMLTransforms::evaluateASTNode(SBML_parseFormula(pSpeciesReference->getId().c_str()), pModel);
+              ASTNode * pNode = SBML_parseFormula(pSpeciesReference->getId().c_str());
+              double stoichiometry = SBMLTransforms::evaluateASTNode(pNode, pModel);
+              pdelete(pNode);
+
               ids.insert(std::pair<std::string, double>(pSpeciesReference->getId(),
                          stoichiometry));
               // update stoichiometry

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,8 +12,6 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
-
-
 
 #define USE_LAYOUT 1
 #define USE_RENDER 1
@@ -39,6 +37,11 @@
 CLRenderInformationBase::CLRenderInformationBase(const std::string& name, CDataContainer* pParent):
   CLBase(),
   CDataContainer(name, pParent),
+  mReferenceRenderInformation(),
+  mBackgroundColor(),
+  mListOfColorDefinitions("ListOfColorDefinitions", this),
+  mListOfGradientDefinitions("ListOfGradientDefinitions", this),
+  mListOfLineEndings("ListOfLineEndings", this),
   mKey(""),
   mName("")
 {
@@ -76,6 +79,9 @@ CLRenderInformationBase::CLRenderInformationBase(const RenderInformationBase& so
   CDataContainer(name, pParent),
   mReferenceRenderInformation(source.getReferenceRenderInformationId()),
   mBackgroundColor(source.getBackgroundColor()),
+  mListOfColorDefinitions("ListOfColorDefinitions", this),
+  mListOfGradientDefinitions("ListOfGradientDefinitions", this),
+  mListOfLineEndings("ListOfLineEndings", this),
   mKey(""),
   mName(source.getName())
 {
