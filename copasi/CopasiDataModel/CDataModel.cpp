@@ -3197,7 +3197,21 @@ CDataModel::CContent & CDataModel::CContent::operator=(const CContent & rhs)
 
 bool CDataModel::CContent::isValid() const
 {
-  return (pModel != NULL && pTaskList != NULL && pReportDefinitionList != NULL && pPlotDefinitionList != NULL && pListOfLayouts != NULL && mpUndoStack != NULL && pGUI != NULL);
+  bool clear = true;
+
+  clear &= pModel != nullptr;
+  clear &= pTaskList != nullptr;
+  clear &= pReportDefinitionList != nullptr;
+  clear &= pPlotDefinitionList != nullptr;
+  clear &= pListOfLayouts != nullptr;
+  clear &= pGUI != nullptr;
+  clear &= mpUndoStack != nullptr;
+
+#ifdef COPASI_Versioning
+  clear &= mpModelVersionHierarchy == nullptr;
+#endif // COPASI_Versioning
+
+  return clear;
 }
 
 void CDataModel::CContent::clear()
@@ -3218,16 +3232,31 @@ void CDataModel::CContent::clear()
 #endif // COPASI_Versioning
 }
 
-void CDataModel::pushData()
+bool CDataModel::CContent::isClear() const
 {
-  // make sure the old data has been deleted.
-  assert(mOldData.pModel == NULL && mOldData.pTaskList == NULL && mOldData.pReportDefinitionList == NULL && mOldData.pPlotDefinitionList == NULL && mOldData.pListOfLayouts == NULL && mOldData.pGUI == NULL);
+  bool clear = true;
 
-  assert(mOldData.pCurrentSBMLDocument == NULL && mOldData.pCurrentSEDMLDocument == NULL);
+  clear &= pModel == nullptr;
+  clear &= pTaskList == nullptr;
+  clear &= pReportDefinitionList == nullptr;
+  clear &= pPlotDefinitionList == nullptr;
+  clear &= pListOfLayouts == nullptr;
+  clear &= pGUI == nullptr;
+  clear &= pCurrentSBMLDocument == nullptr;
+  clear &= mpUndoStack == nullptr;
+
+  clear &= pCurrentSEDMLDocument == nullptr;
 
 #ifdef COPASI_Versioning
-  assert(mOldData.mpModelVersionHierarchy == NULL);
+  clear &= mpModelVersionHierarchy == nullptr;
 #endif // COPASI_Versioning
+
+  return clear;
+}
+
+void CDataModel::pushData()
+{
+  assert (mOldData.isClear());
 
   mOldData = mData;
   mData = CContent();
@@ -3235,12 +3264,8 @@ void CDataModel::pushData()
 
 void CDataModel::popData()
 {
-  // Make sure the old data is valid
-  assert(mOldData.pModel != NULL && mOldData.pTaskList != NULL && mOldData.pReportDefinitionList != NULL && mOldData.pPlotDefinitionList != NULL && mOldData.pListOfLayouts != NULL && mOldData.pGUI != NULL);
-
-#ifdef COPASI_Versioning
-  assert(mOldData.mpModelVersionHierarchy != NULL);
-#endif // COPASI_Versioning
+  assert (mData.isClear());
+  assert (mOldData.isValid());
 
   // TODO CRITICAL We need to clean up mData to avoid memory leaks.
 

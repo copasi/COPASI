@@ -104,6 +104,7 @@ public:
     CContent & operator = (const CContent & rhs);
     bool isValid() const;
     void clear();
+    bool isClear() const;
 
     CModel * pModel;
     CDataVectorN< CCopasiTask > * pTaskList;

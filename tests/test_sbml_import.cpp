@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -147,6 +147,8 @@ TEST_CASE("1: importing sbml files", "[copasi][sbml]")
     REQUIRE(unit->getMultiplier() == 1);
     REQUIRE(unit->getExponent() == -1);
     REQUIRE(unit->getKind() == UNIT_KIND_ITEM);
+
+    pdelete(doc);
   }
 
   CRootContainer::removeDatamodel(dm);
@@ -389,7 +391,7 @@ TEST_CASE("importing sbml files with initial value annotations", "[copasi][sbml]
   auto * mv1 = model->createModelValue("A", 1);
   auto * mv2 = model->createModelValue("B");
 
-  std::stringstream str; 
+  std::stringstream str;
   str << "1 / <" << mv1->getInitialValueReference()->getCN() << ">";
 
   mv2->setStatus(CModelEntity::Status::ASSIGNMENT);
@@ -403,20 +405,16 @@ TEST_CASE("importing sbml files with initial value annotations", "[copasi][sbml]
     // if imported as initial expressions, we should have 2 model values
     REQUIRE(dm->importSBMLFromString(sbml, NULL, true, true, true));
     REQUIRE(dm->getModel()->getNumModelValues() == 2);
-
   }
 
   {
     // if imported without changing expressions we ought to have 3
     REQUIRE(dm->importSBMLFromString(sbml, NULL, true, true, false));
     REQUIRE(dm->getModel()->getNumModelValues() == 3);
-
   }
-
 
   CRootContainer::removeDatamodel(dm);
 }
-
 
 //#include <filesystem>
 //#include <copasi/utilities/CCopasiException.h>
