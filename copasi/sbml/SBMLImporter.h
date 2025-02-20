@@ -689,7 +689,7 @@ protected:
 
 public:
   SBMLImporter();
-  ~SBMLImporter();
+  virtual ~SBMLImporter();
 
   CModel* readSBML(std::string filename,
                    SBMLDocument*& pSBMLDocument,

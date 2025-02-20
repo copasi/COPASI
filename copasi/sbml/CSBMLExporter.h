@@ -184,7 +184,7 @@ public:
   /**
    * Destructor
    */
-  ~CSBMLExporter();
+  virtual ~CSBMLExporter();
 
   SBMLDocument* getSBMLDocument();
 

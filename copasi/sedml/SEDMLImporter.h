@@ -96,7 +96,7 @@ protected:
 
 public:
   SEDMLImporter();
-  ~SEDMLImporter();
+  virtual ~SEDMLImporter();
 
   const std::string getArchiveFileName();
 
