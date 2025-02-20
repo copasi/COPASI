@@ -455,10 +455,6 @@ if (ENABLE_OMP)
       "omp_sched_monotonic")
   endif()
 
-  if (UNIX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
-  endif (UNIX)
-
 endif(ENABLE_OMP)
 
 # TODO raptor should be restricted to a version which is at least
@@ -740,6 +736,14 @@ if ((WIN32 OR (UNIX AND NOT APPLE))
   message(STATUS "Detected Intel Compiler")
   set(USING_INTEL TRUE)
 endif ()
+
+# define the address sanitizer option analogous to visual leak detector below
+option(COPASI_USE_ASAN "use address Sanitizer." OFF)
+mark_as_advanced(COPASI_USE_ASAN)
+
+if (COPASI_USE_ASAN)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+endif (COPASI_USE_ASAN)
 
 # if using msvc or intel windows compiler allow for the use of the static runtime
 if(MSVC OR USING_INTEL)
