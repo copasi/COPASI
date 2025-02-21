@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -88,7 +88,7 @@ CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
 #endif // WIN32
 
 #if (defined SunOS || defined Linux)
-  static iconv_t Converter = NULL;
+  iconv_t Converter = nullptr;
 
   if (Converter == NULL)
     {
@@ -152,7 +152,7 @@ CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
   CLocaleString Result(Locale);
 
   // Reset the Converter
-  iconv(Converter, NULL, &Utf8Length, NULL, &LocaleLength);
+  iconv_close(Converter);
 
   // Release memory
   free(Utf8);
@@ -327,7 +327,6 @@ std::string CLocaleString::toUtf8() const
     return Result;
   }
 #endif // SunOS || Linux
-
 
 #if !defined(WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
   {

@@ -3409,6 +3409,8 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
               it->setMathContainer(&mData.pModel->getMathContainer());
             }
 
+          CCopasiMessage::clearDeque();
+
           // need initialize, so that all objects are created for the
           // object browser
           it->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
@@ -3416,6 +3418,8 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
           // but we should restore any possible changes made to the model
           // by the task, without updating the model
           it->restore(false);
+
+          CCopasiMessage::clearDeque();
         }
 
       catch (...)

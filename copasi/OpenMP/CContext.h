@@ -61,11 +61,6 @@ public:
   const Data & active() const;
   Data const * threadData() const;
 
-  Data * beginThread();
-  Data * endThread();
-  const Data * beginThread() const;
-  const Data * endThread() const;
-
   bool isMaster(const Data * data) const;
   bool isThread(const Data * data) const;
   int localIndex(const Data * data) const;
@@ -245,26 +240,6 @@ template < class Data > const Data & CContext< Data >::active() const
 template < class Data > Data const * CContext< Data >::threadData() const
 {
   return mThreadData;
-}
-
-template < class Data > Data * CContext< Data >::beginThread()
-{
-  return mThreadData;
-}
-
-template < class Data > Data * CContext< Data >::endThread()
-{
-  return mThreadData + mSize;
-}
-
-template < class Data > const Data * CContext< Data >::beginThread() const
-{
-  return mThreadData;
-}
-
-template < class Data > const Data * CContext< Data >::endThread() const
-{
-  return mThreadData + mSize;
 }
 
 template < class Data > bool CContext< Data >::isMaster(const Data * data) const

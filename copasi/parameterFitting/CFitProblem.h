@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -79,6 +79,12 @@ public:
    * @result bool success
    */
   virtual bool setCallBack(CProcessReportLevel callBack) override;
+
+  /**
+   * perform at least the initializations of the subtask that
+   * must be done before the output is initialized.
+   */
+  virtual bool initializeSubtaskBeforeOutput();
 
   /**
    * Do all necessary initialization so that calls to calculate will

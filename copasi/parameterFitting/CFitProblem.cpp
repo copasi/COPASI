@@ -500,6 +500,21 @@ bool CFitProblem::setCallBack(CProcessReportLevel callBack)
   return success;
 }
 
+// virtual
+bool CFitProblem::initializeSubtaskBeforeOutput()
+{
+  bool success = true;
+
+  if (mpExperimentSet == nullptr
+      || mpCrossValidationSet == nullptr)
+    return false;
+
+  success &= mpExperimentSet->compile(mpContainer);
+  success &= mpCrossValidationSet->compile(mpContainer);
+
+  return success;
+}
+
 bool CFitProblem::initialize()
 {
   bool success = true;
@@ -515,7 +530,6 @@ bool CFitProblem::initialize()
 
       if (CCopasiMessage::getHighestSeverity() > CCopasiMessage::WARNING &&
           CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
-
         success = false;
     }
 
@@ -566,8 +580,6 @@ bool CFitProblem::initialize()
 
   mCompleteInitialState = mpContainer->getCompleteInitialState();
   mpInitialStateTime = mpContainer->getInitialState().array() + mpContainer->getCountFixed() + mpContainer->getCountFixedEventTargets();
-
-  success &= mpExperimentSet->compile(mpContainer);
 
   // Initialize the object set which the experiment independent objects.
   std::vector< CObjectInterface::ObjectSet > ObjectSet;
@@ -736,8 +748,6 @@ bool CFitProblem::initialize()
     }
 
   mExperimentDependentValues.resize(mpExperimentSet->getDataPointCount());
-
-  if (!mpCrossValidationSet->compile(mpContainer)) return false;
 
   // Initialize the object set which the experiment independent objects.
   ObjectSet.clear();
