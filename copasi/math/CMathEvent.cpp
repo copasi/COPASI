@@ -400,6 +400,11 @@ void CMathEvent::CTrigger::allocate(const CEvent * pDataEvent,
 
           mRoots.resize(countRoots(TriggerFunction.getRoot(), Variables));
         }
+      else
+      {
+        // still need to resize root
+        mRoots.resize(0);
+      }
     }
 
   return;

@@ -56,6 +56,28 @@ TEST_CASE("create a new model with invalid value", "[copasi][creation]")
   CRootContainer::removeDatamodel(dm);
 }
 
+TEST_CASE("create a new model with invalid trigger", "[copasi][creation]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != NULL);
+
+  REQUIRE(dm->newModel(NULL, true));
+
+  auto * model = dm->getModel();
+  REQUIRE(model != nullptr);
+
+  auto * event = model->createEvent("e0");
+  event->setTriggerExpression(CRegisteredCommonName(std::string("<") + std::string(model->getValueReference()->getStringCN().c_str()) + std::string("> >  10")));
+  event->compile({dm});
+  REQUIRE(model->compileIfNecessary(NULL) == true);
+  event->setTriggerExpression(CRegisteredCommonName(std::string(model->getValueReference()->getStringCN().c_str())));
+  event->compile({dm});
+  REQUIRE(model->compileIfNecessary(NULL) == false);
+
+
+  CRootContainer::removeDatamodel(dm);
+}
+
 TEST_CASE("create a model with inhibited reaciton", "[copasi][creation]")
 {
   auto * dm = CRootContainer::addDatamodel();
