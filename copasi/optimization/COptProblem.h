@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -218,29 +218,6 @@ public:
   bool adjustStartValuesForIntervals();
 
   /**
-   * Adjust the start values so that we have valid intervals (>= 0) for all items
-   * @param COptItem & optItem
-   * @return bool adjusted
-   */
-  bool adjustStartValue(COptItem & optItem);
-
-  /**
-   * Adjust the value so that all intervals are >= 0
-   * @param C_FLOAT64 * pValue
-   * @param  const C_FLOAT64 & min
-   * @param  const C_FLOAT64 & max
-   * @return C_FLOAT64 adjusted (NaN if not adjustable)
-   */
-  C_FLOAT64 adjustForIntervals(C_FLOAT64 * pValue, const C_FLOAT64 & min, const C_FLOAT64 & max);
-
-  /**
-   * Calculate the RMS of the interval size for items which have invalid intervals
-   * @param const C_FLOAT64 &  value
-   * @return C_FLOAT64 minInterval
-   */
-  C_FLOAT64 evalMinimizeIntervals(const C_FLOAT64 & value);
-
-  /**
    * Calculate the statistics for the problem
    * @param const C_FLOAT64 & factor (Default: 1.0e-003)
    * @param const C_FLOAT64 & resolution (Default: 1.0e-009)
@@ -279,7 +256,7 @@ public:
    * @param const bool & algorithmOrder (default: false)
    * @return const std::vector< UpdateMethod * > & updateMethods
    */
-  CVectorCore< C_FLOAT64 * > & getContainerVariables(const bool & algorithmOrder = false) const;
+  // CVectorCore< C_FLOAT64 * > & getContainerVariables(const bool & algorithmOrder = false) const;
 
 protected:
   /**
@@ -540,7 +517,7 @@ protected:
    * is in the same state as before or the new state if update is true.
    * @param const bool & update
    */
-  virtual void updateContainer(const bool & update);
+  void updateContainer(const bool & update);
 
 private:
   /**
@@ -669,7 +646,7 @@ protected:
   /**
    * A vector of pointer to the container variables
    */
-  mutable CVector< C_FLOAT64 * > mContainerVariables;
+  // mutable CVector< C_FLOAT64 * > mContainerVariables;
 
   sCounter mCounters;
 
@@ -716,14 +693,9 @@ protected:
   C_FLOAT64 mMinInterval;
 
   /**
-   * A pointer to the value to be adjusted to create valid intervals
-   */
-  C_FLOAT64 * mpAdjust;
-
-  /**
    * The set of COptItems which intervals are adjusted
    */
-  std::set< COptItem * > mAdjustedItems;
+  COptItem * mpItemToAdjust;
 
   /**
    * Number of items influencing intervals
@@ -734,7 +706,7 @@ protected:
 
   std::vector< COptItem * > mOptItemAlgorithm;
 
-  mutable CVector < C_FLOAT64 * > mContainerVariablesAlgorithm;
+  // mutable CVector < C_FLOAT64 * > mContainerVariablesAlgorithm;
 
   CVector < C_FLOAT64 > mSolutionVariablesAlgorithm;
 };

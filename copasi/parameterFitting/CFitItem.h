@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -126,20 +126,15 @@ public:
   /**
    * Set the local value.
    * @param const C_FLOAT64 & value
+   * @return bool success
    */
-  void setLocalValue(const C_FLOAT64 & value);
+  virtual bool setItemValue(const C_FLOAT64 & value) override;
 
   /**
    * Retrieve the local value.
    * @return const C_FLOAT64 & value
    */
-  const C_FLOAT64 & getLocalValue() const;
-
-  /**
-   * Retrieve the value of the optimization object.
-   * @return const C_FLOAT64 * objectValue
-   */
-  virtual const C_FLOAT64 * getObjectValue() const override;
+  virtual const C_FLOAT64 & getItemValue() const override;
 
   /**
    * Add an experiment to the list of affected experiments.

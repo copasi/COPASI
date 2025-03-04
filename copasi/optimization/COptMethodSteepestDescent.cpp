@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -112,7 +112,7 @@ bool COptMethodSteepestDescent::optimise()
             break;
         }
 
-      *mProblemContext.master()->getContainerVariables(true)[i] = mIndividual[i];
+      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mIndividual[i]);
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -216,7 +216,7 @@ bool COptMethodSteepestDescent::optimise()
         }
 
       for (i = 0; i < mVariableSize; i++)
-        mIndividual[i] = *mProblemContext.master()->getOptItemList(true)[i]->getObjectValue();
+        mIndividual[i] = mProblemContext.master()->getOptItemList(true)[i]->getItemValue();
 
       if (mLogVerbosity > 1)
         {
@@ -288,9 +288,6 @@ bool COptMethodSteepestDescent::initialize()
 
 void COptMethodSteepestDescent::gradient()
 {
-
-  C_FLOAT64 **ppContainerVariable = mProblemContext.master()->getContainerVariables(true).array();
-  C_FLOAT64 **ppContainerVariableEnd = ppContainerVariable + mVariableSize;
   C_FLOAT64 * pGradient = mGradient.array();
 
   C_FLOAT64 y;
@@ -320,34 +317,39 @@ void COptMethodSteepestDescent::gradient()
       return;
     }
 
-  for (; ppContainerVariable != ppContainerVariableEnd; ++ppContainerVariable, ++pGradient)
+  std::vector< COptItem * >::const_iterator it = mProblemContext.master()->getOptItemList(true).begin();
+  std::vector< COptItem * >::const_iterator end = mProblemContext.master()->getOptItemList(true).end();
+
+  for (; it != end; ++it, ++pGradient)
     {
-      if ((x = **ppContainerVariable) != 0.0)
+      x = (*it)->getItemValue();
+
+      if (x != 0.0)
         {
-          **ppContainerVariable = x * 1.001;
+          (*it)->COptItem::setItemValue(x * 1.001);
           *pGradient = (y - evaluate()) / (x * 0.001);
         }
 
       else
         {
-          **ppContainerVariable = 1e-7;
+          (*it)->COptItem::setItemValue(1e-7);
           *pGradient = (y - evaluate()) / 1e-7;
         }
 
-      **ppContainerVariable = x;
+      (*it)->COptItem::setItemValue(x);
     }
 }
 
 C_FLOAT64 COptMethodSteepestDescent::descentLine(const C_FLOAT64 & x)
 {
-  C_FLOAT64 **ppContainerVariable = mProblemContext.master()->getContainerVariables(true).array();
-  C_FLOAT64 **ppContainerVariableEnd = ppContainerVariable + mVariableSize;
+  std::vector< COptItem * >::const_iterator it = mProblemContext.master()->getOptItemList(true).begin();
+  std::vector< COptItem * >::const_iterator end = mProblemContext.master()->getOptItemList(true).end();
   C_FLOAT64 * pGradient = mGradient.array();
   C_FLOAT64 * pIndividual = mIndividual.array();
 
-  for (; ppContainerVariable != ppContainerVariableEnd; ++ppContainerVariable, ++pIndividual, ++pGradient)
+  for (; it != end; ++it, ++pGradient, ++pGradient)
     {
-      **ppContainerVariable = *pIndividual + x **pGradient;
+      (*it)->COptItem::setItemValue(*pIndividual + x * *pGradient);
     }
 
   return evaluate();

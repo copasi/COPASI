@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -115,7 +115,7 @@ bool COptMethodHookeJeeves::optimise()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables(true)[i] = mut;
+      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mut);
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -209,7 +209,7 @@ bool COptMethodHookeJeeves::optimise()
 
               // We need to set the value here so that further checks take
               // account of the value.
-              *mProblemContext.master()->getContainerVariables(true)[i] = mut;
+              mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mut);
             }
 
           newf = bestNearby();
@@ -335,7 +335,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
   mIndividual = mNew;
 
   for (i = 0; i < mVariableSize; i++)
-    *mProblemContext.master()->getContainerVariables(true)[i] = mIndividual[i];
+    mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mIndividual[i]);
 
   for (i = 0; i < mVariableSize; i++)
     {
@@ -357,7 +357,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables(true)[i] = mut;
+      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mut);
 
       if (!evaluate()) break;
 
@@ -382,7 +382,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mProblemContext.master()->getContainerVariables(true)[i] = mut;
+          mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mut);
 
           if (!evaluate()) break;
 
@@ -391,7 +391,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
           else
             {
               mut = mNew[i];
-              *mProblemContext.master()->getContainerVariables(true)[i] = mut;
+              mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mut);
             }
         }
     }

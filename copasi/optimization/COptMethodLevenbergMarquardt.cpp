@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -176,7 +176,7 @@ bool COptMethodLevenbergMarquardt::optimise()
             break;
         }
 
-      *mProblemContext.master()->getContainerVariables(true)[i] = mCurrent[i];
+      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -386,7 +386,7 @@ bool COptMethodLevenbergMarquardt::optimise()
       // calculate the relative change in each parameter
       for (convp = 0.0, i = 0; i < mVariableSize; i++)
         {
-          *mProblemContext.master()->getContainerVariables(true)[i] = mCurrent[i];
+          mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
           convp += fabs((mCurrent[i] - mBest[i]) / mBest[i]);
         }
 
@@ -469,7 +469,7 @@ bool COptMethodLevenbergMarquardt::optimise()
           mCurrent = mBest;
 
           for (i = 0; i < mVariableSize; i++)
-            *mProblemContext.master()->getContainerVariables(true)[i] = mCurrent[i];
+            mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
 
           // if lambda too high terminate
           if (LM_lambda > LAMBDA_MAX)
@@ -636,18 +636,18 @@ void COptMethodLevenbergMarquardt::gradient()
 //REVIEW:START
       if ((x = mCurrent[i]) != 0.0)
         {
-          *mProblemContext.master()->getContainerVariables(true)[i] = (x * mod1);
+          mProblemContext.master()->getOptItemList(true)[i]->setItemValue((x * mod1));
           mGradient[i] = (evaluate() - y) / (x * mModulation);
         }
 
       else
         {
-          *mProblemContext.master()->getContainerVariables(true)[i] = (mModulation);
+          mProblemContext.master()->getOptItemList(true)[i]->setItemValue((mModulation));
           mGradient[i] = (evaluate() - y) / mModulation;
         }
 
 //REVIEW:END
-      *mProblemContext.master()->getContainerVariables(true)[i] = (x);
+      mProblemContext.master()->getOptItemList(true)[i]->setItemValue((x));
     }
 }
 
@@ -690,13 +690,13 @@ void COptMethodLevenbergMarquardt::hessian()
               if ((x = mCurrent[i]) != 0.0)
                 {
                   Delta = 1.0 / (x * mModulation);
-                  *mProblemContext.master()->getContainerVariables(true)[i] = (x * mod1);
+                  mProblemContext.master()->getOptItemList(true)[i]->setItemValue((x * mod1));
                 }
 
               else
                 {
                   Delta = 1.0 / mModulation;
-                  *mProblemContext.master()->getContainerVariables(true)[i] = (mModulation);
+                  mProblemContext.master()->getOptItemList(true)[i]->setItemValue((mModulation));
                   //REVIEW:END
                 }
 
@@ -708,7 +708,7 @@ void COptMethodLevenbergMarquardt::hessian()
               for (; pCurrentResiduals != pEnd; pCurrentResiduals++, pResiduals++, pJacobianT++)
                 *pJacobianT = (*pResiduals - *pCurrentResiduals) * Delta;
 
-              *mProblemContext.master()->getContainerVariables(true)[i] = (x);
+              mProblemContext.master()->getOptItemList(true)[i]->setItemValue((x));
             }
 
 #ifdef XXXX
@@ -810,7 +810,7 @@ void COptMethodLevenbergMarquardt::hessian()
 //REVIEW:END
             }
 
-          *mProblemContext.master()->getContainerVariables(true)[i] = mCurrent[i];
+          mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
           gradient();
 
           for (j = 0; j <= i; j++)
@@ -818,7 +818,7 @@ void COptMethodLevenbergMarquardt::hessian()
 
           // restore the original parameter value
           mCurrent[i] = x;
-          *mProblemContext.master()->getContainerVariables(true)[i] = (x);
+          mProblemContext.master()->getOptItemList(true)[i]->setItemValue((x));
         }
 
       // restore the gradient

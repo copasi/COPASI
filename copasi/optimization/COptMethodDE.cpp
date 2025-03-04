@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -127,7 +127,7 @@ bool COptMethodDE::replicate()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mProblemContext.master()->getContainerVariables(true)[j] = mut;
+          mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut);
         }
 
       Continue &= evaluate(*mIndividuals[i]);
@@ -166,7 +166,7 @@ bool COptMethodDE::replicate()
                 break;
             }
 
-          *mProblemContext.master()->getContainerVariables(true)[j] = mut;
+          mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut);
         }
 
       Continue &= evaluate(*mIndividuals[i]);
@@ -210,7 +210,7 @@ bool COptMethodDE::replicate()
                     break;
                 }
 
-              *mProblemContext.master()->getContainerVariables(true)[j] = mut;
+              mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut);
             }
 
           Continue &= evaluate(*mIndividuals[i - 2 * mPopulationSize]);
@@ -310,7 +310,7 @@ bool COptMethodDE::creation(size_t first, size_t last)
 
             // We need to set the value here so that further checks take
             // account of the value.
-            *mProblemContext.master()->getContainerVariables(true)[j] = mut;
+            mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut);
           }
 
       // calculate its fitness
@@ -433,7 +433,7 @@ bool COptMethodDE::optimise()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables(true)[i] = mut;
+      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mut);
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))

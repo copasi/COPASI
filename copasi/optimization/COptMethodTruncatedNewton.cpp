@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -119,7 +119,7 @@ bool COptMethodTruncatedNewton::optimise()
         }
 
       // set the value
-      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
+      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -222,7 +222,7 @@ bool COptMethodTruncatedNewton::optimise()
             break;
         }
 
-      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
+      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
     }
 
   if (!withinBounds)
@@ -295,7 +295,7 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FL
 
   // set the parameter values
   for (i = 0; i < *n; i++)
-    *mProblemContext.master()->getContainerVariables(true)[i] = (x[i]);
+    mProblemContext.master()->getOptItemList(true)[i]->setItemValue(x[i]);
 
   //carry out the function evaluation
   *f = evaluate();
@@ -342,13 +342,13 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FL
         {
           if (x[i] != 0.0)
             {
-              *mProblemContext.master()->getContainerVariables(true)[i] = (x[i] * 1.001);
+              mProblemContext.master()->getOptItemList(true)[i]->setItemValue(x[i] * 1.001);
               g[i] = (evaluate() - *f) / (x[i] * 0.001);
             }
           else
             {
               // why use 1e-7? shouldn't this be epsilon, or something like that?
-              *mProblemContext.master()->getContainerVariables(true)[i] = (1e-7);
+              mProblemContext.master()->getOptItemList(true)[i]->setItemValue(1e-7);
               g[i] = (evaluate() - *f) / 1e-7;
 
               if (mLogVerbosity > 2)
@@ -359,7 +359,7 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FL
                 }
             }
 
-          *mProblemContext.master()->getContainerVariables(true)[i] = (x[i]);
+          mProblemContext.master()->getOptItemList(true)[i]->setItemValue(x[i]);
         }
     }
 

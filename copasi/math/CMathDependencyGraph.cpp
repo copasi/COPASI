@@ -121,6 +121,11 @@ void CMathDependencyGraph::removeObject(const CObjectInterface * pObject)
   mObjects2Nodes.erase(found);
 }
 
+bool CMathDependencyGraph::contains(const CObjectInterface * pObject) const
+{
+  return mObjects2Nodes.find(pObject) != mObjects2Nodes.end();
+}
+
 void CMathDependencyGraph::removePrerequisite(const CObjectInterface * pObject, const CObjectInterface * pPrerequisite)
 {
   iterator foundObject = mObjects2Nodes.find(pObject);
@@ -738,7 +743,7 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
     }
 
   if (dynamic_cast< const COptItem * >(pDataObject))
-    return "OptItem::" + static_cast< const COptItem * >(pDataObject)->getObject()->getObjectDisplayName();
+    return "OptItem::" + static_cast< const COptItem * >(pDataObject)->getItemObject()->getObjectDisplayName();
 
   // We need to distinguish between initial and transient value if the a corresponding data abject does not exists.
   if (pMathObject == nullptr ||

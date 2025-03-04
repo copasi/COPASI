@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -102,7 +102,7 @@ public:
    * Retrieve the item object. This may only be called after compile
    * @return const CObjectInterface *
    */
-  const CObjectInterface * getObject() const;
+  const CObjectInterface * getItemObject() const;
 
   /**
    * Retrieve the display name of the optimization item.
@@ -210,13 +210,13 @@ public:
    * Checks whether we have a valid interval.
    * @return bool fulfills
    */
-  bool checkInterval() const;
+  bool isValidInterval() const;
 
   /**
    * Checks whether we have a valid initial value item.
    * @return bool fulfills
    */
-  bool checkIsInitialValue() const;
+  bool isInitialValue() const;
 
   /**
    * Update the prerequisites to point to the optimization items controlling the boundary object
@@ -225,10 +225,17 @@ public:
   void updatePrerequisites(const std::vector< COptItem * > & influencingIntervals);
 
   /**
-   * Retrieve the value of the optimization object.
-   * @return const C_FLOAT64 * objectValue
+   * Set the local value.
+   * @param const C_FLOAT64 & value
+   * @return bool success
    */
-  virtual const C_FLOAT64 * getObjectValue() const;
+  virtual bool setItemValue(const C_FLOAT64 & value);
+
+  /**
+   * Retrieve the local value.
+   * @return const C_FLOAT64 & value
+   */
+  virtual const C_FLOAT64 & getItemValue() const;
 
   /**
    * Retrieve the value of the lower bound.
@@ -299,6 +306,8 @@ public:
 
   const std::set< COptItem * > & getDependentItems() const;
 
+  C_FLOAT64 evalMinimizeIntervals(const C_FLOAT64 & value);
+
 private:
   /**
    * Allocates all group parameters and assures that they are
@@ -319,6 +328,8 @@ private:
    * @return bool success
    */
   bool compileUpperBound(const CObjectInterface::ContainerList & listOfContainer);
+
+  bool adjust();
 
   //Attributes:
 protected:

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -217,7 +217,7 @@ bool COptMethodSRES::mutate()
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mProblemContext.master()->getContainerVariables(true)[j] = (mut);
+          mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut);
         }
 
       // calculate its fitness
@@ -354,7 +354,7 @@ bool COptMethodSRES::creation(size_t first)
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mProblemContext.master()->getContainerVariables(true)[j] = (mut);
+          mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut);
 
           // Set the variance for this parameter.
           *pVariance = std::min(*OptItem.getUpperBoundValue() - mut, mut - *OptItem.getLowerBoundValue()) / sqrt(double(mVariableSize));
@@ -475,7 +475,7 @@ bool COptMethodSRES::creation(size_t first)
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mProblemContext.master()->getContainerVariables(true)[j] = (mut);
+          mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut);
 
           // Set the variance for this parameter.
           *pVariance = std::min(*OptItem.getUpperBoundValue() - mut, mut - *OptItem.getLowerBoundValue()) / sqrt(double(mVariableSize));

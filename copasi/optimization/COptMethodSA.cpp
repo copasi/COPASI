@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -146,7 +146,7 @@ bool COptMethodSA::optimise()
             break;
         }
 
-      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
+      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
 
       // The step must not contain any zeroes
       mStep[i] = std::max(fabs(mCurrent[i]), 1.0);
@@ -197,13 +197,13 @@ bool COptMethodSA::optimise()
                   New = mCurrent[h] + xc;
 
                   // Set the new parameter value
-                  *mProblemContext.master()->getContainerVariables(true)[h] = (New);
+                  mProblemContext.master()->getOptItemList(true)[h]->setItemValue(New);
 
                   // Check all parametric constraints
                   if (!mProblemContext.master()->checkParametricConstraints())
                     {
                       // Undo since not accepted
-                      *mProblemContext.master()->getContainerVariables(true)[h] = (mCurrent[h]);
+                      mProblemContext.master()->getOptItemList(true)[h]->setItemValue(mCurrent[h]);
                       continue;
                     }
 
@@ -214,7 +214,7 @@ bool COptMethodSA::optimise()
                   if (!mProblemContext.master()->checkFunctionalConstraints())
                     {
                       // Undo since not accepted
-                      *mProblemContext.master()->getContainerVariables(true)[h] = (mCurrent[h]);
+                      mProblemContext.master()->getOptItemList(true)[h]->setItemValue(mCurrent[h]);
                       continue;
                     }
 
@@ -253,7 +253,7 @@ bool COptMethodSA::optimise()
                         }
                       else
                         // Undo since not accepted
-                        *mProblemContext.master()->getContainerVariables(true)[h] = (mCurrent[h]);
+                        mProblemContext.master()->getOptItemList(true)[h]->setItemValue(mCurrent[h]);
                     }
                 }
             }
@@ -325,7 +325,7 @@ bool COptMethodSA::optimise()
           mCurrent = mProblemContext.master()->getSolutionVariables(true);
 
           for (a = 0; a < mVariableSize; a++)
-            *mProblemContext.master()->getContainerVariables(true)[a] = mCurrent[a];
+            mProblemContext.master()->getOptItemList(true)[a]->setItemValue(mCurrent[a]);
 
           mCurrentValue = mBestValue;
         }

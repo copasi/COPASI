@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -256,7 +256,7 @@ bool COptMethodNelderMead::optimise()
             break;
         }
 
-      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
+      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
 
       // set the magnitude of each parameter
       mStep[i] = (*OptItem.getUpperBoundValue() - *OptItem.getLowerBoundValue()) / mScale;
@@ -309,7 +309,7 @@ First:
         mSimplex[i][j] = mCurrent[i];
 
       // Calculate the value for the corner
-      *mProblemContext.master()->getContainerVariables(true)[j] = (mCurrent[j]);
+      mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mCurrent[j]);
       mValue[j] = evaluate();
 
       if (mEvaluationValue < mBestValue)
@@ -324,7 +324,7 @@ First:
 
       // Reset
       mCurrent[j] = x;
-      *mProblemContext.master()->getContainerVariables(true)[j] = (mCurrent[j]);
+      mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mCurrent[j]);
     }
 
   /* ---- Simplex construction complete; now do some work. ---- */
@@ -380,7 +380,7 @@ First:
           for (i = 0; i < mVariableSize; ++i)
             {
               mCurrent[i] = (1.0 + rcoeff) * mCentroid[i] - rcoeff * mSimplex[i][iWorst];
-              *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
+              mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
 
               // enforce_bounds(&pstar[i], i);  /* make sure it is inside */
             }
@@ -411,7 +411,7 @@ First:
               for (i = 0; i < mVariableSize; ++i)
                 {
                   mCurrent[i] = ecoeff * mCurrent[i] + (1.0 - ecoeff) * mCentroid[i];
-                  *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
+                  mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
 
                   // enforce_bounds(&p2star[i], i);  /* make sure it is inside */
                 }
@@ -477,7 +477,7 @@ First:
                   for (i = 0; i < mVariableSize; ++i)
                     {
                       mCurrent[i] = ccoeff * mSimplex[i][iWorst] + (1.0 - ccoeff) * mCentroid[i];
-                      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
+                      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
 
                       // may not need to check boundaries since it is contraction
                       // enforce_bounds(&p2star[i], i);  /* make sure it is inside */
@@ -504,7 +504,7 @@ First:
                             {
                               mSimplex[i][j] = (mSimplex[i][j] + mSimplex[i][iBest]) * 0.5;
                               mCurrent[i] = mSimplex[i][j];
-                              *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
+                              mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
 
                               //enforce_bounds(&xmin[i], i);  /* make sure it is inside */
                             }
@@ -590,7 +590,7 @@ First:
   mCurrent = mProblemContext.master()->getSolutionVariables(true);
 
   for (i = 0; i < mVariableSize; ++i)
-    *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
+    mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
 
   for (i = 0; i < mVariableSize; ++i)
     {
@@ -598,21 +598,21 @@ First:
       C_FLOAT64 delta = mStep[i] * 1.0e-03;
 
       /* -- check along one direction -- */
-      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i] + delta);
+      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i] + delta);
       evaluate();
 
       if ((mEvaluationValue - mBestValue) < -small)
         break;
 
       /* -- now check the other way -- */
-      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i] - delta);
+      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i] - delta);
       evaluate();
 
       if ((mEvaluationValue - mBestValue) < -small)
         break;
 
       /* -- back to start -- */
-      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
+      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
     }
 
   ok = (i == mVariableSize);

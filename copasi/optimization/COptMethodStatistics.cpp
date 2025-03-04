@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -119,7 +119,7 @@ bool COptMethodStatistics::optimise()
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables(true)[j] = mut;
+      mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut);
     }
 
   Continue = evaluate(mIndividual);

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -100,13 +100,6 @@ private:
   virtual bool cleanup();
 
   /**
-   * Evaluate the fitness of one individual
-   * @param const CVector< C_FLOAT64 > & individual
-   * @return bool continue
-   */
-  bool evaluate(const CVector< C_FLOAT64 > & individual);
-
-  /**
    * Swap individuals from and to
    * @param size_t from
    * @param size_t to
@@ -119,7 +112,7 @@ private:
    * @param CVector< C_FLOAT64 > & individual
    * @return bool success
    */
-  bool mutate(CVector< C_FLOAT64 > & individual);
+  bool mutate(size_t index);
 
   /**
    * @param const CVector< C_FLOAT64 > & parent1
@@ -204,14 +197,12 @@ private:
    */
   C_FLOAT64 mMutationVarians;
 
-
   /**
    * if no improvement was made after # stalled generations
    * stop
    */
   unsigned C_INT32 mStopAfterStalledGenerations;
 
-  C_FLOAT64 mBestValue;
   size_t mBestIndex;
 };
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,6 +39,7 @@
 #include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CBrent.h"
 #include "copasi/utilities/utility.h"
 
 C_FLOAT64 NaN = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -151,7 +152,7 @@ bool COptItem::setObjectCN(const CRegisteredCommonName & objectCN)
   return true;
 }
 
-const CObjectInterface * COptItem::getObject() const
+const CObjectInterface * COptItem::getItemObject() const
 {return mpObject;}
 
 const CRegisteredCommonName & COptItem::getObjectCN() const
@@ -423,6 +424,8 @@ bool COptItem::compile(CObjectInterface::ContainerList listOfContainer)
       success = false;
     }
 
+  calculateValue();
+
   // We can only access the lower and upper numbers if the compile succeeded so far.
   if (success && !mpUpperObject && !mpLowerObject && *mpUpperBound < *mpLowerBound)
     {
@@ -480,12 +483,12 @@ bool COptItem::checkUpperBound(const C_FLOAT64 & value) const
   return value <= *mpUpperBound;
 }
 
-bool COptItem::checkInterval() const
+bool COptItem::isValidInterval() const
 {
   return *mpLowerBound <= *mpUpperBound;
 }
 
-bool COptItem::checkIsInitialValue() const
+bool COptItem::isInitialValue() const
 {
   if (dynamic_cast< const CMathObject * >(mpObject)
       && !static_cast< const CMathObject * >(mpObject)->isInitialValue())
@@ -520,16 +523,85 @@ void COptItem::updatePrerequisites(const std::vector< COptItem * > & influencing
   std::vector< COptItem * >::const_iterator end = influencingIntervals.end();
 
   for (COptItem * pOptItem : influencingIntervals)
-    if (Original.find(pOptItem->getObject()) != Original.end())
+    if (Original.find(pOptItem->getItemObject()) != Original.end())
       {
         mPrerequisits.insert(pOptItem);
       }
 }
 
-const C_FLOAT64 * COptItem::getObjectValue() const
+bool COptItem::setItemValue(const C_FLOAT64 & value)
 {
-  return mpObjectValue;
+  bool success = true;
+
+  if (*const_cast< C_FLOAT64 * >(mpObjectValue) == value)
+    return success;
+
+  *const_cast< C_FLOAT64 * >(mpObjectValue) = value;
+
+  if (mDependentItems.empty())
+    return success;
+
+  success &= mUpdateInterval.apply();
+
+  if (success)
+    for (COptItem * pItem : mDependentItems)
+      success &= pItem->isValidInterval();
+
+  if (!success)
+    success = adjust();
+
+  // We fall back to the old behavior, i.e., just set the value
+  if (!success)
+    {
+      *const_cast< C_FLOAT64 * >(mpObjectValue) = value;
+      success &= mUpdateInterval.apply();
+    }
+
+  return success;
 }
+
+bool COptItem::adjust()
+{
+  CBrent::EvalTemplate< COptItem > eval(this, & COptItem::evalMinimizeIntervals);
+  C_FLOAT64 Min = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+  C_FLOAT64 MinValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+
+  if (!CBrent::findMinimum(*mpLowerBound, *mpUpperBound, &eval, &Min, &MinValue, 1e-12, 100))
+    return false;
+
+  *const_cast< C_FLOAT64 * >(mpObjectValue) = Min;
+  bool success = mUpdateInterval.apply();
+
+  for (COptItem * pItem : mDependentItems)
+    success &= pItem->isValidInterval();
+
+  return success;
+}
+
+C_FLOAT64 COptItem::evalMinimizeIntervals(const C_FLOAT64 & value)
+{
+  static const double SQRT_EPSILON = sqrt(std::numeric_limits< double >::epsilon());
+
+  *const_cast< C_FLOAT64 * >(mpObjectValue) = value;
+  mUpdateInterval.apply();
+  C_FLOAT64 Result = 0.0;
+
+  for (COptItem * pOptItem : mDependentItems)
+    {
+      C_FLOAT64 IntervalMid = fabs(*pOptItem->getLowerBoundValue() + *pOptItem->getUpperBoundValue()) / 2;
+      C_FLOAT64 Interval = *static_cast< const C_FLOAT64 * >(pOptItem->getValuePointer());
+      Interval -= SQRT_EPSILON * IntervalMid; // We force the resulting interval to be slightly larger
+      Interval /=IntervalMid; // Scale the interval so that different items contribute similarly
+      Result += Interval * Interval;
+    }
+
+  return sqrt(Result);
+}
+
+const C_FLOAT64 & COptItem::getItemValue() const
+{
+  return *mpObjectValue;
+  }
 
 bool COptItem::compileLowerBound(const CObjectInterface::ContainerList & listOfContainer)
 {

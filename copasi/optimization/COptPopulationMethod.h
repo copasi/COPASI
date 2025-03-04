@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,6 +19,8 @@
 #include "copasi/optimization/COptMethod.h"
 #include "copasi/core/CVector.h"
 #include "copasi/OpenMP/CRandomContext.h"
+
+class CIntervalValue;
 
 class COptPopulationMethod :
   public COptMethod
@@ -75,6 +77,7 @@ public:
   C_INT32 getPopulationSize();
   C_INT32 getNumGenerations();
   C_INT32 getCurrentGeneration();
+  const C_FLOAT64 & getBeastValue() const;
 
   const std::vector< CVector < C_FLOAT64 > * >& getPopulation();
   const CVector< C_FLOAT64 >& getObjectiveValues();
@@ -98,9 +101,23 @@ public:
 
 protected:
   /**
+   * Evaluate the fitness of one individual
+   * @return C_FLOAT64 value
+   */
+  virtual C_FLOAT64 evaluate() final;
+
+  bool setSolution(const C_FLOAT64 & value,
+                   const CVector< C_FLOAT64 > & variables,
+                   const bool & algorithmOrder);
+
+  bool createIndividual(const size_t & index);
+
+  virtual void finalizeCreation(const size_t & individual, const size_t & item, const CIntervalValue & interval, CRandom * pRandom);
+
+  /**
    * size of the population / swarm size
    */
-  unsigned C_INT32 mPopulationSize;
+    unsigned C_INT32 mPopulationSize;
 
   /**
    * number of generations / iteration limit
@@ -136,6 +153,17 @@ protected:
    * a pointer to the random number generator.
    */
   CRandomContext  mRandomContext;
+
+  /**
+   * Indicates whether calculation shall continue
+   */
+  bool mContinue;
+
+private:
+  /**
+   * The best value
+   */
+  C_FLOAT64 mBestValue;
 };
 
 #endif // COPASI_COptPopulationMethod_H

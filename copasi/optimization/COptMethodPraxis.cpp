@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -125,7 +125,7 @@ bool COptMethodPraxis::optimise()
         }
 
       //set the value
-      *mProblemContext.master()->getContainerVariables(true)[i] = (mCurrent[i]);
+      mProblemContext.master()->getOptItemList(true)[i]->setItemValue((mCurrent[i]));
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -200,7 +200,7 @@ const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT32 & n)
   C_INT32 i;
 
   for (i = 0; i < n; i++)
-    *mProblemContext.master()->getContainerVariables(true)[i] = (x[i]);
+    mProblemContext.master()->getOptItemList(true)[i]->setItemValue((x[i]));
 
   //carry out the function evaluation
   evaluate();

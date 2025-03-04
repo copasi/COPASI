@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -110,7 +110,7 @@ bool COptMethodNL2SOL::optimise()
       bounds[2 * j + 1] = *OptItem.getUpperBoundValue();
 
       // set the value
-      *mProblemContext.master()->getContainerVariables(true)[j] = (mCurrent[j]);
+      mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mCurrent[j]);
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
@@ -267,7 +267,7 @@ C_INT COptMethodNL2SOL::calcr(integer *n, integer *p, doublereal *x, integer *nf
 
   // set the parameter values
   for (i = 0; i < *p; i++)
-    *(mProblemContext.master()->getContainerVariables(true)[i]) = x[i];
+    mProblemContext.master()->getOptItemList(true)[i]->setItemValue(x[i]);
 
   //urparm[0] = (*f)(resid );
 

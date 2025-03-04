@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -136,7 +136,7 @@ bool COptMethodGASR::mutate(CVector< C_FLOAT64 > & individual)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables(true)[j] = mut;
+      mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut);
     }
 
   return true;
@@ -378,7 +378,7 @@ bool COptMethodGASR::creation(size_t first,
 
           // We need to set the value here so that further checks take
           // account of the value.
-          *mProblemContext.master()->getContainerVariables(true)[j] = mut;
+          mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut);
         }
 
       // calculate its fitness
@@ -499,7 +499,7 @@ bool COptMethodGASR::optimise()
 
   // set the parameter values
   for (j = 0; j < mVariableSize; j++)
-    *mProblemContext.master()->getContainerVariables(true)[j] = (*mIndividuals[0])[j];
+    mProblemContext.master()->getOptItemList(true)[j]->setItemValue((*mIndividuals[0])[j]);
 
   Continue = evaluate(*mIndividuals[0]);
   mValues[0] = mEvaluationValue;

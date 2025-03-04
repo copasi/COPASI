@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -76,6 +76,9 @@ public:
    */
   virtual unsigned C_INT32 getMaxLogVerbosity() const;
 
+protected:
+  virtual void finalizeCreation(const size_t & individual, const size_t & item, const CIntervalValue & interval, CRandom * pRandom) override;
+
 private:
   /**
    * Default Constructor
@@ -99,12 +102,6 @@ private:
    * @return bool success
    */
   virtual bool cleanup();
-
-  /**
-   * Evaluate the fitness of one individual
-   * @return C_FLOAT64 value
-   */
-  C_FLOAT64 evaluate();
 
   /**
    * Move the indexed individual in the swarm
@@ -164,11 +161,6 @@ private:
   CMatrix< C_FLOAT64 > mVelocities;
 
   /**
-   * The best value
-   */
-  C_FLOAT64 mBestValue;
-
-  /**
    * Vector of individual best values.
    */
   CVector< C_FLOAT64 > mBestValues;
@@ -213,11 +205,6 @@ private:
   * stop
   */
   unsigned C_INT32 mStopAfterStalledIterations;
-
-  /**
-   * Indicates whether calculation shall continue
-   */
-  bool mContinue;
 };
 
 #endif  // COPASI_COptMethodPS

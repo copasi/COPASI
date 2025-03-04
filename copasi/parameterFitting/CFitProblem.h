@@ -370,13 +370,6 @@ protected:
   virtual void signalMathContainerChanged() override;
 
   /**
-   * Do all necessary restore procedures for the container
-   * is in the same state as before or the new state if update is true.
-   * @param const bool & update
-   */
-  virtual void updateContainer(const bool & update) override;
-
-  /**
    * Create a parameter set with the given name and the current model values
    *
    */
@@ -433,9 +426,9 @@ private:
   CTrajectoryTask * mpTrajectory;
 
   /**
-   * Pointer to the values which need to be updated for each experiment.
+   * Pointer to the items which need to be updated for each experiment.
    */
-  CMatrix< C_FLOAT64 * > mExperimentValues;
+  CMatrix< CFitItem * > mExperimentValues;
 
   /**
    * A vector of refresh methods which contains the sequence of refresh methods
@@ -467,7 +460,7 @@ private:
   /**
    * Matrix of update methods for items for each cross validation.
    */
-  CMatrix< C_FLOAT64 * > mCrossValidationValues;
+  // CMatrix< C_FLOAT64 * > mCrossValidationValues;
 
   /**
    * A vector of refresh methods which contains the sequence of refresh methods

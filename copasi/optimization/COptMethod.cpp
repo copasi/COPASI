@@ -90,10 +90,12 @@ std::pair< C_FLOAT64, bool > COptMethod::objectiveValue(COptProblem * pProblem, 
 // static
 void COptMethod::reflect(COptProblem * pProblem, const C_FLOAT64 & bestValue, C_FLOAT64 & objectiveValue)
 {
+  C_FLOAT64 BestValue = std::min(bestValue, 0.5 * std::numeric_limits< C_FLOAT64 >::max());
+
   if (objectiveValue < bestValue
       && (!pProblem->checkParametricConstraints()
           || !pProblem->checkFunctionalConstraints()))
-    objectiveValue = bestValue + bestValue - objectiveValue;
+    objectiveValue = BestValue + (BestValue - objectiveValue);
 }
 
 void COptMethod::setProblem(COptProblem * pProblem)

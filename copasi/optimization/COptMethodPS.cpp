@@ -26,13 +26,14 @@
 
 #include "copasi/copasi.h"
 
-#include "COptMethodPS.h"
-#include "COptProblem.h"
-#include "COptItem.h"
+#include "copasi/optimization/COptMethodPS.h"
+#include "copasi/optimization/COptProblem.h"
+#include "copasi/optimization/COptItem.h"
 #include "COptTask.h"
 
 #include "copasi/randomGenerator/CRandom.h"
 #include "copasi/randomGenerator/CPermutation.h"
+#include "copasi/randomGenerator/CIntervalValue.h"
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/utilities/CSort.h"
 #include "copasi/core/CDataObjectReference.h"
@@ -49,7 +50,6 @@ COptMethodPS::COptMethodPS(const CDataContainer * pParent,
   : COptPopulationMethod(pParent, methodType, taskType, true)
   , mVariance(0.0)
   , mVelocities()
-  , mBestValue()
   , mBestValues()
   , mBestPositions()
   , mImprovements()
@@ -59,7 +59,6 @@ COptMethodPS::COptMethodPS(const CDataContainer * pParent,
   , mNumInformed(0)
   , mBestIndex(0)
   , mStopAfterStalledIterations(0)
-  , mContinue(true)
 {
   assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
   assertParameter("Swarm Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 50);
@@ -76,7 +75,6 @@ COptMethodPS::COptMethodPS(const COptMethodPS & src,
   : COptPopulationMethod(src, pParent)
   , mVariance(0.0)
   , mVelocities()
-  , mBestValue()
   , mBestValues()
   , mBestPositions()
   , mImprovements()
@@ -85,7 +83,6 @@ COptMethodPS::COptMethodPS(const COptMethodPS & src,
   , mNumInformedMin(0)
   , mNumInformed(0)
   , mBestIndex(0)
-  , mContinue(true)
 {
   initObjects();
 }
@@ -93,37 +90,6 @@ COptMethodPS::COptMethodPS(const COptMethodPS & src,
 COptMethodPS::~COptMethodPS()
 {
   cleanup();
-}
-
-// evaluate the fitness of one individual
-C_FLOAT64 COptMethodPS::evaluate()
-{
-  // We do not need to check whether the parametric constraints are fulfilled
-  // since the parameters are created within the bounds.
-  COptProblem *& pOptProblem = mProblemContext.active();
-
-  // evaluate the fitness
-  if (!pOptProblem->calculate())
-#pragma omp critical (ps_evaluate_continue)
-    mContinue = false;
-
-  C_FLOAT64 EvaluationValue;
-
-  // check whether the functional constraints are fulfilled
-  if (!pOptProblem->checkFunctionalConstraints())
-    EvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
-  else
-    EvaluationValue = pOptProblem->getCalculateValue();
-
-  if (mProblemContext.isThread(&pOptProblem))
-    {
-#pragma omp critical (ps_evaluate_increment_counters)
-      mProblemContext.master()->incrementCounters(pOptProblem->getCounters());
-
-      pOptProblem->resetCounters();
-    }
-
-  return EvaluationValue;
 }
 
 // move an individual
@@ -142,7 +108,6 @@ bool COptMethodPS::move(const size_t & index)
   C_FLOAT64 * pVelocity = mVelocities[index];
   C_FLOAT64 * pBestPosition = mBestPositions[index];
   std::vector< COptItem * >::const_iterator itOptItem = pProblem->getOptItemList(true).begin();
-  C_FLOAT64 ** ppContainerVariable = pProblem->getContainerVariables(true).array();
 
   C_FLOAT64 * pBestInformantPosition = mBestPositions[index];
   C_FLOAT64 BestInformantValue = mBestValues[index];
@@ -160,7 +125,7 @@ bool COptMethodPS::move(const size_t & index)
       }
 
   for (; pIndividual != pEnd;
-       ++pIndividual, ++pVelocity, ++pBestPosition, ++itOptItem, ++ppContainerVariable, ++pBestInformantPosition)
+       ++pIndividual, ++pVelocity, ++pBestPosition, ++itOptItem, ++pBestInformantPosition)
     {
       *pVelocity *= w;
       *pVelocity += c * pRandom->getRandomCC() * (*pBestPosition - *pIndividual);
@@ -186,7 +151,7 @@ bool COptMethodPS::move(const size_t & index)
 
       // We need to set the value here so that further checks take
       // account of the value.
-      **ppContainerVariable = *pIndividual;
+      OptItem.setItemValue(*pIndividual);
     }
 
   // calculate its fitness
@@ -203,15 +168,11 @@ bool COptMethodPS::move(const size_t & index)
         mImprovements[index] = EvaluationValue;
 
         // Check if we improved globally
-        if (EvaluationValue < mBestValue)
+        if (EvaluationValue < getBestValue())
           {
             // and store that value
-            mBestValue = EvaluationValue;
             mBestIndex = index;
-            mContinue &= mProblemContext.master()->setSolution(EvaluationValue, *mIndividuals[mBestIndex], true);
-
-            // We found a new best value lets report it.
-            mpParentTask->output(COutputInterface::DURING);
+            setSolution(EvaluationValue, *mIndividuals[mBestIndex], true);
           }
       }
     }
@@ -220,136 +181,24 @@ bool COptMethodPS::move(const size_t & index)
 }
 
 // initialise an individual
+// virtual
+void COptMethodPS::finalizeCreation(const size_t & individual, const size_t & item, const CIntervalValue & interval, CRandom * pRandom)
+{
+  mVelocities(individual, item) = interval.randomValue(pRandom) - mIndividuals[individual]->operator[](item);
+  mBestPositions(individual, item) = mIndividuals[individual]->operator[](item);
+}
+
 bool COptMethodPS::create(const size_t & index)
 {
-  COptProblem *& pProblem = mProblemContext.active();
-  CRandom * pRandom = mRandomContext.active();
-
-  C_FLOAT64 * pIndividual = mIndividuals[index]->array();
-  C_FLOAT64 * pEnd = pIndividual + mVariableSize;
-  C_FLOAT64 * pVelocity = mVelocities[index];
-  C_FLOAT64 * pBestPosition = mBestPositions[index];
-  std::vector< COptItem * >::const_iterator itOptItem = pProblem->getOptItemList(true).begin();
-  C_FLOAT64 ** ppContainerVariable = pProblem->getContainerVariables(true).array();
-
-  C_FLOAT64 mn, mx, la;
-
-  for (; pIndividual != pEnd;
-       ++pIndividual, ++pVelocity, ++pBestPosition, ++itOptItem, ++ppContainerVariable)
-    {
-      COptItem & OptItem = **itOptItem;
-
-      // calculate lower and upper bounds
-      mn = *OptItem.getLowerBoundValue();
-      mx = *OptItem.getUpperBoundValue();
-
-      try
-        {
-          // First determine the location of the interval
-          // Secondly determine whether to distribute the parameter linearly or not
-          // depending on the location and act upon it.
-          if (0.0 <= mn) // the interval [mn, mx) is in [0, inf)
-            {
-              la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
-
-              if (la < 1.8 || !(mn > 0.0)) // linear
-                {
-                  *pIndividual = mn + pRandom->getRandomCC() * (mx - mn);
-                  *pVelocity = mn + pRandom->getRandomCC() * (mx - mn) - *pIndividual;
-                }
-              else
-                {
-                  *pIndividual = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * pRandom->getRandomCC());
-                  *pVelocity =
-                    pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * pRandom->getRandomCC()) - *pIndividual;
-                }
-            }
-          else if (mx > 0) // 0 is in the interval (mn, mx)
-            {
-              la = log10(mx) + log10(-mn);
-
-              if (la < 3.6) // linear
-                {
-                  *pIndividual = mn + pRandom->getRandomCC() * (mx - mn);
-                  *pVelocity = mn + pRandom->getRandomCC() * (mx - mn) - *pIndividual;
-                }
-              else
-                {
-                  C_FLOAT64 mean = (mx + mn) * 0.5;
-                  C_FLOAT64 sigma = std::min(std::numeric_limits< C_FLOAT64 >::max(), mx - mn) / 3.0;
-
-                  do
-                    {
-                      *pIndividual = pRandom->getRandomNormal(mean, sigma);
-                    }
-                  while ((*pIndividual < mn) || (*pIndividual > mx));
-
-                  *pVelocity = pRandom->getRandomNormal(mean, sigma) - *pIndividual;
-                }
-            }
-          else // the interval (mn, mx] is in (-inf, 0]
-            {
-              // Switch lower and upper bound and change sign, i.e.,
-              // we can treat it similarly as location 1:
-              mx = - *OptItem.getLowerBoundValue();
-              mn = - *OptItem.getUpperBoundValue();
-
-              la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
-
-              if (la < 1.8 || !(mn > 0.0)) // linear
-                {
-                  *pIndividual = - (mn + pRandom->getRandomCC() * (mx - mn));
-                  *pVelocity = - (mn + pRandom->getRandomCC() * (mx - mn)) - *pIndividual;
-                }
-              else
-                {
-                  *pIndividual = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * pRandom->getRandomCC());
-                  *pVelocity =
-                    - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * pRandom->getRandomCC()) - *pIndividual;
-                }
-            }
-        }
-
-      catch (...)
-        {
-          *pIndividual = (mx + mn) * 0.5;
-          *pVelocity = 0.0;
-        }
-
-      // force it to be within the bounds
-      switch (OptItem.checkConstraint(*pIndividual))
-        {
-          case - 1:
-            *pIndividual = *OptItem.getLowerBoundValue();
-            break;
-
-          case 1:
-            *pIndividual = *OptItem.getUpperBoundValue();
-            break;
-        }
-
-      *pBestPosition = *pIndividual;
-
-      // We need to set the value here so that further checks take
-      // account of the value.
-      **ppContainerVariable = *pIndividual;
-    }
+  createIndividual(index);
 
   // calculate its fitness
   mBestValues[index] = mValues[index] = evaluate();
   memcpy(mBestPositions[index], mIndividuals[index]->array(), sizeof(C_FLOAT64) * mVariableSize);
 
-  if (mBestValues[index] < mBestValue)
-#pragma omp critical (ps_create_best_value)
-    {
-      // and store that value
-      mBestIndex = index;
-      mBestValue = mBestValues[mBestIndex];
-      mContinue &= mProblemContext.master()->setSolution(mBestValues[mBestIndex], *mIndividuals[mBestIndex], true);
-
-      // We found a new best value lets report it.
-      mpParentTask->output(COutputInterface::DURING);
-    }
+  if (mBestValues[index] < getBestValue()
+      && setSolution(mBestValues[mBestIndex], *mIndividuals[index], true))
+    mBestIndex = index;
 
   return mContinue;
 }
@@ -404,7 +253,6 @@ bool COptMethodPS::initialize()
 
   mVelocities.resize(mPopulationSize, mVariableSize);
   mVelocities = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-  mBestValue = std::numeric_limits<double>::infinity();
   mBestValues.resize(mPopulationSize);
   mBestValues = std::numeric_limits<double>::infinity();
   mBestPositions.resize(mPopulationSize, mVariableSize);
@@ -557,13 +405,6 @@ bool COptMethodPS::optimise()
       return false;
     }
 
-  C_FLOAT64 * pIndividual = mIndividuals[0]->array();
-  C_FLOAT64 * pEnd = pIndividual + mVariableSize;
-  C_FLOAT64 * pVelocity = mVelocities[0];
-  C_FLOAT64 * pBestPosition = mBestPositions[0];
-  std::vector< COptItem * >::const_iterator itOptItem = mProblemContext.master()->getOptItemList(true).begin();
-  C_FLOAT64 ** ppContainerVariable = mProblemContext.master()->getContainerVariables(true).array();
-
   if (mLogVerbosity > 0)
     mMethodLog.enterLogEntry(
       COptLogEntry(
@@ -572,58 +413,19 @@ bool COptMethodPS::optimise()
       )
     );
 
-  // initialise the population
-  // first individual is the initial guess
-  bool pointInParameterDomain = true;
-
-  for (; pIndividual != pEnd;
-       ++pIndividual, ++pVelocity, ++pBestPosition, ++itOptItem, ++ppContainerVariable)
-    {
-      COptItem & OptItem = **itOptItem;
-
-      *pIndividual = OptItem.getStartValue();
-
-      // force it to be within the bounds
-      switch (OptItem.checkConstraint(*pIndividual))
-        {
-          case -1:
-            *pIndividual = *OptItem.getLowerBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 1:
-            *pIndividual = *OptItem.getUpperBoundValue();
-            pointInParameterDomain = false;
-            break;
-        }
-
-      *pBestPosition = *pIndividual;
-      *pVelocity = 0.0;
-
-      // We need to set the value here so that further checks take
-      // account of the value.
-      **ppContainerVariable = *pIndividual;
-    }
-
-  if (!pointInParameterDomain && (mLogVerbosity > 0))
-    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
-
+  createIndividual(C_INVALID_INDEX);
   // calculate its fitness
-  mBestValues[0] = mValues[0] = mBestValue = evaluate();
+  mBestValues[0] = mValues[0] = evaluate();
   memcpy(mBestPositions[0], mIndividuals[0]->array(), sizeof(C_FLOAT64) * mVariableSize);
 
   // and store that value
   mBestIndex = 0;
-  mContinue &= mProblemContext.master()->setSolution(mBestValues[mBestIndex], *mIndividuals[mBestIndex], true);
-
-  // We found a new best value lets report it.
-  mpParentTask->output(COutputInterface::DURING);
+  setSolution(mBestValues[mBestIndex], *mIndividuals[mBestIndex], true);
 
   // the others are random
   C_INT32 k, kmax = (C_INT32) mPopulationSize;
 
 #pragma omp parallel for schedule(runtime)
-
   for (k = 1; k < kmax; k++)
     if (mContinue)
       create(k);
@@ -643,7 +445,6 @@ bool COptMethodPS::optimise()
       C_INT32 k, kmax = (C_INT32) mPopulationSize;
 
 #pragma omp parallel for schedule(runtime)
-
       for (k = 0; k < kmax; k++)
         if (mContinue)
           move(k);
@@ -692,7 +493,7 @@ bool COptMethodPS::optimise()
         }
 
       if (mProcessReport)
-        mContinue &= mProcessReport.progressItem(mhGenerations);
+        mProcessReport.progressItem(mhGenerations);
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
