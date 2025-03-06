@@ -393,16 +393,16 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
   size_t FirstReactionSpeciesIndex = mpContainer->getCountFixedEventTargets() + 1 + mpContainer->getCountODEs();
   size_t numReacs = mpContainer->getParticleFluxes().size();
 
-  CMathObject * pSpeciesObjectStart = mpContainer->getMathObject(mpContainer->getState(false).array()) + FirstReactionSpeciesIndex;
-  CMathObject * pSpeciesObjectEnd = pSpeciesObjectStart + numMetabs;
-  CMathObject * pSpeciesObject;
+  const CMathObject * pSpeciesObjectStart = mpContainer->getMathObject(mpContainer->getState(false).array()) + FirstReactionSpeciesIndex;
+  const CMathObject * pSpeciesObjectEnd = pSpeciesObjectStart + numMetabs;
+  const CMathObject * pSpeciesObject;
 
   const C_FLOAT64 * pParticleFlux = mpContainer->getParticleFluxes().array();
   const C_FLOAT64 * pFlux = mpContainer->getFluxes().array();
   const C_FLOAT64 * pFluxEnd = pFlux + mpContainer->getFluxes().size();
 
   // Scale Elasticities
-  C_FLOAT64 * pUnscaled;
+  const C_FLOAT64 * pUnscaled;
   C_FLOAT64 * pScaled;
   C_INT32 * pElasticityDependency;
 
@@ -461,7 +461,8 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
   // We need to advance pScaled to adjust for the summation error column
   for (pSpeciesObject = pSpeciesObjectStart; pSpeciesObject != pSpeciesObjectEnd; ++pSpeciesObject, ++pScaled)
     {
-      C_FLOAT64 alt = fabs(*(C_FLOAT64 *)pSpeciesObject->getCorrespondingProperty()->getValuePointer());
+        //get the concentration for the current row
+        C_FLOAT64 alt = fabs(*(C_FLOAT64 *)pSpeciesObject->getCorrespondingProperty()->getValuePointer());
 
       for (pFlux = mpContainer->getFluxes().array(),
            pParticleFlux = mpContainer->getParticleFluxes().array();
@@ -478,60 +479,68 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
         }
     }
 
+  //Scale FluxCCs
+  //columns are the "perturbation" fluxes, rows are the "effect" fluxes
   const CMathReaction * pReaction = mpContainer->getReactions().array();
-
   pUnscaled = mUnscaledFluxCC.array();
   pScaled = mScaledFluxCC.array();
 
+  //loop over rows
   // We need to advance pScaled to adjust for the summation error column
   for (pFlux = mpContainer->getFluxes().array(); pFlux != pFluxEnd; ++pFlux, ++pReaction, ++pScaled)
     {
-      CMathObject * pCompartment = mpContainer->getLargestReactionCompartment(pReaction);
+      const CMathObject * pCompartment = mpContainer->getLargestReactionCompartment(pReaction);
       C_FLOAT64 Resolution = (pCompartment != NULL) ?  res **(C_FLOAT64*)pCompartment->getValuePointer() : res;
 
-      C_FLOAT64 Scale = *pFlux;
+      C_FLOAT64 Scale = *pFlux;  //in amount units
       C_FLOAT64 tmp = 0.0;
       C_FLOAT64 eq = 0.0;
 
       // We use the summation theorem to verify the scaling
-      C_FLOAT64 *pSum = pUnscaled;
-      C_FLOAT64 *pSumEnd = pSum + mUnscaledFluxCC.numCols();
-
+      //loop over the current row with temporary iterators
+      const C_FLOAT64 *pUnscaledIterator = pUnscaled;
+      const C_FLOAT64 *pUnscaledItEnd = pUnscaledIterator + mUnscaledFluxCC.numCols();
       const C_FLOAT64 * pColFlux = mpContainer->getFluxes().array();
-
-      for (pColFlux = mpContainer->getFluxes().array(); pSum != pSumEnd; ++pColFlux, ++pSum)
+      for (pColFlux = mpContainer->getFluxes().array(); pUnscaledIterator != pUnscaledItEnd; ++pColFlux, ++pUnscaledIterator)
         {
-          tmp += *pSum **pColFlux;
-          eq += fabs(*pSum);
+          tmp += *pUnscaledIterator * *pColFlux;
+          eq += fabs(*pUnscaledIterator);
         }
-
       eq /= mUnscaledFluxCC.numCols();
 
+      //Code Review (Sven, 2025): at this point "tmp" should be equal to "Scale" if the summation theorem is fulfilled in this row.
+        // "Scale" is the flux for the current row in amount units.
+        // "eq" is the average absolute value of unscaled FCC for the current row.
+        // I have no idea what the following code does: If we want to test for summation theorem, fabs(tmp-Scale) should be small.
+        // And I do not understand how eq matters in this context, and why it could be a problem if it is bigger the the Resolution.
+        
       if (fabs(tmp) < Resolution && eq >= Resolution)
         {
           Scale = std::numeric_limits< C_FLOAT64 >::infinity();
         }
 
-      tmp = 0.0;
-
       for (pColFlux = mpContainer->getFluxes().array(); pColFlux != pFluxEnd; ++pColFlux, ++pUnscaled, ++pScaled)
         {
-          // In the diagonal the scaling factors cancel.
+          
           if (eq < res)
             {
+              //If the average unscaled FCC for the current row is numerically small, we assume it is unreliable for the whole row
+              //Code Review (Sven): Is this actually true, and does it make sense to report 0.0 and 1.0 in this case
               *pScaled = (pColFlux != pFlux) ? 0.0  : 1.0;
             }
-          else if (pColFlux == pFlux)
+          else if (pColFlux == pFlux)  // In the diagonal the scaling factors cancel.
             {
               *pScaled = *pUnscaled;
             }
-          else if (fabs(Scale) >= res)
+          else if (fabs(Scale) >= Resolution)
             {
+              //this is the regular scaling if there is no numerical trouble:
               *pScaled = *pUnscaled **pColFlux / Scale;
             }
           else
             {
-              CMathObject * pCompartmentCol = mpContainer->getLargestReactionCompartment(pReaction);
+              //if the flux corresponding to the current row is too small we do not want to divide by it
+              const CMathObject * pCompartmentCol = mpContainer->getLargestReactionCompartment(pReaction);
               C_FLOAT64 ScaleCol = (pCompartmentCol != NULL) ?
                                    fabs(*pColFlux / * (C_FLOAT64*)pCompartmentCol->getValuePointer()) :
                                    fabs(*pColFlux);
@@ -547,8 +556,6 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
                              std::numeric_limits<C_FLOAT64>::infinity();
                 }
             }
-
-          tmp += *pScaled;
         }
     }
 
@@ -559,9 +566,9 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
 {
   bool success = true;
 
-  C_FLOAT64 * pScaled = mScaledConcCC.array();
-  C_FLOAT64 * pScaledRowEnd = pScaled + mScaledConcCC.numCols() - 1;
-  C_FLOAT64 * pScaledEnd = pScaled + mScaledConcCC.size();
+  const C_FLOAT64 * pScaled = mScaledConcCC.array();
+  C_FLOAT64 * pScaledRowEnd = mScaledConcCC.array() + mScaledConcCC.numCols() - 1;
+  const C_FLOAT64 * pScaledEnd = pScaled + mScaledConcCC.size();
 
   CVector< C_FLOAT64 > Sum(mScaledConcCC.numRows());
   CVector< C_FLOAT64 > Max(mScaledConcCC.numRows());
@@ -579,13 +586,13 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
           *pSum += *pScaled;
           *pMax = std::max(*pMax, fabs(*pScaled));
         }
-
+      //calculate relative deviation from the summation theorem; if all CCCs are small, just assume everything is OK.
       *pScaledRowEnd = (*pMax > 100.0 * std::numeric_limits< C_FLOAT64 >::min()) ? fabs(*pSum) / *pMax : 0.0;
       success &= *pScaledRowEnd < resolution;
     }
 
   pScaled = mScaledFluxCC.array();
-  pScaledRowEnd = pScaled + mScaledFluxCC.numCols() - 1;
+  pScaledRowEnd = mScaledFluxCC.array() + mScaledFluxCC.numCols() - 1;
   pScaledEnd = pScaled + mScaledFluxCC.size();
 
   Sum.resize(mScaledFluxCC.numRows());
@@ -605,7 +612,10 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
           *pSum += *pScaled;
           *pMax = std::max(*pMax, fabs(*pScaled));
         }
-
+        //Code review (Sven): Is it really necessary to look at relative error here? The scaled FCCs are dimensionless and the order
+        // of magnitude is given by the summation theorem. So the error should be compared to 1.0 and not to whatever the
+        //largest FCC is.
+        //I even think this should also apply for CCCs. 
       *pScaledRowEnd = (*pMax > 100.0 * std::numeric_limits< C_FLOAT64 >::min()) ? fabs(1.0 - *pSum) / *pMax : 0.0;
       success &= *pScaledRowEnd < resolution;
     }
