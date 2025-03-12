@@ -53,7 +53,7 @@ COptMethodGA::COptMethodGA(const CDataContainer * pParent,
   mpPermutation(NULL),
   mLosses(0),
   mPivot(0),
-  mMutationVarians(0.1),
+  mMutationVariance(0.1),
   mStopAfterStalledGenerations(0),
   mBestIndex(C_INVALID_INDEX)
 
@@ -77,7 +77,7 @@ COptMethodGA::COptMethodGA(const COptMethodGA & src,
   mpPermutation(NULL),
   mLosses(0),
   mPivot(0),
-  mMutationVarians(0.1),
+  mMutationVariance(0.1),
   mStopAfterStalledGenerations(0),
   mBestIndex(C_INVALID_INDEX)
 {initObjects();}
@@ -87,17 +87,9 @@ COptMethodGA::~COptMethodGA()
 
 bool COptMethodGA::swap(size_t from, size_t to)
 {
-  CVector< C_FLOAT64 > * pTmp = mIndividuals[to];
-  mIndividuals[to] = mIndividuals[from];
-  mIndividuals[from] = pTmp;
-
-  C_FLOAT64 dTmp = mValues[to];
-  mValues[to] = mValues[from];
-  mValues[from] = dTmp;
-
-  size_t iTmp = mLosses[to];
-  mLosses[to] = mLosses[from];
-  mLosses[from] = iTmp;
+  std::swap(mIndividuals[to], mIndividuals[from]);
+  std::swap(mValues[to], mValues[from]);
+  std::swap(mLosses[to], mLosses[from]);
 
   return true;
 }
@@ -106,35 +98,19 @@ bool COptMethodGA::swap(size_t from, size_t to)
 bool COptMethodGA::mutate(size_t index)
 {
   CVector< C_FLOAT64 > & Individual = *mIndividuals[index];
-  size_t j;
-
   COptProblem *& pOptProblem = mProblemContext.active();
   CRandom *& pRandom = mRandomContext.active();
+  const std::vector< COptItem * > & OptItemList = pOptProblem->getOptItemList(true);
 
   // mutate the parameters
-  for (j = 0; j < mVariableSize; j++)
+  for (size_t j = 0; j < mVariableSize; j++)
     {
-      const COptItem & OptItem = *pOptProblem->getOptItemList(true)[j];
+      COptItem & OptItem = *OptItemList[j];
       C_FLOAT64 & mut = Individual[j];
 
       // calculate the mutated parameter
-      mut *= pRandom->getRandomNormal(1, mMutationVarians);
-
-      // force it to be within the bounds
-      switch (OptItem.checkConstraint(mut))
-        {
-          case - 1:
-            mut = *OptItem.getLowerBoundValue();
-            break;
-
-          case 1:
-            mut = *OptItem.getUpperBoundValue();
-            break;
-        }
-
-      // We need to set the value here so that further checks take
-      // account of the value.
-      pOptProblem->getOptItemList(true)[j]->setItemValue(mut);
+      mut *= pRandom->getRandomNormal(1, mMutationVariance);
+      OptItem.setItemValue(mut, COptItem::CheckPolicyFlag::All);
     }
 
   return true;
@@ -145,7 +121,6 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
                              CVector< C_FLOAT64 > & child1,
                              CVector< C_FLOAT64 > & child2)
 {
-  size_t i, crp;
   size_t nCross = 0;
 
   CRandom *& pRandom = mRandomContext.active();
@@ -165,29 +140,20 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
 
   // choose cross over points;
   // We do not mind if a crossover point gets drawn twice
-  for (i = 0; i < nCross; i++)
-    {
-      crp = pRandom->getRandomU((unsigned C_INT32)(mVariableSize - 1));
-      mCrossOver[crp] = true;
-    }
+  for (size_t i = 0; i < nCross; i++)
+    mCrossOver[pRandom->getRandomU((unsigned C_INT32)(mVariableSize - 1))] = true;
 
   const CVector< C_FLOAT64 > * pParent1 = & parent1;
-
   const CVector< C_FLOAT64 > * pParent2 = & parent2;
-
   const CVector< C_FLOAT64 > * pTmp;
 
-  for (i = 0; i < mVariableSize; i++)
+  for (size_t i = 0; i < mVariableSize; i++)
     {
       if (mCrossOver[i])
-        {
-          pTmp = pParent1;
-          pParent1 = pParent2;
-          pParent2 = pTmp;
-        }
+        std::swap(pParent1, pParent2);
 
-      child1[i] = (*pParent1)[i];
-      child2[i] = (*pParent2)[i];
+      child1[i] = pParent1->operator[](i);
+      child2[i] = pParent2->operator[](i);
     }
 
   return true;
@@ -214,13 +180,13 @@ bool COptMethodGA::replicate()
 
 #pragma omp parallel for schedule(runtime)
   for (i = mPopulationSize; i < 2 * mPopulationSize; i++)
-    if (mContinue)
+    if (proceed())
       {
         mutate(i);
-        mValues[i] = evaluate();
+        mValues[i] = evaluate({EvaluationPolicy::Constraints});
       }
 
-  return mContinue;
+  return true;
 }
 
 // select mPopulationSize individuals
@@ -234,6 +200,7 @@ bool COptMethodGA::select()
 
   // compete with ~ 20% of the TotalPopulation
   nopp = std::max<size_t>(1, mPopulationSize / 5);
+  CRandom * pRandom = mRandomContext.master();
 
   // parents and offspring are all in competition
   for (i = 0; i < TotalPopulation; i++)
@@ -242,7 +209,7 @@ bool COptMethodGA::select()
         // get random opponent
         do
           {
-            opp = mRandomContext.master()->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
+            opp = pRandom->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
           }
         while (i == opp);
 
@@ -270,7 +237,7 @@ size_t COptMethodGA::fittest()
   size_t i, BestIndex = C_INVALID_INDEX;
   C_FLOAT64 BestValue = std::numeric_limits< C_FLOAT64 >::max();
 
-  for (i = 0; i < mPopulationSize && !mLosses[i]; i++)
+  for (i = 0; i < mPopulationSize; i++)
     if (mValues[i] < BestValue)
       {
         BestIndex = i;
@@ -326,78 +293,20 @@ bool COptMethodGA::creation(size_t first,
                             size_t last)
 {
   size_t Last = std::min(last, (size_t) mPopulationSize);
-
   size_t i;
-  size_t j;
-
-  C_FLOAT64 mn;
-  C_FLOAT64 mx;
-  C_FLOAT64 la;
 
 #pragma omp parallel for schedule(runtime)
   for (i = first; i < Last; i++)
-    if (mContinue)
-      {
-        COptProblem *& pOptProblem = mProblemContext.active();
-        CRandom *& pRandom = mRandomContext.active();
+    {
+      createIndividual(i, COptItem::CheckPolicyFlag::All);
+      mValues[i] = evaluate({EvaluationPolicy::Constraints});
+    }
 
-        for (j = 0; j < mVariableSize; j++)
-          {
-            // calculate lower and upper bounds
-            const COptItem & OptItem = *pOptProblem->getOptItemList(true)[j];
-            mn = *OptItem.getLowerBoundValue();
-            mx = *OptItem.getUpperBoundValue();
-
-            C_FLOAT64 & mut = (*mIndividuals[i])[j];
-
-            try
-              {
-                // determine if linear or log scale
-                if ((mn < 0.0) || (mx <= 0.0))
-                  mut = mn + pRandom->getRandomCC() * (mx - mn);
-                else
-                  {
-                    la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
-
-                    if (la < 1.8)
-                      mut = mn + pRandom->getRandomCC() * (mx - mn);
-                    else
-                      mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * pRandom->getRandomCC());
-                  }
-              }
-
-            catch (...)
-              {
-                mut = (mx + mn) * 0.5;
-              }
-
-            // force it to be within the bounds
-            switch (OptItem.checkConstraint(mut))
-              {
-                case - 1:
-                  mut = *OptItem.getLowerBoundValue();
-                  break;
-
-                case 1:
-                  mut = *OptItem.getUpperBoundValue();
-                  break;
-              }
-
-            // We need to set the value here so that further checks take
-            // account of the value.
-            pOptProblem->getOptItemList(true)[j]->setItemValue(mut);
-          }
-
-        // calculate its fitness
-        mValues[i] = evaluate();
-      }
-
-  return mContinue;
+  return true;
 }
 
 void COptMethodGA::initObjects()
-{
-}
+{}
 
 bool COptMethodGA::initialize()
 {
@@ -407,8 +316,9 @@ bool COptMethodGA::initialize()
 
   if (!COptPopulationMethod::initialize())
     {
-      if (mProcessReport)
-        mProcessReport.finishItem(mhGenerations);
+      if (mProcessReport
+          && !mProcessReport.finishItem(mhGenerations))
+        signalStop();
 
       return false;
     }
@@ -433,16 +343,16 @@ bool COptMethodGA::initialize()
   mLosses.resize(2 * mPopulationSize);
 
   // Initialize the variance for mutations
-  mMutationVarians = 0.1;
+  mMutationVariance = 0.1;
 
   if (getParameter("Mutation Variance"))
     {
-      mMutationVarians = getValue< C_FLOAT64 >("Mutation Variance");
+      mMutationVariance = getValue< C_FLOAT64 >("Mutation Variance");
 
-      if (mMutationVarians < 0.0 || 1.0 < mMutationVarians)
+      if (mMutationVariance < 0.0 || 1.0 < mMutationVariance)
         {
-          mMutationVarians = 0.1;
-          setValue("Mutation Variance", mMutationVarians);
+          mMutationVariance = 0.1;
+          setValue("Mutation Variance", mMutationVariance);
         }
     }
 
@@ -464,8 +374,9 @@ bool COptMethodGA::optimise()
   if (!initialize())
     {
       // initialisation failed, we exit
-      if (mProcessReport)
-        mProcessReport.finishItem(mhGenerations);
+      if (mProcessReport
+          && !mProcessReport.finishItem(mhGenerations))
+        signalStop();
 
       return false;
     }
@@ -484,41 +395,8 @@ bool COptMethodGA::optimise()
   Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
 
   size_t i;
-
-  // initialise the population
-  // first individual is the initial guess
-  bool pointInParameterDomain = true;
-
-  for (i = 0; i < mVariableSize; i++)
-    {
-      C_FLOAT64 & mut = (*mIndividuals[0])[i];
-      const COptItem & OptItem = *mProblemContext.active()->getOptItemList(true)[i];
-
-      mut = OptItem.getStartValue();
-
-      // force it to be within the bounds
-      switch (OptItem.checkConstraint(mut))
-        {
-          case - 1:
-            mut = *OptItem.getLowerBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 1:
-            mut = *OptItem.getUpperBoundValue();
-            pointInParameterDomain = false;
-            break;
-        }
-
-      // We need to set the value here so that further checks take
-      // account of the value.
-      mProblemContext.active()->getOptItemList(true)[i]->setItemValue(mut);
-    }
-
-  if (!pointInParameterDomain && (mLogVerbosity > 0))
-    mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
-
-  mValues[0] = evaluate();
+  createIndividual(C_INVALID_INDEX, COptItem::CheckPolicyFlag::All);
+  mValues[0] = evaluate({EvaluationPolicy::Constraints});
   setSolution(mValues[0], *mIndividuals[0], true);
 
   // the others are random
@@ -536,13 +414,14 @@ bool COptMethodGA::optimise()
     setSolution(mValues[mBestIndex], *mIndividuals[mBestIndex], true);
 
   // test if the user wants to stop, and do so if needed
-  if (!mContinue)
+  if (!proceed())
     {
       if (mLogVerbosity > 0)
         mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user after initial population creation."));
 
-      if (mProcessReport)
-        mProcessReport.finishItem(mhGenerations);
+      if (mProcessReport
+          && !mProcessReport.finishItem(mhGenerations))
+        signalStop();
 
       cleanup();
       return true;
@@ -550,7 +429,7 @@ bool COptMethodGA::optimise()
 
   // ITERATE FOR gener GENERATIONS
   for (mCurrentGeneration = 2;
-       mCurrentGeneration <= mGenerations && mContinue;
+       mCurrentGeneration <= mGenerations && proceed();
        mCurrentGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
     {
 
@@ -568,8 +447,7 @@ bool COptMethodGA::optimise()
                 " generations. 50% of individuals randomized."
               ));
 
-          creation((size_t)(mPopulationSize / 2),
-                               mPopulationSize);
+          creation((size_t)(mPopulationSize / 2), mPopulationSize);
           Stalled10 = Stalled30 = Stalled50 = 0;
         }
       else if (Stalled > 30 && Stalled30 > 30)
@@ -616,8 +494,9 @@ bool COptMethodGA::optimise()
           Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
         }
 
-      if (mProcessReport)
-        mProcessReport.progressItem(mhGenerations);
+      if (mProcessReport
+          && !mProcessReport.progressItem(mhGenerations))
+        signalStop();
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
@@ -633,8 +512,9 @@ bool COptMethodGA::optimise()
                    "Terminated after " + std::to_string(mCurrentGeneration - 1) + " of " +
                    std::to_string(mGenerations) + " generations."));
 
-  if (mProcessReport)
-    mProcessReport.finishItem(mhGenerations);
+  if (mProcessReport
+      && !mProcessReport.finishItem(mhGenerations))
+    signalStop();
 
   cleanup();
   return true;

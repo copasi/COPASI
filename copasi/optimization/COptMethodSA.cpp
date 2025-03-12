@@ -53,9 +53,7 @@ COptMethodSA::COptMethodSA(const CDataContainer * pParent,
   , mTolerance(1.e-006)
   , mpRandom(NULL)
   , mVariableSize(0)
-  , mBestValue(std::numeric_limits< C_FLOAT64 >::infinity())
   , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
-  , mContinue(true)
   , mCurrent()
   , mCurrentValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
   , mStep(0)
@@ -79,9 +77,7 @@ COptMethodSA::COptMethodSA(const COptMethodSA & src,
   , mTolerance(src.mTolerance)
   , mpRandom(NULL)
   , mVariableSize(src.mVariableSize)
-  , mBestValue(src.mBestValue)
   , mEvaluationValue(src.mEvaluationValue)
-  , mContinue(src.mContinue)
   , mCurrent(src.mCurrent)
   , mCurrentValue(src.mCurrentValue)
   , mStep(src.mStep)
@@ -102,8 +98,9 @@ bool COptMethodSA::optimise()
 {
   if (!initialize())
     {
-      if (mProcessReport)
-        mProcessReport.finishItem(mhTemperature);
+      if (mProcessReport
+          && !mProcessReport.finishItem(mhTemperature))
+        signalStop();
 
       return false;
     }
@@ -117,9 +114,26 @@ bool COptMethodSA::optimise()
     );
 
   size_t i, j, k, m, h, a, nt;
-  C_FLOAT64 xc, p, c, New;
+  C_FLOAT64 xc, p, c, New, minstep;
   C_FLOAT64 fk[STORED];
   bool ready;
+
+  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+
+  // set the minimum step size as being the average of step sizes
+  // or 100*DBL_EPSILON if average is zero
+  for (i = 0, minstep = 0.0; i < mVariableSize; i++)
+    {
+      minstep += fabs(OptItemList[i]->getItemValue());
+    }
+
+  if (minstep > std::numeric_limits< C_FLOAT64 >::epsilon())
+    minstep /= mVariableSize;
+  else
+    minstep = 100 * std::numeric_limits< C_FLOAT64 >::epsilon();
+
+  if (mLogVerbosity > 0)
+    mMethodLog.enterLogEntry(COptLogEntry("Minimal step size is " + std::to_string(minstep) + "."));
 
   // initial point is first guess but we have to make sure that we
   // are within the parameter domain
@@ -127,45 +141,23 @@ bool COptMethodSA::optimise()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
+      COptItem & OptItem = *OptItemList[i];
 
-      switch (OptItem.checkConstraint(OptItem.getStartValue()))
-        {
-          case - 1:
-            mCurrent[i] = *OptItem.getLowerBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 1:
-            mCurrent[i] = *OptItem.getUpperBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 0:
-            mCurrent[i] = OptItem.getStartValue();
-            break;
-        }
-
-      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
+      mCurrent[i] = OptItem.getStartValue();
+      pointInParameterDomain &= OptItem.setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
+      pointInParameterDomain &= (mCurrent[i] == OptItem.getStartValue());
 
       // The step must not contain any zeroes
-      mStep[i] = std::max(fabs(mCurrent[i]), 1.0);
+      mStep[i] = std::max(fabs(mCurrent[i]), minstep);
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
     mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
-  mCurrentValue = evaluate();
+  mCurrentValue = evaluate(EvaluationPolicy::Constraints);
 
   if (!std::isnan(mEvaluationValue))
-    {
-      // and store that value
-      mBestValue = mEvaluationValue;
-      mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
-
-      // We found a new best value lets report it.
-      mpParentTask->output(COutputInterface::DURING);
-    }
+    setSolution(mEvaluationValue, mCurrent, true);
 
   // store this in all positions
   for (a = 0; a < STORED; a++)
@@ -186,35 +178,33 @@ bool COptMethodSA::optimise()
 
   do // number of internal cycles: max(5*mVariableSize, 100) * NS * mVariableSize
     {
-      for (m = 0; m < nt && mContinue; m++) // step adjustments
+      for (m = 0; m < nt && proceed(); m++) // step adjustments
         {
-          for (j = 0; j < NS && mContinue; j++) // adjustment in all directions
+          for (j = 0; j < NS && proceed(); j++) // adjustment in all directions
             {
-              for (h = 0; h < mVariableSize && mContinue; h++) // adjustment in one direction
+              for (h = 0; h < mVariableSize && proceed(); h++) // adjustment in one direction
                 {
+                  COptItem & OptItem = *OptItemList[h];
                   // Calculate the step
                   xc = (2.0 * mpRandom->getRandomCC() - 1) * mStep[h];
                   New = mCurrent[h] + xc;
 
                   // Set the new parameter value
-                  mProblemContext.master()->getOptItemList(true)[h]->setItemValue(New);
-
-                  // Check all parametric constraints
-                  if (!mProblemContext.master()->checkParametricConstraints())
+                  if (!OptItem.setItemValue(New, COptItem::CheckPolicyFlag::All))
                     {
                       // Undo since not accepted
-                      mProblemContext.master()->getOptItemList(true)[h]->setItemValue(mCurrent[h]);
+                      OptItem.setItemValue(mCurrent[h], COptItem::CheckPolicyFlag::None);
                       continue;
                     }
 
                   // evaluate the function
-                  evaluate();
+                  mEvaluationValue = evaluate(EvaluationPolicy::Constraints);
 
                   // Check all functional constraints
                   if (!mProblemContext.master()->checkFunctionalConstraints())
                     {
                       // Undo since not accepted
-                      mProblemContext.master()->getOptItemList(true)[h]->setItemValue(mCurrent[h]);
+                      OptItem.setItemValue(mCurrent[h], COptItem::CheckPolicyFlag::None);
                       continue;
                     }
 
@@ -228,15 +218,8 @@ bool COptMethodSA::optimise()
                       i++;  // a new point
                       mAccepted[h]++; // a new point in this coordinate
 
-                      if (mCurrentValue < mBestValue)
-                        {
-                          // and store that value
-                          mBestValue = mEvaluationValue;
-                          mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
-
-                          // We found a new best value lets report it.
-                          mpParentTask->output(COutputInterface::DURING);
-                        }
+                      if (mCurrentValue < getBestValue())
+                        setSolution(mEvaluationValue, mCurrent, true);
                     }
                   else
                     {
@@ -253,7 +236,7 @@ bool COptMethodSA::optimise()
                         }
                       else
                         // Undo since not accepted
-                        mProblemContext.master()->getOptItemList(true)[h]->setItemValue(mCurrent[h]);
+                        OptItem.setItemValue(mCurrent[h], COptItem::CheckPolicyFlag::None);
                     }
                 }
             }
@@ -313,7 +296,7 @@ bool COptMethodSA::optimise()
                       "Temperature = " + auxStream.str() + "."));
                 }
 
-              if (fabs(mCurrentValue - mBestValue) > mTolerance)
+              if (fabs(mCurrentValue - getBestValue()) > mTolerance)
                 ready = false;
             }
         }
@@ -325,9 +308,9 @@ bool COptMethodSA::optimise()
           mCurrent = mProblemContext.master()->getSolutionVariables(true);
 
           for (a = 0; a < mVariableSize; a++)
-            mProblemContext.master()->getOptItemList(true)[a]->setItemValue(mCurrent[a]);
+            OptItemList[a]->setItemValue(mCurrent[a], COptItem::CheckPolicyFlag::None);
 
-          mCurrentValue = mBestValue;
+          mCurrentValue = getBestValue();
         }
       else
         {
@@ -346,12 +329,13 @@ bool COptMethodSA::optimise()
       // update the temperature
       mTemperature *= mCoolingFactor;
 
-      if (mProcessReport)
-        mContinue &= mProcessReport.progressItem(mhTemperature);
+      if (mProcessReport
+          && !mProcessReport.progressItem(mhTemperature))
+        signalStop();
 
       mpParentTask->output(COutputInterface::MONITORING);
     }
-  while (!ready && mContinue);
+  while (!ready && proceed());
 
   if (mLogVerbosity > 0)
     {
@@ -364,8 +348,9 @@ bool COptMethodSA::optimise()
                     ));
     }
 
-  if (mProcessReport)
-    mProcessReport.finishItem(mhTemperature);
+  if (mProcessReport
+      && !mProcessReport.finishItem(mhTemperature))
+    signalStop();
 
   return true;
 }
@@ -373,22 +358,6 @@ bool COptMethodSA::optimise()
 bool COptMethodSA::cleanup()
 {
   return true;
-}
-
-const C_FLOAT64 & COptMethodSA::evaluate()
-{
-  // We do not need to check whether the parametric constraints are fulfilled
-  // since the parameters are created within the bounds.
-
-  mContinue &= mProblemContext.master()->calculate();
-  mEvaluationValue = mProblemContext.master()->getCalculateValue();
-
-  // When we leave the either functional domain
-  // we set the objective value +Inf
-  if (!mProblemContext.master()->checkFunctionalConstraints())
-    mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
-
-  return mEvaluationValue;
 }
 
 bool COptMethodSA::initialize()
@@ -418,9 +387,6 @@ bool COptMethodSA::initialize()
       mProcessReport.addItem("Current Temperature",
                              mTemperature);
 
-  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
-  mContinue = true;
-
   mVariableSize = mProblemContext.master()->getOptItemList(true).size();
 
   mCurrent.resize(mVariableSize);
@@ -433,11 +399,6 @@ bool COptMethodSA::initialize()
 unsigned C_INT32 COptMethodSA::getMaxLogVerbosity() const
 {
   return 1;
-}
-
-C_FLOAT64 COptMethodSA::getBestValue() const
-{
-  return mBestValue;
 }
 
 C_FLOAT64 COptMethodSA::getCurrentValue() const

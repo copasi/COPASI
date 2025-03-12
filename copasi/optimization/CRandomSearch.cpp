@@ -58,7 +58,6 @@ CRandomSearch::CRandomSearch(const CDataContainer * pParent,
   , mValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
   , mpRandom(NULL)
   , mVariableSize(0)
-  , mBestValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
 {
   assertParameter("Number of Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100000);
   assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
@@ -76,7 +75,6 @@ CRandomSearch::CRandomSearch(const CRandomSearch & src,
   , mValue(src.mValue)
   , mpRandom(NULL)
   , mVariableSize(src.mVariableSize)
-  , mBestValue(src.mBestValue)
 {initObjects();}
 
 /**
@@ -118,8 +116,6 @@ bool CRandomSearch::initialize()
       mpRandom = CRandom::createGenerator();
     }
 
-  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
-
   mVariableSize = mProblemContext.master()->getOptItemList(true).size();
   mIndividual.resize(mVariableSize);
 
@@ -134,8 +130,6 @@ bool CRandomSearch::initialize()
 //C_INT32 CRandomSearch::optimize()
 bool CRandomSearch::optimise()
 {
-  bool Continue = true;
-
   unsigned C_INT32 j;
 
   // current value is the initial guess
@@ -157,94 +151,46 @@ bool CRandomSearch::optimise()
       const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
 
       mut = OptItem.getStartValue();
-
-      // force it to be within the bounds
-      switch (OptItem.checkConstraint(mut))
-        {
-          case - 1:
-            mut = *OptItem.getLowerBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 1:
-            mut = *OptItem.getUpperBoundValue();
-            pointInParameterDomain = false;
-            break;
-        }
-
-      // We need to set the value here so that further checks take
-      // account of the value.
-      mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut);
+      pointInParameterDomain &= mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut, COptItem::CheckPolicyFlag::All);
+      pointInParameterDomain &= mut == OptItem.getStartValue();
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
     mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
-  Continue = evaluate(mIndividual);
-  mBestValue = mValue;
-  Continue = mProblemContext.master()->setSolution(mBestValue, mIndividual, true);
+  mValue = evaluate(EvaluationPolicy::Constraints);
+  setSolution(mValue, mIndividual, true);
 
-  // We found a new best value lets report it.
-  //if (mpReport) mpReport->printBody();
-  mpParentTask->output(COutputInterface::DURING);
+  CVector< C_FLOAT64 > LastIndividual;
 
-  for (mCurrentIteration = 1; mCurrentIteration < mIterations && Continue; mCurrentIteration++)
+  for (mCurrentIteration = 1; mCurrentIteration < mIterations && proceed(); mCurrentIteration++)
     {
-      for (j = 0; j < mVariableSize && Continue; j++)
+      LastIndividual = mIndividual;
+      const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+
+      for (j = 0; j < mVariableSize && proceed(); j++)
         {
           // CALCULATE lower and upper bounds
-          const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
+          COptItem & OptItem = *OptItemList[j];
           C_FLOAT64 & mut = mIndividual[j];
 
-          mut = OptItem.getRandomValue(*mpRandom);
+          mut = OptItem.getRandomValue(mpRandom);
 
-          // force it to be within the bounds
-          switch (OptItem.checkConstraint(mut))
-            {
-              case - 1:
-                mut = *OptItem.getLowerBoundValue();
-
-                if (!OptItem.checkLowerBound(mut)) // Inequality
-                  {
-                    if (mut == 0.0)
-                      mut = std::numeric_limits< C_FLOAT64 >::min();
-                    else
-                      mut += mut * std::numeric_limits< C_FLOAT64 >::epsilon();
-                  }
-
-                break;
-
-              case 1:
-                mut = *OptItem.getUpperBoundValue();
-
-                if (!OptItem.checkUpperBound(mut)) // Inequality
-                  {
-                    if (mut == 0.0)
-                      mut = - std::numeric_limits< C_FLOAT64 >::min();
-                    else
-                      mut -= mut * std::numeric_limits< C_FLOAT64 >::epsilon();
-                  }
-
-                break;
-            }
-
-          // We need to set the value here so that further checks take
-          // account of the value.
-          mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut);
+          if (!OptItem.setItemValue(mut, COptItem::CheckPolicyFlag::All))
+            break;
         }
 
-      Continue = evaluate(mIndividual);
+      if (j < mVariableSize)
+        {
+          mIndividual = LastIndividual;
+          continue;
+        }
+
+      mValue = evaluate(EvaluationPolicy::Constraints);
 
       // COMPARE
-      if (mValue < mBestValue)
-        {
-          mBestValue = mValue;
-          Continue = mProblemContext.master()->setSolution(mBestValue, mIndividual, true);
-
-          // We found a new best value lets report it.
-          //if (mpReport) mpReport->printBody();
-          mpParentTask->output(COutputInterface::DURING);
-        }
+      if (mValue < getBestValue())
+        setSolution(mValue, mIndividual, true);
 
       mpParentTask->output(COutputInterface::MONITORING);
     }
@@ -257,34 +203,9 @@ bool CRandomSearch::optimise()
   return true;
 }
 
-// evaluate the fitness of one individual
-bool CRandomSearch::evaluate(const CVector< C_FLOAT64 > & /* individual */)
-{
-  bool Continue = true;
-
-  // We do not need to check whether the parametric constraints are fulfilled
-  // since the parameters are created within the bounds.
-
-  // evaluate the fitness
-  Continue = mProblemContext.master()->calculate();
-
-  // check wheter the functional constraints are fulfilled
-  if (!mProblemContext.master()->checkFunctionalConstraints())
-    mValue = std::numeric_limits<C_FLOAT64>::infinity();
-  else
-    mValue = mProblemContext.master()->getCalculateValue();
-
-  return Continue;
-}
-
 unsigned C_INT32 CRandomSearch::getMaxLogVerbosity() const
 {
   return 0;
-}
-
-C_FLOAT64 CRandomSearch::getBestValue() const
-{
-  return mBestValue;
 }
 
 C_FLOAT64 CRandomSearch::getCurrentValue() const

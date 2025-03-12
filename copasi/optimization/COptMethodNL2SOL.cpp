@@ -18,41 +18,39 @@
 
 COptMethodNL2SOL::COptMethodNL2SOL(const CDataContainer * pParent,
                                    const CTaskEnum::Method & methodType,
-                                   const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType, false),
-  v(NULL),
-  iv(NULL),
-  mIterations(150),
-  mVariableSize(0),
-  bounds(NULL),
-  nResiduals(0),
-  mCurrent(),
-  mBest(),
-  mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
-  mContinue(true),
-  fCalcr(new FNL2SOLTemplate<COptMethodNL2SOL>(this, &COptMethodNL2SOL::calcr)),
-  mpCNL2SOL(new CNL2SOL())
+                                   const CTaskEnum::Task & taskType)
+  : COptMethod(pParent, methodType, taskType, false)
+  , v(NULL)
+  , iv(NULL)
+  , mIterations(150)
+  , mVariableSize(0)
+  , bounds(NULL)
+  , nResiduals(0)
+  , mCurrent()
+  , mBest()
+  , fCalcr(new FNL2SOLTemplate< COptMethodNL2SOL >(this, &COptMethodNL2SOL::calcr))
+  , mpCNL2SOL(new CNL2SOL())
 {
   assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
   initObjects();
 }
 
 COptMethodNL2SOL::COptMethodNL2SOL(const COptMethodNL2SOL & src,
-                                   const CDataContainer * pParent):
-  COptMethod(src, pParent),
-  v(NULL),
-  iv(NULL),
-  mIterations(150),
-  mVariableSize(0),
-  bounds(NULL),
-  nResiduals(0),
-  mCurrent(),
-  mBest(),
-  mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
-  mContinue(true),
-  fCalcr(new FNL2SOLTemplate<COptMethodNL2SOL>(this, &COptMethodNL2SOL::calcr)),
-  mpCNL2SOL(new CNL2SOL())
-{initObjects();}
+                                   const CDataContainer * pParent)
+  : COptMethod(src, pParent)
+  , v(NULL)
+  , iv(NULL)
+  , mIterations(150)
+  , mVariableSize(0)
+  , bounds(NULL)
+  , nResiduals(0)
+  , mCurrent()
+  , mBest()
+  , fCalcr(new FNL2SOLTemplate< COptMethodNL2SOL >(this, &COptMethodNL2SOL::calcr))
+  , mpCNL2SOL(new CNL2SOL())
+{
+  initObjects();
+}
 
 COptMethodNL2SOL::~COptMethodNL2SOL()
 {
@@ -84,49 +82,27 @@ bool COptMethodNL2SOL::optimise()
 
   // generate the bound arrays
   bool pointInParameterDomain = true;
+  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
 
   for (j = 0; j < mVariableSize; j++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
+      COptItem & OptItem = *OptItemList[j];
       mCurrent[j] = OptItem.getStartValue();
-
-      switch (OptItem.checkConstraint(mCurrent[j]))
-        {
-          case - 1:
-            mCurrent[j] = *OptItem.getLowerBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 1:
-            mCurrent[j] = *OptItem.getUpperBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 0:
-            break;
-        }
+      OptItem.setItemValue(mCurrent[j], COptItem::CheckPolicyFlag::All);
 
       bounds[2 * j] = *OptItem.getLowerBoundValue();
       bounds[2 * j + 1] = *OptItem.getUpperBoundValue();
-
-      // set the value
-      mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mCurrent[j]);
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
     mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
-  calcr(&nResiduals, &mVariableSize, mCurrent.array(), &dummy, NULL, &dummy, &mBestValue, (U_fp) fCalcr);
+  calcr(&nResiduals, &mVariableSize, mCurrent.array(), &dummy, NULL, &dummy, &mEvaluationValue, (U_fp) fCalcr);
   mBest = mCurrent;
 
   if (!std::isnan(mEvaluationValue))
     {
-      // and store that value
-      mBestValue = mEvaluationValue;
-      mContinue &= mProblemContext.master()->setSolution(mBestValue, mBest, true);
-
-      // We found a new best value lets report it.
-      mpParentTask->output(COutputInterface::DURING);
+      setSolution(mEvaluationValue, mBest, true);
       mpParentTask->output(COutputInterface::MONITORING);
     }
 
@@ -167,9 +143,6 @@ bool COptMethodNL2SOL::initialize()
   mVariableSize = (C_INT) mProblemContext.master()->getOptItemList(true).size();
   mCurrent.resize(mVariableSize);
   mBest.resize(mVariableSize);
-
-  mContinue = true;
-  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
   mIterations = getValue< unsigned C_INT32 >("Iteration Limit");
 
@@ -217,32 +190,9 @@ bool COptMethodNL2SOL::cleanup()
   return true;
 }
 
-const C_FLOAT64 & COptMethodNL2SOL::evaluate()
-{
-  // We do not need to check whether the parametric constraints are fulfilled
-  // since the parameters are created within the bounds.
-  mContinue = mProblemContext.master()->calculate();
-  mEvaluationValue = mProblemContext.master()->getCalculateValue();
-
-  // when we leave the either the parameter or functional domain
-  // we penalize the objective value by forcing it to be larger
-  // than the best value recorded so far.
-  if (mEvaluationValue < mBestValue &&
-      (!mProblemContext.master()->checkParametricConstraints() ||
-       !mProblemContext.master()->checkFunctionalConstraints()))
-    mEvaluationValue = mBestValue + mBestValue - mEvaluationValue;
-
-  return mEvaluationValue;
-}
-
 unsigned C_INT32 COptMethodNL2SOL::getMaxLogVerbosity() const
 {
   return 1;
-}
-
-C_FLOAT64 COptMethodNL2SOL::getBestValue() const
-{
-  return mBestValue;
 }
 
 C_FLOAT64 COptMethodNL2SOL::getCurrentValue() const
@@ -261,29 +211,21 @@ const CVector< C_FLOAT64 > * COptMethodNL2SOL::getCurrentParameters() const
 }
 
 C_INT COptMethodNL2SOL::calcr(integer *n, integer *p, doublereal *x, integer *nf, doublereal *resid,
-                              integer *uiparm, doublereal *urparm, U_fp ufparm)
+                              integer *uiparm, doublereal *urparm, U_fp /* ufparm */)
 {
   int i;
+  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
 
   // set the parameter values
   for (i = 0; i < *p; i++)
-    mProblemContext.master()->getOptItemList(true)[i]->setItemValue(x[i]);
+    OptItemList[i]->setItemValue(x[i], COptItem::CheckPolicyFlag::None);
 
   //urparm[0] = (*f)(resid );
 
-  urparm[0] = evaluate();
+  urparm[0] = evaluate(EvaluationPolicyFlag::All);
 
-  if (mEvaluationValue < mBestValue)
-    {
-      // We found a new best value lets report it.
-      // and store that value
-      mBest = mCurrent;
-      mBestValue  = mEvaluationValue;
-
-      mContinue = mProblemContext.master()->setSolution(mBestValue, mBest, true);
-      // We found a new best value lets report it.
-      mpParentTask->output(COutputInterface::DURING);
-    }
+  if (urparm[0] < getBestValue())
+    setSolution(urparm[0], CVectorCore< C_FLOAT64 >(mVariableSize, x), true);
 
   mpParentTask->output(COutputInterface::MONITORING);
 
@@ -292,7 +234,8 @@ C_INT COptMethodNL2SOL::calcr(integer *n, integer *p, doublereal *x, integer *nf
       const CVector< C_FLOAT64 > Residuals =
         static_cast<CFitProblem *>(mProblemContext.master())->getResiduals();
 
-      for (i = 0; i < *n; i++) resid[i] = Residuals[i];
+      for (i = 0; i < *n; i++)
+        resid[i] = Residuals[i];
     }
 
   if (urparm[0] == std::numeric_limits< C_FLOAT64 >::max()) *nf = 0;

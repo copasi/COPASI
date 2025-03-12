@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -75,9 +75,6 @@ public:
    */
   virtual unsigned C_INT32 getMaxLogVerbosity() const;
 
-
-  virtual C_FLOAT64 getBestValue() const;
-
   virtual C_FLOAT64 getCurrentValue() const;
 
   virtual const CVector< C_FLOAT64 > * getBestParameters() const;
@@ -107,12 +104,6 @@ private:
    * @return bool success
    */
   virtual bool cleanup();
-
-  /**
-   * Evaluate the fitness of one individual
-   * @return bool continue
-   */
-  bool evaluate();
 
   /**
    * Finds the best value in the neighborhood of mNew and updates mNew
@@ -177,16 +168,6 @@ private:
    * The value of the last evaluation.
    */
   C_FLOAT64 mEvaluationValue;
-
-  /**
-   * The best value found so far
-   */
-  C_FLOAT64 mBestValue;
-
-  /**
-   * Flag indicating whether the computation shall continue
-   */
-  bool mContinue;
 };
 
 #endif  // COPASI_COptMethodHookeJeeves

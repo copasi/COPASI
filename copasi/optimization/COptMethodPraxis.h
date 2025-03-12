@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -79,8 +79,6 @@ public:
    */
   virtual unsigned C_INT32 getMaxLogVerbosity() const;
 
-  virtual C_FLOAT64 getBestValue() const;
-
   virtual C_FLOAT64 getCurrentValue() const;
 
   virtual const CVector< C_FLOAT64 > * getBestParameters() const;
@@ -147,19 +145,9 @@ private:
   CVector< C_FLOAT64 > mBest;
 
   /**
-   * The best value found so far
-   */
-  C_FLOAT64 mBestValue;
-
-  /**
    * The result of a function evaluation
    */
   C_FLOAT64 mEvaluationValue;
-
-  /**
-   * Flag indicating whether the computation shall continue
-   */
-  bool mContinue;
 
   /**
    * Functor pointing to the Praxis method.
@@ -172,12 +160,6 @@ private:
   CPraxis mPraxis;
 
   const C_FLOAT64 & evaluateFunction(C_FLOAT64 *, C_INT32 &);
-
-  /**
-   * Evaluate the objective function
-   * @return bool continue
-   */
-  const C_FLOAT64 & evaluate();
 };
 
 #endif  // COPASI_COptMethodPraxis

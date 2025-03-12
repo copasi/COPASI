@@ -27,6 +27,7 @@
 
 #include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/math/CMathUpdateSequence.h"
+#include "copasi/randomGenerator/CIntervalValue.h"
 
 class CCommonName;
 class COptProblem;
@@ -46,6 +47,14 @@ protected:
   COptItem(const COptItem & src);
 
 public:
+  enum struct CheckPolicy {
+    Bounds,
+    Intervals,
+    __SIZE
+  };
+
+  typedef CFlags< CheckPolicy > CheckPolicyFlag;
+
   /**
    * Specific constructor
    * @param const CDataContainer * pParent
@@ -206,6 +215,8 @@ public:
    */
   bool checkUpperBound(const C_FLOAT64 & value) const;
 
+  const CIntervalValue & getInterval() const;
+
   /**
    * Checks whether we have a valid interval.
    * @return bool fulfills
@@ -226,10 +237,11 @@ public:
 
   /**
    * Set the local value.
-   * @param const C_FLOAT64 & value
+   * @param C_FLOAT64 & value
+   * @param const CheckPolicyFlag & policy
    * @return bool success
    */
-  virtual bool setItemValue(const C_FLOAT64 & value);
+  virtual bool setItemValue(C_FLOAT64 & value, const CheckPolicyFlag & policy);
 
   /**
    * Retrieve the local value.
@@ -282,7 +294,7 @@ public:
    * @param CRandom & Random
    * @return C_FLOAT64 randomValue
    */
-  C_FLOAT64 getRandomValue(CRandom & Random) const;
+  C_FLOAT64 getRandomValue(CRandom * Random) const;
 
   /**
    * Output stream operator
@@ -398,14 +410,11 @@ protected:
    */
   C_FLOAT64 mLastStartValue;
 
-  /**
-   * A value indicating whether the interval is valid
-   */
-  C_FLOAT64 mInterval;
-
   std::set< COptItem * > mDependentItems;
 
   CCore::CUpdateSequence mUpdateInterval;
+
+  CIntervalValue mInterval;
 };
 
 #endif // COPASI_COptItem

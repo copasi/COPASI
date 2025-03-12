@@ -125,10 +125,11 @@ public:
 
   /**
    * Set the local value.
-   * @param const C_FLOAT64 & value
+   * @param C_FLOAT64 & value
+   * @param const CheckPolicyFlag & policy
    * @return bool success
    */
-  virtual bool setItemValue(const C_FLOAT64 & value) override;
+  virtual bool setItemValue(C_FLOAT64 & value, const CheckPolicyFlag & policy) override;
 
   /**
    * Retrieve the local value.

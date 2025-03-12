@@ -23,7 +23,7 @@ public:
 
   CIntervalValue(const CIntervalValue & src) = delete;
 
-  CIntervalValue(const C_FLOAT64 & minimum, const C_FLOAT64 & maximum);
+  CIntervalValue(const C_FLOAT64 *& pMinimum, const C_FLOAT64 *& pMaximum);
 
   C_FLOAT64 randomValue(CRandom * pRandom) const;
 
@@ -35,12 +35,18 @@ public:
 
   const C_FLOAT64 & getMaximum() const;
 
+  const C_FLOAT64 & getSize() const;
+
   const C_FLOAT64 & getLogarithmicScale() const;
 
-private:
-  C_FLOAT64 mMinimum;
+  void compile();
 
-  C_FLOAT64 mMaximum;
+private:
+  const C_FLOAT64 *& mpMinimum;
+
+  const C_FLOAT64 *& mpMaximum;
+
+  C_FLOAT64 mSize;
 
   Range mRange;
 

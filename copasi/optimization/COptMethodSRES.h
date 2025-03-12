@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -98,13 +98,6 @@ private:
   virtual bool cleanup();
 
   /**
-   * Evaluate the fitness of one individual
-   * @param const CVector< C_FLOAT64 > & individual
-   * @return bool continue
-   */
-  bool evaluate(const CVector< C_FLOAT64 > & individual);
-
-  /**
    * Swap individuals from and to
    * @param size_t from
    * @param size_t to
@@ -148,6 +141,9 @@ private:
    */
   C_FLOAT64 phi(size_t indvNum);
 
+protected:
+  virtual void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom);
+
   // Attributes
 private:
 
@@ -181,8 +177,6 @@ private:
    * The value of the last evaluation.
    */
   C_FLOAT64 mEvaluationValue;
-
-  C_FLOAT64 mBestValue;
 
   double mTau;    // parameter for updating variances
 

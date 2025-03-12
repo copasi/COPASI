@@ -36,34 +36,31 @@
 #include "copasi/core/CDataObjectReference.h"
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const CDataContainer * pParent,
-    const CTaskEnum::Method & methodType,
-    const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType, false),
-  mIterations(100),
-  mTolerance(1e-6),
-  mContinue(true),
-  mBestValue(std::numeric_limits< C_FLOAT64 >::infinity()),
-  mValue(0.0),
-  mVariableSize(0),
-  mIndividual(0),
-  mGradient(0),
-  mCurrentIteration(0)
+                                                     const CTaskEnum::Method & methodType,
+                                                     const CTaskEnum::Task & taskType)
+  : COptMethod(pParent, methodType, taskType, false)
+  , mIterations(100)
+  , mTolerance(1e-6)
+  , mValue(0.0)
+  , mVariableSize(0)
+  , mIndividual(0)
+  , mGradient(0)
+  , mCurrentIteration(0)
 {
   assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100);
   assertParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1e-6);
 }
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const COptMethodSteepestDescent & src,
-    const CDataContainer * pParent): COptMethod(src, pParent),
-  mIterations(src.mIterations),
-  mTolerance(src.mTolerance),
-  mContinue(src.mContinue),
-  mBestValue(src.mBestValue),
-  mValue(src.mValue),
-  mVariableSize(src.mVariableSize),
-  mIndividual(src.mIndividual),
-  mGradient(src.mGradient),
-  mCurrentIteration(src.mCurrentIteration)
+                                                     const CDataContainer * pParent)
+  : COptMethod(src, pParent)
+  , mIterations(src.mIterations)
+  , mTolerance(src.mTolerance)
+  , mValue(src.mValue)
+  , mVariableSize(src.mVariableSize)
+  , mIndividual(src.mIndividual)
+  , mGradient(src.mGradient)
+  , mCurrentIteration(src.mCurrentIteration)
 {}
 
 COptMethodSteepestDescent::~COptMethodSteepestDescent()
@@ -93,42 +90,21 @@ bool COptMethodSteepestDescent::optimise()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
-
-      switch (OptItem.checkConstraint(OptItem.getStartValue()))
-        {
-          case - 1:
-            mIndividual[i] = *OptItem.getLowerBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 1:
-            mIndividual[i] = *OptItem.getUpperBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 0:
-            mIndividual[i] = OptItem.getStartValue();
-            break;
-        }
-
-      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mIndividual[i]);
+      COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
+      mIndividual[i] = OptItem.getStartValue();
+      pointInParameterDomain &= OptItem.setItemValue(mIndividual[i], COptItem::CheckPolicyFlag::All);
+      pointInParameterDomain &= (mIndividual[i] == OptItem.getStartValue());
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
     mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
-  fmx = mBestValue = evaluate();
-
-  mContinue = mProblemContext.master()->setSolution(mBestValue, mIndividual, true);
-
-  // We found a new best value lets report it.
-  //if (mpReport) mpReport->printBody();
-  mpParentTask->output(COutputInterface::DURING);
+  fmx = evaluate(EvaluationPolicyFlag::All);
+  setSolution(fmx, mIndividual, true);
 
   bool SolutionFound = false;
 
-  for (mCurrentIteration = 0; mCurrentIteration < mIterations && mContinue && !SolutionFound; mCurrentIteration++)
+  for (mCurrentIteration = 0; mCurrentIteration < mIterations && proceed() && !SolutionFound; mCurrentIteration++)
     {
       // calculate the direction of steepest descent
       // by central finite differences
@@ -211,7 +187,7 @@ bool COptMethodSteepestDescent::optimise()
               calc_grad = true;
             }
 
-          if (fabs(fmx - mBestValue) < mTolerance)
+          if (fabs(fmx - getBestValue()) < 2.0 * mTolerance * fabs(fmx + getBestValue()))
             SolutionFound = true;
         }
 
@@ -223,7 +199,7 @@ bool COptMethodSteepestDescent::optimise()
           C_INT oit;
           std::ostringstream string1, string2;
 
-          string1 << "niter=" << mCurrentIteration << ", f=" << fmx << ", fbest=" << mBestValue;
+          string1 << "niter=" << mCurrentIteration << ", f=" << fmx << ", fbest=" << getBestValue();
           string2 << "position: ";
 
           for (oit = 0; (size_t)oit < mVariableSize; ++oit)
@@ -232,16 +208,8 @@ bool COptMethodSteepestDescent::optimise()
           mMethodLog.enterLogEntry(COptLogEntry(string1.str(), "", string2.str()));
         }
 
-      if (fmx < mBestValue)
-        {
-          mBestValue = fmx;
-
-          mContinue = mProblemContext.master()->setSolution(mBestValue, mIndividual, true);
-
-          // We found a new best value lets report it.
-          //if (mpReport) mpReport->printBody();
-          mpParentTask->output(COutputInterface::DURING);
-        }
+      if (fmx < getBestValue())
+        setSolution(fmx, mIndividual, true);
 
       mpParentTask->output(COutputInterface::MONITORING);
     }
@@ -269,12 +237,9 @@ bool COptMethodSteepestDescent::initialize()
   mIterations = getValue< unsigned C_INT32 >("Iteration Limit");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
 
-  mContinue = true;
   mVariableSize = mProblemContext.master()->getOptItemList(true).size();
   mIndividual.resize(mVariableSize);
   mGradient.resize(mVariableSize);
-
-  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
   CFitProblem* pFitProblem = dynamic_cast<CFitProblem*>(mProblemContext.master());
 
@@ -293,7 +258,7 @@ void COptMethodSteepestDescent::gradient()
   C_FLOAT64 y;
   C_FLOAT64 x;
 
-  y = evaluate();
+  y = evaluate(EvaluationPolicyFlag::All);
 
   CFitProblem* pFit = dynamic_cast<CFitProblem*>(mProblemContext.master());
 
@@ -317,26 +282,28 @@ void COptMethodSteepestDescent::gradient()
       return;
     }
 
-  std::vector< COptItem * >::const_iterator it = mProblemContext.master()->getOptItemList(true).begin();
-  std::vector< COptItem * >::const_iterator end = mProblemContext.master()->getOptItemList(true).end();
+  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
 
-  for (; it != end; ++it, ++pGradient)
+  for (size_t i = 0; i < mVariableSize; ++i, ++pGradient)
     {
-      x = (*it)->getItemValue();
+      COptItem & OptItem = *OptItemList[i];
+      x = OptItem.getItemValue();
 
       if (x != 0.0)
         {
-          (*it)->COptItem::setItemValue(x * 1.001);
-          *pGradient = (y - evaluate()) / (x * 0.001);
+          C_FLOAT64 X = x * 1.001;
+          OptItem.setItemValue(X, COptItem::CheckPolicyFlag::None);
+          *pGradient = (y - evaluate(EvaluationPolicyFlag::All)) / (X - x);
         }
 
       else
         {
-          (*it)->COptItem::setItemValue(1e-7);
-          *pGradient = (y - evaluate()) / 1e-7;
+          C_FLOAT64 X = 1e-7;
+          OptItem.setItemValue(X, COptItem::CheckPolicyFlag::None);
+          *pGradient = (y - evaluate(EvaluationPolicyFlag::All)) / (X - x);
         }
 
-      (*it)->COptItem::setItemValue(x);
+      OptItem.setItemValue(x, COptItem::CheckPolicyFlag::None);
     }
 }
 
@@ -349,29 +316,11 @@ C_FLOAT64 COptMethodSteepestDescent::descentLine(const C_FLOAT64 & x)
 
   for (; it != end; ++it, ++pGradient, ++pGradient)
     {
-      (*it)->COptItem::setItemValue(*pIndividual + x * *pGradient);
+      C_FLOAT64 X = *pIndividual + x * *pGradient;
+      (*it)->setItemValue(X, COptItem::CheckPolicyFlag::None);
     }
 
-  return evaluate();
-}
-
-// evaluate the fitness of one individual
-const C_FLOAT64 & COptMethodSteepestDescent::evaluate()
-{
-  // evaluate the fitness
-  mContinue = mProblemContext.master()->calculate();
-
-  mValue = mProblemContext.master()->getCalculateValue();
-
-  // when we leave the either the parameter or functional domain
-  // we penalize the objective value by forcing it to be larger
-  // than the best value recorded so far.
-  if (mValue < mBestValue &&
-      (!mProblemContext.master()->checkParametricConstraints() ||
-       !mProblemContext.master()->checkFunctionalConstraints()))
-    mValue = mBestValue + fabs(mBestValue - mValue);
-
-  return mValue;
+  return evaluate(EvaluationPolicyFlag::All);
 }
 
 void COptMethodSteepestDescent::initObjects()
@@ -384,14 +333,9 @@ unsigned C_INT32 COptMethodSteepestDescent::getMaxLogVerbosity() const
   return 0;
 }
 
-C_FLOAT64 COptMethodSteepestDescent::getBestValue() const
-{
-  return mBestValue;
-}
-
 C_FLOAT64 COptMethodSteepestDescent::getCurrentValue() const
 {
-  return mBestValue;
+  return getBestValue();
 }
 
 const CVector< C_FLOAT64 > * COptMethodSteepestDescent::getBestParameters() const

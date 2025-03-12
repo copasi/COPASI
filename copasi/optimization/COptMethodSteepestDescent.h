@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -48,12 +48,6 @@ private:
    * @return bool success
    */
   virtual bool cleanup();
-
-  /**
-   * Evaluate the objective function for the current parameters
-   * @return const C_FLOAT64 & objectiveValue
-   */
-  const C_FLOAT64 & evaluate();
 
   /**
    * Calculate the gradient of the objective at the current parameters
@@ -109,9 +103,6 @@ public:
    */
   virtual unsigned C_INT32 getMaxLogVerbosity() const;
 
-
-  virtual C_FLOAT64 getBestValue() const;
-
   virtual C_FLOAT64 getCurrentValue() const;
 
   virtual const CVector< C_FLOAT64 > * getBestParameters() const;
@@ -131,16 +122,6 @@ private :
    * The tolerance
    */
   C_FLOAT64 mTolerance;   // length of steps taken
-
-  /**
-   * Indicates whether there the executions shall continue
-   */
-  bool mContinue;
-
-  /**
-   * The best value found so far.
-   */
-  C_FLOAT64 mBestValue;
 
   /**
       * array of values of objective function f/ individuals

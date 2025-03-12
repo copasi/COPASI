@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,12 +51,6 @@ private:
    * @return bool success
    */
   virtual bool cleanup();
-
-  /**
-   * Evaluate the objective function for the current parameters
-   * @return const C_FLOAT64 & objectiveValue
-   */
-  bool evaluate(const CVector< C_FLOAT64 > & individual);
 
   /**
    * Initialize contained objects.
@@ -139,6 +133,9 @@ public:
    */
   virtual unsigned C_INT32 getMaxLogVerbosity() const;
 
+protected:
+  virtual void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom) override;
+
 private :
   // variables
 
@@ -152,11 +149,6 @@ private :
    * number of wins of each individual in the tournament
    */
   CVector< size_t > mLosses;
-
-  /**
-   * The best value found so far.
-   */
-  C_FLOAT64 mBestValue;
 
   /**
    * The value of the last evaluation.

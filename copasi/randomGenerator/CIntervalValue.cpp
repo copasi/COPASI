@@ -8,35 +8,59 @@
 #include "copasi/randomGenerator/CIntervalValue.h"
 #include "copasi/randomGenerator/CRandom.h"
 
-CIntervalValue::CIntervalValue(const C_FLOAT64 & minimum, const C_FLOAT64 & maximum)
-  : mMinimum(minimum)
-  , mMaximum(maximum)
+CIntervalValue::CIntervalValue(const C_FLOAT64 *& pMinimum, const C_FLOAT64 *& pMaximum)
+  : mpMinimum(pMinimum)
+  , mpMaximum(pMaximum)
+  , mSize(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
   , mRange(CIntervalValue::Range::invalid)
   , mIsLogarithmic(false)
   , mLogarithmicScale(0)
 {
+  compile();
+}
+
+void CIntervalValue::compile()
+{
+  if (mpMaximum == nullptr
+      || mpMinimum == nullptr)
+    {
+      mRange = CIntervalValue::Range::invalid;
+      mLogarithmicScale = 0;
+      mIsLogarithmic = false;
+
+      return;
+    }
+
   try
     {
+      mSize = *mpMaximum - *mpMinimum;
+
       // First determine the location of the interval
       // Secondly determine whether to distribute the parameter linearly or not
       // depending on the location and act upon it.
-      if (0.0 <= mMinimum) // the interval [mMinimum, mMaximum) is in [0, inf)
+      if (mSize < 0)
+        {
+          mRange = CIntervalValue::Range::invalid;
+          mLogarithmicScale = 0;
+          mIsLogarithmic = false;
+        }
+      else if (0.0 <= *mpMinimum) // the interval [*mpMinimum, *mpMaximum) is in [0, inf)
         {
           mRange = CIntervalValue::Range::positive;
-          mLogarithmicScale = log10(mMaximum) - log10(std::max(mMinimum, std::numeric_limits< C_FLOAT64 >::min()));
-          mIsLogarithmic = mLogarithmicScale > 1.8 && mMinimum > 0.0;
+          mLogarithmicScale = log10(*mpMaximum) - log10(std::max(*mpMinimum, std::numeric_limits< C_FLOAT64 >::min()));
+          mIsLogarithmic = mLogarithmicScale > 1.8 && *mpMinimum > 0.0;
         }
-      else if (mMaximum > 0) // 0 is in the interval (mMinimum, mMaximum)
+      else if (*mpMaximum > 0) // 0 is in the interval (*mpMinimum, *mpMaximum)
         {
           mRange = CIntervalValue::Range::containsZero;
-          mLogarithmicScale = log10(mMaximum) + log10(-mMinimum);
-          mIsLogarithmic = mLogarithmicScale > 3.6;
+          mLogarithmicScale = log10(*mpMaximum) - log10(-*mpMinimum);
+          mIsLogarithmic = fabs(mLogarithmicScale) > 1.8;
         }
-      else // the interval (mMinimum, mMaximum] is in (-inf, 0]
+      else // the interval (*mpMinimum, *mpMaximum] is in (-inf, 0]
         {
           mRange = CIntervalValue::Range::negative;
-          mLogarithmicScale = log10(-mMinimum) - log10(std::max(-mMaximum, std::numeric_limits< C_FLOAT64 >::min()));
-          mIsLogarithmic = mLogarithmicScale > 1.8 && mMaximum < 0.0;
+          mLogarithmicScale = log10(-*mpMinimum) - log10(std::max(-*mpMaximum, std::numeric_limits< C_FLOAT64 >::min()));
+          mIsLogarithmic = mLogarithmicScale > 1.8 && *mpMaximum < 0.0;
         }
     }
 
@@ -54,50 +78,51 @@ C_FLOAT64 CIntervalValue::randomValue(CRandom * pRandom) const
 
   try
     {
-      switch (mRange)
-        {
-        case CIntervalValue::Range::positive:
-          if (mIsLogarithmic)
-            result = pow(10.0, log10(std::max(mMinimum, std::numeric_limits< C_FLOAT64 >::min())) + mLogarithmicScale * pRandom->getRandomCC());
-          else
-            result = mMinimum + pRandom->getRandomCC() * (mMaximum - mMinimum);
+      if (mIsLogarithmic)
+        switch (mRange)
+          {
+          case CIntervalValue::Range::positive:
+            result = pow(10.0, log10(std::max(*mpMinimum, std::numeric_limits< C_FLOAT64 >::min())) + mLogarithmicScale * pRandom->getRandomCC());
+            break;
 
-          break;
+          case CIntervalValue::Range::containsZero:
+            if (mLogarithmicScale > 0)
+              {
+                C_FLOAT64 R = 2.0 / (2.0 + mLogarithmicScale);
+                C_FLOAT64 Sample = pRandom->getRandomCC();
 
-        case CIntervalValue::Range::containsZero:
-          if (mIsLogarithmic)
-            {
-              C_FLOAT64 mean = (mMaximum + mMinimum) * 0.5;
-              C_FLOAT64 sigma = std::min(std::numeric_limits< C_FLOAT64 >::max(), mMaximum - mMinimum) / 3.0;
+                if (Sample < R)
+                  result = *mpMinimum * (1.0 - 2.0 * Sample/R);
+                else
+                  result = pow(10.0, log10(std::max(-*mpMinimum, std::numeric_limits< C_FLOAT64 >::min())) + mLogarithmicScale * (Sample - R)/(Sample-R));
+              }
+            else
+              {
+                C_FLOAT64 R = 2.0 / (2.0 - mLogarithmicScale);
+                C_FLOAT64 Sample = pRandom->getRandomCC();
 
-              do
-                {
-                  result = pRandom->getRandomNormal(mean, sigma);
-              } while ((result < mMinimum) || (result > mMaximum));
-            }
-          else
-            result = mMinimum + pRandom->getRandomCC() * (mMaximum - mMinimum);
+                if (Sample < R)
+                  result = *mpMaximum * (1.0 - 2.0 * Sample/R);
+                else
+                  result = -pow(10.0, log10(std::max(*mpMaximum, std::numeric_limits< C_FLOAT64 >::min())) - mLogarithmicScale * (Sample - R)/(Sample-R));
+              }
+            break;
 
-          break;
+          case CIntervalValue::Range::negative:
+            result = -pow(10.0, log10(std::max(-*mpMaximum, std::numeric_limits< C_FLOAT64 >::min())) + mLogarithmicScale * pRandom->getRandomCC());
+            break;
 
-        case CIntervalValue::Range::negative:
-          if (mIsLogarithmic)
-            result = -pow(10.0, log10(std::max(-mMaximum, std::numeric_limits< C_FLOAT64 >::min())) + mLogarithmicScale * pRandom->getRandomCC());
-          else
-            result = mMinimum + pRandom->getRandomCC() * (mMaximum - mMinimum);
-
-          break;
-
-        case CIntervalValue::Range::invalid:
-          result = (mMaximum + mMinimum) * 0.5;
-
-          break;
-        }
+          case CIntervalValue::Range::invalid:
+            result = (*mpMaximum + *mpMinimum) * 0.5;
+            break;
+          }
+      else
+        result = *mpMinimum + pRandom->getRandomCC() * (*mpMaximum - *mpMinimum);
     }
 
   catch (...)
     {
-      result = (mMaximum + mMinimum) * 0.5;
+      result = (*mpMaximum + *mpMinimum) * 0.5;
     }
 
   return result;
@@ -115,12 +140,17 @@ const bool & CIntervalValue::isLogarithmic() const
 
 const C_FLOAT64 & CIntervalValue::getMinimum() const
 {
-  return mMinimum;
+  return *mpMinimum;
 }
 
 const C_FLOAT64 & CIntervalValue::getMaximum() const
 {
-  return mMaximum;
+  return *mpMaximum;
+}
+
+const C_FLOAT64 & CIntervalValue::getSize() const
+{
+  return mSize;
 }
 
 const C_FLOAT64 & CIntervalValue::getLogarithmicScale() const

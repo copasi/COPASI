@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -13,6 +13,7 @@
 
 #include <bitset>
 #include <vector>
+#include <initializer_list>
 
 #include "copasi/core/CEnumAnnotation.h"
 
@@ -54,6 +55,13 @@ public:
     bitset()
   {
     bitset::set(static_cast< size_t >(flag));
+  }
+
+  CFlags(const std::initializer_list< Enum > & enums)
+    : bitset()
+  {
+    for (const Enum & e : enums)
+      operator |= (CFlags(e));
   }
 
   /**

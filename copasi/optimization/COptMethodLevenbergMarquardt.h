@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -76,8 +76,6 @@ public:
    */
   virtual unsigned C_INT32 getMaxLogVerbosity() const;
 
-  virtual C_FLOAT64 getBestValue() const;
-
   virtual C_FLOAT64 getCurrentValue() const;
 
   virtual const CVector< C_FLOAT64 > * getBestParameters() const;
@@ -106,12 +104,6 @@ private:
    * @return bool success
    */
   virtual bool cleanup();
-
-  /**
-   * Evaluate the objective function
-   * @return bool continue
-   */
-  const C_FLOAT64 & evaluate();
 
   /**
    * Calculate the gradient of the objective at the current parameters
@@ -197,11 +189,6 @@ private:
   CVector< C_FLOAT64 > mTemp;
 
   /**
-   * The best value found so far
-   */
-  C_FLOAT64 mBestValue;
-
-  /**
    * The result of a function evaluation
    */
   C_FLOAT64 mEvaluationValue;
@@ -211,12 +198,6 @@ private:
   * stop
   */
   unsigned C_INT32 mStopAfterStalledIterations;
-
-
-  /**
-   * Flag indicating whether the computation shall continue
-   */
-  bool mContinue;
 
   /**
    * Indicate whether we have access to the residuals, i.e., it is a
@@ -232,7 +213,6 @@ private:
   C_FLOAT64 mInitialLamda;
   C_FLOAT64 mLambdaUp;
   C_FLOAT64 mLambdaDown;
-
 };
 
 #endif  // COPASI_COptMethodLevenbergMarquardt

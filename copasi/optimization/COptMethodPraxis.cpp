@@ -43,9 +43,7 @@ COptMethodPraxis::COptMethodPraxis(const CDataContainer * pParent,
   , mVariableSize(0)
   , mCurrent()
   , mBest()
-  , mBestValue(std::numeric_limits< C_FLOAT64 >::infinity())
   , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
-  , mContinue(true)
   , mpPraxis(new FPraxisTemplate< COptMethodPraxis >(this, &COptMethodPraxis::evaluateFunction))
   , mPraxis()
 {
@@ -63,9 +61,7 @@ COptMethodPraxis::COptMethodPraxis(const COptMethodPraxis & src,
   , mVariableSize(src.mVariableSize)
   , mCurrent(src.mCurrent)
   , mBest(src.mBest)
-  , mBestValue(src.mBestValue)
   , mEvaluationValue(src.mEvaluationValue)
-  , mContinue(src.mContinue)
   , mpPraxis(new FPraxisTemplate< COptMethodPraxis >(this, &COptMethodPraxis::evaluateFunction))
   , mPraxis()
 {
@@ -104,38 +100,27 @@ bool COptMethodPraxis::optimise()
   // we are within the parameter domain
 
   bool pointInParameterDomain = true;
+  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
+      COptItem & OptItem = *OptItemList[i];
       mCurrent[i] = OptItem.getStartValue();
-
-      //force it to be within the bounds
-      switch (OptItem.checkConstraint(mCurrent[i]))
-        {
-          case - 1:
-            mCurrent[i] = *OptItem.getLowerBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 1:
-            mCurrent[i] = *OptItem.getUpperBoundValue();
-            pointInParameterDomain = false;
-            break;
-        }
-
-      //set the value
-      mProblemContext.master()->getOptItemList(true)[i]->setItemValue((mCurrent[i]));
+      pointInParameterDomain &= OptItem.setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
+      pointInParameterDomain &= (mCurrent[i] == OptItem.getStartValue());
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
     mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   // Report the first value as the current best
-  mBestValue = evaluate();
+  mEvaluationValue = evaluate(EvaluationPolicyFlag::All);
+
+  if (!std::isnan(mEvaluationValue))
+    setSolution(mEvaluationValue, mCurrent, true);
+
   mBest = mCurrent;
   mCountWithinTolerance = 0;
-  mContinue = mProblemContext.master()->setSolution(mBestValue, mBest, true);
 
   // We found a new best value lets report it.
   mpParentTask->output(COutputInterface::DURING);
@@ -182,9 +167,6 @@ bool COptMethodPraxis::initialize()
   mVariableSize = (C_INT32) mProblemContext.master()->getOptItemList(true).size();
   mCurrent.resize(mVariableSize);
   mBest.resize(mVariableSize);
-  mBestValue = std::numeric_limits< C_FLOAT64 >::infinity();
-
-  mContinue = true;
 
   return true;
 }
@@ -198,28 +180,26 @@ bool COptMethodPraxis::cleanup()
 const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT32 & n)
 {
   C_INT32 i;
+  bool Proceed = proceed();
+  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
 
   for (i = 0; i < n; i++)
-    mProblemContext.master()->getOptItemList(true)[i]->setItemValue((x[i]));
+    OptItemList[i]->setItemValue((x[i]), COptItem::CheckPolicyFlag::None);
 
   //carry out the function evaluation
-  evaluate();
+  mEvaluationValue = evaluate(EvaluationPolicyFlag::All);
 
-  if (mEvaluationValue < mBestValue)
+  if (mEvaluationValue < getBestValue())
     {
       // We found a new best value lets report it.
       // and store that value
       for (i = 0; i < n; i++)
         mBest[i] = x[i];
 
-      mBestValue = mEvaluationValue;
       mCountWithinTolerance = 0;
-      mContinue = mProblemContext.master()->setSolution(mBestValue, mBest, true);
-
-      // We found a new best value lets report it.
-      mpParentTask->output(COutputInterface::DURING);
+      setSolution(mEvaluationValue, mBest, true);
     }
-  else if (SBMLImporter::areApproximatelyEqual(mBestValue, mEvaluationValue, mTolerance))
+  else if (SBMLImporter::areApproximatelyEqual(getBestValue(), mEvaluationValue, mTolerance))
     {
       double Norm = 0;
       double tmp;
@@ -233,33 +213,14 @@ const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT32 & n)
       if (sqrt(Norm) < mTolerance)
         {
           ++mCountWithinTolerance;
-          mContinue &= (mCountWithinTolerance < 100);
+          Proceed &= (mCountWithinTolerance < 100);
         }
     }
 
   mpParentTask->output(COutputInterface::MONITORING);
 
-  if (!mContinue)
-    throw bool(mContinue);
-
-  return mEvaluationValue;
-}
-
-const C_FLOAT64 & COptMethodPraxis::evaluate()
-{
-  // We do not need to check whether the parametric constraints are fulfilled
-  // since the parameters are created within the bounds.
-
-  mContinue = mProblemContext.master()->calculate();
-  mEvaluationValue = mProblemContext.master()->getCalculateValue();
-
-  // when we leave the either the parameter or functional domain
-  // we penalize the objective value by forcing it to be larger
-  // than the best value recorded so far.
-  if (mEvaluationValue < mBestValue &&
-      (!mProblemContext.master()->checkParametricConstraints() ||
-       !mProblemContext.master()->checkFunctionalConstraints()))
-    mEvaluationValue = mBestValue + mBestValue - mEvaluationValue;
+  if (!Proceed)
+    throw bool(Proceed);
 
   return mEvaluationValue;
 }
@@ -267,11 +228,6 @@ const C_FLOAT64 & COptMethodPraxis::evaluate()
 unsigned C_INT32 COptMethodPraxis::getMaxLogVerbosity() const
 {
   return 0;
-}
-
-C_FLOAT64 COptMethodPraxis::getBestValue() const
-{
-  return mBestValue;
 }
 
 C_FLOAT64 COptMethodPraxis::getCurrentValue() const

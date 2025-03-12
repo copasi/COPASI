@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -58,13 +58,6 @@ private:
   virtual bool initialize();
 
   /**
-   * Evaluate the fitness of one individual
-   * @param const CVector< C_FLOAT64 > & individual
-   * @return bool continue
-   */
-  bool evaluate(const CVector< C_FLOAT64 > & individual);
-
-  /**
    * a vector of the number of individuals.
    */
   CVector<C_FLOAT64> mIndividual;
@@ -78,11 +71,6 @@ private:
    * *** Perhaps this is actually not needed ****number of parameters
    */
   size_t mVariableSize;
-
-  /**
-   * The best value found so far.
-   */
-  C_FLOAT64 mBestValue;
 
 public:
   /**
@@ -114,9 +102,6 @@ public:
    * of its progress by the callback function set with SetCallback.
    */
   virtual bool optimise();
-
-
-  virtual C_FLOAT64 getBestValue() const;
 
   virtual C_FLOAT64 getCurrentValue() const;
 

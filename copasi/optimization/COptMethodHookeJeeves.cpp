@@ -64,12 +64,11 @@ COptMethodHookeJeeves::~COptMethodHookeJeeves()
 
 bool COptMethodHookeJeeves::optimise()
 {
-  mContinue = true;
-
   if (!initialize())
     {
-      if (mProcessReport)
-        mProcessReport.finishItem(mhIteration);
+      if (mProcessReport
+          && !mProcessReport.finishItem(mhIteration))
+        signalStop();
 
       return false;
     }
@@ -92,49 +91,35 @@ bool COptMethodHookeJeeves::optimise()
   // initialise the guess vector
   bool pointInParameterDomain = true;
 
+  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+
   for (i = 0; i < mVariableSize; i++)
     {
       C_FLOAT64 & mut = mIndividual[i];
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
+      COptItem & OptItem = *OptItemList[i];
 
       mut = OptItem.getStartValue();
-
-      // force it to be within the bounds
-      switch (OptItem.checkConstraint(mut))
-        {
-          case - 1:
-            mut = *OptItem.getLowerBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 1:
-            mut = *OptItem.getUpperBoundValue();
-            pointInParameterDomain = false;
-            break;
-        }
-
-      // We need to set the value here so that further checks take
-      // account of the value.
-      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mut);
+      pointInParameterDomain &= OptItem.setItemValue(mut, COptItem::CheckPolicyFlag::All);
+      pointInParameterDomain &= (mut == OptItem.getStartValue());
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
     mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
-  mContinue &= evaluate();
+  mEvaluationValue = evaluate({EvaluationPolicy::Constraints, EvaluationPolicy::Reflect});
 
   // The first value is also the best
-  mBestValue = mEvaluationValue;
-  mProblemContext.master()->setSolution(mBestValue, mIndividual, true);
-  mpParentTask->output(COutputInterface::DURING);
+  if (!std::isnan(mEvaluationValue))
+    setSolution(mEvaluationValue, mIndividual, true);
 
-  if (!mContinue)
+  if (!proceed())
     {
       if (mLogVerbosity > 0)
         mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user."));
 
-      if (mProcessReport)
-        mProcessReport.finishItem(mhIteration);
+      if (mProcessReport
+          && !mProcessReport.finishItem(mhIteration))
+        signalStop();
 
       cleanup();
       return true;
@@ -145,19 +130,23 @@ bool COptMethodHookeJeeves::optimise()
       mNew[i] = mBefore[i] = mIndividual[i];
       mDelta[i] = fabs(mIndividual[i] * mRho);
 
-      if (mDelta[i] == 0.0) mDelta[i] = mRho;
+      if (mDelta[i] == 0.0)
+        mDelta[i] = mRho;
     }
 
   iadj = 0;
   steplength = mRho;
 
-  newf = mBestValue;
+  newf = getBestValue();
 
-  while ((mIteration < mIterationLimit) && (steplength > mTolerance) && mContinue)
+  while ((mIteration < mIterationLimit)
+         && (steplength > mTolerance)
+         && proceed())
     {
       // signal another iteration to Gepasi
-      if (mProcessReport)
-        mContinue &= mProcessReport.progressItem(mhIteration);
+      if (mProcessReport
+           && !mProcessReport.progressItem(mhIteration))
+         signalStop();
 
       mIteration++;
       iadj++;
@@ -170,19 +159,18 @@ bool COptMethodHookeJeeves::optimise()
       /* if we made some improvements, pursue that direction */
       Keep = true;
 
-      while ((newf < mBestValue) && Keep && mContinue)
+      while ((newf < getBestValue())
+             && Keep
+             && proceed())
         {
           // We found a better value
-          mBestValue = newf;
-          mProblemContext.master()->setSolution(mBestValue, mNew, true);
-          mpParentTask->output(COutputInterface::DURING);
-
+          setSolution(newf, mNew, true);
           iadj = 0;
 
           for (i = 0; i < mVariableSize; i++)
             {
               C_FLOAT64 & mut = mNew[i];
-              const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
+              COptItem & OptItem = *OptItemList[i];
 
               /* firstly, arrange the sign of mDelta[] */
               if (mut <= mBefore[i])
@@ -193,29 +181,18 @@ bool COptMethodHookeJeeves::optimise()
               /* now, move further in this direction */
               tmp = mBefore[i];
               mBefore[i] = mut;
-              mut = mut + mut - tmp;
-
-              // force it to be within the bounds
-              switch (OptItem.checkConstraint(mut))
-                {
-                  case - 1:
-                    mut = *OptItem.getLowerBoundValue();
-                    break;
-
-                  case 1:
-                    mut = *OptItem.getUpperBoundValue();
-                    break;
-                }
+              mut = mut + (mut - tmp);
 
               // We need to set the value here so that further checks take
               // account of the value.
-              mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mut);
+              OptItem.setItemValue(mut, COptItem::CheckPolicyFlag::All);
             }
 
           newf = bestNearby();
 
           /* if the further (optimistic) move was bad.... */
-          if (newf >= mBestValue) break;
+          if (newf >= getBestValue())
+            break;
 
           /* make sure that the differences between the new */
           /* and the old points are due to actual */
@@ -231,7 +208,8 @@ bool COptMethodHookeJeeves::optimise()
               }
         }
 
-      if ((steplength >= mTolerance) && (newf >= mBestValue))
+      if ((steplength >= mTolerance)
+          && (newf >= getBestValue()))
         {
           steplength = steplength * mRho;
 
@@ -255,8 +233,9 @@ bool COptMethodHookeJeeves::optimise()
                      std::to_string(mIterationLimit) + " iterations."));
     }
 
-  if (mProcessReport)
-    mProcessReport.finishItem(mhIteration);
+  if (mProcessReport
+      && !mProcessReport.finishItem(mhIteration))
+    signalStop();
 
   cleanup();
   return true;
@@ -292,8 +271,6 @@ bool COptMethodHookeJeeves::initialize()
   mNew.resize(mVariableSize);
   mDelta.resize(mVariableSize);
 
-  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
-
   return true;
 }
 
@@ -302,64 +279,29 @@ bool COptMethodHookeJeeves::cleanup()
   return true;
 }
 
-bool COptMethodHookeJeeves::evaluate()
-{
-  // We do not need to check whether the parametric constraints are fulfilled
-  // since the parameters are created within the bounds.
-
-  // evaluate the fitness
-  if (!mProblemContext.master()->checkParametricConstraints())
-    {
-      mEvaluationValue = std::numeric_limits< C_FLOAT64 >::max();
-      return mContinue;
-    }
-
-  mContinue &= mProblemContext.master()->calculate();
-
-  // check whether the functional constraints are fulfilled
-  if (!mProblemContext.master()->checkFunctionalConstraints())
-    mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
-  else
-    // get the value of the objective function
-    mEvaluationValue = mProblemContext.master()->getCalculateValue();
-
-  return mContinue;
-}
-
 // given a point, look for a better one nearby, one coord at a time
 C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 {
-  C_FLOAT64 minf = mBestValue;
+  C_FLOAT64 minf = getBestValue();
   size_t i;
 
   mIndividual = mNew;
 
-  for (i = 0; i < mVariableSize; i++)
-    mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mIndividual[i]);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+
+  // mIndividual is already withing the bounds if possible
+  for (i = 0; i < mVariableSize && proceed(); i++)
+    OptItemList[i]->setItemValue(mIndividual[i], COptItem::CheckPolicyFlag::None);
 
   for (i = 0; i < mVariableSize; i++)
     {
       C_FLOAT64 & mut = mIndividual[i];
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
+      COptItem & OptItem = *OptItemList[i];
+
       mut = mNew[i] + mDelta[i];
+      OptItem.setItemValue(mut, COptItem::CheckPolicyFlag::All);
 
-      // force it to be within the bounds
-      switch (OptItem.checkConstraint(mut))
-        {
-          case - 1:
-            mut = *OptItem.getLowerBoundValue();
-            break;
-
-          case 1:
-            mut = *OptItem.getUpperBoundValue();
-            break;
-        }
-
-      // We need to set the value here so that further checks take
-      // account of the value.
-      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mut);
-
-      if (!evaluate()) break;
+      mEvaluationValue = evaluate({EvaluationPolicy::Constraints, EvaluationPolicy::Reflect});
 
       if (mEvaluationValue < minf)
         minf = mEvaluationValue;
@@ -367,31 +309,16 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
         {
           mDelta[i] = - mDelta[i];
           mut = mNew[i] + mDelta[i];
+          OptItem.setItemValue(mut, COptItem::CheckPolicyFlag::All);
 
-          // force it to be within the bounds
-          switch (OptItem.checkConstraint(mut))
-            {
-              case - 1:
-                mut = *OptItem.getLowerBoundValue();
-                break;
-
-              case 1:
-                mut = *OptItem.getUpperBoundValue();
-                break;
-            }
-
-          // We need to set the value here so that further checks take
-          // account of the value.
-          mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mut);
-
-          if (!evaluate()) break;
+          mEvaluationValue = evaluate({EvaluationPolicy::Constraints, EvaluationPolicy::Reflect});
 
           if (mEvaluationValue < minf)
             minf = mEvaluationValue;
           else
             {
               mut = mNew[i];
-              mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mut);
+              OptItem.setItemValue(mut, COptItem::CheckPolicyFlag::All);
             }
         }
     }
@@ -406,14 +333,9 @@ unsigned C_INT32 COptMethodHookeJeeves::getMaxLogVerbosity() const
   return 0;
 }
 
-C_FLOAT64 COptMethodHookeJeeves::getBestValue() const
-{
-  return mBestValue;
-}
-
 C_FLOAT64 COptMethodHookeJeeves::getCurrentValue() const
 {
-  return mBestValue;
+  return getBestValue();
 }
 
 const CVector< C_FLOAT64 > * COptMethodHookeJeeves::getBestParameters() const

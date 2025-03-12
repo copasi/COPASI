@@ -133,29 +133,12 @@ bool COptMethodPS::move(const size_t & index)
 
       *pIndividual += *pVelocity;
 
-      COptItem & OptItem = **itOptItem;
-
-      // force it to be within the bounds
-      switch (OptItem.checkConstraint(*pIndividual))
-        {
-          case - 1:
-            *pIndividual = *OptItem.getLowerBoundValue();
-            *pVelocity = 0.0;
-            break;
-
-          case 1:
-            *pIndividual = *OptItem.getUpperBoundValue();
-            *pVelocity = 0.0;
-            break;
-        }
-
-      // We need to set the value here so that further checks take
-      // account of the value.
-      OptItem.setItemValue(*pIndividual);
+      if (!(*itOptItem)->setItemValue(*pIndividual, COptItem::CheckPolicyFlag::All))
+        *pVelocity = 0.0;
     }
 
   // calculate its fitness
-  C_FLOAT64 EvaluationValue = evaluate();
+  C_FLOAT64 EvaluationValue = evaluate({EvaluationPolicy::Constraints, EvaluationPolicy::Reflect});
   mValues[index] = EvaluationValue;
 
   // Check if we improved individually
@@ -163,18 +146,14 @@ bool COptMethodPS::move(const size_t & index)
     {
       Improved = true;
 
-#pragma omp critical (ps_move_best_value)
-      {
-        mImprovements[index] = EvaluationValue;
+#pragma omp critical (ps_record_improvement)
+      mImprovements[index] = EvaluationValue;
 
-        // Check if we improved globally
-        if (EvaluationValue < getBestValue())
-          {
-            // and store that value
-            mBestIndex = index;
-            setSolution(EvaluationValue, *mIndividuals[mBestIndex], true);
-          }
-      }
+      // Check if we improved globally
+      if (EvaluationValue < getBestValue())
+#pragma omp critical (ps_set_solution)
+        if (setSolution(EvaluationValue, *mIndividuals[index], true))
+          mBestIndex = index;
     }
 
   return Improved;
@@ -182,25 +161,26 @@ bool COptMethodPS::move(const size_t & index)
 
 // initialise an individual
 // virtual
-void COptMethodPS::finalizeCreation(const size_t & individual, const size_t & item, const CIntervalValue & interval, CRandom * pRandom)
+void COptMethodPS::finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom)
 {
-  mVelocities(individual, item) = interval.randomValue(pRandom) - mIndividuals[individual]->operator[](item);
-  mBestPositions(individual, item) = mIndividuals[individual]->operator[](item);
+  mVelocities(individual, index) = item.getRandomValue(pRandom) - mIndividuals[individual]->operator[](index);
+  mBestPositions(individual, index) = mIndividuals[individual]->operator[](index);
 }
 
 bool COptMethodPS::create(const size_t & index)
 {
-  createIndividual(index);
+  createIndividual(index, COptItem::CheckPolicyFlag::All);
 
   // calculate its fitness
-  mBestValues[index] = mValues[index] = evaluate();
+  mBestValues[index] = mValues[index] = evaluate({EvaluationPolicy::Constraints, EvaluationPolicy::Reflect});
   memcpy(mBestPositions[index], mIndividuals[index]->array(), sizeof(C_FLOAT64) * mVariableSize);
 
-  if (mBestValues[index] < getBestValue()
-      && setSolution(mBestValues[mBestIndex], *mIndividuals[index], true))
-    mBestIndex = index;
+  if (mBestValues[index] < getBestValue())
+#pragma omp critical (ps_set_solution)
+    if (setSolution(mBestValues[index], *mIndividuals[index], true))
+      mBestIndex = index;
 
-  return mContinue;
+  return true;
 }
 
 void COptMethodPS::initObjects()
@@ -270,12 +250,10 @@ bool COptMethodPS::initialize()
         " at a swarm size of " + std::to_string(mPopulationSize) + " particles."
       ));
 
-  mContinue = true;
-
   if (getParameter("Stop after # Stalled Iterations"))
     mStopAfterStalledIterations = getValue <unsigned C_INT32>("Stop after # Stalled Iterations");
 
-  return mContinue;
+  return true;
 }
 
 bool COptMethodPS::cleanup()
@@ -399,8 +377,9 @@ bool COptMethodPS::optimise()
 {
   if (!initialize())
     {
-      if (mProcessReport)
-        mProcessReport.finishItem(mhGenerations);
+      if (mProcessReport
+          && !mProcessReport.finishItem(mhGenerations))
+        signalStop();
 
       return false;
     }
@@ -413,9 +392,9 @@ bool COptMethodPS::optimise()
       )
     );
 
-  createIndividual(C_INVALID_INDEX);
+  createIndividual(C_INVALID_INDEX, COptItem::CheckPolicyFlag::All);
   // calculate its fitness
-  mBestValues[0] = mValues[0] = evaluate();
+  mBestValues[0] = mValues[0] = evaluate({EvaluationPolicy::Constraints, EvaluationPolicy::Reflect});
   memcpy(mBestPositions[0], mIndividuals[0]->array(), sizeof(C_FLOAT64) * mVariableSize);
 
   // and store that value
@@ -427,7 +406,7 @@ bool COptMethodPS::optimise()
 
 #pragma omp parallel for schedule(runtime)
   for (k = 1; k < kmax; k++)
-    if (mContinue)
+    if (proceed())
       create(k);
 
   // create the informant list
@@ -435,7 +414,7 @@ bool COptMethodPS::optimise()
 
   size_t Stalled = 0;
 
-  for (; mCurrentGeneration < mGenerations && mContinue; mCurrentGeneration++, Stalled++)
+  for (; mCurrentGeneration < mGenerations && proceed(); mCurrentGeneration++, Stalled++)
     {
       if (mStopAfterStalledIterations != 0 && Stalled > mStopAfterStalledIterations)
         break;
@@ -446,7 +425,7 @@ bool COptMethodPS::optimise()
 
 #pragma omp parallel for schedule(runtime)
       for (k = 0; k < kmax; k++)
-        if (mContinue)
+        if (proceed())
           move(k);
 
       if (mImprovements.empty())
@@ -492,15 +471,17 @@ bool COptMethodPS::optimise()
             Stalled = 0;
         }
 
-      if (mProcessReport)
-        mProcessReport.progressItem(mhGenerations);
+      if (mProcessReport
+          && !mProcessReport.progressItem(mhGenerations))
+        signalStop();
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
     }
 
-  if (mProcessReport)
-    mProcessReport.finishItem(mhGenerations);
+  if (mProcessReport
+      && !mProcessReport.finishItem(mhGenerations))
+    signalStop();
 
   if (mLogVerbosity > 0)
     mMethodLog.enterLogEntry(

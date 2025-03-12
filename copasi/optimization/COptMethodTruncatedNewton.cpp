@@ -89,10 +89,11 @@ bool COptMethodTruncatedNewton::optimise()
   // we are within the parameter domain
   C_INT i;
   bool pointInParameterDomain = true;
+  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
+      COptItem & OptItem = *OptItemList[i];
 
       // :TODO: In COPASI the bounds are not necessarry fixed.
       // Since evaluate checks for boundaries and constraints this is not
@@ -101,41 +102,24 @@ bool COptMethodTruncatedNewton::optimise()
       // up[i] = *OptItem.getUpperBoundValue();
 
       mCurrent[i] = OptItem.getStartValue();
-
-      switch (OptItem.checkConstraint(mCurrent[i]))
-        {
-          case - 1:
-            mCurrent[i] = *OptItem.getLowerBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 1:
-            mCurrent[i] = *OptItem.getUpperBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 0:
-            break;
-        }
-
-      // set the value
-      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
+      pointInParameterDomain &= OptItem.setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
+      pointInParameterDomain &= (mCurrent[i] == OptItem.getStartValue());
     }
 
   if (!pointInParameterDomain && (mLogVerbosity > 0))
     mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   // Report the first value as the current best
-  mBestValue = evaluate();
+  mEvaluationValue = evaluate(EvaluationPolicyFlag::All);
   mBest = mCurrent;
-  mContinue = mProblemContext.master()->setSolution(mBestValue, mBest, true);
+  setSolution(mEvaluationValue, mBest, true);
 
   //tnbc_ wants a signed int for loglevel...
   C_INT msglvl;
   msglvl = (int) mLogVerbosity;
 
   // estimate minimum is 1/10 initial function value (which is now in mBestValue)
-  fest = 0.1 * mBestValue;
+  fest = 0.1 * getBestValue();
   ierror = 0;
 
   // minimise
@@ -160,19 +144,15 @@ bool COptMethodTruncatedNewton::optimise()
         mMethodLog.enterLogEntry(COptLogEntry("tnbc_() return value = " + std::to_string(ierror)));
 
       // Is the corrected value better than solution?
-      if (mEvaluationValue < mBestValue)
+      if (mEvaluationValue < getBestValue())
         {
           // We found a new bestAlgorithm finished. value lets report it.
           // and store that value
           mBest = mCurrent;
-          mBestValue = mEvaluationValue;
-
-          mContinue = mProblemContext.master()->setSolution(mBestValue, mBest, true);
-
-          // We found a new best value lets report it.
-          mpParentTask->output(COutputInterface::DURING);
+          setSolution(mEvaluationValue, mBest, true);
         }
     }
+
   // This signals that the user opted to interrupt
   catch (bool)
     {
@@ -182,75 +162,6 @@ bool COptMethodTruncatedNewton::optimise()
 
   if (ierror < 0)
     fatalError(); // Invalid parameter values.
-
-  /*
-   * TODO: THIS SEEMS TO BE FALSE; THIS TEST SHOULD NOT BE DONE!
-   * THIS SECTION CANDIDATE FOR REMOVAL!
-   */
-
-  // The way the method is currently implemented may lead to parameters just outside the boundaries.
-  // We need to check whether the current value is within the boundaries or whether the corrected
-  // leads to an improved solution.
-  bool withinBounds = true;
-
-  for (i = 0; i < mVariableSize; i++)
-    {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
-
-      //force it to be within the bounds
-      switch (OptItem.checkConstraint(mCurrent[i]))
-        {
-          case - 1:
-            withinBounds = false;
-            mCurrent[i] = *OptItem.getLowerBoundValue();
-
-            if (mLogVerbosity > 1)
-              mMethodLog.enterLogEntry(COptLogEntry("Parameter " + std::to_string(i) + " below lower bound. Reseting."));
-
-            break;
-
-          case 1:
-            withinBounds = false;
-            mCurrent[i] = *OptItem.getUpperBoundValue();
-
-            if (mLogVerbosity > 1)
-              mMethodLog.enterLogEntry(COptLogEntry("Parameter " + std::to_string(i) + " above upper bound. Reseting."));
-
-            break;
-
-          case 0:
-            break;
-        }
-
-      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
-    }
-
-  if (!withinBounds)
-    {
-      if (mLogVerbosity > 0)
-        mMethodLog.enterLogEntry(
-          COptLogEntry("Solution parameters outside of the boundaries. Repeating calculations from current border position."));
-
-      evaluate();
-
-      // Is the corrected value better than solution?
-      if (mEvaluationValue < mBestValue)
-        {
-          // We found a new best value lets report it.
-          // and store that value
-          mBest = mCurrent;
-          mBestValue = mEvaluationValue;
-
-          mContinue = mProblemContext.master()->setSolution(mBestValue, mBest, true);
-
-          // We found a new best value lets report it.
-          mpParentTask->output(COutputInterface::DURING);
-        }
-    }
-
-  /*
-   * END OF SECTION CANDIDATE FOR REMOVAL
-   */
 
   if (mLogVerbosity > 0)
     mMethodLog.enterLogEntry(COptLogEntry("Algorithm finished."));
@@ -268,8 +179,6 @@ bool COptMethodTruncatedNewton::initialize()
   mCurrent.resize(mVariableSize);
   mBest.resize(mVariableSize);
 
-  mContinue = true;
-  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
   mGradient.resize(mVariableSize);
 
   CFitProblem* pFitProblem = dynamic_cast<CFitProblem*>(mProblemContext.master());
@@ -293,28 +202,22 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FL
 {
   C_INT i;
 
+  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+
   // set the parameter values
   for (i = 0; i < *n; i++)
-    mProblemContext.master()->getOptItemList(true)[i]->setItemValue(x[i]);
+    OptItemList[i]->setItemValue(x[i], COptItem::CheckPolicyFlag::None);
 
   //carry out the function evaluation
-  *f = evaluate();
+  *f = evaluate(EvaluationPolicyFlag::All);
 
   CFitProblem* pFit = dynamic_cast<CFitProblem*>(mProblemContext.master());
 
   // Check whether we improved
-  if (mEvaluationValue < mBestValue)
+  if (mEvaluationValue < getBestValue())
     {
-      // We found a new best value lets report it.
-      // and store that value
-      for (i = 0; i < *n; i++)
-        mBest[i] = x[i];
-
-      mBestValue = mEvaluationValue;
-      mContinue = mProblemContext.master()->setSolution(mBestValue, mBest, true);
-
-      // We found a new best value lets report it.
-      mpParentTask->output(COutputInterface::DURING);
+      mBest = CVectorCore< C_FLOAT64 >(mVariableSize, x);
+      setSolution(mEvaluationValue, mBest, true);
     }
 
   if (pFit && pFit->getUseTimeSens())
@@ -336,20 +239,23 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FL
     }
   else
     {
-
       // Calculate the gradient
-      for (i = 0; i < *n && mContinue; i++)
+      for (i = 0; i < *n && proceed(); i++)
         {
+          COptItem & OptItem = *OptItemList[i];
+
           if (x[i] != 0.0)
             {
-              mProblemContext.master()->getOptItemList(true)[i]->setItemValue(x[i] * 1.001);
-              g[i] = (evaluate() - *f) / (x[i] * 0.001);
+              C_FLOAT64 X = x[i] * 1.001;
+              OptItem.setItemValue(X, COptItem::CheckPolicyFlag::None);
+              g[i] = (evaluate(EvaluationPolicyFlag::All) - *f) / (x[i] * 0.001);
             }
           else
             {
               // why use 1e-7? shouldn't this be epsilon, or something like that?
-              mProblemContext.master()->getOptItemList(true)[i]->setItemValue(1e-7);
-              g[i] = (evaluate() - *f) / 1e-7;
+              C_FLOAT64 X = 1e-7;
+              OptItem.setItemValue(X, COptItem::CheckPolicyFlag::None);
+              g[i] = (evaluate(EvaluationPolicyFlag::All) - *f) / 1e-7;
 
               if (mLogVerbosity > 2)
                 {
@@ -359,44 +265,21 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FL
                 }
             }
 
-          mProblemContext.master()->getOptItemList(true)[i]->setItemValue(x[i]);
+          OptItem.setItemValue(x[i], COptItem::CheckPolicyFlag::None);
         }
     }
 
   mpParentTask->output(COutputInterface::MONITORING);
 
-  if (!mContinue)
-    throw bool(mContinue);
+  if (!proceed())
+    throw bool(false);
 
   return 0;
-}
-
-const C_FLOAT64 & COptMethodTruncatedNewton::evaluate()
-{
-  // We do not need to check whether the parametric constraints are fulfilled
-  // since the parameters are created within the bounds.
-  mContinue = mProblemContext.master()->calculate();
-  mEvaluationValue = mProblemContext.master()->getCalculateValue();
-
-  // when we leave the either the parameter or functional domain
-  // we penalize the objective value by forcing it to be larger
-  // than the best value recorded so far.
-  if (mEvaluationValue < mBestValue &&
-      (!mProblemContext.master()->checkParametricConstraints() ||
-       !mProblemContext.master()->checkFunctionalConstraints()))
-    mEvaluationValue = mBestValue + mBestValue - mEvaluationValue;
-
-  return mEvaluationValue;
 }
 
 unsigned C_INT32 COptMethodTruncatedNewton::getMaxLogVerbosity() const
 {
   return 1;
-}
-
-C_FLOAT64 COptMethodTruncatedNewton::getBestValue() const
-{
-  return mBestValue;
 }
 
 C_FLOAT64 COptMethodTruncatedNewton::getCurrentValue() const

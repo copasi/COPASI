@@ -77,7 +77,7 @@ public:
   virtual unsigned C_INT32 getMaxLogVerbosity() const;
 
 protected:
-  virtual void finalizeCreation(const size_t & individual, const size_t & item, const CIntervalValue & interval, CRandom * pRandom) override;
+  virtual void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom) override;
 
 private:
   /**

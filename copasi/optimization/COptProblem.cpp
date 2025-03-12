@@ -591,6 +591,9 @@ bool COptProblem::initialize()
   Objects = mpMathObjectiveExpression->getPrerequisites();
   mpContainer->getTransientDependencies().getUpdateSequence(mUpdateObjectiveFunction, CCore::SimulationContext::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
 
+  // Transfer ownership from the math container to the problem to avoid deletion.
+  add(mpMathObjectiveExpression, true);
+
   return success;
 }
 
@@ -602,7 +605,7 @@ void COptProblem::updateContainer(const bool & update)
 
   for (; it != end; ++it, ++pRestore)
     {
-      (*it)->setItemValue(*pRestore);
+      (*it)->setItemValue(*pRestore, COptItem::CheckPolicyFlag::None);
     }
 }
 
@@ -749,7 +752,8 @@ bool COptProblem::adjustStartValuesForIntervals()
   for (; it != end; ++it)
     {
       // std::cout << *it << ": " << (*it)->getObjectDisplayName() << ": " <<  (*it)->getStartValue() << std::endl;
-      success &= (*it)->setItemValue((*it)->getStartValue());
+      C_FLOAT64 Value = (*it)->getStartValue();
+      success &= (*it)->setItemValue(Value, COptItem::CheckPolicyFlag::All);
     }
 
   mpContainer->setCompleteInitialState(InitialState);
@@ -849,7 +853,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   for (; it != end; ++it, ++pSolution)
     {
-      (*it)->setItemValue(*pSolution);
+      (*it)->setItemValue(*pSolution, COptItem::CheckPolicyFlag::None);
     }
 
   mpContainer->applyUpdateSequence(mInitialRefreshSequence);
@@ -883,13 +887,15 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 
           if (fabs(Current) > resolution)
             {
-              (*it)->setItemValue(Current * (1.0 + factor));
-              Delta = 1.0 / (Current * factor);
+              C_FLOAT64 X = Current * (1.0 + factor);
+              (*it)->setItemValue(X, COptItem::CheckPolicyFlag::None);
+              Delta = 1.0 / (X - Current);
             }
           else
             {
-              (*it)->setItemValue(resolution);
-              Delta = 1.0 / resolution;
+              C_FLOAT64 X = resolution;
+              (*it)->setItemValue(X, COptItem::CheckPolicyFlag::None);
+              Delta = 1.0 /  (X - resolution);
             }
 
           mpContainer->applyUpdateSequence(mInitialRefreshSequence);
@@ -899,7 +905,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
           *pGradient = ((*mpParmMaximize ? -mCalculateValue : mCalculateValue) - mSolutionValue) * Delta;
 
           // Restore the value
-          (*it)->setItemValue(Current);
+          (*it)->setItemValue(Current, COptItem::CheckPolicyFlag::None);
         }
 
       mpContainer->applyUpdateSequence(mInitialRefreshSequence);
@@ -1033,7 +1039,10 @@ void COptProblem::setParameters(const CVectorCore< C_FLOAT64 > & parameters)
   const C_FLOAT64 *pParameter = parameters.begin();
 
   for (; it != end; ++it, ++pParameter)
-    (*it)->setItemValue(*pParameter);
+    {
+      C_FLOAT64 Parameter = *pParameter;
+      (*it)->setItemValue(Parameter, COptItem::CheckPolicyFlag::None);
+    }
 }
 
 bool COptProblem::setObjectiveFunction(const std::string & infix)
@@ -1130,7 +1139,7 @@ void COptProblem::randomizeStartValues()
 
       for (; it != end; ++it)
         {
-          (*it)->setStartValue((*it)->getRandomValue(mpContainer->getRandomGenerator()));
+          (*it)->setStartValue((*it)->getRandomValue(&mpContainer->getRandomGenerator()));
         }
     }
 

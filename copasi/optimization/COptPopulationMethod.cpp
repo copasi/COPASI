@@ -39,8 +39,6 @@ COptPopulationMethod::COptPopulationMethod(const CDataContainer * pParent,
   , mIndividuals()
   , mValues()
   , mRandomContext(parallel)
-  , mContinue(true)
-  , mBestValue()
 {
   initObjects();
 }
@@ -56,8 +54,6 @@ COptPopulationMethod::COptPopulationMethod(const COptPopulationMethod & src,
   , mIndividuals()
   , mValues()
   , mRandomContext(src.mParallel)
-  , mContinue(true)
-  , mBestValue()
 {
   initObjects();
 }
@@ -85,7 +81,6 @@ COptPopulationMethod::initialize()
 
   mCurrentGeneration = 0;
   mGenerations = 0;
-  mBestValue = std::numeric_limits< C_FLOAT64 >::infinity();
 
   if (getParameter("Number of Generations") != NULL)
     mGenerations = getValue< unsigned C_INT32 >("Number of Generations");
@@ -128,64 +123,7 @@ COptPopulationMethod::cleanup()
   return true;
 }
 
-// virtual evaluate the fitness of one individual
-C_FLOAT64 COptPopulationMethod::evaluate()
-{
-  // We do not need to check whether the parametric constraints are fulfilled
-  // since the parameters are created within the bounds.
-  COptProblem *& pOptProblem = mProblemContext.active();
-
-  // evaluate the fitness
-  if (!pOptProblem->calculate())
-#pragma omp atomic write
-    mContinue = false;
-
-  C_FLOAT64 EvaluationValue;
-
-  // check whether the functional constraints are fulfilled
-  if (!pOptProblem->checkFunctionalConstraints())
-    EvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
-  else
-    EvaluationValue = pOptProblem->getCalculateValue();
-
-  if (mProblemContext.isThread(&pOptProblem))
-    {
-#pragma omp critical (ps_evaluate_increment_counters)
-      mProblemContext.master()->incrementCounters(pOptProblem->getCounters());
-
-      pOptProblem->resetCounters();
-    }
-
-  return EvaluationValue;
-}
-
-bool COptPopulationMethod::setSolution(const C_FLOAT64 & value,
-                                       const CVector< C_FLOAT64 > & variables,
-                                       const bool & algorithmOrder)
-{
-  bool solutionUpdated = false;
-
-  // We have a possible race condition therefore we check again
-#pragma omp critical(opt_method_set_solution)
-  if (value < mBestValue)
-    {
-      // and store that value
-      mBestValue = value;
-
-      if (!mProblemContext.master()->setSolution(value, variables, algorithmOrder))
-#pragma omp atomic write
-        mContinue = false;
-
-      // We found a new best value lets report it.
-      mpParentTask->output(COutputInterface::DURING);
-
-      solutionUpdated = true;
-    }
-
-  return solutionUpdated;
-}
-
-bool COptPopulationMethod::createIndividual(const size_t & index)
+bool COptPopulationMethod::createIndividual(const size_t & index, const COptItem::CheckPolicyFlag & policy)
 {
   bool success = true;
   bool useStartValues = (index == C_INVALID_INDEX);
@@ -206,29 +144,12 @@ bool COptPopulationMethod::createIndividual(const size_t & index)
         {
           COptItem & OptItem = **itOptItem;
           *pIndividual = OptItem.getStartValue();
-
-          const C_FLOAT64 & Minimum = *OptItem.getLowerBoundValue();
-          const C_FLOAT64 & Maximum = *OptItem.getUpperBoundValue();
-
-          // force it to be within the bounds
-          switch (OptItem.checkConstraint(*pIndividual))
-            {
-            case -1:
-              *pIndividual = Minimum;
-              pointInParameterDomain = false;
-              break;
-
-            case 1:
-              *pIndividual = Maximum;
-              pointInParameterDomain = false;
-              break;
-            }
-
-          (*itOptItem)->setItemValue(*pIndividual);
-          finalizeCreation(Index, item, CIntervalValue(Minimum, Maximum), pRandom);
+          success &= OptItem.setItemValue(*pIndividual, policy);
+          pointInParameterDomain &= (*pIndividual == OptItem.getStartValue());
+          finalizeCreation(Index, item, OptItem, pRandom);
         }
 
-      if (!pointInParameterDomain && (mLogVerbosity > 0))
+      if (!pointInParameterDomain && !success && (mLogVerbosity > 0))
         mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
     }
   else
@@ -236,26 +157,9 @@ bool COptPopulationMethod::createIndividual(const size_t & index)
       for (size_t item = 0; pIndividual != pEnd; ++pIndividual, ++itOptItem, ++item)
         {
           COptItem & OptItem = **itOptItem;
-          const C_FLOAT64 & Minimum = *OptItem.getLowerBoundValue();
-          const C_FLOAT64 & Maximum = *OptItem.getUpperBoundValue();
-
-          CIntervalValue Interval(Minimum, Maximum);
-          *pIndividual = Interval.randomValue(pRandom);
-
-          // force it to be within the bounds
-          switch (OptItem.checkConstraint(*pIndividual))
-            {
-            case -1:
-              *pIndividual = Minimum;
-              break;
-
-            case 1:
-              *pIndividual = Maximum;
-              break;
-            }
-
-          (*itOptItem)->setItemValue(*pIndividual);
-          finalizeCreation(Index, item, Interval, pRandom);
+          *pIndividual = OptItem.getRandomValue(pRandom);
+          success &= OptItem.setItemValue(*pIndividual, policy);
+          finalizeCreation(Index, item, OptItem, pRandom);
         }
     }
 
@@ -263,7 +167,7 @@ bool COptPopulationMethod::createIndividual(const size_t & index)
 }
 
 // virtual
-void COptPopulationMethod::finalizeCreation(const size_t & /* individual */ , const size_t & /* item */, const CIntervalValue & /* interval */, CRandom * /* pRandom */)
+void COptPopulationMethod::finalizeCreation(const size_t & /* individual */ , const size_t & /* index */, const COptItem & /* item */, CRandom * /* pRandom */)
 {}
 
 C_INT32 COptPopulationMethod::getPopulationSize()
@@ -279,11 +183,6 @@ C_INT32 COptPopulationMethod::getNumGenerations()
 C_INT32 COptPopulationMethod::getCurrentGeneration()
 {
   return mCurrentGeneration;
-}
-
-const C_FLOAT64 & COptPopulationMethod::getBeastValue() const
-{
-  return mBestValue;
 }
 
 const std::vector< CVector < C_FLOAT64 > * >& COptPopulationMethod::getPopulation()

@@ -173,9 +173,9 @@ std::ostream &operator<<(std::ostream &os, const CFitItem & o)
   return os;
 }
 
-bool CFitItem::setItemValue(const C_FLOAT64 & value)
+bool CFitItem::setItemValue(C_FLOAT64 & value, const CheckPolicyFlag & policy)
 {
-  bool success = COptItem::setItemValue(value);
+  bool success = COptItem::setItemValue(value, policy);
 
   mLocalValue = COptItem::getItemValue();
 

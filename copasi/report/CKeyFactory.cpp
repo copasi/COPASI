@@ -210,7 +210,7 @@ bool CKeyFactory::addFix(const std::string & key, CDataObject * pObject)
 
   bool success = false;
 
-#pragma omp critical(key_factory_access)
+#pragma omp critical (key_factory_access)
   {
     std::map< std::string, CKeyFactory::HashTable >::iterator it =
       mKeyTable.find(Prefix);
@@ -275,7 +275,7 @@ CDataObject * CKeyFactory::get(const std::string & key)
 
   CDataObject * pObject = nullptr;
 
-#pragma omp critical(key_factory_access)
+#pragma omp critical (key_factory_access)
   {
     std::map< std::string, CKeyFactory::HashTable >::iterator it = mKeyTable.find(Prefix);
 

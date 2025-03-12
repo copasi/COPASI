@@ -44,9 +44,7 @@ COptMethodCoranaWalk::COptMethodCoranaWalk(const CDataContainer * pParent,
   , mCurrentIteration(0)
   , mpRandom(NULL)
   , mVariableSize(0)
-  , mBestValue(std::numeric_limits< C_FLOAT64 >::infinity())
   , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
-  , mContinue(true)
   , mCurrent()
   , mCurrentValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
   , mStep()
@@ -69,9 +67,7 @@ COptMethodCoranaWalk::COptMethodCoranaWalk(const COptMethodCoranaWalk & src,
   , mCurrentIteration(src.mCurrentIteration)
   , mpRandom(NULL)
   , mVariableSize(src.mVariableSize)
-  , mBestValue(src.mBestValue)
   , mEvaluationValue(src.mEvaluationValue)
-  , mContinue(src.mContinue)
   , mCurrent(src.mCurrent)
   , mCurrentValue(src.mCurrentValue)
   , mStep(src.mStep)
@@ -90,8 +86,9 @@ bool COptMethodCoranaWalk::optimise()
 {
   if (!initialize())
     {
-      if (mProcessReport)
-        mProcessReport.finishItem(mIterations);
+      if (mProcessReport
+          && !mProcessReport.finishItem(mIterations))
+        signalStop();
 
       return false;
     }
@@ -105,11 +102,13 @@ bool COptMethodCoranaWalk::optimise()
   C_FLOAT64 xc, p, c, New, minstep;
   bool processing;
 
+  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+
   // set the minimum step size as being the average of step sizes
   // or 100*DBL_EPSILON if average is zero
   for (i = 0, minstep = 0.0; i < mVariableSize; i++)
     {
-      minstep += fabs(mCurrent[i]);
+      minstep += fabs(OptItemList[i]->getItemValue());
     }
 
   if (minstep > std::numeric_limits< C_FLOAT64 >::epsilon())
@@ -126,26 +125,10 @@ bool COptMethodCoranaWalk::optimise()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
-
-      switch (OptItem.checkConstraint(OptItem.getStartValue()))
-        {
-          case - 1:
-            mCurrent[i] = *OptItem.getLowerBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 1:
-            mCurrent[i] = *OptItem.getUpperBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 0:
-            mCurrent[i] = OptItem.getStartValue();
-            break;
-        }
-
-      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
+      COptItem & OptItem = *OptItemList[i];
+      mCurrent[i] = OptItem.getStartValue();
+      pointInParameterDomain &= OptItem.setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
+      pointInParameterDomain &= (mCurrent[i] == OptItem.getStartValue());
 
       // The step must not contain any zeroes
       mStep[i] = std::max(fabs(mCurrent[i]), minstep);
@@ -155,22 +138,22 @@ bool COptMethodCoranaWalk::optimise()
     mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   // find the objective function value at the start
-  mCurrentValue = evaluate();
+  mCurrentValue = evaluate({EvaluationPolicy::Constraints, EvaluationPolicy::Reflect});
+
   // count it
   mCurrentIteration = 1;
 
   if (!std::isnan(mEvaluationValue))
     {
       // and store that value
-      mBestValue = mEvaluationValue;
-      mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
+      setSolution(mEvaluationValue, mCurrent, true);
 
       // We found a new best value lets report it.
-      mpParentTask->output(COutputInterface::DURING);
       mpParentTask->output(COutputInterface::MONITORING);
 
-      if (mProcessReport)
-        mContinue &= mProcessReport.progressItem(mhIterations);
+      if (mProcessReport
+          && !mProcessReport.progressItem(mhIterations))
+        signalStop();
     }
 
   mAccepted = 0;
@@ -179,38 +162,38 @@ bool COptMethodCoranaWalk::optimise()
 
   do
     {
-      for (j = 0; j < NS && mContinue && processing; j++) // adjustment in all directions
+      for (j = 0; j < NS && proceed() && processing; j++) // adjustment in all directions
         {
-          for (h = 0; h < mVariableSize && mContinue && processing; h++) // adjustment in one direction
+          for (h = 0; h < mVariableSize && proceed() && processing; h++) // adjustment in one direction
             {
+              COptItem & OptItem = *OptItemList[h];
               // Calculate the step
               xc = (2.0 * mpRandom->getRandomCC() - 1) * mStep[h];
               New = mCurrent[h] + xc;
 
               // Set the new parameter value
-              mProblemContext.master()->getOptItemList(true)[h]->setItemValue(New);
-
-              // Check all parametric constraints
-              if (!mProblemContext.master()->checkParametricConstraints())
+              if (!OptItem.setItemValue(New, COptItem::CheckPolicyFlag::All)
+                  || (New != mCurrent[h] + xc))
                 {
                   // Undo since not accepted
-                  mProblemContext.master()->getOptItemList(true)[h]->setItemValue(mCurrent[h]);
+                  OptItem.setItemValue(mCurrent[h], COptItem::CheckPolicyFlag::None);
                   continue;
                 }
 
               // evaluate the function
-              evaluate();
+              mEvaluationValue = evaluate({EvaluationPolicy::Constraints, EvaluationPolicy::Reflect});
               // count it
               mCurrentIteration++;
 
-              if (mProcessReport)
-                mContinue &= mProcessReport.progressItem(mhIterations);
+              if (mProcessReport
+                  && !mProcessReport.progressItem(mhIterations))
+                signalStop();
 
               // Check all functional constraints
               if (!mProblemContext.master()->checkFunctionalConstraints())
                 {
                   // Undo since not accepted
-                  mProblemContext.master()->getOptItemList(true)[h]->setItemValue(mCurrent[h]);
+                  OptItem.setItemValue(mCurrent[h], COptItem::CheckPolicyFlag::None);
 
                   continue;
                 }
@@ -225,15 +208,8 @@ bool COptMethodCoranaWalk::optimise()
                   i++;  // a new point
                   mAccepted[h]++; // a new point in this coordinate
 
-                  if (mCurrentValue < mBestValue)
-                    {
-                      // and store that value
-                      mBestValue = mEvaluationValue;
-                      mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
-
-                      // We found a new best value lets report it.
-                      mpParentTask->output(COutputInterface::DURING);
-                    }
+                  if (mCurrentValue < getBestValue())
+                    setSolution(mCurrentValue, mCurrent, true);
                 }
               else
                 {
@@ -250,7 +226,7 @@ bool COptMethodCoranaWalk::optimise()
                     }
                   else
                     // Undo since not accepted
-                    mProblemContext.master()->getOptItemList(true)[h]->setItemValue(mCurrent[h]);
+                    OptItem.setItemValue(mCurrent[h], COptItem::CheckPolicyFlag::None);
                 }
 
               mpParentTask->output(COutputInterface::MONITORING);
@@ -280,15 +256,16 @@ bool COptMethodCoranaWalk::optimise()
           mCurrent = mProblemContext.master()->getSolutionVariables(true);
 
           for (a = 0; a < mVariableSize; a++)
-            mProblemContext.master()->getOptItemList(true)[a]->setItemValue(mCurrent[a]);
+            mProblemContext.master()->getOptItemList(true)[a]->setItemValue(mCurrent[a], COptItem::CheckPolicyFlag::None);
 
-          mCurrentValue = mBestValue;
+          mCurrentValue = getBestValue();
         }
 
-      if (mProcessReport)
-        mContinue &= mProcessReport.progressItem(mhIterations);
+      if (mProcessReport
+          && !mProcessReport.progressItem(mhIterations))
+        signalStop();
     }
-  while (processing && mContinue);
+  while (processing && proceed());
 
   if (mLogVerbosity > 0)
     mMethodLog.enterLogEntry(
@@ -296,8 +273,9 @@ bool COptMethodCoranaWalk::optimise()
                    "Terminated after " + std::to_string(mCurrentIteration) + " of " +
                    std::to_string(mIterations) + " iterations."));
 
-  if (mProcessReport)
-    mProcessReport.finishItem(mhIterations);
+  if (mProcessReport
+      && !mProcessReport.finishItem(mhIterations))
+    signalStop();
 
   return true;
 }
@@ -305,22 +283,6 @@ bool COptMethodCoranaWalk::optimise()
 bool COptMethodCoranaWalk::cleanup()
 {
   return true;
-}
-
-const C_FLOAT64 & COptMethodCoranaWalk::evaluate()
-{
-  // We do not need to check whether the parametric constraints are fulfilled
-  // since the parameters are created within the bounds.
-
-  mContinue &= mProblemContext.master()->calculate();
-  mEvaluationValue = mProblemContext.master()->getCalculateValue();
-
-  // When we leave the either functional domain
-  // we set the objective value +Inf
-  if (!mProblemContext.master()->checkFunctionalConstraints())
-    mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
-
-  return mEvaluationValue;
 }
 
 bool COptMethodCoranaWalk::initialize()
@@ -342,9 +304,6 @@ bool COptMethodCoranaWalk::initialize()
       mProcessReport.addItem("Iterations",
                              mCurrentIteration, &mIterations);
 
-  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
-  mContinue = true;
-
   mVariableSize = mProblemContext.master()->getOptItemList(true).size();
 
   mCurrent.resize(mVariableSize);
@@ -359,14 +318,9 @@ unsigned C_INT32 COptMethodCoranaWalk::getMaxLogVerbosity() const
   return 0;
 }
 
-C_FLOAT64 COptMethodCoranaWalk::getBestValue() const
-{
-  return mBestValue;
-}
-
 C_FLOAT64 COptMethodCoranaWalk::getCurrentValue() const
 {
-  return mBestValue;
+  return getBestValue();
 }
 
 const CVector< C_FLOAT64 > * COptMethodCoranaWalk::getBestParameters() const

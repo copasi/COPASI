@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -63,13 +63,6 @@ private:
   void initObjects();
 
   /**
-   * Evaluate the fitness of one individual
-   * @param const CVector< C_FLOAT64 > & individual
-   * @return bool continue
-   */
-  bool evaluate(const CVector< C_FLOAT64 > & individual);
-
-  /**
    * Find the best individual at this generation
    * @return size_t fittest
    */
@@ -104,11 +97,6 @@ private:
    * *** Perhaps this is actually not needed ****number of parameters
    */
   size_t mVariableSize;
-
-  /**
-   * The best value found so far.
-   */
-  C_FLOAT64 mBestValue;
 
 public:
   /**
@@ -145,9 +133,6 @@ public:
    * Returns the maximum verbosity at which the method can log.
    */
   virtual unsigned C_INT32 getMaxLogVerbosity() const;
-
-
-  virtual C_FLOAT64 getBestValue() const;
 
   virtual C_FLOAT64 getCurrentValue() const;
 

@@ -1625,6 +1625,11 @@ const CModel & CMathContainer::getModel() const
   return *mpModel;
 }
 
+const std::chrono::steady_clock::time_point & CMathContainer::getCompileTime() const
+{
+  return mCompileTime;
+}
+
 const size_t & CMathContainer::getCountFixedEventTargets() const
 {
   return mSize.nFixedEventTargets;

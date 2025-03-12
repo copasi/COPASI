@@ -184,8 +184,9 @@ bool COptMethodNelderMead::optimise()
 {
   if (!initialize())
     {
-      if (mProcessReport)
-        mProcessReport.finishItem(mhIteration);
+      if (mProcessReport
+          && !mProcessReport.finishItem(mhIteration))
+        signalStop();
 
       return false;
     }
@@ -234,29 +235,13 @@ bool COptMethodNelderMead::optimise()
   // initial point is first guess but we have to make sure that we
   // are within the parameter domain
   bool pointInParameterDomain = true;
+  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
-
-      switch (OptItem.checkConstraint(OptItem.getStartValue()))
-        {
-          case - 1:
-            mCurrent[i] = *OptItem.getLowerBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 1:
-            mCurrent[i] = *OptItem.getUpperBoundValue();
-            pointInParameterDomain = false;
-            break;
-
-          case 0:
-            mCurrent[i] = OptItem.getStartValue();
-            break;
-        }
-
-      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
+      COptItem & OptItem = *OptItemList[i];
+      mCurrent[i] = OptItem.getStartValue();
+      OptItem.setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
 
       // set the magnitude of each parameter
       mStep[i] = (*OptItem.getUpperBoundValue() - *OptItem.getLowerBoundValue()) / mScale;
@@ -265,17 +250,10 @@ bool COptMethodNelderMead::optimise()
   if (!pointInParameterDomain && (mLogVerbosity > 0))
     mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
-  evaluate();
+  mEvaluationValue = evaluate(EvaluationPolicyFlag::All);
 
   if (!std::isnan(mEvaluationValue))
-    {
-      // and store that value
-      mBestValue = mEvaluationValue;
-      mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
-
-      // We found a new best value lets report it.
-      mpParentTask->output(COutputInterface::DURING);
-    }
+    setSolution(mEvaluationValue, mCurrent, true);
 
   quit = false;
   found = false;
@@ -291,16 +269,16 @@ First:
 
   mValue[mVariableSize] = mEvaluationValue;
 
-  for (j = 0; j < mVariableSize && mContinue; ++j)
+  for (j = 0; j < mVariableSize && proceed(); ++j)
     {
+      COptItem & OptItem = *OptItemList[j];
+
       x = mCurrent[j];
 
       // -- move a little in one dimension only --
       mCurrent[j] += (mStep[j] * del);
 
       // Check constraint
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
-
       if (mCurrent[j] > *OptItem.getUpperBoundValue())
         mCurrent[j] = x - (mStep[j] * del);
 
@@ -309,27 +287,20 @@ First:
         mSimplex[i][j] = mCurrent[i];
 
       // Calculate the value for the corner
-      mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mCurrent[j]);
-      mValue[j] = evaluate();
+      OptItem.setItemValue(mCurrent[j], COptItem::CheckPolicyFlag::None);
+      mValue[j] = evaluate(EvaluationPolicyFlag::All);
 
-      if (mEvaluationValue < mBestValue)
-        {
-          // and store that value
-          mBestValue = mEvaluationValue;
-          mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
-
-          // We found a new best value lets report it.
-          mpParentTask->output(COutputInterface::DURING);
-        }
+      if (mEvaluationValue < getBestValue())
+        setSolution(mEvaluationValue, mCurrent, true);
 
       // Reset
       mCurrent[j] = x;
-      mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mCurrent[j]);
+      OptItem.setItemValue(mCurrent[j], COptItem::CheckPolicyFlag::None);
     }
 
   /* ---- Simplex construction complete; now do some work. ---- */
 
-  while (!found && !quit && mContinue)
+  while (!found && !quit && proceed())
     {
       /* ---- take some steps ---- */
 
@@ -380,12 +351,12 @@ First:
           for (i = 0; i < mVariableSize; ++i)
             {
               mCurrent[i] = (1.0 + rcoeff) * mCentroid[i] - rcoeff * mSimplex[i][iWorst];
-              mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
+              OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::None);
 
               // enforce_bounds(&pstar[i], i);  /* make sure it is inside */
             }
 
-          evaluate();
+          mEvaluationValue = evaluate(EvaluationPolicyFlag::All);
           reflok = (mEvaluationValue < ylo);    /* -- 1 if we have moved downhill -- */
 
           if (reflok) /* then */
@@ -398,25 +369,19 @@ First:
               mValue[iWorst] = ylo;
 
               // and store that value
-              if (mEvaluationValue < mBestValue)
-                {
-                  mBestValue = mEvaluationValue;
-                  mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
-
-                  // We found a new best value lets report it.
-                  mpParentTask->output(COutputInterface::DURING);
-                }
+              if (mEvaluationValue < getBestValue())
+                setSolution(mEvaluationValue, mCurrent, true);
 
               /* ---- successful reflection, so be bold and try extension */
               for (i = 0; i < mVariableSize; ++i)
                 {
                   mCurrent[i] = ecoeff * mCurrent[i] + (1.0 - ecoeff) * mCentroid[i];
-                  mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
+                  OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::None);
 
                   // enforce_bounds(&p2star[i], i);  /* make sure it is inside */
                 }
 
-              evaluate();
+              mEvaluationValue = evaluate(EvaluationPolicyFlag::All);
               extnok = (mEvaluationValue < ylo);    /* -- 1 if we continue moved downhill -- */
 
               if (extnok)
@@ -430,14 +395,8 @@ First:
                   mValue[iWorst] = ylo;
 
                   // and store that value
-                  if (mEvaluationValue < mBestValue)
-                    {
-                      mBestValue = mEvaluationValue;
-                      mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
-
-                      // We found a new best value lets report it.
-                      mpParentTask->output(COutputInterface::DURING);
-                    }
+                  if (mEvaluationValue < getBestValue())
+                    setSolution(mEvaluationValue, mCurrent, true);
                 }
             }   /* successful reflection */
           else    /* if reflok then else */
@@ -477,13 +436,13 @@ First:
                   for (i = 0; i < mVariableSize; ++i)
                     {
                       mCurrent[i] = ccoeff * mSimplex[i][iWorst] + (1.0 - ccoeff) * mCentroid[i];
-                      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
+                      OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::None);
 
                       // may not need to check boundaries since it is contraction
                       // enforce_bounds(&p2star[i], i);  /* make sure it is inside */
                     }
 
-                  evaluate();
+                  mEvaluationValue = evaluate(EvaluationPolicyFlag::None);
                   contok = (mEvaluationValue <= mValue[iWorst]);  /* -- 1 if we have not gone uphill -- */
 
                   if (contok) /* then */
@@ -504,23 +463,15 @@ First:
                             {
                               mSimplex[i][j] = (mSimplex[i][j] + mSimplex[i][iBest]) * 0.5;
                               mCurrent[i] = mSimplex[i][j];
-                              mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
+                              OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::None);
 
                               //enforce_bounds(&xmin[i], i);  /* make sure it is inside */
                             }
 
-                          mValue[j] = evaluate();
+                          mValue[j] = evaluate(EvaluationPolicyFlag::All);
 
-                          if (mEvaluationValue < mBestValue)
-                            {
-                              /* ---- retain extension ---- */
-                              // and store that value
-                              mBestValue = mEvaluationValue;
-                              mContinue &= mProblemContext.master()->setSolution(mBestValue, mCurrent, true);
-
-                              // We found a new best value lets report it.
-                              mpParentTask->output(COutputInterface::DURING);
-                            }
+                          if (mEvaluationValue < getBestValue())
+                            setSolution(mEvaluationValue, mCurrent, true);
                         }
                     }  /* if (contok) */
                 }  /* contraction */
@@ -543,8 +494,9 @@ First:
       ++mIteration;
 
       // signal another iteration
-      if (mProcessReport)
-        mContinue &= mProcessReport.progressItem(mhIteration);
+      if (mProcessReport
+          && !mProcessReport.progressItem(mhIteration))
+        signalStop();
 
       mpParentTask->output(COutputInterface::MONITORING);
 
@@ -583,14 +535,14 @@ First:
       ));
 
   /* **** bail out if necessary **** */
-  if (quit || !mContinue) goto Finish;
+  if (quit || !proceed()) goto Finish;
 
   /* ---- Check around the currently selected point to see if it is a local minimum.  */
-  small = fabs(mBestValue) * reltol + abstol;
+  small = fabs(getBestValue()) * reltol + abstol;
   mCurrent = mProblemContext.master()->getSolutionVariables(true);
 
   for (i = 0; i < mVariableSize; ++i)
-    mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
+    OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::None);
 
   for (i = 0; i < mVariableSize; ++i)
     {
@@ -598,21 +550,23 @@ First:
       C_FLOAT64 delta = mStep[i] * 1.0e-03;
 
       /* -- check along one direction -- */
-      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i] + delta);
-      evaluate();
+      C_FLOAT64 X = mCurrent[i] + delta;
+      OptItemList[i]->setItemValue(X, COptItem::CheckPolicyFlag::None);
+      mEvaluationValue = evaluate(EvaluationPolicyFlag::All);
 
-      if ((mEvaluationValue - mBestValue) < -small)
+      if ((mEvaluationValue - getBestValue()) < -small)
         break;
 
       /* -- now check the other way -- */
-      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i] - delta);
-      evaluate();
+      X = mCurrent[i] - delta;
+      OptItemList[i]->setItemValue(X, COptItem::CheckPolicyFlag::None);
+      mEvaluationValue = evaluate(EvaluationPolicyFlag::All);
 
-      if ((mEvaluationValue - mBestValue) < -small)
+      if ((mEvaluationValue - getBestValue()) < -small)
         break;
 
       /* -- back to start -- */
-      mProblemContext.master()->getOptItemList(true)[i]->setItemValue(mCurrent[i]);
+      OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::None);
     }
 
   ok = (i == mVariableSize);
@@ -652,8 +606,9 @@ Finish:  /* end of procedure */
                    "Terminated after " + std::to_string(mIteration) + " of " + std::to_string(mIterationLimit) + " iterations."
                   ));
 
-  if (mProcessReport)
-    mProcessReport.finishItem(mhIteration);
+  if (mProcessReport
+      && !mProcessReport.finishItem(mhIteration))
+    signalStop();
 
   return true;
 }
@@ -661,25 +616,6 @@ Finish:  /* end of procedure */
 bool COptMethodNelderMead::cleanup()
 {
   return true;
-}
-
-const C_FLOAT64 & COptMethodNelderMead::evaluate()
-{
-  // We do not need to check whether the parametric constraints are fulfilled
-  // since the parameters are created within the bounds.
-
-  mContinue &= mProblemContext.master()->calculate();
-  mEvaluationValue = mProblemContext.master()->getCalculateValue();
-
-  // when we leave the either the parameter or functional domain
-  // we penalize the objective value by forcing it to be larger
-  // than the best value recorded so far.
-  if (mEvaluationValue < mBestValue &&
-      (!mProblemContext.master()->checkParametricConstraints() ||
-       !mProblemContext.master()->checkFunctionalConstraints()))
-    mEvaluationValue = mBestValue + mBestValue - mEvaluationValue;
-
-  return mEvaluationValue;
 }
 
 bool COptMethodNelderMead::initialize()
@@ -709,10 +645,6 @@ bool COptMethodNelderMead::initialize()
   mCurrent.resize(mVariableSize);
   mStep.resize(mVariableSize);
 
-  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
-
-  mContinue = true;
-
   return true;
 }
 
@@ -721,14 +653,9 @@ unsigned C_INT32 COptMethodNelderMead::getMaxLogVerbosity() const
   return 1;
 }
 
-C_FLOAT64 COptMethodNelderMead::getBestValue() const
-{
-  return mBestValue;
-}
-
 C_FLOAT64 COptMethodNelderMead::getCurrentValue() const
 {
-  return mBestValue;
+  return getBestValue();
 }
 
 const CVector< C_FLOAT64 > * COptMethodNelderMead::getBestParameters() const

@@ -18,16 +18,28 @@ CRandomContext::~CRandomContext()
       Base::setMaster(nullptr);
       delete pRNG;
     }
+
+  if (Base::size() > 1)
+    for (size_t i = 0; i < Base::size(); ++i)
+      delete Base::threadData()[i];
 }
 
 void  CRandomContext::init(CRandom::Type type, unsigned C_INT32 seed)
 {
   Base::init();
 
-  if (Base::master())
+  if (Base::master() != nullptr)
     {
+      if (Base::master()->getType() == type
+          && seed == 0)
+        return;
+
       delete Base::master();
-      Base::master() = NULL;
+      Base::master() = nullptr;
+
+      if (Base::size() > 1)
+        for (size_t i = 0; i < Base::size(); ++i)
+          delete Base::threadData()[i];
     }
 
   Base::setMaster(nullptr);

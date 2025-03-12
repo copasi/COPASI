@@ -35,25 +35,25 @@
 #include "copasi/randomGenerator/CRandom.h"
 
 COptMethodStatistics::COptMethodStatistics(const CDataContainer * pParent,
-    const CTaskEnum::Method & methodType,
-    const CTaskEnum::Task & taskType):
-  COptMethod(pParent, methodType, taskType, false),
-  mIndividual(),
-  mValue(0.0),
-  mVariableSize(0),
-  mBestValue(0.0)
+                                           const CTaskEnum::Method & methodType,
+                                           const CTaskEnum::Task & taskType)
+  : COptMethod(pParent, methodType, taskType, false)
+  , mIndividual()
+  , mValue(0.0)
+  , mVariableSize(0)
 {
   initObjects();
 }
 
 COptMethodStatistics::COptMethodStatistics(const COptMethodStatistics & src,
-    const CDataContainer * pParent):
-  COptMethod(src, pParent),
-  mIndividual(src.mIndividual),
-  mValue(src.mValue),
-  mVariableSize(src.mVariableSize),
-  mBestValue(src.mBestValue)
-{initObjects();}
+                                           const CDataContainer * pParent)
+  : COptMethod(src, pParent)
+  , mIndividual(src.mIndividual)
+  , mValue(src.mValue)
+  , mVariableSize(src.mVariableSize)
+{
+  initObjects();
+}
 
 /**
  * Destructor
@@ -75,8 +75,6 @@ bool COptMethodStatistics::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mBestValue = std::numeric_limits< C_FLOAT64 >::infinity();
-
   mVariableSize = mProblemContext.master()->getOptItemList(true).size();
   mIndividual.resize(mVariableSize);
 
@@ -95,50 +93,25 @@ bool COptMethodStatistics::optimise()
   if (!initialize()) return false;
 
   size_t j;
+  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
 
   // Initialize the population
   // first individual is the initial guess
   for (j = 0; j < mVariableSize; j++)
     {
       C_FLOAT64 & mut = mIndividual[j];
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
+      COptItem & OptItem = *OptItemList[j];
 
       mut = OptItem.getStartValue();
-
-      // force it to be within the bounds
-      switch (OptItem.checkConstraint(mut))
-        {
-          case - 1:
-            mut = *OptItem.getLowerBoundValue();
-            break;
-
-          case 1:
-            mut = *OptItem.getUpperBoundValue();
-            break;
-        }
-
-      // We need to set the value here so that further checks take
-      // account of the value.
-      mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut);
+      OptItem.setItemValue(mut, COptItem::CheckPolicy::Bounds);
     }
 
-  Continue = evaluate(mIndividual);
-
-  mBestValue = mValue;
-  Continue = mProblemContext.master()->setSolution(mBestValue, mIndividual, true);
-
-  // We found a new best value lets report it.
-  //if (mpReport) mpReport->printBody();
-  mpParentTask->output(COutputInterface::DURING);
+  mValue = evaluate(EvaluationPolicy::Constraints);
+  setSolution(mValue, mIndividual, true);
 
   mpParentTask->output(COutputInterface::MONITORING);
 
   return true;
-}
-
-C_FLOAT64 COptMethodStatistics::getBestValue() const
-{
-  return mValue;
 }
 
 C_FLOAT64 COptMethodStatistics::getCurrentValue() const
@@ -154,24 +127,4 @@ const CVector< C_FLOAT64 > * COptMethodStatistics::getBestParameters() const
 const CVector< C_FLOAT64 > * COptMethodStatistics::getCurrentParameters() const
 {
   return &mIndividual;
-}
-
-// evaluate the fitness of one individual
-bool COptMethodStatistics::evaluate(const CVector< C_FLOAT64 > & /* individual */)
-{
-  bool Continue = true;
-
-  // We do not need to check whether the parametric constraints are fulfilled
-  // since the parameters are created within the bounds.
-
-  // evaluate the fitness
-  Continue = mProblemContext.master()->calculate();
-
-  // check whether the functional constraints are fulfilled
-  if (!mProblemContext.master()->checkFunctionalConstraints())
-    mValue = std::numeric_limits< C_FLOAT64 >::max();
-  else
-    mValue = mProblemContext.master()->getCalculateValue();
-
-  return Continue;
 }

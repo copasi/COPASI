@@ -1024,7 +1024,10 @@ bool CFitProblem::calculate()
           // set the global and experiment local fit item values.
           for (; ppUpdate != ppUpdateEnd; ppUpdate++)
             if (*ppUpdate)
-              (*ppUpdate)->COptItem::setItemValue((*ppUpdate)->getItemValue());
+              {
+                C_FLOAT64 Value = (*ppUpdate)->getItemValue();
+                (*ppUpdate)->COptItem::setItemValue(Value, COptItem::CheckPolicyFlag::None);
+              }
 
           mpContainer->applyUpdateSequence(mExperimentInitialUpdates[i]);
 
@@ -1322,7 +1325,10 @@ bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
           // set the global and experiment local fit item values.
           for (; ppUpdate != ppUpdateEnd; ppUpdate++)
             if (*ppUpdate)
-              (*ppUpdate)->COptItem::setItemValue((*ppUpdate)->getItemValue());
+              {
+                C_FLOAT64 Value = (*ppUpdate)->getItemValue();
+                (*ppUpdate)->COptItem::setItemValue(Value, COptItem::CheckPolicyFlag::None);
+              }
 
           mpContainer->applyUpdateSequence(mExperimentInitialUpdates[index]);
         }
@@ -1373,7 +1379,10 @@ void CFitProblem::createParameterSets()
       // set the global and experiment local fit item values.
       for (; ppUpdate != ppUpdateEnd; ppUpdate++)
         if (*ppUpdate)
-          (*ppUpdate)->COptItem::setItemValue((*ppUpdate)->getItemValue());
+          {
+            C_FLOAT64 Value = (*ppUpdate)->getItemValue();
+            (*ppUpdate)->COptItem::setItemValue(Value, COptItem::CheckPolicyFlag::None);
+          }
 
       // Synchronize the initial state.
       mpContainer->applyUpdateSequence(mExperimentInitialUpdates[i]);
@@ -1962,7 +1971,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   // Recalculate the best solution.
   for (i = 0; i < imax; i++)
     {
-      mpOptItems->at(i)->setItemValue(mSolutionVariables[i]);
+      mpOptItems->at(i)->setItemValue(mSolutionVariables[i], COptItem::CheckPolicyFlag::None);
     }
 
   // For Output
@@ -2091,12 +2100,14 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
           if (fabs(Current) > resolution)
             {
-              mpOptItems->at(i)->setItemValue(Current * (1.0 + factor));
+              C_FLOAT64 X = Current * (1.0 + factor);
+              mpOptItems->at(i)->setItemValue(X, COptItem::CheckPolicyFlag::None);
               Delta = 1.0 / (Current * factor);
             }
           else
             {
-              mpOptItems->at(i)->setItemValue(resolution);
+              C_FLOAT64 X = resolution;
+              mpOptItems->at(i)->setItemValue(X, COptItem::CheckPolicyFlag::None);
               Delta = 1.0 / resolution;
             }
 
@@ -2129,7 +2140,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
             }
 
           // Restore the value
-          mpOptItems->at(i)->setItemValue(Current);
+          mpOptItems->at(i)->setItemValue(Current, COptItem::CheckPolicyFlag::None);
         }
 
       if (!CalculateFIM)
@@ -2320,7 +2331,7 @@ bool CFitProblem::setSolution(const C_FLOAT64 & value,
       C_FLOAT64 *pSolution = mSolutionVariables.begin();
 
       for (; it != end; ++it, ++pSolution)
-        (*it)->setItemValue(*pSolution);
+        (*it)->setItemValue(*pSolution, COptItem::CheckPolicyFlag::None);
 
       Continue = calculateCrossValidation();
     }
@@ -2384,7 +2395,7 @@ bool CFitProblem::calculateCrossValidation()
           // set the global and experiment local fit item values.
           for (; ppUpdate != ppUpdateEnd; ppUpdate++, pSolution++)
             if (*ppUpdate)
-              (*ppUpdate)->COptItem::setItemValue(*pSolution);
+              (*ppUpdate)->COptItem::setItemValue(*pSolution, COptItem::CheckPolicyFlag::None);
 
           mpContainer->applyUpdateSequence(mCrossValidationInitialUpdates[i]);
 

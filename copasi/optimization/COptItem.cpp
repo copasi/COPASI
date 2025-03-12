@@ -60,9 +60,9 @@ COptItem::COptItem(const CDataContainer * pParent,
   , mpUpperBound(NULL)
   , mUpperBound(0.0)
   , mLastStartValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
-  , mInterval(1.0)
   , mDependentItems()
   , mUpdateInterval()
+  , mInterval(mpLowerBound, mpUpperBound)
 {
   initializeParameter();
 }
@@ -83,9 +83,9 @@ COptItem::COptItem(const COptItem & src,
   , mpUpperBound(NULL)
   , mUpperBound(0.0)
   , mLastStartValue(src.mLastStartValue)
-  , mInterval(src.mInterval)
   , mDependentItems(src.mDependentItems)
   , mUpdateInterval(src.mUpdateInterval)
+  , mInterval(mpLowerBound, mpUpperBound)
 {
   initializeParameter();
 }
@@ -106,9 +106,9 @@ COptItem::COptItem(const CCopasiParameterGroup & group,
   , mpUpperBound(NULL)
   , mUpperBound(0.0)
   , mLastStartValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
-  , mInterval(1.0)
   , mDependentItems()
   , mUpdateInterval()
+  , mInterval(mpLowerBound, mpUpperBound)
 {
   initializeParameter();
 }
@@ -120,14 +120,14 @@ COptItem::~COptItem()
 void COptItem::calculateValue()
 {
   // The size of the interval.
-  mInterval = *mpUpperBound - *mpLowerBound;
+  mInterval.compile();
   // std::cout << getObjectDisplayName() << ": " << mInterval << std::endl;
 }
 
 // virtual
 void * COptItem::getValuePointer() const
 {
-  return const_cast< C_FLOAT64 * >(&mInterval);
+  return const_cast< C_FLOAT64 * >(&mInterval.getSize());
 }
 
 void COptItem::initializeParameter()
@@ -276,7 +276,7 @@ void COptItem::rememberStartValue()
   mLastStartValue = getStartValue();
 }
 
-C_FLOAT64 COptItem::getRandomValue(CRandom & Random) const
+C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom) const
 {
   C_FLOAT64 RandomValue;
 
@@ -293,65 +293,7 @@ C_FLOAT64 COptItem::getRandomValue(CRandom & Random) const
       return RandomValue;
     }
 
-  C_FLOAT64 mn = *mpLowerBound;
-  C_FLOAT64 mx = *mpUpperBound;
-
-  C_FLOAT64 la;
-
-  try
-    {
-      // First determine the location of the interval
-      // Secondly determine whether to distribute the parameter linearly or not
-      // depending on the location and act upon it.
-      if (0.0 <= mn) // the interval [mn, mx) is in [0, inf)
-        {
-          la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
-
-          if (la < 1.8 || !(mn > 0.0)) // linear
-            RandomValue = mn + Random.getRandomCC() * (mx - mn);
-          else
-            RandomValue = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * Random.getRandomCC());
-        }
-      else if (mx > 0) // 0 is in the interval (mn, mx)
-        {
-          la = log10(mx) + log10(-mn);
-
-          if (la < 3.6) // linear
-            RandomValue = mn + Random.getRandomCC() * (mx - mn);
-          else
-            {
-              C_FLOAT64 mean = (mx + mn) * 0.5;
-              C_FLOAT64 sigma = std::min(std::numeric_limits< C_FLOAT64 >::max(), mx - mn) / 3.0;
-
-              do
-                {
-                  RandomValue = Random.getRandomNormal(mean, sigma);
-                }
-              while ((RandomValue < mn) || (RandomValue > mx));
-            }
-        }
-      else // the interval (mn, mx] is in (-inf, 0]
-        {
-          // Switch lower and upper bound and change sign, i.e.,
-          // we can treat it similarly as location 1:
-          mx = - *mpLowerBound;
-          mn = - *mpUpperBound;
-
-          la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
-
-          if (la < 1.8 || !(mn > 0.0)) // linear
-            RandomValue = - (mn + Random.getRandomCC() * (mx - mn));
-          else
-            RandomValue = - pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * Random.getRandomCC());
-        }
-    }
-
-  catch (...)
-    {
-      RandomValue = (mx + mn) * 0.5;
-    }
-
-  return RandomValue;
+  return mInterval.randomValue(pRandom);
 }
 
 bool COptItem::isValid() const
@@ -488,6 +430,11 @@ bool COptItem::isValidInterval() const
   return *mpLowerBound <= *mpUpperBound;
 }
 
+const CIntervalValue & COptItem::getInterval() const
+{
+  return mInterval;
+}
+
 bool COptItem::isInitialValue() const
 {
   if (dynamic_cast< const CMathObject * >(mpObject)
@@ -529,32 +476,44 @@ void COptItem::updatePrerequisites(const std::vector< COptItem * > & influencing
       }
 }
 
-bool COptItem::setItemValue(const C_FLOAT64 & value)
+bool COptItem::setItemValue(C_FLOAT64 & value, const CheckPolicyFlag & policy)
 {
   bool success = true;
 
   if (*const_cast< C_FLOAT64 * >(mpObjectValue) == value)
     return success;
 
+  if (policy & CheckPolicy::Bounds)
+    {
+      if (!isValidInterval())
+        return false;
+
+      if (value < *mpLowerBound)
+        value = *mpLowerBound;
+      else if (*mpUpperBound < value)
+        value = *mpUpperBound;
+    }
+
   *const_cast< C_FLOAT64 * >(mpObjectValue) = value;
 
-  if (mDependentItems.empty())
-    return success;
+  if (!mDependentItems.empty())
+    success &= mUpdateInterval.apply();
 
-  success &= mUpdateInterval.apply();
-
-  if (success)
-    for (COptItem * pItem : mDependentItems)
-      success &= pItem->isValidInterval();
-
-  if (!success)
-    success = adjust();
-
-  // We fall back to the old behavior, i.e., just set the value
-  if (!success)
+  if ((policy & CheckPolicy::Intervals))
     {
-      *const_cast< C_FLOAT64 * >(mpObjectValue) = value;
-      success &= mUpdateInterval.apply();
+      if (success)
+        for (COptItem * pItem : mDependentItems)
+          success &= pItem->isValidInterval();
+
+      if (!success)
+        success = adjust();
+
+      // We fall back to the old behavior, i.e., just set the value
+      if (!success)
+        {
+          *const_cast< C_FLOAT64 * >(mpObjectValue) = value;
+          success &= mUpdateInterval.apply();
+        }
     }
 
   return success;

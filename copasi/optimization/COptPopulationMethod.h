@@ -17,6 +17,7 @@
 #define COPASI_COptPopulationMethod_H
 
 #include "copasi/optimization/COptMethod.h"
+#include "copasi/optimization/COptItem.h"
 #include "copasi/core/CVector.h"
 #include "copasi/OpenMP/CRandomContext.h"
 
@@ -77,7 +78,6 @@ public:
   C_INT32 getPopulationSize();
   C_INT32 getNumGenerations();
   C_INT32 getCurrentGeneration();
-  const C_FLOAT64 & getBeastValue() const;
 
   const std::vector< CVector < C_FLOAT64 > * >& getPopulation();
   const CVector< C_FLOAT64 >& getObjectiveValues();
@@ -100,19 +100,9 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const COptPopulationMethod & o);
 
 protected:
-  /**
-   * Evaluate the fitness of one individual
-   * @return C_FLOAT64 value
-   */
-  virtual C_FLOAT64 evaluate() final;
+  bool createIndividual(const size_t & index, const COptItem::CheckPolicyFlag & policy);
 
-  bool setSolution(const C_FLOAT64 & value,
-                   const CVector< C_FLOAT64 > & variables,
-                   const bool & algorithmOrder);
-
-  bool createIndividual(const size_t & index);
-
-  virtual void finalizeCreation(const size_t & individual, const size_t & item, const CIntervalValue & interval, CRandom * pRandom);
+  virtual void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom);
 
   /**
    * size of the population / swarm size
@@ -153,17 +143,6 @@ protected:
    * a pointer to the random number generator.
    */
   CRandomContext  mRandomContext;
-
-  /**
-   * Indicates whether calculation shall continue
-   */
-  bool mContinue;
-
-private:
-  /**
-   * The best value
-   */
-  C_FLOAT64 mBestValue;
 };
 
 #endif // COPASI_COptPopulationMethod_H
