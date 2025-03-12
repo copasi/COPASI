@@ -514,7 +514,7 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
         // I have no idea what the following code does: If we want to test for summation theorem, fabs(tmp-Scale) should be small.
         // And I do not understand how eq matters in this context, and why it could be a problem if it is bigger the the Resolution.
         
-      if (fabs(tmp) < Resolution && eq >= Resolution)
+      if (fabs(tmp) < Resolution && eq >= Resolution)  //Code Review: I think eq should be compared to "res" instead of "Resolution"
         {
           Scale = std::numeric_limits< C_FLOAT64 >::infinity();
         }
@@ -570,24 +570,16 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
   C_FLOAT64 * pScaledRowEnd = mScaledConcCC.array() + mScaledConcCC.numCols() - 1;
   const C_FLOAT64 * pScaledEnd = pScaled + mScaledConcCC.size();
 
-  CVector< C_FLOAT64 > Sum(mScaledConcCC.numRows());
-  CVector< C_FLOAT64 > Max(mScaledConcCC.numRows());
-  Sum = 0.0;
-  Max = 0.0;
-  C_FLOAT64 * pSum = Sum.array();
-  C_FLOAT64 * pMax = Max.array();
-
-  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledConcCC.numCols(), ++pSum, ++pMax, ++pScaled)
+  C_FLOAT64 Sum;
+  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledConcCC.numCols(), ++pScaled)
     {
+      Sum = 0.0;
       for (; pScaled != pScaledRowEnd; ++pScaled)
         {
           success &= !std::isnan(*pScaled);
-
-          *pSum += *pScaled;
-          *pMax = std::max(*pMax, fabs(*pScaled));
+          Sum += *pScaled;
         }
-      //calculate relative deviation from the summation theorem; if all CCCs are small, just assume everything is OK.
-      *pScaledRowEnd = (*pMax > 100.0 * std::numeric_limits< C_FLOAT64 >::min()) ? fabs(*pSum) / *pMax : 0.0;
+      *pScaledRowEnd = fabs(Sum) ; //absolute deviation
       success &= *pScaledRowEnd < resolution;
     }
 
@@ -595,28 +587,15 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
   pScaledRowEnd = mScaledFluxCC.array() + mScaledFluxCC.numCols() - 1;
   pScaledEnd = pScaled + mScaledFluxCC.size();
 
-  Sum.resize(mScaledFluxCC.numRows());
-  Max.resize(mScaledFluxCC.numRows());
-  Sum = 0.0;
-  Max = 0.0;
-
-  pSum = Sum.array();
-  pMax = Max.array();
-
-  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledConcCC.numCols(), ++pSum, ++pMax, ++pScaled)
+  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledConcCC.numCols(), ++pScaled)
     {
+      Sum = 0.0;
       for (; pScaled != pScaledRowEnd; ++pScaled)
         {
           success &= !std::isnan(*pScaled);
-
-          *pSum += *pScaled;
-          *pMax = std::max(*pMax, fabs(*pScaled));
+          Sum += *pScaled;
         }
-        //Code review (Sven): Is it really necessary to look at relative error here? The scaled FCCs are dimensionless and the order
-        // of magnitude is given by the summation theorem. So the error should be compared to 1.0 and not to whatever the
-        //largest FCC is.
-        //I even think this should also apply for CCCs. 
-      *pScaledRowEnd = (*pMax > 100.0 * std::numeric_limits< C_FLOAT64 >::min()) ? fabs(1.0 - *pSum) / *pMax : 0.0;
+      *pScaledRowEnd = fabs(1.0 - Sum);
       success &= *pScaledRowEnd < resolution;
     }
 
