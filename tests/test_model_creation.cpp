@@ -74,7 +74,6 @@ TEST_CASE("create a new model with invalid trigger", "[copasi][creation]")
   event->compile({dm});
   REQUIRE(model->compileIfNecessary(NULL) == false);
 
-
   CRootContainer::removeDatamodel(dm);
 }
 
@@ -337,6 +336,14 @@ TEST_CASE("manually create miriam using libsbml", "[copasi][miriam]")
 
   CMIRIAMInfo * info = CAnnotation::allocateMiriamInfo(dm->getModel());
   info->load(dm->getModel());
+
+  CDataVector< CCreator >::iterator it = info->getCreators().begin();
+  CDataVector< CCreator >::iterator end = info->getCreators().end();
+
+  for (; it != end; ++it)
+    info->removeCreator(&*it);
+
+  REQUIRE(info->save());
 
   CCreator * pCreator = info->createCreator("");
   pCreator->setFamilyName("LastName");

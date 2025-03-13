@@ -267,9 +267,9 @@ TEST_CASE("importing an SBML file multiple times", "[copasi][sbml]")
   REQUIRE(dm != nullptr);
 
   auto * pFunDB = CRootContainer::getFunctionList();
-  REQUIRE(pFunDB->loadedFunctions().size() == 43);
+  REQUIRE(pFunDB->loadedFunctions().size() == 83);
   pFunDB->purgeUnusedUserDefinedFunctions();
-  REQUIRE(pFunDB->loadedFunctions().size() == 41);
+  REQUIRE(pFunDB->loadedFunctions().size() == 81);
 
   std::string test_file = getTestFile("test-data/BIOMD0000000027_url.xml");
 
