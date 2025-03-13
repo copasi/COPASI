@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -221,6 +221,7 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
   size_t numReacs = mpContainer->getParticleFluxes().size();
 
   mpContainer->calculateElasticityDependencies(mElasticityDependencies, false);
+
   // Calculate the dependencies of the elasticities this is helpful for scaling to determine
   // whether 0/0 is 0 or NaN
   const CMathDependencyGraph & TransientDependencies = mpContainer->getTransientDependencies();
@@ -234,6 +235,7 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
   // mUnscaledElasticities.resize(numReacs, numMetabs);
   C_FLOAT64 * pElasticity;
   C_FLOAT64 * pElasticityEnd = mUnscaledElasticities.array() + mUnscaledElasticities.size();
+  C_INT32 * pDependency;
 
   C_FLOAT64 Store, InvDelta;
   C_FLOAT64 X1, X2;
@@ -287,11 +289,14 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
 
       // set column j of Dxv
       pElasticity = mUnscaledElasticities.array() + j;
+      pDependency = mElasticityDependencies.array() + j;
+
       pY1 = Y1.array();
       pY2 = Y2.array();
 
-      for (; pElasticity < pElasticityEnd; pElasticity += numMetabs, ++pY1, ++pY2)
-        * pElasticity = (*pY1 - *pY2) * InvDelta;
+      for (; pElasticity < pElasticityEnd; pElasticity += numMetabs, pDependency += numMetabs, ++pY1, ++pY2)
+        if (*pDependency)
+          *pElasticity = (*pY1 - *pY2) * InvDelta;
 
       // restore the value of the species
       *pSpecies = Store;
@@ -429,9 +434,9 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
             {
               *pScaled = 0.0;
             }
-          else if (fabs(*pFlux) * VolumeInv >= res)
+          else if (fabs(*pFlux) * VolumeInv >= res || true)
             {
-              *pScaled = *pUnscaled **(C_FLOAT64 *)pSpeciesObject->getValuePointer() / *pParticleFlux;
+              *pScaled = *pUnscaled * pSpeciesObject->getValue() / *pParticleFlux;
             }
           else
             {
@@ -461,8 +466,8 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
   // We need to advance pScaled to adjust for the summation error column
   for (pSpeciesObject = pSpeciesObjectStart; pSpeciesObject != pSpeciesObjectEnd; ++pSpeciesObject, ++pScaled)
     {
-        //get the concentration for the current row
-        C_FLOAT64 alt = fabs(*(C_FLOAT64 *)pSpeciesObject->getCorrespondingProperty()->getValuePointer());
+      //get the concentration for the current row
+      C_FLOAT64 alt = fabs(pSpeciesObject->getCorrespondingProperty()->getValue());
 
       for (pFlux = mpContainer->getFluxes().array(),
            pParticleFlux = mpContainer->getParticleFluxes().array();
@@ -472,8 +477,8 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
            ++pUnscaled,
            ++pScaled)
         {
-          if (alt >= res)
-            *pScaled = *pUnscaled **pParticleFlux / *(C_FLOAT64 *)pSpeciesObject->getValuePointer();
+          if (alt >= res || true)
+            *pScaled = *pUnscaled **pParticleFlux / pSpeciesObject->getValue();
           else
             *pScaled = *pUnscaled * std::numeric_limits<C_FLOAT64>::infinity();
         }
@@ -513,26 +518,26 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
         // "eq" is the average absolute value of unscaled FCC for the current row.
         // I have no idea what the following code does: If we want to test for summation theorem, fabs(tmp-Scale) should be small.
         // And I do not understand how eq matters in this context, and why it could be a problem if it is bigger the the Resolution.
-        
-      if (fabs(tmp) < Resolution && eq >= Resolution)  //Code Review: I think eq should be compared to "res" instead of "Resolution"
+
+      if (fabs(tmp) < Resolution && eq >= Resolution && false)
         {
           Scale = std::numeric_limits< C_FLOAT64 >::infinity();
         }
 
       for (pColFlux = mpContainer->getFluxes().array(); pColFlux != pFluxEnd; ++pColFlux, ++pUnscaled, ++pScaled)
         {
-          
-          if (eq < res)
+
+          if (eq < res || Scale == 0.0)
             {
               //If the average unscaled FCC for the current row is numerically small, we assume it is unreliable for the whole row
               //Code Review (Sven): Is this actually true, and does it make sense to report 0.0 and 1.0 in this case
               *pScaled = (pColFlux != pFlux) ? 0.0  : 1.0;
             }
-          else if (pColFlux == pFlux)  // In the diagonal the scaling factors cancel.
+          else if (pColFlux == pFlux && false)  // In the diagonal the scaling factors cancel.
             {
               *pScaled = *pUnscaled;
             }
-          else if (fabs(Scale) >= Resolution)
+          else if (fabs(Scale) >= Resolution || true)
             {
               //this is the regular scaling if there is no numerical trouble:
               *pScaled = *pUnscaled **pColFlux / Scale;
@@ -570,16 +575,24 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
   C_FLOAT64 * pScaledRowEnd = mScaledConcCC.array() + mScaledConcCC.numCols() - 1;
   const C_FLOAT64 * pScaledEnd = pScaled + mScaledConcCC.size();
 
-  C_FLOAT64 Sum;
-  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledConcCC.numCols(), ++pScaled)
+  CVector< C_FLOAT64 > Sum(mScaledConcCC.numRows());
+  CVector< C_FLOAT64 > Max(mScaledConcCC.numRows());
+  Sum = 0.0;
+  Max = 0.0;
+  C_FLOAT64 * pSum = Sum.array();
+  C_FLOAT64 * pMax = Max.array();
+
+  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledConcCC.numCols(), ++pSum, ++pMax, ++pScaled)
     {
-      Sum = 0.0;
       for (; pScaled != pScaledRowEnd; ++pScaled)
         {
           success &= !std::isnan(*pScaled);
-          Sum += *pScaled;
+
+          *pSum += *pScaled;
+          *pMax = std::max(*pMax, fabs(*pScaled));
         }
-      *pScaledRowEnd = fabs(Sum) ; //absolute deviation
+      //calculate relative deviation from the summation theorem; if all CCCs are small, just assume everything is OK.
+      *pScaledRowEnd = (*pMax > 100.0 * std::numeric_limits< C_FLOAT64 >::min()) ? fabs(*pSum) / std::max(*pMax, 1.0) : 0.0;
       success &= *pScaledRowEnd < resolution;
     }
 
@@ -587,15 +600,28 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
   pScaledRowEnd = mScaledFluxCC.array() + mScaledFluxCC.numCols() - 1;
   pScaledEnd = pScaled + mScaledFluxCC.size();
 
-  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledConcCC.numCols(), ++pScaled)
+  Sum.resize(mScaledFluxCC.numRows());
+  Max.resize(mScaledFluxCC.numRows());
+  Sum = 0.0;
+  Max = 0.0;
+
+  pSum = Sum.array();
+  pMax = Max.array();
+
+  for (; pScaled != pScaledEnd; pScaledRowEnd += mScaledConcCC.numCols(), ++pSum, ++pMax, ++pScaled)
     {
-      Sum = 0.0;
       for (; pScaled != pScaledRowEnd; ++pScaled)
         {
           success &= !std::isnan(*pScaled);
-          Sum += *pScaled;
+
+          *pSum += *pScaled;
+          *pMax = std::max(*pMax, fabs(*pScaled));
         }
-      *pScaledRowEnd = fabs(1.0 - Sum);
+        //Code review (Sven): Is it really necessary to look at relative error here? The scaled FCCs are dimensionless and the order
+        // of magnitude is given by the summation theorem. So the error should be compared to 1.0 and not to whatever the
+        //largest FCC is.
+        //I even think this should also apply for CCCs.
+      *pScaledRowEnd = (*pMax > 100.0 * std::numeric_limits< C_FLOAT64 >::min()) ? fabs(1.0 - *pSum) / std::max(*pMax, 1.0) : 0.0;
       success &= *pScaledRowEnd < resolution;
     }
 
@@ -708,9 +734,9 @@ bool CMCAMethod::process()
 void CMCAMethod::setSteadyStateTask(CSteadyStateTask * pSteadyStateTask)
 {
   mpSteadyStateTask = pSteadyStateTask;
-
   if (mpSteadyStateTask != NULL)
     {
+      mSteadyStateResolution = mpSteadyStateTask->getMethod()->getValue< C_FLOAT64 >("Resolution");
       mSSStatus = mpSteadyStateTask->getResult();
     }
   else

@@ -3272,7 +3272,7 @@ void CMathContainer::calculateElasticityDependencies(CMatrix< C_INT32 > & elasti
 
   // The required values are the reaction fluxes.
 
-  CMathObject * pFluxObject = getMathObject(mFluxes.array());
+  CMathObject * pFluxObject = getMathObject(mParticleFluxes.array());
   CMathObject * pFluxObjectEnd = pFluxObject + mSize.nReactions;
 
   ObjectSet Requested;
