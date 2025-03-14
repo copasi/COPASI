@@ -252,18 +252,19 @@ bool CQDataVizPlot::initFromSpec(const CPlotSpecification * plotspec)
   itPlotItem = mpPlotSpecification->getItems().begin();
   pVisible = Visible.array();
 
-  mCurves.resize(mpPlotSpecification->getItems().size());
+  mCurves.clear();
 
-  auto ppCurve = mCurves.begin();
   unsigned long int k = 0;
   bool needLeft = false;
   bool needRight = false;
 
-  for (; itPlotItem != endPlotItem; ++itPlotItem, ++pVisible, ++ppCurve, ++k)
+  for (; itPlotItem != endPlotItem; ++itPlotItem, ++pVisible, ++k)
     {
       auto plotType = itPlotItem->getType();
 
-      if (plotType != CPlotItem::spectogram && plotType != CPlotItem::surface && plotType != CPlotItem::bandedGraph)
+      if (plotType != CPlotItem::spectogram
+          && plotType != CPlotItem::surface
+          && plotType != CPlotItem::bandedGraph)
         continue;
 
       // set up the curve
@@ -325,7 +326,7 @@ bool CQDataVizPlot::initFromSpec(const CPlotSpecification * plotspec)
       series->setProperty("copasi_key", QVariant(FROM_UTF8(itPlotItem->CCopasiParameter::getKey())));
       series->setName(FROM_UTF8(itPlotItem->getTitle()));
 
-      *ppCurve = series;
+      mCurves.push_back(series);
 
       showCurve(series, *pVisible);
 
