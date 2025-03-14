@@ -721,7 +721,7 @@ QToolBar *CopasiUI3Window::createToolBar()
   tb->addAction(mpaNew);
   tb->addAction(mpaOpen);
   tb->addAction(mpaSave);
-  tb->addAction(mpaCapture);
+  // tb->addAction(mpaCapture); // remove capture as it is unnecessary for now only from toolbar
   tb->addAction(mpaSliders);
   tb->addAction(mpaCheckModel);
   tb->addAction(mpaApplyInitialState);
