@@ -233,6 +233,7 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
   //CMathObject * pSpeciesObject;
 
   // mUnscaledElasticities.resize(numReacs, numMetabs);
+  mUnscaledElasticities = 0.0;
   C_FLOAT64 * pElasticity;
   C_FLOAT64 * pElasticityEnd = mUnscaledElasticities.array() + mUnscaledElasticities.size();
   C_INT32 * pDependency;
