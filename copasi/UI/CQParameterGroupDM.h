@@ -64,6 +64,8 @@ public:
 
   static CCopasiParameter * nodeFromIndex(const QModelIndex & index);
 
+  static bool InPaintEvent;
+
 signals:
   void signalCreateComboBox(const QModelIndex &) const;
   void signalCreatePushButton(const QModelIndex &) const;

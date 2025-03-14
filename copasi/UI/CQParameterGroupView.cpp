@@ -193,6 +193,13 @@ void CQParameterGroupView::slotPushButtonClicked(const QModelIndex & index)
     }
 }
 
+void CQParameterGroupView::paintEvent(QPaintEvent * event)
+{
+  CQParameterGroupDM::InPaintEvent = true;
+  QTreeView::paintEvent(event);
+  CQParameterGroupDM::InPaintEvent = false;
+}
+
 void CQParameterGroupView::modifySelectCNs(CCopasiParameterGroup & group, const CCopasiParameter & cnTemplate)
 {
   // avoid crash on not having valid values

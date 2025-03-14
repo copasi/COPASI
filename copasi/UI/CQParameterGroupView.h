@@ -21,6 +21,8 @@ class CCopasiParameter;
 class CCopasiParameterGroup;
 class QSortFilterProxyModel;
 
+class QPaintEvent;
+
 class CQParameterGroupView: public QTreeView
 {
   Q_OBJECT
@@ -47,6 +49,7 @@ protected slots:
 
 protected:
   void modifySelectCNs(CCopasiParameterGroup & group, const CCopasiParameter & cnTemplate);
+  void paintEvent(QPaintEvent * event);
 
 protected:
   CQParameterGroupDM * mpParameterGroupDM;
