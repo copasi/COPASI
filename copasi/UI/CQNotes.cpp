@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -278,7 +278,8 @@ bool CQNotes::leaveProtected()
 // virtual
 bool CQNotes::enterProtected()
 {
-  if (mObjectCNToCopy == "")
+  if (mObjectCNToCopy.empty()
+      || mObjectCNToCopy == mObjectCN)
     {
       load();
     }
@@ -292,7 +293,7 @@ bool CQNotes::enterProtected()
       load();
       mpObject = const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(List, mObjectCN)));
       save();
-      mObjectCN.clear();
+      mObjectCNToCopy.clear();
     }
 
   return true;
@@ -422,7 +423,8 @@ void CQNotes::save()
   if (plainText == notes)
     return;
 
-  if (mLoadedText == currentPlainText)
+  if (mLoadedText == currentPlainText
+      && mObjectCNToCopy.empty())
     return;
 
   if (mpValidatorXML->needsWrap())
