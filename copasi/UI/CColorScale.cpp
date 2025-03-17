@@ -388,8 +388,8 @@ void CColorScaleBiLog::passValue(const C_FLOAT64 & number)
   if (fabs(number) >= std::numeric_limits< C_FLOAT64 >::max())
     return; //Inf
 
-  if (number == 0.0)
-    return;
+  if (fabs(number) <= 1e-50)
+    return; //Ignore extremely small numbers
 
   C_FLOAT64 tmp = log(fabs(number));
 
@@ -411,7 +411,7 @@ void CColorScaleBiLog::finishAutomaticParameterCalculation()
   if (mInt != 0)
     m1 = (mFloat / mInt) - 4;
   else
-    m1 = -4.0;
+    m1 = -3.0;
 
   m2 -= 1.0;
 }
