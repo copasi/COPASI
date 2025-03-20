@@ -463,36 +463,34 @@ void CopasiUI3Window::createActions()
   //TODO: add tool tips, status tips etc.
   mpaNew = new QAction(CQIconResource::icon(CQIconResource::fileNew), "&New", this);
   connect(mpaNew, SIGNAL(triggered()), this, SLOT(slotNewDoc()));
-  mpaNew->setShortcut(Qt::CTRL + Qt::Key_N);
+  mpaNew->setShortcut(QKeySequence::New);
   mpaOpen = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "&Open...", this);
   connect(mpaOpen, SIGNAL(triggered()), this, SLOT(slotFileOpen()));
-  mpaOpen->setShortcut(Qt::CTRL + Qt::Key_O);
+  mpaOpen->setShortcut(QKeySequence::Open);
   mpaOpenCopasiFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "COP&ASI Files...", this);
   connect(mpaOpenCopasiFiles, SIGNAL(triggered()), this, SLOT(slotFileExamplesCopasiFiles()));
-  // mpaOpenCopasiFiles->setShortcut(Qt::CTRL + Qt::Key_1);
   mpaOpenSBMLFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "S&BML Files...", this);
   connect(mpaOpenSBMLFiles, SIGNAL(triggered()), this, SLOT(slotFileExamplesSBMLFiles()));
-  // mpaOpenSBMLFiles->setShortcut(Qt::CTRL + Qt::Key_2);
   mpaOpenFromUrl = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "Open from &Url...", this);
   connect(mpaOpenFromUrl, SIGNAL(triggered()), this, SLOT(slotFileOpenFromUrl()));
   mpaSave = new QAction(CQIconResource::icon(CQIconResource::fileSave), "&Save", this);
   connect(mpaSave, SIGNAL(triggered()), this, SLOT(slotFileSave()));
-  mpaSave->setShortcut(Qt::CTRL + Qt::Key_S);
+  mpaSave->setShortcut(QKeySequence::Save);
   mpaSaveAs = new QAction(CQIconResource::icon(CQIconResource::fileSaveas), "Save &As...", this);
   connect(mpaSaveAs, SIGNAL(triggered()), this, SLOT(slotFileSaveAs()));
-  mpaSaveAs->setShortcut(QKeySequence(Qt::SHIFT, Qt::CTRL, Qt::Key_S));
+  mpaSaveAs->setShortcut(QKeySequence::SaveAs);
   mpaImportSBML = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "&Import SBML...", this);
   connect(mpaImportSBML, SIGNAL(triggered()), this, SLOT(slotImportSBML()));
-  mpaImportSBML->setShortcut(Qt::CTRL + Qt::Key_I);
+  mpaImportSBML->setShortcut(Qt::CTRL | Qt::Key_I);
   mpaExportSBML = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export SBML...", this);
   connect(mpaExportSBML, SIGNAL(triggered()), this, SLOT(slotExportSBML()));
-  mpaExportSBML->setShortcut(Qt::CTRL + Qt::Key_E);
+  mpaExportSBML->setShortcut(Qt::CTRL | Qt::Key_E);
   mpaExportODE = new QAction(CQIconResource::icon(CQIconResource::fileExport), "Export ODEs...", this);
   connect(mpaExportODE, SIGNAL(triggered()), this, SLOT(slotExportMathModel()));
-  mpaExportODE->setShortcut(Qt::CTRL + Qt::Key_M);
+  mpaExportODE->setShortcut(Qt::CTRL | Qt::Key_M);
   mpaQuit = new QAction("&Quit", this);
   connect(mpaQuit, SIGNAL(triggered()), this, SLOT(slotQuit()));
-  mpaQuit->setShortcut(Qt::CTRL + Qt::Key_Q);
+  mpaQuit->setShortcut(QKeySequence::Quit);
 
   mpaCopy = new QAction("&Copy", this);
   mpaCopy->setShortcut(QKeySequence::Copy);
@@ -540,21 +538,18 @@ void CopasiUI3Window::createActions()
 
   mpaOpenSEDMLFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "S&ED-ML Files...", this);
   connect(mpaOpenSEDMLFiles, SIGNAL(triggered()), this, SLOT(slotFileExamplesSEDMLFiles()));
-  // mpaOpenSEDMLFiles->setShortcut(Qt::CTRL + Qt::Key_3);
   mpaImportSEDML = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "&Import SED-ML...", this);
   connect(mpaImportSEDML, SIGNAL(triggered()), this, SLOT(slotImportSEDML()));
-  // mpaImportSEDML->setShortcut(Qt::CTRL + Qt::Key_X);
   mpaExportSEDML = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export SED-ML...", this);
   connect(mpaExportSEDML, SIGNAL(triggered()), this, SLOT(slotExportSEDML()));
-  // mpaExportSEDML->setShortcut(Qt::CTRL + Qt::Key_Z);
-
+  
   //     QAction* mpaObjectBrowser;
 
   mpaAddModel = new QAction(CQIconResource::icon(CQIconResource::fileAdd), "&Add to model...", this);
-  mpaAddModel->setShortcut(QKeySequence(Qt::SHIFT, Qt::CTRL, Qt::Key_A));
+  mpaAddModel->setShortcut(Qt::SHIFT | Qt::CTRL |Qt::Key_A);
   connect(mpaAddModel, SIGNAL(triggered()), this, SLOT(slotAddFileOpen()));
   mpaMergeModels = new QAction("&Merge added model...", this);
-  mpaMergeModels->setShortcut(QKeySequence(Qt::SHIFT, Qt::CTRL, Qt::Key_M));
+  mpaMergeModels->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_M);
   connect(mpaMergeModels, SIGNAL(triggered()), this, SLOT(slotMergeModels()));
 
   mpaCloseAllWindows = new QAction("Close all windows below:", this);

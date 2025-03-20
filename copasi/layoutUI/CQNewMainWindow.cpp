@@ -191,7 +191,7 @@ void CQNewMainWindow::createActions()
 
   mpSwitchModeAct = new QAction(mAnimationIcon, tr("Animation Mode"), this);
   mpSwitchModeAct->setStatusTip(tr("Switch to animation mode."));
-  mpSwitchModeAct->setShortcut(Qt::CTRL + Qt::Key_M);
+  mpSwitchModeAct->setShortcut(Qt::CTRL | Qt::Key_M);
   mpSwitchModeAct->setEnabled(true);
   connect(mpSwitchModeAct, SIGNAL(triggered()), this, SLOT(switchMode()));
   mpRevertCurveAct = new QAction(QPixmap(revert_curve_xpm), tr("Revert curve"), this);
@@ -201,12 +201,12 @@ void CQNewMainWindow::createActions()
 
   mpScreenshotAct = new QAction(QPixmap(photo), tr("Export bitmap..."), this);
   mpScreenshotAct->setStatusTip(tr("Export diagram as bitmap."));
-  mpScreenshotAct->setShortcut(Qt::CTRL + Qt::Key_E);
+  mpScreenshotAct->setShortcut(Qt::CTRL | Qt::Key_E);
   mpScreenshotAct->setEnabled(true);
   connect(mpScreenshotAct, SIGNAL(triggered()), this, SLOT(slotScreenshot()));
 
   mpCloseAct = new QAction(tr("Close"), this);
-  mpCloseAct->setShortcut(tr("Ctrl+W"));
+  mpCloseAct->setShortcut(Qt::CTRL | Qt::Key_W);
   mpCloseAct->setStatusTip(tr("Close Diagram"));
   connect(mpCloseAct, SIGNAL(triggered()), this, SLOT(close()));
 
@@ -216,22 +216,18 @@ void CQNewMainWindow::createActions()
   connect(this->mpLoadDataAct, SIGNAL(activated()), this->mpAnimationWindow, SLOT(loadData()));
 
   mpRectangularShape = new QAction("Rectangle", this);
-  //mpRectangularShape->setShortcut(Qt::CTRL + Qt::Key_R);
   mpRectangularShape->setStatusTip("Show labels as rectangles");
   connect(mpRectangularShape, SIGNAL(activated()), this->mpAnimationWindow, SLOT(mapLabelsToRectangles()));
 
   mpCircularShape = new QAction("Circle", this);
-  //mpCircularShape->setShortcut(Qt::CTRL + Qt::Key_C);
   mpCircularShape->setStatusTip("Show labels as circles");
   connect(mpCircularShape, SIGNAL(activated()), this->mpAnimationWindow, SLOT(mapLabelsToCircles()));
 
   mpMimaNodeSizes = new QAction("Set Min/Max Node Sizes", this);
-  //mpMimaNodeSizes->setShortcut(Qt::CTRL + Qt::Key_M);
   mpMimaNodeSizes->setToolTip("Change Min/Max for node sizes within animation");
   connect(mpMimaNodeSizes, SIGNAL(activated()), this->mpAnimationWindow, SLOT(changeMinMaxNodeSizes()));
 
   mpSFontSize = new QAction("Set Font Size", this);
-  //mpSFontSize->setShortcut(Qt::CTRL + Qt::Key_F);
   mpSFontSize->setToolTip("Change the font size of the node labels in the graph view");
   connect(mpSFontSize, SIGNAL(activated()), this->mpAnimationWindow, SLOT(changeFontSize()));
 
@@ -242,7 +238,7 @@ void CQNewMainWindow::createActions()
 
   mpRandomizeLayout = new QAction(CQIconResource::icon(CQIconResource::roll), tr("Randomize Layout"), this);
   mpRandomizeLayout->setToolTip("Randomize current Layout");
-  mpRandomizeLayout->setShortcut(Qt::CTRL + Qt::Key_F5);
+  mpRandomizeLayout->setShortcut(Qt::CTRL | Qt::Key_F5);
   connect(this->mpRandomizeLayout, SIGNAL(triggered()), this, SLOT(slotRunRandomizeLayout()));
 
   mpCalculateDimensions = new QAction(tr("&Calculate Dimensions"), this);

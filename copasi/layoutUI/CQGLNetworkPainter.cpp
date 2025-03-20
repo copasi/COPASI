@@ -2652,13 +2652,13 @@ void CQGLNetworkPainter::adaptCurveForRectangles(std::multimap<std::string, CGra
 void CQGLNetworkPainter::createActions()
 {
   zoomInAction = new QAction("Zoom in", this);
-  zoomInAction->setShortcut(Qt::CTRL + Qt::Key_P);
+  zoomInAction->setShortcut(Qt::CTRL | Qt::Key_P);
   connect(zoomInAction, SIGNAL(triggered()), this, SLOT(zoomIn()));
   zoomOutAction = new QAction("Zoom out", this);
-  zoomOutAction->setShortcut(Qt::CTRL + Qt::Key_M);
+  zoomOutAction->setShortcut(Qt::CTRL | Qt::Key_M);
   connect(zoomOutAction, SIGNAL(triggered()), this, SLOT(zoomOut()));
   setFontSizeAction = new QAction("Set Font Size", this);
-  setFontSizeAction->setShortcut(Qt::CTRL + Qt::Key_F);
+  setFontSizeAction->setShortcut(Qt::CTRL | Qt::Key_F);
   connect(setFontSizeAction, SIGNAL(triggered()), this, SLOT(setFontSize()));
 }
 
