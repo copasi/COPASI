@@ -150,17 +150,27 @@ bool CQDataVizPlot::createGraph(CQDataVizPlot::PlotMode mode)
             auto * graph = new Q3DScatter();
 
             if (!mpAxisX)
-              mpAxisX = new QValue3DAxis;
+              {
+                mpAxisX = new QValue3DAxis;
+                qobject_cast< QValue3DAxis * > (mpAxisX)->setLabelFormat("%g");
+              }
 
             graph->setAxisX(qobject_cast< QValue3DAxis * >(mpAxisX));
 
             if (!mpAxisY)
-              mpAxisY = new QValue3DAxis;
+              {
+                mpAxisY = new QValue3DAxis;
+                qobject_cast< QValue3DAxis * > (mpAxisY)->setLabelFormat("%g");
+              }
 
             graph->setAxisY(qobject_cast< QValue3DAxis * >(mpAxisY));
 
             if (!mpAxisZ)
-              mpAxisZ = new QValue3DAxis;
+              {
+                mpAxisZ = new QValue3DAxis;
+                qobject_cast< QValue3DAxis * > (mpAxisZ)->setLabelFormat("%g");
+              }
+
 
             graph->setAxisZ(qobject_cast< QValue3DAxis * >(mpAxisZ));
             mpGraph = graph;
@@ -172,17 +182,26 @@ bool CQDataVizPlot::createGraph(CQDataVizPlot::PlotMode mode)
             auto * graph = new Q3DSurface();
 
             if (!mpAxisX)
-              mpAxisX = new QValue3DAxis;
+              {
+                mpAxisX = new QValue3DAxis;
+                qobject_cast< QValue3DAxis * >(mpAxisX)->setLabelFormat("%g");
+              }
 
             graph->setAxisX(qobject_cast< QValue3DAxis * >(mpAxisX));
 
             if (!mpAxisY)
-              mpAxisY = new QValue3DAxis;
+              {
+                mpAxisY = new QValue3DAxis;
+                qobject_cast< QValue3DAxis * >(mpAxisY)->setLabelFormat("%g");
+              }
 
             graph->setAxisY(qobject_cast< QValue3DAxis * >(mpAxisY));
 
             if (!mpAxisZ)
-              mpAxisZ = new QValue3DAxis;
+              {
+                mpAxisZ = new QValue3DAxis;
+                qobject_cast< QValue3DAxis * >(mpAxisZ)->setLabelFormat("%g");
+              }
 
             graph->setAxisZ(qobject_cast< QValue3DAxis * >(mpAxisZ));
             mpGraph = graph;
