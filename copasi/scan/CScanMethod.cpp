@@ -628,7 +628,7 @@ bool CScanMethod::calculate()
   if (!success)
     {
       ++mFailCounter;
-      success = mpProblem->getContinueOnError();
+      success = mpProblem->getContinueOnError() && mProcessReport.proceed();
     }
 
   // Assure that the subtask did not interfere with the scan operation.
