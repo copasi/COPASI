@@ -81,7 +81,7 @@ bool CFunctionDB::load()
   XML.setFunctionList(&mLoadedFunctions);
 
   std::stringstream DB;
-  DB.str(FunctionDBxml);
+  DB.str(FunctionDBxml());
 
   if (DB.fail())
     return false;
