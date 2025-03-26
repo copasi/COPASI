@@ -44,12 +44,7 @@ set (SWIG_ENUM_FIX_FILES
         "${BIN_DIRECTORY}/java-files/org/COPASI/CNewtonMethod.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CCopasiTimer.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CDataModel.java"
-        "${BIN_DIRECTORY}/java-files/org/COPASI/CPlotItem.java"
-        "${BIN_DIRECTORY}/java-files/org/COPASI/TaskSubTypeVector.java"
-        "${BIN_DIRECTORY}/java-files/org/COPASI/MethodSubTypeVector.java"
-        "${BIN_DIRECTORY}/java-files/org/COPASI/DataObjectMap.java"
-        "${BIN_DIRECTORY}/java-files/org/COPASI/FloatCVector.java"
-        "${BIN_DIRECTORY}/java-files/org/COPASI/ObjectListTypeStdVector.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CPlotItem.java"        
      )
 
 foreach(broken_file ${SWIG_ENUM_FIX_FILES})
