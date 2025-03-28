@@ -132,6 +132,7 @@ bool CExperimentSet::compile(const CMathContainer * pMathContainer)
           CurrentLineNumber = 1;
 
           in.str("");
+          in.clear();
           std::ifstream file;
           file.open(CLocaleString::fromUtf8(CurrentFileName).c_str(), std::ios::binary);
 
@@ -139,6 +140,7 @@ bool CExperimentSet::compile(const CMathContainer * pMathContainer)
             fileRead = false;
           else
             in << file.rdbuf();
+          file.close();
         }
 
       if (!fileRead)
