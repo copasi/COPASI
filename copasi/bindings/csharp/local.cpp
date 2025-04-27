@@ -39,6 +39,9 @@
 #include <copasi/model/CModelParameter.h>
 #include <copasi/model/CModelParameterSet.h>
 
+#include <copasi/CopasiTypes.h>
+
+
 // Now we specify the definitions
 // for the type determination methods
 

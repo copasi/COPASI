@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,9 @@
 #include "CRDFTriplet.h"
 #include "CRDFNode.h"
 
+#include "copasi/commandline/COptions.h"
 #include "copasi/utilities/CCopasiException.h"
+#include "copasi/utilities/CDirEntry.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/commandline/CConfigurationFile.h"
 
@@ -67,10 +69,10 @@ void CMIRIAMResources::isCitation(void * pData, void * /* pCallee */)
 // static
 bool CMIRIAMResources::isCitation(const std::string & uri)
 {
-  size_t Index = CRootContainer::getConfiguration()->getRecentMIRIAMResources().getMIRIAMResourceIndex(uri);
+  size_t Index = CRootContainer::getMiriamResources().getMIRIAMResourceIndex(uri);
 
   if (Index != C_INVALID_INDEX &&
-      CRootContainer::getConfiguration()->getRecentMIRIAMResources().getMIRIAMResource(Index).getMIRIAMCitation())
+      CRootContainer::getMiriamResources().getMIRIAMResource(Index).getMIRIAMCitation())
     {
       return true;
     }

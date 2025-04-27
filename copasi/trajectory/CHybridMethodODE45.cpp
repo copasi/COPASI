@@ -29,7 +29,7 @@
 
 /* DEFINE ********************************************************************/
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 #if _MSC_VER < 1600
 #define min _cpp_min
 #define max _cpp_max
@@ -261,8 +261,8 @@ void CHybridMethodODE45::initializeParameter()
   getParameter("Partitioning Strategy")->setValidValues(ValidValues);
 
   CCopasiParameter FastReactionTemplate("Reaction", CCopasiParameter::Type::CN);
-  std::vector< std::pair < CCommonName, CCommonName > > Reactions;
-  Reactions.push_back(std::make_pair(CCommonName("Reactions"), CCommonName("Reactions")));
+  std::vector< std::pair< CRegisteredCommonName, CRegisteredCommonName > > Reactions;
+  Reactions.push_back(std::make_pair(CRegisteredCommonName("Reactions"), CRegisteredCommonName("Reactions")));
   FastReactionTemplate.setValidValues(Reactions);
 
   mpFastReactions->getElementTemplates().addParameter(FastReactionTemplate);

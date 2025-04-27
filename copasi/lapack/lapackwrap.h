@@ -1,4 +1,14 @@
-// Copyright (C) 2013 - 2015 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2013 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -1048,7 +1058,7 @@ extern "C"
 # define zhetri_ ZHETRI
 # define zhetrs_ ZHETRS
 # define zhgeqz_ ZHGEQZ
-# define zhpcon_ ZHPCONLAPACK_INCLUDE_DIR
+# define zhpcon_ ZHPCON
 # define zhpev_ ZHPEV
 # define zhpevd_ ZHPEVD
 # define zhpevx_ ZHPEVX
@@ -1256,7 +1266,7 @@ extern "C"
 #  if defined (HAVE_CLAPACK_H) && !defined(HAVE_APPLE) && !defined(COPASI_OVERWRITE_USE_LAPACK)
 #   include <clapack.h>
 #  else
-#    if !defined(HAVE_APPLE)
+#    if !defined(HAVE_APPLE) && !defined(USE_MKL)
 #     include "copasi/lapack/lapack.h"
 #    endif
 #  endif
@@ -1284,7 +1294,7 @@ using std::isnan;
 # undef max
 #endif // max
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 #if _MSC_VER < 1600
 # define min _cpp_min
 # define max _cpp_max

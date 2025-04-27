@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -199,9 +199,9 @@ const CTaskEnum::Method * CMCATask::getValidMethods() const
 
 std::ostream &operator<<(std::ostream &os, const CMCATask & C_UNUSED(A))
 {
-  os << std::endl;
+  os << "\n";
 
-  os << std::endl;
+  os << "\n";
 
   return os;
 }
@@ -226,55 +226,55 @@ void CMCATask::printResult(std::ostream * ostream) const
     {
       if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::found)
         {
-          os << "A steady state was found. All coefficients are shown." << std::endl;
+          os << "A steady state was found. All coefficients are shown." << "\n";
           showCCs = true;
           showSS = true;
         }
 
       if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::foundEquilibrium)
         {
-          os << "Found equilibrium steady state. Only elasticities available." << std::endl;
+          os << "Found equilibrium steady state. Only elasticities available." << "\n";
           showSS = true;
         }
 
       if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::foundNegative)
         {
-          os << "Invalid steady state found (negative concentrations)." << std::endl;
+          os << "Invalid steady state found (negative concentrations)." << "\n";
           showSS = true;
         }
 
       if (pMethod->getSteadyStateStatus() == CSteadyStateMethod::notFound)
         {
-          os << "No steady state found. Only elasticities available." << std::endl;
+          os << "No steady state found. Only elasticities available." << "\n";
         }
     }
   else
     {
-      os << "Since no steady state calculation was requested only elasticities are shown." << std::endl;
+      os << "Since no steady state calculation was requested only elasticities are shown." << "\n";
     }
 
-  os << std::endl;
-  os << *pMethod->getUnscaledElasticitiesAnn() << std::endl;
-  os << *pMethod->getScaledElasticitiesAnn() << std::endl;
+  os << "\n";
+  os << *pMethod->getUnscaledElasticitiesAnn() << "\n";
+  os << *pMethod->getScaledElasticitiesAnn() << "\n";
 
   if (showCCs)
     {
-      os << *pMethod->getUnscaledConcentrationCCAnn() << std::endl;
-      os << *pMethod->getScaledConcentrationCCAnn() << std::endl;
+      os << *pMethod->getUnscaledConcentrationCCAnn() << "\n";
+      os << *pMethod->getScaledConcentrationCCAnn() << "\n";
 
-      os << *pMethod->getUnscaledFluxCCAnn() << std::endl;
-      os << *pMethod->getScaledFluxCCAnn() << std::endl;
+      os << *pMethod->getUnscaledFluxCCAnn() << "\n";
+      os << *pMethod->getScaledFluxCCAnn() << "\n";
     }
 
   if (showSS)
     {
       if (!pProblem->getSubTask())
         {
-          os << "Problem with steady state calculation. Please report as bug!" << std::endl;
+          os << "Problem with steady state calculation. Please report as bug!" << "\n";
           return;
         }
 
-      os << "Results of the steady state subtask (the state for which the MCA was performed):" << std::endl;
+      os << "Results of the steady state subtask (the state for which the MCA was performed):" << "\n";
       os << *static_cast< CSteadyStateTask *>(pProblem->getSubTask());
     }
 }

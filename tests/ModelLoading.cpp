@@ -1,7 +1,7 @@
-// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
 // BEGIN: Copyright
 // END: Copyright
@@ -115,7 +115,7 @@ TEST_CASE("Update Model", "[COPASI]")
   // reset the values again
   x.setInitialValue(1);
   y.setInitialValue(1);
-  model->updateInitialValues(CCore::Framework::Concentration);
+  model->updateInitialValues(CCore::Framework::Concentration, false);
   model->applyInitialValues();
 
   REQUIRE(x.getInitialValue() == 1);
@@ -134,7 +134,6 @@ TEST_CASE("Update Model", "[COPASI]")
 
   CRootContainer::removeDatamodel(dm);
 }
-
 
 TEST_CASE("Species ODE expressions", "[COPASI][multiple_models]")
 {
@@ -156,7 +155,7 @@ TEST_CASE("Species ODE expressions", "[COPASI][multiple_models]")
 
   std::string expression = species.getExpression();
   REQUIRE(expression.find("Model=New Model") != std::string::npos);
-  
+
   CRootContainer::removeDatamodel(dm);
   CRootContainer::removeDatamodel(dm2);
 }

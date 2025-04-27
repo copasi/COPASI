@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -159,38 +159,38 @@ std::string CMassAction::writeMathML(const std::vector< std::vector< std::string
   bool rev = (isReversible() == TriTrue);
 
   if (rev)
-    out << "<mfenced>" << std::endl;
+    out << "<mfenced>" << "\n";
 
-  out << "<mrow>" << std::endl;
+  out << "<mrow>" << "\n";
 
-  out << variables[0][0] << std::endl;
+  out << variables[0][0] << "\n";
 
   size_t i, imax = variables[1].size();
 
   for (i = 0; i < imax; ++i)
     {
-      out << "<mo>&CenterDot;</mo>" << std::endl;
-      out << variables[1][i] << std::endl;
+      out << "<mo>&CenterDot;</mo>" << "\n";
+      out << variables[1][i] << "\n";
     }
 
   if (rev)
     {
-      out << "<mo>-</mo>" << std::endl;
-      out << variables[2][0] << std::endl;
+      out << "<mo>-</mo>" << "\n";
+      out << variables[2][0] << "\n";
 
       size_t i, imax = variables[3].size();
 
       for (i = 0; i < imax; ++i)
         {
-          out << "<mo>&CenterDot;</mo>" << std::endl;
-          out << variables[3][i] << std::endl;
+          out << "<mo>&CenterDot;</mo>" << "\n";
+          out << variables[3][i] << "\n";
         }
     }
 
-  out << "</mrow>" << std::endl;
+  out << "</mrow>" << "\n";
 
   if (rev)
-    out << "</mfenced>" << std::endl;
+    out << "</mfenced>" << "\n";
 
   return out.str();
 }

@@ -1,22 +1,22 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 #include "copasi/copasi.h"
 
@@ -148,7 +148,6 @@ const std::string CRDFPredicate::PredicatePrefix[] =
     "any",   // any
     "end"    // end
 };
-
 
 // static
 std::map< std::string, CRDFPredicate::ePredicateType > CRDFPredicate::URI2Predicate;
@@ -627,7 +626,7 @@ std::string CRDFPredicate::getElementNameForType(ePredicateType type)
 {
   if (type < copasi_encodes || type >= unknown)
     return std::string();
-  
+
   return PredicatePrefix[type];
 }
 
@@ -822,15 +821,15 @@ std::ostream & operator << (std::ostream & os, const CRDFPredicate::Path & path)
   for (; it != end; ++it)
     os << *it << " ";
 
-  return os << std::endl;
+  return os << "\n";
 }
 
 std::ostream & operator << (std::ostream & os, const CRDFPredicate::sAllowedLocation & location)
 {
-  os << "MaxOccurance: " << location.MaxOccurance << std::endl;
-  os << "ReadOnly: " << location.ReadOnly << std::endl;
-  os << "Type: " << location.Type << std::endl;
-  os << location.Location << std::endl;
+  os << "MaxOccurance: " << location.MaxOccurance << "\n";
+  os << "ReadOnly: " << location.ReadOnly << "\n";
+  os << "Type: " << location.Type << "\n";
+  os << location.Location << "\n";
 
   return os;
 }

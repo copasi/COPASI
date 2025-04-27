@@ -361,7 +361,9 @@
 %template(ReferenceVector) CDataVector<CReference>;
 %template(ModificationVector) CDataVector<CModification>;
 
+#if (!defined SWIGJAVA)
 %template(ObjectListTypeStdVector) std::vector<CObjectLists::ListType>;
+#endif
 
 typedef CDataVectorN<CEvent> EventVectorN;
 

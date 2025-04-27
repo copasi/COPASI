@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -154,30 +154,30 @@ void CMCAProblem::printResult(std::ostream * ostream) const
 //print the description
 std::ostream &operator<<(std::ostream &os, const CMCAProblem & o)
 {
-  os << "Problem Description:" << std::endl;
+  os << "Problem Description:" << "\n";
 
-  //os << "Subtask: " << std::endl;
+  //os << "Subtask: " << "\n";
 
   if (o.isSteadyStateRequested())
     {
-      os << "Calculation of a steady state is requested before the MCA." << std::endl << std::endl;
+      os << "Calculation of a steady state is requested before the MCA." << "\n" << "\n";
 
       if (o.getSubTask())
         {
-          //os << "" << std::endl;
+          //os << "" << "\n";
           o.getSubTask()->getDescription().print(&os);
         }
       else
         {
-          os << "However an error occurred. Please report this as a bug." << std::endl;
+          os << "However an error occurred. Please report this as a bug." << "\n";
         }
     }
   else
     {
-      os << "MCA is performed on the current state (which is not necessarily a steady state)." << std::endl;
+      os << "MCA is performed on the current state (which is not necessarily a steady state)." << "\n";
     }
 
-  os << std::endl;
+  os << "\n";
 
   return os;
 }

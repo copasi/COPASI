@@ -116,34 +116,6 @@ void CMCAResultSubwidget::loadAll(const CMCAMethod * mcaMethod)
 
 void CMCAResultSubwidget::loadElasticities(const CMCAMethod * mcaMethod)
 {
-  //   const CModel* model = mcaMethod->getModel();
-  //   assert(model);
-  //   unsigned C_INT32 numRows, numCols;
-  //   numRows = model->getTotSteps();
-  //   numCols = model->getMetabolitesX().size();
-  //   mTableElasticities->setNumRows(numRows);
-  //   mTableElasticities->setNumCols(numCols);
-  //   unsigned C_INT32 i, j;
-  //   QHeader* header = mTableElasticities->verticalHeader();
-  //   for (i = 0; i < numRows;++i)
-  //     {
-  //       header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
-  //}
-  //   header = mTableElasticities->horizontalHeader();
-  //   for (i = 0; i < numCols;++i)
-  //     {
-  //       header->setLabel(i, FROM_UTF8(model->getMetabolitesX()[i]->getObjectName()));
-  //}
-  //   const CMatrix<C_FLOAT64> & elasticities = (mComboScale->currentIndex() == 0) ? mcaMethod->getScaledElasticities() : mcaMethod->getUnscaledElasticities();
-  //   if (elasticities.numRows() == 0 || elasticities.numCols() == 0) return;
-  //   for (i = 0; i < numRows;++i)
-  //     {
-  //       for (j = 0; j < numCols;++j)
-  //         {
-  //           mTableElasticities->setText(i, j, convertToQString(elasticities[i][j]));
-  //}
-  //}
-
   const CDataArray * elasticitiesAnn;
 
   if (mComboScale->currentIndex() == 0)
@@ -168,33 +140,6 @@ void CMCAResultSubwidget::loadElasticities(const CMCAMethod * mcaMethod)
 
 void CMCAResultSubwidget::loadConcentrationCCs(const CMCAMethod * mcaMethod)
 {
-  /*  const CModel* model = mcaMethod->getModel();
-    assert(model);
-    unsigned C_INT32 numRows, numCols;
-    numRows = model->getNumVariableMetabs();
-    numCols = model->getTotSteps();
-    mTableCCC->setNumRows(numRows);
-    mTableCCC->setNumCols(numCols);
-    unsigned C_INT32 i, j;
-    QHeader* header = mTableCCC->verticalHeader();
-    for (i = 0; i < numRows;++i)
-      {
-        header->setLabel(i, FROM_UTF8(model->getMetabolitesX()[i]->getObjectName()));
-      }
-    header = mTableCCC->horizontalHeader();
-    for (i = 0; i < numCols;++i)
-      {
-        header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
-      }
-    const CMatrix<C_FLOAT64> & CCCs = (mComboScale->currentIndex() == 0) ? mcaMethod->getScaledConcentrationCC() : mcaMethod->getUnscaledConcentrationCC();
-    if (CCCs.numRows() == 0 || CCCs.numCols() == 0) return;
-    for (i = 0; i < numRows;++i)
-      {
-        for (j = 0; j < numCols;++j)
-          {
-            mTableCCC->setText(i, j, convertToQString(CCCs[i][j]));
-          }
-      }*/
   const CDataArray * CCCAnn;
 
   if (mComboScale->currentIndex() == 0)
@@ -203,7 +148,10 @@ void CMCAResultSubwidget::loadConcentrationCCs(const CMCAMethod * mcaMethod)
 
       CColorScaleBiLog * tcs = new CColorScaleBiLog();
       mpArrayCCC->setColorCoding(tcs);
-      mpArrayCCC->setColorScalingAutomatic(true);
+        mpArrayCCC->setColorScalingAutomatic(false);
+          tcs->setWhitepoint(0.005);
+          tcs->setMaxIntensityPoint(2.0);
+
     }
   else
     {
@@ -212,6 +160,7 @@ void CMCAResultSubwidget::loadConcentrationCCs(const CMCAMethod * mcaMethod)
       CColorScaleBiLog * tcs = new CColorScaleBiLog();
       mpArrayCCC->setColorCoding(tcs);
       mpArrayCCC->setColorScalingAutomatic(true);
+        
     }
 
   mpArrayCCC->setArrayAnnotation(CCCAnn);
@@ -219,34 +168,6 @@ void CMCAResultSubwidget::loadConcentrationCCs(const CMCAMethod * mcaMethod)
 
 void CMCAResultSubwidget::loadFluxCCs(const CMCAMethod * mcaMethod)
 {
-  /*  const CModel* model = mcaMethod->getModel();
-    assert(model);
-    unsigned C_INT32 numRows, numCols;
-    numCols = numRows = model->getTotSteps();
-    mTableFCC->setNumRows(numRows);
-    mTableFCC->setNumCols(numCols);
-
-    unsigned C_INT32 i, j;
-    QHeader* header = mTableFCC->verticalHeader();
-    for (i = 0; i < numRows;++i)
-      {
-        header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
-      }
-    header = mTableFCC->horizontalHeader();
-    for (i = 0; i < numCols;++i)
-      {
-        header->setLabel(i, FROM_UTF8(model->getReactions()[i]->getObjectName()));
-      }
-    const CMatrix<C_FLOAT64> & FCCs = (mComboScale->currentIndex() == 0) ? mcaMethod->getScaledFluxCC() : mcaMethod->getUnscaledFluxCC();
-    if (FCCs.numRows() == 0 || FCCs.numCols() == 0) return;
-    for (i = 0; i < numRows;++i)
-      {
-        for (j = 0; j < numCols;++j)
-          {
-            mTableFCC->setText(i, j, convertToQString(FCCs[i][j]));
-          }
-      }*/
-
   const CDataArray * FCCAnn;
 
   if (mComboScale->currentIndex() == 0)
@@ -255,7 +176,9 @@ void CMCAResultSubwidget::loadFluxCCs(const CMCAMethod * mcaMethod)
 
       CColorScaleBiLog * tcs = new CColorScaleBiLog();
       mpArrayFCC->setColorCoding(tcs);
-      mpArrayFCC->setColorScalingAutomatic(true);
+      mpArrayFCC->setColorScalingAutomatic(false);
+        tcs->setWhitepoint(0.005);
+        tcs->setMaxIntensityPoint(2.0);
     }
   else
     {
@@ -313,15 +236,6 @@ void CMCAResultSubwidget::slotScaled()
 void CMCAResultSubwidget::clear()
 {
   mTopLabel->setText("No result available, please execute the MCA task.");
-
-  //   mTableElasticities->setNumRows(0);
-  //   mTableElasticities->setNumCols(0);
-  //
-  //   mTableCCC->setNumRows(0);
-  //   mTableCCC->setNumCols(0);
-  //
-  //   mTableFCC->setNumRows(0);
-  //   mTableFCC->setNumCols(0);
 
   mpArrayElasticities->setArrayAnnotation(NULL);
   mpArrayFCC->setArrayAnnotation(NULL);

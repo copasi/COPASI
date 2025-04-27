@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -85,7 +85,7 @@ CCopasiProblem::~CCopasiProblem() {}
 
 CCopasiProblem * CCopasiProblem::copy() const
 {
-  return CProblemFactory::copy(this, this);
+  return CProblemFactory::copy(this, NULL);
 }
 
 const CTaskEnum::Task & CCopasiProblem::getType() const {return mType;}
@@ -135,7 +135,7 @@ void CCopasiProblem::printResult(std::ostream * ostream) const
 
 std::ostream &operator<<(std::ostream &os, const CCopasiProblem & o)
 {
-  os << "Problem Description:" << std::endl;
+  os << "Problem Description:" << "\n";
 
   CCopasiParameterGroup::elements::const_iterator it = o.beginIndex();
   CCopasiParameterGroup::elements::const_iterator end = o.endIndex();
@@ -143,7 +143,7 @@ std::ostream &operator<<(std::ostream &os, const CCopasiProblem & o)
   for (; it != end; ++it)
     {
       (*it)->print(&os);
-      os << std::endl;
+      os << "\n";
     }
 
   return os;

@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -31,7 +31,7 @@ if (COPASI_DEPENDENCY_DIR AND EXISTS ${COPASI_DEPENDENCY_DIR})
 
 # we have a dependencies directory and get to overwrite all the dependencies
 
-if (NOT UNIX OR CYGWIN)
+if ((NOT UNIX OR CYGWIN) AND NOT MINGW)
 
 # dependencies for windows
 
@@ -68,7 +68,7 @@ if (NOT EXISTS ${RAPTOR_LIBRARY})
 set (RAPTOR_LIBRARY ${COPASI_DEPENDENCY_DIR}/lib/raptor.lib CACHE FILEPATH "raptor library" FORCE)
 endif()
 
-if (NOT BLA_VENDOR OR "${BLA_VENDOR}" STREQUAL "COPASI Dependencies")
+if (NOT DEFINED MKLROOT AND (NOT BLA_VENDOR OR "${BLA_VENDOR}" STREQUAL "COPASI Dependencies"))
   # clapack
   set (CLAPACK_INCLUDE_DIR ${COPASI_DEPENDENCY_DIR}/include CACHE PATH "clapack include directory" FORCE)
   

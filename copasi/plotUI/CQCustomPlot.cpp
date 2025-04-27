@@ -1,4 +1,4 @@
-// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -232,6 +232,7 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
     this->xAxis->setProperty("axis_label", action->data());
     this->updateSteadyStateInfo(type);
     this->mSelectedIndependent = "";
+    this->mHaveNewData = true;
 
     if (type == X_AXIS_VALUE)
       {
@@ -1258,7 +1259,7 @@ bool CQCustomPlot::saveData(const std::string & filename)
               fs << "\t";
             }
 
-          fs << std::endl;
+          fs << "\n";
         }
     }
 
@@ -1310,7 +1311,7 @@ bool CQCustomPlot::saveData(const std::string & filename)
               fs << "\t";
             }
 
-          fs << std::endl;
+          fs << "\n";
         }
     }
 
@@ -1362,7 +1363,7 @@ bool CQCustomPlot::saveData(const std::string & filename)
               fs << "\t";
             }
 
-          fs << std::endl;
+          fs << "\n";
         }
     }
 
@@ -1385,7 +1386,7 @@ bool CQCustomPlot::saveData(const std::string & filename)
               FirstHistogram = false;
             }
 
-          fs << mSaveHistogramObjects[HistogramIndex] << std::endl;
+          fs << mSaveHistogramObjects[HistogramIndex] << "\n";
 
           auto * curve = dynamic_cast< QCPGraph * >(*itCurves);
 
@@ -2372,7 +2373,7 @@ void CQCustomPlot::setupLegend()
 
   legend->clearItems();
 
-  for (int i = (currentPage) * maxItems; i < ((currentPage + 1) *maxItems) && i < numItems; ++i)
+  for (int i = (currentPage) * maxItems; i < ((currentPage + 1) *maxItems) && i < numItems && i >=0; ++i)
     {
       auto * current = mCurves[i];
 

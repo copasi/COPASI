@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,6 +32,8 @@
 
 #include <string>
 #include <deque>
+
+#include "copasi/OpenMP/CContext.h"
 
 typedef struct MESSAGES {size_t No; const char * Text;}
 Message;
@@ -135,13 +137,11 @@ private:
    */
   size_t mNumber;
 
-#ifndef WIN32
   /**
    * The stack of messages. Each message created with one of
    * the specific constructors is automatically added to the stack.
    */
-  static std::deque< CCopasiMessage > mMessageDeque;
-#endif // not WIN32
+  static CContext< std::deque< CCopasiMessage > > mMessageDeque;
 
   /**
    * A flag indicating whether the COPASI is running as commandline or
@@ -152,6 +152,8 @@ private:
   // Operations
 
 public:
+  static void init();
+
   /**
    * This function peeks at the first message created in COPASI.
    * If no more messages are in the dequeue the message

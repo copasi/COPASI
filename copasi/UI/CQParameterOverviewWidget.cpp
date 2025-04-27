@@ -141,6 +141,13 @@ bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType
         }
     }
 
+  if (action == ListViews::DELETE && objectType == ListViews::ObjectType::MODELPARAMETERSET)
+  {
+    mpParameterSet = NULL;
+    CopasiUI3Window::getMainWindow()->getMainWidget()->switchToOtherWidget(ListViews::WidgetType::ParameterSets, CRegisteredCommonName());
+    return true;
+  }
+
   if (mIgnoreUpdates || !isVisible())
     {
       return true;
@@ -175,6 +182,7 @@ bool CQParameterOverviewWidget::updateProtected(ListViews::ObjectType objectType
                 case ListViews::DELETE:
                   mObjectCN.clear();
                   mpObject = NULL;
+                  mpParameterSet = NULL;
 
                   enterProtected();
                   break;
@@ -361,6 +369,8 @@ void CQParameterOverviewWidget::slotBtnDelete()
   ListViews::addUndoMetaData(this, UndoData);
 
   slotNotifyChanges(mpDataModel->applyData(UndoData));
+
+  mpParameterSet = NULL;
 }
 
 // virtual
@@ -399,10 +409,11 @@ void CQParameterOverviewWidget::slotBtnNew()
   if (answer == QMessageBox::Save)
     {
       // Save the parameter set to a new or existing set
+      pModel->refreshActiveParameterSet();
       saveParameterSet(&pModel->getActiveModelParameterSet());
     }
 
-  // TODO CRITICAL We need to record all changes to the model
+  // We need to record all changes to the model
   pSetToApply->updateModel();
 
   // Notify the GUI that the model state has changed.

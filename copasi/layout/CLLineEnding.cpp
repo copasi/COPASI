@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -210,11 +210,12 @@ LineEnding* CLLineEnding::toSBML(unsigned int level, unsigned int version) const
   pLE->setEnableRotationalMapping(this->mEnableRotationalMapping);
   BoundingBox bb(level, version);
   bb.setId("bb");
-  Point p(new LayoutPkgNamespaces(),
+  LayoutPkgNamespaces NameSpaces;
+  Point p(&NameSpaces,
           this->mBoundingBox.getPosition().getX(),
           this->mBoundingBox.getPosition().getY());
   bb.setPosition(&p);
-  Dimensions d(new LayoutPkgNamespaces(),
+  Dimensions d(&NameSpaces,
                this->mBoundingBox.getDimensions().getWidth(),
                this->mBoundingBox.getDimensions().getHeight());
   bb.setDimensions(&d);

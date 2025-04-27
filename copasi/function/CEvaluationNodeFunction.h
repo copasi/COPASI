@@ -89,9 +89,9 @@ public:
    */
   virtual inline void calculate() override
   {
-    if (mpFunction)
+    if (mpFunction1)
       {
-        mValue = (*mpFunction)(*mpArgValue1);
+        mValue = (*mpFunction1)(*mpArgValue1);
       }
     else if (mpFunction2)
       {
@@ -100,6 +100,10 @@ public:
     else if (mpFunction4)
       {
         mValue = (*mpFunction4)(*mpArgValue1, *mpArgValue2, *mpArgValue3, *mpArgValue4);
+      }
+    else if (mpFunction)
+      {
+        mValue = (*mpFunction)(this);
       }
   }
 
@@ -176,7 +180,7 @@ public:
    * Create a new ASTNode corresponding to this FunctionNode.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode* toAST(const CDataModel* pDataModel) const override;
+  virtual ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const override;
 
   /**
    * Create a simplified node for an operatorNode with children from vector (if not exist, = NULL),
@@ -282,15 +286,17 @@ public:
 
   static C_FLOAT64 rpoisson(C_FLOAT64 mu);
 
-  static C_FLOAT64 max(C_FLOAT64 x1,
-                       C_FLOAT64 x2);
+  static C_FLOAT64 max(CEvaluationNodeFunction * pNode);
 
-  static C_FLOAT64 min(C_FLOAT64 x1,
-                       C_FLOAT64 x2);
+  static C_FLOAT64 min(CEvaluationNodeFunction * pNode);
 
   // Attributes
 private:
-  C_FLOAT64(*mpFunction)(C_FLOAT64 arg1);
+  C_FLOAT64 max();
+
+  C_FLOAT64 min();
+
+  C_FLOAT64(*mpFunction1)(C_FLOAT64 arg1);
 
   C_FLOAT64(*mpFunction2)(C_FLOAT64 arg1,
                           C_FLOAT64 arg2);
@@ -300,6 +306,8 @@ private:
                           C_FLOAT64 arg3,
                           C_FLOAT64 arg4);
 
+  C_FLOAT64(*mpFunction)(CEvaluationNodeFunction * pNode);
+  
   CEvaluationNode * mpArgNode1;
   CEvaluationNode * mpArgNode2;
   CEvaluationNode * mpArgNode3;

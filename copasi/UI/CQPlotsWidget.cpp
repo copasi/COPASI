@@ -77,7 +77,6 @@ CQPlotsWidget::CQPlotsWidget(QWidget *parent, const char *name)
           this, SLOT(slotFilterChanged()));
   connect(mpBtnActivateAll, SIGNAL(pressed()), this, SLOT(slotBtnActivateAllClicked()));
   connect(mpBtnDeactivateAll, SIGNAL(pressed()), this, SLOT(slotBtnDeactivateAllClicked()));
-  connect(mpTblPlots, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 /*
@@ -125,15 +124,12 @@ void CQPlotsWidget::slotBtnDeactivateAllClicked()
 void CQPlotsWidget::slotBtnNewClicked()
 {
   mpPlotDM->insertRow(mpPlotDM->rowCount() - 1, QModelIndex());
-  updateDeleteBtns();
 }
 
-void CQPlotsWidget::slotBtnDeleteClicked()
+void CQPlotsWidget::slotBtnDeleteClicked(bool needFocus)
 {
-  if (mpTblPlots->hasFocus())
+  if (!needFocus || mpTblPlots->hasFocus())
     {deleteSelectedPlots();}
-
-  updateDeleteBtns();
 }
 
 void CQPlotsWidget::deleteSelectedPlots()
@@ -165,8 +161,6 @@ void CQPlotsWidget::slotBtnClearClicked()
     {
       mpPlotDM->clear();
     }
-
-  updateDeleteBtns();
 }
 
 bool CQPlotsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
@@ -194,10 +188,7 @@ bool CQPlotsWidget::enterProtected()
   //Set Model for the TableView
   mpTblPlots->setModel(NULL);
   mpTblPlots->setModel(mpProxyModel);
-  connect(mpTblPlots->selectionModel(), SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
-          this, SLOT(slotSelectionChanged()));
 
-  updateDeleteBtns();
   mpTblPlots->horizontalHeader()->restoreState(State);
   blockSignals(false);
 
@@ -212,39 +203,6 @@ bool CQPlotsWidget::enterProtected()
   return true;
 }
 
-void CQPlotsWidget::updateDeleteBtns()
-{
-  bool selected = false;
-  QModelIndexList selRows = mpTblPlots->selectionModel()->selectedRows();
-
-  if (selRows.size() == 0)
-    selected = false;
-  else
-    {
-      if (selRows.size() == 1)
-        {
-          if (mpPlotDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
-            selected = false;
-          else
-            selected = true;
-        }
-      else
-        selected = true;
-    }
-
-  mpBtnDelete->setEnabled(selected);
-
-  if (mpProxyModel->rowCount() - 1)
-    mpBtnClear->setEnabled(true);
-  else
-    mpBtnClear->setEnabled(false);
-}
-
-void CQPlotsWidget::slotSelectionChanged()
-{
-  updateDeleteBtns();
-}
-
 void CQPlotsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                 const QModelIndex &C_UNUSED(bottomRight))
 {
@@ -254,7 +212,6 @@ void CQPlotsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
     }
 
   setFramework(mFramework);
-  updateDeleteBtns();
 }
 
 void CQPlotsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
@@ -281,7 +238,7 @@ void CQPlotsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 void CQPlotsWidget::keyPressEvent(QKeyEvent *ev)
 {
   if (ev->key() == Qt::Key_Delete)
-    slotBtnDeleteClicked();
+    slotBtnDeleteClicked(true);
   else if (ev->key() == Qt::Key_C &&
            (ev->modifiers() & Qt::ControlModifier))
     {

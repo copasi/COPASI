@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -187,23 +187,24 @@ bool CDataContainer::appendDeletedDependentData(CUndoData & undoData) const
   return dataAppended;
 }
 
-CDataContainer::CDataContainer() :
-  CDataObject(),
-  mObjects()
+CDataContainer::CDataContainer()
+  : CDataObject()
+  , mObjects()
 {}
 
 CDataContainer::CDataContainer(const std::string & name,
                                const CDataContainer * pParent,
                                const std::string & type,
-                               const CFlags< Flag > & flag):
-  CDataObject(name, pParent, type, flag | CDataObject::Container),
-  mObjects()
+                               const CFlags< Flag > & flag)
+  : CDataObject(name, pParent, type, flag | CDataObject::Container)
+  , mObjects()
 {}
 
 CDataContainer::CDataContainer(const CDataContainer & src,
-                               const CDataContainer * pParent):
-  CDataObject(src, pParent),
-  mObjects()
+                               const CDataContainer * pParent,
+                               const std::string & objectType)
+  : CDataObject(src, pParent, objectType)
+  , mObjects()
 {}
 
 CDataContainer::~CDataContainer()

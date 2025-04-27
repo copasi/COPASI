@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -148,23 +148,23 @@ void COptPopulationMethod::print(std::ostream * ostream) const
 {
   COptMethod::print(ostream);
 
-  *ostream << std::endl << *this;
+  *ostream << "\n" << *this;
 }
 
 std::ostream &operator<<(std::ostream &os, const COptPopulationMethod & o)
 {
-  os << "Population Information: " << std::endl;
-  os << "Population Size: " << o.mPopulationSize << std::endl;
-  os << "# Generations / Iterations: " << o.mGenerations << std::endl;
-  os << "Current Generation / Iteration: " << o.mCurrentGeneration << std::endl;
-  os << "Population Values: " << std::endl << "   " << o.mValues << std::endl << std::endl;
-  os << "Population:" << std::endl;
+  os << "Population Information: " << "\n";
+  os << "Population Size: " << o.mPopulationSize << "\n";
+  os << "# Generations / Iterations: " << o.mGenerations << "\n";
+  os << "Current Generation / Iteration: " << o.mCurrentGeneration << "\n";
+  os << "Population Values: " << "\n" << "   " << o.mValues << "\n" << "\n";
+  os << "Population:" << "\n";
 
   std::vector< CVector < C_FLOAT64 > * >::const_iterator it = o.mIndividuals.begin();
 
   for (; it != o.mIndividuals.end(); ++it)
     {
-      os << "   " << **it << std::endl;
+      os << "   " << **it << "\n";
     }
 
   return os;

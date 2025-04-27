@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -284,42 +284,42 @@ bool CODEExporterC::exportTitleData(const CModel* copasiModel, std::ostream & os
       yc_names << "\"" << reverse_map[str.str()] << "\", ";
     }
 
-  os << "#ifdef SIZE_DEFINITIONS" << std::endl;
-  os << "#define N_METABS " << metab_size << std::endl;
-  os << "#define N_ODE_METABS " << ode_size << std::endl;
-  os << "#define N_INDEP_METABS " << indep_size << std::endl;
-  os << "#define N_COMPARTMENTS " << comps_size << std::endl;
-  os << "#define N_GLOBAL_PARAMS " << modvals_size << std::endl;
-  os << "#define N_KIN_PARAMS " << count << std::endl;
-  os << "#define N_REACTIONS " << reacs_size << std::endl << std::endl;
+  os << "#ifdef SIZE_DEFINITIONS" << "\n";
+  os << "#define N_METABS " << metab_size << "\n";
+  os << "#define N_ODE_METABS " << ode_size << "\n";
+  os << "#define N_INDEP_METABS " << indep_size << "\n";
+  os << "#define N_COMPARTMENTS " << comps_size << "\n";
+  os << "#define N_GLOBAL_PARAMS " << modvals_size << "\n";
+  os << "#define N_KIN_PARAMS " << count << "\n";
+  os << "#define N_REACTIONS " << reacs_size << "\n" << "\n";
 
-  os << "#define N_ARRAY_SIZE_P  " << numP  << "\t// number of parameters" << std::endl;
-  os << "#define N_ARRAY_SIZE_X  " << numX  << "\t// number of initials" << std::endl;
-  os << "#define N_ARRAY_SIZE_Y  " << numY  << "\t// number of assigned elements" << std::endl;
-  os << "#define N_ARRAY_SIZE_XC " << numXC << "\t// number of x concentration" << std::endl;
-  os << "#define N_ARRAY_SIZE_PC " << numPC << "\t// number of p concentration" << std::endl;
-  os << "#define N_ARRAY_SIZE_YC " << numYC << "\t// number of y concentration" << std::endl;
-  os << "#define N_ARRAY_SIZE_DX " << numDX << "\t// number of ODEs " << std::endl;
-  os << "#define N_ARRAY_SIZE_CT " << numCT << "\t// number of conserved totals" << std::endl << std::endl;
+  os << "#define N_ARRAY_SIZE_P  " << numP  << "\t// number of parameters" << "\n";
+  os << "#define N_ARRAY_SIZE_X  " << numX  << "\t// number of initials" << "\n";
+  os << "#define N_ARRAY_SIZE_Y  " << numY  << "\t// number of assigned elements" << "\n";
+  os << "#define N_ARRAY_SIZE_XC " << numXC << "\t// number of x concentration" << "\n";
+  os << "#define N_ARRAY_SIZE_PC " << numPC << "\t// number of p concentration" << "\n";
+  os << "#define N_ARRAY_SIZE_YC " << numYC << "\t// number of y concentration" << "\n";
+  os << "#define N_ARRAY_SIZE_DX " << numDX << "\t// number of ODEs " << "\n";
+  os << "#define N_ARRAY_SIZE_CT " << numCT << "\t// number of conserved totals" << "\n" << "\n";
 
-  os << "#endif // SIZE_DEFINITIONS" << std::endl;
-  os << std::endl;
+  os << "#endif // SIZE_DEFINITIONS" << "\n";
+  os << "\n";
 
-  os << "#ifdef TIME" << std::endl;
-  os << "#define T  <set here a user name for the time variable> " << std::endl;
-  os << "#endif // TIME" << std::endl;
+  os << "#ifdef TIME" << "\n";
+  os << "#define T  <set here a user name for the time variable> " << "\n";
+  os << "#endif // TIME" << "\n";
 
-  os << std::endl;
-  os << "#ifdef NAME_ARRAYS" << std::endl;
-  os << p_names.str()  << " \"\" };" << std::endl;
-  os << x_names.str()  << " \"\" };" << std::endl;
-  os << y_names.str()  << " \"\" };" << std::endl;
-  os << xc_names.str() << " \"\" };" << std::endl;
-  os << pc_names.str() << " \"\" };" << std::endl;
-  os << yc_names.str() << " \"\" };" << std::endl;
-  os << dx_names.str() << " \"\" };" << std::endl;
-  os << ct_names.str() << " \"\" };" << std::endl;
-  os << "#endif // NAME_ARRAYS" << std::endl;
+  os << "\n";
+  os << "#ifdef NAME_ARRAYS" << "\n";
+  os << p_names.str()  << " \"\" };" << "\n";
+  os << x_names.str()  << " \"\" };" << "\n";
+  os << y_names.str()  << " \"\" };" << "\n";
+  os << xc_names.str() << " \"\" };" << "\n";
+  os << pc_names.str() << " \"\" };" << "\n";
+  os << yc_names.str() << " \"\" };" << "\n";
+  os << dx_names.str() << " \"\" };" << "\n";
+  os << ct_names.str() << " \"\" };" << "\n";
+  os << "#endif // NAME_ARRAYS" << "\n";
 
   return true;
 }
@@ -698,7 +698,7 @@ bool CODEExporterC::exportSingleObject(std::ostringstream & which, const std::st
   if (!comments.empty() && comments != " ")
     which << '\t' << "//" << comments;
 
-  which << std::endl;
+  which << "\n";
 
   return true;
 }
@@ -1022,10 +1022,10 @@ bool CODEExporterC::exportSingleFunction(const CFunction *func, std::set<std::st
             }
 
           functions << ") ";
-          functions << '\t' << "//" << name << std::endl;
-          functions << "{return  " << tmpfunc->getRoot()->buildCCodeString().c_str() << ";} " << std::endl;
+          functions << '\t' << "//" << name << "\n";
+          functions << "{return  " << tmpfunc->getRoot()->buildCCodeString().c_str() << ";} " << "\n";
 
-          headers << "); " << std::endl;
+          headers << "); " << "\n";
 
           isExported.insert(name);
         }

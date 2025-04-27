@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -42,6 +42,10 @@ struct omp_info
 template < class Data > class CContext
 {
 public:
+  bool singleThreadedExecution();
+  bool multiThreaded();
+  int localThreadIndex();
+
   CContext(const bool & parallel = true);
   CContext(const CContext & src);
   ~CContext();
@@ -52,12 +56,11 @@ public:
   void release();
   Data & master();
   Data & active();
+  Data * threadData();
   const Data & master() const;
   const Data & active() const;
-  Data * beginThread();
-  Data * endThread();
-  const Data * beginThread() const;
-  const Data * endThread() const;
+  Data const * threadData() const;
+
   bool isMaster(const Data * data) const;
   bool isThread(const Data * data) const;
   int localIndex(const Data * data) const;
@@ -65,36 +68,48 @@ public:
   const size_t & size() const;
 
 private:
-  Data * mMasterData;
+  Data * mpMasterData;
   Data * mThreadData;
   bool mParallel;
   size_t mSize;
 };
 
+template < class Data > bool CContext< Data >::singleThreadedExecution()
+{
+  return omp_get_num_threads() == 1;
+}
+
+template < class Data > bool CContext< Data >::multiThreaded()
+{
+  return mSize > 1;
+}
+
+template < class Data > int CContext< Data >::localThreadIndex()
+{
+  return omp_get_thread_num();
+}
+
 template < class Data > CContext< Data >::CContext(const bool & parallel)
-  : mMasterData(NULL)
+  : mpMasterData(NULL)
   , mThreadData(NULL)
   , mParallel(parallel)
   , mSize(0)
 {}
 
 template < class Data > CContext< Data >::CContext(const CContext & src)
-  : mMasterData(NULL)
+  : mpMasterData(NULL)
   , mThreadData(NULL)
   , mParallel(src.mParallel)
   , mSize(0)
 {
   init();
 
-  *mMasterData = *src.mMasterData;
+  *mpMasterData = *src.mpMasterData;
 
-  Data * pIt = mThreadData;
-  Data * pEnd = mThreadData + mSize;
-  const Data * pSrc = src.mThreadData;
-
-  for (; pIt != pEnd; ++pIt, ++pSrc)
-    if (isThread(pIt))
-      *pIt = *pSrc;
+  if (mSize > 1)
+#pragma omp parallel for
+    for (size_t i = 0; i < mSize; ++i)
+      mThreadData[i] = src.mThreadData[i];
 }
 
 template < class Data > CContext< Data >::~CContext()
@@ -108,15 +123,12 @@ template < class Data > CContext< Data > & CContext< Data >::operator = (const C
     {
       init();
 
-      *mMasterData = *rhs.mMasterData;
+      *mpMasterData = *rhs.mpMasterData;
 
-      Data * pIt = mThreadData;
-      Data * pEnd = mThreadData + mSize;
-      const Data * pRhs = rhs.mThreadData;
-
-      for (; pIt != pEnd; ++pIt, ++pRhs)
-        if (isThread(pIt))
-          *pIt = *pRhs;
+      if (mSize > 1)
+#pragma omp parallel for
+        for (size_t i = 0; i < mSize; ++i)
+          mThreadData[i] = rhs.mThreadData[i];
     }
 
   return *this;
@@ -127,19 +139,17 @@ template < class Data > bool CContext< Data >::operator == (const CContext< Data
   if (mSize != rhs.mSize)
     return false;
 
-  if (memcmp(mMasterData, rhs.mMasterData, sizeof(Data)))
+  if (!(mpMasterData == rhs.mpMasterData))
     return false;
 
-  const Data * pIt = mThreadData;
-  const Data * pEnd = mThreadData + mSize;
-  const Data * pRhs = rhs.mThreadData;
+  bool equal = true;
 
-  for (; pIt != pEnd; ++pIt, ++pRhs)
-    if (isThread(pIt)
-        && memcmp(pIt, pRhs, sizeof(Data)))
-      return false;
+  if (mSize > 1)
+#pragma omp parallel for reduction(& : equal)
+    for (size_t i = 0; i < mSize; ++i)
+      equal = mThreadData[i] == rhs.mThreadData[i];
 
-  return true;
+  return equal;
 }
 
 template < class Data > void CContext< Data >::init()
@@ -147,7 +157,7 @@ template < class Data > void CContext< Data >::init()
   if (mSize != 0)
     return;
 
-  mMasterData = new Data();
+  mpMasterData = new Data();
   mSize = mParallel ? omp_get_max_threads() : 1;
 
   if (mSize > 1)
@@ -156,16 +166,16 @@ template < class Data > void CContext< Data >::init()
     }
   else
     {
-      mThreadData = mMasterData;
+      mThreadData = mpMasterData;
     }
 }
 
 template < class Data > void CContext< Data >::release()
 {
-  if (mMasterData != NULL)
+  if (mpMasterData != NULL)
     {
-      delete mMasterData;
-      mMasterData = NULL;
+      delete mpMasterData;
+      mpMasterData = NULL;
 
       if (mSize == 1)
         mThreadData = NULL;
@@ -182,7 +192,7 @@ template < class Data > void CContext< Data >::release()
 
 template < class Data > Data & CContext< Data >::master()
 {
-  return *mMasterData;
+  return *mpMasterData;
 }
 
 template < class Data > Data & CContext< Data >::active()
@@ -190,7 +200,7 @@ template < class Data > Data & CContext< Data >::active()
   switch (omp_get_num_threads())
     {
       case 1:
-        return *mMasterData;
+        return *mpMasterData;
         break;
 
       default:
@@ -198,12 +208,17 @@ template < class Data > Data & CContext< Data >::active()
         break;
     }
 
-  return *mMasterData;
+  return *mpMasterData;
+}
+
+template < class Data > Data * CContext< Data >::threadData()
+{
+  return mThreadData;
 }
 
 template < class Data > const Data & CContext< Data >::master() const
 {
-  return *mMasterData;
+  return *mpMasterData;
 }
 
 template < class Data > const Data & CContext< Data >::active() const
@@ -211,7 +226,7 @@ template < class Data > const Data & CContext< Data >::active() const
   switch (omp_get_num_threads())
     {
       case 1:
-        return *mMasterData;
+        return *mpMasterData;
         break;
 
       default:
@@ -219,37 +234,22 @@ template < class Data > const Data & CContext< Data >::active() const
         break;
     }
 
-  return *mMasterData;
+  return *mpMasterData;
 }
 
-template < class Data > Data * CContext< Data >::beginThread()
+template < class Data > Data const * CContext< Data >::threadData() const
 {
   return mThreadData;
-}
-
-template < class Data > Data * CContext< Data >::endThread()
-{
-  return mThreadData + mSize;
-}
-
-template < class Data > const Data * CContext< Data >::beginThread() const
-{
-  return mThreadData;
-}
-
-template < class Data > const Data * CContext< Data >::endThread() const
-{
-  return mThreadData + mSize;
 }
 
 template < class Data > bool CContext< Data >::isMaster(const Data * data) const
 {
-  return mMasterData == data;
+  return mpMasterData == data;
 }
 
 template < class Data > bool CContext< Data >::isThread(const Data * data) const
 {
-  return mMasterData != data;
+  return mpMasterData != data;
 }
 
 template < class Data > int CContext< Data >::localIndex(const Data * data) const

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 # ifndef WIN32_LEAN_AND_MEAN
 # define WIN32_LEAN_AND_MEAN
 # endif // WIN32_LEAN_AND_MEAN
@@ -62,7 +62,7 @@ const char * findLocale()
 // static
 CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
 {
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
   int size;
 
   size = MultiByteToWideChar(CP_UTF8, // code page
@@ -88,7 +88,7 @@ CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
 #endif // WIN32
 
 #if (defined SunOS || defined Linux)
-  static iconv_t Converter = NULL;
+  iconv_t Converter = nullptr;
 
   if (Converter == NULL)
     {
@@ -152,7 +152,7 @@ CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
   CLocaleString Result(Locale);
 
   // Reset the Converter
-  iconv(Converter, NULL, &Utf8Length, NULL, &LocaleLength);
+  iconv_close(Converter);
 
   // Release memory
   free(Utf8);
@@ -161,7 +161,7 @@ CLocaleString CLocaleString::fromUtf8(const std::string & utf8)
   return Result;
 #endif // SunOS || Linux
 
-#ifdef Darwin
+#if !defined(WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
   return CLocaleString(utf8.c_str());
 #endif
 }
@@ -223,31 +223,32 @@ std::string CLocaleString::toUtf8() const
       return "";
     }
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
   int size;
 
   size = WideCharToMultiByte(CP_UTF8, // code page
-                             0, // performance and mapping flags
-                             mpStr, // address of wide-character string
-                             -1, // NULL terminated
-                             NULL, // address of buffer for new string
-                             0, // size of buffer
-                             NULL, // address of default for unmappable characters
-                             NULL) + 1; // address of flag set when default char used
+                             0,       // performance and mapping flags
+                             mpStr,   // address of wide-character string
+                             -1,      // NULL terminated
+                             NULL,    // address of buffer for new string
+                             0,       // size of buffer
+                             NULL,    // address of default for unmappable characters
+                             NULL)
+         + 1; // address of flag set when default char used
 
   char * pUtf8 = new char[size];
 
   WideCharToMultiByte(CP_UTF8, // code page
-                      0, // address of wide-character string
-                      mpStr, // address of wide-character string
-                      -1, // NULL terminated
-                      pUtf8, // address of buffer for new string
-                      size, // size of buffer
-                      NULL, // address of default for unmappable characters
-                      NULL);     // address of flag set when default char used
+                      0,       // address of wide-character string
+                      mpStr,   // address of wide-character string
+                      -1,      // NULL terminated
+                      pUtf8,   // address of buffer for new string
+                      size,    // size of buffer
+                      NULL,    // address of default for unmappable characters
+                      NULL);   // address of flag set when default char used
 
   std::string Utf8 = pUtf8;
-  delete [] pUtf8;
+  delete[] pUtf8;
 
   return Utf8;
 #endif // WIN32
@@ -263,16 +264,16 @@ std::string CLocaleString::toUtf8() const
       Converter = iconv_open(To, From);
     }
 
-  if (Converter == (iconv_t)(-1))
+  if (Converter == (iconv_t) (-1))
     return mpStr;
 
   size_t LocaleLength = strlen(mpStr);
   char * Locale = strdup(mpStr);
-#if (COPASI_ICONV_CONST_CHAR) // non standard iconv declaration :(
+#  if (COPASI_ICONV_CONST_CHAR) // non standard iconv declaration :(
   const char * pLocale = Locale;
-#else
+#  else
   char * pLocale = Locale;
-#endif
+#  endif
 
   size_t Utf8Length = LocaleLength + 1;
   size_t SpaceLeft = LocaleLength;
@@ -280,56 +281,59 @@ std::string CLocaleString::toUtf8() const
   char * pUtf8 = Utf8;
 
   while (LocaleLength)
-    if ((size_t)(-1) ==
-        iconv(Converter, &pLocale, &LocaleLength, &pUtf8, &SpaceLeft))
+    if ((size_t) (-1) == iconv(Converter, &pLocale, &LocaleLength, &pUtf8, &SpaceLeft))
       {
         switch (errno)
           {
-            case EILSEQ:
-              pUtf8 = Utf8;
-              LocaleLength = 0;
-              break;
+          case EILSEQ:
+            pUtf8 = Utf8;
+            LocaleLength = 0;
+            break;
 
-            case EINVAL:
-              pUtf8 = Utf8;
-              LocaleLength = 0;
-              break;
+          case EINVAL:
+            pUtf8 = Utf8;
+            LocaleLength = 0;
+            break;
 
-            case E2BIG:
-              char * pTmp = Utf8;
-              size_t OldLength = Utf8Length;
-              Utf8Length += 2 * LocaleLength;
+          case E2BIG:
+            char * pTmp = Utf8;
+            size_t OldLength = Utf8Length;
+            Utf8Length += 2 * LocaleLength;
 
-              Utf8 = new char[Utf8Length];
-              memcpy(Utf8, pTmp,
-                     sizeof(char) * (OldLength - SpaceLeft - 1));
-              pUtf8 = Utf8 + OldLength - SpaceLeft - 1;
-              SpaceLeft += 2 * LocaleLength;
-              delete [] pTmp;
+            Utf8 = new char[Utf8Length];
+            memcpy(Utf8, pTmp,
+                   sizeof(char) * (OldLength - SpaceLeft - 1));
+            pUtf8 = Utf8 + OldLength - SpaceLeft - 1;
+            SpaceLeft += 2 * LocaleLength;
+            delete[] pTmp;
 
-              break;
+            break;
           }
 
         continue;
       }
 
   *pUtf8 = 0x00; // NULL terminate the string.
-  std::string Result = Utf8;
+  {
+    std::string Result = Utf8;
 
-  // Reset the Converter
-  iconv(Converter, NULL, &LocaleLength, NULL, &Utf8Length);
+    // Reset the Converter
+    iconv(Converter, NULL, &LocaleLength, NULL, &Utf8Length);
 
-  // Release memory
-  free(Locale);
-  delete [] Utf8;
+    // Release memory
+    free(Locale);
+    delete[] Utf8;
 
-  return Result;
+    return Result;
+  }
 #endif // SunOS || Linux
 
-#ifdef Darwin
-  std::string Result = mpStr;
-  return Result;
-#endif // Darwin
+#if !defined(WIN32) || defined(__MINGW32__) || defined(__MINGW64__)
+  {
+    std::string Result = mpStr;
+    return Result;
+  }
+#endif
 }
 
 const CLocaleString::lchar * CLocaleString::c_str() const

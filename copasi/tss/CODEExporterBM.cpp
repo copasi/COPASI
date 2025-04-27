@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -65,18 +65,18 @@ CODEExporterBM::CODEExporterBM()
 {}
 bool CODEExporterBM::exportTitleData(const CDataModel* pDataModel, std::ostream & os)
 {
-  os << "METHOD stiff" << std::endl;
-  os << std::endl;
-  os << "STARTTIME = 0" << std::endl;
+  os << "METHOD stiff" << "\n";
+  os << "\n";
+  os << "STARTTIME = 0" << "\n";
 
   const CTrajectoryTask * pTrajectory =
     dynamic_cast<const CTrajectoryTask *>(&const_cast<CDataModel*>(pDataModel)->getTaskList()->operator[]("Time-Course"));
   const CTrajectoryProblem * pTrajectoryProblem =
     dynamic_cast<const CTrajectoryProblem *>(pTrajectory->getProblem());
 
-  os << "STOPTIME = " << pTrajectoryProblem->getDuration() << std::endl;
-  os << "DT = " << pTrajectoryProblem->getStepSize() << std::endl;
-  os << std::endl;
+  os << "STOPTIME = " << pTrajectoryProblem->getDuration() << "\n";
+  os << "DT = " << pTrajectoryProblem->getStepSize() << "\n";
+  os << "\n";
 
   return true;
 }
@@ -220,7 +220,7 @@ bool CODEExporterBM::exportSingleObject(std::ostringstream & which,
                                         const std::string & comments)
 {
   which << name << " = " << expression
-        << '\t' << '\t' << "; " << comments << std::endl;
+        << '\t' << '\t' << "; " << comments << "\n";
 
   return true;
 }

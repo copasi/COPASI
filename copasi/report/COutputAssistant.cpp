@@ -1237,7 +1237,7 @@ COutputAssistant::createDefaultOutput(
               {
                 itItem->setTitle("sum of squares");
                 itItem->setActivity(COutputInterface::DURING);
-                itItem->setValue("Line type", (unsigned C_INT32) 0);
+                itItem->setValue("Line type", (unsigned C_INT32) CPlotItem::LineType::LinesAndSymbols);
                 itItem++;
               }
           }
@@ -1278,7 +1278,7 @@ COutputAssistant::createDefaultOutput(
               {
                 itItem->setTitle("target function");
                 itItem->setActivity(COutputInterface::DURING);
-                itItem->setValue("Line type", (unsigned C_INT32) 0);
+                itItem->setValue("Line type", (unsigned C_INT32) CPlotItem::LineType::LinesAndSymbols);
                 itItem++;
               }
           }

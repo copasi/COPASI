@@ -125,7 +125,8 @@ if(NOT APPLE)
     install(TARGETS CopasiUI DESTINATION bin)
 # ensure that next to the binaries also dependencies are copied
     if (WIN32)
-        option(COPASI_WIN32_SKIP_BUNDLE_UTILS "Skip bundle utilities" OFF)
+        option(COPASI_WIN32_SKIP_BUNDLE_UTILS "Skip bundle utilities" ON)
+        SET(DIRS "" CACHE STRING "Directories containing shared libraries for fixup_bundle")
         mark_as_advanced(COPASI_WIN32_SKIP_BUNDLE_UTILS)
         if (NOT COPASI_WIN32_SKIP_BUNDLE_UTILS)
         install(CODE "

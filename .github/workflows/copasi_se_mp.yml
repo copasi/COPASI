@@ -37,13 +37,11 @@ jobs:
 
     - name: install libuuid (static)
       run: |
-           curl -L -O http://downloads.sourceforge.net/libuuid/libuuid-1.0.3.tar.gz 
-           tar -zxf libuuid-1.0.3.tar.gz
-           cd libuuid-1.0.3
-           ./configure --disable-dependency-tracking --with-pic --enable-static=yes --enable-shared=no
-           make
-           make install
-           rm /usr/local/lib/libuuid.la
+           yum install -y libuuid-devel
+
+    - name: install libasan
+      run: |
+           yum install -y gcc-toolset-14-libasan-devel
 
     - name: Update COPASI Version
       run: ./gitTools/UpdateCopasiVersion --force
@@ -51,7 +49,7 @@ jobs:
     - name: Configure COPASI
       shell: bash
       run: |
-        cmake -B build_copasi -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCOPASI_INSTALL_C_API=ON -DBUILD_TESTS=ON -DBUILD_GUI=OFF -DCOPASI_DEPENDENCY_DIR=./dependencies/ -DCMAKE_INSTALL_PREFIX=./install/ -DENABLE_OMP=ON -DENABLE_JIT=OFF -S . 
+        cmake -B build_copasi -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCOPASI_INSTALL_C_API=ON -DBUILD_TESTS=ON -DBUILD_GUI=OFF -DCOPASI_DEPENDENCY_DIR=./dependencies/ -DCMAKE_INSTALL_PREFIX=./install/ -DENABLE_OMP=ON -DENABLE_JIT=ON -DENABLE_USE_ASAN=ON -S . 
         sed -i 's/libgomp.a/libgomp.so/g' build_copasi/CMakeCache.txt
         sed -i 's/libpthread.a/libpthread.so/g' build_copasi/CMakeCache.txt
 

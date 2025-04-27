@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -156,6 +156,12 @@ add_custom_target(binding_csharp_swig DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/csharp
 # 
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+
+if (MSVC)
+    # the build fails when compiled with packages as the object file is too 
+    # big adding the big flag makes it work!
+    add_definitions(/bigobj)
+endif(MSVC)
 
 add_library(binding_csharp_native_lib SHARED ${CMAKE_CURRENT_BINARY_DIR}/copasi_wrapper.cpp) 
 add_dependencies(binding_csharp_native_lib binding_csharp_swig)

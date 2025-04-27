@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the -->
+<!-- Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the -->
 <!-- University of Virginia, University of Heidelberg, and University -->
 <!-- of Connecticut School of Medicine. -->
 <!-- All rights reserved. -->
@@ -21,8 +21,8 @@
 
 <ParameterGroup name="Configuration">
   <ParameterGroup name="MIRIAM Resources">
-    <Parameter name="LastUpdateDate" type="unsignedInteger" value="1678291289"/>
-    <Parameter name="Frequency" type="unsignedInteger" value="604800"/>
+    <Parameter name="LastUpdateDate" type="unsignedInteger" value="1738608731"/>
+    <Parameter name="Frequency" type="unsignedInteger" value="0"/>
     <ParameterGroup name="Resources">
       <ParameterGroup name="BIND">
         <Parameter name="DisplayName" type="string" value="BIND"/>
@@ -7686,6 +7686,276 @@
         <Parameter name="DisplayName" type="string" value="BioKC"/>
         <Parameter name="URI" type="string" value="urn:miriam:biokc"/>
         <Parameter name="Pattern" type="string" value="bkc[0-9]*"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Genome assembly database - RefSeq accessions">
+        <Parameter name="DisplayName" type="string" value="Genome assembly database - RefSeq accessions"/>
+        <Parameter name="URI" type="string" value="urn:miriam:refseq.gcf"/>
+        <Parameter name="Pattern" type="string" value="^GCF_[0-9]{9}(\.[0-9]+)?$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Synapse Data Repository">
+        <Parameter name="DisplayName" type="string" value="Synapse Data Repository"/>
+        <Parameter name="URI" type="string" value="urn:miriam:synapse"/>
+        <Parameter name="Pattern" type="string" value="[0-9]*\.*[0-9]*"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Chemical Information Ontology">
+        <Parameter name="DisplayName" type="string" value="Chemical Information Ontology"/>
+        <Parameter name="URI" type="string" value="urn:miriam:cheminf"/>
+        <Parameter name="Pattern" type="string" value="^CHEMINF:\d+$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="1"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="MediaDive mediums">
+        <Parameter name="DisplayName" type="string" value="MediaDive mediums"/>
+        <Parameter name="URI" type="string" value="urn:miriam:mediadive.medium"/>
+        <Parameter name="Pattern" type="string" value="^[A-Z]?[0-9]{1,5}[a-z]?$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Medical Action Ontology">
+        <Parameter name="DisplayName" type="string" value="Medical Action Ontology"/>
+        <Parameter name="URI" type="string" value="urn:miriam:maxo"/>
+        <Parameter name="Pattern" type="string" value="\d{7}"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Ontology for Parasite Lifecycle">
+        <Parameter name="DisplayName" type="string" value="Ontology for Parasite Lifecycle"/>
+        <Parameter name="URI" type="string" value="urn:miriam:opl"/>
+        <Parameter name="Pattern" type="string" value="^OPL:\d+$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="1"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="BioDeep Database">
+        <Parameter name="DisplayName" type="string" value="BioDeep Database"/>
+        <Parameter name="URI" type="string" value="urn:miriam:biodeep"/>
+        <Parameter name="Pattern" type="string" value="^BioDeep_\d{11}$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="DOME Registry">
+        <Parameter name="DisplayName" type="string" value="DOME Registry"/>
+        <Parameter name="URI" type="string" value="urn:miriam:dome"/>
+        <Parameter name="Pattern" type="string" value="^[a-z0-9]{10}$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="NCBI Data Repository Service">
+        <Parameter name="DisplayName" type="string" value="NCBI Data Repository Service"/>
+        <Parameter name="URI" type="string" value="urn:miriam:ncbidrs"/>
+        <Parameter name="Pattern" type="string" value="^[0-9a-fA-F]{32}$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Model Card Ontology">
+        <Parameter name="DisplayName" type="string" value="Model Card Ontology"/>
+        <Parameter name="URI" type="string" value="urn:miriam:mcro"/>
+        <Parameter name="Pattern" type="string" value="^MCRO:\d+$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="1"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Integrated Chemical Environment - Chemical data">
+        <Parameter name="DisplayName" type="string" value="Integrated Chemical Environment - Chemical data"/>
+        <Parameter name="URI" type="string" value="urn:miriam:ice.chem"/>
+        <Parameter name="Pattern" type="string" value="\d{2,7}-\d{2}-\d|DTXSID\d{7,9}|[A-Z]{14}-[A-Z]{8}[SN][A-Z]-[A-Z]$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Mondo Disease Ontology">
+        <Parameter name="DisplayName" type="string" value="Mondo Disease Ontology"/>
+        <Parameter name="URI" type="string" value="urn:miriam:mondo"/>
+        <Parameter name="Pattern" type="string" value="^\d{7}$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="tricdb">
+        <Parameter name="DisplayName" type="string" value="tricdb"/>
+        <Parameter name="URI" type="string" value="urn:miriam:tricdb"/>
+        <Parameter name="Pattern" type="string" value="^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Statistical Ontology">
+        <Parameter name="DisplayName" type="string" value="Statistical Ontology"/>
+        <Parameter name="URI" type="string" value="urn:miriam:stato"/>
+        <Parameter name="Pattern" type="string" value="^STATO:\d+$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="1"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="LifeWatch Metadata Catalogue">
+        <Parameter name="DisplayName" type="string" value="LifeWatch Metadata Catalogue"/>
+        <Parameter name="URI" type="string" value="urn:miriam:lw"/>
+        <Parameter name="Pattern" type="string" value="^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Maggot">
+        <Parameter name="DisplayName" type="string" value="Maggot"/>
+        <Parameter name="URI" type="string" value="urn:miriam:maggot"/>
+        <Parameter name="Pattern" type="string" value="^[A-Za-z0-9]+$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Human Chromosome Ontology">
+        <Parameter name="DisplayName" type="string" value="Human Chromosome Ontology"/>
+        <Parameter name="URI" type="string" value="urn:miriam:hco"/>
+        <Parameter name="Pattern" type="string" value="^.+$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Ontology of Biological and Clinical Statistics">
+        <Parameter name="DisplayName" type="string" value=" Ontology of Biological and Clinical Statistics"/>
+        <Parameter name="URI" type="string" value="urn:miriam:obcs"/>
+        <Parameter name="Pattern" type="string" value="^OBCS:\d+$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="1"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Metadata Management and distribution system for Multiple GNSS Networks">
+        <Parameter name="DisplayName" type="string" value="Metadata Management and distribution system for Multiple GNSS Networks"/>
+        <Parameter name="URI" type="string" value="urn:miriam:moid"/>
+        <Parameter name="Pattern" type="string" value="[a-zA-Z0-9]+\.[a-f0-9]{24}"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Biofactoid">
+        <Parameter name="DisplayName" type="string" value="Biofactoid"/>
+        <Parameter name="URI" type="string" value="urn:miriam:biofactoid"/>
+        <Parameter name="Pattern" type="string" value="^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="ODAM Data explorer">
+        <Parameter name="DisplayName" type="string" value="ODAM Data explorer"/>
+        <Parameter name="URI" type="string" value="urn:miriam:odam.explorer"/>
+        <Parameter name="Pattern" type="string" value="^[A-Za-z][A-Za-z0-9]+$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="CSTR">
+        <Parameter name="DisplayName" type="string" value="CSTR"/>
+        <Parameter name="URI" type="string" value="urn:miriam:cstr"/>
+        <Parameter name="Pattern" type="string" value="^\w{5}\.\d{2}\..*$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Austrian Library Network">
+        <Parameter name="DisplayName" type="string" value="Austrian Library Network"/>
+        <Parameter name="URI" type="string" value="urn:miriam:obv"/>
+        <Parameter name="Pattern" type="string" value="AC[0-9]{8}"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Gemeinsame Normdatei">
+        <Parameter name="DisplayName" type="string" value="Gemeinsame Normdatei"/>
+        <Parameter name="URI" type="string" value="urn:miriam:gnd"/>
+        <Parameter name="Pattern" type="string" value="[0-9X\-]+"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="OpenCitations Meta Identifier">
+        <Parameter name="DisplayName" type="string" value="OpenCitations Meta Identifier"/>
+        <Parameter name="URI" type="string" value="urn:miriam:omid"/>
+        <Parameter name="Pattern" type="string" value="^[a-z][a-z]/06[1-9]*0[1-9][0-9]*$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="TogoVar">
+        <Parameter name="DisplayName" type="string" value="TogoVar"/>
+        <Parameter name="URI" type="string" value="urn:miriam:togovar"/>
+        <Parameter name="Pattern" type="string" value="^tgv[0-9]+$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="VA Data Commons">
+        <Parameter name="DisplayName" type="string" value="VA Data Commons"/>
+        <Parameter name="URI" type="string" value="urn:miriam:dg.va03"/>
+        <Parameter name="Pattern" type="string" value="[0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="Nanbyo Disease Ontology">
+        <Parameter name="DisplayName" type="string" value="Nanbyo Disease Ontology"/>
+        <Parameter name="URI" type="string" value="urn:miriam:nando"/>
+        <Parameter name="Pattern" type="string" value="^NANDO:[0-9]+$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="1"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="AnVIL DRS">
+        <Parameter name="DisplayName" type="string" value="AnVIL DRS"/>
+        <Parameter name="URI" type="string" value="urn:miriam:drs.anv0"/>
+        <Parameter name="Pattern" type="string" value="^v2_[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"/>
+        <Parameter name="Citation" type="bool" value="0"/>
+        <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
+        <ParameterGroup name="Deprecated">
+        </ParameterGroup>
+      </ParameterGroup>
+      <ParameterGroup name="COG">
+        <Parameter name="DisplayName" type="string" value="COG"/>
+        <Parameter name="URI" type="string" value="urn:miriam:cog"/>
+        <Parameter name="Pattern" type="string" value="^COG[0-9]+$"/>
         <Parameter name="Citation" type="bool" value="0"/>
         <Parameter name="NamespaceEmbeddedInPattern" type="bool" value="0"/>
         <ParameterGroup name="Deprecated">

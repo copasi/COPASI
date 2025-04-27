@@ -34,7 +34,11 @@ extern "C"
 #  define daxpy_ daxpy
 #  define dcopy_ dcopy
 #  define ddot_ ddot
+#  if (defined WIN32)
+#  define dgemm_ DGEMM
+#else 
 #  define dgemm_ dgemm
+#endif
 #  define dnrm2_ dnrm2
 #  define dscal_ dscal
 #  define idamax_ idamax
@@ -75,7 +79,7 @@ extern "C"
 #  include <blas.h>
 # elif defined(HAVE_CBLAS_H)
 #  include <cblas.h>
-# else
+# elif !defined(USE_MKL)
 #  include "copasi/lapack/blas.h"
 # endif
 
@@ -115,7 +119,7 @@ extern "C"
 # undef max
 #endif // max
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 # if _MSC_VER < 1600
 #  define min _cpp_min
 #  define max _cpp_max

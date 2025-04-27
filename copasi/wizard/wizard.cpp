@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -82,7 +82,7 @@ WizardDialog::WizardDialog(QWidget* parent, const char* /* name */, bool /* moda
 
   buttonGroup->button(0)->setChecked(true);
 
-  connect(buttonGroup, SIGNAL(buttonClicked(int)), this, SLOT(buttonGroup2_clicked(int)));
+  connect(buttonGroup, SIGNAL(buttonClicked(QAbstractButton *)), this, SLOT(buttonGroup2_clicked(QAbstractButton *)));
   connect(textBrowser, SIGNAL(anchorClicked(const QUrl &)), this, SLOT(textBrowser_anchorClicked(const QUrl &)));
 }
 
@@ -100,7 +100,7 @@ const char* WizardDialog::Error = "<html><head><title>Error</title></head><body>
 
 QString WizardDialog::helpPath = "";
 
-void WizardDialog::buttonGroup2_clicked(int)
+void WizardDialog::buttonGroup2_clicked(QAbstractButton*)
 {
   int checkedId = this->buttonGroup->checkedId();
 
@@ -130,13 +130,13 @@ void WizardDialog::buttonGroup2_clicked(int)
 void WizardDialog::forwardButton_clicked()
 {
   buttonGroup->button(buttonGroup->checkedId() + 1)->setChecked(true);
-  buttonGroup2_clicked(this->buttonGroup->checkedId());
+  buttonGroup2_clicked(this->buttonGroup->checkedButton());
 }
 
 void WizardDialog::backButton_clicked()
 {
   buttonGroup->button(buttonGroup->checkedId() - 1)->setChecked(true);
-  buttonGroup2_clicked(this->buttonGroup->checkedId());
+  buttonGroup2_clicked(this->buttonGroup->checkedButton());
 }
 
 void WizardDialog::textBrowser_anchorClicked(const QUrl & url)
@@ -165,7 +165,7 @@ void WizardDialog::textBrowser_anchorClicked(const QUrl & url)
   else if (name == "Step 1")
     {
       buttonGroup->button(0)->setChecked(true);
-      buttonGroup2_clicked(this->buttonGroup->checkedId());
+      buttonGroup2_clicked(this->buttonGroup->checkedButton());
     }
   else if (name == "Time Course")
     {

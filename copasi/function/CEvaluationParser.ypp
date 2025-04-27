@@ -32,6 +32,7 @@
 
 %token TOKEN_CALL
 %token TOKEN_FUNCTION
+%token TOKEN_FUNCTION_1
 %token TOKEN_FUNCTION_2
 %token TOKEN_SIGN
 
@@ -79,6 +80,7 @@
 %right TOKEN_OPERATOR_POWER
 %right TOKEN_CALL // Will never occur
 %right TOKEN_FUNCTION // Will never occur
+%right TOKEN_FUNCTION_1 // Will never occur
 %right TOKEN_FUNCTION_2 // Will never occur
 %right TOKEN_LOGICAL_CHOICE // Will never occur
 
@@ -100,7 +102,7 @@ result:   exp
             mpRootNode = $$; 
           }
 
-d_or_b:    call 
+d_or_b:   call 
           {
             $$ = $1;
             mpRootNode = $$; 
@@ -186,7 +188,11 @@ exp:      TOKEN_NUMBER
             $$ = $2;
             mpRootNode = $$; 
           }
-        | TOKEN_FUNCTION TOKEN_STRUCTURE_OPEN exp TOKEN_STRUCTURE_CLOSE
+        | function
+          {
+            $$ = $1;
+          }
+        | TOKEN_FUNCTION_1 TOKEN_STRUCTURE_OPEN exp TOKEN_STRUCTURE_CLOSE
           {
             $$ = $1;
             $$->addChild($3);
@@ -476,6 +482,32 @@ bool:     TOKEN_LOGICAL_VALUE
             mpRootNode = $$; 
           }
 
+function: TOKEN_FUNCTION TOKEN_STRUCTURE_OPEN TOKEN_STRUCTURE_CLOSE
+          {
+            $$ = $1;
+          }
+        | TOKEN_FUNCTION TOKEN_STRUCTURE_OPEN exp TOKEN_STRUCTURE_CLOSE
+          {
+            $$ = $1;
+            $$->addChild($3);
+          }
+        | fcont exp TOKEN_STRUCTURE_CLOSE
+          {
+            $$ = $1;
+            $$->addChild($2);
+          }
+
+fcont:    TOKEN_FUNCTION TOKEN_STRUCTURE_OPEN exp TOKEN_STRUCTURE_COMMA
+          {
+            $$ = $1;
+            $$->addChild($3);
+          }
+        | fcont exp TOKEN_STRUCTURE_COMMA
+          {
+            $$ = $1;
+            $$->addChild($2);
+          }
+
 vector:   TOKEN_STRUCTURE_VECTOR_OPEN TOKEN_STRUCTURE_VECTOR_CLOSE
           {
             $$ = new CEvaluationNodeVector();
@@ -512,47 +544,47 @@ call:     TOKEN_CALL TOKEN_STRUCTURE_CLOSE
           {
             $$ = $1;
           }
-        | cstart d_or_b TOKEN_STRUCTURE_CLOSE
+        | ccont d_or_b TOKEN_STRUCTURE_CLOSE
           {
             $$ = $1;
             $$->addChild($2); 
           }
-        | cstart exp TOKEN_STRUCTURE_CLOSE
+        | ccont exp TOKEN_STRUCTURE_CLOSE
           {
             $$ = $1;
             $$->addChild($2); 
           }
-        | cstart bool TOKEN_STRUCTURE_CLOSE
+        | ccont bool TOKEN_STRUCTURE_CLOSE
           {
             $$ = $1;
             $$->addChild($2); 
           }
-        | cstart vector TOKEN_STRUCTURE_CLOSE
+        | ccont vector TOKEN_STRUCTURE_CLOSE
           {
             $$ = $1;
             $$->addChild($2); 
           }
 
-cstart:   TOKEN_CALL 
+ccont:    TOKEN_CALL 
           {
             $$ = $1;
           }
-        | cstart d_or_b TOKEN_STRUCTURE_COMMA
-          {
-            $$ = $1;
-            $$->addChild($2); 
-          }
-        | cstart exp TOKEN_STRUCTURE_COMMA
+        | ccont d_or_b TOKEN_STRUCTURE_COMMA
           {
             $$ = $1;
             $$->addChild($2); 
           }
-        | cstart bool TOKEN_STRUCTURE_COMMA
+        | ccont exp TOKEN_STRUCTURE_COMMA
           {
             $$ = $1;
             $$->addChild($2); 
           }
-        | cstart vector TOKEN_STRUCTURE_COMMA
+        | ccont bool TOKEN_STRUCTURE_COMMA
+          {
+            $$ = $1;
+            $$->addChild($2); 
+          }
+        | ccont vector TOKEN_STRUCTURE_COMMA
           {
             $$ = $1;
             $$->addChild($2); 

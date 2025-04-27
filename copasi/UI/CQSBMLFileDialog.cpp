@@ -46,7 +46,8 @@ std::pair< QString, std::pair< unsigned C_INT32, unsigned C_INT32 > > CQSBMLFile
                    "Level 2 Version 3 (*.xml);;"
                    "Level 2 Version 4 (*.xml);;"
                    "Level 2 Version 5 (*.xml);;"
-                   "Level 3 Version 1 (*.xml)";
+                   "Level 3 Version 1 (*.xml);;"
+                   "Level 3 Version 2 (*.xml)";
 
   QString SelectedFilter =
     QString("Level %1 Version %2 (*.xml)").arg(QString::number(sbmlLevel)).arg(QString::number(sbmlVersion));;

@@ -104,6 +104,7 @@ public:
     EXP,
     True,
     XOR,
+    IMPLIES,
     RATIONALE,
     AND,
     CLOSE,
@@ -120,6 +121,7 @@ public:
     NE,
     TAN,
     REMAINDER,
+    QUOTIENT,
     GT,
     SEC,
     CSC,
@@ -369,7 +371,7 @@ public:
    * Create a new invalid ASTNode.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode* toAST(const CDataModel* pDataModel) const;
+  virtual ASTNode* toAST(const CDataModel* pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const;
 
   /**
    * Copy a node and assign new children child1 and child2

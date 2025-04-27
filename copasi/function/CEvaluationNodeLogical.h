@@ -82,6 +82,10 @@ public:
                     (*mpLeftValue < 0.5 && *mpRightValue > 0.5)) ? 1.0 : 0.0;
           break;
 
+        case SubType::IMPLIES:
+          mValue = (*mpLeftValue < 0.5 || *mpRightValue > 0.5) ? 1.0 : 0.0;
+          break;
+
         case SubType::AND:
           mValue = (*mpLeftValue > 0.5 &&
                     *mpRightValue > 0.5) ? 1.0 : 0.0;
@@ -189,7 +193,7 @@ public:
    * Create a new ASTNode corresponding to this OperatorNode.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode* toAST(const CDataModel* pDataModel) const override;
+  virtual ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const override;
 
   /**
    * Build the MathML string

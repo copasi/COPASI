@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -802,6 +807,7 @@ bool CCellDesignerImporter::createSpeciesGlyph(const SpeciesAlias& sa)
 bool CCellDesignerImporter::createSpeciesStyles()
 {
   bool result = true;
+  LayoutPkgNamespaces NameSpaces;
 
   if (this->mpLocalRenderInfo == NULL)
     {
@@ -865,7 +871,9 @@ bool CCellDesignerImporter::createSpeciesStyles()
                   // all primitives we create should be relative to the glyphs bounding box
                   // sine the CellDesigner annotation contains absolute values for
                   // all coordinates, we need to subtract the species glyphs position
-                  Point offset(new LayoutPkgNamespaces(), -glyphs_it->first->getBoundingBox()->getPosition()->x(), -glyphs_it->first->getBoundingBox()->getPosition()->y());
+                  LayoutPkgNamespaces NameSpaces;
+
+                  Point offset(&NameSpaces, -glyphs_it->first->getBoundingBox()->getPosition()->x(), -glyphs_it->first->getBoundingBox()->getPosition()->y());
 
                   while (pCurrent != NULL)
                     {
@@ -1010,7 +1018,7 @@ bool CCellDesignerImporter::createSpeciesStyles()
                                   result = CCellDesignerImporter::createPrimitive(pStyle->getGroup(),
                                            anno_pos->second.mIdentity,
                                            glyphs_it->second.mBounds,
-                                           Point(new LayoutPkgNamespaces(), -glyphs_it->first->getBoundingBox()->getPosition()->x(), -glyphs_it->first->getBoundingBox()->getPosition()->y()),
+                                           Point(&NameSpaces, -glyphs_it->first->getBoundingBox()->getPosition()->x(), -glyphs_it->first->getBoundingBox()->getPosition()->y()),
                                            glyphs_it->second.mUView.mLineWidth,
                                            "#000000",
                                            color_id);
@@ -2555,6 +2563,8 @@ CCellDesignerImporter::createUniUniCurve(ReactionAnnotation& ranno,
     LocalStyle* pReactionStyle
                                         )
 {
+  LayoutPkgNamespaces NameSpaces;
+
   bool result = true;
   assert(ranno.mBaseReactants.size() == 1);
   assert(ranno.mBaseProducts.size() == 1);
@@ -2587,12 +2597,12 @@ CCellDesignerImporter::createUniUniCurve(ReactionAnnotation& ranno,
           Point pReactantAnchor = CCellDesignerImporter::getPositionPoint(box_pos1->second, ranno.mBaseReactants[0].mPosition);
           // pProductAnchor stores the coordinates of the anchor point at the product
           Point pProductAnchor = CCellDesignerImporter::getPositionPoint(box_pos2->second, ranno.mBaseProducts[0].mPosition);
-          Point v1(new LayoutPkgNamespaces(), pProductAnchor.x() - pReactantAnchor.x(), pProductAnchor.y() - pReactantAnchor.y());
-          Point v2(new LayoutPkgNamespaces());
+          Point v1(&NameSpaces, pProductAnchor.x() - pReactantAnchor.x(), pProductAnchor.y() - pReactantAnchor.y());
+          Point v2(&NameSpaces);
           result = CCellDesignerImporter::createOrthogonal(v1, v2);
 
-          Point p3(new LayoutPkgNamespaces(), pReactantAnchor.x() + v2.x(), pReactantAnchor.y() + v2.y());
-          Point p(new LayoutPkgNamespaces());
+          Point p3(&NameSpaces, pReactantAnchor.x() + v2.x(), pReactantAnchor.y() + v2.y());
+          Point p(&NameSpaces);
           std::vector<Point> points;
 
           // we add pReactantAnchor and pProductAnchor to the points vector
@@ -2658,7 +2668,7 @@ CCellDesignerImporter::createUniUniCurve(ReactionAnnotation& ranno,
           p3 = reactantPoints.back();
 
           double distance = CCellDesignerImporter::distance(p3, pProductAnchor);
-          Point v(new LayoutPkgNamespaces(), (pProductAnchor.x() - p3.x()) / distance, (pProductAnchor.y() - p3.y()) / distance);
+          Point v(&NameSpaces, (pProductAnchor.x() - p3.x()) / distance, (pProductAnchor.y() - p3.y()) / distance);
           // create the curve for the reaction glyph
           // right now, the reaction glyph consists of a short
           // line segment
@@ -2673,7 +2683,7 @@ CCellDesignerImporter::createUniUniCurve(ReactionAnnotation& ranno,
           Curve* pCurve = pRGlyph->getCurve();
           assert(pCurve != NULL);
           LineSegment* pLS = pCurve->createLineSegment();
-          Point center(new LayoutPkgNamespaces(), (p3.x() + pProductAnchor.x()) * 0.5, (p3.y() + pProductAnchor.y()) * 0.5);
+          Point center(&NameSpaces, (p3.x() + pProductAnchor.x()) * 0.5, (p3.y() + pProductAnchor.y()) * 0.5);
           pLS->setStart(center.x() - distance * v.x(), center.y() - distance * v.y());
           pLS->setEnd(center.x() + distance * v.x(), center.y() + distance * v.y());
           // add a new substrate point
@@ -2719,6 +2729,8 @@ CCellDesignerImporter::createUniBiCurve(ReactionAnnotation& ranno,
                                         ReactionGlyph* pRGlyph,
                                         LocalStyle* pReactionStyle)
 {
+  LayoutPkgNamespaces NameSpaces;
+
   bool result = true;
   assert(ranno.mBaseReactants.size() == 1);
   assert(ranno.mBaseProducts.size() == 2);
@@ -2728,7 +2740,7 @@ CCellDesignerImporter::createUniBiCurve(ReactionAnnotation& ranno,
   // that tells us, which of the points is the connection point
   // center_product1 - center_substrate_1)
   // if no tShapeIndex or omittedSHapeIndex is given, we assume it is 0
-  Point connectionPoint(new LayoutPkgNamespaces());
+  Point connectionPoint(&NameSpaces);
 
   if (ranno.mEditPoints.mTShapeIndex < (int)ranno.mEditPoints.mPoints.size())
     {
@@ -2767,12 +2779,12 @@ CCellDesignerImporter::createUniBiCurve(ReactionAnnotation& ranno,
       pos2 != this->mCDBounds.end() &&
       pos3 != this->mCDBounds.end())
     {
-      Point p1(new LayoutPkgNamespaces(), pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth() * 0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight() * 0.5);
-      Point p2(new LayoutPkgNamespaces(), pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth() * 0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight() * 0.5);
-      Point p3(new LayoutPkgNamespaces(), pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth() * 0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight() * 0.5);
-      Point v1(new LayoutPkgNamespaces(), p2.x() - p1.x(), p2.y() - p1.y());
-      Point v2(new LayoutPkgNamespaces(), p3.x() - p1.x(), p3.y() - p1.y());
-      Point p(new LayoutPkgNamespaces(), p1.x() + connectionPoint.x()*v1.x() + connectionPoint.y()*v2.x(), p1.y() + connectionPoint.x()*v1.y() + connectionPoint.y()*v2.y());
+      Point p1(&NameSpaces, pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth() * 0.5, pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight() * 0.5);
+      Point p2(&NameSpaces, pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth() * 0.5, pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight() * 0.5);
+      Point p3(&NameSpaces, pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth() * 0.5, pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight() * 0.5);
+      Point v1(&NameSpaces, p2.x() - p1.x(), p2.y() - p1.y());
+      Point v2(&NameSpaces, p3.x() - p1.x(), p3.y() - p1.y());
+      Point p(&NameSpaces, p1.x() + connectionPoint.x()*v1.x() + connectionPoint.y()*v2.x(), p1.y() + connectionPoint.x()*v1.y() + connectionPoint.y()*v2.y());
       // p is the start point of the reaction glyph
       // i.e. the point where the substrates connect
       // create the curve for the reaction glyph
@@ -2814,7 +2826,7 @@ CCellDesignerImporter::createUniBiCurve(ReactionAnnotation& ranno,
                   Point p1 = CCellDesignerImporter::getPositionPoint(pos1->second, ranno.mBaseReactants[0].mPosition);
                   double dist = CCellDesignerImporter::distance(p1, p);
                   assert(dist != 0.0);
-                  Point v(new LayoutPkgNamespaces(), (p1.x() - p.x()) / dist, (p1.y() - p.y()) / dist);
+                  Point v(&NameSpaces, (p1.x() - p.x()) / dist, (p1.y() - p.y()) / dist);
                   dist /= 3.0;
 
                   if (dist > 15.0)
@@ -3008,6 +3020,8 @@ bool CCellDesignerImporter::createBiUniCurve(ReactionAnnotation& ranno,
     ReactionGlyph* pRGlyph,
     LocalStyle* pReactionStyle)
 {
+  LayoutPkgNamespaces NameSpaces;
+
   bool result = true;
   assert(ranno.mBaseReactants.size() == 2);
   assert(ranno.mBaseProducts.size() == 1);
@@ -3015,7 +3029,7 @@ bool CCellDesignerImporter::createBiUniCurve(ReactionAnnotation& ranno,
   assert(!ranno.mEditPoints.mPoints.empty());
   // there should be a tShapeIndex or an omittedShapeIndex element
   // that tells us, which of the points is the connection point
-  Point connectionPoint(new LayoutPkgNamespaces());
+  Point connectionPoint(&NameSpaces);
 
   if (ranno.mEditPoints.mTShapeIndex < (int)ranno.mEditPoints.mPoints.size())
     {
@@ -3056,13 +3070,13 @@ bool CCellDesignerImporter::createBiUniCurve(ReactionAnnotation& ranno,
       pos2 != this->mCDBounds.end() &&
       pos3 != this->mCDBounds.end())
     {
-      Point p1(new LayoutPkgNamespaces(),
+      Point p1(&NameSpaces,
                pos1->second.getPosition()->x() + pos1->second.getDimensions()->getWidth() * 0.5,
                pos1->second.getPosition()->y() + pos1->second.getDimensions()->getHeight() * 0.5);
-      Point p2(new LayoutPkgNamespaces(),
+      Point p2(&NameSpaces,
                pos2->second.getPosition()->x() + pos2->second.getDimensions()->getWidth() * 0.5,
                pos2->second.getPosition()->y() + pos2->second.getDimensions()->getHeight() * 0.5);
-      Point p3(new LayoutPkgNamespaces(),
+      Point p3(&NameSpaces,
                pos3->second.getPosition()->x() + pos3->second.getDimensions()->getWidth() * 0.5,
                pos3->second.getPosition()->y() + pos3->second.getDimensions()->getHeight() * 0.5);
 
@@ -3103,7 +3117,7 @@ bool CCellDesignerImporter::createBiUniCurve(ReactionAnnotation& ranno,
                   Point p3 = CCellDesignerImporter::getPositionPoint(pos3->second, ranno.mBaseProducts[0].mPosition);
                   double dist = CCellDesignerImporter::distance(p3, p);
                   assert(dist != 0.0);
-                  Point v(new LayoutPkgNamespaces(), (p3.x() - p.x()) / dist, (p3.y() - p.y()) / dist);
+                  Point v(&NameSpaces, (p3.x() - p.x()) / dist, (p3.y() - p.y()) / dist);
                   dist /= 3.0;
 
                   if (dist > 15.0)
@@ -3444,6 +3458,8 @@ CCellDesignerImporter::createStyleFromLine(Line &line, const std::string& glyphI
  */
 bool CCellDesignerImporter::createSpeciesReferenceGlyphs(ReactionGlyph* pRGlyph, const std::vector<LinkTarget>& links, std::map<SpeciesReferenceGlyph*, Point>& startsMap, bool reactants)
 {
+  LayoutPkgNamespaces NameSpaces;
+
   bool result = true;
   startsMap.clear();
 
@@ -3608,7 +3624,7 @@ bool CCellDesignerImporter::createSpeciesReferenceGlyphs(ReactionGlyph* pRGlyph,
                                   // there are actually elements that do not have the linkAnchor
                                   // since I currently don't know what to do with these, I just add the
                                   // origin as position
-                                  startsMap.insert(std::pair<SpeciesReferenceGlyph*, Point>(pSRG, Point(new LayoutPkgNamespaces(), 0.0, 0.0)));
+                                  startsMap.insert(std::pair<SpeciesReferenceGlyph*, Point>(pSRG, Point(&NameSpaces, 0.0, 0.0)));
                                 }
                             }
                         }
@@ -3643,6 +3659,8 @@ bool CCellDesignerImporter::createSpeciesReferenceGlyphs(ReactionGlyph* pRGlyph,
  */
 Point CCellDesignerImporter::getPositionPoint(const BoundingBox& box, POSITION position)
 {
+  LayoutPkgNamespaces NameSpaces;
+
   double x = std::numeric_limits<double>::quiet_NaN(), y = std::numeric_limits<double>::quiet_NaN();
   double bx = box.getPosition()->x();
   double by = box.getPosition()->y();
@@ -3743,7 +3761,7 @@ Point CCellDesignerImporter::getPositionPoint(const BoundingBox& box, POSITION p
         break;
     }
 
-  return Point(new LayoutPkgNamespaces(), x, y);
+  return Point(&NameSpaces, x, y);
 }
 
 /**
@@ -3752,6 +3770,7 @@ Point CCellDesignerImporter::getPositionPoint(const BoundingBox& box, POSITION p
  */
 bool CCellDesignerImporter::convertCompartmentAnnotations()
 {
+  LayoutPkgNamespaces NameSpaces;
   bool result = true;
 
   if (this->mpDocument && mpModel && this->mpLayout)
@@ -3804,7 +3823,7 @@ bool CCellDesignerImporter::convertCompartmentAnnotations()
                               const CompartmentGlyph* pCGlyph = dynamic_cast<const CompartmentGlyph*>(pos->second);
                               assert(pCGlyph != NULL);
                               std::map<const CompartmentGlyph*, Point>::const_iterator pos2 = this->mCompartmentNamePointMap.find(pCGlyph);
-                              Point p(new LayoutPkgNamespaces(), 0.0, 0.0);
+                              Point p(&NameSpaces, 0.0, 0.0);
 
                               if (pos2 != this->mCompartmentNamePointMap.end())
                                 {
@@ -6151,6 +6170,7 @@ bool CCellDesignerImporter::parseReactionModification(const XMLNode* pNode, Reac
  */
 bool CCellDesignerImporter::parsePointsString(const std::string& s, std::vector<Point>& points)
 {
+  LayoutPkgNamespaces NameSpaces;
   bool result = true;
   // first we need to split the string at the whitespaces
   std::string splitChars = " \n\t\r";
@@ -6165,7 +6185,7 @@ bool CCellDesignerImporter::parsePointsString(const std::string& s, std::vector<
       std::string splitter(",");
       char** err;
       double dbl;
-      Point p(new LayoutPkgNamespaces());
+      Point p(&NameSpaces);
 
       while (it != endit && result == true)
         {
@@ -6277,6 +6297,7 @@ bool CCellDesignerImporter::splitString(const std::string& s, std::vector<std::s
  */
 bool CCellDesignerImporter::parseCompartmentAlias(const XMLNode* pNode, CompartmentAlias& ca, const Dimensions& ld)
 {
+  LayoutPkgNamespaces NameSpaces;
   bool result = true;
 
   if (pNode != NULL && pNode->getName() == "compartmentAlias")
@@ -6320,7 +6341,7 @@ bool CCellDesignerImporter::parseCompartmentAlias(const XMLNode* pNode, Compartm
                         {
                           if (pChild->getAttributes().hasAttribute("x") && pChild->getAttributes().hasAttribute("y"))
                             {
-                              Point tmp(new LayoutPkgNamespaces());
+                              Point tmp(&NameSpaces);
                               result = CCellDesignerImporter::parsePoint(pChild, tmp);
 
                               if (result == true)
@@ -8727,6 +8748,7 @@ bool CCellDesignerImporter::createDefaultReactionGlyphStyle()
  */
 bool CCellDesignerImporter::createDefaultModifierStyle()
 {
+  LayoutPkgNamespaces NameSpaces;
   bool result = true;
 
   if (this->mpLocalRenderInfo != NULL)
@@ -8742,8 +8764,8 @@ bool CCellDesignerImporter::createDefaultModifierStyle()
           headId = this->createUniqueId("modifier_arrow");
           pLE->setId(headId);
           this->mIdMap.insert(std::pair<std::string, const SBase*>(headId, pLE));
-          Point pos(new LayoutPkgNamespaces(), -5.0, -5.0);
-          Dimensions dim = Dimensions(new LayoutPkgNamespaces(), 10.0, 10.0);
+          Point pos(&NameSpaces, -5.0, -5.0);
+          Dimensions dim = Dimensions(&NameSpaces, 10.0, 10.0);
           BoundingBox box;
           box.setPosition(&pos);
           box.setDimensions(&dim);
@@ -8875,6 +8897,7 @@ bool CCellDesignerImporter::createDefaultModifierStyle()
  */
 bool CCellDesignerImporter::createDefaultInhibitorStyle()
 {
+  LayoutPkgNamespaces NameSpaces;
   bool result = true;
 
   if (this->mpLocalRenderInfo != NULL)
@@ -8882,8 +8905,8 @@ bool CCellDesignerImporter::createDefaultInhibitorStyle()
       LineEnding* pLE = this->mpLocalRenderInfo->createLineEnding();
       assert(pLE != NULL);
       BoundingBox box;
-      Point pos(new LayoutPkgNamespaces());
-      Dimensions dim(new LayoutPkgNamespaces());
+      Point pos(&NameSpaces);
+      Dimensions dim(&NameSpaces);
       RenderGroup* pGroup = NULL;
       std::string headId;
 
@@ -8893,8 +8916,8 @@ bool CCellDesignerImporter::createDefaultInhibitorStyle()
           headId = this->createUniqueId("inhibitor_arrow");
           pLE->setId(headId);
           this->mIdMap.insert(std::pair<std::string, const SBase*>(headId, pLE));
-          pos = Point(new LayoutPkgNamespaces(), 0.0, -5.0);
-          dim = Dimensions(new LayoutPkgNamespaces(), 3.0, 10.0);
+          pos = Point(&NameSpaces, 0.0, -5.0);
+          dim = Dimensions(&NameSpaces, 3.0, 10.0);
           box.setPosition(&pos);
           box.setDimensions(&dim);
           pLE->setBoundingBox(&box);
@@ -8979,6 +9002,7 @@ bool CCellDesignerImporter::createDefaultInhibitorStyle()
  */
 bool CCellDesignerImporter::createDefaultActivatorStyle()
 {
+  LayoutPkgNamespaces NameSpaces;
   bool result = true;
 
   if (this->mpLocalRenderInfo != NULL)
@@ -8987,8 +9011,8 @@ bool CCellDesignerImporter::createDefaultActivatorStyle()
       LineEnding* pLE = this->mpLocalRenderInfo->createLineEnding();
       assert(pLE != NULL);
       BoundingBox box;
-      Point pos(new LayoutPkgNamespaces());
-      Dimensions dim(new LayoutPkgNamespaces());
+      Point pos(&NameSpaces);
+      Dimensions dim(&NameSpaces);
       RenderGroup* pGroup = NULL;
       std::string headId;
 
@@ -8998,8 +9022,8 @@ bool CCellDesignerImporter::createDefaultActivatorStyle()
           headId = this->createUniqueId("activator_arrow");
           pLE->setId(headId);
           this->mIdMap.insert(std::pair<std::string, const SBase*>(headId, pLE));
-          pos = Point(new LayoutPkgNamespaces(), -5.0, -5.0);
-          dim = Dimensions(new LayoutPkgNamespaces(), 10.0, 10.0);
+          pos = Point(&NameSpaces, -5.0, -5.0);
+          dim = Dimensions(&NameSpaces, 10.0, 10.0);
           box.setPosition(&pos);
           box.setDimensions(&dim);
           pLE->setBoundingBox(&box);
@@ -9116,6 +9140,7 @@ bool CCellDesignerImporter::createDefaultActivatorStyle()
  */
 bool CCellDesignerImporter::createCatalysisStyles()
 {
+  LayoutPkgNamespaces NameSpaces;
   bool result = true;
 
   if (this->mpLocalRenderInfo != NULL)
@@ -9124,8 +9149,8 @@ bool CCellDesignerImporter::createCatalysisStyles()
       LineEnding* pLE = this->mpLocalRenderInfo->createLineEnding();
       assert(pLE != NULL);
       BoundingBox box;
-      Point pos(new LayoutPkgNamespaces());
-      Dimensions dim(new LayoutPkgNamespaces());
+      Point pos(&NameSpaces);
+      Dimensions dim(&NameSpaces);
       RenderGroup* pGroup = NULL;
       std::string headId;
 
@@ -9135,8 +9160,8 @@ bool CCellDesignerImporter::createCatalysisStyles()
           headId = this->createUniqueId("catalysis_arrow");
           pLE->setId(headId);
           this->mIdMap.insert(std::pair<std::string, const SBase*>(headId, pLE));
-          pos = Point(new LayoutPkgNamespaces(), -5.0, -5.0);
-          dim = Dimensions(new LayoutPkgNamespaces(), 10.0, 10.0);
+          pos = Point(&NameSpaces, -5.0, -5.0);
+          dim = Dimensions(&NameSpaces, 10.0, 10.0);
           box.setPosition(&pos);
           box.setDimensions(&dim);
           pLE->setBoundingBox(&box);
@@ -9267,6 +9292,7 @@ bool CCellDesignerImporter::createCatalysisStyles()
  */
 bool CCellDesignerImporter::createDefaultProductStyle()
 {
+  LayoutPkgNamespaces NameSpaces;
   bool result = true;
 
   if (this->mpLocalRenderInfo != NULL)
@@ -9275,8 +9301,8 @@ bool CCellDesignerImporter::createDefaultProductStyle()
       LineEnding* pLE = this->mpLocalRenderInfo->createLineEnding();
       assert(pLE != NULL);
       BoundingBox box;
-      Point pos(new LayoutPkgNamespaces());
-      Dimensions dim(new LayoutPkgNamespaces());
+      Point pos(&NameSpaces);
+      Dimensions dim(&NameSpaces);
       RenderGroup* pGroup = NULL;
       std::string headId;
 
@@ -9286,8 +9312,8 @@ bool CCellDesignerImporter::createDefaultProductStyle()
           headId = this->createUniqueId("product_arrow");
           pLE->setId(headId);
           this->mIdMap.insert(std::pair<std::string, const SBase*>(headId, pLE));
-          pos = Point(new LayoutPkgNamespaces(), -10.0, -5.0);
-          dim = Dimensions(new LayoutPkgNamespaces(), 10.0, 10.0);
+          pos = Point(&NameSpaces, -10.0, -5.0);
+          dim = Dimensions(&NameSpaces, 10.0, 10.0);
           box.setPosition(&pos);
           box.setDimensions(&dim);
           pLE->setBoundingBox(&box);
@@ -9481,6 +9507,7 @@ void CCellDesignerImporter::addAllPositions(std::vector<POSITION>& v)
  */
 bool CCellDesignerImporter::findShortestConnection(std::vector<POSITION>& pos1, std::vector<POSITION>& pos2, const BoundingBox& box1, const BoundingBox& box2)
 {
+  LayoutPkgNamespaces NameSpaces;
   bool result = true;
   double x1 = box1.getPosition()->x();
   double y1 = box1.getPosition()->y();
@@ -9537,7 +9564,7 @@ bool CCellDesignerImporter::findShortestConnection(std::vector<POSITION>& pos1, 
         {
           double minDist = std::numeric_limits<double>::max();
           double dist;
-          Point p1(new LayoutPkgNamespaces()), p2(new LayoutPkgNamespaces());
+          Point p1(&NameSpaces), p2(&NameSpaces);
           std::pair<POSITION, POSITION> bestPair;
           std::vector<POSITION>::const_iterator it = pos1.begin(), endit = pos1.end();
           POSITION best;
@@ -9592,6 +9619,8 @@ bool CCellDesignerImporter::findShortestConnection(std::vector<POSITION>& pos1, 
  */
 POSITION CCellDesignerImporter::findShortestConnection(const Point& p, std::vector<POSITION>& pos, const BoundingBox& box)
 {
+  LayoutPkgNamespaces NameSpaces;
+
   POSITION result = POSITION_UNDEFINED;
   double x = box.getPosition()->x();
   double y = box.getPosition()->y();
@@ -9626,7 +9655,7 @@ POSITION CCellDesignerImporter::findShortestConnection(const Point& p, std::vect
         }
 
       std::vector<POSITION>::const_iterator it = pos.begin(), endit = pos.end();
-      Point p2(new LayoutPkgNamespaces());
+      Point p2(&NameSpaces);
 
       while (it != endit)
         {
@@ -9662,9 +9691,11 @@ double CCellDesignerImporter::distance(const Point& p1, const Point& p2)
  */
 Point CCellDesignerImporter::calculateAbsoluteValue(const Point& p, const Point& p1, const Point& p2, const Point& p3)
 {
-  Point v1(new LayoutPkgNamespaces(), p2.x() - p1.x(), p2.y() - p1.y());
-  Point v2(new LayoutPkgNamespaces(), p3.x() - p1.x(), p3.y() - p1.y());
-  Point result(new LayoutPkgNamespaces(), p1.x() + p.x()*v1.x() + p.y()*v2.x(), p1.y() + p.x()*v1.y() + p.y()*v2.y());
+  LayoutPkgNamespaces NameSpaces;
+
+  Point v1(&NameSpaces, p2.x() - p1.x(), p2.y() - p1.y());
+  Point v2(&NameSpaces, p3.x() - p1.x(), p3.y() - p1.y());
+  Point result(&NameSpaces, p1.x() + p.x()*v1.x() + p.y()*v2.x(), p1.y() + p.x()*v1.y() + p.y()*v2.y());
   return result;
 }
 
@@ -9863,6 +9894,7 @@ bool CCellDesignerImporter::setSpeciesReferenceId(SpeciesReferenceGlyph* pGlyph,
  */
 bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, ReactionAnnotation& ranno)
 {
+  LayoutPkgNamespaces NameSpaces;
   bool result = true;
 
   if (pRGlyph != NULL)
@@ -9955,7 +9987,7 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                           y1 = pLS->getStart()->y();
                           x2 = pLS->getEnd()->x();
                           y2 = pLS->getEnd()->y();
-                          Point tmpP(new LayoutPkgNamespaces(), x2 - x1, y2 - y1);
+                          Point tmpP(&NameSpaces, x2 - x1, y2 - y1);
                           double tmp;
                           tmp = x1;
                           x1 = (x1 < x2) ? x1 : x2;
@@ -9970,8 +10002,8 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                           width = (width < 10.0) ? 10.0 : width;
                           height = (height < 10.0) ? 10.0 : height;
                           BoundingBox r_box;
-                          Point position(new LayoutPkgNamespaces(), x1 - width * 0.5, y1 - height * 0.5);
-                          Dimensions dim(new LayoutPkgNamespaces(), width, height);
+                          Point position(&NameSpaces, x1 - width * 0.5, y1 - height * 0.5);
+                          Dimensions dim(&NameSpaces, width, height);
                           r_box.setPosition(&position);
                           r_box.setDimensions(&dim);
                           Point connectionPoint = CCellDesignerImporter::getPositionPoint(r_box, r_pos);
@@ -10095,15 +10127,15 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                                   // the first vector for the coordinate system of the edit points is the vector
                                   // from connection point to target point
 
-                                  Point v1(new LayoutPkgNamespaces(), connectionPoint.x() - targetPoint.x(), connectionPoint.y() - targetPoint.y());
+                                  Point v1(&NameSpaces, connectionPoint.x() - targetPoint.x(), connectionPoint.y() - targetPoint.y());
                                   // the second vector is the vector with the same length that is orthogonal
                                   // to this vector
-                                  Point v2(new LayoutPkgNamespaces());
+                                  Point v2(&NameSpaces);
                                   result = CCellDesignerImporter::createOrthogonal(v1, v2);
 
                                   if (result == true)
                                     {
-                                      Point p3(new LayoutPkgNamespaces(), targetPoint.x() + v2.x(), targetPoint.y() + v2.y());
+                                      Point p3(&NameSpaces, targetPoint.x() + v2.x(), targetPoint.y() + v2.y());
                                       Curve* pCurve = pSRefGlyph->getCurve();
                                       assert(pCurve != NULL);
 
@@ -10115,7 +10147,7 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
                                           // the line segments
                                           // add all edit points
                                           std::vector<Point>::const_iterator pointIt = mod.mEditPoints.mPoints.begin(), pointsEnd = mod.mEditPoints.mPoints.end();
-                                          Point p(new LayoutPkgNamespaces());
+                                          Point p(&NameSpaces);
                                           std::vector<Point> points;
 
                                           int directionCount = 0;
@@ -10929,75 +10961,89 @@ std::string CCellDesignerImporter::getColorString(const std::string& color_id) c
   return result;
 }
 
-ReactionModification::ReactionModification() :
-  mAliases()
+ReactionModification::ReactionModification()
+  : mAliases()
   , mModifiers()
   , mType(UNDEFINED_ML_TYPE)
-  , mTargetLineIndex(std::numeric_limits<int>::max())
+  , mTargetLineIndex(std::numeric_limits< int >::max())
   , mEditPoints()
-  , mNum0(std::numeric_limits<int>::max())
-  , mNum1(std::numeric_limits<int>::max())
-  , mNum2(std::numeric_limits<int>::max())
+  , mNum0(std::numeric_limits< int >::max())
+  , mNum1(std::numeric_limits< int >::max())
+  , mNum2(std::numeric_limits< int >::max())
   , mModType(UNDEFINED_MTYPE)
-  , mOffset(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
-{}
+  , mOffset()
+{
+  LayoutPkgNamespaces NameSpaces;
+  mOffset = Point(&NameSpaces, 0.0, 0.0);
+}
 
-ReactionAnnotation::ReactionAnnotation() :
-  mName("")
+ReactionAnnotation::ReactionAnnotation()
+  : mName("")
   , mType(UNDEFINED_RTYPE)
   , mBaseReactants()
   , mBaseProducts()
   , mReactantLinks()
   , mProductLinks()
   , mConnectScheme()
-  , mOffset(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
+  , mOffset()
   , mEditPoints()
   , mLine(Line())
   , mModifications()
-{}
+{
+  LayoutPkgNamespaces NameSpaces;
+  mOffset = Point(&NameSpaces, 0.0, 0.0);
+}
 
-CompartmentAlias::CompartmentAlias() :
-  mId("")
+CompartmentAlias::CompartmentAlias()
+  : mId("")
   , mCompartment("")
   , mClass(UNDEFINED_CLASS)
-  , mNamePoint(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
+  , mNamePoint()
   , mDoubleLine()
   , mPaint()
   , mBounds()
   , mFontSize(12.0)
-{}
+{
+  LayoutPkgNamespaces NameSpaces;
+  mNamePoint = Point(&NameSpaces, 0.0, 0.0);
+}
 
-UsualView::UsualView() :
-  mInnerPosition(Point(new LayoutPkgNamespaces(), 0.0, 0.0))
-  , mBoxSize(Dimensions(new LayoutPkgNamespaces(), 0.0, 0.0))
+UsualView::UsualView()
+  : mInnerPosition()
+  , mBoxSize()
   , mLineWidth(0.0)
   , mPaint()
+{
+  LayoutPkgNamespaces NameSpaces;
+  mInnerPosition = Point(&NameSpaces, 0.0, 0.0);
+  mBoxSize = Dimensions(&NameSpaces, 0.0, 0.0);
+}
+
+LinkTarget::LinkTarget()
+  : mAlias("")
+  , mSpecies("")
+  , mPosition(POSITION_UNDEFINED)
 {}
 
-LinkTarget::LinkTarget() :
-  mAlias(""),
-  mSpecies(""),
-  mPosition(POSITION_UNDEFINED)
-{}
-
-SpeciesModification::SpeciesModification() :
-  mResidue("")
+SpeciesModification::SpeciesModification()
+  : mResidue("")
   , mType(UNDEFINED_MOD_TYPE)
 {}
 
-SpeciesState::SpeciesState():
-  mModifications()
+SpeciesState::SpeciesState()
+  : mModifications()
 {}
 
-SpeciesIdentity::SpeciesIdentity():
-  mSpeciesClass(UNDEFINED_CLASS),
-  mNameOrReference(""), mHypothetical(false)
+SpeciesIdentity::SpeciesIdentity()
+  : mSpeciesClass(UNDEFINED_CLASS)
+  , mNameOrReference("")
+  , mHypothetical(false)
 {}
 
-SpeciesAnnotation::SpeciesAnnotation():
-  mPosition(UNDEFINED_POSITION),
-  mParentComplex(""),
-  mIdentity(SpeciesIdentity())
+SpeciesAnnotation::SpeciesAnnotation()
+  : mPosition(UNDEFINED_POSITION)
+  , mParentComplex("")
+  , mIdentity(SpeciesIdentity())
 {}
 
 CompartmentAnnotation::CompartmentAnnotation():

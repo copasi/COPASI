@@ -72,7 +72,7 @@ public:
    * Create a new ASTNode corresponding to this NumberNode.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  ASTNode* toAST(const CDataModel* pDataModel) const;
+  ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const;
 
   /**
    * Build the MathML string

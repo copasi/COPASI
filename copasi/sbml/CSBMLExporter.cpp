@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #include <cmath>
 
@@ -168,6 +168,10 @@ std::string addRateOfIfItDoesNotExist(SBMLDocument* pSBMLDocument,
                                       std::map<std::string, const SBase*>& idMap,
                                       const char* id)
 {
+  // don't add for l3v2
+  if (!pSBMLDocument || (pSBMLDocument->getLevel() == 3 && pSBMLDocument->getVersion() > 1))
+    return "";
+
   std::string newId = hasFunctionDefinitionForURI(pSBMLDocument,
                       "http://sbml.org/annotations/symbols",
                       "symbols",
@@ -3420,10 +3424,16 @@ CSBMLExporter::addInitialAssignmentsToModel(const CDataModel &dataModel)
               math << sbmlId << " * "
                    << mAvogadroId << " * "
                    << pComp->getSBMLId();
-              ia->setMath(SBML_parseFormula(math.str().c_str()));
+              ASTNode * pNode = SBML_parseFormula(math.str().c_str());
+              ia->setMath(pNode);
+              pdelete(pNode);
             }
           else
-            ia->setMath(SBML_parseFormula(sbmlId.c_str()));
+            {
+              ASTNode * pNode = SBML_parseFormula(sbmlId.c_str());
+              ia->setMath(pNode);
+              pdelete(pNode);
+            }
 
           ia->setUserData((void*)"1");
         }
@@ -7324,7 +7334,7 @@ ASTNode* CSBMLExporter::convertToASTNode(const CEvaluationNode* pOrig, CDataMode
   // functions that have an SBML id
   // if they don't, we have to set one
   this->setFunctionSBMLIds(pOrig, dataModel);
-  ASTNode* pResult = pOrig->toAST(&dataModel);
+  ASTNode* pResult = pOrig->toAST(&dataModel, mSBMLLevel, mSBMLVersion);
 
   adjustNames(pResult, mpSBMLDocument, mIdMap);
 
@@ -8106,6 +8116,7 @@ XMLNode* CSBMLExporter::createSBMLNotes(const std::string& notes_string)
         {
           // create an XMLNode
           XMLNode* pNotes = XMLNode::convertStringToXMLNode(notes_string);
+
           assert(pNotes != NULL);
 
           if (pNotes != NULL)
@@ -8162,7 +8173,9 @@ XMLNode* CSBMLExporter::createSBMLNotes(const std::string& notes_string)
                                   Head.insertChild(0, *pTitle);
                                   delete pTitle;
 
-                                  pResult->removeChild(pResult->getIndex("head"));
+                                  XMLNode * pRemove = pResult->removeChild(pResult->getIndex("head"));
+                                  pdelete(pRemove);
+
                                   pResult->insertChild(0, Head);
                                 }
                             }
@@ -8188,6 +8201,7 @@ XMLNode* CSBMLExporter::createSBMLNotes(const std::string& notes_string)
                             }
 
                           delete pNotes;
+
                           pResult->unsetEnd();
                           assert(pResult->isEnd() == false);
                         }

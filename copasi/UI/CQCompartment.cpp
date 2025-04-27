@@ -122,6 +122,10 @@ void CQCompartment::slotBtnCopy() {}
 
 void CQCompartment::copy()
 {
+
+  if (!mpObject)
+    return;
+
   CModel * pModel = mpDataModel->getModel();
   CModelExpansion cModelExpObj = CModelExpansion(pModel);
   CModelExpansion::SetOfModelElements compartmentObjectsToCopy;

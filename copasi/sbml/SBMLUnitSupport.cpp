@@ -1,4 +1,4 @@
-// Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -968,10 +968,16 @@ const SBMLUnitSupport::SUnitInfo & SBMLUnitSupport::importUnit(const UnitDefinit
 
   // Check whther we already imported the unit;
   if (UnitInfo.pSBML != nullptr)
-    return UnitInfo;
+    {
+      if (pUnitDefinition != UnitInfo.pSBML)
+        delete pUnitDefinition;
+
+      return UnitInfo;
+    }
 
   UnitInfo.pSBML = pUnitDefinition;
   UnitInfo.valid = createUnitExpressionFor(UnitInfo);
+  UnitInfo.allocated = allocated;
 
   if (UnitInfo.valid)
     {

@@ -47,6 +47,7 @@
 #include "CQOptPopulation.h"
 
 #include "copasi/utilities/CCopasiTask.h"
+#include "copasi/utilities/CCopasiProblem.h"
 #include "copasi/utilities/CCopasiMethod.h"
 #include "copasi/utilities/CCopasiException.h"
 #include "copasi/output/COutputHandler.h"
@@ -63,6 +64,7 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/commandline/CConfigurationFile.h"
 #include "copasi/utilities/CMethodFactory.h"
+#include "copasi/utilities/CCopasiParameter.h"
 
 /*
  *  Constructs a TaskWidget which is a child of 'parent', with the
@@ -281,7 +283,7 @@ bool TaskWidget::commonBeforeRunTask()
   CCopasiMessage::clearDeque();
 
   // create population display if needed
-  if (CRootContainer::getConfiguration()->displayPopulations())
+  if (mpTask->getProblem()->getParameter("DisplayPoplations") && mpTask->getProblem()->getParameter("DisplayPoplations")->getValue< bool >())
     {
 
       if (dynamic_cast<COptTask*>(mpTask) != NULL || dynamic_cast<CFitTask*>(mpTask) != NULL)
@@ -307,7 +309,7 @@ bool TaskWidget::commonAfterRunTask()
 {
   if (!mpTask) return false;
 
-  if (CRootContainer::getConfiguration()->displayPopulations())
+  if (mpTask->getProblem()->getParameter("DisplayPoplations") && mpTask->getProblem()->getParameter("DisplayPoplations")->getValue<bool>())
     {
 
       if (dynamic_cast<COptTask*>(mpTask) != NULL || dynamic_cast<CFitTask*>(mpTask) != NULL)

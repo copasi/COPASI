@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -109,24 +109,37 @@ endif ()
 if (NOT LAPACK_FOUND)
   # cmake MKL Detection does only support MKL version 10 and older
   if (DEFINED ENV{MKLROOT})
+    message(STATUS "MKLROOT is: $ENV{MKLROOT}")
+    set(MKLROOT $ENV{MKLROOT} CACHE PATH "MKLROOT" FORCE)
+  endif()
+  if (DEFINED MKLROOT)
     set(BLA_VENDOR "Intel (MKL)")
 
     if (UNIX)
-      if (COPASI_BUILD_TYPE EQUAL "32bit")
-        set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/ia32/libmkl_intel.a $ENV{MKLROOT}/lib/ia32/libmkl_core.a $ENV{MKLROOT}/lib/ia32/libmkl_sequential.a -Wl,--end-group -lpthread -lm -ldl")
-      elseif (COPASI_BUILD_TYPE EQUAL "64bit")
-        set(LAPACK_LIBRARIES "-Wl,--start-group $ENV{MKLROOT}/lib/intel64/libmkl_intel_lp64.a $ENV{MKLROOT}/lib/intel64/libmkl_core.a $ENV{MKLROOT}/lib/intel64/libmkl_sequential.a -Wl,--end-group -lpthread -lm -ldl")
+      if ((COPASI_BUILD_TYPE EQUAL "32bit") AND EXISTS ${MKLROOT}/lib/ia32)
+        set(LAPACK_LIBRARIES "-Wl,--start-group ${MKLROOT}/lib/ia32/libmkl_intel.a ${MKLROOT}/lib/ia32/libmkl_core.a ${MKLROOT}/lib/ia32/libmkl_sequential.a -Wl,--end-group -lpthread -lm -ldl")
+      elseif (COPASI_BUILD_TYPE EQUAL "64bit" AND EXISTS ${MKLROOT}/lib/intel64)
+        set(LAPACK_LIBRARIES "-Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_lp64.a ${MKLROOT}/lib/intel64/libmkl_core.a ${MKLROOT}/lib/intel64/libmkl_sequential.a -Wl,--end-group -lpthread -lm -ldl")
+      elseif(EXISTS "${MKLROOT}/lib" AND EXISTS "${MKLROOT}/lib/libmkl_intel_lp64.a")
+        set(LAPACK_LIBRARIES "-Wl,--start-group ${MKLROOT}/lib/libmkl_intel_lp64.a ${MKLROOT}/lib/libmkl_core.a ${MKLROOT}/lib/libmkl_sequential.a -Wl,--end-group -lpthread -lm -ldl")
+      elseif(EXISTS ${MKLROOT}/lib AND EXISTS ${MKLROOT}/lib/libmkl_intel.a)
+        set(LAPACK_LIBRARIES "-Wl,--start-group ${MKLROOT}/lib/libmkl_intel.a ${MKLROOT}/lib/libmkl_core.a ${MKLROOT}/lib/libmkl_sequential.a -Wl,--end-group -lpthread -lm -ldl")
       endif ()
     else ()
-      if (COPASI_BUILD_TYPE EQUAL "32bit")
-        set(LAPACK_LIBRARIES "$ENV{MKLROOT}/lib/ia32/mkl_intel_c.lib" "$ENV{MKLROOT}/lib/ia32/mkl_core.lib" "$ENV{MKLROOT}/lib/ia32/mkl_sequential.lib")
-      elseif (COPASI_BUILD_TYPE EQUAL "64bit")
-        set(LAPACK_LIBRARIES "$ENV{MKLROOT}/lib/intel64/mkl_intel_lp64.lib" "$ENV{MKLROOT}/lib/intel64/mkl_core.lib" "$ENV{MKLROOT}/lib/intel64/mkl_sequential.lib")
+      if (COPASI_BUILD_TYPE EQUAL "32bit" AND EXISTS "${MKLROOT}/lib/ia32/")
+        set(LAPACK_LIBRARIES "${MKLROOT}/lib/ia32/mkl_intel_c.lib" "${MKLROOT}/lib/ia32/mkl_core.lib" "${MKLROOT}/lib/ia32/mkl_sequential.lib")
+      elseif (COPASI_BUILD_TYPE EQUAL "64bit" AND EXISTS "${MKLROOT}/lib/intel64/" )
+        set(LAPACK_LIBRARIES "${MKLROOT}/lib/intel64/mkl_intel_lp64.lib" "${MKLROOT}/lib/intel64/mkl_core.lib" "${MKLROOT}/lib/intel64/mkl_sequential.lib")
+      elseif (EXISTS "${MKLROOT}/lib/mkl_intel_lp64.lib")
+        set(LAPACK_LIBRARIES "${MKLROOT}/lib/mkl_intel_lp64.lib" "${MKLROOT}/lib/mkl_core.lib" "${MKLROOT}/lib/mkl_sequential.lib")        
       endif ()
     endif ()
 
+    set(CLAPACK_INCLUDE_DIR ${MKLROOT}/include)
     add_definitions(-DHAVE_MKL)
     set(LAPACK_FOUND "Yes")
+    set(USE_MKL 1)
+    
   endif ()
 endif ()
 
@@ -288,9 +301,9 @@ find_path(CLAPACK_INCLUDE_DIR clapack.h
 endif(NOT CLAPACK_INCLUDE_DIR)
 
 
-if (CLAPACK_INCLUDE_DIR)
+if (CLAPACK_INCLUDE_DIR AND NOT DEFINED MKLROOT)
   add_definitions(-DHAVE_CLAPACK_H)
-endif (CLAPACK_INCLUDE_DIR)
+endif (CLAPACK_INCLUDE_DIR AND NOT DEFINED MKLROOT)
 
 if (NOT CLAPACK_INCLUDE_DIR)
   find_path(CLAPACK_INCLUDE_DIR lapack.h
@@ -313,7 +326,7 @@ if (NOT CLAPACK_INCLUDE_DIR)
 endif (NOT CLAPACK_INCLUDE_DIR)
 
 if (NOT CLAPACK_INCLUDE_DIR)
-  set(CLAPACK_INCLUDE_DIR "${COPASI_SOURCE_DIR}")
+  set(CLAPACK_INCLUDE_DIR "${COPASI_SOURCE_DIR}/copasi/lapack")
 endif (NOT CLAPACK_INCLUDE_DIR)
 
 

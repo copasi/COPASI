@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -103,6 +103,8 @@ public:
 
     CContent & operator = (const CContent & rhs);
     bool isValid() const;
+    void clear();
+    bool isClear() const;
 
     CModel * pModel;
     CDataVectorN< CCopasiTask > * pTaskList;
@@ -253,11 +255,30 @@ public:
 
   bool importSBMLFromString(const std::string & sbmlDocumentText,
                             CProcessReport *pProcessReport = NULL,
-                            const bool & deleteOldData = true);
+                            const bool & deleteOldData = true,
+                            bool importMiriam = true,
+                            bool importInitialValues = false);
 
   bool importSBML(const std::string & fileName,
                   CProcessReport *pProcessReport = NULL,
-                  const bool & deleteOldData = true);
+                  const bool & deleteOldData = true,
+                  bool importMiriam = true,
+                  bool importInitialValues = false);
+
+  /**
+   * Infers Reactions from the ODE's in this model.
+   */
+  bool convertODEsToReactions();
+
+  /**
+   * Converts Reactions in this model to ODEs
+   */
+  bool convertReactionsToODEs();
+
+  /**
+   * Converts all local parameters to global ones.
+   */
+  bool convertParametersToGlobal();
 
   std::string exportSBMLToString(CProcessReport * pProcessReport, int sbmlLevel, int sbmlVersion);
 

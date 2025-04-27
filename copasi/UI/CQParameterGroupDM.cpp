@@ -112,7 +112,11 @@ Qt::ItemFlags CQParameterGroupDM::flags(const QModelIndex &index) const
       if (pNode->getType() == CCopasiParameter::Type::BOOL)
         return Flags | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
 
-      if (pNode->hasValidValues())
+      if (InPaintEvent)
+        {
+          emit signalCloseEditor(index);
+        }        
+      else if (pNode->hasValidValues())
         {
           emit signalCreateComboBox(index);
         }
@@ -390,6 +394,9 @@ bool CQParameterGroupDM::isTopLevelGroup(CCopasiParameter * pNode) const
 
   return false;
 }
+
+//static 
+bool CQParameterGroupDM::InPaintEvent = false;
 
 // static
 CCopasiParameter * CQParameterGroupDM::nodeFromIndex(const QModelIndex & index)

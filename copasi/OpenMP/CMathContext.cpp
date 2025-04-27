@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -15,23 +15,28 @@ CMathContext::~CMathContext()
 void CMathContext::sync()
 {
   CMathContainer *& pMaster = Base::master();
-  CMathContainer ** pIt = Base::beginThread();
-  CMathContainer ** pEnd = Base::endThread();
 
-  for (; pIt != pEnd; ++pIt)
+  if (size() > 1)
     {
-      if (*pIt != NULL
-          && pMaster != NULL
-          && **pIt == *pMaster)
-        continue;
+      bool renameEnabled = CRegisteredCommonName::isEnabled();
 
-      if (*pIt != NULL)
+      if (renameEnabled)
+        CRegisteredCommonName::setEnabled(false);
+
+#pragma omp parallel for
+      for (size_t i = 0; i < size(); ++i)
         {
-          delete *pIt;
-          *pIt = NULL;
+          if (threadData()[i] != NULL)
+            {
+              delete threadData()[i];
+              threadData()[i] = NULL;
+            }
+
+          if (pMaster != NULL)
+            threadData()[i] = pMaster->copy();
         }
 
-      if (pMaster != NULL)
-        *pIt = pMaster->copy();
+      if (renameEnabled)
+        CRegisteredCommonName::setEnabled(true);
     }
 }

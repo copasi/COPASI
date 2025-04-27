@@ -1,4 +1,4 @@
-// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -150,17 +150,27 @@ bool CQDataVizPlot::createGraph(CQDataVizPlot::PlotMode mode)
             auto * graph = new Q3DScatter();
 
             if (!mpAxisX)
-              mpAxisX = new QValue3DAxis;
+              {
+                mpAxisX = new QValue3DAxis;
+                qobject_cast< QValue3DAxis * > (mpAxisX)->setLabelFormat("%g");
+              }
 
             graph->setAxisX(qobject_cast< QValue3DAxis * >(mpAxisX));
 
             if (!mpAxisY)
-              mpAxisY = new QValue3DAxis;
+              {
+                mpAxisY = new QValue3DAxis;
+                qobject_cast< QValue3DAxis * > (mpAxisY)->setLabelFormat("%g");
+              }
 
             graph->setAxisY(qobject_cast< QValue3DAxis * >(mpAxisY));
 
             if (!mpAxisZ)
-              mpAxisZ = new QValue3DAxis;
+              {
+                mpAxisZ = new QValue3DAxis;
+                qobject_cast< QValue3DAxis * > (mpAxisZ)->setLabelFormat("%g");
+              }
+
 
             graph->setAxisZ(qobject_cast< QValue3DAxis * >(mpAxisZ));
             mpGraph = graph;
@@ -172,17 +182,26 @@ bool CQDataVizPlot::createGraph(CQDataVizPlot::PlotMode mode)
             auto * graph = new Q3DSurface();
 
             if (!mpAxisX)
-              mpAxisX = new QValue3DAxis;
+              {
+                mpAxisX = new QValue3DAxis;
+                qobject_cast< QValue3DAxis * >(mpAxisX)->setLabelFormat("%g");
+              }
 
             graph->setAxisX(qobject_cast< QValue3DAxis * >(mpAxisX));
 
             if (!mpAxisY)
-              mpAxisY = new QValue3DAxis;
+              {
+                mpAxisY = new QValue3DAxis;
+                qobject_cast< QValue3DAxis * >(mpAxisY)->setLabelFormat("%g");
+              }
 
             graph->setAxisY(qobject_cast< QValue3DAxis * >(mpAxisY));
 
             if (!mpAxisZ)
-              mpAxisZ = new QValue3DAxis;
+              {
+                mpAxisZ = new QValue3DAxis;
+                qobject_cast< QValue3DAxis * >(mpAxisZ)->setLabelFormat("%g");
+              }
 
             graph->setAxisZ(qobject_cast< QValue3DAxis * >(mpAxisZ));
             mpGraph = graph;
@@ -252,18 +271,19 @@ bool CQDataVizPlot::initFromSpec(const CPlotSpecification * plotspec)
   itPlotItem = mpPlotSpecification->getItems().begin();
   pVisible = Visible.array();
 
-  mCurves.resize(mpPlotSpecification->getItems().size());
+  mCurves.clear();
 
-  auto ppCurve = mCurves.begin();
   unsigned long int k = 0;
   bool needLeft = false;
   bool needRight = false;
 
-  for (; itPlotItem != endPlotItem; ++itPlotItem, ++pVisible, ++ppCurve, ++k)
+  for (; itPlotItem != endPlotItem; ++itPlotItem, ++pVisible, ++k)
     {
       auto plotType = itPlotItem->getType();
 
-      if (plotType != CPlotItem::spectogram && plotType != CPlotItem::surface && plotType != CPlotItem::bandedGraph)
+      if (plotType != CPlotItem::spectogram
+          && plotType != CPlotItem::surface
+          && plotType != CPlotItem::bandedGraph)
         continue;
 
       // set up the curve
@@ -325,7 +345,7 @@ bool CQDataVizPlot::initFromSpec(const CPlotSpecification * plotspec)
       series->setProperty("copasi_key", QVariant(FROM_UTF8(itPlotItem->CCopasiParameter::getKey())));
       series->setName(FROM_UTF8(itPlotItem->getTitle()));
 
-      *ppCurve = series;
+      mCurves.push_back(series);
 
       showCurve(series, *pVisible);
 
@@ -889,7 +909,7 @@ bool CQDataVizPlot::saveData(const std::string & filename)
               fs << "\t";
             }
 
-          fs << std::endl;
+          fs << "\n";
         }
     }
 
@@ -941,7 +961,7 @@ bool CQDataVizPlot::saveData(const std::string & filename)
               fs << "\t";
             }
 
-          fs << std::endl;
+          fs << "\n";
         }
     }
 
@@ -993,7 +1013,7 @@ bool CQDataVizPlot::saveData(const std::string & filename)
               fs << "\t";
             }
 
-          fs << std::endl;
+          fs << "\n";
         }
     }
 
@@ -1004,9 +1024,9 @@ bool CQDataVizPlot::saveData(const std::string & filename)
       QSurface3DSeries * surface = qobject_cast< QSurface3DSeries * > (curve.second);
       QScatter3DSeries * scatter = qobject_cast< QScatter3DSeries * >(curve.second);
 
-      fs << std::endl
-         << std::endl
-         << " FROM PROXY " << std::endl;
+      fs << "\n"
+         << "\n"
+         << " FROM PROXY " << "\n";
 
       if (surface)
         {
@@ -1023,7 +1043,7 @@ bool CQDataVizPlot::saveData(const std::string & filename)
                      << "\t";
                 }
 
-              fs << std::endl;
+              fs << "\n";
             }
         }
     }

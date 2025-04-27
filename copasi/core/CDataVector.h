@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -11,7 +11,7 @@
 #ifndef COPASI_CDataVector
 #define COPASI_CDataVector
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 # pragma warning (disable: 4786)
 #endif  // WIN32
 
@@ -1481,7 +1481,7 @@ public:
 template <class CType>
 std::ostream &operator<<(std::ostream &os, const CDataVector<CType> & d)
 {
-  os << "   +++Vektor;  size: " << d.size() << std::endl;
+  os << "   +++Vektor;  size: " << d.size() << "\n";
 
   unsigned int i;
 
@@ -1489,9 +1489,9 @@ std::ostream &operator<<(std::ostream &os, const CDataVector<CType> & d)
     os << "   " << d[i];
 
   if (d.size() == 0)
-    os << "   empty" << std::endl;
+    os << "   empty" << "\n";
 
-  os << "   ---Vektor" << std::endl;
+  os << "   ---Vektor" << "\n";
 
   return os;
 }

@@ -318,7 +318,7 @@ bool CDataHandler::generateObjectsFromName(const CObjectInterface::ContainerList
       auto * pObj = dynamic_cast< CDataObject * >(pObjectInterface);
       bool isData = false;
 
-      if (pObj && pObj->getObjectType() == "Reference")
+      if (pObj && (pObj->getObjectType() == "Reference" || pObj->getObjectType() == "ElementReference"))
         {
           isData = pObj->hasFlag(CDataObject::Flag::ValueBool)
                    || pObj->hasFlag(CDataObject::Flag::ValueInt)

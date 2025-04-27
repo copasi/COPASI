@@ -694,6 +694,7 @@ CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode, bool isFunc
               case AST_POWER:
               case AST_FUNCTION_POWER:
               case AST_FUNCTION_REM:
+              case AST_FUNCTION_QUOTIENT:
                 // create a CEvaluationNodeOperator
                 pResultNode = CEvaluationNodeOperator::fromAST(*itNode, itNode.context());
                 break;
@@ -797,6 +798,7 @@ CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode, bool isFunc
               case AST_RELATIONAL_LEQ:
               case AST_RELATIONAL_LT:
               case AST_RELATIONAL_NEQ:
+              case AST_LOGICAL_IMPLIES:
                 pResultNode = CEvaluationNodeLogical::fromAST(*itNode, itNode.context());
                 break;
 
@@ -836,9 +838,9 @@ void CEvaluationTree::initObjects()
   addObjectReference("Value", mValue);
 }
 
-ASTNode* CEvaluationTree::toAST(const CDataModel* pDataModel) const
+ASTNode * CEvaluationTree::toAST(const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
-  return mpRootNode->toAST(pDataModel);
+  return mpRootNode->toAST(pDataModel, sbmlLevel, sbmlVersion);
 }
 
 bool CEvaluationTree::hasCircularDependency() const
@@ -890,6 +892,7 @@ bool CEvaluationTree::hasDiscontinuity() const
           case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::CEIL):
           case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::MODULUS):
           case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::REMAINDER):
+          case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::QUOTIENT):
             // We found a discontinuity.
             return true;
             break;

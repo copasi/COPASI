@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -61,10 +61,10 @@ CLGradientBase::CLGradientBase(const std::string& name, CDataContainer* pParent)
   CLBase(),
   CDataContainer(name, pParent),
   mSpreadMethod(CLGradientBase::PAD),
+  mGradientStops("GradientStops", this),
   mKey(""),
   mId("")
-{
-}
+{}
 
 /**
  * Copy Constructor.
@@ -76,8 +76,7 @@ CLGradientBase::CLGradientBase(const CLGradientBase& source, CDataContainer* pPa
   mGradientStops(source.mGradientStops, this),
   mKey(""),
   mId(source.mId)
-{
-}
+{}
 
 /**
  * Constructor to generate object from the corresponding SBML object.
@@ -85,6 +84,7 @@ CLGradientBase::CLGradientBase(const CLGradientBase& source, CDataContainer* pPa
 CLGradientBase::CLGradientBase(const GradientBase& source, const std::string& name, CDataContainer* pParent):
   CLBase(),
   CDataContainer(name, pParent),
+  mGradientStops("GradientStops", this),
   mKey(""),
   mId(source.getId())
 {
@@ -109,7 +109,7 @@ CLGradientBase::CLGradientBase(const GradientBase& source, const std::string& na
     {
       CLGradientStop* pStop = new CLGradientStop(*source.getGradientStop((unsigned int) i));
       this->addGradientStop(pStop);
-      delete pStop;
+      pdelete(pStop);
     }
 }
 
@@ -247,6 +247,8 @@ void CLGradientBase::addSBMLAttributes(GradientBase* pBase) const
 
   for (i = 0; i < iMax; ++i)
     {
-      pBase->addGradientStop(this->mGradientStops[i].toSBML(pBase->getLevel(), pBase->getVersion()));
+      GradientStop * pStop = this->mGradientStops[i].toSBML(pBase->getLevel(), pBase->getVersion());
+      pBase->addGradientStop(pStop);
+      pdelete(pStop);
     }
 }

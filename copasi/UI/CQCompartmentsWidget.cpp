@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -77,7 +77,6 @@ CQCompartmentsWidget::CQCompartmentsWidget(QWidget *parent, const char *name)
   connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-  connect(mpTblCompartments, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 /*
@@ -94,15 +93,12 @@ CQCompartmentsWidget::~CQCompartmentsWidget()
 void CQCompartmentsWidget::slotBtnNewClicked()
 {
   mpCompartmentDM->insertRow(mpCompartmentDM->rowCount() - 1, QModelIndex());
-  updateDeleteBtns();
 }
 
-void CQCompartmentsWidget::slotBtnDeleteClicked()
+void CQCompartmentsWidget::slotBtnDeleteClicked(bool needFocus)
 {
-  if (mpTblCompartments->hasFocus())
+  if (!needFocus || mpTblCompartments->hasFocus())
     {deleteSelectedCompartments();}
-
-  updateDeleteBtns();
 }
 
 void CQCompartmentsWidget::deleteSelectedCompartments()
@@ -123,6 +119,7 @@ void CQCompartmentsWidget::deleteSelectedCompartments()
     {return;}
 
   mpCompartmentDM->removeRows(mappedSelRows);
+  enterProtected();
 }
 
 void CQCompartmentsWidget::slotBtnClearClicked()
@@ -134,8 +131,6 @@ void CQCompartmentsWidget::slotBtnClearClicked()
     {
       mpCompartmentDM->clear();
     }
-
-  updateDeleteBtns();
 }
 
 bool CQCompartmentsWidget::updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
@@ -182,7 +177,6 @@ bool CQCompartmentsWidget::enterProtected()
   mpTblCompartments->setModel(NULL);
   mpTblCompartments->setModel(mpProxyModel);
 
-  updateDeleteBtns();
   mpTblCompartments->horizontalHeader()->restoreState(State);
   blockSignals(false);
 
@@ -196,39 +190,6 @@ bool CQCompartmentsWidget::enterProtected()
   return true;
 }
 
-void CQCompartmentsWidget::updateDeleteBtns()
-{
-  bool selected = false;
-  QModelIndexList selRows = mpTblCompartments->selectionModel()->selectedRows();
-
-  if (selRows.size() == 0)
-    selected = false;
-  else
-    {
-      if (selRows.size() == 1)
-        {
-          if (mpCompartmentDM->isDefaultRow(mpProxyModel->mapToSource(selRows[0])))
-            selected = false;
-          else
-            selected = true;
-        }
-      else
-        selected = true;
-    }
-
-  mpBtnDelete->setEnabled(selected);
-
-  if (mpProxyModel->rowCount() - 1)
-    mpBtnClear->setEnabled(true);
-  else
-    mpBtnClear->setEnabled(false);
-}
-
-void CQCompartmentsWidget::slotSelectionChanged()
-{
-  updateDeleteBtns();
-}
-
 void CQCompartmentsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
                                        const QModelIndex &C_UNUSED(bottomRight))
 {
@@ -236,8 +197,6 @@ void CQCompartmentsWidget::dataChanged(const QModelIndex &C_UNUSED(topLeft),
     {
       mpTblCompartments->resizeColumnsToContents();
     }
-
-  updateDeleteBtns();
 }
 
 void CQCompartmentsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
@@ -264,7 +223,7 @@ void CQCompartmentsWidget::slotDoubleClicked(const QModelIndex proxyIndex)
 void CQCompartmentsWidget::keyPressEvent(QKeyEvent *ev)
 {
   if (ev->key() == Qt::Key_Delete)
-    slotBtnDeleteClicked();
+    slotBtnDeleteClicked(true);
   else if (ev->key() == Qt::Key_C && (ev->modifiers() & Qt::ControlModifier))
     {
       QModelIndexList selRows = mpTblCompartments->selectionModel()->selectedRows(0);

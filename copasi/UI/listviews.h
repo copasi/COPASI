@@ -114,7 +114,7 @@ class CQLayoutsWidget;
 class CQPlotSubwidget;
 class CDataModel;
 class CUndoData;
-
+class QScrollArea;
 #include "copasi/core/CRegisteredCommonName.h"
 
 //********************************************************************************
@@ -391,6 +391,8 @@ private:
 
   CQLayoutsWidget * mpLayoutsWidget;
   CQMathMatrixWidget * mpMathMatrixWidget;
+
+  std::map< CopasiWidget *, QScrollArea * > mScrollMap;
 };
 
 #endif

@@ -238,7 +238,7 @@ bool CTrajectoryTask::processTrajectory(const bool& useInitialValues)
 
   C_FLOAT64 Duration = mpTrajectoryProblem->getDuration();
   C_FLOAT64 StepSize = mpTrajectoryProblem->getStepSize();
-  C_FLOAT64 StepNumber = fabs(Duration) / StepSize;
+  C_FLOAT64 StepNumber = fabs(Duration) / fabs(StepSize);
 
   if (mpTrajectoryProblem->getAutomaticStepSize() ||
       std::isnan(StepNumber) ||

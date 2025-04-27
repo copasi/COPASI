@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -185,6 +185,7 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CDataObject*, SBa
           // until then we simply take all the namespaces from the parent element with us
           LAYOUT_CREATE_NS(layoutns, lol->getSBMLNamespaces());
           pLayout = new Layout(layoutns);
+          pdelete(layoutns);
 
           lol->appendAndOwn(pLayout);
 

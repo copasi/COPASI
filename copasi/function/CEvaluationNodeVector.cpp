@@ -159,7 +159,7 @@ CEvaluationNode * CEvaluationNodeVector::fromAST(const ASTNode * /* pASTNode */,
   return NULL;
 }
 
-ASTNode* CEvaluationNodeVector::toAST(const CDataModel* /*pDataModel*/) const
+ASTNode* CEvaluationNodeVector::toAST(const CDataModel* /*pDataModel*/, int, int) const
 {
   // :TODO:
   ASTNode* node = new ASTNode(AST_FUNCTION_PIECEWISE);

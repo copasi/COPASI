@@ -217,6 +217,12 @@ bool CQFittingWidget::saveTaskProtected()
       pProblem->setCalculateStatistics(mpCheckStatistics->isChecked());
     }
 
+  if (mpCheckDisplayPopulation->isChecked() != pProblem->getParameter("DisplayPoplations")->getValue< bool >())
+    {
+      mChanged = true;
+      pProblem->getParameter("DisplayPoplations")->setValue(mpCheckStatistics->isChecked());
+    }
+
   if (mpUseTimeSens->isChecked() != pProblem->getUseTimeSens())
     {
       mChanged = true;
@@ -273,6 +279,7 @@ bool CQFittingWidget::loadTaskProtected()
   mpCheckRandomize->setChecked(pProblem->getRandomizeStartValues());
   mpCreateParameterSets->setChecked(pProblem->getCreateParameterSets());
   mpCheckStatistics->setChecked(pProblem->getCalculateStatistics());
+  mpCheckDisplayPopulation->setChecked(pProblem->getParameter("DisplayPoplations")->getValue< bool >());
   mpUseTimeSens->setChecked(pProblem->getUseTimeSens());
 
   mpParameters->load(mpDataModel, pProblem->getGroup("OptimizationItemList"), &mExperimentKeyMap, &mCrossValidationKeyMap);
@@ -373,6 +380,42 @@ void CQFittingWidget::init()
   mpCurrentList = mpParameters;
   mpExperimentSet = NULL;
   mpCrossValidationSet = NULL;
+
+  // add corner widget for increase / decrease the height of the tab widget
+  QWidget * pGroup = new QWidget();
+  QLayout * pGroupLayout = new QHBoxLayout(pGroup);
+
+  QToolButton * tb = new QToolButton();
+  tb->setText("+");
+  QObject::connect(tb, SIGNAL(clicked()), this, SLOT(slotIncreaseTabHeight()));
+  pGroupLayout->addWidget(tb);
+
+  tb = new QToolButton();
+  tb->setText("-");
+  QObject::connect(tb, SIGNAL(clicked()), this, SLOT(slotDecreaseTabHeight()));
+  pGroupLayout->addWidget(tb);
+
+  pGroupLayout->setContentsMargins(0, 0, 0, 0);
+
+  mpTabWidget->setCornerWidget(pGroup);
+}
+
+void CQFittingWidget::slotIncreaseTabHeight()
+{
+  auto height = mpTabWidget->height();
+  height += 100;
+  mpTabWidget->setMinimumHeight(height);
+}
+
+void CQFittingWidget::slotDecreaseTabHeight()
+{
+  auto height = mpTabWidget->height();
+
+  if (height < 300)
+    return;
+
+  height -= 100;
+  mpTabWidget->setMinimumHeight(height);
 }
 
 void CQFittingWidget::slotParameterNumberChanged(int number)

@@ -326,11 +326,6 @@ public:
   CModelParameterSet & getActiveModelParameterSet();
 
   /**
-   * Update the model initial values from the active parameter set.
-   */
-  void applyActiveParameterSet();
-
-  /**
    * refresh the active parameter set from the model initial values
    */
   void refreshActiveParameterSet();
@@ -511,7 +506,7 @@ public:
    * @param refreshParameterSet (default: true) if true the active parameter set is refreshed
    * @return bool success
    */
-  bool updateInitialValues(const CCore::Framework & framework, bool refreshParameterSet=true);
+  bool updateInitialValues(const CCore::Framework & framework, bool refreshParameterSet = true);
 
   /**
    * Copy the current state value to the initial state
@@ -1036,7 +1031,7 @@ public:
    *
    * @see buildInitialRefreshSequence(std::set< const CDataObject * > & changedObjects)
    */
-  void updateInitialValues(std::set< const CDataObject * > & changedObjects, bool refreshParameterSet=true);
+  void updateInitialValues(std::set< const CDataObject * > & changedObjects, bool refreshParameterSet = true);
 
   /**
    * Builds and executes the the update sequence used to calculate all initial
@@ -1049,7 +1044,7 @@ public:
    *
    * @see updateInitialValues(std::set< const CDataObject * > & changedObjects)
    */
-  void updateInitialValues(const CDataObject * changedObject, bool refreshParameterSet=true);
+  void updateInitialValues(const CDataObject * changedObject, bool refreshParameterSet = true);
 
   /**
    * Initialize a vector of individual absolute tolerances

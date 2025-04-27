@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -97,6 +97,7 @@ const CEnumAnnotation< std::string, CEvaluationNode::SubType > CEvaluationNode::
   "Ge",
   "Gt",
   "If",
+  "Implies", // IMPLIES
   "Infinity",
   "Integer",
   "Invalid",
@@ -120,6 +121,7 @@ const CEnumAnnotation< std::string, CEvaluationNode::SubType > CEvaluationNode::
   "Power",
   "Rationale",
   "Remainder",
+  "Quotient", //     QUOTIENT
   "Rgamma",
   "Rnormal",
   "Rpoisson",
@@ -586,7 +588,7 @@ CEvaluationNode* CEvaluationNode::simplifyNode(const std::vector<CEvaluationNode
   return newnode;
 }
 
-ASTNode* CEvaluationNode::toAST(const CDataModel* /*pDataModel*/) const
+ASTNode* CEvaluationNode::toAST(const CDataModel* /*pDataModel*/, int, int) const
 {
   return new ASTNode();
 }
@@ -631,19 +633,19 @@ void CEvaluationNode::printRecursively(std::ostream & os, int indent) const
 {
   int i;
 
-  os << std::endl;
+  os << "\n";
 
   for (i = 0; i < indent; ++i) os << " ";
 
-  os << "mData: " << mData << std::endl;
+  os << "mData: " << mData << "\n";
 
   for (i = 0; i < indent; ++i) os << " ";
 
-  os << "mType: " << CEvaluationNode::MainTypeName[mMainType] << "  subType: " << CEvaluationNode::SubTypeName[mSubType] << std::endl;
+  os << "mType: " << CEvaluationNode::MainTypeName[mMainType] << "  subType: " << CEvaluationNode::SubTypeName[mSubType] << "\n";
 
   for (i = 0; i < indent; ++i) os << " ";
 
-  os << "mValue: " << mValue << std::endl;
+  os << "mValue: " << mValue << "\n";
 
   CEvaluationNode* tmp;
 
@@ -917,6 +919,9 @@ CValidatedUnit CEvaluationNode::setUnit(const CMathContainer & /* container */,
 {
   std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itTargetUnit = targetUnits.find(const_cast< CEvaluationNode * >(this));
   std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itCurrentUnit = currentUnits.find(const_cast< CEvaluationNode * >(this));
+
+  if (itTargetUnit == targetUnits.end() || itCurrentUnit == currentUnits.end())
+    return CValidatedUnit();
 
   CValidatedUnit Result(CValidatedUnit::merge(itTargetUnit->second, itCurrentUnit->second));
 

@@ -9,11 +9,15 @@
 #include "copasi/math/CMathExpression.h"
 #include "copasi/utilities/CNodeIterator.h"
 #include "copasi/utilities/CCopasiMessage.h"
+#include "copasi/utilities/CBalanceTree.h"
 #include "copasi/commandline/CConfigurationFile.h"
 #include "copasi/core/CRootContainer.h"
 
 // static
 size_t CJitCompilerImplementation::InitalBufferSize = 8192;
+
+// static 
+C_FLOAT64 CJitCompilerImplementation::Invalid = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
 // static
 void CJitCompilerImplementation::SetJitBufferSize(const size_t size)
@@ -481,6 +485,13 @@ CJitCompilerImplementation::Node * CJitCompilerImplementation::compile(const CEv
       }
       break;
 
+      case CEvaluationNode::SubType::QUOTIENT:
+      {
+        auto & Function = mpExpression->Immediate< F2 >(__jit_quotient);
+        pNodeJIT = &mpExpression->Call(Function, *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[0]), *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[1]));
+      }
+      break;
+
       default:
         break;
     }
@@ -780,15 +791,27 @@ CJitCompilerImplementation::Node * CJitCompilerImplementation::compile(const CEv
 
       case CEvaluationNode::SubType::MAX:
       {
-        auto & Function = mpExpression->Immediate< F2 >(CEvaluationNodeFunction::max);
-        pNodeJIT = &mpExpression->Call(Function, *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[0]), *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[1]));
+        if (context.empty())
+          pNodeJIT = &mpExpression->Immediate(&Invalid);
+        else
+          pNodeJIT = BalanceTree< Node * >::create(context, [this](Node * const & pFirst, Node * const & pSecond)
+          {
+            auto & Function = mpExpression->Immediate< F2 >(__jit_max);
+            return &mpExpression->Call(Function, *static_cast< NativeJIT::Node< C_FLOAT64 > * >(pFirst), *static_cast< NativeJIT::Node< C_FLOAT64 > * >(pSecond));
+          });
       }
       break;
 
       case CEvaluationNode::SubType::MIN:
       {
-        auto & Function = mpExpression->Immediate< F2 >(CEvaluationNodeFunction::min);
-        pNodeJIT = &mpExpression->Call(Function, *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[0]), *static_cast< NativeJIT::Node< C_FLOAT64 > * >(context[1]));
+        if (context.empty())
+          pNodeJIT = &mpExpression->Immediate(&Invalid);
+        else
+          pNodeJIT = BalanceTree< Node * >::create(context, [this](Node * const & pFirst, Node * const & pSecond)
+          {
+            auto & Function = mpExpression->Immediate< F2 >(__jit_min);
+            return &mpExpression->Call(Function, *static_cast< NativeJIT::Node< C_FLOAT64 > * >(pFirst), *static_cast< NativeJIT::Node< C_FLOAT64 > * >(pSecond));
+          });
       }
       break;
 
@@ -853,6 +876,13 @@ CJitCompilerImplementation::Node * CJitCompilerImplementation::compile(const CEv
         pNodeJIT = &mpExpression->Call(Function, *static_cast< NativeJIT::Node< bool > * >(context[0]), *static_cast< NativeJIT::Node< bool > * >(context[1]));
       }
       break;
+
+      case CEvaluationNode::SubType::IMPLIES:
+        {
+          auto & Function = mpExpression->Immediate< B2B >(__jit_implies);
+          pNodeJIT = &mpExpression->Call(Function, *static_cast< NativeJIT::Node< bool > * >(context[0]), *static_cast< NativeJIT::Node< bool > * >(context[1]));
+        }
+        break;
 
       case CEvaluationNode::SubType::AND:
       {

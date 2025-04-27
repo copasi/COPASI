@@ -105,7 +105,7 @@ public:
    * Converts this node to an AST Node of type AST_NAME
    * @return ASTNode* the resulting ASTNode.
    */
-  virtual ASTNode* toAST(const CDataModel* pDataModel) const override;
+  virtual ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const override;
 
   /**
    * Build the MathML string

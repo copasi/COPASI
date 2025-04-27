@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -122,7 +122,8 @@ public:
                  const CFlags< Flag > & flag = CFlags< Flag >::None);
 
   CDataContainer(const CDataContainer & src,
-                 const CDataContainer * pParent);
+                 const CDataContainer * pParent,
+                 const std::string & objectType = "");
 
   virtual ~CDataContainer();
 

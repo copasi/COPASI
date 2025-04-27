@@ -42,7 +42,7 @@ CEvaluationNodeWhiteSpace::CEvaluationNodeWhiteSpace(const CEvaluationNodeWhiteS
 
 CEvaluationNodeWhiteSpace::~CEvaluationNodeWhiteSpace() {}
 
-ASTNode* CEvaluationNodeWhiteSpace::toAST(const CDataModel* /*pDataModel*/) const
+ASTNode* CEvaluationNodeWhiteSpace::toAST(const CDataModel* /*pDataModel*/, int, int) const
 {
   fatalError();
   return NULL;

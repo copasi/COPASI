@@ -373,6 +373,14 @@ void CQTabWidget::slotBtnCopy()
     }
   else // Old Style Copy
     {
+      // ignore copy of mass action
+    if (mObjectCN == std::string("CN=Root,FunctionDB=FunctionDB,Vector=Functions[Mass action (irreversible)]") ||
+      mObjectCN == std::string("CN=Root,FunctionDB=FunctionDB,Vector=Functions[Mass action (reversible)]"))
+      {
+        QMessageBox::warning(this, "Cannot copy function", "Mass action kinetics cannot be copied.");
+        return;
+      }
+
       emit copyClicked();
       emit newClicked();
     }

@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -455,7 +455,6 @@ if (ENABLE_OMP)
       "omp_sched_monotonic")
   endif()
 
-
 endif(ENABLE_OMP)
 
 # TODO raptor should be restricted to a version which is at least
@@ -738,6 +737,14 @@ if ((WIN32 OR (UNIX AND NOT APPLE))
   set(USING_INTEL TRUE)
 endif ()
 
+# define the address sanitizer option analogous to visual leak detector below
+option(COPASI_USE_ASAN "use address Sanitizer." OFF)
+mark_as_advanced(COPASI_USE_ASAN)
+
+if (COPASI_USE_ASAN)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
+endif (COPASI_USE_ASAN)
+
 # if using msvc or intel windows compiler allow for the use of the static runtime
 if(MSVC OR USING_INTEL)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_DEPRECATE -DWIN32_LEAN_AND_MEAN)
@@ -938,6 +945,7 @@ message(STATUS "-----------------------------------------------------------
    Vendor               = ${BLA_VENDOR}
    LAPACK Libs          = ${CLAPACK_LIBRARIES}
    LAPACK LDFLAGS       = ${CLAPACK_LINKER_FLAGS}
+   LAPACK include       = ${CLAPACK_INCLUDE_DIR}
 
    crossguid Libs       = ${CROSSGUID_LIBRARY}
    cross include        = ${CROSSGUID_INCLUDE_DIR}

@@ -27,7 +27,7 @@
 
 #include "copasi/copasi.h"
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 # ifndef WIN32_LEAN_AND_MEAN
 # define WIN32_LEAN_AND_MEAN
 # endif // WIN32_LEAN_AND_MEAN
@@ -73,7 +73,7 @@ void COptions::init(C_INT argc, char *argv[])
   std::string * Utf8 = new std::string[argc];
   C_INT i;
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
   // We cannot use the commandline arguments provided by main as they are not sufficient
   // to encode unicode data.
   CLocaleString::lchar * CommandLine = GetCommandLineW();
@@ -97,11 +97,11 @@ void COptions::init(C_INT argc, char *argv[])
 
 #endif
 
+  std::string Self;
   if (argc > 0)
-    setValue("Self", Utf8[0]);
-  else
-    setValue("Self", std::string(""));
+    Self = Utf8[0];
 
+  setValue("Self", Self);
   setValue("PWD", getPWD());
 
   // First we must clean up the command line by
@@ -110,6 +110,7 @@ void COptions::init(C_INT argc, char *argv[])
   // The default settings for SBW related options
   setValue("SBWRegister", false);
   setValue("SBWModule", false);
+  setValue("SkipCheckForUpdate", false);
 
   char **ArgV = new char * [argc];
   C_INT ArgC = 0;
@@ -120,6 +121,8 @@ void COptions::init(C_INT argc, char *argv[])
         setValue("SBWRegister", true);
       else if (Utf8[i] == "-sbwmodule")
         setValue("SBWModule", true);
+      else if (Utf8[i] == "--skip-update-check")
+        setValue("SkipCheckForUpdate", true);
       else
         {
           ArgV[ArgC] = strdup(Utf8[i].c_str());
@@ -213,17 +216,33 @@ void COptions::init(C_INT argc, char *argv[])
   if (!CDirEntry::exist(exampleDir))
     exampleDir = CopasiDir + "/Contents/Resources/examples";
 
-  setValue("ExampleDir", exampleDir);
-  setValue("WizardDir", CopasiDir + "/Contents/Resources/doc/html");
+  std::string wizardDir = CopasiDir + "/Contents/Resources/doc/html";
+  
 #elif WIN32
   setValue("DefaultConfigDir", CopasiDir + "\\share\\copasi\\config");
-  setValue("ExampleDir", CopasiDir + "\\share\\copasi\\examples");
-  setValue("WizardDir", CopasiDir + "\\share\\copasi\\doc\\html");
+  std::string exampleDir = CopasiDir + "\\share\\copasi\\examples";
+  std::string wizardDir = CopasiDir + "\\share\\copasi\\doc\\html";
 #else // All Unix flavors have the same installation structure.
   setValue("DefaultConfigDir", CopasiDir + "/share/copasi/config");
-  setValue("ExampleDir", CopasiDir + "/share/copasi/examples");
-  setValue("WizardDir", CopasiDir + "/share/copasi/doc/html");
+  std::string exampleDir = CopasiDir + "/share/copasi/examples";
+  if (!CDirEntry::exist(exampleDir) && CDirEntry::exist("/usr/share/copasi/examples"))
+    exampleDir = "/usr/share/copasi/examples";
+
+  std::string wizardDir = CopasiDir + "/share/copasi/doc/html";
+  
 #endif
+
+  if (!CDirEntry::exist(exampleDir) && CDirEntry::exist(CDirEntry::dirName(Self) + std::string("../share/copasi/examples")))
+    exampleDir = CDirEntry::dirName(Self) + std::string("/../share/copasi/examples");
+  if (!CDirEntry::exist(exampleDir) && CDirEntry::exist(CDirEntry::dirName(Self) + std::string("../../share/copasi/examples")))
+    exampleDir = CDirEntry::dirName(Self) + std::string("/../../share/copasi/examples");
+  setValue("ExampleDir", exampleDir);
+  
+  if (!CDirEntry::exist(wizardDir) && CDirEntry::exist(CDirEntry::dirName(Self) + std::string("../share/copasi/doc/html")))
+    wizardDir = CDirEntry::dirName(Self) + std::string("/../share/copasi/doc/html");
+  if (!CDirEntry::exist(wizardDir) && CDirEntry::exist(CDirEntry::dirName(Self) + std::string("../../share/copasi/doc/html")))
+    wizardDir = CDirEntry::dirName(Self) + std::string("/../../share/copasi/doc/html");
+  setValue("WizardDir", wizardDir);
 
   /* Create manually for each option except for:
      CopasiDir, ConfigFile, Home, and Default
@@ -300,7 +319,7 @@ std::string COptions::getCopasiDir(void)
 
   CopasiDir = getEnvironmentVariable("COPASIDIR");
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 
   if (CopasiDir == "")
     {
@@ -405,7 +424,7 @@ std::string COptions::getHome(void)
 
   Home = getEnvironmentVariable("HOME");
 
-#ifdef WIN32
+#if defined(WIN32)
 
   if (Home == "")
     Home = getEnvironmentVariable("HOMEDRIVE")

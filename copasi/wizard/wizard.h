@@ -30,6 +30,7 @@
 #include "copasi/wizard/ui_wizard.h"
 
 class QUrl;
+class QAbstractButton;
 
 class WizardDialog : public QDialog, public Ui::WizardDialog
 {
@@ -44,7 +45,7 @@ public:
   virtual void setCopasiMainWindow(QWidget * copasiMainWindow);
 
 public slots:
-  virtual void buttonGroup2_clicked(int);
+  virtual void buttonGroup2_clicked(QAbstractButton *);
   virtual void forwardButton_clicked();
   virtual void backButton_clicked();
   virtual void textBrowser_anchorClicked(const QUrl & url);

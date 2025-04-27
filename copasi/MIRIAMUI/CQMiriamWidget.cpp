@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -505,7 +505,7 @@ void CQMiriamWidget::updateResourcesList()
 {
   // Build the list of known resources
   assert(CRootContainer::getDatamodelList()->size() > 0);
-  const CMIRIAMResources *pResource = &CRootContainer::getConfiguration()->getRecentMIRIAMResources();
+  const CMIRIAMResources *pResource = &CRootContainer::getMiriamResources();
   QMap< QString, QString > ResourceMap;
   QMap< QString, QString > ReferenceMap;
   size_t i, imax = pResource->getResourceList().size();

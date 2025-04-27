@@ -1,7 +1,7 @@
-// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2021 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
 #include "catch.hpp"
 
@@ -56,6 +56,27 @@ TEST_CASE("create a new model with invalid value", "[copasi][creation]")
   CRootContainer::removeDatamodel(dm);
 }
 
+TEST_CASE("create a new model with invalid trigger", "[copasi][creation]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != NULL);
+
+  REQUIRE(dm->newModel(NULL, true));
+
+  auto * model = dm->getModel();
+  REQUIRE(model != nullptr);
+
+  auto * event = model->createEvent("e0");
+  event->setTriggerExpression(CRegisteredCommonName(std::string("<") + std::string(model->getValueReference()->getStringCN().c_str()) + std::string("> >  10")));
+  event->compile({dm});
+  REQUIRE(model->compileIfNecessary(NULL) == true);
+  event->setTriggerExpression(CRegisteredCommonName(std::string(model->getValueReference()->getStringCN().c_str())));
+  event->compile({dm});
+  REQUIRE(model->compileIfNecessary(NULL) == false);
+
+  CRootContainer::removeDatamodel(dm);
+}
+
 TEST_CASE("create a model with inhibited reaciton", "[copasi][creation]")
 {
   auto * dm = CRootContainer::addDatamodel();
@@ -70,7 +91,7 @@ TEST_CASE("create a model with inhibited reaciton", "[copasi][creation]")
 
   auto & vars = pFunc->getVariables();
 
-for (auto & var : vars)
+  for (auto & var : vars)
     {
       if (var.getObjectName() == "A" || var.getObjectName() == "B")
         var.setUsage(CFunctionParameter::Role::SUBSTRATE);
@@ -107,6 +128,7 @@ for (auto & var : vars)
   REQUIRE(r->compile() == true);
   REQUIRE(r->getFunction()->getObjectName() == "test");
 
+  delete info;
   CRootContainer::removeDatamodel(dm);
 }
 
@@ -160,18 +182,18 @@ TEST_CASE("changing initial concentrations", "[copasi][manipulation]")
   auto * pMetab = model->createMetabolite("speciesB", "compartment");
 
   // change initial concentration
-for (auto & metab : model->getMetabolites())
+  for (auto & metab : model->getMetabolites())
     {
       if (metab.getObjectDisplayName() != "speciesB")
         continue;
 
-      model->updateInitialValues(metab.getInitialConcentrationReference());
+      model->updateInitialValues(metab.getInitialConcentrationReference(), false);
       metab.setInitialConcentration(0.4);
-      model->updateInitialValues(metab.getInitialConcentrationReference());
+      model->updateInitialValues(metab.getInitialConcentrationReference(), false);
     }
 
   // retrieve metab again
-for (auto & metab : model->getMetabolites())
+  for (auto & metab : model->getMetabolites())
     {
       if (metab.getObjectDisplayName() != "speciesB")
         continue;
@@ -255,7 +277,6 @@ TEST_CASE("use binary min and max", "[copasi][sbml]")
   CRootContainer::removeDatamodel(dm);
 }
 
-
 TEST_CASE("set up opt problem subtype", "[copasi][optimization]")
 {
   auto * dm = CRootContainer::addDatamodel();
@@ -280,7 +301,7 @@ TEST_CASE("set up opt problem subtype", "[copasi][optimization]")
     REQUIRE(problem != NULL);
     REQUIRE((problem->getSubtaskType() == CTaskEnum::Task::timeCourse));
   }
-  
+
   CRootContainer::removeDatamodel(dm);
 }
 
@@ -304,10 +325,8 @@ TEST_CASE("import sbml model and test miriam info", "[copasi][sbml][miriam]")
   auto miriam = info->getRDFGraph()->toXmlString();
   REQUIRE(!miriam.empty());
 
-
   CRootContainer::removeDatamodel(dm);
 }
-
 
 TEST_CASE("manually create miriam using libsbml", "[copasi][miriam]")
 {
@@ -317,6 +336,14 @@ TEST_CASE("manually create miriam using libsbml", "[copasi][miriam]")
 
   CMIRIAMInfo * info = CAnnotation::allocateMiriamInfo(dm->getModel());
   info->load(dm->getModel());
+
+  CDataVector< CCreator >::iterator it = info->getCreators().begin();
+  CDataVector< CCreator >::iterator end = info->getCreators().end();
+
+  for (; it != end; ++it)
+    info->removeCreator(&*it);
+
+  REQUIRE(info->save());
 
   CCreator * pCreator = info->createCreator("");
   pCreator->setFamilyName("LastName");
@@ -343,7 +370,6 @@ TEST_CASE("manually create miriam using libsbml", "[copasi][miriam]")
 }
 
 #ifdef COPASI_USE_RAPTOR
-
 
 #include <copasi/MIRIAM/CRDFParser.h>
 #include <copasi/MIRIAM/CRDFGraph.h>
@@ -376,12 +402,11 @@ TEST_CASE("miriam parsing using libsbml", "[copasi][miriam]")
   auto incoming = graph1->getIncomingTriplets(start);
   auto parents = graph1->getParentSubjects(start);
 
-
-  // now ensure that serializing to string works 
+  // now ensure that serializing to string works
   CRDFWriter writer;
   auto * raptorSerialization = writer.write(graph2);
   auto serialization = graph2->toXmlString();
-  
+
   free(raptorSerialization);
   pdelete(graph1);
   pdelete(graph2);
@@ -401,11 +426,9 @@ TEST_CASE("miriam parsing using libsbml", "[copasi][miriam]")
   raptorSerialization = writer.write(graph2);
   serialization = graph2->toXmlString();
 
-
   free(raptorSerialization);
   pdelete(graph1);
   pdelete(graph2);
-
 
   CRootContainer::removeDatamodel(dm);
 }

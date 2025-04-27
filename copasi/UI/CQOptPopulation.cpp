@@ -184,13 +184,13 @@ void CQOptPopulation::createActions()
   //connect(mpaToggleLogX, SIGNAL(toggled(bool)), this, SLOT(toggleLogX(bool)));
 
   mpaSaveToFile = new QAction("Save Image", this);
-  mpaSaveToFile->setShortcut(Qt::CTRL + Qt::Key_S);
+  mpaSaveToFile->setShortcut(QKeySequence::SaveAs);
   mpaSaveToFile->setToolTip("Save as Image");
   connect(mpaSaveToFile, SIGNAL(triggered()), this, SLOT(slotSaveImage()));
 
   mpaCloseWindow = new QAction("Close", this);
   mpaCloseWindow->setObjectName("close");
-  mpaCloseWindow->setShortcut(Qt::CTRL + Qt::Key_W);
+  mpaCloseWindow->setShortcut(QKeySequence::Close);
   connect(mpaCloseWindow, SIGNAL(triggered()), this, SLOT(slotCloseWindow()));
 
   mpaRefresh = new QAction("Repaint (Full refresh)", this);

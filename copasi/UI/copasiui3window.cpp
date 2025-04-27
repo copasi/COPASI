@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -38,6 +38,7 @@
 #include <QtCore/QThread>
 #include <QFontDialog>
 #include <QtCore/QDateTime>
+#include <QProcess>
 
 #include <QByteArray>
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
@@ -87,6 +88,7 @@
 #include "copasi/model/CModelExpansion.h"
 #include "copasi/UI/CQCheckModelWindow.h"
 #include <copasi/UI/CQBrowserPane.h>
+#include <copasi/UI/CQExternalToolDialog.h>
 
 #include "copasi/model/CModelExpansion.h"
 
@@ -113,6 +115,9 @@
 #include <copasi/UI/CQOptPopulation.h>
 
 #include <copasi/UI/CQParameterEstimationResult.h>
+
+#include <copasi/UI/CQExternalToolDialog.h>
+#include <copasi/UI/CQExternalTools.h>
 
 #include <qwt_global.h>
 
@@ -346,6 +351,8 @@ CopasiUI3Window::CopasiUI3Window():
   , mpPopulationDisplay(NULL)
   , mAutoUpdateCheck(false)
   , mActionStack()
+  , mpaShowExternalToolDialog(NULL)
+  , mpExternaltools(new CQExternalTools)
 {
   // There can only be one
   pMainWindow = this;
@@ -415,6 +422,8 @@ CopasiUI3Window::CopasiUI3Window():
 
   QTimer::singleShot(10, this, SLOT(slotAutoCheckForUpdates()));
   connect(this, SIGNAL(signalDefferedLoadFile(QString)), this, SLOT(slotDefferedLoadFile(QString)));
+
+  mpExternaltools->init(mpTools, mpaShowExternalToolDialog);
 }
 
 CopasiUI3Window::~CopasiUI3Window()
@@ -445,6 +454,7 @@ CopasiUI3Window::~CopasiUI3Window()
   mpDataModelGUI->deregisterListView(mpListView);
   pdelete(mpDataModelGUI);
   pdelete(mpListView);
+  pdelete(mpExternaltools);
 }
 
 void CopasiUI3Window::createActions()
@@ -453,36 +463,34 @@ void CopasiUI3Window::createActions()
   //TODO: add tool tips, status tips etc.
   mpaNew = new QAction(CQIconResource::icon(CQIconResource::fileNew), "&New", this);
   connect(mpaNew, SIGNAL(triggered()), this, SLOT(slotNewDoc()));
-  mpaNew->setShortcut(Qt::CTRL + Qt::Key_N);
+  mpaNew->setShortcut(QKeySequence::New);
   mpaOpen = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "&Open...", this);
   connect(mpaOpen, SIGNAL(triggered()), this, SLOT(slotFileOpen()));
-  mpaOpen->setShortcut(Qt::CTRL + Qt::Key_O);
+  mpaOpen->setShortcut(QKeySequence::Open);
   mpaOpenCopasiFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "COP&ASI Files...", this);
   connect(mpaOpenCopasiFiles, SIGNAL(triggered()), this, SLOT(slotFileExamplesCopasiFiles()));
-  // mpaOpenCopasiFiles->setShortcut(Qt::CTRL + Qt::Key_1);
   mpaOpenSBMLFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "S&BML Files...", this);
   connect(mpaOpenSBMLFiles, SIGNAL(triggered()), this, SLOT(slotFileExamplesSBMLFiles()));
-  // mpaOpenSBMLFiles->setShortcut(Qt::CTRL + Qt::Key_2);
   mpaOpenFromUrl = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "Open from &Url...", this);
   connect(mpaOpenFromUrl, SIGNAL(triggered()), this, SLOT(slotFileOpenFromUrl()));
   mpaSave = new QAction(CQIconResource::icon(CQIconResource::fileSave), "&Save", this);
   connect(mpaSave, SIGNAL(triggered()), this, SLOT(slotFileSave()));
-  mpaSave->setShortcut(Qt::CTRL + Qt::Key_S);
+  mpaSave->setShortcut(QKeySequence::Save);
   mpaSaveAs = new QAction(CQIconResource::icon(CQIconResource::fileSaveas), "Save &As...", this);
   connect(mpaSaveAs, SIGNAL(triggered()), this, SLOT(slotFileSaveAs()));
-  mpaSaveAs->setShortcut(QKeySequence(Qt::SHIFT, Qt::CTRL, Qt::Key_S));
+  mpaSaveAs->setShortcut(QKeySequence::SaveAs);
   mpaImportSBML = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "&Import SBML...", this);
   connect(mpaImportSBML, SIGNAL(triggered()), this, SLOT(slotImportSBML()));
-  mpaImportSBML->setShortcut(Qt::CTRL + Qt::Key_I);
+  mpaImportSBML->setShortcut(Qt::CTRL | Qt::Key_I);
   mpaExportSBML = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export SBML...", this);
   connect(mpaExportSBML, SIGNAL(triggered()), this, SLOT(slotExportSBML()));
-  mpaExportSBML->setShortcut(Qt::CTRL + Qt::Key_E);
+  mpaExportSBML->setShortcut(Qt::CTRL | Qt::Key_E);
   mpaExportODE = new QAction(CQIconResource::icon(CQIconResource::fileExport), "Export ODEs...", this);
   connect(mpaExportODE, SIGNAL(triggered()), this, SLOT(slotExportMathModel()));
-  mpaExportODE->setShortcut(Qt::CTRL + Qt::Key_M);
+  mpaExportODE->setShortcut(Qt::CTRL | Qt::Key_M);
   mpaQuit = new QAction("&Quit", this);
   connect(mpaQuit, SIGNAL(triggered()), this, SLOT(slotQuit()));
-  mpaQuit->setShortcut(Qt::CTRL + Qt::Key_Q);
+  mpaQuit->setShortcut(QKeySequence::Quit);
 
   mpaCopy = new QAction("&Copy", this);
   mpaCopy->setShortcut(QKeySequence::Copy);
@@ -530,21 +538,18 @@ void CopasiUI3Window::createActions()
 
   mpaOpenSEDMLFiles = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "S&ED-ML Files...", this);
   connect(mpaOpenSEDMLFiles, SIGNAL(triggered()), this, SLOT(slotFileExamplesSEDMLFiles()));
-  // mpaOpenSEDMLFiles->setShortcut(Qt::CTRL + Qt::Key_3);
   mpaImportSEDML = new QAction(CQIconResource::icon(CQIconResource::fileOpen), "&Import SED-ML...", this);
   connect(mpaImportSEDML, SIGNAL(triggered()), this, SLOT(slotImportSEDML()));
-  // mpaImportSEDML->setShortcut(Qt::CTRL + Qt::Key_X);
   mpaExportSEDML = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export SED-ML...", this);
   connect(mpaExportSEDML, SIGNAL(triggered()), this, SLOT(slotExportSEDML()));
-  // mpaExportSEDML->setShortcut(Qt::CTRL + Qt::Key_Z);
-
+  
   //     QAction* mpaObjectBrowser;
 
   mpaAddModel = new QAction(CQIconResource::icon(CQIconResource::fileAdd), "&Add to model...", this);
-  mpaAddModel->setShortcut(QKeySequence(Qt::SHIFT, Qt::CTRL, Qt::Key_A));
+  mpaAddModel->setShortcut(Qt::SHIFT | Qt::CTRL |Qt::Key_A);
   connect(mpaAddModel, SIGNAL(triggered()), this, SLOT(slotAddFileOpen()));
   mpaMergeModels = new QAction("&Merge added model...", this);
-  mpaMergeModels->setShortcut(QKeySequence(Qt::SHIFT, Qt::CTRL, Qt::Key_M));
+  mpaMergeModels->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_M);
   connect(mpaMergeModels, SIGNAL(triggered()), this, SLOT(slotMergeModels()));
 
   mpaCloseAllWindows = new QAction("Close all windows below:", this);
@@ -580,6 +585,9 @@ void CopasiUI3Window::createActions()
 #endif
   mpaParameterEstimationResult = new QAction("Load Parameter Estimation Protocol", this);
   connect(mpaParameterEstimationResult, SIGNAL(triggered()), this, SLOT(slotLoadParameterEstimationProtocol()));
+
+  mpaShowExternalToolDialog = new QAction("External Tools...", this);
+  connect(mpaShowExternalToolDialog, &QAction::triggered, this, &CopasiUI3Window::slotConfigureExternalTools);
 }
 
 void
@@ -708,7 +716,7 @@ QToolBar *CopasiUI3Window::createToolBar()
   tb->addAction(mpaNew);
   tb->addAction(mpaOpen);
   tb->addAction(mpaSave);
-  tb->addAction(mpaCapture);
+  // tb->addAction(mpaCapture); // remove capture as it is unnecessary for now only from toolbar
   tb->addAction(mpaSliders);
   tb->addAction(mpaCheckModel);
   tb->addAction(mpaApplyInitialState);
@@ -736,6 +744,12 @@ void CopasiUI3Window::createMenuBar()
 {
   QMenu *pFileMenu = menuBar()->addMenu("&File");
   pFileMenu->addAction(mpaNew);
+#ifdef Q_OS_MACOS
+  QAction *pOpenNewWindow = new QAction("New Window", this);
+  pOpenNewWindow->setToolTip("Open a new COPASI instance");
+  QObject::connect(pOpenNewWindow, SIGNAL(triggered()), this, SLOT(slotStartNewInstance()));
+  pFileMenu->addAction(pOpenNewWindow);
+#endif
   pFileMenu->addAction(mpaOpen);
   pFileMenu->addAction(mpaOpenFromUrl);
   mpMenuExamples = pFileMenu->addMenu("Examples");
@@ -816,6 +830,9 @@ void CopasiUI3Window::createMenuBar()
 
   mpTools->addAction(mpaCheckModel);
   mpTools->addAction("&Convert to irreversible", this, SLOT(slotConvertToIrreversible()));
+  mpTools->addAction("Convert ODEs -> Reactions", this, SLOT(slotConvertODEsToReactions()));
+  mpTools->addAction("Convert Reactions -> ODEs", this, SLOT(slotConvertReactionsToODEs()));
+  mpTools->addAction("Convert local to global Parmeters", this, SLOT(slotPromoteLocalParameters()));
   mpTools->addAction("Create &Events For Timeseries Experiment", this, SLOT(slotCreateEventsForTimeseries()));
   mpTools->addAction("&Remove SBML Ids from model", this, SLOT(slotClearSbmlIds()));
   mpTools->addAction(mpaParameterEstimationResult);
@@ -824,6 +841,8 @@ void CopasiUI3Window::createMenuBar()
   mpSBWMenu = new QMenu("&SBW", this);
   mpSBWAction = mpTools->addMenu(mpSBWMenu);
 #endif // COPASI_SBW_INTEGRATION
+  mpTools->addSeparator();
+  mpTools->addAction(mpaShowExternalToolDialog);
   mpTools->addSeparator();
   mpTools->addAction(mpaUpdateMIRIAM);
   mpTools->addAction("&Preferences", this, SLOT(slotPreferences()));
@@ -1617,7 +1636,7 @@ void CopasiUI3Window::slotPreferencesAccepted()
 {
   emit signalPreferenceUpdated();
   // save settings
-  CRootContainer::getConfiguration()->save();
+  mpDataModelGUI->saveConfiguration(false);
 }
 
 void CopasiUI3Window::slotTutorialWizard()
@@ -1997,6 +2016,111 @@ void CopasiUI3Window::slotConvertToIrreversible()
 
   mpDataModel->changed();
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::CHANGE, CRegisteredCommonName());
+}
+
+void CopasiUI3Window::slotConvertODEsToReactions()
+{
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+
+  if (!pModel)
+    return;
+
+  mpDataModelGUI->commit();
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
+                         mpDataModel->getModel()->getCN());
+  mpListView->clearCurrentWidget();
+  mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
+  mpListView->resetCache();
+
+  if (this->mpSliders)
+    this->mpSliders->reset();
+
+  CCopasiMessage::clearDeque();
+
+  if (!mpDataModel->convertODEsToReactions())
+    {
+      // Display error messages.
+      CQMessageBox::information(this, "Conversion Failed",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default,
+                                QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+    }
+
+  mpDataModel->changed();
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, CRegisteredCommonName());
+  mpListView->resetCache();
+}
+
+void CopasiUI3Window::slotConvertReactionsToODEs()
+{
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+
+  if (!pModel)
+    return;
+
+  mpDataModelGUI->commit();
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
+                         mpDataModel->getModel()->getCN());
+  mpListView->clearCurrentWidget();
+  mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
+  mpListView->resetCache();
+
+  if (this->mpSliders)
+    this->mpSliders->reset();
+
+  CCopasiMessage::clearDeque();
+
+  if (!mpDataModel->convertReactionsToODEs())
+    {
+      // Display error messages.
+      CQMessageBox::information(this, "Conversion Failed",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default,
+                                QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+    }
+
+  mpDataModel->changed();
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, CRegisteredCommonName());
+  mpListView->resetCache();
+}
+
+void CopasiUI3Window::slotPromoteLocalParameters()
+{
+  assert(mpDataModel != NULL);
+  CModel * pModel = mpDataModel->getModel();
+
+  if (!pModel)
+    return;
+
+  mpDataModelGUI->commit();
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::DELETE,
+                         mpDataModel->getModel()->getCN());
+  mpListView->clearCurrentWidget();
+  mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
+  mpListView->resetCache();
+
+  if (this->mpSliders)
+    this->mpSliders->reset();
+
+  CCopasiMessage::clearDeque();
+
+  if (!mpDataModel->convertParametersToGlobal())
+    {
+      // Display error messages.
+      CQMessageBox::information(this, "Conversion Failed",
+                                CCopasiMessage::getAllMessageText().c_str(),
+                                QMessageBox::Ok | QMessageBox::Default,
+                                QMessageBox::NoButton);
+      CCopasiMessage::clearDeque();
+    }
+
+  mpDataModel->changed();
+  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, CRegisteredCommonName());
+  mpListView->resetCache();
 }
 
 void CopasiUI3Window::slotShowSliders(bool flag)
@@ -2534,9 +2658,7 @@ void CopasiUI3Window::slotUpdateMIRIAMFinished(bool success)
   */
   if (success)
     {
-      CRootContainer::getConfiguration()->save();
-      CMIRIAMResourceObject::setMIRIAMResources(
-        &CRootContainer::getConfiguration()->getRecentMIRIAMResources());
+      mpDataModelGUI->saveConfiguration(true);
       mpDataModelGUI->updateMIRIAMResourceContents();
       this->checkPendingMessages();
     }
@@ -2554,8 +2676,7 @@ void CopasiUI3Window::slotUpdateMIRIAM()
 
   try
     {
-      success = mpDataModelGUI->updateMIRIAM(
-                  CRootContainer::getConfiguration()->getRecentMIRIAMResources());
+      success = mpDataModelGUI->updateMIRIAM(CRootContainer::getMiriamResources());
     }
   catch (...)
     {
@@ -2632,7 +2753,7 @@ void CopasiUI3Window::slotFontSelection()
   if (ok)
     {
       CRootContainer::getConfiguration()->setApplicationFont(TO_UTF8(Font.toString()));
-      CRootContainer::getConfiguration()->save();
+      mpDataModelGUI->saveConfiguration(false);
 
       qApp->setFont(Font);
       // The stylesheet (set in CQCopasiApplication.cpp) is apparently overriding
@@ -2692,7 +2813,7 @@ void CopasiUI3Window::slotAutoCheckForUpdates()
 
       CRootContainer::getConfiguration()->getCheckForUpdates().setEnabled(result == QMessageBox::StandardButton::Yes);
       CRootContainer::getConfiguration()->getCheckForUpdates().setConfirmedCheckForUpdate(true);
-      CRootContainer::getConfiguration()->save();
+      mpDataModelGUI->saveConfiguration(false);
     }
 
   if (!CRootContainer::getConfiguration()->getCheckForUpdates().checkRequired()) return;
@@ -3810,6 +3931,17 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
   mpDataModelGUI->downloadFileFromUrl(TO_UTF8(url), TmpFileName);
 }
 
+void CopasiUI3Window::slotConfigureExternalTools()
+{
+  CQExternalToolDialog dlg;
+  dlg.init(mpExternaltools);
+  if (dlg.exec() == QDialog::Accepted)
+    {
+      dlg.saveTools(true);
+      mpExternaltools->init(mpTools, mpaShowExternalToolDialog);
+    }
+}
+
 void CopasiUI3Window::activateElement(const std::string& activate)
 {
   // resolve display name first
@@ -3859,7 +3991,7 @@ void CopasiUI3Window::removeReportTargets()
 
       if (!target.empty())
         {
-          str << "  task: " << task.getObjectName() << " target: " << target << std::endl;
+          str << "  task: " << task.getObjectName() << " target: " << target << "\n";
           task.getReport().setTarget("");
         }
     }
@@ -4073,6 +4205,11 @@ void CopasiUI3Window::slotHandleCopasiScheme(const QUrl& url)
 #endif
 }
 
+void CopasiUI3Window::slotStartNewInstance()
+{
+  QProcess::startDetached(qApp->applicationFilePath());
+}
+
 void CopasiUI3Window::slotCheckForUpdate()
 {
 #if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
@@ -4166,7 +4303,7 @@ void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
           CRootContainer::getConfiguration()->getCheckForUpdates().skipVersion(Latest))
         {
           mAutoUpdateCheck = false;
-          CRootContainer::getConfiguration()->save();
+          mpDataModelGUI->saveConfiguration(false);
 
           return;
         }
@@ -4223,7 +4360,7 @@ void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
         }
 
       mAutoUpdateCheck = false;
-      CRootContainer::getConfiguration()->save();
+      mpDataModelGUI->saveConfiguration(false);
     }
   else if (mpDataModelGUI->getLastDownloadUrl() != "https://api.github.com/repos/copasi/COPASI/releases/latest")
     {
@@ -4279,10 +4416,10 @@ void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
   else
     {
       std::stringstream str;
-      str << "COPASI failed to download the file from " << std::endl
-          << std::endl
-          << mpDataModelGUI->getLastDownloadUrl() << std::endl
-          << std::endl
+      str << "COPASI failed to download the file from " << "\n"
+          << "\n"
+          << mpDataModelGUI->getLastDownloadUrl() << "\n"
+          << "\n"
           << CCopasiMessage::getAllMessageText();
 
       CQMessageBox::critical(this, "Download Failed",

@@ -37,7 +37,7 @@
 LIBSBML_CPP_NAMESPACE_USE
 LIBSEDML_CPP_NAMESPACE_USE
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 # pragma warning (disable: 4786)
 # pragma warning (disable: 4243)
 // warning C4355: 'this' : used in base member initializer list
@@ -49,7 +49,7 @@ LIBSEDML_CPP_NAMESPACE_USE
 // The POSIX name for this item is deprecated. Instead, use the ISO C++ conformant name: _strdup. See online help for details.
 #  pragma warning(disable : 4996)
 # endif
-#endif  // WIN32
+#endif  // WIN32  && !defined(__MINGW32__) && !defined(__MINGW64__)
 
 #include <assert.h>
 #include <fstream>
@@ -65,7 +65,7 @@ LIBSEDML_CPP_NAMESPACE_USE
 # undef max
 #endif
 
-#if defined(HAVE_APPLE) || __GNUC__ > 5 || (__GNUC__ == 5 && __GNUC_MINOR__ >= 3)
+#if defined(HAVE_APPLE) || __GNUC__ > 5 || (__GNUC__ == 5 && __GNUC_MINOR__ >= 3) || defined (__MINGW32__) || defined (__MINGW64__)
 # include <cmath>
 using std::isnan;
 #endif
@@ -173,5 +173,7 @@ extern std::ofstream DebugFile;
 // suppress unused parameter warnings
 #define C_UNUSED(p)
 #define COPASI_DEPRECATED
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif // NOMINMAX
 #endif // COPASI_copasi

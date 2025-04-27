@@ -101,6 +101,14 @@ public:
                      const bool & createMissing = false);
 
   /**
+   * Specific constructor
+   * @param CModel * pModel
+   * @param const CDataContainer * pParent
+   */
+  CModelParameterSet(CModel * pModel,
+                     const CDataContainer * pParent);
+
+  /**
    * Destructor
    */
   virtual ~CModelParameterSet();

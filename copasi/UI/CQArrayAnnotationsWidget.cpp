@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
-// University of Virginia, University of Heidelberg, and University
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// University of Virginia, University of Heidelberg, and University 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and University of 
+// of Connecticut School of Medicine. 
+// All rights reserved. 
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., University of Heidelberg, and The University 
+// of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
+// and The University of Manchester. 
+// All rights reserved. 
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
-// All rights reserved.
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
+// Properties, Inc. and EML Research, gGmbH. 
+// All rights reserved. 
 
 #ifdef SunOS
 #include <ieeefp.h>
@@ -626,7 +626,15 @@ void CQArrayAnnotationsWidget::switchToBarChart()
 #ifdef WITH_QT5_VISUALIZATION
 
       if (!m_container)
-        createBarChart();
+        {
+          if (!createBarChart())
+            {
+              mpButton->setEnabled(false);
+              switchToTable();
+              return;
+            }
+          
+        }
 
       fillBarChart();
 
@@ -939,6 +947,9 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (!mpArray) return;
 
 #ifdef WITH_QT5_VISUALIZATION
+  
+  if (!m_modifier)
+    return;
 
   m_modifier->loadData(mpArray, mRowIndex, mColIndex);
 
@@ -1092,84 +1103,89 @@ void CQArrayAnnotationsWidget::fillBarChart()
 #endif
 }
 
-void CQArrayAnnotationsWidget::createBarChart()
+bool CQArrayAnnotationsWidget::createBarChart()
 {
-  if (!mWithBarChart) return;
+  if (!mWithBarChart)
+    return false;
 
 #ifdef WITH_QT5_VISUALIZATION
 
   m_graph = new Q3DBars();
+  if (!m_graph->hasContext())
+  {
+    pdelete(m_graph);
+    return false;
+  }
 
   m_container = QWidget::createWindowContainer(m_graph);
+
   mpStack->addWidget(m_container);
 
-  if (m_graph->hasContext())
-    {
-      m_modifier = new CQ3DBarsModifier(this, m_graph);
+  m_modifier = new CQ3DBarsModifier(this, m_graph);
 
-      m_contextMenu = new QMenu(this);
+  m_contextMenu = new QMenu(this);
 
-      QMenu* menu = new QMenu("Theme", m_contextMenu);
-      menu->addAction(new QAction("Qt", menu));
-      menu->addAction(new QAction("Primary Colors", menu));
-      menu->addAction(new QAction("Digia", menu));
-      menu->addAction(new QAction("Stone Moss", menu));
-      menu->addAction(new QAction("Army Blue", menu));
-      menu->addAction(new QAction("Retro", menu));
-      menu->addAction(new QAction("Ebony", menu));
-      menu->addAction(new QAction("Isabelle", menu));
-      m_contextMenu->addMenu(menu); // theme
+  QMenu * menu = new QMenu("Theme", m_contextMenu);
+  menu->addAction(new QAction("Qt", menu));
+  menu->addAction(new QAction("Primary Colors", menu));
+  menu->addAction(new QAction("Digia", menu));
+  menu->addAction(new QAction("Stone Moss", menu));
+  menu->addAction(new QAction("Army Blue", menu));
+  menu->addAction(new QAction("Retro", menu));
+  menu->addAction(new QAction("Ebony", menu));
+  menu->addAction(new QAction("Isabelle", menu));
+  m_contextMenu->addMenu(menu); // theme
 
-      menu = new QMenu("Selection Mode", m_contextMenu);
-      menu->addAction(new QAction("None", menu));
-      menu->addAction(new QAction("Bar", menu));
-      menu->addAction(new QAction("Row", menu));
-      menu->addAction(new QAction("Bar and Row", menu));
-      menu->addAction(new QAction("Column", menu));
-      menu->addAction(new QAction("Bar and Column", menu));
-      menu->addAction(new QAction("Row and Column", menu));
-      menu->addAction(new QAction("Bar, Row and Column", menu));
-      menu->addAction(new QAction("Slice into Row", menu));
-      menu->addAction(new QAction("Slice into Row and Item", menu));
-      menu->addAction(new QAction("Slice into Column", menu));
-      menu->addAction(new QAction("Slice into Column and Item", menu));
-      m_contextMenu->addMenu(menu); // selection mode
+  menu = new QMenu("Selection Mode", m_contextMenu);
+  menu->addAction(new QAction("None", menu));
+  menu->addAction(new QAction("Bar", menu));
+  menu->addAction(new QAction("Row", menu));
+  menu->addAction(new QAction("Bar and Row", menu));
+  menu->addAction(new QAction("Column", menu));
+  menu->addAction(new QAction("Bar and Column", menu));
+  menu->addAction(new QAction("Row and Column", menu));
+  menu->addAction(new QAction("Bar, Row and Column", menu));
+  menu->addAction(new QAction("Slice into Row", menu));
+  menu->addAction(new QAction("Slice into Row and Item", menu));
+  menu->addAction(new QAction("Slice into Column", menu));
+  menu->addAction(new QAction("Slice into Column and Item", menu));
+  m_contextMenu->addMenu(menu); // selection mode
 
-      menu = new QMenu("Style", m_contextMenu);
-      menu->addAction(new QAction("Bar", menu));
-      menu->addAction(new QAction("Pyramid", menu));
-      menu->addAction(new QAction("Cone", menu));
-      menu->addAction(new QAction("Cylinder", menu));
-      menu->addAction(new QAction("Bevel bar", menu));
-      menu->addAction(new QAction("Sphere", menu));
-      m_contextMenu->addMenu(menu); // style
+  menu = new QMenu("Style", m_contextMenu);
+  menu->addAction(new QAction("Bar", menu));
+  menu->addAction(new QAction("Pyramid", menu));
+  menu->addAction(new QAction("Cone", menu));
+  menu->addAction(new QAction("Cylinder", menu));
+  menu->addAction(new QAction("Bevel bar", menu));
+  menu->addAction(new QAction("Sphere", menu));
+  m_contextMenu->addMenu(menu); // style
 
-      menu = new QMenu("Shadow", m_contextMenu);
-      menu->addAction(new QAction("None", menu));
-      menu->addAction(new QAction("Low", menu));
-      menu->addAction(new QAction("Medium", menu));
-      menu->addAction(new QAction("High", menu));
-      menu->addAction(new QAction("Low Soft", menu));
-      menu->addAction(new QAction("Medium Soft", menu));
-      menu->addAction(new QAction("High Soft", menu));
-      m_contextMenu->addMenu(menu); // style
+  menu = new QMenu("Shadow", m_contextMenu);
+  menu->addAction(new QAction("None", menu));
+  menu->addAction(new QAction("Low", menu));
+  menu->addAction(new QAction("Medium", menu));
+  menu->addAction(new QAction("High", menu));
+  menu->addAction(new QAction("Low Soft", menu));
+  menu->addAction(new QAction("Medium Soft", menu));
+  menu->addAction(new QAction("High Soft", menu));
+  m_contextMenu->addMenu(menu); // style
 
-      m_contextMenu->addSeparator();
+  m_contextMenu->addSeparator();
 
-      m_contextMenu->addAction(new QAction("Change label style"));
-      m_contextMenu->addAction(new QAction("Smooth bars"));
-      m_contextMenu->addAction(new QAction("Change camera preset"));
-      m_contextMenu->addAction(new QAction("Zoom to selected bar"));
-      m_contextMenu->addAction(new QAction("Show background"));
-      m_contextMenu->addAction(new QAction("Show grid"));
-      m_contextMenu->addAction(new QAction("Show reflections"));
-      m_contextMenu->addAction(new QAction("Show Gradients"));
+  m_contextMenu->addAction(new QAction("Change label style"));
+  m_contextMenu->addAction(new QAction("Smooth bars"));
+  m_contextMenu->addAction(new QAction("Change camera preset"));
+  m_contextMenu->addAction(new QAction("Zoom to selected bar"));
+  m_contextMenu->addAction(new QAction("Show background"));
+  m_contextMenu->addAction(new QAction("Show grid"));
+  m_contextMenu->addAction(new QAction("Show reflections"));
+  m_contextMenu->addAction(new QAction("Show Gradients"));
 
-      connect(m_contextMenu, SIGNAL(triggered(QAction*)), m_modifier, SLOT(actionTriggered(QAction*)));
+  connect(m_contextMenu, SIGNAL(triggered(QAction *)), m_modifier, SLOT(actionTriggered(QAction *)));
 
-      setContextMenuPolicy(Qt::CustomContextMenu);
-      connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotShowContextMenu(const QPoint &)));
-    }
+  setContextMenuPolicy(Qt::CustomContextMenu);
+  connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotShowContextMenu(const QPoint &)));
+    
 
 #else
   mpPlot3d = new CQBarChart();
@@ -1185,4 +1201,6 @@ void CQArrayAnnotationsWidget::createBarChart()
   mBarChartFilled = false;
 
 #endif // WITH_QT5_VISUALIZATION
+
+  return true;
 }

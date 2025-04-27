@@ -179,7 +179,7 @@ protected:
 
   void fillTable0();
 
-  void createBarChart();
+  bool createBarChart();
 
   void fillBarChart();
 

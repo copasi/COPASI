@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,6 +51,7 @@ CRegisteredCommonName::CRegisteredCommonName()
   : CCommonName()
   , mpDataModel(nullptr)
 {
+#pragma omp critical (cregisteredcommonname_access)
   mSet.insert(this);
 }
 
@@ -64,6 +65,7 @@ CRegisteredCommonName::CRegisteredCommonName(const std::string & name)
   if (pObject != nullptr)
     mpDataModel = pObject->getObjectDataModel();
 
+#pragma omp critical (cregisteredcommonname_access)
   mSet.insert(this);
 }
 #endif // DEPRECATE_CONSTRUCTOR
@@ -73,6 +75,7 @@ CRegisteredCommonName::CRegisteredCommonName(const std::string & name, const COb
   , mpDataModel(CObjectInterface::DataObject(pObject) != nullptr
                 ? CObjectInterface::DataObject(pObject)->getObjectDataModel() : nullptr)
 {
+#pragma omp critical (cregisteredcommonname_access)
   mSet.insert(this);
 }
 
@@ -80,11 +83,13 @@ CRegisteredCommonName::CRegisteredCommonName(const CRegisteredCommonName & src)
   : CCommonName(src)
   , mpDataModel(src.mpDataModel)
 {
+#pragma omp critical (cregisteredcommonname_access)
   mSet.insert(this);
 }
 
 CRegisteredCommonName::~CRegisteredCommonName()
 {
+#pragma omp critical (cregisteredcommonname_access)
   mSet.erase(this);
 }
 

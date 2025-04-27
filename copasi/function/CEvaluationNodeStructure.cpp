@@ -65,7 +65,7 @@ CEvaluationNodeStructure::CEvaluationNodeStructure(const CEvaluationNodeStructur
 
 CEvaluationNodeStructure::~CEvaluationNodeStructure() {}
 
-ASTNode* CEvaluationNodeStructure::toAST(const CDataModel* /*pDataModel*/) const
+ASTNode* CEvaluationNodeStructure::toAST(const CDataModel* /*pDataModel*/, int, int) const
 {
   fatalError();
   return NULL;

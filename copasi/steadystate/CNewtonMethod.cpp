@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -318,7 +318,6 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doIntegration(bool forward)
           break;
         }
 
-      calculateDerivativesX();
       C_FLOAT64 value = targetFunction();
 
       if (isSteadyState(value))
@@ -437,7 +436,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
 
   // DebugFile << "Iteration: " << k << std::endl;
 
-  calculateJacobian(currentValue, true);
+  calculateJacobian(true);
 
   if (CLeastSquareSolution::solve(*mpJacobian, mdxdt, mH) != mpJacobian->numCols())
     {
@@ -480,7 +479,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
           (*pHit) *= 0.5;
         }
 
-      calculateDerivativesX();
+      mpContainer->updateSimulatedValues(true);
       newValue = targetFunction();
 
       // mpParentTask->output(COutputInterface::DURING);
@@ -491,7 +490,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::doNewtonStep(C_FLOAT64 & currentV
       //discard the step
       memcpy(mpX, mXold.array(), mDimension * sizeof(C_FLOAT64));
 
-      calculateDerivativesX();
+      mpContainer->updateSimulatedValues(true);
       currentValue = targetFunction();
 
       if (mKeepProtocol)
@@ -547,7 +546,7 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
                                       k,
                                       &mIterationLimit);
 
-  calculateDerivativesX();
+  mpContainer->updateSimulatedValues(true);
   C_FLOAT64 targetValue = targetFunction();
 
   {
@@ -640,11 +639,6 @@ CNewtonMethod::NewtonResultCode CNewtonMethod::processNewton()
   return result;
 }
 
-void CNewtonMethod::calculateDerivativesX()
-{
-  mpContainer->updateSimulatedValues(true);
-}
-
 bool CNewtonMethod::containsNaN() const
 {
   return !mpContainer->isStateValid();
@@ -665,11 +659,11 @@ C_FLOAT64 CNewtonMethod::targetFunction()
 {
   if (mTargetCriterion != eTargetCriterion::Rate)
     {
-      calculateJacobian(std::max(mTargetRate, mTargetDistance), true);
+      calculateJacobian(false);
     }
 
   // Assure that all values are updated.
-  mpContainer->updateSimulatedValues(true);
+  mpContainer->updateSimulatedValues(false);
   mpContainer->applyUpdateSequence(mUpdateConcentrations);
 
   mTargetRate = targetFunctionRate();
@@ -754,6 +748,7 @@ C_FLOAT64 CNewtonMethod::targetFunctionDistance()
 
   CMatrix< C_FLOAT64 > JacobianWithTime;
   mpContainer->calculateJacobian(JacobianWithTime, *mpDerivationFactor, true, !mpContainer->isAutonomous());
+  mpContainer->updateSimulatedValues(false);
 
   CLeastSquareSolution::ResultInfo Info = CLeastSquareSolution::solve(JacobianWithTime, mdxdt, mAtol, mCompartmentVolumes, mpContainer->getQuantity2NumberFactor(), Distance);
 

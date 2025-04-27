@@ -39,6 +39,7 @@
 
 #include "copasi/commandline/CLocaleString.h"
 
+
 class COptions
 {
   class COptionValue
@@ -153,6 +154,14 @@ public:
 
   static std::string getConfigDir(void);
 
+  static std::string getCopasiDir(void);
+
+  static std::string getHome(void);
+  
+  static std::string getTemp(void);
+
+  static std::string getConfigFile(void);
+
 private:
   template< class CType > static void setValue(const std::string & name,
       const CType & value)
@@ -165,12 +174,7 @@ private:
     return;
   }
 
-  static std::string getCopasiDir(void);
 
-  static std::string getHome(void);
-  static std::string getTemp(void);
-
-  static std::string getConfigFile(void);
 };
 
 #endif // COPASI_COptions

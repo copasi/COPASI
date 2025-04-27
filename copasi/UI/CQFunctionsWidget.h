@@ -53,9 +53,8 @@ protected:
   virtual void keyPressEvent(QKeyEvent* ev);
 
 protected slots:
-  virtual void updateDeleteBtns();
   virtual void slotBtnNewClicked();
-  virtual void slotBtnDeleteClicked();
+  virtual void slotBtnDeleteClicked(bool needFocus=false);
   virtual void slotBtnClearClicked();
   virtual void slotDoubleClicked(const QModelIndex proxyIndex);
   virtual void dataChanged(const QModelIndex& topLeft,

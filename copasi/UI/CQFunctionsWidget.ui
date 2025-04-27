@@ -204,22 +204,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>mpTblFunctions</sender>
-   <signal>clicked(QModelIndex)</signal>
-   <receiver>CQFunctionsWidget</receiver>
-   <slot>updateDeleteBtns()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>270</x>
-     <y>212</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>270</x>
-     <y>227</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>mpBtnNew</sender>
    <signal>pressed()</signal>
    <receiver>CQFunctionsWidget</receiver>
@@ -237,7 +221,6 @@
   </connection>
  </connections>
   <slots>
-    <slot>updateDeleteBtns()</slot>
     <slot>slotBtnNewClicked()</slot>
     <slot>slotBtnDeleteClicked()</slot>
     <slot>slotBtnClearClicked()</slot>

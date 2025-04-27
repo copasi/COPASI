@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -42,13 +42,9 @@ CPointerContextWithParent< Data >::CPointerContextWithParent(const bool & parall
   Base::master() = NULL;
 
   if (Base::size() > 1)
-    {
-      Data ** pIt = Base::beginThread();
-      Data ** pEnd = Base::endThread();
-
-      for (; pIt != pEnd; ++pIt)
-        *pIt = NULL;
-    }
+#pragma omp parallel for
+    for (size_t i = 0; i < Base::size(); ++i)
+      Base::threadData()[i] = NULL;
 }
 
 template < class Data >
@@ -62,15 +58,11 @@ void CPointerContextWithParent< Data >::setMaster(Data * pMaster)
 {
   Base::setMaster(pMaster);
 
+  // We must not parallelize this as setObjectParent my introduce race conditions.
   if (Base::size() > 1)
-    {
-      Data ** pIt = Base::beginThread();
-      Data ** pEnd = Base::endThread();
-
-      for (; pIt != pEnd; ++pIt)
-        if (*pIt != NULL)
-          (*pIt)->setObjectParent(mpParent);
-    }
+    for (size_t i = 0; i < Base::size(); ++i)
+      if (Base::threadData()[i] != NULL)
+        (Base::threadData()[i])->setObjectParent(mpParent);
 }
 
 #endif // COPASI_CPointerContextWithParent
