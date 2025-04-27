@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -162,24 +162,8 @@ bool CMathDependencyGraph::getUpdateSequence(CCore::CUpdateSequence & updateSequ
 #endif // DEBUG_OUTPUT
     }
 
-  CObjectInterface::ObjectSet::const_iterator it = requestedObjects.begin();
-  CObjectInterface::ObjectSet::const_iterator end = requestedObjects.end();
-  CObjectInterface::ObjectSet Prerequisites;
-
-  for (; it != end && success; ++it)
-    (*it)->appendPrerequisites(Prerequisites);
-
-  CObjectInterface::ObjectSet ChangedObjects(changedObjects);
-
-  it = Prerequisites.begin();
-  end = Prerequisites.end();
-
-  for (; it != end; ++it)
-    if ((*it)->getPrerequisites().empty())
-      ChangedObjects.insert(*it);
-
-  it = ChangedObjects.begin();
-  end = ChangedObjects.end();
+  CObjectInterface::ObjectSet::const_iterator it = changedObjects.begin();
+  CObjectInterface::ObjectSet::const_iterator end = changedObjects.end();
 
   // Mark all nodes which are changed or need to be calculated
   for (; it != end && success; ++it)
@@ -608,8 +592,8 @@ void CMathDependencyGraph::relocate(const CMathContainer * pContainer,
 
 void CMathDependencyGraph::exportDOTFormat(std::ostream & os, const std::string & name) const
 {
-  os << "digraph " << name << " {" << std::endl;
-  os << "rankdir=LR;" << std::endl;
+  os << "digraph " << name << " {" << "\n";
+  os << "rankdir=LR;" << "\n";
 
   mObject2Index.clear();
 
@@ -637,11 +621,11 @@ void CMathDependencyGraph::exportDOTFormat(std::ostream & os, const std::string 
           os << (((*itDep)->isChanged()) ? "\\nC" : "\\no");
           os << (((*itDep)->isRequested()) ? "R" : "o");
           os << "\"";
-          os << ";" << std::endl;
+          os << ";" << "\n";
         }
     }
 
-  os << "}" << std::endl;
+  os << "}" << "\n";
 }
 
 // static

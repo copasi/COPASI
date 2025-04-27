@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -165,6 +165,12 @@ protected:
   SbmlProgressCallback *mpSbmlCallback;
 
   /**
+   * flag controlling whether to import previously exported
+   * initial values as initial values.
+   */
+  bool mImportInitialValues = {false};
+
+  /**
    * This utility functions adds a new step to the progress dialog (if present)
    * @param globalStep the global steps that have been completed
    * @param currentTotal the total for current task
@@ -243,6 +249,7 @@ protected:
   void importSBMLRule(const Rule* sbmlRule,
                       std::map<const CDataObject*, SBase*>& copasi2sbmlmap,
                       Model* pSBMLModel);
+public:
 
   /**
    * Imports the given AssignmentRule which is for a global parameter.
@@ -252,6 +259,21 @@ protected:
                                 CModelEntity::Status ruleType,
                                 std::map<const CDataObject*, SBase*>& copasi2sbmlmap,
                                 Model* pSBMLModel);
+
+  /**
+   * sets the datamodel to be used by the importer
+   */
+  void setDataModel(CDataModel * pDM);
+
+  /**
+   * changes the behavior how initial values are imported back in.
+   * by default initial values in expressions will not be translated
+   * into initial values.
+   *
+   */
+  void setImportInitialValueAnnotation(bool parseInitialValues);
+
+protected:
 
   /**
    * Imports all events
@@ -299,6 +321,7 @@ protected:
       CModel* copasiModel,
       std::map<const CDataObject*, SBase*>& copasi2sbmlmap);
 
+public:
   /**
    * Creates and returns a COPASI CReaction object from the given SBML
    * Reaction object.
@@ -306,7 +329,7 @@ protected:
   CReaction* createCReactionFromReaction(Reaction* sbmlReaction,
                                          Model* sbmlModel,
                                          CModel* cmodel, std::map<const CDataObject*, SBase*>& copasi2sbmlmap);
-
+protected:
   /**
    * Creates a map of each parameter of the function definition and its
    * corresponding parameter in the function call.
@@ -333,7 +356,7 @@ protected:
    * This function replaces the AST_FUNCTION_POWER ASTNodes in a ASTNode tree
    * with the AST_POWER node.
    */
-  void replacePowerFunctionNodes(ASTNode* node);
+  //void replacePowerFunctionNodes(ASTNode* node);
 
   /**
    * This functions replaces all species nodes for species that are in the substanceOnlySpeciesVector.
@@ -345,13 +368,13 @@ protected:
    * Replaces all occurrences of the log function with two arguments by
    * a division of two separate calls to log.
    */
-  void replaceLog(ConverterASTNode* sourceNode);
+  //void replaceLog(ConverterASTNode* sourceNode);
 
   /**
    * Replaces all occurrences of the root function with two arguments by
    * a call to the power function with the inverse of the first argument.
    */
-  void replaceRoot(ConverterASTNode* sourceNode);
+  //void replaceRoot(ConverterASTNode* sourceNode);
 
   /**
    * Replaces the ids of named nodes in an ASTNode tree with
@@ -590,7 +613,7 @@ protected:
   /**
    * Creates a function definition for the delay function.
    */
-  void createDelayFunctionDefinition();
+  //void createDelayFunctionDefinition();
 
   /**
    * This method goes through the list of global parameters and tries to find
@@ -663,7 +686,7 @@ protected:
 
 public:
   SBMLImporter();
-  ~SBMLImporter();
+  virtual ~SBMLImporter();
 
   CModel* readSBML(std::string filename,
                    SBMLDocument*& pSBMLDocument,

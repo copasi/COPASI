@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> University of Virginia, University of Heidelberg, and University </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+ <class>CQExternalToolDialog</class>
+ <widget class="QDialog" name="CQExternalToolDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>538</width>
+    <height>418</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>External tool</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0" colspan="2">
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Title:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="txtTitle"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Command</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QLineEdit" name="txtCommand"/>
+       </item>
+       <item>
+        <widget class="QToolButton" name="cmdBrowseCommand">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Arguments:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QLineEdit" name="txtArguments"/>
+       </item>
+       <item>
+        <widget class="QToolButton" name="cmdShowArgContext">
+         <property name="text">
+          <string>&gt;</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Initial directory</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QLineEdit" name="txtInitialDirectory"/>
+       </item>
+       <item>
+        <widget class="QToolButton" name="cmdBrowseInitialDir">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_ini">
+       <property name="text">
+        <string>ini</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="txtIniFile">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QCheckBox" name="chkPromptForArguments">
+       <property name="text">
+        <string>&amp;Prompt for arguments</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Menu contents:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Orientation::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QListWidget" name="lstExternalTools"/>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QPushButton" name="cmdAdd">
+           <property name="text">
+            <string>&amp;Add</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="cmdDelete">
+           <property name="text">
+            <string>&amp;Delete</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Orientation::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="cmdMoveUp">
+           <property name="text">
+            <string>Move &amp;Up</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="cmdMoveDown">
+           <property name="text">
+            <string>Move Do&amp;wn</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>lstExternalTools</tabstop>
+  <tabstop>cmdAdd</tabstop>
+  <tabstop>cmdDelete</tabstop>
+  <tabstop>cmdMoveUp</tabstop>
+  <tabstop>cmdMoveDown</tabstop>
+  <tabstop>txtTitle</tabstop>
+  <tabstop>txtCommand</tabstop>
+  <tabstop>cmdBrowseCommand</tabstop>
+  <tabstop>txtArguments</tabstop>
+  <tabstop>cmdShowArgContext</tabstop>
+  <tabstop>txtInitialDirectory</tabstop>
+  <tabstop>cmdBrowseInitialDir</tabstop>
+  <tabstop>chkPromptForArguments</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>CQExternalToolDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>CQExternalToolDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmdAdd</sender>
+   <signal>clicked()</signal>
+   <receiver>CQExternalToolDialog</receiver>
+   <slot>slotAddTool()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>488</x>
+     <y>51</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmdBrowseCommand</sender>
+   <signal>clicked()</signal>
+   <receiver>CQExternalToolDialog</receiver>
+   <slot>slotBrowseCommand()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>515</x>
+     <y>279</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmdBrowseInitialDir</sender>
+   <signal>clicked()</signal>
+   <receiver>CQExternalToolDialog</receiver>
+   <slot>slotBrowseInitialDir()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>515</x>
+     <y>339</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmdDelete</sender>
+   <signal>clicked()</signal>
+   <receiver>CQExternalToolDialog</receiver>
+   <slot>slotDeleteTool()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>488</x>
+     <y>81</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmdMoveDown</sender>
+   <signal>clicked()</signal>
+   <receiver>CQExternalToolDialog</receiver>
+   <slot>slotMoveDown()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>488</x>
+     <y>217</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmdMoveUp</sender>
+   <signal>clicked()</signal>
+   <receiver>CQExternalToolDialog</receiver>
+   <slot>slotMoveUp()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>488</x>
+     <y>187</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>cmdShowArgContext</sender>
+   <signal>clicked()</signal>
+   <receiver>CQExternalToolDialog</receiver>
+   <slot>slotShowArgs()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>516</x>
+     <y>309</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lstExternalTools</sender>
+   <signal>currentItemChanged(QListWidgetItem*,QListWidgetItem*)</signal>
+   <receiver>CQExternalToolDialog</receiver>
+   <slot>slotItemChanged()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>227</x>
+     <y>134</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtArguments</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>CQExternalToolDialog</receiver>
+   <slot>slotUpdateSelected()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>297</x>
+     <y>281</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtTitle</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>CQExternalToolDialog</receiver>
+   <slot>slotUpdateSelected()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>311</x>
+     <y>222</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtCommand</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>CQExternalToolDialog</receiver>
+   <slot>slotUpdateSelected()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>297</x>
+     <y>251</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>txtInitialDirectory</sender>
+   <signal>textChanged(QString)</signal>
+   <receiver>CQExternalToolDialog</receiver>
+   <slot>slotUpdateSelected()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>297</x>
+     <y>311</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>slotAddTool()</slot>
+  <slot>slotDeleteTool()</slot>
+  <slot>slotMoveUp()</slot>
+  <slot>slotMoveDown()</slot>
+  <slot>slotBrowseCommand()</slot>
+  <slot>slotShowArgs()</slot>
+  <slot>slotBrowseInitialDir()</slot>
+  <slot>slotItemChanged()</slot>
+  <slot>slotUpdateSelected()</slot>
+ </slots>
+</ui>

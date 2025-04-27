@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -162,9 +162,9 @@ public:
   virtual ~CMathContainer();
 
   /**
-   * Check whether 2 container would genereate equivalent results
+   * Check whether 2 container would generate equivalent results
    */
-  bool operator == (const CMathContainer & rhs);
+  bool operator == (const CMathContainer & rhs) const;
 
   /**
    *

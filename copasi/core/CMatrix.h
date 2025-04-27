@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -809,7 +809,7 @@ public:
 template <class CType>
 std::ostream &operator<<(std::ostream &os, const CMatrix< CType > & A)
 {
-  os << "Matrix(" << A.mRows << "x" << A.mCols << ")" << std::endl;
+  os << "Matrix(" << A.mRows << "x" << A.mCols << ")" << "\n";
 
   size_t i, j;
   CType * tmp = A.mpBuffer;
@@ -819,7 +819,7 @@ std::ostream &operator<<(std::ostream &os, const CMatrix< CType > & A)
       for (j = 0; j < A.mCols; j++)
         os << "\t" << *(tmp++);
 
-      os << std::endl;
+      os << "\n";
     }
 
   return os;
@@ -831,14 +831,14 @@ std::ostream &operator<<(std::ostream &os,
 {
   size_t i, imax = A.numRows();
   size_t j, jmax = A.numCols();
-  os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
+  os << "Matrix(" << imax << "x" << jmax << ")" << "\n";
 
   for (i = 0; i < imax; i++)
     {
       for (j = 0; j < jmax; j++)
         os << "\t" << A(i, j);
 
-      os << std::endl;
+      os << "\n";
     }
 
   return os;
@@ -850,14 +850,14 @@ std::ostream &operator<<(std::ostream &os,
 {
   size_t i, imax = A.numRows();
   size_t j, jmax = A.numCols();
-  os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
+  os << "Matrix(" << imax << "x" << jmax << ")" << "\n";
 
   for (i = 0; i < imax; i++)
     {
       for (j = 0; j < jmax; j++)
         os << "\t" << A(i, j);
 
-      os << std::endl;
+      os << "\n";
     }
 
   return os;
@@ -869,14 +869,14 @@ std::ostream &operator << (std::ostream &os,
 {
   size_t i, imax = A.numRows();
   size_t j, jmax = A.numCols();
-  os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
+  os << "Matrix(" << imax << "x" << jmax << ")" << "\n";
 
   for (i = 0; i < imax; i++)
     {
       for (j = 0; j < jmax; j++)
         os << "\t" << A(i, j);
 
-      os << std::endl;
+      os << "\n";
     }
 
   return os;
@@ -888,14 +888,14 @@ std::ostream &operator << (std::ostream &os,
 {
   size_t i, imax = A.numRows();
   size_t j, jmax = A.numCols();
-  os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
+  os << "Matrix(" << imax << "x" << jmax << ")" << "\n";
 
   for (i = 0; i < imax; i++)
     {
       for (j = 0; j < jmax; j++)
         os << "\t" << A(i, j);
 
-      os << std::endl;
+      os << "\n";
     }
 
   return os;
@@ -907,14 +907,14 @@ std::ostream &operator << (std::ostream &os,
 {
   size_t i, imax = A.numRows();
   size_t j, jmax = A.numCols();
-  os << "Matrix(" << imax << "x" << jmax << ")" << std::endl;
+  os << "Matrix(" << imax << "x" << jmax << ")" << "\n";
 
   for (i = 0; i < imax; i++)
     {
       for (j = 0; j < jmax; j++)
         os << "\t" << A(i, j);
 
-      os << std::endl;
+      os << "\n";
     }
 
   return os;

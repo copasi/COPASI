@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -373,6 +373,14 @@ void CQTabWidget::slotBtnCopy()
     }
   else // Old Style Copy
     {
+      // ignore copy of mass action
+    if (mObjectCN == std::string("CN=Root,FunctionDB=FunctionDB,Vector=Functions[Mass action (irreversible)]") ||
+      mObjectCN == std::string("CN=Root,FunctionDB=FunctionDB,Vector=Functions[Mass action (reversible)]"))
+      {
+        QMessageBox::warning(this, "Cannot copy function", "Mass action kinetics cannot be copied.");
+        return;
+      }
+
       emit copyClicked();
       emit newClicked();
     }

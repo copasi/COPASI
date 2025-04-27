@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1307,32 +1307,9 @@ CModelParameterSet & CModel::getActiveModelParameterSet()
   return mParameterSet;
 }
 
-void CModel::applyActiveParameterSet()
-{
-  CModelParameterSet * pParameterSet =
-    dynamic_cast< CModelParameterSet * >(CRootContainer::getKeyFactory()->get(mActiveParameterSetKey));
-
-  if (pParameterSet != NULL)
-    {
-      pParameterSet->updateModel();
-    }
-  else
-    {
-      /*
-      CModelParameterSet * pParameterSet = new CModelParameterSet(UTCTimeStamp());
-      mParameterSets.add(pParameterSet, true);
-      mActiveParameterSetKey = pParameterSet->getKey();
-      pParameterSet->createFromModel();
-      */
-    }
-
-  mParameterSet.createFromModel();
-  mActiveParameterSetKey = mParameterSet.getKey();
-}
-
 void CModel::refreshActiveParameterSet()
 {
-  mParameterSet.refreshFromModel(false);
+  mParameterSet.createFromModel();
 }
 
 CDataVectorN < CEvent > & CModel::getEvents()
@@ -1780,7 +1757,7 @@ bool CModel::setQuantityUnit(const std::string & name,
 
   mNumber2QuantityFactor = 1.0 / mQuantity2NumberFactor;
 
-  updateInitialValues(framework);
+  updateInitialValues(framework, false);
 
   return true;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,7 +57,7 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
 {
   mPrecedence = PRECEDENCE_NUMBER;
   mValueType = ValueType::Number;
-  
+
   switch (subType)
     {
       case SubType::INVALID:
@@ -444,24 +444,34 @@ CEvaluationNode * CEvaluationNodeObject::fromAST(const ASTNode * pASTNode, const
   return pNode;
 }
 
-ASTNode* CEvaluationNodeObject::toAST(const CDataModel* pDataModel) const
+ASTNode * CEvaluationNodeObject::toAST(const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
   ASTNode* node = new ASTNode();
   node->setType(AST_NAME);
 
   if (mRegisteredObjectCN == "rateOf" || mData == "<rateOf>")
     {
-      node->setType(AST_FUNCTION);
-      const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
+      const CEvaluationNode * child = dynamic_cast< const CEvaluationNode * >(this->getChild());
+      if (child == NULL)
+        fatalError();
 
-      if (child == NULL) fatalError();
+      if (sbmlLevel == 3 && sbmlVersion > 1)
+        {
+          node->setType(AST_FUNCTION_RATE_OF);
+          node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+        }
+      else
+        {
+          node->setType(AST_FUNCTION);
 
-      const CEvaluationNodeObject* sibling = dynamic_cast<const CEvaluationNodeObject*>(this->getChild()->getSibling());
+          const CEvaluationNodeObject * sibling = dynamic_cast< const CEvaluationNodeObject * >(this->getChild()->getSibling());
 
-      if (sibling == NULL) fatalError();
+          if (sibling == NULL)
+            fatalError();
 
-      node->setName(sibling->getObjectCN().c_str());
-      node->addChild(child->toAST(pDataModel));
+          node->setName(sibling->getObjectCN().c_str());
+          node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+        }
       return node;
     }
 
@@ -591,7 +601,7 @@ std::string CEvaluationNodeObject::getMMLString(const std::vector< std::string >
 
   const CDataObject * pDataObject = CObjectInterface::DataObject(mpObject);
 
-  out << CMathMl::getMMLName(pDataObject) << std::endl;
+  out << CMathMl::getMMLName(pDataObject) << "\n";
 
   return out.str();
 }

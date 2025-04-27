@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -159,7 +159,7 @@ CEvaluationNode * CEvaluationNodeVector::fromAST(const ASTNode * /* pASTNode */,
   return NULL;
 }
 
-ASTNode* CEvaluationNodeVector::toAST(const CDataModel* /*pDataModel*/) const
+ASTNode* CEvaluationNodeVector::toAST(const CDataModel* /*pDataModel*/, int, int) const
 {
   // :TODO:
   ASTNode* node = new ASTNode(AST_FUNCTION_PIECEWISE);

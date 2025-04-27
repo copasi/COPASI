@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -101,10 +101,10 @@ void CEFMProblem::printResult(std::ostream * ostream) const
       const std::vector< CFluxMode > & FluxModes = pTask->getFluxModes();
 
       // List
-      *ostream << "\tNumber of Modes:\t" << FluxModes.size() << std::endl;
+      *ostream << "\tNumber of Modes:\t" << FluxModes.size() << "\n";
 
       // Column header
-      *ostream << "#\t\tReactions\tEquations" << std::endl;
+      *ostream << "#\t\tReactions\tEquations" << "\n";
 
       std::vector< CFluxMode >::const_iterator itMode = FluxModes.begin();
       std::vector< CFluxMode >::const_iterator endMode = FluxModes.end();
@@ -135,15 +135,15 @@ void CEFMProblem::printResult(std::ostream * ostream) const
               end = Description.find("\n", start);
               *ostream << "\t" << Description.substr(start, end - start);
               start = end + 1;
-              *ostream << "\t" << pTask->getReactionEquation(itReaction) << std::endl;
+              *ostream << "\t" << pTask->getReactionEquation(itReaction) << "\n";
             }
         }
 
-      *ostream << std::endl;
+      *ostream << "\n";
 
       // Net Reactions
       // Column header
-      *ostream << "#\tNet Reaction\tInternal Species" << std::endl;
+      *ostream << "#\tNet Reaction\tInternal Species" << "\n";
 
       itMode = FluxModes.begin();
 
@@ -151,10 +151,10 @@ void CEFMProblem::printResult(std::ostream * ostream) const
         {
           *ostream << j + 1;
           *ostream << "\t" << pTask->getNetReaction(*itMode);
-          *ostream << "\t" << pTask->getInternalSpecies(*itMode) << std::endl;
+          *ostream << "\t" << pTask->getInternalSpecies(*itMode) << "\n";
         }
 
-      *ostream << std::endl;
+      *ostream << "\n";
 
       // EFM vs Reaction
       std::vector< const CReaction * >::const_iterator itReaction = mReorderedReactions.begin();
@@ -168,7 +168,7 @@ void CEFMProblem::printResult(std::ostream * ostream) const
           *ostream << "\t" << (*itReaction)->getObjectName();
         }
 
-      *ostream << std::endl;
+      *ostream << "\n";
 
       itMode = FluxModes.begin();
       size_t k;
@@ -184,10 +184,10 @@ void CEFMProblem::printResult(std::ostream * ostream) const
               *ostream << "\t" << itMode->getMultiplier(k);
             }
 
-          *ostream << std::endl;
+          *ostream << "\n";
         }
 
-      *ostream << std::endl;
+      *ostream << "\n";
 
       const CModel & Model = mpContainer->getModel();
 
@@ -202,7 +202,7 @@ void CEFMProblem::printResult(std::ostream * ostream) const
           *ostream << "\t" << CMetabNameInterface::getDisplayName(&Model, **itSpecies, false);
         }
 
-      *ostream << std::endl;
+      *ostream << "\n";
 
       itMode = FluxModes.begin();
 
@@ -226,9 +226,9 @@ void CEFMProblem::printResult(std::ostream * ostream) const
                 }
             }
 
-          *ostream << std::endl;
+          *ostream << "\n";
         }
 
-      *ostream << std::endl;
+      *ostream << "\n";
     }
 }

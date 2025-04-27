@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -79,6 +79,7 @@ class CModelVersionHierarchy;
 class CQOptPopulation;
 class CDataModel;
 class CUndoStack;
+class CQExternalTools;
 
 enum CopasiUIActions
 {
@@ -142,9 +143,9 @@ public:
 
 // COMBINE Archive will take care of file management
   /*
-  #ifdef COPASI_Provenance
+#ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-  #endif
+#endif
   */
 
   CQOptPopulation* getPopulationDisplay();
@@ -201,7 +202,11 @@ public slots:
   void slotFileOpen(QString file = QString());
   void slotFileOpenFromUrl(QString url = QString());
 
+  void slotConfigureExternalTools();
+
   void slotHandleCopasiScheme(const QUrl& url);
+
+  void slotStartNewInstance();
 
 public:
   /**
@@ -254,6 +259,9 @@ protected slots:
   void slotPreferences();
   void slotPreferencesAccepted();
   void slotConvertToIrreversible();
+  void slotConvertODEsToReactions();
+  void slotConvertReactionsToODEs();
+  void slotPromoteLocalParameters();
   void slotCreateEventsForTimeseries();
 
   void listViewsFolderChanged(const QModelIndex & index);
@@ -365,7 +373,6 @@ private:
    * @return the import options
    */
   SedmlImportOptions getSedMLImportOptionsForArchive(const QString & fileName, bool & shouldCancelImport);
-
 
   DataModelGUI* mpDataModelGUI; // to keep track of the data model..
   CDataModel* mpDataModel;
@@ -492,6 +499,10 @@ private:
   bool mAutoUpdateCheck;
 
   std::deque< std::pair < CopasiUIActions, std::string > > mActionStack;
+
+  QAction * mpaShowExternalToolDialog;
+
+  CQExternalTools * mpExternaltools;
 
 #ifdef COPASI_SBW_INTEGRATION
 public:

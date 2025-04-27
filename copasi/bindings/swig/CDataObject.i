@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -116,7 +116,9 @@ namespace std {
 
 #if !defined(SWIGR) && !defined(SWIGPERL) && !defined(SWIGOCTAVE)
 %template(DataObjectSet) set< const CDataObject * >;
+#if (!defined SWIGJAVA)
 %template(DataObjectMap) map< const CDataObject *, const CDataObject * >;
+#endif
 %template(DataObjectVector) vector< const CDataObject * >;
 %template(VectorOfDataObjectVector) vector< vector< const CDataObject * > >;
 #endif // !defined(SWIGR) && !defined(SWIGPERL) && !defined(SWIGOCTAVE)

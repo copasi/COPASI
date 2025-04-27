@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -117,14 +117,12 @@ bool COptMethod::initialize()
   mMathContext.sync();
   mProblemContext.setMathContext(mMathContext);
 
-  COptProblem **ppProblem = mProblemContext.beginThread();
-  COptProblem **ppProblemEnd = mProblemContext.endThread();
-
-  for (; ppProblem != ppProblemEnd; ++ppProblem)
-    if (mProblemContext.isThread(ppProblem))
+  if (mProblemContext.size() > 1)
+#pragma omp parallel for
+    for (size_t i = 0; i < mProblemContext.size(); ++i)
       {
-        (*ppProblem)->initializeSubtaskBeforeOutput();
-        (*ppProblem)->initialize();
+        mProblemContext.threadData()[i]->initializeSubtaskBeforeOutput();
+        mProblemContext.threadData()[i]->initialize();
       }
 
   mpParentTask = dynamic_cast<COptTask *>(getObjectParent());

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -114,7 +114,7 @@ bool CExperimentSet::compile(const CMathContainer * pMathContainer)
 
   CObjectInterface::ObjectSet DependentObjects;
 
-  std::ifstream in;
+  std::stringstream in;
   std::string CurrentFileName("");
   size_t CurrentLineNumber = 1;
 
@@ -123,24 +123,30 @@ bool CExperimentSet::compile(const CMathContainer * pMathContainer)
 
   for (; it != end; ++it)
     {
+      bool fileRead = true;
+
       if (CurrentFileName != (*it)->getFileName())
+#pragma omp critical (experiment_read)
         {
           CurrentFileName = (*it)->getFileName();
           CurrentLineNumber = 1;
 
-          if (in.is_open())
-            {
-              in.close();
-              in.clear();
-            }
+          in.str("");
+          in.clear();
+          std::ifstream file;
+          file.open(CLocaleString::fromUtf8(CurrentFileName).c_str(), std::ios::binary);
 
-          in.open(CLocaleString::fromUtf8(CurrentFileName).c_str(), std::ios::binary);
+          if (file.fail())
+            fileRead = false;
+          else
+            in << file.rdbuf();
+          file.close();
+        }
 
-          if (in.fail())
-            {
-              CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 8, CurrentFileName.c_str());
-              return false; // File can not be opened.
-            }
+      if (!fileRead)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCFitting + 8, CurrentFileName.c_str());
+          return false; // File can not be opened.
         }
 
       if (!(*it)->read(in, CurrentLineNumber))

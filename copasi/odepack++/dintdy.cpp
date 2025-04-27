@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -74,7 +74,6 @@ C_INT CInternalSolver::dintdy_(double *t, const C_INT *k, double *yh,
   C_INT ic, jb, jj;
   double tp;
   C_INT jb2, jj1, jp1;
-  std::string msg;
 
   /* ***BEGIN PROLOGUE  DINTDY */
   /* ***SUBSIDIARY */
@@ -227,17 +226,14 @@ L55:
   return 0;
 
 L80:
-  msg = "DINTDY-  K (=I1) illegal      ";
-  mxerrwd(msg, &c__30, &c__51, &c__0, &c__1, k, &c__0, &c__0, &c_b34, &
+  mxerrwd("DINTDY-  K (=I1) illegal      ", &c__30, &c__51, &c__0, &c__1, k, &c__0, &c__0, &c_b34, &
           c_b34, (C_INT)80);
   *iflag = -1;
   return 0;
 L90:
-  msg = "DINTDY-  T (=R1) illegal      ";
-  mxerrwd(msg, &c__30, &c__52, &c__0, &c__0, &c__0, &c__0, &c__1, t, &c_b34,
+  mxerrwd("DINTDY-  T (=R1) illegal      ", &c__30, &c__52, &c__0, &c__0, &c__0, &c__0, &c__1, t, &c_b34,
           (C_INT)80);
-  msg = "      T not in interval TCUR - HU (= R1) to TCUR (=R2)      ";
-  mxerrwd(msg, &c__60, &c__52, &c__0, &c__0, &c__0, &c__0, &c__2, &tp, &
+  mxerrwd("      T not in interval TCUR - HU (= R1) to TCUR (=R2)      ", &c__60, &c__52, &c__0, &c__0, &c__0, &c__0, &c__2, &tp, &
           dls001_1.tn, (C_INT)80);
   *iflag = -2;
   return 0;

@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -225,7 +225,7 @@ endif(EXTRA_MOC_OPTIONS)
   set(QWT_VERSION 0x0${QWT_VERSION_NUMERIC})
   set(COPASI_UI_MOC_OPTIONS ${COPASI_UI_MOC_OPTIONS} -DQWT_VERSION=0x0${QWT_VERSION_NUMERIC})
 
-  if (CLAPACK_FOUND)
+  if (CLAPACK_FOUND AND NOT USE_MKL)
     set(USE_CLAPACK 1)
   elseif (USE_MKL)
     set(USE_MKL 1)
@@ -509,12 +509,14 @@ if(BUILD_GUI)
            DOC "Path to the uic executable"
            PATHS ${Qt6Widgets_DIR}/../../../bin/
                  ${Qt6Widgets_DIR}/../../../share/qt/libexec/
+                 ${Qt6Widgets_DIR}/../../../libexec/qt6/
            )
 
     if (NOT EXISTS "${Qt6Widgets_UIC_EXECUTABLE}")
       message(FATAL_ERROR "Need UIC executable to compile GUI, it should be in: 
           ${Qt6Widgets_DIR}/../../../bin
           ${Qt6Widgets_DIR}/../../../share/qt/libexec
+          ${Qt6Widgets_DIR}/../../../libexec/qt6/
           ")
     endif()
   endif()

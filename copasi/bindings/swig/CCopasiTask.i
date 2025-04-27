@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -70,8 +70,12 @@
 %warnfilter(325) CDescription;
 %warnfilter(325) CResult;
 
+#ifndef SWIGJAVA
 %template(TaskSubTypeVector) std::vector<CTaskEnum::Task>;
+typedef std::vector<CTaskEnum::Task> TaskSubTypeVector;
 %template(MethodSubTypeVector) std::vector<CTaskEnum::Method>;
+typedef std::vector<CTaskEnum::Method> MethodSubTypeVector;
+#endif // SWIGJAVA
 
 %include "copasi/utilities/CTaskEnum.h"
 %include "copasi/utilities/CCopasiTask.h"
@@ -420,8 +424,4 @@
    }
 #endif // SWIGR
 }  
-
-
-
-
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -50,7 +50,7 @@ void CMoietiesProblem::printResult(std::ostream * pOstream) const
   *pOstream << "Dependent Species" << "\t";
   *pOstream << "Total Amount" << "\t";
   *pOstream << "Total Particle Amount" << "\t";
-  *pOstream << "Expression" << std::endl;
+  *pOstream << "Expression" << "\n";
 
   CDataVector< CMoiety >::const_iterator it = Model.getMoieties().begin();
   CDataVector< CMoiety >::const_iterator end = Model.getMoieties().end();
@@ -60,19 +60,19 @@ void CMoietiesProblem::printResult(std::ostream * pOstream) const
       *pOstream << it->getObjectName() << "\t";
       *pOstream << it->getAmount() << "\t";
       *pOstream << it->getNumber() << "\t";
-      *pOstream << it->getDescription(&Model) << std::endl;
+      *pOstream << it->getDescription(&Model) << "\n";
     }
 
-  *pOstream << std::endl;
+  *pOstream << "\n";
 
   // Print Reordered Stoichiometry Matrix
-  *pOstream << *dynamic_cast<const CDataArray *>(Model.getObject(CCommonName("Array=Stoichiometry(ann)"))) << std::endl;
+  *pOstream << *dynamic_cast<const CDataArray *>(Model.getObject(CCommonName("Array=Stoichiometry(ann)"))) << "\n";
 
   // Print Link Matrix
-  *pOstream << *dynamic_cast<const CDataArray *>(Model.getObject(CCommonName("Array=Link matrix(ann)"))) << std::endl;
+  *pOstream << *dynamic_cast<const CDataArray *>(Model.getObject(CCommonName("Array=Link matrix(ann)"))) << "\n";
 
   // Print Reduced Stoichiometry Matrix
-  *pOstream << *dynamic_cast<const CDataArray *>(Model.getObject(CCommonName("Array=Reduced stoichiometry(ann)"))) << std::endl;
+  *pOstream << *dynamic_cast<const CDataArray *>(Model.getObject(CCommonName("Array=Reduced stoichiometry(ann)"))) << "\n";
 
   return;
 }

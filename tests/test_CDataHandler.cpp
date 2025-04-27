@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,7 +23,7 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi][datahandler]")
 
     // change the initial time
     dm->getModel()->setInitialTime(20);
-    dm->getModel()->updateInitialValues(dm->getModel()->getInitialValueReference());
+    dm->getModel()->updateInitialValues(dm->getModel()->getInitialValueReference(), false);
     dm->getModel()->forceCompile(NULL);
     dm->getModel()->applyInitialValues();
 
@@ -48,6 +48,9 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi][datahandler]")
     handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Reactions[R3],Reference=Flux", dm});
     handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Reactions[R4],Reference=Flux", dm});
 
+    // add test to verify that array element references can be correctly resolved
+    handler.addDuringName({"CN=Root,Vector=TaskList[Metabolic Control Analysis],Method=MCA Method (Reder),Array=Scaled elasticities[(R1)][X]", dm});
+
     auto& task = dynamic_cast<CTrajectoryTask&>((*dm->getTaskList())["Time-Course"]);
     REQUIRE(task.initialize(CCopasiTask::OUTPUT_DURING, &handler, NULL) == true);
     REQUIRE(task.process(true) == true);
@@ -56,7 +59,7 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi][datahandler]")
     auto & data = handler.getDuringData();
 
     REQUIRE(data.size() > 0);
-    REQUIRE(data[0].size() == 7);
+    REQUIRE(data[0].size() == 8);
 
     {
       REQUIRE(task.initialize(CCopasiTask::ONLY_TIME_SERIES, dm, NULL) == true);
@@ -121,5 +124,25 @@ TEST_CASE("ensure that data handler with function evaluations can be compiled", 
 
   auto data = handler.getDuringData();
   dm->saveModel("opt.cps", NULL, true);
+  CRootContainer::removeDatamodel(dm);
+}
+
+TEST_CASE("Test resolving of reactions with )", "[copasi][datahandler]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != nullptr);
+
+  REQUIRE(dm->loadModel(getTestFile("test-data/brusselator.cps"), NULL) == true);
+
+  auto * model = dm->getModel();
+  auto* reaction = model->createReaction("Reaction with spaces and (steps)");
+  reaction->setReactionScheme("A -> D");
+  model->compileIfNecessary(NULL);
+
+  // try and retrieve the reaction by display name:
+  auto fluxName = reaction->getFluxReference()->getObjectDisplayName();
+  auto* obj = dm->findObjectByDisplayName(fluxName);
+  REQUIRE(obj != nullptr);
+
   CRootContainer::removeDatamodel(dm);
 }

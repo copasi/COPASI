@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,8 +47,9 @@ CCopasiParameterGroup::CCopasiParameterGroup():
 {}
 
 CCopasiParameterGroup::CCopasiParameterGroup(const CCopasiParameterGroup & src,
-    const CDataContainer * pParent):
-  CCopasiParameter(src, pParent),
+    const CDataContainer * pParent,
+    const std::string & objectType):
+  CCopasiParameter(src, pParent, objectType),
   mpElementTemplates(NULL)
 {
   operator=(src);
@@ -525,7 +526,7 @@ void CCopasiParameterGroup::print(std::ostream * ostream) const
 
 std::ostream &operator<<(std::ostream &os, const CCopasiParameterGroup & o)
 {
-  os << "<<< Parameter Group: " << o.getObjectName() << std::endl;
+  os << "<<< Parameter Group: " << o.getObjectName() << "\n";
 
   CCopasiParameterGroup::elements::const_iterator it = o.beginIndex();
   CCopasiParameterGroup::elements::const_iterator end = o.endIndex();
@@ -533,10 +534,10 @@ std::ostream &operator<<(std::ostream &os, const CCopasiParameterGroup & o)
   for (; it != end; ++it)
     {
       (*it)->print(&os);
-      os << std::endl;
+      os << "\n";
     }
 
-  os << ">>> Parameter Group: " << o.getObjectName() << std::endl;
+  os << ">>> Parameter Group: " << o.getObjectName() << "\n";
   return os;
 }
 
@@ -705,6 +706,16 @@ bool CCopasiParameterGroup::removeParameter(CCopasiParameter * pParameter)
   if (pParameter != NULL &&
       pParameter->getObjectParent() == this)
     {
+      index_iterator it = static_cast< elements * >(mpValue)->begin();
+      index_iterator end = static_cast< elements * >(mpValue)->end();
+
+      for (; it != end; ++it)
+        if (*it == pParameter)
+          {
+            static_cast< elements * >(mpValue)->erase(it, it + 1);
+            break;
+          }
+
       delete pParameter;
       return true;
     }
@@ -717,7 +728,8 @@ bool CCopasiParameterGroup::remove(CDataObject * pObject)
 {
   bool success = CCopasiParameter::remove(pObject);
 
-  if (success)
+  if (success
+      && dynamic_cast< CCopasiParameter * >(pObject) != nullptr)
     {
       // elements contains CCopasiParameter *, we therefore must compare it to the same type.
       CCopasiParameter * pParameter = static_cast< CCopasiParameter * >(pObject);
@@ -810,26 +822,6 @@ CCopasiParameter::Type CCopasiParameterGroup::getType(const size_t & index) cons
   if (pParameter) return pParameter->getType();
 
   return CCopasiParameter::Type::INVALID;
-}
-
-std::string CCopasiParameterGroup::getKey(const std::string & name) const
-{
-  CCopasiParameter * pParameter =
-    const_cast< CCopasiParameterGroup * >(this)->getParameter(name);
-
-  if (pParameter) return pParameter->getKey();
-
-  return "Not Found";
-}
-
-std::string CCopasiParameterGroup::getKey(const size_t & index) const
-{
-  CCopasiParameter * pParameter =
-    const_cast< CCopasiParameterGroup * >(this)->getParameter(index);
-
-  if (pParameter) return pParameter->getKey();
-
-  return "Not Found";
 }
 
 const std::string & CCopasiParameterGroup::getName(const size_t & index) const

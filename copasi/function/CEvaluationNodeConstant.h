@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -97,7 +97,7 @@ public:
    * Create a new ASTNode corresponding to this ConstantNode.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode* toAST(const CDataModel* pDataModel) const;
+  virtual ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const;
 
   /**
    * Build the MathML string

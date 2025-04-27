@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -564,22 +564,22 @@ void * CMetab::getValuePointer() const
 
 std::ostream & operator<<(std::ostream &os, const CMetab & d)
 {
-  os << "    ++++CMetab: " << d.getObjectName() << std::endl;
-  os << "        mConc " << d.mConc << " mIConc " << d.mIConc << std::endl;
-  os << "        mValue (particle number) " << d.mValue << " mIValue " << d.mIValue << std::endl;
-  os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << CModelEntity::StatusName[d.getStatus()] << std::endl;
+  os << "    ++++CMetab: " << d.getObjectName() << "\n";
+  os << "        mConc " << d.mConc << " mIConc " << d.mIConc << "\n";
+  os << "        mValue (particle number) " << d.mValue << " mIValue " << d.mIValue << "\n";
+  os << "        mRate " << d.mRate << " mTT " << d.mTT << " mStatus " << CModelEntity::StatusName[d.getStatus()] << "\n";
 
   if (d.mpCompartment)
-    os << "        mpCompartment == " << d.mpCompartment << std::endl;
+    os << "        mpCompartment == " << d.mpCompartment << "\n";
   else
-    os << "        mpCompartment == 0 " << std::endl;
+    os << "        mpCompartment == 0 " << "\n";
 
   if (d.mpModel)
-    os << "        mpModel == " << d.mpModel << std::endl;
+    os << "        mpModel == " << d.mpModel << "\n";
   else
-    os << "        mpModel == 0 " << std::endl;
+    os << "        mpModel == 0 " << "\n";
 
-  os << "    ----CMetab " << std::endl;
+  os << "    ----CMetab " << "\n";
 
   return os;
 }

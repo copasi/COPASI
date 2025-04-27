@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -99,6 +99,14 @@ public:
   CModelParameterSet(const CModelParameterSet & src,
                      const CDataContainer * pParent,
                      const bool & createMissing = false);
+
+  /**
+   * Specific constructor
+   * @param CModel * pModel
+   * @param const CDataContainer * pParent
+   */
+  CModelParameterSet(CModel * pModel,
+                     const CDataContainer * pParent);
 
   /**
    * Destructor

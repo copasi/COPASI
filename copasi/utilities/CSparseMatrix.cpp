@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -364,7 +364,7 @@ bool CSparseMatrix::remove(const size_t & row,
 
 std::ostream &operator<<(std::ostream &os, const CSparseMatrix & A)
 {
-  os << "Matrix(" << A.mNumRows << "x" << A.mNumCols << ")" << std::endl;
+  os << "Matrix(" << A.mNumRows << "x" << A.mNumCols << ")" << "\n";
 
   size_t i;
 
@@ -388,7 +388,7 @@ std::ostream &operator<<(std::ostream &os, const CSparseMatrix & A)
       for (; i < A.mNumCols; i++)
         os << "\t" << 0.0;
 
-      os << std::endl;
+      os << "\n";
     }
 
   return os;

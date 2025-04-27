@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -120,23 +120,23 @@ CRungeKutta::~CRungeKutta()
   if (mpEventFunc)
     mpEventFunc = NULL;
 
-  pdelete(mYRight);
-  pdelete(mYLeft);
+  pdeletev(mYRight);
+  pdeletev(mYLeft);
 
   if (mK)
     {
       for (int i = (int)mStage; i >= 0; i--)
-        pdelete(mK[i])
+        pdeletev(mK[i])
 
-        pdelete(mK);
+        pdeletev(mK);
     }
 
-  pdelete(mRootValuesLeft);
-  pdelete(mRootValueRight);
-  pdelete(mRootValueTmp);
-  pdelete(mZ1);
-  pdelete(mZ2);
-  pdelete(mZ3);
+  pdeletev(mRootValuesLeft);
+  pdeletev(mRootValueRight);
+  pdeletev(mRootValueTmp);
+  pdeletev(mZ1);
+  pdeletev(mZ2);
+  pdeletev(mZ3);
 
   return;
 }
@@ -570,9 +570,9 @@ void CRungeKutta::allocateSpace()
   if (mK)
     {
       for (int i = (int)mStage; i >= 0; i--)
-        pdelete(mK[i]);
+        pdeletev(mK[i]);
 
-      pdelete(mK);
+      pdeletev(mK);
     }
 
   mK = new C_FLOAT64*[mStage + 1];
@@ -581,35 +581,35 @@ void CRungeKutta::allocateSpace()
     mK[r] = new C_FLOAT64[*mpDim];
 
   //----Set mYNew----
-  pdelete(mYRight);
+  pdeletev(mYRight);
   mYRight = new C_FLOAT64[*mpDim];
 
   //----Set mYCp----
-  pdelete(mYLeft);
+  pdeletev(mYLeft);
   mYLeft = new C_FLOAT64[*mpDim];
 
   // ----(2)----
   size_t size = (*mpDim > mRootNum) ? *mpDim : mRootNum;
   size = (size > (MAX_STAGE + 2)) ? size : (MAX_STAGE + 2);
 
-  pdelete(mZ1);
+  pdeletev(mZ1);
   mZ1 = new C_FLOAT64[size];
 
-  pdelete(mZ2);
+  pdeletev(mZ2);
   mZ2 = new C_FLOAT64[size];
 
-  pdelete(mZ3);
+  pdeletev(mZ3);
   mZ3 = new C_FLOAT64[size];
 
   if (mRootNum > 0)
     {
-      pdelete(mRootValuesLeft);
+      pdeletev(mRootValuesLeft);
       mRootValuesLeft = new C_FLOAT64[mRootNum];
 
-      pdelete(mRootValueRight);
+      pdeletev(mRootValueRight);
       mRootValueRight    = new C_FLOAT64[mRootNum];
 
-      pdelete(mRootValueTmp);
+      pdeletev(mRootValueTmp);
       mRootValueTmp    = new C_FLOAT64[mRootNum];
     }
 

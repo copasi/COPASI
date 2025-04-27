@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -214,6 +214,12 @@ int main(int argc, char *argv[])
   COptions::getValue("License", License);
 
   COptions::getValue("ReportFile", ReportFileName);
+
+  // should a report filename be given, ensure that
+  // it is an absolute path
+  if (!ReportFileName.empty())
+    CDirEntry::makePathAbsolute(ReportFileName, COptions::getPWD());
+
   COptions::getValue("ScheduledTask", ScheduledTask);
   COptions::getValue("SedmlTask", SedmlTask);
   COptions::getValue("PrintSedMLTasks", PrintSedMLTasks);
@@ -511,6 +517,9 @@ int printUsage(const std::string& name)
         }
     }
 
+  free(Argv[0]);
+  free(Argv[1]);
+
   return 1;
 }
 
@@ -620,8 +629,8 @@ int exportParametersToIniFile()
 
   if (!pDataModel || !pDataModel->getModel()) return -2;
 
-  pDataModel->getModel()->getActiveModelParameterSet().
-  saveToStream(fs, CCore::Framework::Concentration, "ini", "");
+  pDataModel->getModel()->refreshActiveParameterSet();
+  pDataModel->getModel()->getActiveModelParameterSet().saveToStream(fs, CCore::Framework::Concentration, "ini", "");
 
   fs.close();
 

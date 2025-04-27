@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -171,11 +171,11 @@ bool dgemm::eval(const C_FLOAT64 & alpha, const dgemm::Matrix & A, const dgemm::
   C_INT LDB = std::max< C_INT >(1, K);
   C_INT LDC = std::max< C_INT >(1, M);
 
-  dgemm_(&TRANS, &TRANS, &M, &N, &K,
-         const_cast< C_FLOAT64 * >(&alpha),
-         const_cast< C_FLOAT64 * >(B.array()), &LDA,
-         const_cast< C_FLOAT64 * >(A.array()), &LDB,
-         const_cast< C_FLOAT64 * >(&beta), C.array(), &LDC);
+  ::dgemm_(&TRANS, &TRANS, &M, &N, &K,
+           const_cast< C_FLOAT64 * >(&alpha),
+           const_cast< C_FLOAT64 * >(B.array()), &LDA,
+           const_cast< C_FLOAT64 * >(A.array()), &LDB,
+           const_cast< C_FLOAT64 * >(&beta), C.array(), &LDC);
 
   return true;
 }
@@ -200,11 +200,11 @@ bool dgemm::eval(const C_FLOAT64 & alpha, const dgemm::Matrix & A, const dgemm::
   C_INT LDB = std::max< C_INT >(1, K);
   C_INT LDC = std::max< C_INT >(1, M);
 
-  dgemm_(&TRANS, &TRANS, &M, &N, &K,
-         const_cast< C_FLOAT64 * >(&alpha),
-         const_cast< C_FLOAT64 * >(B.array()), &LDA,
-         const_cast< C_FLOAT64 * >(A.array()), &LDB,
-         const_cast< C_FLOAT64 * >(&beta), C.array(), &LDC);
+  ::dgemm_(&TRANS, &TRANS, &M, &N, &K,
+           const_cast< C_FLOAT64 * >(&alpha),
+           const_cast< C_FLOAT64 * >(B.array()), &LDA,
+           const_cast< C_FLOAT64 * >(A.array()), &LDB,
+           const_cast< C_FLOAT64 * >(&beta), C.array(), &LDC);
 
   return true;
 }
@@ -229,11 +229,11 @@ bool dgemm::eval(const C_FLOAT64 & alpha, const dgemm::Vector & A, const dgemm::
   C_INT LDB = std::max< C_INT >(1, K);
   C_INT LDC = std::max< C_INT >(1, M);
 
-  dgemm_(&TRANS, &TRANS, &M, &N, &K,
-         const_cast< C_FLOAT64 * >(&alpha),
-         const_cast< C_FLOAT64 * >(B.array()), &LDA,
-         const_cast< C_FLOAT64 * >(A.array()), &LDB,
-         const_cast< C_FLOAT64 * >(&beta), C.array(), &LDC);
+  ::dgemm_(&TRANS, &TRANS, &M, &N, &K,
+           const_cast< C_FLOAT64 * >(&alpha),
+           const_cast< C_FLOAT64 * >(B.array()), &LDA,
+           const_cast< C_FLOAT64 * >(A.array()), &LDB,
+           const_cast< C_FLOAT64 * >(&beta), C.array(), &LDC);
 
   return true;
 }
@@ -252,11 +252,11 @@ bool dgemm::eval(const C_FLOAT64 & alpha, const dgemm::Vector & A, const dgemm::
   C_INT LDB = std::max< C_INT >(1, K);
   C_INT LDC = std::max< C_INT >(1, M);
 
-  dgemm_(&TRANS, &TRANS, &M, &N, &K,
-         const_cast< C_FLOAT64 * >(&alpha),
-         const_cast< C_FLOAT64 * >(B.array()), &LDA,
-         const_cast< C_FLOAT64 * >(A.array()), &LDB,
-         const_cast< C_FLOAT64 * >(&beta), &C, &LDC);
+  ::dgemm_(&TRANS, &TRANS, &M, &N, &K,
+           const_cast< C_FLOAT64 * >(&alpha),
+           const_cast< C_FLOAT64 * >(B.array()), &LDA,
+           const_cast< C_FLOAT64 * >(A.array()), &LDB,
+           const_cast< C_FLOAT64 * >(&beta), &C, &LDC);
 
   return true;
 }

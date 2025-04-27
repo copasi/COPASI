@@ -16,3 +16,4 @@
 *.cmake   CommentStart=# 
 catch.hpp format= 
 CMakeLists.txt CommentStart=# 
+*.cps linguist-language=XML

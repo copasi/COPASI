@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -74,7 +74,7 @@ bool CODEExporterXPPAUT::exportTitleData(const CDataModel* pDataModel, std::ostr
 
   os << "total=" << pTrajectoryProblem->getDuration() << ",";
   os << "dt=" << pTrajectoryProblem->getStepSize()
-     << ",METH=stiff" << std::endl; //gear is the only method with automatic step size
+     << ",METH=stiff" << "\n"; //gear is the only method with automatic step size
 
   return true;
 }
@@ -307,7 +307,7 @@ void CODEExporterXPPAUT::exportSingleLine(const std::string & line, std::ostring
 
           part += " \\";
 
-          which << part.c_str() << std::endl;
+          which << part.c_str() << "\n";
 
           pos0 = pos;
           pos += limit;
@@ -322,11 +322,11 @@ void CODEExporterXPPAUT::exportSingleLine(const std::string & line, std::ostring
               part += line[i];
             }
 
-          which << part.c_str() << std::endl;
+          which << part.c_str() << "\n";
         }
     }
   else
-    which << line << std::endl;
+    which << line << "\n";
 
   return;
 }
@@ -356,7 +356,7 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
     {
       case CModelEntity::Status::FIXED:
       {
-        fixed << "#" << comments << std::endl;
+        fixed << "#" << comments << "\n";
         fixed << "param ";
 
         if (!exportSingleObject(fixed, name, expression, comments))
@@ -370,7 +370,7 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
       {
         if (!metab->isDependent())
           {
-            initial << "#" << comments << std::endl;
+            initial << "#" << comments << "\n";
             initial << "init ";
 
             if (!exportSingleObject(initial, name, expression, comments))
@@ -378,7 +378,7 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
           }
         else
           {
-            assignment << "#" << comments << std::endl;
+            assignment << "#" << comments << "\n";
 
             if (!exportSingleObject(assignment, name, expression, comments))
               return false;
@@ -389,7 +389,7 @@ bool CODEExporterXPPAUT::exportSingleMetabolite(const CMetab* metab, std::string
 
       case CModelEntity::Status::ASSIGNMENT:
       {
-        assignment << "#" << comments << std::endl;
+        assignment << "#" << comments << "\n";
 
         if (!exportSingleObject(assignment, name, expression, comments))
           return false;
@@ -412,7 +412,7 @@ bool CODEExporterXPPAUT::exportSingleCompartment(const CCompartment* comp, std::
     {
       case CModelEntity::Status::FIXED:
       {
-        fixed << "#" << comments << std::endl;
+        fixed << "#" << comments << "\n";
         fixed << "param ";
 
         if (!exportSingleObject(fixed, NameMap[comp->getKey()], expression, comments))
@@ -423,7 +423,7 @@ bool CODEExporterXPPAUT::exportSingleCompartment(const CCompartment* comp, std::
 
       case CModelEntity::Status::ODE:
       {
-        initial << "#" << comments << std::endl;
+        initial << "#" << comments << "\n";
         initial << "init ";
 
         if (!exportSingleObject(initial, NameMap[comp->getKey()], expression, comments))
@@ -435,7 +435,7 @@ bool CODEExporterXPPAUT::exportSingleCompartment(const CCompartment* comp, std::
       case CModelEntity::Status::ASSIGNMENT:
       {
 #if 0
-        assignment << "#" << comments << std::endl;
+        assignment << "#" << comments << "\n";
 
         if (!exportSingleObject(assignment, NameMap[comp->getKey()], expression, comments))
           return false;
@@ -459,7 +459,7 @@ bool CODEExporterXPPAUT::exportSingleModVal(const CModelValue* modval, std::stri
     {
       case CModelEntity::Status::FIXED:
       {
-        fixed << "#" << comments << std::endl;
+        fixed << "#" << comments << "\n";
         fixed << "param ";
 
         if (!exportSingleObject(fixed, NameMap[modval->getKey()], expression, comments))
@@ -470,7 +470,7 @@ bool CODEExporterXPPAUT::exportSingleModVal(const CModelValue* modval, std::stri
 
       case CModelEntity::Status::ODE:
       {
-        initial << "#" << comments << std::endl;
+        initial << "#" << comments << "\n";
         initial << "init ";
 
         if (!exportSingleObject(initial, NameMap[modval->getKey()], expression, comments))
@@ -482,7 +482,7 @@ bool CODEExporterXPPAUT::exportSingleModVal(const CModelValue* modval, std::stri
       case CModelEntity::Status::ASSIGNMENT:
       {
 #if 0
-        assignment << "#" << comments << std::endl;
+        assignment << "#" << comments << "\n";
 
         if (!exportSingleObject(assignment, NameMap[modval->getKey()], expression, comments))
           return false;
@@ -519,7 +519,7 @@ bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::s
     {
       case CModelEntity::Status::FIXED:
       {
-        fixed << "#" << comments << std::endl;
+        fixed << "#" << comments << "\n";
         fixed << "param ";
 
         if (!exportSingleObject(fixed, name, expression, comments))
@@ -530,7 +530,7 @@ bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::s
 
       case CModelEntity::Status::ODE:
       {
-        initial << "#" << comments << std::endl;
+        initial << "#" << comments << "\n";
         initial << "init ";
 
         if (!exportSingleObject(initial, name, expression, comments))
@@ -541,7 +541,7 @@ bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::s
 
       case CModelEntity::Status::ASSIGNMENT:
       {
-        assignment << "#" << comments << std::endl;
+        assignment << "#" << comments << "\n";
 
         if (!exportSingleObject(assignment, name, expression, comments))
           return false;
@@ -559,7 +559,7 @@ bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::s
 
 bool CODEExporterXPPAUT::exportSingleParameter(const CCopasiParameter* param, std::string & expression, std::string & comments)
 {
-  fixed << "#" << comments << std::endl;
+  fixed << "#" << comments << "\n";
 
   fixed << "param ";
 
@@ -595,7 +595,7 @@ bool CODEExporterXPPAUT::exportSingleODE(const CModelEntity* mentity, std::strin
 {
   std::ostringstream odeKey;
 
-  if (!isEmptyString(comments)) ode << "#" << comments << std::endl;
+  if (!isEmptyString(comments)) ode << "#" << comments << "\n";
 
   odeKey << "ode_" << mentity->getKey();
 
@@ -633,6 +633,6 @@ std::string CODEExporterXPPAUT::exportTitleString(const size_t tmp)
 
 bool CODEExporterXPPAUT::exportClosingData(const CModel* /* copasiModel */, std::ostream & os)
 {
-  os << "done" << std::endl;
+  os << "done" << "\n";
   return true;
 }

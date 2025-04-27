@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -92,6 +92,11 @@ CEvaluationNodeOperator::CEvaluationNodeOperator(const SubType & subType,
         mpOperator = &CEvaluationNodeOperator::s_remainder;
         break;
 
+      case SubType::QUOTIENT:
+        mPrecedence = PRECEDENCE_OPERATOR_REMAINDER;
+        mpOperator = &CEvaluationNodeOperator::s_quotient;
+        break;
+
       default:
         break;
     }
@@ -178,6 +183,13 @@ void CEvaluationNodeOperator::s_remainder()
   mValue = fmod(*mpLeftValue, *mpRightValue);
 }
 
+void CEvaluationNodeOperator::s_quotient()
+{
+  // Definition: A = quotient * B + remainder
+  //          => quotient = (A - remainder)/B
+  mValue = (*mpLeftValue - fmod(*mpLeftValue, *mpRightValue)) / *mpRightValue;
+}
+
 void CEvaluationNodeOperator::s_invalid()
 {
   mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -195,14 +207,16 @@ std::string CEvaluationNodeOperator::getInfix(const std::vector< std::string > &
       else
         Infix = children[0];
 
-      if (SubType::REMAINDER == (mSubType))
+      if (SubType::REMAINDER == mSubType
+          || SubType::QUOTIENT == mSubType)
         {
           Infix += " ";
         }
 
       Infix += mData;
 
-      if (SubType::REMAINDER == (mSubType))
+      if (SubType::REMAINDER == mSubType
+          || SubType::QUOTIENT == mSubType)
         {
           Infix += " ";
         }
@@ -230,14 +244,16 @@ std::string CEvaluationNodeOperator::getDisplayString(const std::vector< std::st
       else
         DisplayString = children[0];
 
-      if (SubType::REMAINDER == (mSubType))
+      if (SubType::REMAINDER == mSubType
+          || SubType::QUOTIENT == mSubType)
         {
           DisplayString += " ";
         }
 
       DisplayString += mData;
 
-      if (SubType::REMAINDER == (mSubType))
+      if (SubType::REMAINDER == mSubType
+          || SubType::QUOTIENT == mSubType)
         {
           DisplayString += " ";
         }
@@ -267,6 +283,9 @@ std::string CEvaluationNodeOperator::getCCodeString(const std::vector< std::stri
       if (subType == SubType::REMAINDER)
         DisplayString = "fmod(";
 
+      if (subType == SubType::QUOTIENT)
+        DisplayString = "(int)(";
+
       if (subType == SubType::MODULUS)
         DisplayString = "(int)";
 
@@ -279,6 +298,7 @@ std::string CEvaluationNodeOperator::getCCodeString(const std::vector< std::stri
         {
           case SubType::POWER:
           case SubType::REMAINDER:
+          case SubType::QUOTIENT:
             DisplayString += ",";
             break;
 
@@ -297,7 +317,8 @@ std::string CEvaluationNodeOperator::getCCodeString(const std::vector< std::stri
         DisplayString += children[1];
 
       if (subType == SubType::POWER ||
-          subType == SubType::REMAINDER)
+          subType == SubType::REMAINDER ||
+          subType == SubType::QUOTIENT)
         DisplayString += ")";
 
       return DisplayString;
@@ -350,6 +371,9 @@ std::string CEvaluationNodeOperator::getXPPString(const std::vector< std::string
           subType == SubType::REMAINDER)
         DisplayString = "mod(";
 
+      if (subType == SubType::QUOTIENT)
+        DisplayString = "flr(";
+
       if (*mpLeftNode < * (CEvaluationNode *)this)
         DisplayString += "(" + children[0] + ")";
       else
@@ -360,6 +384,10 @@ std::string CEvaluationNodeOperator::getXPPString(const std::vector< std::string
           case SubType::MODULUS:
           case SubType::REMAINDER:
             DisplayString += ",";
+            break;
+
+          case SubType::QUOTIENT:
+            DisplayString += "/";
             break;
 
           default:
@@ -373,7 +401,8 @@ std::string CEvaluationNodeOperator::getXPPString(const std::vector< std::string
         DisplayString += children[1];
 
       if (subType == SubType::MODULUS ||
-          subType == SubType::REMAINDER)
+          subType == SubType::REMAINDER ||
+          subType == SubType::QUOTIENT)
         DisplayString += ")";
 
       return DisplayString;
@@ -422,9 +451,14 @@ CEvaluationNode * CEvaluationNodeOperator::fromAST(const ASTNode * pASTNode, con
         data = "^";
         break;
 
+      case AST_FUNCTION_QUOTIENT:
+        subType = SubType::QUOTIENT;
+        data = "quot";
+        break;
+
       case AST_FUNCTION_REM:
         subType = SubType::REMAINDER;
-        data = "mod";
+        data = "%";
         break;
 
       default:
@@ -459,7 +493,7 @@ CEvaluationNode * CEvaluationNodeOperator::fromAST(const ASTNode * pASTNode, con
         }
     }
   // handle binary operators (POWER,/)
-  else if (type == AST_DIVIDE || type == AST_POWER || type == AST_FUNCTION_POWER || type == AST_FUNCTION_REM)
+  else if (type == AST_DIVIDE || type == AST_POWER || type == AST_FUNCTION_POWER || type == AST_FUNCTION_REM || type == AST_FUNCTION_QUOTIENT)
     {
       switch (pASTNode->getNumChildren())
         {
@@ -505,10 +539,11 @@ CEvaluationNode * CEvaluationNodeOperator::fromAST(const ASTNode * pASTNode, con
   return pNode;
 }
 
-ASTNode* CEvaluationNodeOperator::toAST(const CDataModel* pDataModel) const
+ASTNode * CEvaluationNodeOperator::toAST(const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
   SubType subType = (SubType)this->subType();
   ASTNode* node = new ASTNode();
+  bool skipChildren = false;
 
   switch (subType)
     {
@@ -527,7 +562,19 @@ ASTNode* CEvaluationNodeOperator::toAST(const CDataModel* pDataModel) const
       case SubType::MODULUS:
       case SubType::REMAINDER:
         // replace this with a more complex subtree
-        CEvaluationNodeOperator::createModuloTree(this, node, pDataModel);
+        if (sbmlLevel == 3 && sbmlVersion > 1)
+        {
+            node->setType(AST_FUNCTION_REM);
+        }
+        else
+          {
+            CEvaluationNodeOperator::createModuloTree(this, node, pDataModel, sbmlLevel, sbmlVersion);
+            skipChildren = true;
+          }
+        break;
+
+      case SubType::QUOTIENT:
+        node->setType(AST_FUNCTION_QUOTIENT);
         break;
 
       case SubType::PLUS:
@@ -543,12 +590,12 @@ ASTNode* CEvaluationNodeOperator::toAST(const CDataModel* pDataModel) const
     }
 
   // for all but S_INVALID and S_MODULUS two children have to be converted
-  if (subType != SubType::INVALID && subType != SubType::MODULUS)
+  if (subType != SubType::INVALID && !skipChildren)
     {
       const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
       const CEvaluationNode* child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
-      node->addChild(child1->toAST(pDataModel));
-      node->addChild(child2->toAST(pDataModel));
+      node->addChild(child1->toAST(pDataModel, sbmlLevel, sbmlVersion));
+      node->addChild(child2->toAST(pDataModel, sbmlLevel, sbmlVersion));
     }
 
   return node;
@@ -1411,7 +1458,7 @@ CEvaluationNode* CEvaluationNodeOperator::simplifyNode(const std::vector<CEvalua
     }
 }
 
-bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pNode, ASTNode* pASTNode, const CDataModel* pDataModel) const
+bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator * pNode, ASTNode * pASTNode, const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
   bool result = false;
 
@@ -1435,14 +1482,14 @@ bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pN
               ASTNode* pASTNodeTrue = new ASTNode();
               pASTNodeTrue->setType(AST_MINUS);
               ASTNode* tmpASTNode = new ASTNode(AST_DIVIDE);
-              tmpASTNode->addChild(x->toAST(pDataModel));
-              tmpASTNode->addChild(y->toAST(pDataModel));
+              tmpASTNode->addChild(x->toAST(pDataModel, sbmlLevel, sbmlVersion));
+              tmpASTNode->addChild(y->toAST(pDataModel, sbmlLevel, sbmlVersion));
               ASTNode* tmpASTNode2 = new ASTNode(AST_FUNCTION_CEILING);
               tmpASTNode2->addChild(tmpASTNode);
               tmpASTNode = new ASTNode(AST_TIMES);
-              tmpASTNode->addChild(y->toAST(pDataModel));
+              tmpASTNode->addChild(y->toAST(pDataModel, sbmlLevel, sbmlVersion));
               tmpASTNode->addChild(tmpASTNode2);
-              pASTNodeTrue->addChild(x->toAST(pDataModel));
+              pASTNodeTrue->addChild(x->toAST(pDataModel, sbmlLevel, sbmlVersion));
               pASTNodeTrue->addChild(tmpASTNode);
               pASTNode->addChild(pASTNodeTrue);
               // now comes the condition
@@ -1456,7 +1503,7 @@ bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pN
               // <
               tmpASTNode = new ASTNode(AST_RELATIONAL_LT);
               // x
-              tmpASTNode->addChild(x->toAST(pDataModel));
+              tmpASTNode->addChild(x->toAST(pDataModel, sbmlLevel, sbmlVersion));
               // 0
               tmpASTNode2 = new ASTNode(AST_INTEGER);
               tmpASTNode2->setValue(0);
@@ -1466,7 +1513,7 @@ bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pN
               // <
               tmpASTNode = new ASTNode(AST_RELATIONAL_LT);
               // y
-              tmpASTNode->addChild(y->toAST(pDataModel));
+              tmpASTNode->addChild(y->toAST(pDataModel, sbmlLevel, sbmlVersion));
               // 0
               tmpASTNode2 = new ASTNode(AST_INTEGER);
               tmpASTNode2->setValue(0);
@@ -1478,14 +1525,14 @@ bool CEvaluationNodeOperator::createModuloTree(const CEvaluationNodeOperator* pN
               ASTNode* pASTNodeFalse = new ASTNode();
               pASTNodeFalse->setType(AST_MINUS);
               tmpASTNode = new ASTNode(AST_DIVIDE);
-              tmpASTNode->addChild(x->toAST(pDataModel));
-              tmpASTNode->addChild(y->toAST(pDataModel));
+              tmpASTNode->addChild(x->toAST(pDataModel, sbmlLevel, sbmlVersion));
+              tmpASTNode->addChild(y->toAST(pDataModel, sbmlLevel, sbmlVersion));
               tmpASTNode2 = new ASTNode(AST_FUNCTION_FLOOR);
               tmpASTNode2->addChild(tmpASTNode);
               tmpASTNode = new ASTNode(AST_TIMES);
-              tmpASTNode->addChild(y->toAST(pDataModel));
+              tmpASTNode->addChild(y->toAST(pDataModel, sbmlLevel, sbmlVersion));
               tmpASTNode->addChild(tmpASTNode2);
-              pASTNodeFalse->addChild(x->toAST(pDataModel));
+              pASTNodeFalse->addChild(x->toAST(pDataModel, sbmlLevel, sbmlVersion));
               pASTNodeFalse->addChild(tmpASTNode);
               pASTNode->addChild(pASTNodeFalse);
               result = true;
@@ -1521,17 +1568,17 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
     {
       case SubType::PLUS:
 
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
         out << children[0];
-        out << "<mo>" << "+" << "</mo>" << std::endl;
+        out << "<mo>" << "+" << "</mo>" << "\n";
         out << children[1];
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
         break;
 
       case SubType::MINUS:
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
         out << children[0];
-        out << "<mo>" << "-" << "</mo>" << std::endl;
+        out << "<mo>" << "-" << "</mo>" << "\n";
 
         type = (mpRightNode->mainType() | mpRightNode->subType());
 
@@ -1540,17 +1587,17 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
                 || ((mpRightNode->mainType() == CEvaluationNode::MainType::CALL) && expand)
                );
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[1];
 
-        if (flag) out << "</mfenced>" << std::endl; // ???
+        if (flag) out << "</mfenced>" << "\n"; // ???
 
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
         break;
 
       case SubType::MULTIPLY:
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
 
         //do we need "()" ?
         type = (mpLeftNode->mainType() | mpLeftNode->subType());
@@ -1560,13 +1607,13 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
                 || ((mpLeftNode->mainType() == MainType::CALL) && expand)
                );
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "<mo>" << "&CenterDot;" << "</mo>" << std::endl;
+        out << "<mo>" << "&CenterDot;" << "</mo>" << "\n";
 
         type = (mpRightNode->mainType() | mpRightNode->subType());
 
@@ -1575,32 +1622,32 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
                 || ((mpRightNode->mainType() == CEvaluationNode::MainType::CALL) && expand)
                );
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[1];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
 
         break;
 
       case SubType::DIVIDE:
-        out << "<mfrac>" << std::endl;
+        out << "<mfrac>" << "\n";
 
-        //out << "<mrow>" << std::endl;
+        //out << "<mrow>" << "\n";
         out << children[0];
-        //out << "</mrow>" << std::endl;
+        //out << "</mrow>" << "\n";
 
-        //out << "<mrow>" << std::endl;
+        //out << "<mrow>" << "\n";
         out << children[1];
-        //out << "</mrow>" << std::endl;
+        //out << "</mrow>" << "\n";
 
-        out << "</mfrac>" << std::endl;
+        out << "</mfrac>" << "\n";
         break;
 
       case SubType::POWER:
-        out << "<msup>" << std::endl;
+        out << "<msup>" << "\n";
 
         type = (mpLeftNode->mainType() | mpLeftNode->subType());
 
@@ -1613,67 +1660,92 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
                 || ((mpLeftNode->mainType() == CEvaluationNode::MainType::CALL) && expand)
                );
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
         out << children[1];
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
 
-        out << "</msup>" << std::endl;
+        out << "</msup>" << "\n";
         break;
 
       case SubType::MODULUS:
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
 
         //do we need "()" ?
         flag = true;
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "<mo>" << "%" << "</mo>" << std::endl;
+        out << "<mo>" << "%" << "</mo>" << "\n";
 
         flag = true;
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[1];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
         break;
 
       case SubType::REMAINDER:
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
 
         //do we need "()" ?
         flag = (*mpLeftNode < * (CEvaluationNode *)this);
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "<mo>" << "mod" << "</mo>" << std::endl;
+        out << "<mo>" << "mod" << "</mo>" << "\n";
 
         flag = !(*(CEvaluationNode *)this < *mpRightNode);
 
-        if (flag) out << "<mfenced>" << std::endl;
+        if (flag) out << "<mfenced>" << "\n";
 
         out << children[1];
 
-        if (flag) out << "</mfenced>" << std::endl;
+        if (flag) out << "</mfenced>" << "\n";
 
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
+        break;
+
+      case SubType::QUOTIENT:
+        out << "<mrow>" << "\n";
+
+        //do we need "()" ?
+        flag = (*mpLeftNode < * (CEvaluationNode *)this);
+
+        if (flag) out << "<mfenced>" << "\n";
+
+        out << children[0];
+
+        if (flag) out << "</mfenced>" << "\n";
+
+        out << "<mo>" << "quotient" << "</mo>" << "\n";
+
+        flag = !(*(CEvaluationNode *)this < *mpRightNode);
+
+        if (flag) out << "<mfenced>" << "\n";
+
+        out << children[1];
+
+        if (flag) out << "</mfenced>" << "\n";
+
+        out << "</mrow>" << "\n";
         break;
     }
 
@@ -1684,6 +1756,10 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
 CValidatedUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container,
     const std::vector< CValidatedUnit > & units) const
 {
+
+  if (units.empty())
+    return CValidatedUnit(CBaseUnit::undefined, true);
+
   switch (mSubType)
     {
       case SubType::POWER:
@@ -1746,16 +1822,19 @@ CValidatedUnit CEvaluationNodeOperator::getUnit(const CMathContainer & container
       break;
 
       case SubType::MULTIPLY:
+        if (units.size() > 1)
         return units[0] * units[1];
         break;
 
       case SubType::DIVIDE:
       case SubType::MODULUS:
+        if (units.size() > 1)
         return units[0] * units[1].exponentiate(-1);
         break;
 
       case SubType::PLUS:
       case SubType::MINUS:
+        if (units.size() > 1)
         return CValidatedUnit::merge(units[0], units[1]);
         break;
 
@@ -1821,6 +1900,9 @@ CValidatedUnit CEvaluationNodeOperator::setUnit(const CMathContainer & container
         std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itLeft = currentUnits.find(mpLeftNode);
         std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itRight = currentUnits.find(mpRightNode);
 
+        if (itRight == currentUnits.end())
+          break;
+
         if (itLeft->second.isUndefined() ||
             mpLeftNode->getChild() != NULL)
           {
@@ -1832,8 +1914,7 @@ CValidatedUnit CEvaluationNodeOperator::setUnit(const CMathContainer & container
             targetUnits[mpLeftNode].setConflict(Result.conflict());
           }
 
-        if (itRight->second.isUndefined()  ||
-            mpRightNode->getChild() != NULL)
+        if (itRight->second.isUndefined() || mpRightNode->getChild() != NULL)
           {
             targetUnits[mpRightNode] = Result * itLeft->second.exponentiate(-1.0);
           }
@@ -1850,6 +1931,9 @@ CValidatedUnit CEvaluationNodeOperator::setUnit(const CMathContainer & container
       {
         std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itLeft = currentUnits.find(mpLeftNode);
         std::map < CEvaluationNode *, CValidatedUnit >::const_iterator itRight = currentUnits.find(mpRightNode);
+
+        if (itRight == currentUnits.end() || mpRightNode == NULL)
+          break;
 
         if (itLeft->second.isUndefined() ||
             mpLeftNode->getChild() != NULL)

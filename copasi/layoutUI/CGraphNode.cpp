@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,12 +68,12 @@ void CGraphNode::setSize(C_FLOAT64 newSize)
 
 std::ostream & operator<<(std::ostream &os, const CGraphNode & gn)
 {
-  os << "node key: " << gn.morigNodeKey << "  size: " << gn.msize << std::endl;
-  os << "object key: " << gn.mObjectKey << std::endl;
-  os << "bounding box: " << gn.mBBox << std::endl;
-  os << "label: " << gn.mLabelText << std::endl;
+  os << "node key: " << gn.morigNodeKey << "  size: " << gn.msize << "\n";
+  os << "object key: " << gn.mObjectKey << "\n";
+  os << "bounding box: " << gn.mBBox << "\n";
+  os << "label: " << gn.mLabelText << "\n";
   //for (int i=0;i<gn.mConnectedCurveIndices.size();i++)
-  // os << gn.mConnectedCurveIndices[i] << std::endl;;
+  // os << gn.mConnectedCurveIndices[i] << "\n";;
 
   return os;
 }

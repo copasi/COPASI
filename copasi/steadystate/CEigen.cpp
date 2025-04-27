@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -704,13 +704,13 @@ const CVector< C_FLOAT64 > & CEigen::getR() const
 
 std::ostream &operator<<(std::ostream &os, const CEigen &A)
 {
-  os << std::endl;
+  os << "\n";
   os << "KINETIC STABILITY ANALYSIS";
-  os << std::endl;
-  os << "The linear stability analysis based on the eigenvalues" << std::endl;
-  os << "of the Jacobian matrix is only valid for steady states." << std::endl;
-  os << std::endl;
-  os << "Summary:" << std::endl;
+  os << "\n";
+  os << "The linear stability analysis based on the eigenvalues" << "\n";
+  os << "of the Jacobian matrix is only valid for steady states." << "\n";
+  os << "\n";
+  os << "Summary:" << "\n";
   os << "This state ";
 
   // Output statistics
@@ -724,60 +724,60 @@ std::ostream &operator<<(std::ostream &os, const CEigen &A)
 
   if (A.mMaximagpart > A.mResolution)
     {
-      os << "," << std::endl;
+      os << "," << "\n";
       os << "transient states in its vicinity have oscillatory components";
     }
 
-  os << "." << std::endl;
-  os << std::endl;
+  os << "." << "\n";
+  os << "\n";
 
-  os << "Eigenvalue statistics:" << std::endl;
+  os << "Eigenvalue statistics:" << "\n";
   // Output Max Real Part
   os << " Largest real part: ";
-  os << std::setprecision(6) << A.mMaxrealpart << std::endl;
+  os << std::setprecision(6) << A.mMaxrealpart << "\n";
   // Output Max imaginary Part
   os << " Largest absolute imaginary part:  ";
-  os << std::setprecision(6) << A.mMaximagpart << std::endl;
+  os << std::setprecision(6) << A.mMaximagpart << "\n";
 
   if (A.mImagOfMaxComplex > A.mResolution)
     os << " The complex eigenvalues with the largest real part are:  "
-       << A.mMaxRealOfComplex << " +|- " << A.mImagOfMaxComplex << "i" << std::endl;
+       << A.mMaxRealOfComplex << " +|- " << A.mImagOfMaxComplex << "i" << "\n";
 
   // Output Eigen-nreal
   os.unsetf(std::ios_base::scientific);
   os.unsetf(std::ios_base::showpoint);
   os << " " << A.mNreal;
-  os << " are purely real" << std::endl;
+  os << " are purely real" << "\n";
   // Output Eigen-nimage
   os << " " << A.mNimag;
-  os << " are purely imaginary" << std::endl;
+  os << " are purely imaginary" << "\n";
   // Output Eigen-ncplxconj
   os << " " << A.mNcplxconj;
-  os << " are complex" << std::endl;
+  os << " are complex" << "\n";
   // Output Eigen-nzero
   os << " " << A.mNzero;
-  os << " are equal to zero" << std::endl;
+  os << " are equal to zero" << "\n";
   // Output Eigen-nposreal
   os << " " << A.mNposreal;
-  os << " have positive real part" << std::endl;
+  os << " have positive real part" << "\n";
   // Output Eigen-nnegreal
   os << " " << A.mNnegreal;
-  os << " have negative real part" << std::endl;
+  os << " have negative real part" << "\n";
 
   // Set point manipulators
   os.setf(std::ios_base::showpoint);
   // Output Eigne-stiffness
-  os << " stiffness = " << A.mStiffness << std::endl;
-  os << " time hierarchy = " << A.mHierarchy << std::endl;
+  os << " stiffness = " << A.mStiffness << "\n";
+  os << " time hierarchy = " << A.mHierarchy << "\n";
 
-  os << std::endl;
+  os << "\n";
   os << "Fold bifurcation test functions (standard, bifurcation discovery tool): " << A.mBifurcationIndicator_Fold
-     << ", " << A.mBifurcationIndicator_Fold_BDT <<  std::endl;
+     << ", " << A.mBifurcationIndicator_Fold_BDT <<  "\n";
   os << "Hopf bifurcation test functions (standard, bifurcation discovery tool): " << A.mBifurcationIndicator_Hopf
-     << ", " << A.mBifurcationIndicator_Hopf_BDT <<  std::endl;
+     << ", " << A.mBifurcationIndicator_Hopf_BDT <<  "\n";
 
-  os << std::endl;
-  os << "Oscillation indicator: " << A.mOscillationIndicator_EV  << std::endl;
+  os << "\n";
+  os << "Oscillation indicator: " << A.mOscillationIndicator_EV  << "\n";
 
   return os;
 }

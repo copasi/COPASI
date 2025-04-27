@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -184,13 +184,13 @@ void CQOptPopulation::createActions()
   //connect(mpaToggleLogX, SIGNAL(toggled(bool)), this, SLOT(toggleLogX(bool)));
 
   mpaSaveToFile = new QAction("Save Image", this);
-  mpaSaveToFile->setShortcut(Qt::CTRL + Qt::Key_S);
+  mpaSaveToFile->setShortcut(QKeySequence::SaveAs);
   mpaSaveToFile->setToolTip("Save as Image");
   connect(mpaSaveToFile, SIGNAL(triggered()), this, SLOT(slotSaveImage()));
 
   mpaCloseWindow = new QAction("Close", this);
   mpaCloseWindow->setObjectName("close");
-  mpaCloseWindow->setShortcut(Qt::CTRL + Qt::Key_W);
+  mpaCloseWindow->setShortcut(QKeySequence::Close);
   connect(mpaCloseWindow, SIGNAL(triggered()), this, SLOT(slotCloseWindow()));
 
   mpaRefresh = new QAction("Repaint (Full refresh)", this);

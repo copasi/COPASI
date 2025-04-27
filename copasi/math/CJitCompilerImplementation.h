@@ -1,10 +1,12 @@
-// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
 
 #ifndef COPASI_CJitCompilerImplementation
 #define COPASI_CJitCompilerImplementation
+
+#include <cmath>
 
 #include "copasi/math/CJitCompiler.h"
 
@@ -41,6 +43,7 @@ public:
 
 private:
   static size_t InitalBufferSize;
+  static C_FLOAT64 Invalid;
 
 #ifdef USE_JIT
 protected:
@@ -85,7 +88,14 @@ private:
 
     return (C_FLOAT64)(((C_INT32) x) % ((C_INT32) y));
   }
+  static inline C_FLOAT64 __jit_quotient(C_FLOAT64 x, C_FLOAT64 y)
+  {
+    return (x - fmod(x, y)) / y;
+  }
+  static inline C_FLOAT64 __jit_max(C_FLOAT64 x, C_FLOAT64 y){return x > y ? x : y;}
+  static inline C_FLOAT64 __jit_min(C_FLOAT64 x, C_FLOAT64 y){return x < y ? x : y;}
   static inline bool __jit_xor(bool x, bool y) {return (x || y) && (x != y);}
+  static inline bool __jit_implies(bool x, bool y) {return !x || y;}
   static inline bool __jit_eq(bool x, bool y) {return x == y;}
   static inline bool __jit_eq(C_FLOAT64 x, C_FLOAT64 y) {return x == y;}
   static inline bool __jit_neq(bool x, bool y) {return x != y;}

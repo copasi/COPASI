@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -107,7 +107,7 @@ CValidatedUnit CEvaluationNodeVariable::getUnit(const CMathContainer & /* contai
   return CValidatedUnit();
 }
 
-ASTNode* CEvaluationNodeVariable::toAST(const CDataModel* /*pDataModel*/) const
+ASTNode* CEvaluationNodeVariable::toAST(const CDataModel* /*pDataModel*/, int, int) const
 {
   ASTNode* node = new ASTNode();
   node->setType(AST_NAME);
@@ -126,11 +126,11 @@ std::string CEvaluationNodeVariable::getMMLString(const std::vector< std::string
 
   if (mIndex < variables.size())
     {
-      out << variables[mIndex][0] << std::endl;
+      out << variables[mIndex][0] << "\n";
     }
   else
     {
-      out << "<mi>" << CMathMl::fixName(mData) << "</mi>" << std::endl;
+      out << "<mi>" << CMathMl::fixName(mData) << "</mi>" << "\n";
     }
 
   return out.str();

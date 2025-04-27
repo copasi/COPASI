@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -121,7 +126,7 @@ public:
    * Create a new ASTNode corresponding to this choice node.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode* toAST(const CDataModel* pDataModel) const;
+  virtual ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const;
 
   /**
    * Add a child to a node.

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -30,6 +30,7 @@
 #include "copasi/wizard/ui_wizard.h"
 
 class QUrl;
+class QAbstractButton;
 
 class WizardDialog : public QDialog, public Ui::WizardDialog
 {
@@ -44,7 +45,7 @@ public:
   virtual void setCopasiMainWindow(QWidget * copasiMainWindow);
 
 public slots:
-  virtual void buttonGroup2_clicked(int);
+  virtual void buttonGroup2_clicked(QAbstractButton *);
   virtual void forwardButton_clicked();
   virtual void backButton_clicked();
   virtual void textBrowser_anchorClicked(const QUrl & url);

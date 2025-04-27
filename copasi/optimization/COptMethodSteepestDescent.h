@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,8 +27,6 @@
 
 #include "copasi/core/CVector.h"
 #include "copasi/optimization/COptMethod.h"
-
-class FDescent;
 
 class COptMethodSteepestDescent: public COptMethod
 {
@@ -111,7 +109,6 @@ public:
    */
   virtual unsigned C_INT32 getMaxLogVerbosity() const;
 
-
   virtual C_FLOAT64 getBestValue() const;
 
   virtual C_FLOAT64 getCurrentValue() const;
@@ -163,11 +160,6 @@ private :
    * The gradient vector for the objective function
    */
   CVector < C_FLOAT64 > mGradient;
-
-  /**
-   * Functor pointing to the descent method.
-   */
-  FDescent * mpDescent;
 
   /**
       * The current iteration

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -2513,6 +2513,19 @@ CNormalLogical* createLogical(const CEvaluationNode* pNode)
                 pAndNode->addChild(pNotNode);
                 pResult = createLogical(pAndNode);
                 delete pAndNode;
+                break;
+
+              case CEvaluationNode::SubType::IMPLIES:
+                // replace A implies B by NOT(A) OR B
+                pA = dynamic_cast< const CEvaluationNode * >(pNode->getChild());
+                pB = dynamic_cast< const CEvaluationNode * >(pA->getSibling());
+                pNotNode = new CEvaluationNodeFunction(CEvaluationNode::SubType::NOT, "NOT");
+                pNotNode->addChild(pA->copyBranch());
+                pOrNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::OR, "OR");
+                pOrNode->addChild(pNotNode);
+                pOrNode->addChild(pB->copyBranch());
+                pResult = createLogical(pOrNode);
+                delete pOrNode;
                 break;
 
               case CEvaluationNode::SubType::AND:

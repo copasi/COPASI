@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -142,11 +142,11 @@ C_FLOAT64 CFitItem::getConstraintViolation() const
 
 std::ostream &operator<<(std::ostream &os, const CFitItem & o)
 {
-  os << * static_cast<const COptItem *>(&o) << std::endl;
+  os << * static_cast<const COptItem *>(&o) << "\n";
 
   size_t i, imax = o.mpGrpAffectedExperiments->size();
 
-  os << "    Affected Experiments:" << std::endl << "      ";
+  os << "    Affected Experiments:" << "\n" << "      ";
 
   if (imax == 0) os << "all";
 
@@ -159,7 +159,7 @@ std::ostream &operator<<(std::ostream &os, const CFitItem & o)
 
   imax = o.mpGrpAffectedCrossValidations->size();
 
-  os << "    Affected Validation Experiments:" << std::endl << "      ";
+  os << "    Affected Validation Experiments:" << "\n" << "      ";
 
   if (imax == 0) os << "all";
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -114,7 +114,7 @@ class CQLayoutsWidget;
 class CQPlotSubwidget;
 class CDataModel;
 class CUndoData;
-
+class QScrollArea;
 #include "copasi/core/CRegisteredCommonName.h"
 
 //********************************************************************************
@@ -391,6 +391,8 @@ private:
 
   CQLayoutsWidget * mpLayoutsWidget;
   CQMathMatrixWidget * mpMathMatrixWidget;
+
+  std::map< CopasiWidget *, QScrollArea * > mScrollMap;
 };
 
 #endif

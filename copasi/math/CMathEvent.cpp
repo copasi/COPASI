@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -400,6 +400,11 @@ void CMathEvent::CTrigger::allocate(const CEvent * pDataEvent,
 
           mRoots.resize(countRoots(TriggerFunction.getRoot(), Variables));
         }
+      else
+      {
+        // still need to resize root
+        mRoots.resize(0);
+      }
     }
 
   return;
@@ -809,6 +814,7 @@ CEvaluationNode * CMathEvent::CTrigger::compile(const CEvaluationNode * pTrigger
                 case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::AND):
                 case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::OR):
                 case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::XOR):
+                case (CEvaluationNode::MainType::LOGICAL | CEvaluationNode::SubType::IMPLIES):
                   pNode = compileAND(*itNode, itNode.context(), variables, pRoot, container);
                   break;
 
@@ -884,6 +890,10 @@ CEvaluationNode * CMathEvent::CTrigger::compileAND(const CEvaluationNode * pTrig
 
       case CEvaluationNode::SubType::XOR:
         pNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::XOR, "XOR");
+        break;
+
+      case CEvaluationNode::SubType::IMPLIES:
+        pNode = new CEvaluationNodeLogical(CEvaluationNode::SubType::IMPLIES, "IMPLIES");
         break;
 
       default:
@@ -1395,12 +1405,23 @@ void CMathEvent::createUpdateSequences()
   Requested.clear();
 
   CObjectInterface::ObjectSet EventTargets;
+  CObjectInterface::ObjectSet Changed(StateValues);
   CAssignment * pAssignment = mAssignments.array();
   CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
 
   for (; pAssignment != pAssignmentEnd; ++pAssignment)
     {
       Requested.insert(pAssignment->getAssignment());
+
+      CObjectInterface::ObjectSet Prerequisites;
+      pAssignment->getAssignment()->appendPrerequisites(Prerequisites);
+
+      CObjectInterface::ObjectSet::const_iterator it = Prerequisites.begin();
+      CObjectInterface::ObjectSet::const_iterator end = Prerequisites.end();
+
+      for (; it != end; ++it)
+        if ((*it)->getPrerequisites().empty())
+          Changed.insert(*it);
 
       const CMathObject * pTarget = pAssignment->getTarget();
 

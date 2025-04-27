@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -674,10 +674,10 @@ void CEvent::initObjects()
 
 std::ostream & operator<<(std::ostream &os, const CEvent & d)
 {
-  os << "CEvent:  " << d.getObjectName() << std::endl;
-  os << "   SBML id:  " << d.mSBMLId << std::endl;
+  os << "CEvent:  " << d.getObjectName() << "\n";
+  os << "   SBML id:  " << d.mSBMLId << "\n";
 
-  os << "----CEvent" << std::endl;
+  os << "----CEvent" << "\n";
 
   return os;
 }

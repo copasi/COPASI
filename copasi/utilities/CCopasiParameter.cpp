@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -217,27 +217,28 @@ void CCopasiParameter::createUndoData(CUndoData & undoData,
   return;
 }
 
-CCopasiParameter::CCopasiParameter():
-  CDataContainer("NoName", NULL, "Parameter"),
-  mKey(CRootContainer::getKeyFactory()->add("Parameter", this)),
-  mType(CCopasiParameter::Type::INVALID),
-  mpValue(NULL),
-  mpValueReference(NULL),
-  mpValidValues(NULL),
-  mpDefault(NULL),
-  mUserInterfaceFlag(UserInterfaceFlag::All)
+CCopasiParameter::CCopasiParameter()
+  : CDataContainer("NoName", NULL, "Parameter")
+  , mKey()
+  , mType(CCopasiParameter::Type::INVALID)
+  , mpValue(NULL)
+  , mpValueReference(NULL)
+  , mpValidValues(NULL)
+  , mpDefault(NULL)
+  , mUserInterfaceFlag(UserInterfaceFlag::All)
 {}
 
 CCopasiParameter::CCopasiParameter(const CCopasiParameter & src,
-                                   const CDataContainer * pParent):
-  CDataContainer(src, pParent),
-  mKey(CRootContainer::getKeyFactory()->add(src.getObjectType(), this)),
-  mType(src.mType),
-  mpValue(NULL),
-  mpValueReference(NULL),
-  mpValidValues(NULL),
-  mpDefault(NULL),
-  mUserInterfaceFlag(src.mUserInterfaceFlag)
+                                   const CDataContainer * pParent,
+                                   const std::string & objectType)
+  : CDataContainer(src, pParent, objectType)
+  , mKey()
+  , mType(src.mType)
+  , mpValue(NULL)
+  , mpValueReference(NULL)
+  , mpValidValues(NULL)
+  , mpDefault(NULL)
+  , mUserInterfaceFlag(src.mUserInterfaceFlag)
 {
   assignValue(src.mpValue);
   assignDefault(src.mpDefault);
@@ -254,7 +255,7 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
                   ((type == CCopasiParameter::Type::INT || type == CCopasiParameter::Type::UINT) ? CDataObject::ValueInt :
                    ((type == CCopasiParameter::Type::STRING || type == CCopasiParameter::Type::CN || type == CCopasiParameter::Type::KEY || type == CCopasiParameter::Type::FILE || type == CCopasiParameter::Type::EXPRESSION) ? CDataObject::ValueString :
                     (type == CCopasiParameter::Type::BOOL) ? CDataObject::ValueBool : CDataObject::Container)))),
-  mKey(CRootContainer::getKeyFactory()->add(objectType, this)),
+  mKey(),
   mType(type),
   mpValue(NULL),
   mpValueReference(NULL),
@@ -267,8 +268,12 @@ CCopasiParameter::CCopasiParameter(const std::string & name,
 
 CCopasiParameter::~CCopasiParameter()
 {
-  if (CRootContainer::getRoot())
+  if (!mKey.empty()
+      && CRootContainer::getRoot() != nullptr)
     CRootContainer::getKeyFactory()->remove(mKey);
+
+  if (dynamic_cast< CCopasiParameterGroup * >(getObjectParent()) != nullptr)
+    static_cast< CCopasiParameterGroup * >(getObjectParent())->remove(this);
 
   deleteValue(mType, mpValue);
   deleteValue(mType, mpDefault);
@@ -325,7 +330,13 @@ CCopasiParameter & CCopasiParameter::operator = (const CCopasiParameter & rhs)
   return *this;
 }
 
-const std::string & CCopasiParameter::getKey() const {return mKey;}
+const std::string & CCopasiParameter::getKey() const
+{
+  if (mKey.empty())
+    mKey = CRootContainer::getKeyFactory()->add(getObjectType(), const_cast< CCopasiParameter * >(this));
+
+  return mKey;
+}
 
 bool CCopasiParameter::setValue(const std::vector< CCopasiParameter * > & /* value */)
 {

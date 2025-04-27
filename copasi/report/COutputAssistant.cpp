@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1237,7 +1237,7 @@ COutputAssistant::createDefaultOutput(
               {
                 itItem->setTitle("sum of squares");
                 itItem->setActivity(COutputInterface::DURING);
-                itItem->setValue("Line type", (unsigned C_INT32) 0);
+                itItem->setValue("Line type", (unsigned C_INT32) CPlotItem::LineType::LinesAndSymbols);
                 itItem++;
               }
           }
@@ -1278,7 +1278,7 @@ COutputAssistant::createDefaultOutput(
               {
                 itItem->setTitle("target function");
                 itItem->setActivity(COutputInterface::DURING);
-                itItem->setValue("Line type", (unsigned C_INT32) 0);
+                itItem->setValue("Line type", (unsigned C_INT32) CPlotItem::LineType::LinesAndSymbols);
                 itItem++;
               }
           }

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1292,7 +1292,7 @@ bool CQwtPlot::saveData(const std::string & filename)
               fs << "\t";
             }
 
-          fs << std::endl;
+          fs << "\n";
         }
     }
 
@@ -1346,7 +1346,7 @@ bool CQwtPlot::saveData(const std::string & filename)
               fs << "\t";
             }
 
-          fs << std::endl;
+          fs << "\n";
         }
     }
 
@@ -1400,7 +1400,7 @@ bool CQwtPlot::saveData(const std::string & filename)
               fs << "\t";
             }
 
-          fs << std::endl;
+          fs << "\n";
         }
     }
 
@@ -1422,7 +1422,7 @@ bool CQwtPlot::saveData(const std::string & filename)
               FirstHistogram = false;
             }
 
-          fs << mSaveHistogramObjects[HistogramIndex] << std::endl;
+          fs << mSaveHistogramObjects[HistogramIndex] << "\n";
 
 #if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
           CHistoCurveData * pData = static_cast< CHistoCurveData * >((*itCurves)->data());

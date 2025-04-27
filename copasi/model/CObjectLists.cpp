@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -585,8 +585,12 @@ std::set< const CModelEntity * > CObjectLists::getEventTargets(const CModel* pMo
 
       for (; itAssignment != endAssignment; ++itAssignment)
         {
+          const CDataObject * pDataObject = dynamic_cast < const CDataObject*>(CDataObject::GetObjectFromCN(List, itAssignment->getTargetCN()));
           const CModelEntity * pModelEntity =
-            dynamic_cast< const CModelEntity * >(CDataObject::GetObjectFromCN(List, itAssignment->getTargetCN()));
+            dynamic_cast< const CModelEntity * >(pDataObject);
+
+          if (!pModelEntity && pDataObject)
+            pModelEntity = dynamic_cast< const CModelEntity * >(pDataObject->getObjectParent());
 
           if (pModelEntity != NULL)
             {

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -207,6 +207,7 @@ bool ModelHandler::processEnd(const XML_Char * pszName)
           {
             size_t Size = CCopasiMessage::size();
 
+            mpData->pModel->refreshActiveParameterSet();
             mpData->pModel->getActiveModelParameterSet().assignSetContent(*pModelParameterSet, false);
             delete pModelParameterSet;
             mActiveSet = "";

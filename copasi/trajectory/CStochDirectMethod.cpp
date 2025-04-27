@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,7 +22,7 @@
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 # pragma warning (disable: 4786)
 # pragma warning (disable: 4243)
 // warning C4355: 'this' : used in base member initializer list

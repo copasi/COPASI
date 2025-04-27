@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -48,8 +48,8 @@ CCompartmentGraphNode::CCompartmentGraphNode(const CCompartmentGraphNode & src,
 
 std::ostream & operator<<(std::ostream &os, const CCompartmentGraphNode & gn)
 {
-  os << "node key: " << gn.mOrigNodeKey << std::endl;
-  os << "object key: " << gn.mObjectKey << std::endl;
-  os << "bounding box: " << gn.mBBox << std::endl;
+  os << "node key: " << gn.mOrigNodeKey << "\n";
+  os << "object key: " << gn.mObjectKey << "\n";
+  os << "bounding box: " << gn.mBBox << "\n";
   return os;
 }

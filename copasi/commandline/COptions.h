@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -153,6 +153,14 @@ public:
 
   static std::string getConfigDir(void);
 
+  static std::string getCopasiDir(void);
+
+  static std::string getHome(void);
+
+  static std::string getTemp(void);
+
+  static std::string getConfigFile(void);
+
 private:
   template< class CType > static void setValue(const std::string & name,
       const CType & value)
@@ -164,13 +172,6 @@ private:
 
     return;
   }
-
-  static std::string getCopasiDir(void);
-
-  static std::string getHome(void);
-  static std::string getTemp(void);
-
-  static std::string getConfigFile(void);
 };
 
 #endif // COPASI_COptions

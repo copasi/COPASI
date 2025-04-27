@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -586,16 +586,16 @@ const C_FLOAT64 & CMathEventQueue::getProcessQueueExecutionTime() const
 
 std::ostream &operator<<(std::ostream &os, const CMathEventQueue & o)
 {
-  os << "Process Queue" << std::endl;
+  os << "Process Queue" << "\n";
   CMathEventQueue::const_iterator it;
 
-  if (o.mActions.size()) os << " Actions:" << std::endl;
+  if (o.mActions.size()) os << " Actions:" << "\n";
 
   for (it = o.mActions.begin(); it != o.mActions.end(); ++it)
     {
-      os << it->first << std::endl;
-      os << it->second << std::endl;
-      os << std::endl;
+      os << it->first << "\n";
+      os << it->second << "\n";
+      os << "\n";
     }
 
   return os;

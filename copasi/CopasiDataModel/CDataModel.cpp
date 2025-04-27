@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -237,11 +237,9 @@ CDataModel::~CDataModel()
   CRegisteredCommonName::setEnabled(false);
 
   // Make sure that the old data is deleted
-  deleteOldData();
-
+  mOldData.clear();
   // Delete the current data
-  mOldData = mData;
-  deleteOldData();
+  mData.clear();
 
   pdelete(pOldMetabolites);
 
@@ -922,7 +920,7 @@ bool CDataModel::saveModel(const std::string & fileName, CProcessReport * pProce
       mData.pModel->compileIfNecessary(pProcessReport);
 
       // Assure that the parameter set reflects all changes made to the model.
-      mData.pModel->getActiveModelParameterSet().refreshFromModel(false);
+      mData.pModel->refreshActiveParameterSet();
     }
 
   catch (...)
@@ -1012,7 +1010,7 @@ std::string CDataModel::saveModelToString(CProcessReport * pProcessReport)
       mData.pModel->compileIfNecessary(pProcessReport);
 
       // Assure that the parameter set reflects all changes made to the model.
-      mData.pModel->getActiveModelParameterSet().refreshFromModel(false);
+      mData.pModel->refreshActiveParameterSet();
     }
 
   catch (...)
@@ -1096,7 +1094,9 @@ bool CDataModel::newModel(CProcessReport * pProcessReport,
 
 bool CDataModel::importSBMLFromString(const std::string & sbmlDocumentText,
                                       CProcessReport * pProcessReport,
-                                      const bool & deleteOldData)
+                                      const bool & deleteOldData,
+                                      bool importMiriam /*= true*/,
+                                      bool importInitialValues /*= false*/)
 {
   // During load no objects will be renamed;
   CRegisteredCommonName::setEnabled(false);
@@ -1108,8 +1108,9 @@ bool CDataModel::importSBMLFromString(const std::string & sbmlDocumentText,
   SBMLImporter importer;
   // Right now we always import the COPASI MIRIAM annotation if it is there.
   // Later this will be configurable by the user in the preferences dialog
-  importer.setImportCOPASIMIRIAM(true);
+  importer.setImportCOPASIMIRIAM(importMiriam);
   importer.setImportHandler(pProcessReport);
+  importer.setImportInitialValueAnnotation(importInitialValues);
   //mCopasi2SBMLMap.clear();
   CModel * pModel = NULL;
 
@@ -1177,7 +1178,9 @@ bool CDataModel::importSBMLFromString(const std::string & sbmlDocumentText,
 
 bool CDataModel::importSBML(const std::string & fileName,
                             CProcessReport * pProcessReport,
-                            const bool & deleteOldData)
+                            const bool & deleteOldData,
+                            bool importMiriam /*= true*/,
+                            bool importInitialValues /*= false*/)
 {
   // During load no objects will be renamed;
   CRegisteredCommonName::setEnabled(false);
@@ -1194,8 +1197,9 @@ bool CDataModel::importSBML(const std::string & fileName,
   SBMLImporter importer;
   // Right now we always import the COPASI MIRIAM annotation if it is there.
   // Later this will be settable by the user in the preferences dialog
-  importer.setImportCOPASIMIRIAM(true);
+  importer.setImportCOPASIMIRIAM(importMiriam);
   importer.setImportHandler(pProcessReport);
+  importer.setImportInitialValueAnnotation(importInitialValues);
 
   CModel * pModel = NULL;
 
@@ -2252,6 +2256,8 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
   numMessagesBefore = CCopasiMessage::size();
 
+  bool loadedModelFromSedml = loadedModel;
+
   if (loadedModel == false && sbml_content != NULL)
     {
       loadedModel = this->importSBML(destinationDir + "/" + sbml_content->getLocation(), pProgressReport, deleteOldData);
@@ -2282,7 +2288,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
     {
       addMessages("Messages from attempted SED-ML file import: ", messageStream, importSedMLMessages);
 
-      if (sbml_content)
+      if (!loadedModelFromSedml && sbml_content)
         {
           messageStream << "Attempting to import the SBML file instead." << std::endl;
         }
@@ -2603,20 +2609,7 @@ CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile,
 
 void CDataModel::deleteOldData()
 {
-  pdelete(mOldData.pModel);
-  pdelete(mOldData.pTaskList);
-  pdelete(mOldData.pReportDefinitionList);
-  pdelete(mOldData.pPlotDefinitionList);
-  pdelete(mOldData.pListOfLayouts);
-  pdelete(mOldData.pGUI);
-  pdelete(mOldData.pCurrentSBMLDocument);
-  pdelete(mOldData.mpUndoStack);
-
-  pdelete(mOldData.pCurrentSEDMLDocument);
-
-#ifdef COPASI_Versioning
-  pdelete(mOldData.mpModelVersionHierarchy);
-#endif // COPASI_Versioning
+  mOldData.clear();
 }
 
 const CModel * CDataModel::getModel() const
@@ -3190,7 +3183,6 @@ CDataModel::CContent & CDataModel::CContent::operator=(const CContent & rhs)
       mSBMLFileName = rhs.mSBMLFileName;
       mReferenceDir = rhs.mReferenceDir;
       mCopasi2SBMLMap = rhs.mCopasi2SBMLMap;
-
       pCurrentSEDMLDocument = rhs.pCurrentSEDMLDocument;
       mCopasi2SEDMLMap = rhs.mCopasi2SEDMLMap;
       mSEDMLFileName = rhs.mSEDMLFileName;
@@ -3205,19 +3197,66 @@ CDataModel::CContent & CDataModel::CContent::operator=(const CContent & rhs)
 
 bool CDataModel::CContent::isValid() const
 {
-  return (pModel != NULL && pTaskList != NULL && pReportDefinitionList != NULL && pPlotDefinitionList != NULL && pListOfLayouts != NULL && mpUndoStack != NULL && pGUI != NULL);
+  bool clear = true;
+
+  clear &= pModel != nullptr;
+  clear &= pTaskList != nullptr;
+  clear &= pReportDefinitionList != nullptr;
+  clear &= pPlotDefinitionList != nullptr;
+  clear &= pListOfLayouts != nullptr;
+  clear &= pGUI != nullptr;
+  clear &= mpUndoStack != nullptr;
+
+#ifdef COPASI_Versioning
+  clear &= mpModelVersionHierarchy == nullptr;
+#endif // COPASI_Versioning
+
+  return clear;
+}
+
+void CDataModel::CContent::clear()
+{
+  pdelete(pModel);
+  pdelete(pTaskList);
+  pdelete(pReportDefinitionList);
+  pdelete(pPlotDefinitionList);
+  pdelete(pListOfLayouts);
+  pdelete(pGUI);
+  pdelete(pCurrentSBMLDocument);
+  pdelete(mpUndoStack);
+
+  pdelete(pCurrentSEDMLDocument);
+
+#ifdef COPASI_Versioning
+  pdelete(mpModelVersionHierarchy);
+#endif // COPASI_Versioning
+}
+
+bool CDataModel::CContent::isClear() const
+{
+  bool clear = true;
+
+  clear &= pModel == nullptr;
+  clear &= pTaskList == nullptr;
+  clear &= pReportDefinitionList == nullptr;
+  clear &= pPlotDefinitionList == nullptr;
+  clear &= pListOfLayouts == nullptr;
+  clear &= pGUI == nullptr;
+  clear &= pCurrentSBMLDocument == nullptr;
+  clear &= mpUndoStack == nullptr;
+
+  clear &= pCurrentSEDMLDocument == nullptr;
+
+#ifdef COPASI_Versioning
+  clear &= mpModelVersionHierarchy == nullptr;
+#endif // COPASI_Versioning
+
+  return clear;
 }
 
 void CDataModel::pushData()
 {
-  // make sure the old data has been deleted.
-  assert(mOldData.pModel == NULL && mOldData.pTaskList == NULL && mOldData.pReportDefinitionList == NULL && mOldData.pPlotDefinitionList == NULL && mOldData.pListOfLayouts == NULL && mOldData.pGUI == NULL);
-
-  assert(mOldData.pCurrentSEDMLDocument == NULL);
-
-#ifdef COPASI_Versioning
-  assert(mOldData.mpModelVersionHierarchy == NULL);
-#endif // COPASI_Versioning
+  assert (mOldData.isClear());
 
   mOldData = mData;
   mData = CContent();
@@ -3225,12 +3264,8 @@ void CDataModel::pushData()
 
 void CDataModel::popData()
 {
-  // Make sure the old data is valid
-  assert(mOldData.pModel != NULL && mOldData.pTaskList != NULL && mOldData.pReportDefinitionList != NULL && mOldData.pPlotDefinitionList != NULL && mOldData.pListOfLayouts != NULL && mOldData.pGUI != NULL);
-
-#ifdef COPASI_Versioning
-  assert(mOldData.mpModelVersionHierarchy != NULL);
-#endif // COPASI_Versioning
+  assert (mData.isClear());
+  assert (mOldData.isValid());
 
   // TODO CRITICAL We need to clean up mData to avoid memory leaks.
 
@@ -3354,11 +3389,6 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
   if (mOldData.pCurrentSEDMLDocument == mData.pCurrentSEDMLDocument)
     mOldData.pCurrentSEDMLDocument = NULL;
 
-  if (mData.pModel && mData.pModel->compileIfNecessary(pProcessReport))
-    {
-      mData.pModel->getActiveModelParameterSet().updateModel();
-    }
-
   // We need to initialize all the task so that results are available
 
   // We suppress all errors and warnings
@@ -3379,6 +3409,8 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
               it->setMathContainer(&mData.pModel->getMathContainer());
             }
 
+          CCopasiMessage::clearDeque();
+
           // need initialize, so that all objects are created for the
           // object browser
           it->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
@@ -3386,6 +3418,8 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
           // but we should restore any possible changes made to the model
           // by the task, without updating the model
           it->restore(false);
+
+          CCopasiMessage::clearDeque();
         }
 
       catch (...)
@@ -3410,7 +3444,7 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
           CCopasiMessage(CCopasiMessage::WARNING, validity.getIssueMessages().c_str());
         }
 
-      mData.pModel->updateInitialValues(CCore::Framework::ParticleNumbers);
+      mData.pModel->updateInitialValues(CCore::Framework::ParticleNumbers, false);
     }
 
   changed(false);
@@ -3457,12 +3491,12 @@ bool CDataModel::changeModelParameter(CDataObject * element, double value)
           bool isInitialConcentration = pRef->getObjectName() == "InitialConcentration" && pRef->getObjectDataModel() != NULL && pRef->getObjectDataModel()->getModel() != NULL;
 
           if (isInitialConcentration)
-            pRef->getObjectDataModel()->getModel()->updateInitialValues(pRef);
+            pRef->getObjectDataModel()->getModel()->updateInitialValues(pRef, false);
 
           *static_cast< double * >(pRef->getValuePointer()) = value;
 
           if (isInitialConcentration)
-            pRef->getObjectDataModel()->getModel()->updateInitialValues(pRef);
+            pRef->getObjectDataModel()->getModel()->updateInitialValues(pRef, false);
 
           return true;
         }
@@ -3528,6 +3562,7 @@ void CDataModel::reparameterizeFromIniFile(const std::string & fileName)
     }
 
   getModel()->compileIfNecessary(NULL); // compile if needed
+  getModel()->refreshActiveParameterSet();
 }
 
 const CDataObject * CDataModel::findObjectByDisplayName(const std::string & displayString) const
@@ -3647,7 +3682,7 @@ const CDataObject * CDataModel::findObjectByDisplayName(const std::string & disp
 
   // try for local reaction parameters
 
-  pos = displayString.find(")");
+  pos = displayString.rfind(")");
 
   if (pos != std::string::npos && (displayString.size() > (pos + 2)))
     {
@@ -3681,4 +3716,79 @@ const CDataObject * CDataModel::findObjectByDisplayName(const std::string & disp
     }
 
   return NULL;
+}
+
+#include <sbml/SBMLDocument.h>
+#include <sbml/conversion/ConversionProperties.h>
+
+/*
+ * Infers Reactions from the ODE's in this model.
+ */
+bool
+CDataModel::convertODEsToReactions()
+{
+  std::string sbml = exportSBMLToString(NULL, 3, 1);
+
+  auto *doc = readSBMLFromString(sbml.c_str());
+
+  ConversionProperties props;
+  props.addOption("inferReactions", true,
+                  "Infer reactions from rateRules in the model");
+
+  if (doc->convert(props) != LIBSBML_OPERATION_SUCCESS)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "Couldn't infer reactions: %s", doc->getErrorLog()->toString().c_str());
+      return false;
+    }
+
+  std::string newSBML = writeSBMLToString(doc);
+  delete doc;
+  return importSBMLFromString(newSBML.c_str());
+}
+
+/*
+ * Converts Reactions in this model to ODEs
+ */
+bool
+CDataModel::convertReactionsToODEs()
+{
+  std::string sbml = exportSBMLToString(NULL, 3, 1);
+
+  auto *doc = readSBMLFromString(sbml.c_str());
+
+  ConversionProperties props;
+  props.addOption("replaceReactions", true,
+                  "Replace reactions with rateRules");
+
+  if (doc->convert(props) != LIBSBML_OPERATION_SUCCESS)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "Couldn't convert reactions to ODEs: %s", doc->getErrorLog()->toString().c_str());
+      return false;
+    }
+
+  std::string newSBML = writeSBMLToString(doc);
+  delete doc;
+  return importSBMLFromString(newSBML.c_str());
+}
+
+bool
+CDataModel::convertParametersToGlobal()
+{
+  std::string sbml = exportSBMLToString(NULL, 3, 1);
+
+  auto * doc = readSBMLFromString(sbml.c_str());
+
+  ConversionProperties props;
+  props.addOption("promoteLocalParameters", true,
+                  "Promotes all Local Parameters to Global ones");
+
+  if (doc->convert(props) != LIBSBML_OPERATION_SUCCESS)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, "Couldn't promote local parameters: %s", doc->getErrorLog()->toString().c_str());
+      return false;
+    }
+
+  std::string newSBML = writeSBMLToString(doc);
+  delete doc;
+  return importSBMLFromString(newSBML.c_str());
 }

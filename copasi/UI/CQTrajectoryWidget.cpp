@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -86,7 +86,7 @@ void CQTrajectoryWidget::init()
   mpEditDuration->setValidator(mpValidatorDuration);
 
   mpValidatorIntervalSize = new CQValidatorDouble(mpEditIntervalSize);
-  mpValidatorIntervalSize->setRange(0, std::numeric_limits< double >::max());
+  //mpValidatorIntervalSize->setRange(0, std::numeric_limits< double >::max());
   mpEditIntervalSize->setValidator(mpValidatorIntervalSize);
 
   mpValidatorIntervals = new CQValidatorInt(mpEditIntervals);

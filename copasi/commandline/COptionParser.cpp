@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,7 +35,7 @@
  * cxx_source_file variable.
  */
 
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 #pragma warning (disable: 4786)
 #define strcasecmp _stricmp
 #endif
@@ -304,9 +304,7 @@ void copasi::COptionParser::finalize(void)
           case option_Verbose:
             throw option_error("missing value for 'verbose' option");
         }
-
     }
-
 }
 //#########################################################################
 void copasi::COptionParser::parse_element(const char *element, int position, opsource source)
@@ -322,7 +320,7 @@ void copasi::COptionParser::parse_element(const char *element, int position, ops
       case state_option:
         if (length >= 2 && element[0] == '-' && element[1] == '-')
           {
-            if (length == 2) { state_ = state_consume; return; }
+            if (length == 2) {state_ = state_consume; return;}
 
             element += 2;
             const char *value = element;
@@ -1203,7 +1201,6 @@ const char* expand_long_name(const std::string &name)
 
   if (name_size <= 4 && name.compare(0, name_size, "help", name_size) == 0)
     matches.push_back("help");
-
 
   if (matches.empty())
     {

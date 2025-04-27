@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -189,7 +189,7 @@ bool CQParameterSetsDM::insertRows(int position, int rows, const QModelIndex & p
       while (pModel->getModelParameterSets().getIndex(TO_UTF8(Name)) != C_INVALID_INDEX)
         Name = QString("Parameter Set %1").arg(LocalTimeStamp().c_str());
 
-      CModelParameterSet * pNew = new CModelParameterSet(pModel->getActiveModelParameterSet(), NULL, false);
+      CModelParameterSet * pNew = new CModelParameterSet(pModel, NULL);
       pNew->setObjectName(TO_UTF8(Name));
       mpListOfParameterSets->add(pNew, true);
       ++mFetched;

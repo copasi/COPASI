@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,7 @@
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "FminBrent.h"
+#include "copasi/utilities/CBrent.h"
 
 #include "copasi/core/CDataObjectReference.h"
 
@@ -47,7 +47,6 @@ COptMethodSteepestDescent::COptMethodSteepestDescent(const CDataContainer * pPar
   mVariableSize(0),
   mIndividual(0),
   mGradient(0),
-  mpDescent(new FDescentTemplate<COptMethodSteepestDescent>(this, &COptMethodSteepestDescent::descentLine)),
   mCurrentIteration(0)
 {
   assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100);
@@ -64,14 +63,11 @@ COptMethodSteepestDescent::COptMethodSteepestDescent(const COptMethodSteepestDes
   mVariableSize(src.mVariableSize),
   mIndividual(src.mIndividual),
   mGradient(src.mGradient),
-  mpDescent(new FDescentTemplate<COptMethodSteepestDescent>(this, &COptMethodSteepestDescent::descentLine)),
   mCurrentIteration(src.mCurrentIteration)
 {}
 
 COptMethodSteepestDescent::~COptMethodSteepestDescent()
 {
-  pdelete(mpDescent);
-
   cleanup();
 }
 
@@ -205,7 +201,8 @@ bool COptMethodSteepestDescent::optimise()
               //md = mn + (mx-mn)/2;
               //Brent(mn, md, mx, descent_line, &alpha, &tmp, 1e-6, 50);
 
-              FminBrent(mn, mx, mpDescent, &alpha, &tmp, mTolerance, 5);
+              CBrent::EvalTemplate< COptMethodSteepestDescent > eval(this, & COptMethodSteepestDescent::descentLine);
+              CBrent::findMinimum(mn, mx, &eval, &alpha, &tmp, mTolerance, 100);
 
               // take one step in that direction
               fmx = descentLine(alpha);

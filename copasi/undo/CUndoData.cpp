@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1065,26 +1065,26 @@ CUndoObjectInterface * CUndoData::getObject(const CDataModel & dataModel, const 
 
 std::ostream & operator << (std::ostream & os, const CUndoData & o)
 {
-  os << "Type: " << CUndoData::TypeName[o.mType] << std::endl;
+  os << "Type: " << CUndoData::TypeName[o.mType] << "\n";
 
-  os << "Pre:" << std::endl;
+  os << "Pre:" << "\n";
   std::vector< CUndoData >::const_iterator it = o.mPreProcessData.begin();
   std::vector< CUndoData >::const_iterator end = o.mPreProcessData.end();
 
   for (; it != end; ++it)
     {
-      os << *it << std::endl;
+      os << *it << "\n";
     }
 
-  os << "Old:  " << std::endl << o.mOldData << std::endl;
-  os << "New:  " << std::endl << o.mNewData << std::endl;
-  os << "Post:" << std::endl;
+  os << "Old:  " << "\n" << o.mOldData << "\n";
+  os << "New:  " << "\n" << o.mNewData << "\n";
+  os << "Post:" << "\n";
   it = o.mPostProcessData.begin();
   end = o.mPostProcessData.end();
 
   for (; it != end; ++it)
     {
-      os << *it << std::endl;
+      os << *it << "\n";
     }
 
   return os;

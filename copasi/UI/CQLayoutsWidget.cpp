@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -94,7 +94,6 @@ CQLayoutsWidget::CQLayoutsWidget(QWidget *parent)
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
   connect(mpPushButtonDelegate, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotShowLayout(const QModelIndex &)));
-  connect(mpTblLayouts, SIGNAL(clicked(const QModelIndex &)), this, SLOT(slotSelectionChanged()));
 }
 
 // virtual
@@ -169,12 +168,6 @@ void CQLayoutsWidget::deleteSelectedLayouts()
   mpLayoutsDM->removeRows(mappedSelRows);
 }
 
-void CQLayoutsWidget::updateDeleteBtns()
-{
-  mpBtnDelete->setEnabled(mpTblLayouts->selectionModel()->selectedRows().size() > 0);
-  mpBtnClear->setEnabled(mpProxyModel->rowCount() > 0);
-}
-
 // virtual
 bool CQLayoutsWidget::enterProtected()
 {
@@ -214,7 +207,6 @@ bool CQLayoutsWidget::enterProtected()
         }
     }
 
-  updateDeleteBtns();
   mpTblLayouts->horizontalHeader()->restoreState(State);
   blockSignals(false);
 
@@ -317,9 +309,9 @@ void CQLayoutsWidget::slotBtnNewClicked()
 }
 
 // virtual
-void CQLayoutsWidget::slotBtnDeleteClicked()
+void CQLayoutsWidget::slotBtnDeleteClicked(bool needFocus)
 {
-  if (mpTblLayouts->hasFocus())
+  if (!needFocus || mpTblLayouts->hasFocus())
     {deleteSelectedLayouts();}
 }
 
@@ -334,12 +326,6 @@ void CQLayoutsWidget::slotBtnClearClicked()
       mpLayoutsDM->clear();
       deleteLayoutWindows();
     }
-}
-
-// virtual
-void CQLayoutsWidget::slotSelectionChanged()
-{
-  updateDeleteBtns();
 }
 
 // virtual
@@ -362,7 +348,6 @@ void CQLayoutsWidget::dataChanged(const QModelIndex & /* topLeft */,
       mpTblLayouts->resizeColumnsToContents();
     }
 
-  updateDeleteBtns();
   showButtons();
 }
 

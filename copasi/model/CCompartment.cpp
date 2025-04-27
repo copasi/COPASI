@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -74,7 +74,7 @@ bool CCompartment::applyData(const CData & data, CUndoData::CChangeSet & changes
     {
       const CData & Data = data.getProperty(CData::INITIAL_VALUE).toData();
       mIValue = Data.getProperty(CData::VALUE).toDouble();
-      mpModel->updateInitialValues(CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers));
+      mpModel->updateInitialValues(CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers), false);
       changes.add({CUndoData::Type::CHANGE, "State", mpModel->getStringCN(), mpModel->getStringCN()});
     }
 
@@ -245,8 +245,8 @@ void CCompartment::initObjects()
 std::ostream & operator<<(std::ostream &os, const CCompartment & d)
 {
   os << "++++CCompartment: " << d.getObjectName() << " mValue " << d.mValue;
-  os << "    CCompartment.mMetabolites " << std::endl << d.mMetabolites;
-  os << "----CCompartment " << std::endl;
+  os << "    CCompartment.mMetabolites " << "\n" << d.mMetabolites;
+  os << "----CCompartment " << "\n";
 
   return os;
 }

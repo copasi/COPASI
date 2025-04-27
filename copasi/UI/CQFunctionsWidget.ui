@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the </comment>
 <comment> University of Virginia, University of Heidelberg, and University </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -204,22 +204,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>mpTblFunctions</sender>
-   <signal>clicked(QModelIndex)</signal>
-   <receiver>CQFunctionsWidget</receiver>
-   <slot>updateDeleteBtns()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>270</x>
-     <y>212</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>270</x>
-     <y>227</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>mpBtnNew</sender>
    <signal>pressed()</signal>
    <receiver>CQFunctionsWidget</receiver>
@@ -237,7 +221,6 @@
   </connection>
  </connections>
   <slots>
-    <slot>updateDeleteBtns()</slot>
     <slot>slotBtnNewClicked()</slot>
     <slot>slotBtnDeleteClicked()</slot>
     <slot>slotBtnClearClicked()</slot>

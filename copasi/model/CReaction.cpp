@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -916,7 +916,6 @@ void CReaction::initializeParameters()
           mParameters.addParameter(name,
                                    CCopasiParameter::Type::DOUBLE,
                                    (C_FLOAT64) 1.0);
-
           pParameter = mParameters.getParameter(name);
         }
 
@@ -990,7 +989,7 @@ CIssue CReaction::compile()
 
   // Clear all mValidity flags which might be set here.
   mValidity.remove(CValidity::Severity::All,
-                   CValidity::Kind(CIssue::eKind::KineticsUndefined) | CIssue::eKind::VariablesMismatch | CIssue::eKind::ObjectNotFound);
+                   CValidity::Kind(CIssue::eKind::KineticsUndefined) | CIssue::eKind::VariablesMismatch | CIssue::eKind::ObjectNotFound | CIssue::eKind::MissingInitialValue);
 
   std::set< const CDataObject * > Dependencies;
 
@@ -1003,7 +1002,6 @@ CIssue CReaction::compile()
       else
         {
           Issue &= CIssue(CIssue::eSeverity::Warning, CIssue::eKind::KineticsUndefined);
-          mValidity.add(Issue);
           mFlux = 0.0;
           mParticleFlux = 0.0;
         }
@@ -1057,6 +1055,18 @@ CIssue CReaction::compile()
     }
 
   mPrerequisits.erase(NULL);
+
+  // Check whether we have local parameters with value NaN
+
+  CCopasiParameterGroup::const_name_iterator itParameter = mParameters.beginName();
+  CCopasiParameterGroup::const_name_iterator endParameter = mParameters.endName();
+
+  for (; itParameter != endParameter; ++itParameter)
+    if (isLocalParameter(itParameter->getObjectName())
+        && std::isnan(itParameter->getValue< C_FLOAT64 >()))
+      Issue &= CIssue(CIssue::eSeverity::Error, CIssue::eKind::MissingInitialValue);
+
+  mValidity.add(Issue);
 
   return Issue;
 }
@@ -1453,24 +1463,24 @@ const bool & CReaction::hasNoise() const
 
 std::ostream & operator<<(std::ostream &os, const CReaction & d)
 {
-  os << "CReaction:  " << d.getObjectName() << std::endl;
-  os << "   SBML id:  " << d.mSBMLId << std::endl;
+  os << "CReaction:  " << d.getObjectName() << "\n";
+  os << "   SBML id:  " << d.mSBMLId << "\n";
 
-  os << "   mChemEq " << std::endl;
+  os << "   mChemEq " << "\n";
   os << d.mChemEq;
 
   if (d.mpFunction)
-    os << "   *mpFunction " << d.mpFunction->getObjectName() << std::endl;
+    os << "   *mpFunction " << d.mpFunction->getObjectName() << "\n";
   else
-    os << "   mpFunction == 0 " << std::endl;
+    os << "   mpFunction == 0 " << "\n";
 
-  //os << "   mParameterDescription: " << std::endl << d.mParameterDescription;
-  os << "   mFlux: " << d.mFlux << std::endl;
+  //os << "   mParameterDescription: " << "\n" << d.mParameterDescription;
+  os << "   mFlux: " << d.mFlux << "\n";
 
-  os << "   parameter group:" << std::endl;
+  os << "   parameter group:" << "\n";
   os << d.mParameters;
 
-  os << "   key map:" << std::endl;
+  os << "   key map:" << "\n";
   size_t i, j;
 
   for (i = 0; i < d.mParameterIndexToCNs.size(); ++i)
@@ -1480,10 +1490,10 @@ std::ostream & operator<<(std::ostream &os, const CReaction & d)
       for (j = 0; j < d.mParameterIndexToCNs[i].size(); ++j)
         os << d.mParameterIndexToCNs[i][j] << ", ";
 
-      os << std::endl;
+      os << "\n";
     }
 
-  os << "----CReaction" << std::endl;
+  os << "----CReaction" << "\n";
 
   return os;
 }
@@ -1513,10 +1523,10 @@ std::string CReaction::sanitizeSBMLId(const std::string & id)
 CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject* objectNode, std::map<std::string, std::pair<CDataObject*, CFunctionParameter*> >& replacementMap, std::map<const CDataObject*, SBase*>& copasi2sbmlmap)
 {
   CEvaluationNodeVariable* pVariableNode = NULL;
-  std::string objectCN = objectNode->getData();
+  std::string Data = objectNode->getData();
+  CCommonName ObjectCN(Data.substr(1, Data.size() - 2));
 
-  CDataObject * object = resolveCN(getFirstCModelOrDefault(copasi2sbmlmap),
-                                   CCommonName(objectCN.substr(1, objectCN.size() - 2)));
+  CDataObject * object = resolveCN(getFirstCModelOrDefault(copasi2sbmlmap), ObjectCN);
 
   std::string id;
 
@@ -1703,6 +1713,29 @@ CEvaluationNodeVariable* CReaction::object2variable(const CEvaluationNodeObject*
         {
           // error
           CCopasiMessage(CCopasiMessage::ERROR, MCReaction + 4);
+        }
+    }
+  else
+    {
+      // We have no mapped object. We will create a variable of type parameter which is not mapped.
+      // Check whether we already created a variable with that name:
+      CCommonName ParentCN;
+      std::string Type;
+      std::string Name;
+
+      ObjectCN.split(ParentCN, Type, Name);
+      std::string Id(Name.empty() ? Type : Name);
+
+      pVariableNode = new CEvaluationNodeVariable(CEvaluationNode::SubType::DEFAULT, Id);
+
+      if (replacementMap.find(Id) == replacementMap.end())
+        {
+          CFunctionParameter * pFunParam = new CFunctionParameter(Id, CFunctionParameter::DataType::FLOAT64,
+              CFunctionParameter::Role::PARAMETER);
+          mParameters.addParameter(Id,
+                                   CCopasiParameter::Type::DOUBLE,
+                                   std::numeric_limits< C_FLOAT64 >::quiet_NaN());
+          replacementMap[Id] = std::make_pair(mParameters.getParameter(Id), pFunParam);
         }
     }
 

@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -20,6 +25,8 @@ class CQPushButtonDelegate;
 class CCopasiParameter;
 class CCopasiParameterGroup;
 class QSortFilterProxyModel;
+
+class QPaintEvent;
 
 class CQParameterGroupView: public QTreeView
 {
@@ -47,6 +54,7 @@ protected slots:
 
 protected:
   void modifySelectCNs(CCopasiParameterGroup & group, const CCopasiParameter & cnTemplate);
+  void paintEvent(QPaintEvent * event);
 
 protected:
   CQParameterGroupDM * mpParameterGroupDM;

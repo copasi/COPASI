@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -288,6 +288,7 @@ CCopasiXMLInterface::~CCopasiXMLInterface() {}
 bool CCopasiXMLInterface::load(const std::string & fileName,
                                const std::string & relativeTo)
 {
+  mFileName = fileName;
   mPWD = relativeTo;
 
   std::ifstream is(CLocaleString::fromUtf8(fileName).c_str());
@@ -300,6 +301,7 @@ bool CCopasiXMLInterface::load(const std::string & fileName,
 bool CCopasiXMLInterface::save(const std::string & fileName,
                                const std::string & relativeTo)
 {
+  mFileName = fileName;
   mPWD = relativeTo;
 
   std::ofstream os(CLocaleString::fromUtf8(fileName).c_str());
@@ -313,7 +315,7 @@ bool CCopasiXMLInterface::save(const std::string & fileName,
 
 bool CCopasiXMLInterface::saveData(const std::string & data)
 {
-  *mpOstream << mIndent << CCopasiXMLInterface::encode(data, character) << std::endl;
+  *mpOstream << mIndent << CCopasiXMLInterface::encode(data, character) << "\n";
 
   return true;
 }
@@ -335,7 +337,7 @@ bool CCopasiXMLInterface::saveXhtml(const std::string & xhtml)
           && FirstElement.find("xmlns='http://www.w3.org/1999/xhtml'") == std::string::npos)
         FirstElement += " xmlns=\"http://www.w3.org/1999/xhtml\"";
 
-      *mpOstream << mIndent << FirstElement << xhtml.substr(pos) << std::endl;
+      *mpOstream << mIndent << FirstElement << xhtml.substr(pos) << "\n";
     }
   else
     {
@@ -350,14 +352,14 @@ bool CCopasiXMLInterface::saveElement(const std::string & name,
 {
   *mpOstream << mIndent << "<" << name;
   *mpOstream << attributeList;
-  *mpOstream << "/>" << std::endl;
+  *mpOstream << "/>" << "\n";
 
   return true;
 }
 
 bool CCopasiXMLInterface::startSaveElement(const std::string & name)
 {
-  *mpOstream << mIndent << "<" << name << ">" << std::endl;
+  *mpOstream << mIndent << "<" << name << ">" << "\n";
 
   mIndent += "  ";
   return true;
@@ -368,7 +370,7 @@ bool CCopasiXMLInterface::startSaveElement(const std::string & name,
 {
   *mpOstream << mIndent << "<" << name;
   *mpOstream << attributeList;
-  *mpOstream << ">" << std::endl;
+  *mpOstream << ">" << "\n";
 
   mIndent += "  ";
   return true;
@@ -377,7 +379,7 @@ bool CCopasiXMLInterface::startSaveElement(const std::string & name,
 bool CCopasiXMLInterface::endSaveElement(const std::string & name)
 {
   mIndent = mIndent.substr(0, mIndent.length() - 2);
-  *mpOstream << mIndent << "</" << name << ">" << std::endl;
+  *mpOstream << mIndent << "</" << name << ">" << "\n";
 
   return true;
 }

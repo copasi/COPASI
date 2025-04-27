@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -49,10 +49,12 @@
 
 %template(ObjectStdVector) std::vector<CDataObject*>;
 typedef std::vector<CDataObject*> ObjectStdVector;
+#if (!defined SWIGJAVA)
 %template(StringUnitMap) std::map< std::string, CUnit >;
 typedef std::map< std::string, CUnit > StringUnitMap;
 %template(StringDoubleMap) std::map< std::string, double >;
 typedef std::map< std::string, double > StringDoubleMap;
+#endif
 
 %ignore CUnit::getSymbolComponents;
 %ignore CUnit::SymbolComponent;
@@ -111,7 +113,6 @@ typedef std::map< std::string, double > StringDoubleMap;
 %ignore CModel::processQueue;
 %ignore CModel::processRoots;
 %ignore CModel::calculateDerivatives;
-%ignore CModel::calculateDerivativesX;
 %ignore CModel::getListOfInitialRefreshes;
 %ignore CModel::getListOfSimulatedRefreshes;
 %ignore CModel::getListOfNonSimulatedRefreshes;

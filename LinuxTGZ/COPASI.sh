@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -116,6 +116,15 @@ cp -r "${SETUP_DIR}"/src/share/copasi/lib share/copasi
 echo cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libQt/ {print $3}'` share/copasi/lib
 cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libQt/ {print $3}'` share/copasi/lib
 chmod 644 share/copasi/lib/libQt*
+
+# If linuxdeployqt is set, use it to bundle the Qt libraries
+if [ -n "${COPASI_LINUXDEPLOYQT}" ]; then  
+  pushd ${SETUP_DIR}/${PACKAGE_NAME}/share/copasi/lib  
+  echo "running linuxdeployqt"
+  echo ${COPASI_LINUXDEPLOYQT} ./CopasiUI  -always-overwrite -bundle-non-qt-libs -qmake=`which qmake` -extra-plugins=platforms/libqxcb.so
+  ${COPASI_LINUXDEPLOYQT} ./CopasiUI  -always-overwrite -bundle-non-qt-libs -qmake=`which qmake` -extra-plugins=platforms/libqxcb.so
+  popd
+fi
 
 echo
 popd

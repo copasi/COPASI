@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -193,8 +193,19 @@ void CQParameterGroupView::slotPushButtonClicked(const QModelIndex & index)
     }
 }
 
+void CQParameterGroupView::paintEvent(QPaintEvent * event)
+{
+  CQParameterGroupDM::InPaintEvent = true;
+  QTreeView::paintEvent(event);
+  CQParameterGroupDM::InPaintEvent = false;
+}
+
 void CQParameterGroupView::modifySelectCNs(CCopasiParameterGroup & group, const CCopasiParameter & cnTemplate)
 {
+  // avoid crash on not having valid values
+  if (!cnTemplate.hasValidValues())
+    return;
+
   // OpenSelectionDialog
   std::vector< const CDataObject * > Selection;
   CObjectInterface::ContainerList ContainerList;
@@ -218,9 +229,9 @@ void CQParameterGroupView::modifySelectCNs(CCopasiParameterGroup & group, const 
 
   std::vector<const CDataObject * > ValidObjects;
 
-  const std::vector< std::pair < CCommonName, CCommonName > > & ValidValues = cnTemplate.getValidValues< CCommonName >();
-  std::vector< std::pair < CCommonName, CCommonName > >::const_iterator itValidValues = ValidValues.begin();
-  std::vector< std::pair < CCommonName, CCommonName > >::const_iterator endValidValues = ValidValues.end();
+  const std::vector< std::pair< CRegisteredCommonName, CRegisteredCommonName > > & ValidValues = cnTemplate.getValidValues< CRegisteredCommonName >();
+  std::vector< std::pair< CRegisteredCommonName, CRegisteredCommonName > >::const_iterator itValidValues = ValidValues.begin();
+  std::vector< std::pair< CRegisteredCommonName, CRegisteredCommonName > >::const_iterator endValidValues = ValidValues.end();
 
   for (; itValidValues != endValidValues; ++itValidValues)
     {

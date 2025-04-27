@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -94,6 +94,7 @@ CSEDMLExporter::CSEDMLExporter()
 
 CSEDMLExporter::~CSEDMLExporter()
 {
+  freeSedMLDocument();
   pdelete(mpSBMLNamespaces);
 }
 
@@ -333,7 +334,11 @@ bool CSEDMLExporter::exportNthScanItem(CScanProblem * pProblem,
         }
 
       change->setRange(rangeId);
-      change->setMath(SBML_parseFormula(rangeId.c_str()));
+
+      ASTNode * pNode = SBML_parseFormula(rangeId.c_str());
+      change->setMath(pNode);
+      pdelete(pNode);
+
       task->setRangeId(rangeId);
       return true;
     }
@@ -726,7 +731,9 @@ CSEDMLExporter::createDataGenerator(
 
   pPVar->setTaskReference(taskId);
 
-  pPDGen->setMath(SBML_parseFormula(pPVar->getId().c_str()));
+  ASTNode * pNode = SBML_parseFormula(pPVar->getId().c_str());
+  pPDGen->setMath(pNode);
+  pdelete(pNode);
 
   mDataGenerators[key] = pPDGen;
 
@@ -1156,7 +1163,10 @@ void CSEDMLExporter::setCurrentTime(std::string & taskId)
       SEDML_SET_ID(pTimeVar, "var_time_" << taskId);
       pTimeVar->setTaskReference(taskId);
       pTimeVar->setSymbol(SEDML_TIME_URN);
-      mpCurrentTime->setMath(SBML_parseFormula(pTimeVar->getId().c_str()));
+
+      ASTNode * pNode = SBML_parseFormula(pTimeVar->getId().c_str());
+      mpCurrentTime->setMath(pNode);
+      pdelete(pNode);
     }
 }
 

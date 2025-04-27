@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,6 +7,7 @@
 #define COPASI_CPointerContext
 
 #include "copasi/OpenMP/CContext.h"
+#include "copasi/core/CRegisteredCommonName.h"
 
 template < class Data >
 class CPointerContext : public CContext< Data * >
@@ -37,13 +38,9 @@ CPointerContext< Data >::CPointerContext(const bool & parallel)
   Base::master() = NULL;
 
   if (Base::size() > 1)
-    {
-      Data ** pIt = Base::beginThread();
-      Data ** pEnd = Base::endThread();
-
-      for (; pIt != pEnd; ++pIt)
-        *pIt = NULL;
-    }
+#pragma omp parallel for
+    for (size_t i = 0; i < Base::size(); ++i)
+      Base::threadData()[i] = NULL;
 }
 
 template < class Data >
@@ -66,31 +63,33 @@ void CPointerContext< Data >::setMaster(Data * pMaster)
       Base::master() = NULL;
 
       if (Base::size() > 1)
-        {
-          Data ** pIt = Base::beginThread();
-          Data ** pEnd = Base::endThread();
-
-          for (; pIt != pEnd; ++pIt)
-            if (*pIt != NULL)
-              {
-                delete *pIt;
-                *pIt = NULL;
-              }
-        }
+#pragma omp parallel for
+        for (size_t i = 0; i < Base::size(); ++i)
+          if (Base::threadData()[i] != NULL)
+            {
+              delete Base::threadData()[i];
+              Base::threadData()[i] = NULL;
+            }
     }
 
   if (pMaster != NULL)
     {
       Base::master() = pMaster;
 
-      if (Base::size() > 1)
-        {
-          Data ** pIt = Base::beginThread();
-          Data ** pEnd = Base::endThread();
+      {
+        bool renameEnabled = CRegisteredCommonName::isEnabled();
 
-          for (; pIt != pEnd; ++pIt)
-            *pIt = dynamic_cast< Data * >(pMaster->copy());
-        }
+        if (renameEnabled)
+          CRegisteredCommonName::setEnabled(false);
+
+        if (Base::size() > 1)
+#pragma omp parallel for
+          for (size_t i = 0; i < Base::size(); ++i)
+            Base::threadData()[i] = dynamic_cast< Data * >(pMaster->copy());
+
+        if (renameEnabled)
+          CRegisteredCommonName::setEnabled(true);
+      }
     }
 }
 

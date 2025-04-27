@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -84,11 +84,12 @@ CDataObject::CDataObject(const std::string & name,
 }
 
 CDataObject::CDataObject(const CDataObject & src,
-                         const CDataContainer * pParent)
+                         const CDataContainer * pParent,
+                         const std::string & objectType)
   : CObjectInterface(src)
   , CUndoObjectInterface(src)
   , mObjectName(src.mObjectName)
-  , mObjectType(src.mObjectType)
+  , mObjectType(objectType.empty() ? src.mObjectType : objectType)
   , mpObjectParent(src.mpObjectParent)
   , mObjectDisplayName()
   , mpObjectDisplayName(NULL)
@@ -282,21 +283,26 @@ bool CDataObject::setObjectName(const std::string & name)
 
   std::string OldName = mObjectName;
 
-  std::string oldCN = this->getCNProtected();
-  mObjectName = Name;
-
-  std::set< CDataContainer * >::iterator it = mReferences.begin();
-  std::set< CDataContainer * >::iterator end = mReferences.end();
-
-  for (; it != end; ++it)
-    (*it)->objectRenamed(this, OldName);
-
-  if (CRegisteredCommonName::isEnabled() &&
-      mpObjectParent != NULL)
+  if (OldName.empty())
     {
-      CRegisteredCommonName::handle(oldCN, getCN());
+      mObjectName = Name;
     }
+  else
+    {
+      std::string oldCN = this->getCNProtected();
+      mObjectName = Name;
 
+      std::set< CDataContainer * >::iterator it = mReferences.begin();
+      std::set< CDataContainer * >::iterator end = mReferences.end();
+
+      for (; it != end; ++it)
+        (*it)->objectRenamed(this, OldName);
+
+      if (CRegisteredCommonName::isEnabled() && mpObjectParent != NULL)
+        {
+          CRegisteredCommonName::handle(oldCN, getCN());
+        }
+    }
   return true;
 }
 
@@ -648,16 +654,16 @@ const std::string CDataObject::getUnits() const
 
 std::ostream &operator<<(std::ostream &os, const CDataObject & o)
 {
-  os << "Name:      " << o.getObjectDisplayName() << std::endl;
-  os << "Type:      " << o.getObjectType() << std::endl;
-  os << "Container: " << o.hasFlag(CDataObject::Container) << std::endl;
-  os << "Vector:    " << o.hasFlag(CDataObject::Vector) << std::endl;
-  os << "VectorN:   " << o.hasFlag(CDataObject::NameVector) << std::endl;
-  os << "Matrix:    " << o.hasFlag(CDataObject::Matrix) << std::endl;
-  os << "Reference: " << o.hasFlag(CDataObject::Reference) << std::endl;
-  os << "Bool:      " << o.hasFlag(CDataObject::ValueBool) << std::endl;
-  os << "Int:       " << o.hasFlag(CDataObject::ValueInt) << std::endl;
-  os << "Dbl:       " << o.hasFlag(CDataObject::ValueDbl) << std::endl;
+  os << "Name:      " << o.getObjectDisplayName() << "\n";
+  os << "Type:      " << o.getObjectType() << "\n";
+  os << "Container: " << o.hasFlag(CDataObject::Container) << "\n";
+  os << "Vector:    " << o.hasFlag(CDataObject::Vector) << "\n";
+  os << "VectorN:   " << o.hasFlag(CDataObject::NameVector) << "\n";
+  os << "Matrix:    " << o.hasFlag(CDataObject::Matrix) << "\n";
+  os << "Reference: " << o.hasFlag(CDataObject::Reference) << "\n";
+  os << "Bool:      " << o.hasFlag(CDataObject::ValueBool) << "\n";
+  os << "Int:       " << o.hasFlag(CDataObject::ValueInt) << "\n";
+  os << "Dbl:       " << o.hasFlag(CDataObject::ValueDbl) << "\n";
 
   return os;
 }

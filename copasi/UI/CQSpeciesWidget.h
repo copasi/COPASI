@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,7 +47,6 @@ private:
   CQComboDelegate* mpCompartmentDelegate;
   CQComboDelegate* mpTypeDelegate;
   void deleteSelectedSpecies();
-  void updateDeleteBtns();
 
 signals:
   void initFilter();
@@ -62,9 +61,8 @@ protected:
 
 protected slots:
   virtual void slotBtnNewClicked();
-  virtual void slotBtnDeleteClicked();
+  virtual void slotBtnDeleteClicked(bool needFocus=false);
   virtual void slotBtnClearClicked();
-  virtual void slotSelectionChanged();
   virtual void slotDoubleClicked(const QModelIndex proxyIndex);
   virtual void dataChanged(const QModelIndex& topLeft,
                            const QModelIndex& bottomRight);

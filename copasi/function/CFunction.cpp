@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -456,27 +456,27 @@ std::string CFunction::writeMathML(const std::vector< std::vector< std::string >
     {
       bool flag = false; //TODO include check if parentheses are necessary
 
-      if (flag) out << "<mfenced>" << std::endl;
+      if (flag) out << "<mfenced>" << "\n";
 
       out << getRoot()->buildMMLString(fullExpand, variables);
 
-      if (flag) out << "</mfenced>" << std::endl;
+      if (flag) out << "</mfenced>" << "\n";
     }
   else //no expand
     {
-      out << "<mrow>" << std::endl;
-      out << CMathMl::fixName(getObjectName()) << std::endl;
-      out << "<mfenced>" << std::endl;
+      out << "<mrow>" << "\n";
+      out << CMathMl::fixName(getObjectName()) << "\n";
+      out << "<mfenced>" << "\n";
 
       size_t i, imax = variables.size();
 
       for (i = 0; i < imax; ++i)
         {
-          out << variables[i][0] << std::endl;
+          out << variables[i][0] << "\n";
         }
 
-      out << "</mfenced>" << std::endl;
-      out << "</mrow>" << std::endl;
+      out << "</mfenced>" << "\n";
+      out << "</mrow>" << "\n";
     }
 
   return out.str();
@@ -484,23 +484,23 @@ std::string CFunction::writeMathML(const std::vector< std::vector< std::string >
 
 void CFunction::writeMathML(std::ostream & out, size_t l) const
 {
-  //out << "<math>" << std::endl;
+  //out << "<math>" << "\n";
 
-  out << SPC(l) << "<mrow>" << std::endl;
-  out << SPC(l + 1) << CMathMl::fixName(getObjectName()) << std::endl;
-  out << SPC(l + 1) << "<mfenced>" << std::endl;
+  out << SPC(l) << "<mrow>" << "\n";
+  out << SPC(l + 1) << CMathMl::fixName(getObjectName()) << "\n";
+  out << SPC(l + 1) << "<mfenced>" << "\n";
 
   size_t i, imax = getVariables().size();
 
   for (i = 0; i < imax; ++i)
     {
-      out << SPC(l + 2) << "<mi>" << CMathMl::fixName(getVariables()[i]->getObjectName()) << "</mi>" << std::endl;
+      out << SPC(l + 2) << "<mi>" << CMathMl::fixName(getVariables()[i]->getObjectName()) << "</mi>" << "\n";
     }
 
-  out << SPC(l + 1) << "</mfenced>" << std::endl;
-  out << SPC(l) << "</mrow>" << std::endl;
+  out << SPC(l + 1) << "</mfenced>" << "\n";
+  out << SPC(l) << "</mrow>" << "\n";
 
-  //out << "</math>" << std::endl;
+  //out << "</math>" << "\n";
 }
 
 std::ostream& operator<<(std::ostream &os, const CFunction & f)
@@ -514,9 +514,9 @@ std::ostream& operator<<(std::ostream &os, const CFunction & f)
   else
     os << "(reversible)";
 
-  os << std::endl;
+  os << "\n";
   os << f.mVariables;
-  os << f.getInfix() << std::endl;
+  os << f.getInfix() << "\n";
 
   return os;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,6 +29,7 @@
 #include "CEvaluationNode.h"
 #include "CEvaluationTree.h"
 #include "copasi/utilities/CValidatedUnit.h"
+#include "copasi/utilities/CBalanceTree.h"
 
 #include "copasi/randomGenerator/CRandom.h"
 
@@ -60,22 +61,55 @@ C_FLOAT64 CEvaluationNodeFunction::rpoisson(C_FLOAT64 mu)
 }
 
 // static
-C_FLOAT64 CEvaluationNodeFunction::max(C_FLOAT64 x1, C_FLOAT64 x2)
+C_FLOAT64 CEvaluationNodeFunction::max(CEvaluationNodeFunction * pNode)
 {
-  return std::max(x1, x2);
+  return pNode->max();
+}
+
+C_FLOAT64 CEvaluationNodeFunction::max()
+{
+  CEvaluationNode * pChild = static_cast< CEvaluationNode * >(getChild());
+
+  if (pChild == nullptr)
+    return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+
+  C_FLOAT64 Result = *pChild->getValuePointer();
+
+  while ((pChild = static_cast<CEvaluationNode *>(pChild->getSibling())) != nullptr)
+    if (Result < *pChild->getValuePointer())
+      Result = *pChild->getValuePointer();
+
+  return Result;
 }
 
 // static
-C_FLOAT64 CEvaluationNodeFunction::min(C_FLOAT64 x1, C_FLOAT64 x2)
+C_FLOAT64 CEvaluationNodeFunction::min(CEvaluationNodeFunction * pNode)
 {
-  return std::min(x1, x2);
+  return pNode->min();
+}
+
+C_FLOAT64 CEvaluationNodeFunction::min()
+{
+  CEvaluationNode * pChild = static_cast< CEvaluationNode * >(getChild());
+
+  if (pChild == nullptr)
+    return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+
+  C_FLOAT64 Result = *pChild->getValuePointer();
+
+  while ((pChild = static_cast<CEvaluationNode *>(pChild->getSibling())) != nullptr)
+    if (Result > *pChild->getValuePointer())
+      Result = *pChild->getValuePointer();
+
+  return Result;
 }
 
 CEvaluationNodeFunction::CEvaluationNodeFunction():
   CEvaluationNode(MainType::FUNCTION, SubType::INVALID, ""),
-  mpFunction(NULL),
+  mpFunction1(NULL),
   mpFunction2(NULL),
   mpFunction4(NULL),
+  mpFunction(NULL),
   mpArgNode1(NULL),
   mpArgNode2(NULL),
   mpArgNode3(NULL),
@@ -91,9 +125,10 @@ CEvaluationNodeFunction::CEvaluationNodeFunction():
 CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
     const Data & data):
   CEvaluationNode(MainType::FUNCTION, subType, data),
-  mpFunction(NULL),
+  mpFunction1(NULL),
   mpFunction2(NULL),
   mpFunction4(NULL),
+  mpFunction(NULL),
   mpArgNode1(NULL),
   mpArgNode2(NULL),
   mpArgNode3(NULL),
@@ -108,147 +143,147 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
   switch (subType)
     {
       case SubType::LOG:
-        mpFunction = log;
+        mpFunction1 = log;
         break;
 
       case SubType::LOG10:
-        mpFunction = log10;
+        mpFunction1 = log10;
         break;
 
       case SubType::EXP:
-        mpFunction = exp;
+        mpFunction1 = exp;
         break;
 
       case SubType::SIN:
-        mpFunction = sin;
+        mpFunction1 = sin;
         break;
 
       case SubType::COS:
-        mpFunction = cos;
+        mpFunction1 = cos;
         break;
 
       case SubType::TAN:
-        mpFunction = tan;
+        mpFunction1 = tan;
         break;
 
       case SubType::SEC:
-        mpFunction = sec;
+        mpFunction1 = sec;
         break;
 
       case SubType::CSC:
-        mpFunction = csc;
+        mpFunction1 = csc;
         break;
 
       case SubType::COT:
-        mpFunction = cot;
+        mpFunction1 = cot;
         break;
 
       case SubType::SINH:
-        mpFunction = sinh;
+        mpFunction1 = sinh;
         break;
 
       case SubType::COSH:
-        mpFunction = cosh;
+        mpFunction1 = cosh;
         break;
 
       case SubType::TANH:
-        mpFunction = tanh;
+        mpFunction1 = tanh;
         break;
 
       case SubType::SECH:
-        mpFunction = sech;
+        mpFunction1 = sech;
         break;
 
       case SubType::CSCH:
-        mpFunction = csch;
+        mpFunction1 = csch;
         break;
 
       case SubType::COTH:
-        mpFunction = coth;
+        mpFunction1 = coth;
         break;
 
       case SubType::ARCSIN:
-        mpFunction = asin;
+        mpFunction1 = asin;
         break;
 
       case SubType::ARCCOS:
-        mpFunction = acos;
+        mpFunction1 = acos;
         break;
 
       case SubType::ARCTAN:
-        mpFunction = atan;
+        mpFunction1 = atan;
         break;
 
       case SubType::ARCSEC:
-        mpFunction = arcsec;
+        mpFunction1 = arcsec;
         break;
 
       case SubType::ARCCSC:
-        mpFunction = arccsc;
+        mpFunction1 = arccsc;
         break;
 
       case SubType::ARCCOT:
-        mpFunction = arccot;
+        mpFunction1 = arccot;
         break;
 
       case SubType::ARCSINH:
-        mpFunction = asinh;
+        mpFunction1 = asinh;
         break;
 
       case SubType::ARCCOSH:
-        mpFunction = acosh;
+        mpFunction1 = acosh;
         break;
 
       case SubType::ARCTANH:
-        mpFunction = atanh;
+        mpFunction1 = atanh;
         break;
 
       case SubType::ARCSECH:
-        mpFunction = asech;
+        mpFunction1 = asech;
         break;
 
       case SubType::ARCCSCH:
-        mpFunction = acsch;
+        mpFunction1 = acsch;
         break;
 
       case SubType::ARCCOTH:
-        mpFunction = acoth;
+        mpFunction1 = acoth;
         break;
 
       case SubType::SIGN:
-        mpFunction = sign;
+        mpFunction1 = sign;
         break;
 
       case SubType::SQRT:
-        mpFunction = sqrt;
+        mpFunction1 = sqrt;
         break;
 
       case SubType::ABS:
-        mpFunction = fabs;
+        mpFunction1 = fabs;
         break;
 
       case SubType::FLOOR:
-        mpFunction = floor;
+        mpFunction1 = floor;
         break;
 
       case SubType::CEIL:
-        mpFunction = ceil;
+        mpFunction1 = ceil;
         break;
 
       case SubType::FACTORIAL:
-        mpFunction = factorial;
+        mpFunction1 = factorial;
         break;
 
       case SubType::MINUS:
-        mpFunction = minus;
+        mpFunction1 = minus;
         break;
 
       case SubType::PLUS:
-        mpFunction = plus;
+        mpFunction1 = plus;
         break;
 
       case SubType::NOT:
-        mpFunction = copasiNot;
+        mpFunction1 = copasiNot;
         break;
 
       case SubType::RUNIFORM:
@@ -268,7 +303,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
         break;
 
       case SubType::RPOISSON:
-        mpFunction = rpoisson;
+        mpFunction1 = rpoisson;
 
         if (!mpRandom)
           mpRandom = CRandom::createGenerator();
@@ -284,15 +319,15 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
         break;
 
       case SubType::MAX:
-        mpFunction2 = max;
+        mpFunction = max;
         break;
 
       case SubType::MIN:
-        mpFunction2 = min;
+        mpFunction = min;
         break;
 
       default:
-        mpFunction = NULL;
+        mpFunction1 = NULL;
         fatalError();
         break;
     }
@@ -302,7 +337,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
 
 CEvaluationNodeFunction::CEvaluationNodeFunction(const CEvaluationNodeFunction & src):
   CEvaluationNode(src),
-  mpFunction(src.mpFunction),
+  mpFunction1(src.mpFunction1),
   mpFunction2(src.mpFunction2),
   mpFunction4(src.mpFunction4),
   mpArgNode1(src.mpArgNode1),
@@ -329,6 +364,9 @@ CIssue CEvaluationNodeFunction::compile()
   success &= mpArgNode1->setValueType(mValueType);
 
   if (mpFunction)
+    return CIssue::Success;
+
+  if (mpFunction1)
     {
       if (mpArgNode1->getSibling() == NULL)
         return CIssue::Success;
@@ -385,9 +423,18 @@ std::string CEvaluationNodeFunction::getInfix(const std::vector< std::string > &
         case SubType::RUNIFORM:
         case SubType::RNORMAL:
         case SubType::RGAMMA:
+          return mData + "(" + children[0] + "," + children[1] + ")";
+
         case SubType::MAX:
         case SubType::MIN:
-          return mData + "(" + children[0] + "," + children[1] + ")";
+          {
+            std::string Arguments = BalanceTree< std::string >::create(children, [](const std::string & first, const std::string & second)
+            {
+              return first + "," + second;
+            });
+
+            return mData + "(" + Arguments + ")";
+          }
 
         case SubType::RPOISSON:
           return mData + "(" + children[0] + ")";
@@ -415,9 +462,18 @@ std::string CEvaluationNodeFunction::getDisplayString(const std::vector< std::st
         case SubType::RUNIFORM:
         case SubType::RNORMAL:
         case SubType::RGAMMA:
+          return mData + "(" + children[0] + "," + children[1] + ")";
+
         case SubType::MAX:
         case SubType::MIN:
-          return mData + "(" + children[0] + "," + children[1] + ")";
+          {
+            std::string Arguments = BalanceTree< std::string >::create(children, [](const std::string & first, const std::string & second)
+            {
+              return first + "," + second;
+            });
+
+            return mData + "(" + Arguments + ")";
+          }
 
         case SubType::RPOISSON:
           return mData + "(" + children[0] + ")";
@@ -623,9 +679,18 @@ std::string CEvaluationNodeFunction::getCCodeString(const std::vector< std::stri
           case SubType::RUNIFORM:
           case SubType::RNORMAL:
           case SubType::RGAMMA:
+            return data + "(" + children[0] + "," + children[1] + ")";
+
           case SubType::MAX:
           case SubType::MIN:
-            return data + "(" + children[0] + "," + children[1] + ")";
+            {
+              std::string Arguments = BalanceTree< std::string >::create(children, [](const std::string & first, const std::string & second)
+              {
+                return first + "," + second;
+              });
+
+              return mData + "(" + Arguments + ")";
+            }
 
           default:
             return data + "(" + children[0] + ")";
@@ -715,9 +780,18 @@ std::string CEvaluationNodeFunction::getBerkeleyMadonnaString(const std::vector<
           case SubType::RUNIFORM:
           case SubType::RNORMAL:
           case SubType::RGAMMA:
+            return data + "(" + children[0] + "," + children[1] + ")";
+
           case SubType::MAX:
           case SubType::MIN:
-            return data + "(" + children[0] + "," + children[1] + ")";
+            {
+              std::string Arguments = BalanceTree< std::string >::create(children, [](const std::string & first, const std::string & second)
+              {
+                return first + "," + second;
+              });
+
+              return mData + "(" + Arguments + ")";
+            }
 
           default:
             return data + "(" + children[0] + ")";
@@ -809,9 +883,18 @@ std::string CEvaluationNodeFunction::getXPPString(const std::vector< std::string
           case SubType::RUNIFORM:
           case SubType::RNORMAL:
           case SubType::RGAMMA:
+            return data + "(" + children[0] + "," + children[1] + ")";
+
           case SubType::MAX:
           case SubType::MIN:
-            return data + "(" + children[0] + "," + children[1] + ")";
+            {
+              std::string Arguments = BalanceTree< std::string >::create(children, [](const std::string & first, const std::string & second)
+              {
+                return first + "," + second;
+              });
+
+              return mData + "(" + Arguments + ")";
+            }
 
           default:
             return data + "(" + children[0] + ")";
@@ -835,6 +918,7 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
   std::string data = "";
 
   bool allowTwo = false;
+  bool allowN = false;
 
   if (type == AST_FUNCTION_ROOT)
     {
@@ -1061,12 +1145,14 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
         subType = SubType::MAX;
         data = "max";
         allowTwo = iMax == 2;
+        allowN = true;
         break;
 
       case AST_FUNCTION_MIN:
         subType = SubType::MIN;
         data = "min";
         allowTwo = iMax == 2;
+        allowN = true;
         break;
 
       default:
@@ -1075,7 +1161,7 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
         break;
     }
 
-  if (!allowTwo)
+  if (!allowTwo && !allowN)
     {
       assert(iMax == 1);
     }
@@ -1084,16 +1170,20 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
 
   if (!children.empty())
     {
-      pNode->addChild(children[0]);
+      int maxChildren =
+        allowN ? children.size() : allowTwo ? 2
+                                            : 1;
 
-      if (allowTwo)
-        pNode->addChild(children[1]);
+      for (int i = 0; i < maxChildren; ++i)
+        {
+          pNode->addChild(children[i]);
+        }
     }
 
   return pNode;
 }
 
-ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
+ASTNode * CEvaluationNodeFunction::toAST(const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
   SubType subType = (SubType)this->subType();
   ASTNode* node = new ASTNode();
@@ -1250,7 +1340,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         // the node will be replaced by its only child
         needFirstArg = false;
         delete node;
-        node = dynamic_cast<const CEvaluationNode*>(this->getChild())->toAST(pDataModel);
+        node = dynamic_cast<const CEvaluationNode*>(this->getChild())->toAST(pDataModel, sbmlLevel, sbmlVersion);
         break;
 
       case SubType::NOT:
@@ -1264,8 +1354,8 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         node->setName("RUNIFORM");
         const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
         const CEvaluationNode* sibling = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-        node->addChild(child->toAST(pDataModel));
-        node->addChild(sibling->toAST(pDataModel));
+        node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+        node->addChild(sibling->toAST(pDataModel, sbmlLevel, sbmlVersion));
       }
       break;
 
@@ -1276,8 +1366,8 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         node->setName("RNORMAL");
         const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
         const CEvaluationNode* sibling = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-        node->addChild(child->toAST(pDataModel));
-        node->addChild(sibling->toAST(pDataModel));
+        node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+        node->addChild(sibling->toAST(pDataModel, sbmlLevel, sbmlVersion));
       }
       break;
 
@@ -1288,8 +1378,8 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         node->setName("RGAMMA");
         const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
         const CEvaluationNode* sibling = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-        node->addChild(child->toAST(pDataModel));
-        node->addChild(sibling->toAST(pDataModel));
+        node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+        node->addChild(sibling->toAST(pDataModel, sbmlLevel, sbmlVersion));
       }
       break;
 
@@ -1299,31 +1389,57 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
         node->setType(AST_FUNCTION);
         node->setName("RPOISSON");
         const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-        node->addChild(child->toAST(pDataModel));
+        node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
       }
       break;
 
       case SubType::MAX:
-      {
-        needFirstArg = false;
-        node->setType(AST_FUNCTION);
-        node->setName("MAX");
-        const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-        const CEvaluationNode* sibling = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-        node->addChild(child->toAST(pDataModel));
-        node->addChild(sibling->toAST(pDataModel));
+        {
+          needFirstArg = false;
+          if (sbmlLevel == 3 && sbmlVersion > 1)
+            {
+              node->setType(AST_FUNCTION_MAX);
+              const CEvaluationNode * child = dynamic_cast< const CEvaluationNode * >(this->getChild());
+              while (child != NULL)
+              {
+                node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+                child = dynamic_cast< const CEvaluationNode * > (child->getSibling());
+              }
+            }
+          else
+            {
+              node->setType(AST_FUNCTION);
+              node->setName("MAX");
+              const CEvaluationNode * child = dynamic_cast< const CEvaluationNode * >(this->getChild());
+              const CEvaluationNode * sibling = dynamic_cast< const CEvaluationNode * >(child->getSibling());
+              node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+              node->addChild(sibling->toAST(pDataModel, sbmlLevel, sbmlVersion));
+            }
       }
       break;
 
       case SubType::MIN:
       {
         needFirstArg = false;
-        node->setType(AST_FUNCTION);
-        node->setName("MIN");
-        const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-        const CEvaluationNode* sibling = dynamic_cast<const CEvaluationNode*>(child->getSibling());
-        node->addChild(child->toAST(pDataModel));
-        node->addChild(sibling->toAST(pDataModel));
+        if (sbmlLevel == 3 && sbmlVersion > 1)
+          {
+            node->setType(AST_FUNCTION_MIN);
+            const CEvaluationNode * child = dynamic_cast< const CEvaluationNode * >(this->getChild());
+            while (child != NULL)
+              {
+                node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+                child = dynamic_cast< const CEvaluationNode * >(child->getSibling());
+              }
+          }
+        else
+          {
+            node->setType(AST_FUNCTION);
+            node->setName("MIN");
+            const CEvaluationNode * child = dynamic_cast< const CEvaluationNode * >(this->getChild());
+            const CEvaluationNode * sibling = dynamic_cast< const CEvaluationNode * >(child->getSibling());
+            node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
+            node->addChild(sibling->toAST(pDataModel, sbmlLevel, sbmlVersion));
+          }
       }
       break;
         // :TODO: Bug 894: Implement me.
@@ -1349,7 +1465,7 @@ ASTNode* CEvaluationNodeFunction::toAST(const CDataModel* pDataModel) const
       if (needFirstArg)
         {
           const CEvaluationNode* child = dynamic_cast<const CEvaluationNode*>(this->getChild());
-          node->addChild(child->toAST(pDataModel));
+          node->addChild(child->toAST(pDataModel, sbmlLevel, sbmlVersion));
         }
     }
 
@@ -1678,7 +1794,7 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
   const CEvaluationNode * pParent = static_cast<const CEvaluationNode *>(getParent());
 
-  out << "<mrow>" << std::endl;
+  out << "<mrow>" << "\n";
 
   switch (mSubType)
     {
@@ -1691,11 +1807,11 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
                 || ((mpArgNode1->mainType() == MainType::CALL) && expand));
       }
 
-      if (flag) out << "<mfenced>" << std::endl;
+      if (flag) out << "<mfenced>" << "\n";
 
       out << children[0];
 
-      if (flag) out << "</mfenced>" << std::endl;
+      if (flag) out << "</mfenced>" << "\n";
 
       break;
 
@@ -1708,149 +1824,169 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
             flag1 |= ((pParent->mainType() | pParent->subType()) == (MainType::OPERATOR | SubType::POWER));
 
-            if (flag1) out << "<mfenced>" << std::endl;
+            if (flag1) out << "<mfenced>" << "\n";
 
-            if (flag1) out << "<mrow>" << std::endl;
+            if (flag1) out << "<mrow>" << "\n";
           }
 
-        out << "<mo>" << "-" << "</mo>" << std::endl;
+        out << "<mo>" << "-" << "</mo>" << "\n";
 
-        if (!flag) out << "<mfenced>" << std::endl;
+        if (!flag) out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (!flag) out << "</mfenced>" << std::endl;
+        if (!flag) out << "</mfenced>" << "\n";
 
-        if (flag1) out << "</mrow>" << std::endl;
+        if (flag1) out << "</mrow>" << "\n";
 
-        if (flag1) out << "</mfenced>" << std::endl;
+        if (flag1) out << "</mfenced>" << "\n";
 
         break;
 
       case SubType::FACTORIAL:
 
-        if (!flag) out << "<mfenced>" << std::endl;
+        if (!flag) out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (!flag) out << "</mfenced>" << std::endl;
+        if (!flag) out << "</mfenced>" << "\n";
 
-        out << "<mo>" << "!" << "</mo>" << std::endl;
+        out << "<mo>" << "!" << "</mo>" << "\n";
 
         break;
 
       case SubType::SQRT:
       case SubType::ABS:
 
-        out << ldata << std::endl;
+        out << ldata << "\n";
 
         out << children[0];
 
-        out << rdata << std::endl;
+        out << rdata << "\n";
 
         break;
 
       case SubType::EXP:
 
-        out << "<msup>" << std::endl;
-        out << "<mo> e  </mo>" << std::endl;
+        out << "<msup>" << "\n";
+        out << "<mo> e  </mo>" << "\n";
 
         out << children[0];
 
-        out << "</msup>" << std::endl;
+        out << "</msup>" << "\n";
 
         break;
 
       case SubType::LOG10:
 
-        out << "<msub>" << std::endl;
-        out << "<mo>" << "log" << "</mo>" << std::endl;
-        out << "<mn>" << "10" << "</mn>" << std::endl;
+        out << "<msub>" << "\n";
+        out << "<mo>" << "log" << "</mo>" << "\n";
+        out << "<mn>" << "10" << "</mn>" << "\n";
 
-        out << "</msub>" << std::endl;
+        out << "</msub>" << "\n";
 
         if (flag)
-          out << "<mspace width=\"0.3em\"/>" << std::endl;
+          out << "<mspace width=\"0.3em\"/>" << "\n";
         else
-          out << "<mfenced>" << std::endl;
+          out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (!flag) out << "</mfenced>" << std::endl;
+        if (!flag) out << "</mfenced>" << "\n";
 
         break;
 
       case SubType::CEIL:
       case SubType::FLOOR:
-        out << "<mi> " << data << " </mi>" << std::endl;
+        out << "<mi> " << data << " </mi>" << "\n";
 
-        out << "<mfenced>" << std::endl;
+        out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        out << "</mfenced>" << std::endl;
+        out << "</mfenced>" << "\n";
 
         break;
 
       case SubType::RUNIFORM:
       case SubType::RNORMAL:
       case SubType::RGAMMA:
-      case SubType::MAX:
-      case SubType::MIN:
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
 
-        out << "<mi>" << mData << "</mi>" << std::endl;
-        out << "<mrow>" << std::endl;
-        out << "<mo>(</mo>" << std::endl;
-        out << "<mrow>" << std::endl;
+        out << "<mi>" << mData << "</mi>" << "\n";
+        out << "<mrow>" << "\n";
+        out << "<mo>(</mo>" << "\n";
+        out << "<mrow>" << "\n";
 
         out << children[0];
 
-        out << "<mo> , </mo>" << std::endl;
+        out << "<mo> , </mo>" << "\n";
 
         out << children[1];
 
-        out << "</mrow>" << std::endl;
-        out << "<mo>) </mo>" << std::endl;
+        out << "</mrow>" << "\n";
+        out << "<mo>) </mo>" << "\n";
 
-        out << "</mrow>" << std::endl;
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
+        out << "</mrow>" << "\n";
+        break;
+
+      case SubType::MAX:
+      case SubType::MIN:
+        out << "<mrow>" << "\n";
+
+        out << "<mi>" << mData << "</mi>" << "\n";
+        out << "<mrow>" << "\n";
+        out << "<mo>(</mo>" << "\n";
+
+        {
+          std::string Arguments = BalanceTree< std::string >::create(children, [](const std::string & first, const std::string & second)
+          {
+            return "<mrow>\n" + first + "<mo> , </mo>\n" +  second + "</mrow>\n";
+          });
+
+          out << Arguments;
+        }
+
+        out << "<mo>) </mo>" << "\n";
+        out << "</mrow>" << "\n";
+        out << "</mrow>" << "\n";
         break;
 
       case SubType::RPOISSON:
-        out << "<mrow>" << std::endl;
+        out << "<mrow>" << "\n";
 
-        out << "<mi>" << mData << "</mi>" << std::endl;
-        out << "<mrow>" << std::endl;
-        out << "<mo>(</mo>" << std::endl;
-        out << "<mrow>" << std::endl;
+        out << "<mi>" << mData << "</mi>" << "\n";
+        out << "<mrow>" << "\n";
+        out << "<mo>(</mo>" << "\n";
+        out << "<mrow>" << "\n";
 
         out << children[0];
 
-        out << "</mrow>" << std::endl;
-        out << "<mo>) </mo>" << std::endl;
+        out << "</mrow>" << "\n";
+        out << "<mo>) </mo>" << "\n";
 
-        out << "</mrow>" << std::endl;
-        out << "</mrow>" << std::endl;
+        out << "</mrow>" << "\n";
+        out << "</mrow>" << "\n";
         break;
 
       default:
 
-        out << "<mi> " << data << " </mi>" << std::endl;
+        out << "<mi> " << data << " </mi>" << "\n";
 
         if (flag)
-          out << "<mspace width=\"0.3em\"/>" << std::endl;
+          out << "<mspace width=\"0.3em\"/>" << "\n";
         else
-          out << "<mfenced>" << std::endl;
+          out << "<mfenced>" << "\n";
 
         out << children[0];
 
-        if (!flag) out << "</mfenced>" << std::endl;
+        if (!flag) out << "</mfenced>" << "\n";
 
         break;
     }
 
-  out << "</mrow>" << std::endl;
+  out << "</mrow>" << "\n";
 
   return out.str();
 }

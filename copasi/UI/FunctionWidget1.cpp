@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,6 +36,8 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/model/CMetab.h"
 #include "copasi/model/CModel.h"
+#include <copasi/core/CDataObject.h>
+#include <copasi/model/CReaction.h>
 #include "copasi/utilities/CCopasiException.h"
 #include "copasi/function/CFunction.h"
 #include "copasi/function/CFunctionDB.h"
@@ -804,6 +806,34 @@ void FunctionWidget1::slotBtnDelete()
     {
       case QMessageBox::Ok:                                                    // Yes or Enter
       {
+
+        bool dataAppended = false;
+
+        CDataObject::DataObjectSet dependentReactions;
+        CDataObject::DataObjectSet dependentMetabolites;
+        CDataObject::DataObjectSet dependentCompartments;
+        CDataObject::DataObjectSet dependentModelValues;
+        CDataObject::DataObjectSet dependentEvents;
+        CDataObject::DataObjectSet dependentEventAssignments;
+
+        dataAppended |= mpDataModel->getModel()->appendAllDependents(*pFunction,
+                                                    dependentReactions,
+                                                    dependentMetabolites,
+                                                    dependentCompartments,
+                                                    dependentModelValues,
+                                                    dependentEvents,
+                                                    dependentEventAssignments);
+
+        if (dataAppended && !dependentReactions.empty())
+        {
+          for (auto* reactionDo : dependentReactions)
+          {
+              CReaction* r = const_cast<CReaction*>(dynamic_cast< const CReaction * >(reactionDo));
+            if (r)
+              r->setFunction(NULL);
+          }
+        }
+
         CRootContainer::getFunctionList()->loadedFunctions().remove(mpObject->getObjectName());
 
         protectedNotify(ListViews::ObjectType::FUNCTION, ListViews::DELETE, mObjectCN);

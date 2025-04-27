@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,9 +53,8 @@ protected:
   virtual void keyPressEvent(QKeyEvent* ev);
 
 protected slots:
-  virtual void updateDeleteBtns();
   virtual void slotBtnNewClicked();
-  virtual void slotBtnDeleteClicked();
+  virtual void slotBtnDeleteClicked(bool needFocus=false);
   virtual void slotBtnClearClicked();
   virtual void slotDoubleClicked(const QModelIndex proxyIndex);
   virtual void dataChanged(const QModelIndex& topLeft,

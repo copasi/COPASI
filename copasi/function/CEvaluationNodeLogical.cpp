@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,6 +57,10 @@ CEvaluationNodeLogical::CEvaluationNodeLogical(const SubType & subType,
         break;
 
       case SubType::XOR:
+        mPrecedence = PRECEDENCE_LOGIG_XOR;
+        break;
+
+      case SubType::IMPLIES:
         mPrecedence = PRECEDENCE_LOGIG_XOR;
         break;
 
@@ -125,6 +129,7 @@ CIssue CEvaluationNodeLogical::compile()
       case SubType::OR:
       case SubType::XOR:
       case SubType::AND:
+      case SubType::IMPLIES:
         Result &= mpLeftNode->setValueType(ValueType::Boolean);
         Result &= mpRightNode->setValueType(ValueType::Boolean);
         break;
@@ -424,6 +429,7 @@ CValidatedUnit CEvaluationNodeLogical::getUnit(const CMathContainer & /* contain
       case SubType::OR:
       case SubType::XOR:
       case SubType::AND:
+      case SubType::IMPLIES:
         if (!(units[0] == CBaseUnit::dimensionless) ||
             !(units[1] == CBaseUnit::dimensionless))
           {
@@ -460,6 +466,7 @@ CValidatedUnit CEvaluationNodeLogical::setUnit(const CMathContainer & container,
       case SubType::OR:
       case SubType::XOR:
       case SubType::AND:
+      case SubType::IMPLIES:
         targetUnits[mpLeftNode] = CValidatedUnit(CBaseUnit::dimensionless, false);
         targetUnits[mpRightNode] = CValidatedUnit(CBaseUnit::dimensionless, false);
         break;
@@ -505,6 +512,11 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
       case AST_LOGICAL_OR:
         subType = SubType::OR;
         data = "or";
+        break;
+
+      case AST_LOGICAL_IMPLIES:
+        subType = SubType::IMPLIES;
+        data = "implies";
         break;
 
       case AST_LOGICAL_XOR:
@@ -588,6 +600,7 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
       case SubType::GT:
       case SubType::LE:
       case SubType::LT:
+      case SubType::IMPLIES:
         // all these are binary
         assert(iMax == 2);
         pNode = new CEvaluationNodeLogical(subType, data);
@@ -603,7 +616,7 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
   return pNode;
 }
 
-ASTNode* CEvaluationNodeLogical::toAST(const CDataModel* pDataModel) const
+ASTNode * CEvaluationNodeLogical::toAST(const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
   SubType subType = (SubType)this->subType();
   ASTNode* node = new ASTNode();
@@ -620,6 +633,10 @@ ASTNode* CEvaluationNodeLogical::toAST(const CDataModel* pDataModel) const
 
       case SubType::XOR:
         node->setType(AST_LOGICAL_XOR);
+        break;
+
+      case SubType::IMPLIES:
+        node->setType(AST_LOGICAL_IMPLIES);
         break;
 
       case SubType::EQ:
@@ -658,8 +675,8 @@ ASTNode* CEvaluationNodeLogical::toAST(const CDataModel* pDataModel) const
     {
       const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
       const CEvaluationNode* child2 = dynamic_cast<const CEvaluationNode*>(child1->getSibling());
-      node->addChild(child1->toAST(pDataModel));
-      node->addChild(child2->toAST(pDataModel));
+      node->addChild(child1->toAST(pDataModel, sbmlLevel, sbmlVersion));
+      node->addChild(child2->toAST(pDataModel, sbmlLevel, sbmlVersion));
     }
 
   return node;
@@ -691,6 +708,10 @@ std::string CEvaluationNodeLogical::getMMLString(const std::vector< std::string 
 
           case SubType::XOR:
             data = " xor ";
+            break;
+
+          case SubType::IMPLIES:
+            data = " implies ";
             break;
 
           case SubType::EQ:
@@ -725,27 +746,27 @@ std::string CEvaluationNodeLogical::getMMLString(const std::vector< std::string 
             break;
         }
 
-      out << "<mrow>" << std::endl;
+      out << "<mrow>" << "\n";
 
       flag = ((*mpLeftNode < * (CEvaluationNode *)this));
 
-      if (flag) out << "<mfenced>" << std::endl;
+      if (flag) out << "<mfenced>" << "\n";
 
       out << children[0];
 
-      if (flag) out << "</mfenced>" << std::endl;
+      if (flag) out << "</mfenced>" << "\n";
 
-      out << "<mo>" << data << "</mo>" << std::endl;
+      out << "<mo>" << data << "</mo>" << "\n";
 
       flag = ((*(CEvaluationNode *)this < *mpRightNode));
 
-      if (!flag) out << "<mfenced>" << std::endl;
+      if (!flag) out << "<mfenced>" << "\n";
 
       out << children[1];
 
-      if (!flag) out << "</mfenced>" << std::endl;
+      if (!flag) out << "</mfenced>" << "\n";
 
-      out << "</mrow>" << std::endl;
+      out << "</mrow>" << "\n";
     }
 
   return out.str();

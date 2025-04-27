@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -256,7 +256,7 @@ CEvaluationNode * CEvaluationNodeChoice::fromAST(const ASTNode * pASTNode, const
   return pNode;
 }
 
-ASTNode* CEvaluationNodeChoice::toAST(const CDataModel* pDataModel) const
+ASTNode * CEvaluationNodeChoice::toAST(const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
   ASTNode* node = new ASTNode(AST_FUNCTION_PIECEWISE);
   const CEvaluationNode* child1 = dynamic_cast<const CEvaluationNode*>(this->getChild());
@@ -267,9 +267,9 @@ ASTNode* CEvaluationNodeChoice::toAST(const CDataModel* pDataModel) const
   assert(child3 != NULL);
   // the condition is the second child to the AST node but the first child in
   // the CEvaluationNode
-  node->addChild(child2->toAST(pDataModel));
-  node->addChild(child1->toAST(pDataModel));
-  node->addChild(child3->toAST(pDataModel));
+  node->addChild(child2->toAST(pDataModel, sbmlLevel, sbmlVersion));
+  node->addChild(child1->toAST(pDataModel, sbmlLevel, sbmlVersion));
+  node->addChild(child3->toAST(pDataModel, sbmlLevel, sbmlVersion));
   return node;
 }
 
@@ -284,38 +284,38 @@ std::string CEvaluationNodeChoice::getMMLString(const std::vector< std::string >
 
   if (const_cast<CEvaluationNodeChoice *>(this)->compile())
     {
-      out << "<mrow>" << std::endl;
-      out << "<mo> {</mo>" << std::endl;
-      out << "<mtable>" << std::endl;
+      out << "<mrow>" << "\n";
+      out << "<mo> {</mo>" << "\n";
+      out << "<mtable>" << "\n";
 
-      out << "<mtr>" << std::endl;
+      out << "<mtr>" << "\n";
 
-      out << "<mtd>" << std::endl;
+      out << "<mtd>" << "\n";
       out << children[0];
-      out << "<mo> , </mo>" << std::endl;
-      out << "</mtd>" << std::endl;
+      out << "<mo> , </mo>" << "\n";
+      out << "</mtd>" << "\n";
 
-      out << "<mtd>" << std::endl;
+      out << "<mtd>" << "\n";
       out << children[1];
 
-      out << "</mtd>" << std::endl;
+      out << "</mtd>" << "\n";
 
-      out << "</mtr>" << std::endl;
+      out << "</mtr>" << "\n";
 
-      out << "<mtr>" << std::endl;
+      out << "<mtr>" << "\n";
 
-      out << "<mtd>" << std::endl;
-      out << "<mo> else, </mo>" << std::endl;
+      out << "<mtd>" << "\n";
+      out << "<mo> else, </mo>" << "\n";
 
-      out << "</mtd>" << std::endl;
-      out << "<mtd>" << std::endl;
+      out << "</mtd>" << "\n";
+      out << "<mtd>" << "\n";
       out << children[2];
-      out << "</mtd>" << std::endl;
+      out << "</mtd>" << "\n";
 
-      out << "</mtr>" << std::endl;
+      out << "</mtr>" << "\n";
 
-      out << "</mtable>" << std::endl;
-      out << "</mrow>" << std::endl;
+      out << "</mtable>" << "\n";
+      out << "</mrow>" << "\n";
     }
 
   return out.str();

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -63,9 +63,11 @@ public:
    * Copy constructor
    * @param "const CCopasiParameterGroup &" src
    * @param const CDataContainer * pParent (default: NULL)
+   * @param const std::string & objectType (default: "ParameterGroup")
    */
   CCopasiParameterGroup(const CCopasiParameterGroup & src,
-                        const CDataContainer * pParent = NULL);
+                        const CDataContainer * pParent = NULL,
+                        const std::string & objectType = "ParameterGroup");
 
   /**
    * Specific constructor
@@ -448,20 +450,6 @@ public:
    * @return CCopasiParameter::Type
    */
   CCopasiParameter::Type getType(const size_t & index) const;
-
-  /**
-   * Retrieve the key of a parameter or subgroup
-   * @param const std::string & name
-   * @return std::string key
-   */
-  std::string getKey(const std::string & name) const;
-
-  /**
-   * Retrieve the key of a parameter or subgroup
-   * @param const size_t & index
-   * @return std::string key
-   */
-  std::string getKey(const size_t & index) const;
 
   /**
    * Retrieve the name of a parameter or subgroup

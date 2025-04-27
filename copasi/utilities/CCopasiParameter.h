@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -97,7 +97,7 @@ protected:
   /**
    * The key of the parameter.
    */
-  std::string mKey;
+  mutable std::string mKey;
 
 private:
   /**CCopasiParameter
@@ -173,9 +173,11 @@ public:
    * Copy constructor
    * @param const CCopasiParameter & src
    * @param const CDataContainer * pParent (default: NULL)
+   * @param const std::string & objectType (default: "Parameter")
    */
   CCopasiParameter(const CCopasiParameter & src,
-                   const CDataContainer * pParent);
+                   const CDataContainer * pParent,
+                   const std::string & objectType = "Parameter");
 
   /**
    * Specific constructor

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -78,6 +78,7 @@ LIBCOMBINE_CPP_NAMESPACE_USE
 #include "local.cpp"
 
 #include <copasi/core/CCore.h>
+#include <copasi/CopasiTypes.h>
 
 /**
  * This method is used to get the C_INVALID_INDEX
@@ -352,6 +353,9 @@ size_t INVALID_INDEX();
 %include <copasi/tssanalysis/CTSSAProblem.h>
 %include <copasi/tssanalysis/CTSSAMethod.h>
 
+%include <copasi/timesens/CTimeSensTask.h>
+%include <copasi/timesens/CTimeSensProblem.h>
+%include <copasi/timesens/CTimeSensMethod.h>
 
 %ignore COptMethodPS::COptMethodPS(const COptMethodPS&);
 %ignore COptMethodPS::COptMethodPS(const CDataContainer *);

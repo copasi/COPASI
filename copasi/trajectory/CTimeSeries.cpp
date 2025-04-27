@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -417,7 +417,6 @@ std::string CTimeSeries::getSBMLId(const size_t & var, const CDataModel* pDataMo
   return result;
 }
 
-
 int
 CTimeSeries::save(std::ostream& str, bool writeParticleNumbers,
                   const std::string& separator) const
@@ -432,7 +431,7 @@ CTimeSeries::save(std::ostream& str, bool writeParticleNumbers,
       stringStream << this->getTitle(counter2) << separator;
     }
 
-  stringStream << std::endl;
+  stringStream << "\n";
   str << stringStream.str();
 
   if (!str.good()) return 1;
@@ -461,7 +460,7 @@ CTimeSeries::save(std::ostream& str, bool writeParticleNumbers,
           stringStream << value << separator;
         }
 
-      stringStream << std::endl;
+      stringStream << "\n";
       str << stringStream.str();
 
       if (!str.good()) return 1;

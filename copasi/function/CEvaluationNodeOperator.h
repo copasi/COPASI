@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -142,7 +142,7 @@ public:
    * Create a new ASTNode corresponding to this OperatorNode.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode* toAST(const CDataModel* pDataModel) const override;
+  virtual ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const override;
 
   /**
    * Create a simplified node for an operatorNode with children from vector (if not exist, = NULL),
@@ -156,9 +156,9 @@ public:
    * @param const CEvaluationNodeOperator* pNode the modulo
    *  operator node to be converted.
    * @param const ASTNode* pASTNode the root node for the SBML math expression
-   * @return bool which is true on sucessfull conversion.
+   * @return bool which is true on successful conversion.
    */
-  bool createModuloTree(const CEvaluationNodeOperator* pNode, ASTNode* pASTNode, const CDataModel* pDataModel) const;
+  bool createModuloTree(const CEvaluationNodeOperator * pNode, ASTNode * pASTNode, const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const;
 
   /**
    * Build the MathML string
@@ -184,6 +184,7 @@ private:
   void s_plus();
   void s_minus();
   void s_remainder();
+  void s_quotient();
   void s_invalid();
 
 // Attributes

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -115,6 +115,12 @@ bool CQOptimizationWidget::saveTaskProtected()
       pProblem->setCalculateStatistics(mpCheckStatistics->isChecked());
     }
 
+  if (mpCheckDisplayPopulation->isChecked() != pProblem->getParameter("DisplayPoplations")->getValue< bool >())
+    {
+      mChanged = true;
+      pProblem->getParameter("DisplayPoplations")->setValue(mpCheckStatistics->isChecked());
+    }
+
   mChanged |= mpParameters->save(NULL, NULL);
   mChanged |= mpConstraints->save(NULL, NULL);
 
@@ -150,6 +156,7 @@ bool CQOptimizationWidget::loadTaskProtected()
 
   mpCheckRandomize->setChecked(pProblem->getRandomizeStartValues());
   mpCheckStatistics->setChecked(pProblem->getCalculateStatistics());
+  mpCheckDisplayPopulation->setChecked(pProblem->getParameter("DisplayPoplations")->getValue< bool >());
 
   mpBoxSubtask->setCurrentIndex(mpBoxSubtask->findText(FROM_UTF8(CTaskEnum::TaskName[pProblem->getSubtaskType()])));
 
@@ -242,6 +249,42 @@ void CQOptimizationWidget::init()
   connect(mpConstraints, SIGNAL(numberChanged(int)), this, SLOT(slotConstraintNumberChanged(int)));
 
   mpCurrentList = mpParameters;
+
+  // add corner widget for increase / decrease the height of the tab widget
+  QWidget * pGroup = new QWidget();
+  QLayout * pGroupLayout = new QHBoxLayout(pGroup);
+
+  QToolButton * tb = new QToolButton();
+  tb->setText("+");
+  QObject::connect(tb, SIGNAL(clicked()), this, SLOT(slotIncreaseTabHeight()));
+  pGroupLayout->addWidget(tb);
+
+  tb = new QToolButton();
+  tb->setText("-");
+  QObject::connect(tb, SIGNAL(clicked()), this, SLOT(slotDecreaseTabHeight()));
+  pGroupLayout->addWidget(tb);
+
+  pGroupLayout->setContentsMargins(0, 0, 0, 0);
+
+  mpTabWidget->setCornerWidget(pGroup);
+}
+
+void CQOptimizationWidget::slotIncreaseTabHeight()
+{
+  auto height = mpTabWidget->height();
+  height += 100;
+  mpTabWidget->setMinimumHeight(height);
+}
+
+void CQOptimizationWidget::slotDecreaseTabHeight()
+{
+  auto height = mpTabWidget->height();
+
+  if (height < 300)
+    return;
+
+  height -= 100;
+  mpTabWidget->setMinimumHeight(height);
 }
 
 void CQOptimizationWidget::destroy()

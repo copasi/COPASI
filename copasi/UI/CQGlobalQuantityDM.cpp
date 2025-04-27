@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -371,23 +371,25 @@ bool CQGlobalQuantityDM::removeRows(QModelIndexList rows, const QModelIndex& ind
   if (rows.isEmpty())
     return false;
 
-  // Build the list of pointers to items to be deleted
+  // Build the list of items to be deleted
   // before actually deleting any item.
-  QList< CModelValue * > ModelValues;
+  QList< std::string > names;
   QModelIndexList::const_iterator i;
 
   for (i = rows.begin(); i != rows.end(); ++i)
     if (i->isValid()
-        && !isDefaultRow(*i))
+        && !isDefaultRow(*i) && i->row() < (int) mpGlobalQuantities->size())
       {
-        ModelValues.append(&mpGlobalQuantities->operator[](i->row()));
+        names.append(mpGlobalQuantities->operator[](i->row()).getObjectName());
       }
 
-  QList< CModelValue * >::const_iterator j;
-
-  for (j = ModelValues.begin(); j != ModelValues.end(); ++j)
+  for (auto&  objName : names)
     {
-      CModelValue * pModelValue = *j;
+      auto index = mpGlobalQuantities->getIndex(objName);
+      if (index == C_INVALID_INDEX)
+        continue;
+
+      CModelValue * pModelValue = &mpGlobalQuantities->operator[](objName);
 
       QMessageBox::StandardButton choice =
         CQMessageBox::confirmDelete(ListViews::ancestor(this), "quantity",
@@ -396,7 +398,7 @@ bool CQGlobalQuantityDM::removeRows(QModelIndexList rows, const QModelIndex& ind
 
       if (choice == QMessageBox::Ok)
         {
-          removeRows(mpGlobalQuantities->getIndex(pModelValue->getObjectName()), 1);
+          removeRows(index, 1);
         }
     }
 

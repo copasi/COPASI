@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,8 +27,14 @@
 #include "copasi/layout/CLGlobalRenderInformation.h"
 #include "copasi/utilities/CUnitDefinition.h"
 #include "copasi/utilities/CUnitDefinitionDB.h"
+#include "copasi/utilities/CDirEntry.h"
 
-#include <copasi/MIRIAM/CRDFGraphConverter.h>
+#include "copasi/MIRIAM/CConstants.h"
+#include "copasi/MIRIAM/CRDFGraphConverter.h"
+
+#ifdef USE_OMP
+// #include "copasi/OpenMP/CLogger.h"
+#endif // USE_OMP
 
 extern CDataVector< CLGlobalRenderInformation > * DEFAULT_STYLES;
 
@@ -40,16 +46,17 @@ extern CRootContainer * pRootContainer;
  * The only way to create a root container is through the static init
  * method.
  */
-CRootContainer::CRootContainer(const bool & withGUI):
-  CDataContainer("Root", NULL, "CN", CDataObject::Root),
-  mKeyFactory(),
-  mpUnknownResource(NULL),
-  mpFunctionList(NULL),
-  mpUnitDefinitionList(NULL),
-  mpConfiguration(NULL),
-  mpDataModelList(NULL),
-  mWithGUI(withGUI),
-  mpUndefined(NULL)
+CRootContainer::CRootContainer(const bool & withGUI)
+  : CDataContainer("Root", NULL, "CN", CDataObject::Root)
+  , mKeyFactory()
+  , mpUnknownResource(NULL)
+  , mpMIRIAMResources(NULL)
+  , mpFunctionList(NULL)
+  , mpUnitDefinitionList(NULL)
+  , mpConfiguration(NULL)
+  , mpDataModelList(NULL)
+  , mWithGUI(withGUI)
+  , mpUndefined(NULL)
 {}
 
 // Destructor
@@ -67,6 +74,9 @@ CRootContainer::~CRootContainer()
 
   // delete the unkown resource
   pdelete(mpUnknownResource);
+
+  // delete the MIRIAM resources
+  pdelete(mpMIRIAMResources);
 
   // delete the model list
   pdelete(mpDataModelList);
@@ -89,10 +99,18 @@ CRootContainer::~CRootContainer()
  */
 void CRootContainer::init(int argc, char *argv[], const bool & withGUI)
 {
+  CCopasiMessage::init();
   COptions::init(argc, argv);
 
+#ifdef USE_OMP
+  // CLogger::init();
+  // CLogger::setTask();
+  // CLogger::setLevel(CLogger::LogLevel::trace);
+  // CLogger::setLogDir(COptions::getPWD() + CDirEntry::Separator + "COPASI");
+#endif // USE_OMP
+
   CRegisteredCommonName::setEnabled(false);
-  
+
   CCopasiMessage::setIsGUI(withGUI);
 
   if (pRootContainer == NULL)
@@ -124,6 +142,9 @@ void CRootContainer::initializeChildren()
   mpUnknownResource = new CMIRIAMResource("Unknown Resource");
   mpUnknownResource->setMIRIAMDisplayName("-- select --");
   mpUnknownResource->setMIRIAMURI("urn:miriam:unknown");
+
+  mpMIRIAMResources = new CMIRIAMResources;
+  CMIRIAMResourceObject::setMIRIAMResources(mpMIRIAMResources);
 
   mpFunctionList = new CFunctionDB("FunctionDB", this);
   mpFunctionList->load();
@@ -248,6 +269,12 @@ CKeyFactory* CRootContainer::getKeyFactory()
 const CMIRIAMResource & CRootContainer::getUnknownMiriamResource()
 {
   return *pRootContainer->mpUnknownResource;
+}
+
+// static
+CMIRIAMResources & CRootContainer::getMiriamResources()
+{
+  return *pRootContainer->mpMIRIAMResources;
 }
 
 // static

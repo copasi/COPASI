@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -165,7 +165,6 @@ void CQExpressionMmlStackedWidget::reset()
   mpExpressionWidget->setExpression("");
 
   updateWidget();
-
 }
 
 void CQExpressionMmlStackedWidget::init()
@@ -271,13 +270,13 @@ void CQExpressionMmlStackedWidget::saveMML(const QString& outfilename)
   std::ofstream ofile;
   ofile.open(CLocaleString::fromUtf8(TO_UTF8(outfilename)).c_str(), std::ios::trunc);
 
-  ofile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << std::endl;
-  ofile << "<!DOCTYPE math PUBLIC \"-//W3C//DTD MathML 2.0//EN\" \"http://www.w3.org/Math/DTD/mathml2/mathml2.dtd\">" << std::endl;
-  ofile << "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" << std::endl;
+  ofile << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" << "\n";
+  ofile << "<!DOCTYPE math PUBLIC \"-//W3C//DTD MathML 2.0//EN\" \"http://www.w3.org/Math/DTD/mathml2/mathml2.dtd\">" << "\n";
+  ofile << "<math xmlns=\"http://www.w3.org/1998/Math/MathML\">" << "\n";
 
   mpExpressionWidget->writeMathML(ofile);
 
-  ofile << "</math>" << std::endl;
+  ofile << "</math>" << "\n";
 
   ofile.close();
 }

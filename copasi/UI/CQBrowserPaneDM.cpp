@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1220,12 +1220,12 @@ int CQBrowserPaneDM::CNode::getRow() const
 
 std::ostream & operator<<(std::ostream &os, const CQBrowserPaneDM::CNode & n)
 {
-  os << "CQBrowserPaneDM::CNode:" << std::endl;
-  //os << "   mChemicalEquation:          " << d.getChemicalEquation() << std::endl;
-  //os << "   mChemicalEquationConverted: " << d.getChemicalEquationConverted() << std::endl;
+  os << "CQBrowserPaneDM::CNode:" << "\n";
+  //os << "   mChemicalEquation:          " << d.getChemicalEquation() << "\n";
+  //os << "   mChemicalEquationConverted: " << d.getChemicalEquationConverted() << "\n";
 
-  os << "   mId:          " << (size_t) n.mData.mId << std::endl;
-  os << "   mCN:          " << n.mData.mCN << std::endl;
-  os << "   mDisplayRole: " << TO_UTF8(n.mData.mDisplayRole) << std::endl;
+  os << "   mId:          " << (size_t) n.mData.mId << "\n";
+  os << "   mCN:          " << n.mData.mCN << "\n";
+  os << "   mDisplayRole: " << TO_UTF8(n.mData.mDisplayRole) << "\n";
   return os;
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -347,7 +347,7 @@ bool CSteadyStateTask::process(const bool & useInitialValues)
 #endif
 
   mpContainer->setState(mSteadyState);
-  mpContainer->updateSimulatedValues(true);
+  mpContainer->updateSimulatedValues(false);
   mpContainer->updateTransientDataValues();
   mpContainer->pushAllTransientValues();
 
@@ -400,26 +400,26 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   switch (A.getResult())
     {
       case CSteadyStateMethod::found:
-        os << "A steady state with given resolution was found." << std::endl;
+        os << "A steady state with given resolution was found." << "\n";
         break;
 
       case CSteadyStateMethod::notFound:
-        os << "No steady state with given resolution was found!" << std::endl;
-        os << "(below are the last unsuccessful trial values)" << std::endl;
+        os << "No steady state with given resolution was found!" << "\n";
+        os << "(below are the last unsuccessful trial values)" << "\n";
         break;
 
       case CSteadyStateMethod::foundEquilibrium:
-        os << "An equilibrium steady state (zero fluxes) was found." << std::endl;
+        os << "An equilibrium steady state (zero fluxes) was found." << "\n";
         break;
 
       case CSteadyStateMethod::foundNegative:
-        os << "An invalid steady state (negative concentrations) was found." << std::endl;
+        os << "An invalid steady state (negative concentrations) was found." << "\n";
     }
 
-  os << std::endl;
+  os << "\n";
 
   A.mpContainer->setState(A.mSteadyState);
-  A.mpContainer->updateSimulatedValues(true);
+  A.mpContainer->updateSimulatedValues(false);
   A.mpContainer->updateTransientDataValues();
   A.mpContainer->pushAllTransientValues();
 
@@ -465,7 +465,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   if (Units != "")
     os << " (" << Units << ")";
 
-  os << std::endl;
+  os << "\n";
 
   for (i = 0; i < imax; ++i)
     {
@@ -475,10 +475,10 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
       os << pMetab->getConcentrationRate() << "\t";
       os << pMetab->getValue() << "\t";
       os << pMetab->getRate() << "\t";
-      os << pMetab->getTransitionTime() << std::endl;
+      os << pMetab->getTransitionTime() << "\n";
     }
 
-  os << std::endl;
+  os << "\n";
 
   // Reaction Info: Name, Flux, Particle Flux
   const CDataVector<CReaction>& Reactions = pModel->getReactions();
@@ -510,7 +510,7 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
   if (Units != "")
     os << " (" << Units << ")";
 
-  os << std::endl;
+  os << "\n";
 
   for (i = 0; i < imax; ++i)
     {
@@ -523,44 +523,44 @@ std::ostream &operator<<(std::ostream &os, const CSteadyStateTask &A)
       else
         os << std::numeric_limits< C_FLOAT64 >::quiet_NaN() << "\t";
 
-      os << pReaction->getParticleFlux() << std::endl;
+      os << pReaction->getParticleFlux() << "\n";
     }
 
-  os << std::endl;
+  os << "\n";
 
   if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isJacobianRequested())
     {
-      os << *A.mpJacobianAnn << std::endl;
+      os << *A.mpJacobianAnn << "\n";
 
       if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isStabilityAnalysisRequested())
         {
-          os << "Eigenvalues\treal\timaginary" << std::endl;
+          os << "Eigenvalues\treal\timaginary" << "\n";
           imax = A.mEigenValues.getR().size();
 
           for (i = 0; i < imax; i++)
-            os << "\t" << A.mEigenValues.getR()[i] << "\t" << A.mEigenValues.getI()[i] << std::endl;
+            os << "\t" << A.mEigenValues.getR()[i] << "\t" << A.mEigenValues.getI()[i] << "\n";
 
-          os << std::endl;
+          os << "\n";
         }
 
-      os << *A.mpJacobianXAnn << std::endl;
+      os << *A.mpJacobianXAnn << "\n";
 
       if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isStabilityAnalysisRequested())
         {
-          os << "Eigenvalues\treal\timaginary" << std::endl;
+          os << "Eigenvalues\treal\timaginary" << "\n";
           imax = A.mEigenValuesX.getR().size();
 
           for (i = 0; i < imax; i++)
-            os << "\t" << A.mEigenValuesX.getR()[i] << "\t" << A.mEigenValuesX.getI()[i] << std::endl;
+            os << "\t" << A.mEigenValuesX.getR()[i] << "\t" << A.mEigenValuesX.getI()[i] << "\n";
 
-          os << std::endl;
+          os << "\n";
         }
     }
 
   if (static_cast<CSteadyStateProblem *>(A.mpProblem)->isStabilityAnalysisRequested())
     {
-      os << "Stability Analysis of the Reduced System" << std::endl;
-      os << A.mEigenValuesX << std::endl;
+      os << "Stability Analysis of the Reduced System" << "\n";
+      os << A.mEigenValuesX << "\n";
     }
 
   return os;

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -418,7 +418,10 @@ GetDowncastSwigTypeForMethod(CCopasiMethod* method)
     {
       pInfo = SWIGTYPE_p_CSensMethod;
     }
-
+  else if (dynamic_cast<CLNAMethod*>(method))
+    {
+      pInfo = SWIGTYPE_p_CLNAMethod;
+    }
   return pInfo;
 }
 
@@ -555,6 +558,10 @@ GetDowncastSwigTypeForProblem(CCopasiProblem* problem)
     {
       pInfo = GetDowncastSwigTypeForCOptProblem(static_cast<COptProblem*>(problem));
     }
+  else if (dynamic_cast<CTimeSensProblem*>(problem))
+    {
+      pInfo = SWIGTYPE_p_CTimeSensProblem;
+    }
   else if (dynamic_cast<CTrajectoryProblem*>(problem))
     {
       pInfo = SWIGTYPE_p_CTrajectoryProblem;
@@ -608,6 +615,10 @@ GetDowncastSwigTypeForTask(CCopasiTask* task)
   else if (dynamic_cast<CLNATask*>(task))
     {
       pInfo = SWIGTYPE_p_CLNATask;
+    }
+  else if (dynamic_cast<CTimeSensTask*>(task))
+    {
+      pInfo = SWIGTYPE_p_CTimeSensTask;
     }
   else if (dynamic_cast<CTrajectoryTask*>(task))
     {

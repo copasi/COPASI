@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the </comment>
 <comment> University of Virginia, University of Heidelberg, and University </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -100,6 +100,16 @@
       <widget class="QCheckBox" name="mpUseTimeSens">
        <property name="text">
         <string>Use Time Sens</string>
+       </property>
+       <property name="visible">
+        <bool>false</bool>
+       </property>  
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mpCheckDisplayPopulation">
+       <property name="text">
+        <string>Display Population</string>
        </property>
       </widget>
      </item>

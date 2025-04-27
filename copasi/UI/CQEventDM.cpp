@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -312,7 +312,7 @@ bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex& index)
 
   for (i = rows.begin(); i != rows.end(); ++i)
     if (i->isValid()
-        && !isDefaultRow(*i))
+        && !isDefaultRow(*i) && i->row() < (int) mpEvents->size())
       {
         Events.append(&mpEvents->operator[](i->row()));
       }

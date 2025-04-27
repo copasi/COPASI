@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -176,18 +176,31 @@ void SEDMLImporter::updateCopasiTaskForSimulation(
         SedUniformTimeCourse * tc = static_cast< SedUniformTimeCourse * >(sedmlsim);
         double outputStartTime = tc->getOutputStartTime();
         double outputEndTime = tc->getOutputEndTime();
+        double initialTime = tc->getInitialTime();
         int numberOfPoints = tc->getNumberOfPoints();
         tProblem->setOutputStartTime(outputStartTime);
 
         // set the models initial time to the initial time of the simulation
         if (mpCopasiModel)
           {
-            mpCopasiModel->setInitialTime(tc->getInitialTime());
-            mpCopasiModel->updateInitialValues(mpCopasiModel->getInitialValueReference());
+            mpCopasiModel->setInitialTime(initialTime);
+            mpCopasiModel->updateInitialValues(mpCopasiModel->getInitialValueReference(), false);
           }
 
-        tProblem->setDuration(outputEndTime - outputStartTime);
-        tProblem->setStepNumber(numberOfPoints);
+        tProblem->setDuration(outputEndTime - initialTime);
+
+        // in COPASI the number of points calculated will be for the total duration of
+        // initialTime ... ouputEndTime, so if the outputStartTime is not equal to the
+        // initial time, the number of points will differ so we have to adjust:
+
+        if (outputStartTime != initialTime)
+          {
+            tProblem->setStepSize((outputEndTime - outputStartTime) / numberOfPoints);
+          }
+        else
+          {
+            tProblem->setStepNumber(numberOfPoints);
+          }
 
         // TODO read kisao terms
         if (tc->isSetAlgorithm())
@@ -1053,6 +1066,8 @@ SEDMLImporter::parseSEDML(const std::string & sedmlDocumentText,
 
   if (pSEDMLDocument->getListOfModels() == NULL)
     {
+      pdelete(pSEDMLDocument);
+
       CCopasiMessage Message(CCopasiMessage::ERROR, MCSEDML + 2);
 
       if (mpProcessReport != NULL)
@@ -1134,6 +1149,8 @@ void SEDMLImporter::updateContent(CDataModel::CContent & data, CDataModel & dm)
   data.pCurrentSEDMLDocument = mpSEDMLDocument;
   data.mCopasi2SEDMLMap = mContent.mCopasi2SEDMLMap;
   data.mContentType = CDataModel::ContentType::SEDML;
+
+  initializeContent();
 }
 
 void SEDMLImporter::importTasks(CDataVectorN< CCopasiTask > * pTaskList)
@@ -1265,7 +1282,16 @@ void SEDMLImporter::importTask(
                       vrange = convertSimpleFunctionalRange(frange, repeat);
                   }
 
-                if (SBML_formulaToString(sv->getMath()) != sv->getRange())
+                char * pFormula = SBML_formulaToString(sv->getMath());
+                std::string Formula;
+
+                if (pFormula != nullptr)
+                  {
+                    Formula = pFormula;
+                    free(pFormula);
+                  }
+
+                if (Formula != sv->getRange())
                   {
                     CCopasiMessage(CCopasiMessage::WARNING,
                                    "This version of COPASI only supports setValue elements that apply range values.");
@@ -1563,6 +1589,7 @@ CModel * SEDMLImporter::importModel(const std::string & modelId)
       // Later this will be settable by the user in the preferences dialog
       importer.setImportCOPASIMIRIAM(true);
       importer.setImportHandler(mpProcessReport);
+      importer.setImportInitialValueAnnotation(false);
 
       mpCopasiModel = NULL;
 
@@ -1594,6 +1621,7 @@ CModel * SEDMLImporter::importModel(const std::string & modelId)
   // apply possible changes to the model
   if (sedmlModel != NULL && sedmlModel->getNumChanges() > 0)
     {
+      mpCopasiModel->refreshActiveParameterSet();
       CModelParameterSet & set = mpCopasiModel->getActiveModelParameterSet();
       bool valueChanged = false;
 
@@ -1676,6 +1704,10 @@ void SEDMLImporter::restoreFunctionDB()
  */
 SEDMLImporter::~SEDMLImporter()
 {
+  pdelete(mContent.pTaskList);
+  pdelete(mContent.pReportDefinitionList);
+  pdelete(mContent.pPlotDefinitionList);
+
   mReportMap.clear();
 }
 

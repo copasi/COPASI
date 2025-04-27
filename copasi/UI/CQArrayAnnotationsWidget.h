@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,18 +21,6 @@
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
-
-
-
-
-
-
-
-
-
-
-
-
 
 #ifndef CQARRAYANN_H
 #define CQARRAYANN_H
@@ -179,7 +167,7 @@ protected:
 
   void fillTable0();
 
-  void createBarChart();
+  bool createBarChart();
 
   void fillBarChart();
 
@@ -239,8 +227,6 @@ public slots:
   CQBarChart* mpPlot3d;
 
 #endif // WITH_QT5_VISUALIZATION
-
-
 };
 
 #endif

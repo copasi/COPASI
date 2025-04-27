@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -80,6 +80,10 @@ public:
         case SubType::XOR:
           mValue = ((*mpLeftValue > 0.5 && *mpRightValue < 0.5) ||
                     (*mpLeftValue < 0.5 && *mpRightValue > 0.5)) ? 1.0 : 0.0;
+          break;
+
+        case SubType::IMPLIES:
+          mValue = (*mpLeftValue < 0.5 || *mpRightValue > 0.5) ? 1.0 : 0.0;
           break;
 
         case SubType::AND:
@@ -189,7 +193,7 @@ public:
    * Create a new ASTNode corresponding to this OperatorNode.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode* toAST(const CDataModel* pDataModel) const override;
+  virtual ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const override;
 
   /**
    * Build the MathML string

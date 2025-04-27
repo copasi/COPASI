@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -318,7 +318,7 @@ bool CDataHandler::generateObjectsFromName(const CObjectInterface::ContainerList
       auto * pObj = dynamic_cast< CDataObject * >(pObjectInterface);
       bool isData = false;
 
-      if (pObj && pObj->getObjectType() == "Reference")
+      if (pObj && (pObj->getObjectType() == "Reference" || pObj->getObjectType() == "ElementReference"))
         {
           isData = pObj->hasFlag(CDataObject::Flag::ValueBool)
                    || pObj->hasFlag(CDataObject::Flag::ValueInt)

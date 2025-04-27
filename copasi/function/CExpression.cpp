@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -235,11 +235,11 @@ void CExpression::writeMathML(std::ostream & out, bool fullExpand, size_t l) con
 
       bool flag = false; //TODO include check if parantheses are necessary
 
-      if (flag) out << SPC(l) << "<mfenced>" << std::endl;
+      if (flag) out << SPC(l) << "<mfenced>" << "\n";
 
       out << getRoot()->buildMMLString(fullExpand, env);
 
-      if (flag) out << SPC(l) << "</mfenced>" << std::endl;
+      if (flag) out << SPC(l) << "</mfenced>" << "\n";
     }
 }
 

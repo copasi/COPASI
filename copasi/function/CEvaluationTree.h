@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -180,7 +180,7 @@ public:
    * Converts a CEvaluationTree to an ASTNode based tree.
    * @return ASTNode* root node of the tree.
    */
-  virtual ASTNode* toAST(const CDataModel* pDataModel) const;
+  virtual ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const;
 
   /**
    * Set the infix description of the tree and compile it.

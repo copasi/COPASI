@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 // the window containing the plot and buttons for supported operations
 
@@ -160,31 +160,31 @@ void PlotWindow::createActions()
   connect(mpaToggleLogY, SIGNAL(toggled(bool)), this, SLOT(toggleLogY(bool)));
   mpaPrint = new QAction("Print", this);
   mpaPrint ->setToolTip("Print Plot");
-  mpaPrint -> setShortcut(Qt::CTRL + Qt::Key_P);
+  mpaPrint -> setShortcut(Qt::CTRL | Qt::Key_P);
   connect(mpaPrint, SIGNAL(triggered()), this, SLOT(printPlot()));
   mpaSaveImage = new QAction("Save Image", this);
-  mpaSaveImage ->setShortcut(Qt::CTRL + Qt::Key_S);
+  mpaSaveImage ->setShortcut(Qt::CTRL | Qt::Key_S);
   mpaSaveImage ->setToolTip("Save Plot as Image");
   connect(mpaSaveImage, SIGNAL(triggered()), this, SLOT(printAsImage()));
   mpaSaveData = new QAction("Save Data", this);
-  mpaSaveData ->setShortcut(QKeySequence(Qt::CTRL, Qt::SHIFT, Qt::Key_S));
+  mpaSaveData ->setShortcut(QKeySequence::SaveAs);
   mpaSaveData ->setToolTip("Save Data");
   connect(mpaSaveData, SIGNAL(triggered()), this, SLOT(slotSaveData()));
   mpaZoomOut = new QAction("Zoom out", this);
-  mpaZoomOut ->setShortcut(Qt::CTRL + Qt::Key_0);
+  mpaZoomOut ->setShortcut(Qt::CTRL | Qt::Key_0);
   mpaZoomOut ->setToolTip("Zoom out");
   connect(mpaZoomOut, SIGNAL(triggered()), this, SLOT(slotZoomOut()));
   mpaShowAll = new QAction("Show All", this);
-  mpaShowAll ->setShortcut(Qt::CTRL + Qt::Key_A);
+  mpaShowAll ->setShortcut(Qt::CTRL | Qt::Key_A);
   mpaShowAll ->setToolTip("Show all curves");
   connect(mpaShowAll, SIGNAL(triggered()), this, SLOT(slotSelectAll()));
   mpaHideAll = new QAction("Hide All", this);
-  mpaHideAll ->setShortcut(Qt::CTRL + Qt::Key_D);
+  mpaHideAll ->setShortcut(Qt::CTRL | Qt::Key_D);
   mpaHideAll ->setToolTip("Hide all curves");
   connect(mpaHideAll, SIGNAL(triggered()), this, SLOT(slotDeselectAll()));
   mpaCloseWindow = new QAction("Close", this);
   mpaCloseWindow->setObjectName("close");
-  mpaCloseWindow->setShortcut(Qt::CTRL + Qt::Key_W);
+  mpaCloseWindow->setShortcut(Qt::CTRL | Qt::Key_W);
   connect(mpaCloseWindow, SIGNAL(triggered()), this, SLOT(slotCloseWindow()));
   mpaDeactivatePlot = new QAction("Deactivate", this);
   mpaDeactivatePlot->setToolTip("Disables / Enables the plot. When enabled it will automatically appear / update upon running the task.");

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,57 +45,56 @@
 
 #define INITIALTEXTSIZE 1024
 
-#ifdef WIN32
-/**
- * The stack of messages. Each message created with one of
- * the specific constructors is automatically added to the stack.
- */
-static std::deque< CCopasiMessage > mMessageDeque;
-#else
-std::deque< CCopasiMessage > CCopasiMessage::mMessageDeque;
-#endif
+// static
+CContext< std::deque< CCopasiMessage > > CCopasiMessage::mMessageDeque(true);
 
 // static
 bool CCopasiMessage::IsGUI = false;
 
+// static
+void CCopasiMessage::init()
+{
+  mMessageDeque.init();
+}
+
 const CCopasiMessage & CCopasiMessage::peekFirstMessage()
 {
-  if (mMessageDeque.empty())
+  if (mMessageDeque.active().empty())
     CCopasiMessage(CCopasiMessage::RAW,
                    MCCopasiMessage + 1);
 
-  return mMessageDeque.front();
+  return mMessageDeque.active().front();
 }
 
 const CCopasiMessage & CCopasiMessage::peekLastMessage()
 {
-  if (mMessageDeque.empty())
+  if (mMessageDeque.active().empty())
     CCopasiMessage(CCopasiMessage::RAW,
                    MCCopasiMessage + 1);
 
-  return mMessageDeque.back();
+  return mMessageDeque.active().back();
 }
 
 CCopasiMessage CCopasiMessage::getFirstMessage()
 {
-  if (mMessageDeque.empty())
+  if (mMessageDeque.active().empty())
     CCopasiMessage(CCopasiMessage::RAW,
                    MCCopasiMessage + 1);
 
-  CCopasiMessage Message(mMessageDeque.front());
-  mMessageDeque.pop_front();
+  CCopasiMessage Message(mMessageDeque.active().front());
+  mMessageDeque.active().pop_front();
 
   return Message;
 }
 
 CCopasiMessage CCopasiMessage::getLastMessage()
 {
-  if (mMessageDeque.empty())
+  if (mMessageDeque.active().empty())
     CCopasiMessage(CCopasiMessage::RAW,
                    MCCopasiMessage + 1);
 
-  CCopasiMessage Message(mMessageDeque.back());
-  mMessageDeque.pop_back();
+  CCopasiMessage Message(mMessageDeque.active().back());
+  mMessageDeque.active().pop_back();
 
   return Message;
 }
@@ -105,7 +104,7 @@ std::string CCopasiMessage::getAllMessageText(const bool & chronological)
   std::string Text = "";
   CCopasiMessage(*getMessage)() = chronological ? getFirstMessage : getLastMessage;
 
-  while (!mMessageDeque.empty())
+  while (!mMessageDeque.active().empty())
     {
       if (Text != "") Text += "\n";
 
@@ -117,20 +116,20 @@ std::string CCopasiMessage::getAllMessageText(const bool & chronological)
 
 void CCopasiMessage::clearDeque()
 {
-  mMessageDeque.clear();
+  mMessageDeque.active().clear();
   return;
 }
 
 size_t CCopasiMessage::size()
 {
-  return mMessageDeque.size();
+  return mMessageDeque.active().size();
 }
 
 CCopasiMessage::Type CCopasiMessage::getHighestSeverity()
 {
   CCopasiMessage::Type HighestSeverity = RAW;
-  std::deque< CCopasiMessage >::const_iterator it = mMessageDeque.begin();
-  std::deque< CCopasiMessage >::const_iterator end = mMessageDeque.end();
+  std::deque< CCopasiMessage >::const_iterator it = mMessageDeque.active().begin();
+  std::deque< CCopasiMessage >::const_iterator end = mMessageDeque.active().end();
 
   for (; it != end; ++it)
     if (it->getType() > HighestSeverity) HighestSeverity = it->getType();
@@ -140,8 +139,8 @@ CCopasiMessage::Type CCopasiMessage::getHighestSeverity()
 
 bool CCopasiMessage::checkForMessage(const size_t & number)
 {
-  std::deque< CCopasiMessage >::const_iterator it = mMessageDeque.begin();
-  std::deque< CCopasiMessage >::const_iterator end = mMessageDeque.end();
+  std::deque< CCopasiMessage >::const_iterator it = mMessageDeque.active().begin();
+  std::deque< CCopasiMessage >::const_iterator end = mMessageDeque.active().end();
 
   for (; it != end; ++it)
     if (it->getNumber() == number) return true;
@@ -336,11 +335,11 @@ void CCopasiMessage::handler(const bool & /* _throw */)
   if (mType != RAW) lineBreak();
 
   // Remove the message: No more messages.
-  if (mMessageDeque.size() == 1 &&
-      mMessageDeque.back().getNumber() == MCCopasiMessage + 1)
+  if (mMessageDeque.active().size() == 1 &&
+      mMessageDeque.active().back().getNumber() == MCCopasiMessage + 1)
     getLastMessage();
 
-  mMessageDeque.push_back(*this);
+  mMessageDeque.active().push_back(*this);
 
   // All messages are printed to std::cerr
   if (COptions::compareValue("Verbose", true) &&

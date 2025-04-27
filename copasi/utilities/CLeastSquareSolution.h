@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -14,9 +14,9 @@ class CLeastSquareSolution
 public:
   struct ResultInfo
   {
-    size_t rank;
-    C_FLOAT64 relativeError;
-    C_FLOAT64 absoluteError;
+    size_t rank = 0;
+    C_FLOAT64 relativeError = 0;
+    C_FLOAT64 absoluteError = 0;
   };
 
   /**

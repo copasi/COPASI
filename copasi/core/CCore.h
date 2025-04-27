@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,7 +17,7 @@
 
 #define C_INVALID_INDEX (std::numeric_limits< size_t >::max())
 
-#if (defined SunOS || defined __CYGWIN__ || defined Darwin)
+#if (defined SunOS || defined __CYGWIN__ || defined Darwin || defined __MINGW32__ || defined __MINGW64__)
 # define C_INT64 long long int
 # define LLONG_CONST(n) n ## LL
 # define C_INT32 int
@@ -27,7 +27,7 @@
 # define C_FLOAT32 float
 # define abs64 abs
 #else
-#ifdef WIN32
+#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
 # ifndef _USE_MATH_DEFINES
 # define _USE_MATH_DEFINES 1
 # endif // _USE_MATH_DEFINES
