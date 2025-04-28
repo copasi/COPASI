@@ -1155,7 +1155,40 @@ bool addToKnownFunctionToMap(std::map<std::string, std::string>& map, const Func
   id = isKnownCustomFunctionDefinition(sbmlFunction,
                                        "http://sbml.org/annotations/distribution",
                                        "distribution",
+                                       "http://en.wikipedia.org/wiki/Normal_distribution");
+
+  if (!id.empty())
+    {
+      map[id] = "RNORMAL";
+      return true;
+    }
+
+  id = isKnownCustomFunctionDefinition(sbmlFunction,
+                                       "http://sbml.org/annotations/distribution",
+                                       "distribution",
                                        "http://www.uncertml.org/distributions/uniform");
+
+  if (!id.empty())
+    {
+      map[id] = "RUNIFORM";
+      return true;
+    }
+
+  id = isKnownCustomFunctionDefinition(sbmlFunction,
+                                       "http://sbml.org/annotations/distribution",
+                                       "distribution",
+                                       "http://en.wikipedia.org/wiki/Uniform_distribution_(continuous)");
+
+  if (!id.empty())
+    {
+      map[id] = "RUNIFORM";
+      return true;
+    }
+
+  id = isKnownCustomFunctionDefinition(sbmlFunction,
+                                       "http://sbml.org/annotations/distribution",
+                                       "distribution",
+                                       "http://en.wikipedia.org/wiki/Uniform_distribution");
 
   if (!id.empty())
     {
@@ -1177,7 +1210,29 @@ bool addToKnownFunctionToMap(std::map<std::string, std::string>& map, const Func
   id = isKnownCustomFunctionDefinition(sbmlFunction,
                                        "http://sbml.org/annotations/distribution",
                                        "distribution",
+                                       "http://en.wikipedia.org/wiki/Gamma_distribution");
+
+  if (!id.empty())
+    {
+      map[id] = "RGAMMA";
+      return true;
+    }
+
+  id = isKnownCustomFunctionDefinition(sbmlFunction,
+                                       "http://sbml.org/annotations/distribution",
+                                       "distribution",
                                        "http://www.uncertml.org/distributions/poisson");
+
+  if (!id.empty())
+    {
+      map[id] = "RPOISSON";
+      return true;
+    }
+
+  id = isKnownCustomFunctionDefinition(sbmlFunction,
+                                       "http://sbml.org/annotations/distribution",
+                                       "distribution",
+                                       "http://en.wikipedia.org/wiki/Poisson_distribution");
 
   if (!id.empty())
     {
@@ -3073,6 +3128,27 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
             }
         }
     }
+
+  if (sbmlDoc->getPlugin("distrib") != NULL && sbmlDoc->isSetPackageRequired("distrib"))
+  {
+    ConversionProperties props;
+    props.addOption("convert distrib to annotations", true, "convert distrib to annotations");
+    props.addOption("writeMeans", true, "Created functions return means of distributions instead of NaN");
+
+    if (sbmlDoc->convert(props) != LIBSBML_OPERATION_SUCCESS)
+      {
+        std::string message =
+          "The SBML model you are trying to import uses the Distrib extension. "
+          "In order to import this model in COPASI, it has to be converted, however conversion failed";
+
+        if (sbmlDoc->getNumErrors() == 0)
+          message += ".";
+        else
+          message += " with the following errors:\n" + sbmlDoc->getErrorLog()->toString();
+
+        CCopasiMessage(CCopasiMessage::ERROR, message.c_str());
+      }
+  }
 
   if (sbmlDoc->getPlugin("comp") != NULL && sbmlDoc->isSetPackageRequired("comp"))
     {
