@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -22,7 +22,7 @@
 #
 ###############################################################################
 
-cmake_minimum_required (VERSION 2.8.12)
+cmake_minimum_required (VERSION 2.8.12...3.19.1)
 
 if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
