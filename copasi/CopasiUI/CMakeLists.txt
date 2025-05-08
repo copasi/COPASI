@@ -81,6 +81,12 @@ endif()
 add_executable(CopasiUI ${COPASI_UI_FLAGS} ${SOURCES} ${HEADERS} ${RESOURCES})
 target_link_libraries(CopasiUI libCOPASIUI)
 
+# workaround link order issues on debian systems
+if (UNIX AND ${SELECT_QT} STREQUAL "Qt6" AND MML_LIBRARY)
+target_link_libraries(CopasiUI Qt6::Xml ${MML_LIBRARY} Qt6::Xml)
+endif()
+
+
 # now modify the package location for the resource files
 if (APPLE)
 
