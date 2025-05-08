@@ -525,6 +525,15 @@ if(BUILD_GUI)
     endif()
   endif()
 
+  # ensure we have absolute path to the uic executable
+  if (EXISTS "${Qt6Widgets_UIC_EXECUTABLE}")
+    # convert to absolute path
+    get_filename_component(Qt6Widgets_UIC_EXECUTABLE ${Qt6Widgets_UIC_EXECUTABLE} ABSOLUTE)
+    # set the variable as path property in the cache
+    set(Qt6Widgets_UIC_EXECUTABLE ${Qt6Widgets_UIC_EXECUTABLE} CACHE PATH "Path to the uic executable")
+    message(STATUS "Using UIC executable: ${Qt6Widgets_UIC_EXECUTABLE}")
+  endif()
+
   MACRO(COPASI_QT6_WRAP_UI outfiles)
     set(options)
     set(oneValueArgs SUBDIR)
