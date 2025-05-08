@@ -510,6 +510,7 @@ if(BUILD_GUI)
            PATHS ${Qt6Widgets_DIR}/../../../bin/
                  ${Qt6Widgets_DIR}/../../../share/qt/libexec/
                  ${Qt6Widgets_DIR}/../../../libexec/qt6/
+                 ${Qt6Widgets_DIR}/../../../libexec/
            )
 
     if (NOT EXISTS "${Qt6Widgets_UIC_EXECUTABLE}")
@@ -517,6 +518,9 @@ if(BUILD_GUI)
           ${Qt6Widgets_DIR}/../../../bin
           ${Qt6Widgets_DIR}/../../../share/qt/libexec
           ${Qt6Widgets_DIR}/../../../libexec/qt6/
+          ${Qt6Widgets_DIR}/../../../libexec/
+         
+          Please specify Qt6Widgets_UIC_EXECUTABLE manually
           ")
     endif()
   endif()
