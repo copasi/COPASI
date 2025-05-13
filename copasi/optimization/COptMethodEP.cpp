@@ -37,13 +37,12 @@
 
 COptMethodEP::COptMethodEP(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
-                           const CTaskEnum::Task & taskType):
-  COptPopulationMethod(pParent, methodType, taskType, false),
-  mBestIndex(C_INVALID_INDEX),
-  mLosses(0),
-  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mStopAfterStalledGenerations(0),
-  mVariance(0)
+                           const CTaskEnum::Task & taskType)
+  : COptPopulationMethod(pParent, methodType, taskType, true)
+  , mBestIndex(C_INVALID_INDEX)
+  , mLosses(0)
+  , mStopAfterStalledGenerations(0)
+  , mVariance(0)
 {
   assertParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
   assertParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 20);
@@ -56,13 +55,14 @@ COptMethodEP::COptMethodEP(const CDataContainer * pParent,
 
 COptMethodEP::COptMethodEP(const COptMethodEP & src,
                            const CDataContainer * pParent)
-  : COptPopulationMethod(src, pParent),
-    mBestIndex(C_INVALID_INDEX),
-    mLosses(0),
-    mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-    mStopAfterStalledGenerations(0),
-    mVariance(0)
-{initObjects();}
+  : COptPopulationMethod(src, pParent)
+  , mBestIndex(C_INVALID_INDEX)
+  , mLosses(0)
+  , mStopAfterStalledGenerations(0)
+  , mVariance(0)
+{
+  initObjects();
+}
 
 COptMethodEP::~COptMethodEP()
 {
@@ -88,10 +88,8 @@ bool COptMethodEP::optimise()
       )
     );
 
-  bool Continue = true;
-
   // Initialize the population
-  Continue = creation();
+  creation();
 
   // get the index of the fittest
   mBestIndex = fittest();
@@ -99,7 +97,7 @@ bool COptMethodEP::optimise()
   if (mBestIndex != C_INVALID_INDEX)
     setSolution(mValues[mBestIndex], *mIndividuals[mBestIndex], true);
 
-  if (!Continue)
+  if (!proceed())
     {
       if (mLogVerbosity > 0)
         mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user after initial population creation."));
@@ -116,7 +114,7 @@ bool COptMethodEP::optimise()
 
   // iterate over Generations
   for (mCurrentGeneration = 2;
-       mCurrentGeneration <= mGenerations && Continue;
+       mCurrentGeneration <= mGenerations && proceed();
        mCurrentGeneration++, Stalled++)
     {
 
@@ -124,10 +122,10 @@ bool COptMethodEP::optimise()
         break;
 
       // replicate the individuals
-      Continue = replicate();
+      replicate();
 
       // select the most fit
-      Continue = select();
+      select();
 
       // get the index of the fittest
       mBestIndex = fittest();
@@ -139,8 +137,9 @@ bool COptMethodEP::optimise()
           setSolution(mValues[mBestIndex], *mIndividuals[mBestIndex], true);
         }
 
-      if (mProcessReport)
-        Continue = mProcessReport.progressItem(mhGenerations);
+      if (mProcessReport
+          && !mProcessReport.progressItem(mhGenerations))
+        signalStop();
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
@@ -241,7 +240,8 @@ bool COptMethodEP::creation()
   // set the other half to random values within the boundaries
   // for(i=half; i<mVariableSizeze; i++)
 
-  for (i = 1; i < mPopulationSize && proceed(); i++)
+#pragma omp parallel for schedule(runtime)
+  for (i = 1; i < mPopulationSize; i++)
     {
       createIndividual(i, COptItem::CheckPolicyFlag::All);
       mValues[i] = evaluate({EvaluationPolicy::Constraints});
@@ -291,21 +291,10 @@ bool COptMethodEP::select()
 
 bool COptMethodEP::swap(size_t from, size_t to)
 {
-  CVector< C_FLOAT64 > * pTmp = mIndividuals[to];
-  mIndividuals[to] = mIndividuals[from];
-  mIndividuals[from] = pTmp;
-
-  pTmp = mVariance[to];
-  mVariance[to] = mVariance[from];
-  mVariance[from] = pTmp;
-
-  C_FLOAT64 dTmp = mValues[to];
-  mValues[to] = mValues[from];
-  mValues[from] = dTmp;
-
-  size_t iTmp = mLosses[to];
-  mLosses[to] = mLosses[from];
-  mLosses[from] = iTmp;
+  std::swap(mIndividuals[to], mIndividuals[from]);
+  std::swap(mVariance[to], mVariance[from]);
+  std::swap(mValues[to], mValues[from]);
+  std::swap(mLosses[to], mLosses[from]);
 
   return true;
 }
@@ -332,16 +321,13 @@ bool COptMethodEP::replicate()
   bool Continue = true;
 
   // iterate over parents
-  for (i = 0; i < mPopulationSize && Continue; i++)
+#pragma omp parallel for schedule(runtime)
+  for (i = 0; i < mPopulationSize; i++)
     {
       // replicate them
-      for (j = 0; j < mVariableSize; j++)
-        {
-          (*mIndividuals[mPopulationSize + i])[j] = (*mIndividuals[i])[j];
-          (*mVariance[mPopulationSize + i])[j] = (*mVariance[i])[j];
-        }
-
-      mValues[mPopulationSize + i] = mValues[i];
+      *mIndividuals[mPopulationSize + i] = *mIndividuals[i];
+      *mVariance[mPopulationSize + i] = *mVariance[i];
+      mValues[mPopulationSize + i] = std::numeric_limits< C_FLOAT64 >::infinity();
 
       // possibly mutate the offspring
       Continue = mutate(mPopulationSize + i);

@@ -217,6 +217,9 @@ const CVector< C_FLOAT64 > * COptMethod::getCurrentParameters() const
 // virtual evaluate the fitness of one individual
 C_FLOAT64 COptMethod::evaluate(const EvaluationPolicyFlag & policy)
 {
+  if (!mProceed)
+    return std::numeric_limits< C_FLOAT64 >::infinity();
+    
   // We do not need to check whether the parametric constraints are fulfilled
   // since the parameters are created within the bounds.
   COptProblem *& pOptProblem = mProblemContext.active();

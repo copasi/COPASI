@@ -151,11 +151,6 @@ private :
   CVector< size_t > mLosses;
 
   /**
-   * The value of the last evaluation.
-   */
-  C_FLOAT64 mEvaluationValue;
-
-  /**
   * if no improvement was made after # stalled generations
   * stop
   */
