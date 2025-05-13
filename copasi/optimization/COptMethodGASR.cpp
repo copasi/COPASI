@@ -38,22 +38,21 @@
 
 COptMethodGASR::COptMethodGASR(const CDataContainer * pParent,
                                const CTaskEnum::Method & methodType,
-                               const CTaskEnum::Task & taskType):
-  COptPopulationMethod(pParent, methodType, taskType, false),
-  mCrossOverFalse(0),
-  mCrossOver(0),
-  mpPermutation(NULL),
-  mWins(0),
-  mMutationVarians(0.1),
-  mStopAfterStalledGenerations(0),
-  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mBestIndex(C_INVALID_INDEX)
+                               const CTaskEnum::Task & taskType)
+  : COptPopulationMethod(pParent, methodType, taskType, true)
+  , mCrossOverFalse(0)
+  , mCrossOver(0)
+  , mpPermutation(NULL)
+  , mWins(0)
+  , mMutationVariance(0.1)
+  , mStopAfterStalledGenerations(0)
+  , mBestIndex(C_INVALID_INDEX)
 {
   assertParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
   assertParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 20);
   assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
   assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
-  assertParameter("Pf", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.475);  //*****ADDED for SR
+  assertParameter("Pf", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.475); //*****ADDED for SR
   assertParameter("Mutation Variance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.1, eUserInterfaceFlag::editable);
   assertParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
@@ -61,17 +60,18 @@ COptMethodGASR::COptMethodGASR(const CDataContainer * pParent,
 }
 
 COptMethodGASR::COptMethodGASR(const COptMethodGASR & src,
-                               const CDataContainer * pParent):
-  COptPopulationMethod(src, pParent),
-  mCrossOverFalse(0),
-  mCrossOver(0),
-  mpPermutation(NULL),
-  mWins(0),
-  mMutationVarians(0.1),
-  mStopAfterStalledGenerations(0),
-  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mBestIndex(C_INVALID_INDEX)
-{initObjects();}
+                               const CDataContainer * pParent)
+  : COptPopulationMethod(src, pParent)
+  , mCrossOverFalse(0)
+  , mCrossOver(0)
+  , mpPermutation(NULL)
+  , mWins(0)
+  , mMutationVariance(0.1)
+  , mStopAfterStalledGenerations(0)
+  , mBestIndex(C_INVALID_INDEX)
+{
+  initObjects();
+}
 
 COptMethodGASR::~COptMethodGASR()
 {cleanup();}
@@ -109,7 +109,7 @@ bool COptMethodGASR::mutate(CVector< C_FLOAT64 > & individual)
       C_FLOAT64 & mut = individual[j];
 
       // calculate the mutated parameter
-      mut *= mRandomContext.master()->getRandomNormal(1, mMutationVarians);
+      mut *= mRandomContext.master()->getRandomNormal(1, mMutationVariance);
 
       // for SR do not force to be within bounds
 
@@ -176,7 +176,6 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
 bool COptMethodGASR::replicate()
 {
   size_t i;
-  bool Continue = true;
 
   // generate a random order for the parents
   mpPermutation->shuffle();
@@ -193,16 +192,17 @@ bool COptMethodGASR::replicate()
     *mIndividuals[2 * mPopulationSize - 1] = *mIndividuals[mpPermutation->next()];
 
   // mutate the offspring
-  for (i = mPopulationSize; i < 2 * mPopulationSize && Continue; i++)
+#pragma omp parallel for schedule(runtime)
+  for (i = mPopulationSize; i < 2 * mPopulationSize; i++)
     {
       mutate(*mIndividuals[i]);
-      mValues[i] = mEvaluationValue = evaluate(EvaluationPolicyFlag::None);
+      mValues[i] = evaluate(EvaluationPolicyFlag::None);
 
       /* Calculate the phi value of the individual for SR*/
       mPhi[i] = phi(i);
     }
 
-  return Continue;
+  return proceed();
 }
 
 // select mPopulationSize individuals
@@ -320,20 +320,19 @@ bool COptMethodGASR::creation(size_t first,
   C_FLOAT64 mx;
   C_FLOAT64 la;
 
-  bool Continue = true;
-
-  for (i = first; i < Last && Continue; i++)
+#pragma omp parallel for schedule(runtime)
+  for (i = first; i < Last; i++)
     {
       createIndividual(i, COptItem::CheckPolicyFlag::None);
 
       // calculate its fitness
-      mValues[i] = mEvaluationValue = evaluate(EvaluationPolicyFlag::None);
+      mValues[i] = evaluate(EvaluationPolicyFlag::None);
 
       /* Calculate the phi value of the individual for SR*/
       mPhi[i] = phi(i);
     }
 
-  return Continue;
+  return proceed();
 }
 
 void COptMethodGASR::initObjects()
@@ -379,16 +378,16 @@ bool COptMethodGASR::initialize()
   mWins.resize(2 * mPopulationSize);
 
   // initialize the variance for mutations
-  mMutationVarians = 0.1;
+  mMutationVariance = 0.1;
 
   if (getParameter("Mutation Variance"))
     {
-      mMutationVarians = getValue< C_FLOAT64 >("Mutation Variance");
+      mMutationVariance = getValue< C_FLOAT64 >("Mutation Variance");
 
-      if (mMutationVarians < 0.0 || 1.0 < mMutationVarians)
+      if (mMutationVariance < 0.0 || 1.0 < mMutationVariance)
         {
-          mMutationVarians = 0.1;
-          setValue("Mutation Variance", mMutationVarians);
+          mMutationVariance = 0.1;
+          setValue("Mutation Variance", mMutationVariance);
         }
     }
 
@@ -435,8 +434,8 @@ bool COptMethodGASR::optimise()
   // first individual is the initial guess
   createIndividual(C_INVALID_INDEX, COptItem::CheckPolicyFlag::None);
 
-  mValues[0] = mEvaluationValue = evaluate(EvaluationPolicyFlag::None);
-  mProblemContext.master()->setSolution(mEvaluationValue, *mIndividuals[0], true);
+  mValues[0] = evaluate(EvaluationPolicyFlag::None);
+  mProblemContext.master()->setSolution(mValues[0], *mIndividuals[0], true);
 
   /* Calculate the phi value of the individual for SR*/
   mPhi[0] = phi(0);

@@ -195,18 +195,13 @@ private:
   /**
    * variance for mutations
    */
-  C_FLOAT64 mMutationVarians;
+  C_FLOAT64 mMutationVariance;
 
   /**
   * if no improvement was made after # stalled generations
   * stop
   */
   unsigned C_INT32 mStopAfterStalledGenerations;
-
-  /**
-   * The value of the last evaluation.
-   */
-  C_FLOAT64 mEvaluationValue;
 
   /**
    * The best value so far.
