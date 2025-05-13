@@ -33,13 +33,12 @@
 
 COptMethodDE::COptMethodDE(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
-                           const CTaskEnum::Task & taskType):
-  COptPopulationMethod(pParent, methodType, taskType, false),
-  mpPermutation(NULL),
-  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mMutationVarians(0.1),
-  mStopAfterStalledGenerations(0),
-  mBestIndex(C_INVALID_INDEX)
+                           const CTaskEnum::Task & taskType)
+  : COptPopulationMethod(pParent, methodType, taskType, true)
+  , mpPermutation(NULL)
+  , mMutationVariance(0.1)
+  , mStopAfterStalledGenerations(0)
+  , mBestIndex(C_INVALID_INDEX)
 
 {
   assertParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
@@ -53,14 +52,15 @@ COptMethodDE::COptMethodDE(const CDataContainer * pParent,
 }
 
 COptMethodDE::COptMethodDE(const COptMethodDE & src,
-                           const CDataContainer * pParent):
-  COptPopulationMethod(src, pParent),
-  mpPermutation(NULL),
-  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mMutationVarians(0.1),
-  mStopAfterStalledGenerations(0),
-  mBestIndex(C_INVALID_INDEX)
-{initObjects();}
+                           const CDataContainer * pParent)
+  : COptPopulationMethod(src, pParent)
+  , mpPermutation(NULL)
+  , mMutationVariance(0.1)
+  , mStopAfterStalledGenerations(0)
+  , mBestIndex(C_INVALID_INDEX)
+{
+  initObjects();
+}
 
 COptMethodDE::~COptMethodDE()
 {cleanup();}
@@ -73,7 +73,8 @@ bool COptMethodDE::replicate()
   const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
   mpPermutation->shuffle();
 
-  for (i = mPopulationSize; i < 2 * mPopulationSize && proceed(); i++)
+#pragma omp parallel for schedule(runtime)
+  for (i = mPopulationSize; i < 2 * mPopulationSize; i++)
     {
       // MUTATION a, b, c in [0, mPopulationSize - 1]
       a = mpPermutation->pick();
@@ -92,11 +93,12 @@ bool COptMethodDE::replicate()
           OptItem.setItemValue(mut, COptItem::CheckPolicyFlag::All);
         }
 
-      mValues[i] = evaluate({EvaluationPolicy::Constraints});
+      mValues[i] = evaluate(EvaluationPolicy::Constraints);
     }
 
   //CROSSOVER MUTATED GENERATION WITH THE CURRENT ONE
-  for (i = 2 * mPopulationSize; i < 3 * mPopulationSize && proceed(); i++)
+#pragma omp parallel for schedule(runtime)
+  for (i = 2 * mPopulationSize; i < 3 * mPopulationSize; i++)
     {
       for (j = 0; j < mVariableSize; j++)
         {
@@ -108,7 +110,7 @@ bool COptMethodDE::replicate()
           if (r < 0.6 * mPopulationSize)
             {
               mut = (*mIndividuals[i - mPopulationSize])[j] *
-                    mRandomContext.master()->getRandomNormal(1, mMutationVarians);
+                    mRandomContext.master()->getRandomNormal(1, mMutationVariance);
             }
           else
             mut = (*mIndividuals[i - 2 * mPopulationSize])[j];
@@ -177,15 +179,14 @@ bool COptMethodDE::creation(size_t first, size_t last)
   C_FLOAT64 mx;
   C_FLOAT64 la;
 
-  for (i = first; i < Last && proceed(); i++)
+#pragma omp parallel for schedule(runtime)
+  for (i = first; i < Last; i++)
     {
       // We do not want to loose the best individual;
       if (mBestIndex != i)
         {
           createIndividual(i, COptItem::CheckPolicyFlag::All);
-          // calculate its fitness
-          COptPopulationMethod::evaluate({EvaluationPolicy::Constraints});
-          mValues[i] = mEvaluationValue;
+          mValues[i] = evaluate({EvaluationPolicy::Constraints});
         }
     }
 
@@ -230,16 +231,16 @@ bool COptMethodDE::initialize()
   mValues.resize(3 * mPopulationSize);
   mValues = std::numeric_limits<C_FLOAT64>::infinity();
 
-  mMutationVarians = 0.1;
+  mMutationVariance = 0.1;
 
   if (getParameter("Mutation Variance"))
     {
-      mMutationVarians = getValue< C_FLOAT64 >("Mutation Variance");
+      mMutationVariance = getValue< C_FLOAT64 >("Mutation Variance");
 
-      if (mMutationVarians < 0.0 || 1.0 < mMutationVarians)
+      if (mMutationVariance < 0.0 || 1.0 < mMutationVariance)
         {
-          mMutationVarians = 0.1;
-          setValue("Mutation Variance", mMutationVarians);
+          mMutationVariance = 0.1;
+          setValue("Mutation Variance", mMutationVariance);
         }
     }
 
@@ -281,7 +282,7 @@ bool COptMethodDE::optimise()
   bool pointInParameterDomain = true;
   createIndividual(C_INVALID_INDEX, COptItem::CheckPolicyFlag::All);
 
-  mValues[0] = evaluate({EvaluationPolicy::Constraints});
+  mValues[0] = evaluate(EvaluationPolicy::Constraints);
 
   if (!std::isnan(mValues[0]))
     setSolution(mValues[0], *mIndividuals[0], true);

@@ -119,14 +119,9 @@ private:
   CPermutation * mpPermutation;
 
   /**
-    * The value of the last evaluation.
-    */
-  C_FLOAT64 mEvaluationValue;
-
-  /**
    * variance for mutations
    */
-  C_FLOAT64 mMutationVarians;
+  C_FLOAT64 mMutationVariance;
 
   /**
   * if no improvement was made after # stalled generations
