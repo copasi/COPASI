@@ -1912,9 +1912,10 @@ bool CDataModel::exportCombineArchive(
                   {
                     CExperiment * current = experiments.getExperiment(i);
 
-                    if (current->getFileName() == renameIt->first)
+                    if (current->getFileNameOnly() == renameIt->first)
                       {
                         current->setFileName("." + renameIt->second);
+                        break;
                       }
                   }
               }
@@ -1938,9 +1939,10 @@ bool CDataModel::exportCombineArchive(
                   {
                     CExperiment * current = experiments.getExperiment(i);
 
-                    if (current->getFileName() == renameIt->first)
+                    if (current->getFileNameOnly() == renameIt->first)
                       {
                         current->setFileName("." + renameIt->second);
+                        break;
                       }
                   }
               }
@@ -1965,6 +1967,7 @@ bool CDataModel::exportCombineArchive(
                 if (current->getFileNameOnly() == "." + renameIt->second)
                   {
                     current->setFileName(renameIt->first);
+                    break;
                   }
               }
           }
@@ -1981,6 +1984,7 @@ bool CDataModel::exportCombineArchive(
                 if (current->getFileNameOnly() == "." + renameIt->second)
                   {
                     current->setFileName(renameIt->first);
+                    break;
                   }
               }
           }
