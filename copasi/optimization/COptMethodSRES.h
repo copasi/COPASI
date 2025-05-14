@@ -173,11 +173,6 @@ private:
   */
   unsigned C_INT32 mStopAfterStalledGenerations;
 
-  /**
-   * The value of the last evaluation.
-   */
-  C_FLOAT64 mEvaluationValue;
-
   double mTau;    // parameter for updating variances
 
   double mTauPrime;    // parameter for updating variances

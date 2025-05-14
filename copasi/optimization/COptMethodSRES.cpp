@@ -45,9 +45,8 @@
 COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
                                const CTaskEnum::Method & methodType,
                                const CTaskEnum::Task & taskType)
-  : COptPopulationMethod(pParent, methodType, taskType, false)
+  : COptPopulationMethod(pParent, methodType, taskType, true)
   , mStopAfterStalledGenerations(0)
-  , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max())
 {
   assertParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
   assertParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 20);
@@ -63,7 +62,6 @@ COptMethodSRES::COptMethodSRES(const COptMethodSRES & src,
                                const CDataContainer * pParent)
   : COptPopulationMethod(src, pParent)
   , mStopAfterStalledGenerations(0)
-  , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max())
 {
   initObjects();
 }
@@ -73,21 +71,10 @@ COptMethodSRES::~COptMethodSRES()
 
 bool COptMethodSRES::swap(size_t from, size_t to)
 {
-  CVector< C_FLOAT64 > * pTmp = mIndividuals[to];
-  mIndividuals[to] = mIndividuals[from];
-  mIndividuals[from] = pTmp;
-
-  pTmp = mVariance[to];
-  mVariance[to] = mVariance[from];
-  mVariance[from] = pTmp;
-
-  C_FLOAT64 dTmp = mValues[to];
-  mValues[to] = mValues[from];
-  mValues[from] = dTmp;
-
-  dTmp = mPhi[to];
-  mPhi[to] = mPhi[from];
-  mPhi[from] = dTmp;
+  std::swap(mIndividuals[to], mIndividuals[from]);
+  std::swap(mVariance[to], mVariance[from]);
+  std::swap(mValues[to], mValues[from]);
+  std::swap(mPhi[to], mPhi[from]);
 
   return true;
 }
@@ -146,24 +133,20 @@ bool COptMethodSRES::mutate()
   std::vector< CVector < C_FLOAT64 > * >::iterator end = mIndividuals.end();
   std::vector< CVector < C_FLOAT64 > * >::iterator itVariance = mVariance.begin() + mPopulationSize;
 
-  C_FLOAT64 * pVariable, * pVariableEnd, * pVariance, * pMaxVariance;
-  C_FLOAT64 * pPhi = mPhi.array() + mPopulationSize;
-  C_FLOAT64 * pValue = mValues.array() + mPopulationSize;
-
-  bool Continue = true;
   size_t i, j;
   C_FLOAT64 v1;
 
   // Mutate each new individual
-  for (i = mPopulationSize; it != end && Continue; ++it, ++itVariance, ++i)
+#pragma omp parallel for schedule(runtime)
+  for (i = mPopulationSize; i < 2 * mPopulationSize; ++i)
     {
       CRandom * pRandom = mRandomContext.master();
       const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
 
-      pVariable = (*it)->array();
-      pVariableEnd = pVariable + mVariableSize;
-      pVariance = (*itVariance)->array();
-      pMaxVariance = mMaxVariance.array();
+      C_FLOAT64 * pVariable = mIndividuals[i]->array();
+      C_FLOAT64 * pVariableEnd = pVariable + mVariableSize;
+      C_FLOAT64 * pVariance = mVariance[i]->array();
+      C_FLOAT64 * pMaxVariance = mMaxVariance.array();
 
       v1 = pRandom->getRandomNormal01();
 
@@ -206,12 +189,11 @@ bool COptMethodSRES::mutate()
         }
 
       // calculate its fitness
-      mEvaluationValue = evaluate(EvaluationPolicyFlag::None);
-      *pValue++ = mEvaluationValue;
-      *pPhi++ = phi(i);
+      mValues[i] = evaluate(EvaluationPolicyFlag::None);
+      mPhi[i] = phi(i);
     }
 
-  return Continue;
+  return proceed();
 }
 
 // select mPopulationSize individuals
@@ -274,35 +256,28 @@ void COptMethodSRES::finalizeCreation(const size_t & individual, const size_t & 
 bool COptMethodSRES::creation(size_t first)
 {
   size_t i;
-  size_t j;
-
-  bool Continue = true;
-
-  C_FLOAT64 * pPhi = mPhi.array() + first;
-  C_FLOAT64 * pValue = mValues.array() + first;
 
   // set the first individual to the initial guess
   if (first == 0)
     {
       createIndividual(C_INVALID_INDEX, COptItem::CheckPolicyFlag::All);
 
-      mEvaluationValue = evaluate(EvaluationPolicyFlag::None);
-      *pValue++ = mEvaluationValue;
-      *pPhi++ = phi(0);
+      mValues[0] = evaluate(EvaluationPolicyFlag::None);
+      mPhi[0] = phi(0);
 
       ++first;
     }
 
-  for (i = first; i < mPopulationSize && proceed(); ++i)
+#pragma omp parallel for schedule(runtime)
+  for (i = first; i < mPopulationSize; ++i)
     {
       createIndividual(i, COptItem::CheckPolicyFlag::All);
 
-      mEvaluationValue = evaluate(EvaluationPolicyFlag::None);
-      *pValue++ = mEvaluationValue;
-      *pPhi++ = phi(i);
+      mValues[i] = evaluate(EvaluationPolicyFlag::None);
+      mPhi[i] = phi(i);
     }
 
-  return Continue;
+  return proceed();
 }
 
 void COptMethodSRES::initObjects()
