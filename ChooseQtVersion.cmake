@@ -8,7 +8,7 @@
 # of Connecticut School of Medicine. 
 # All rights reserved. 
 
-cmake_minimum_required (VERSION 2.8.12...3.19.1)
+cmake_minimum_required(VERSION 2.8...3.19)
 
 set(SELECT_QT "Any" CACHE STRING "The prefered Qt version one of: Qt6, Qt5, Qt4 or Any" )
 if (DEFINED SELECT_QT)
