@@ -27,7 +27,7 @@
 #
 ###############################################################################
 
-cmake_minimum_required (VERSION 2.8.12...3.19.1)
+cmake_minimum_required(VERSION 2.8...3.19)
 project (compareExpressions-stresstest)
 
 include_directories(
