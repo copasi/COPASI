@@ -52,7 +52,7 @@ bool CMethodContext< Method >::setProblemContext(CProblemContext< Problem > & Co
       success &= Base::master()->setProblem(Context.master());
 
       if (Base::size() > 1)
-#pragma omp parallel for reduce(&: success)
+#pragma omp parallel for reduction(&: success)
         for (size_t i = 0; i < Base::size(); ++i)
           success &= Base::threadData()[i]->setProblem(Context.threadData()[i]);
     }
