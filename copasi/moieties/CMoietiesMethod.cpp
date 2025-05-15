@@ -57,7 +57,9 @@ bool CMoietiesMethod::process()
   return true;
 }
 
-void CMoietiesMethod::setProblem(CMoietiesProblem * pProblem)
+bool CMoietiesMethod::setProblem(CCopasiProblem * pProblem)
 {
-  mpProblem = pProblem;
+  mpProblem = dynamic_cast< CMoietiesProblem * >(pProblem);
+
+  return mpProblem != nullptr;
 }

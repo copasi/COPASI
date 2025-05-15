@@ -51,7 +51,7 @@ COptMethodNelderMead::COptMethodNelderMead(const CDataContainer * pParent,
 
 COptMethodNelderMead::COptMethodNelderMead(const COptMethodNelderMead & src,
     const CDataContainer * pParent):
-  COptMethod(src, pParent)
+  COptMethod(src, pParent, false)
 {initObjects();}
 
 COptMethodNelderMead::~COptMethodNelderMead()
@@ -235,7 +235,7 @@ bool COptMethodNelderMead::optimise()
   // initial point is first guess but we have to make sure that we
   // are within the parameter domain
   bool pointInParameterDomain = true;
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   for (i = 0; i < mVariableSize; i++)
     {
@@ -636,7 +636,7 @@ bool COptMethodNelderMead::initialize()
                              mIteration,
                              & mIterationLimit);
 
-  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
+  mVariableSize = mProblemContext.active()->getOptItemList(true).size();
 
   mSimplex.resize(mVariableSize, mVariableSize + 1);
   mValue.resize(mVariableSize + 1);

@@ -52,8 +52,9 @@ COptMethodDE::COptMethodDE(const CDataContainer * pParent,
 }
 
 COptMethodDE::COptMethodDE(const COptMethodDE & src,
-                           const CDataContainer * pParent)
-  : COptPopulationMethod(src, pParent)
+                           const CDataContainer * pParent,
+                           const bool & parallel)
+  : COptPopulationMethod(src, pParent, parallel)
   , mpPermutation(NULL)
   , mMutationVariance(0.1)
   , mStopAfterStalledGenerations(0)
@@ -70,12 +71,13 @@ bool COptMethodDE::replicate()
   size_t i, j;
   size_t a, b, c;
 
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
   mpPermutation->shuffle();
 
 #pragma omp parallel for schedule(runtime)
   for (i = mPopulationSize; i < 2 * mPopulationSize; i++)
     {
+      const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
+
       // MUTATION a, b, c in [0, mPopulationSize - 1]
       a = mpPermutation->pick();
       // b is guaranteed to be different from a
@@ -100,17 +102,20 @@ bool COptMethodDE::replicate()
 #pragma omp parallel for schedule(runtime)
   for (i = 2 * mPopulationSize; i < 3 * mPopulationSize; i++)
     {
+      const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
+      CRandom * pRandom = mRandomContext.active();
+      
       for (j = 0; j < mVariableSize; j++)
         {
           COptItem & OptItem = *OptItemList[j];
           C_FLOAT64 & mut = (*mIndividuals[i])[j];
 
-          size_t r = mRandomContext.master()->getRandomU(mPopulationSize - 1);
+          size_t r = pRandom->getRandomU(mPopulationSize - 1);
 
           if (r < 0.6 * mPopulationSize)
             {
               mut = (*mIndividuals[i - mPopulationSize])[j] *
-                    mRandomContext.master()->getRandomNormal(1, mMutationVariance);
+                    pRandom->getRandomNormal(1, mMutationVariance);
             }
           else
             mut = (*mIndividuals[i - 2 * mPopulationSize])[j];

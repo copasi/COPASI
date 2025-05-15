@@ -59,10 +59,11 @@ COptMethod::COptMethod(const CDataContainer * pParent,
 }
 
 COptMethod::COptMethod(const COptMethod & src,
-                       const CDataContainer * pParent)
+                       const CDataContainer * pParent,
+                       const bool & parallel)
   : CCopasiMethod(src, pParent)
   , mpParentTask(src.mpParentTask)
-  , mParallel(src.mParallel)
+  , mParallel(parallel)
   , mMathContext(src.mParallel)
   , mProblemContext(src.mParallel, this)
   , mLogVerbosity(src.mLogVerbosity)
@@ -104,10 +105,12 @@ void COptMethod::reflect(COptProblem * pProblem, const C_FLOAT64 & bestValue, C_
 }
  */
 
-void COptMethod::setProblem(COptProblem * pProblem)
+bool COptMethod::setProblem(CCopasiProblem * pProblem)
 {
-  mProblemContext.setMaster(pProblem);
+  mProblemContext.setMaster(dynamic_cast< COptProblem * >(pProblem));
   mProblemContext.setMathContext(mMathContext);
+
+  return mProblemContext.master() != nullptr;
 }
 
 //virtual C_INT32 COptMethod::Optimise(C_FLOAT64 (*func) (void))

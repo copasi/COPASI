@@ -41,6 +41,7 @@
 #include "copasi/copasi.h"
 #include "CHybridNextReactionLSODAMethod.h"
 #include "copasi/math/CMathContainer.h"
+#include "copasi/trajectory/CTrajectoryProblem.h"
 
 CHybridNextReactionLSODAMethod::CHybridNextReactionLSODAMethod(const CDataContainer * pParent,
     const CTaskEnum::Method & methodType,

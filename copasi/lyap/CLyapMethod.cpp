@@ -95,8 +95,12 @@ CLyapMethod::~CLyapMethod()
  *  This method is used by CLyap
  *  @param "CLyapProblem *" problem
  */
-void CLyapMethod::setProblem(CLyapProblem * problem)
-{mpProblem = problem;}
+bool CLyapMethod::setProblem(CCopasiProblem * pProblem)
+{
+  mpProblem = dynamic_cast< CLyapProblem * >(pProblem);
+
+  return mpProblem != nullptr;
+}
 
 /**
  *  This instructs the method to calculate a a time step of deltaT

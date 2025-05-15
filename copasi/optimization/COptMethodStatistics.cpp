@@ -47,7 +47,7 @@ COptMethodStatistics::COptMethodStatistics(const CDataContainer * pParent,
 
 COptMethodStatistics::COptMethodStatistics(const COptMethodStatistics & src,
                                            const CDataContainer * pParent)
-  : COptMethod(src, pParent)
+  : COptMethod(src, pParent, false)
   , mIndividual(src.mIndividual)
   , mValue(src.mValue)
   , mVariableSize(src.mVariableSize)
@@ -75,7 +75,7 @@ bool COptMethodStatistics::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
+  mVariableSize = mProblemContext.active()->getOptItemList(true).size();
   mIndividual.resize(mVariableSize);
 
   return true;
@@ -93,7 +93,7 @@ bool COptMethodStatistics::optimise()
   if (!initialize()) return false;
 
   size_t j;
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   // Initialize the population
   // first individual is the initial guess

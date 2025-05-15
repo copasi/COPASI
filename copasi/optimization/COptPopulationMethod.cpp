@@ -44,8 +44,9 @@ COptPopulationMethod::COptPopulationMethod(const CDataContainer * pParent,
 }
 
 COptPopulationMethod::COptPopulationMethod(const COptPopulationMethod & src,
-    const CDataContainer * pParent)
-  : COptMethod(src, pParent)
+    const CDataContainer * pParent,
+    const bool & parallel)
+  : COptMethod(src, pParent, parallel)
   , mPopulationSize(0)
   , mGenerations(0)
   , mCurrentGeneration(0)
@@ -105,7 +106,7 @@ COptPopulationMethod::initialize()
   unsigned C_INT32 seed = (getParameter("Seed") != NULL) ? getValue< unsigned C_INT32 >("Seed") : 0;
 
   mRandomContext.init(RNG, seed);
-  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
+  mVariableSize = mProblemContext.active()->getOptItemList(true).size();
 
   return true;
 }

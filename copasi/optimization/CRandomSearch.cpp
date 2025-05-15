@@ -68,7 +68,7 @@ CRandomSearch::CRandomSearch(const CDataContainer * pParent,
 
 CRandomSearch::CRandomSearch(const CRandomSearch & src,
                              const CDataContainer * pParent)
-  : COptMethod(src, pParent)
+  : COptMethod(src, pParent, false)
   , mIterations(src.mIterations)
   , mCurrentIteration(src.mCurrentIteration)
   , mIndividual(src.mIndividual)
@@ -116,7 +116,7 @@ bool CRandomSearch::initialize()
       mpRandom = CRandom::createGenerator();
     }
 
-  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
+  mVariableSize = mProblemContext.active()->getOptItemList(true).size();
   mIndividual.resize(mVariableSize);
 
   return true;
@@ -148,10 +148,10 @@ bool CRandomSearch::optimise()
   for (j = 0; j < mVariableSize; j++)
     {
       C_FLOAT64 & mut = mIndividual[j];
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
+      COptItem & OptItem = *mProblemContext.active()->getOptItemList(true)[j];
 
       mut = OptItem.getStartValue();
-      pointInParameterDomain &= mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut, COptItem::CheckPolicyFlag::All);
+      pointInParameterDomain &= OptItem.setItemValue(mut, COptItem::CheckPolicyFlag::All);
       pointInParameterDomain &= mut == OptItem.getStartValue();
     }
 
@@ -166,7 +166,7 @@ bool CRandomSearch::optimise()
   for (mCurrentIteration = 1; mCurrentIteration < mIterations && proceed(); mCurrentIteration++)
     {
       LastIndividual = mIndividual;
-      const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+      const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
       for (j = 0; j < mVariableSize && proceed(); j++)
         {

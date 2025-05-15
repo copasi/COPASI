@@ -54,7 +54,7 @@ COptMethodPraxis::COptMethodPraxis(const CDataContainer * pParent,
 
 COptMethodPraxis::COptMethodPraxis(const COptMethodPraxis & src,
                                    const CDataContainer * pParent)
-  : COptMethod(src, pParent)
+  : COptMethod(src, pParent, false)
   , mTolerance(1.e-005)
   , mIteration(src.mIteration)
   , mhIteration(src.mhIteration)
@@ -100,7 +100,7 @@ bool COptMethodPraxis::optimise()
   // we are within the parameter domain
 
   bool pointInParameterDomain = true;
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   for (i = 0; i < mVariableSize; i++)
     {
@@ -164,7 +164,7 @@ bool COptMethodPraxis::initialize()
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
   mIteration = 0;
 
-  mVariableSize = (C_INT32) mProblemContext.master()->getOptItemList(true).size();
+  mVariableSize = (C_INT32) mProblemContext.active()->getOptItemList(true).size();
   mCurrent.resize(mVariableSize);
   mBest.resize(mVariableSize);
 
@@ -181,7 +181,7 @@ const C_FLOAT64 & COptMethodPraxis::evaluateFunction(C_FLOAT64 *x, C_INT32 & n)
 {
   C_INT32 i;
   bool Proceed = proceed();
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   for (i = 0; i < n; i++)
     OptItemList[i]->setItemValue((x[i]), COptItem::CheckPolicyFlag::None);

@@ -60,8 +60,9 @@ COptMethodGASR::COptMethodGASR(const CDataContainer * pParent,
 }
 
 COptMethodGASR::COptMethodGASR(const COptMethodGASR & src,
-                               const CDataContainer * pParent)
-  : COptPopulationMethod(src, pParent)
+                               const CDataContainer * pParent,
+                               const bool & parallel)
+  : COptPopulationMethod(src, pParent, parallel)
   , mCrossOverFalse(0)
   , mCrossOver(0)
   , mpPermutation(NULL)
@@ -103,19 +104,22 @@ bool COptMethodGASR::mutate(CVector< C_FLOAT64 > & individual)
 {
   size_t j;
 
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
+  CRandom * pRandom = mRandomContext.active();
+
   // mutate the parameters
   for (j = 0; j < mVariableSize; j++)
     {
       C_FLOAT64 & mut = individual[j];
 
       // calculate the mutated parameter
-      mut *= mRandomContext.master()->getRandomNormal(1, mMutationVariance);
+      mut *= pRandom->getRandomNormal(1, mMutationVariance);
 
       // for SR do not force to be within bounds
 
       // We need to set the value here so that further checks take
       // account of the value.
-      mProblemContext.master()->getOptItemList(true)[j]->setItemValue(mut, COptItem::CheckPolicyFlag::None);
+      OptItemList[j]->setItemValue(mut, COptItem::CheckPolicyFlag::None);
     }
 
   return true;
@@ -126,13 +130,16 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
                                CVector< C_FLOAT64 > & child1,
                                CVector< C_FLOAT64 > & child2)
 {
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
+  CRandom * pRandom = mRandomContext.active();
+
   size_t i, crp;
   size_t nCross = 0;
 
   mCrossOver = mCrossOverFalse;
 
   if (mVariableSize > 1)
-    nCross = mRandomContext.master()->getRandomU((unsigned C_INT32)(mVariableSize / 2));
+    nCross = pRandom->getRandomU((unsigned C_INT32)(mVariableSize / 2));
 
   if (nCross == 0)
     {
@@ -147,7 +154,7 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
   // We do not mind if a crossover point gets drawn twice
   for (i = 0; i < nCross; i++)
     {
-      crp = mRandomContext.master()->getRandomU((unsigned C_INT32)(mVariableSize - 1));
+      crp = pRandom->getRandomU((unsigned C_INT32)(mVariableSize - 1));
       mCrossOver[crp] = true;
     }
 
@@ -257,8 +264,10 @@ C_FLOAT64 COptMethodGASR::phi(size_t indivNum)
   C_FLOAT64 phiVal = 0.0;
   C_FLOAT64 phiCalc;
 
-  std::vector< COptItem * >::const_iterator it = mProblemContext.master()->getOptItemList(true).begin();
-  std::vector< COptItem * >::const_iterator end = mProblemContext.master()->getOptItemList(true).end();
+  COptProblem *& pProblem = mProblemContext.active();
+
+  std::vector< COptItem * >::const_iterator it = pProblem->getOptItemList(true).begin();
+  std::vector< COptItem * >::const_iterator end = pProblem->getOptItemList(true).end();
   C_FLOAT64 * pValue = mIndividuals[indivNum]->array();
 
   for (; it != end; ++it, pValue++)
@@ -277,8 +286,8 @@ C_FLOAT64 COptMethodGASR::phi(size_t indivNum)
         }
     }
 
-  it = mProblemContext.master()->getConstraintList().begin();
-  end = mProblemContext.master()->getConstraintList().end();
+  it = pProblem->getConstraintList().begin();
+  end = pProblem->getConstraintList().end();
 
   for (; it != end; ++it)
     {
@@ -435,7 +444,7 @@ bool COptMethodGASR::optimise()
   createIndividual(C_INVALID_INDEX, COptItem::CheckPolicyFlag::None);
 
   mValues[0] = evaluate(EvaluationPolicyFlag::None);
-  mProblemContext.master()->setSolution(mValues[0], *mIndividuals[0], true);
+  setSolution(mValues[0], *mIndividuals[0], true);
 
   /* Calculate the phi value of the individual for SR*/
   mPhi[0] = phi(0);

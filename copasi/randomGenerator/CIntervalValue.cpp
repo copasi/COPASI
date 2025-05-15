@@ -94,7 +94,7 @@ C_FLOAT64 CIntervalValue::randomValue(CRandom * pRandom) const
                 if (Sample < R)
                   result = *mpMinimum * (1.0 - 2.0 * Sample/R);
                 else
-                  result = pow(10.0, log10(std::max(-*mpMinimum, std::numeric_limits< C_FLOAT64 >::min())) + mLogarithmicScale * (Sample - R)/(Sample-R));
+                  result = pow(10.0, log10(std::max(-*mpMinimum, std::numeric_limits< C_FLOAT64 >::min())) + mLogarithmicScale * (Sample - R)/(1.0 - R));
               }
             else
               {
@@ -104,7 +104,7 @@ C_FLOAT64 CIntervalValue::randomValue(CRandom * pRandom) const
                 if (Sample < R)
                   result = *mpMaximum * (1.0 - 2.0 * Sample/R);
                 else
-                  result = -pow(10.0, log10(std::max(*mpMaximum, std::numeric_limits< C_FLOAT64 >::min())) - mLogarithmicScale * (Sample - R)/(Sample-R));
+                  result = -pow(10.0, log10(std::max(*mpMaximum, std::numeric_limits< C_FLOAT64 >::min())) - mLogarithmicScale * (Sample - R)/(1.0 - R));
               }
             break;
 

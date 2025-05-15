@@ -114,7 +114,8 @@ public:
    * @param const COptMethodEP & src
    */
   COptMethodEP(const COptMethodEP& src,
-               const CDataContainer * pParent);
+               const CDataContainer * pParent,
+               const bool & parallel);
 
   /**
    * Destructor

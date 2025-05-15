@@ -54,8 +54,9 @@ COptMethodEP::COptMethodEP(const CDataContainer * pParent,
 }
 
 COptMethodEP::COptMethodEP(const COptMethodEP & src,
-                           const CDataContainer * pParent)
-  : COptPopulationMethod(src, pParent)
+                           const CDataContainer * pParent,
+                           const bool & parallel)
+  : COptPopulationMethod(src, pParent, parallel)
   , mBestIndex(C_INVALID_INDEX)
   , mLosses(0)
   , mStopAfterStalledGenerations(0)
@@ -181,7 +182,7 @@ bool COptMethodEP::initialize()
 
   if (!COptPopulationMethod::initialize()) return false;
 
-  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
+  mVariableSize = mProblemContext.active()->getOptItemList(true).size();
 
   mIndividuals.resize(2 * mPopulationSize);
 
@@ -260,6 +261,7 @@ bool COptMethodEP::select()
 
   // compete with ~ 20% of the TotalPopulation
   nopp = std::max<size_t>(1, mPopulationSize / 5);
+  CRandom * pRandom = mRandomContext.active();
 
   // parents and offspring are all in competition
   for (i = 0; i < TotalPopulation; i++)
@@ -268,7 +270,7 @@ bool COptMethodEP::select()
         // get random opponent
         do
           {
-            opp = mRandomContext.master()->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
+            opp = pRandom->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
           }
         while (i == opp);
 
@@ -344,9 +346,10 @@ bool COptMethodEP::mutate(size_t i)
   CVector<C_FLOAT64> & Individual = *mIndividuals[i];
   CVector<C_FLOAT64> & Variance = *mVariance[i];
 
-  v1 = mRandomContext.master()->getRandomNormal01();
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
+  CRandom * pRandom = mRandomContext.active();
 
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  v1 = pRandom->getRandomNormal01();
 
   // update the variances
   for (j = 0; j < mVariableSize; j++)
@@ -358,10 +361,10 @@ bool COptMethodEP::mutate(size_t i)
         {
           // update the parameter for the variances
           Variance[j] =
-            std::max(Variance[j] * exp(tau1 * v1 + tau2 * mRandomContext.master()->getRandomNormal01()), 1e-8);
+            std::max(Variance[j] * exp(tau1 * v1 + tau2 * pRandom->getRandomNormal01()), 1e-8);
 
           // calculate the mutated parameter
-          mut += Variance[j] * mRandomContext.master()->getRandomNormal01();
+          mut += Variance[j] * pRandom->getRandomNormal01();
         }
 
       catch (...)

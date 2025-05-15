@@ -44,7 +44,7 @@ COptMethodTruncatedNewton::COptMethodTruncatedNewton(const CDataContainer * pPar
 
 COptMethodTruncatedNewton::COptMethodTruncatedNewton(const COptMethodTruncatedNewton & src,
     const CDataContainer * pParent):
-  COptMethod(src, pParent),
+  COptMethod(src, pParent, false),
   mpTruncatedNewton(new FTruncatedNewtonTemplate<COptMethodTruncatedNewton>(this, &COptMethodTruncatedNewton::sFun)),
   mpCTruncatedNewton(new CTruncatedNewton())
 {initObjects();}
@@ -89,7 +89,7 @@ bool COptMethodTruncatedNewton::optimise()
   // we are within the parameter domain
   C_INT i;
   bool pointInParameterDomain = true;
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   for (i = 0; i < mVariableSize; i++)
     {
@@ -175,13 +175,13 @@ bool COptMethodTruncatedNewton::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mVariableSize = (C_INT) mProblemContext.master()->getOptItemList(true).size();
+  mVariableSize = (C_INT) mProblemContext.active()->getOptItemList(true).size();
   mCurrent.resize(mVariableSize);
   mBest.resize(mVariableSize);
 
   mGradient.resize(mVariableSize);
 
-  CFitProblem* pFitProblem = dynamic_cast<CFitProblem*>(mProblemContext.master());
+  CFitProblem* pFitProblem = dynamic_cast<CFitProblem*>(mProblemContext.active());
 
   if (pFitProblem != NULL)
     {
@@ -202,7 +202,7 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FL
 {
   C_INT i;
 
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   // set the parameter values
   for (i = 0; i < *n; i++)
@@ -211,7 +211,7 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FL
   //carry out the function evaluation
   *f = evaluate(EvaluationPolicyFlag::All);
 
-  CFitProblem* pFit = dynamic_cast<CFitProblem*>(mProblemContext.master());
+  CFitProblem* pFit = dynamic_cast<CFitProblem*>(mProblemContext.active());
 
   // Check whether we improved
   if (mEvaluationValue < getBestValue())

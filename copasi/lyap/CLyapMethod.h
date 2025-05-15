@@ -120,7 +120,7 @@ public:
    *  This method is used by CLyap
    *  @param "CLyapProblem *" problem
    */
-  void setProblem(CLyapProblem * problem);
+  virtual bool setProblem(CCopasiProblem * pProblem) override;
 
   /**
    *  This instructs the method to calculate a time step of deltaT

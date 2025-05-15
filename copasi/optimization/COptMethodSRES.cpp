@@ -59,8 +59,9 @@ COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
 }
 
 COptMethodSRES::COptMethodSRES(const COptMethodSRES & src,
-                               const CDataContainer * pParent)
-  : COptPopulationMethod(src, pParent)
+                               const CDataContainer * pParent,
+                               const bool & parallel)
+  : COptPopulationMethod(src, pParent, parallel)
   , mStopAfterStalledGenerations(0)
 {
   initObjects();
@@ -98,7 +99,7 @@ bool COptMethodSRES::replicate()
   // iterate over parents
   for (i = 0; itSrc != endSrc && Continue; ++itSrc, ++itSrcVariance, ++i)
     {
-      CRandom * pRandom = mRandomContext.master();
+      CRandom * pRandom = mRandomContext.active();
 
       // iterate over the child rate - 1 since the first child is the parent.
       for (j = 1; j < childrate; ++j, ++itTarget, ++itTargetVariance)
@@ -140,8 +141,8 @@ bool COptMethodSRES::mutate()
 #pragma omp parallel for schedule(runtime)
   for (i = mPopulationSize; i < 2 * mPopulationSize; ++i)
     {
-      CRandom * pRandom = mRandomContext.master();
-      const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+      CRandom * pRandom = mRandomContext.active();
+      const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
       C_FLOAT64 * pVariable = mIndividuals[i]->array();
       C_FLOAT64 * pVariableEnd = pVariable + mVariableSize;
@@ -206,7 +207,7 @@ void COptMethodSRES::select()
   // we have properly sorted the top mPopulationSize individuals.
   for (size_t i = 0; i < mPopulationSize; i++)
     {
-      CRandom * pRandom = mRandomContext.master();
+      CRandom * pRandom = mRandomContext.active();
 
       for (size_t j = mIndividuals.size() - 1; j > 0; --j)
         {
@@ -319,7 +320,7 @@ bool COptMethodSRES::initialize()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
+      const COptItem & OptItem = *mProblemContext.active()->getOptItemList(true)[i];
 
       try
         {
@@ -378,8 +379,8 @@ C_FLOAT64 COptMethodSRES::phi(size_t indivNum)
   C_FLOAT64 phiVal = 0.0;
   C_FLOAT64 phiCalc;
 
-  std::vector< COptItem * >::const_iterator it = mProblemContext.master()->getOptItemList(true).begin();
-  std::vector< COptItem * >::const_iterator end = mProblemContext.master()->getOptItemList(true).end();
+  std::vector< COptItem * >::const_iterator it = mProblemContext.active()->getOptItemList(true).begin();
+  std::vector< COptItem * >::const_iterator end = mProblemContext.active()->getOptItemList(true).end();
   C_FLOAT64 * pValue = mIndividuals[indivNum]->array();
 
   for (; it != end; ++it, pValue++)
@@ -398,8 +399,8 @@ C_FLOAT64 COptMethodSRES::phi(size_t indivNum)
         }
     }
 
-  it = mProblemContext.master()->getConstraintList().begin();
-  end = mProblemContext.master()->getConstraintList().end();
+  it = mProblemContext.active()->getConstraintList().begin();
+  end = mProblemContext.active()->getConstraintList().end();
 
   for (; it != end; ++it)
     {

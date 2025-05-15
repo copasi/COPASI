@@ -107,8 +107,12 @@ void CTimeSensMethod::output(const bool & useMoieties)
  *  This method is used by CTimeSens
  *  @param "CTimeSensProblem *" problem
  */
-void CTimeSensMethod::setProblem(CTimeSensProblem * problem)
-{mpProblem = problem;}
+bool CTimeSensMethod::setProblem(CCopasiProblem * pProblem)
+{
+  mpProblem = dynamic_cast< CTimeSensProblem * >(pProblem);
+
+  return mpProblem != nullptr;
+}
 
 // virtual
 void CTimeSensMethod::stateChange(const CMath::StateChange & change)

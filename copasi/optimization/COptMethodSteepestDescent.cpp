@@ -53,7 +53,7 @@ COptMethodSteepestDescent::COptMethodSteepestDescent(const CDataContainer * pPar
 
 COptMethodSteepestDescent::COptMethodSteepestDescent(const COptMethodSteepestDescent & src,
                                                      const CDataContainer * pParent)
-  : COptMethod(src, pParent)
+  : COptMethod(src, pParent, false)
   , mIterations(src.mIterations)
   , mTolerance(src.mTolerance)
   , mValue(src.mValue)
@@ -90,7 +90,7 @@ bool COptMethodSteepestDescent::optimise()
 
   for (i = 0; i < mVariableSize; i++)
     {
-      COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[i];
+      COptItem & OptItem = *mProblemContext.active()->getOptItemList(true)[i];
       mIndividual[i] = OptItem.getStartValue();
       pointInParameterDomain &= OptItem.setItemValue(mIndividual[i], COptItem::CheckPolicyFlag::All);
       pointInParameterDomain &= (mIndividual[i] == OptItem.getStartValue());
@@ -122,12 +122,12 @@ bool COptMethodSteepestDescent::optimise()
             {
               if (mGradient[i] > 0)
                 {
-                  tmp = *mProblemContext.master()->getOptItemList(true)[i]->getUpperBoundValue();
+                  tmp = *mProblemContext.active()->getOptItemList(true)[i]->getUpperBoundValue();
                 }
 
               else
                 {
-                  tmp = *mProblemContext.master()->getOptItemList(true)[i]->getLowerBoundValue();
+                  tmp = *mProblemContext.active()->getOptItemList(true)[i]->getLowerBoundValue();
                 }
 
               // calculate the size of the largest jump
@@ -192,7 +192,7 @@ bool COptMethodSteepestDescent::optimise()
         }
 
       for (i = 0; i < mVariableSize; i++)
-        mIndividual[i] = mProblemContext.master()->getOptItemList(true)[i]->getItemValue();
+        mIndividual[i] = mProblemContext.active()->getOptItemList(true)[i]->getItemValue();
 
       if (mLogVerbosity > 1)
         {
@@ -237,11 +237,11 @@ bool COptMethodSteepestDescent::initialize()
   mIterations = getValue< unsigned C_INT32 >("Iteration Limit");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
 
-  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
+  mVariableSize = mProblemContext.active()->getOptItemList(true).size();
   mIndividual.resize(mVariableSize);
   mGradient.resize(mVariableSize);
 
-  CFitProblem* pFitProblem = dynamic_cast<CFitProblem*>(mProblemContext.master());
+  CFitProblem* pFitProblem = dynamic_cast<CFitProblem*>(mProblemContext.active());
 
   if (pFitProblem != NULL)
     {
@@ -260,7 +260,7 @@ void COptMethodSteepestDescent::gradient()
 
   y = evaluate(EvaluationPolicyFlag::All);
 
-  CFitProblem* pFit = dynamic_cast<CFitProblem*>(mProblemContext.master());
+  CFitProblem* pFit = dynamic_cast<CFitProblem*>(mProblemContext.active());
 
   if (pFit && pFit->getUseTimeSens())
     {
@@ -282,7 +282,7 @@ void COptMethodSteepestDescent::gradient()
       return;
     }
 
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   for (size_t i = 0; i < mVariableSize; ++i, ++pGradient)
     {
@@ -309,8 +309,8 @@ void COptMethodSteepestDescent::gradient()
 
 C_FLOAT64 COptMethodSteepestDescent::descentLine(const C_FLOAT64 & x)
 {
-  std::vector< COptItem * >::const_iterator it = mProblemContext.master()->getOptItemList(true).begin();
-  std::vector< COptItem * >::const_iterator end = mProblemContext.master()->getOptItemList(true).end();
+  std::vector< COptItem * >::const_iterator it = mProblemContext.active()->getOptItemList(true).begin();
+  std::vector< COptItem * >::const_iterator end = mProblemContext.active()->getOptItemList(true).end();
   C_FLOAT64 * pGradient = mGradient.array();
   C_FLOAT64 * pIndividual = mIndividual.array();
 

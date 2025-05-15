@@ -152,8 +152,12 @@ CTSSAMethod::~CTSSAMethod()
  *  This method is used by CTSSA
  *  @param "CTSSAProblem *" problem
  */
-void CTSSAMethod::setProblem(CTSSAProblem * problem)
-{mpProblem = problem;}
+bool CTSSAMethod::setProblem(CCopasiProblem * pProblem)
+{
+  mpProblem = dynamic_cast< CTSSAProblem * >(pProblem);
+
+  return mpProblem != nullptr;
+}
 
 /**
  *  This instructs the method to calculate a a time step of deltaT

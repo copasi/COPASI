@@ -50,7 +50,8 @@ public:
   * @param const CDataContainer * pParent (default: NULL)
   */
   COptPopulationMethod(const COptPopulationMethod & src,
-                       const CDataContainer * pParent);
+                       const CDataContainer * pParent,
+                       const bool & parallel);
 
   /**
   * Destructor

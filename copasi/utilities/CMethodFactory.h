@@ -30,7 +30,8 @@ public:
    * @param const CDataContainer * pParent
    */
   static CCopasiMethod * copy(const CCopasiMethod * pSrc,
-                              const CDataContainer * pParent);
+                              const CDataContainer * pParent,
+                              bool parallel = true);
 };
 
 #endif //COPASI_CMethodFactory

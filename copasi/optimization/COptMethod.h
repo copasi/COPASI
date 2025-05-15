@@ -42,7 +42,7 @@
 
 #include <string>
 
-#include "copasi/OpenMP/CPointerMathContext.h"
+#include "copasi/OpenMP/CProblemContext.h"
 #include "copasi/utilities/CCopasiMethod.h"
 #include "copasi/optimization/COptLog.h"
 
@@ -51,7 +51,6 @@ class COptItem;
 class COptTask;
 template < class CType > class CVector;
 
-typedef CPointerMathContext< COptProblem > COptProblemContext;
 
 // YOHE: this is an abstract class that contains many virtual functions
 // without definitions
@@ -92,7 +91,7 @@ protected:
   /**
    * A thread specific problem
    */
-  COptProblemContext mProblemContext;
+  CProblemContext< COptProblem > mProblemContext;
 
   /**
    * Define the current verbosity for the log
@@ -130,7 +129,8 @@ public:
    * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethod(const COptMethod & src,
-             const CDataContainer * pParent);
+             const CDataContainer * pParent,
+             const bool & parallel);
 
   /**
    * Destructor
@@ -149,7 +149,7 @@ public:
    * Set the problem to be optimized
    * @param "COptProblem *" problem
    */
-  void setProblem(COptProblem * problem);
+  virtual bool setProblem(CCopasiProblem * pProblem) override;
 
   /**
    * Initialize arrays and pointer.

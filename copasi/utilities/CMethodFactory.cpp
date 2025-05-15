@@ -278,7 +278,7 @@ CCopasiMethod * CMethodFactory::create(const CTaskEnum::Task & taskType,
 }
 
 // static
-CCopasiMethod * CMethodFactory::copy(const CCopasiMethod * pSrc, const CDataContainer * pParent)
+CCopasiMethod * CMethodFactory::copy(const CCopasiMethod * pSrc, const CDataContainer * pParent, bool parallel)
 {
   if (pSrc == NULL)
     return NULL;
@@ -303,19 +303,19 @@ CCopasiMethod * CMethodFactory::copy(const CCopasiMethod * pSrc, const CDataCont
         break;
 
       case CTaskEnum::Method::DifferentialEvolution:
-        pCopy = new COptMethodDE(*static_cast< const COptMethodDE * >(pSrc), pParent);
+        pCopy = new COptMethodDE(*static_cast< const COptMethodDE * >(pSrc), pParent, parallel);
         break;
 
       case CTaskEnum::Method::ScatterSearch:
-        pCopy = new COptMethodSS(*static_cast< const COptMethodSS * >(pSrc), pParent);
+        pCopy = new COptMethodSS(*static_cast< const COptMethodSS * >(pSrc), pParent, parallel);
         break;
 
       case CTaskEnum::Method::GeneticAlgorithm:
-        pCopy = new COptMethodGA(*static_cast< const COptMethodGA * >(pSrc), pParent);
+        pCopy = new COptMethodGA(*static_cast< const COptMethodGA * >(pSrc), pParent, parallel);
         break;
 
       case CTaskEnum::Method::EvolutionaryProgram:
-        pCopy = new COptMethodEP(*static_cast< const COptMethodEP * >(pSrc), pParent);
+        pCopy = new COptMethodEP(*static_cast< const COptMethodEP * >(pSrc), pParent, parallel);
         break;
 
       case CTaskEnum::Method::SteepestDescent:
@@ -323,7 +323,7 @@ CCopasiMethod * CMethodFactory::copy(const CCopasiMethod * pSrc, const CDataCont
         break;
 
       case CTaskEnum::Method::GeneticAlgorithmSR:
-        pCopy = new COptMethodGASR(*static_cast< const COptMethodGASR * >(pSrc), pParent);
+        pCopy = new COptMethodGASR(*static_cast< const COptMethodGASR * >(pSrc), pParent, parallel);
         break;
 
       case CTaskEnum::Method::HookeJeeves:
@@ -343,7 +343,7 @@ CCopasiMethod * CMethodFactory::copy(const CCopasiMethod * pSrc, const CDataCont
         break;
 
       case CTaskEnum::Method::SRES:
-        pCopy = new COptMethodSRES(*static_cast< const COptMethodSRES * >(pSrc), pParent);
+        pCopy = new COptMethodSRES(*static_cast< const COptMethodSRES * >(pSrc), pParent, parallel);
         break;
 
       case CTaskEnum::Method::Statistics:
@@ -351,7 +351,7 @@ CCopasiMethod * CMethodFactory::copy(const CCopasiMethod * pSrc, const CDataCont
         break;
 
       case CTaskEnum::Method::ParticleSwarm:
-        pCopy = new COptMethodPS(*static_cast< const COptMethodPS * >(pSrc), pParent);
+        pCopy = new COptMethodPS(*static_cast< const COptMethodPS * >(pSrc), pParent, parallel);
         break;
 
       case CTaskEnum::Method::Praxis:

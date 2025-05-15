@@ -54,7 +54,7 @@ COptMethodHookeJeeves::COptMethodHookeJeeves(const CDataContainer * pParent,
 
 COptMethodHookeJeeves::COptMethodHookeJeeves(const COptMethodHookeJeeves & src,
     const CDataContainer * pParent):
-  COptMethod(src, pParent)
+  COptMethod(src, pParent, false)
 {
   initObjects();
 }
@@ -91,7 +91,7 @@ bool COptMethodHookeJeeves::optimise()
   // initialise the guess vector
   bool pointInParameterDomain = true;
 
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   for (i = 0; i < mVariableSize; i++)
     {
@@ -264,7 +264,7 @@ bool COptMethodHookeJeeves::initialize()
                              mIteration,
                              & mIterationLimit);
 
-  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
+  mVariableSize = mProblemContext.active()->getOptItemList(true).size();
 
   mIndividual.resize(mVariableSize);
   mBefore.resize(mVariableSize);
@@ -287,7 +287,7 @@ C_FLOAT64 COptMethodHookeJeeves::bestNearby()
 
   mIndividual = mNew;
 
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   // mIndividual is already withing the bounds if possible
   for (i = 0; i < mVariableSize && proceed(); i++)

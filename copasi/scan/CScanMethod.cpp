@@ -637,8 +637,12 @@ bool CScanMethod::calculate()
   return success;
 }
 
-void CScanMethod::setProblem(CScanProblem * problem)
-{mpProblem = problem;}
+bool CScanMethod::setProblem(CCopasiProblem * pProblem)
+{
+  mpProblem = dynamic_cast< CScanProblem * >(pProblem);
+
+  return mpProblem != nullptr;
+}
 
 //virtual
 bool CScanMethod::isValidProblem(const CCopasiProblem * pProblem)

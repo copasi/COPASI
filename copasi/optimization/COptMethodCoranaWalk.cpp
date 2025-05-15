@@ -60,7 +60,7 @@ COptMethodCoranaWalk::COptMethodCoranaWalk(const CDataContainer * pParent,
 
 COptMethodCoranaWalk::COptMethodCoranaWalk(const COptMethodCoranaWalk & src,
     const CDataContainer * pParent)
-  : COptMethod(src, pParent)
+  : COptMethod(src, pParent, false)
   , mTemperature(src.mTemperature)
   , mhIterations(C_INVALID_INDEX)
   , mIterations(src.mIterations)
@@ -102,7 +102,7 @@ bool COptMethodCoranaWalk::optimise()
   C_FLOAT64 xc, p, c, New, minstep;
   bool processing;
 
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   // set the minimum step size as being the average of step sizes
   // or 100*DBL_EPSILON if average is zero
@@ -190,7 +190,7 @@ bool COptMethodCoranaWalk::optimise()
                 signalStop();
 
               // Check all functional constraints
-              if (!mProblemContext.master()->checkFunctionalConstraints())
+              if (!mProblemContext.active()->checkFunctionalConstraints())
                 {
                   // Undo since not accepted
                   OptItem.setItemValue(mCurrent[h], COptItem::CheckPolicyFlag::None);
@@ -253,10 +253,10 @@ bool COptMethodCoranaWalk::optimise()
 
       if (processing)
         {
-          mCurrent = mProblemContext.master()->getSolutionVariables(true);
+          mCurrent = mProblemContext.active()->getSolutionVariables(true);
 
           for (a = 0; a < mVariableSize; a++)
-            mProblemContext.master()->getOptItemList(true)[a]->setItemValue(mCurrent[a], COptItem::CheckPolicyFlag::None);
+            mProblemContext.active()->getOptItemList(true)[a]->setItemValue(mCurrent[a], COptItem::CheckPolicyFlag::None);
 
           mCurrentValue = getBestValue();
         }
@@ -304,7 +304,7 @@ bool COptMethodCoranaWalk::initialize()
       mProcessReport.addItem("Iterations",
                              mCurrentIteration, &mIterations);
 
-  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
+  mVariableSize = mProblemContext.active()->getOptItemList(true).size();
 
   mCurrent.resize(mVariableSize);
   mStep.resize(mVariableSize);

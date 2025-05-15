@@ -76,7 +76,7 @@ public:
    * Set the problem to be optmised
    * @param "COscillationProblem *" problem
    */
-  void setProblem(COscillationProblem * problem);
+  virtual bool setProblem(CCopasiProblem * pProblem) override;
 
   /**
    * Initialize arrays and pointer.

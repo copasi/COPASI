@@ -24,6 +24,7 @@
 #include "copasi/core/CVector.h"
 #include "copasi/optimization/COptPopulationMethod.h"
 #include "copasi/optimization/COptProblem.h"
+#include "copasi/OpenMP/CMethodContext.h"
 
 class CRandom;
 
@@ -47,7 +48,8 @@ public:
    * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodSS(const COptMethodSS & src,
-               const CDataContainer * pParent);
+               const CDataContainer * pParent,
+               const bool & parallel);
 
   /**
    * Destructor
@@ -254,11 +256,6 @@ private:
   CVector <C_FLOAT64> mProb;
 
   /**
-    * The value of the last evaluation.
-    */
-  C_FLOAT64 mEvaluationValue;
-
-  /**
   * if no improvement was made after # stalled generations
   * stop
   */
@@ -275,14 +272,15 @@ private:
   C_FLOAT64 mCloseValue;
 
   /**
-   * a pointer to an opt problem used for local minimization
-   */
-  COptProblem * mpOptProblemLocal {NULL};
-
-  /**
    * a pointer to an opt method used for local minimization
    */
-  COptMethod * mpLocalMinimizer {NULL};
+  COptMethod * mpLocalMinimizer;
+
+  /**
+   * The context for the local method
+   */
+
+   CMethodContext< COptMethod > mLocalMinimizerContext;
 };
 
 #endif  // COPASI_COptMethodSS

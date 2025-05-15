@@ -278,7 +278,7 @@ public:
    *  This method is used by CTrajectory
    *  @param "CTrajectoryProblem *" problem
    */
-  void setProblem(CScanProblem * problem);
+  virtual bool setProblem(CCopasiProblem * pProblem) override;
 
   bool init();
 

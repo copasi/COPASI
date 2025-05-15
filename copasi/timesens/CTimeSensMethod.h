@@ -81,7 +81,7 @@ public:
    *  This method is used by CTrajectory
    *  @param "CTimeSensProblem *" problem
    */
-  void setProblem(CTimeSensProblem * problem);
+  virtual bool setProblem(CCopasiProblem * pProblem) override;
 
   /**
    * Inform the trajectory method that the state has changed outside

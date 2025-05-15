@@ -70,7 +70,7 @@ COptMethodSA::COptMethodSA(const CDataContainer * pParent,
 
 COptMethodSA::COptMethodSA(const COptMethodSA & src,
                            const CDataContainer * pParent)
-  : COptMethod(src, pParent)
+  : COptMethod(src, pParent, false)
   , mTemperature(src.mTemperature)
   , mhTemperature(C_INVALID_INDEX)
   , mCoolingFactor(src.mCoolingFactor)
@@ -118,7 +118,7 @@ bool COptMethodSA::optimise()
   C_FLOAT64 fk[STORED];
   bool ready;
 
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   // set the minimum step size as being the average of step sizes
   // or 100*DBL_EPSILON if average is zero
@@ -201,7 +201,7 @@ bool COptMethodSA::optimise()
                   mEvaluationValue = evaluate(EvaluationPolicy::Constraints);
 
                   // Check all functional constraints
-                  if (!mProblemContext.master()->checkFunctionalConstraints())
+                  if (!mProblemContext.active()->checkFunctionalConstraints())
                     {
                       // Undo since not accepted
                       OptItem.setItemValue(mCurrent[h], COptItem::CheckPolicyFlag::None);
@@ -387,7 +387,7 @@ bool COptMethodSA::initialize()
       mProcessReport.addItem("Current Temperature",
                              mTemperature);
 
-  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
+  mVariableSize = mProblemContext.active()->getOptItemList(true).size();
 
   mCurrent.resize(mVariableSize);
   mStep.resize(mVariableSize);

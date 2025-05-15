@@ -78,7 +78,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
 
 COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const COptMethodLevenbergMarquardt & src,
                                                            const CDataContainer * pParent)
-  : COptMethod(src, pParent)
+  : COptMethod(src, pParent, false)
   , mIterationLimit(src.mIterationLimit)
   , mTolerance(src.mTolerance)
   , mModulation(src.mModulation)
@@ -153,7 +153,7 @@ bool COptMethodLevenbergMarquardt::optimise()
   // initial point is first guess but we have to make sure that we
   // are within the parameter domain
   bool pointInParameterDomain = true;
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   for (i = 0; i < mVariableSize; i++)
     {
@@ -195,7 +195,7 @@ bool COptMethodLevenbergMarquardt::optimise()
           hessian();
 
           //std::ofstream ohess; ohess.open("hessian.txt"); ohess << mResidualJacobianT; ohess.close();
-          //std::ofstream osens; osens.open("sens.txt"); osens << dynamic_cast<CFitProblem*>(mProblemContext.master())->getTimeSensJac(); osens.close();
+          //std::ofstream osens; osens.open("sens.txt"); osens << dynamic_cast<CFitProblem*>(mProblemContext.active())->getTimeSensJac(); osens.close();
         }
 
       calc_hess = true;
@@ -480,7 +480,7 @@ bool COptMethodLevenbergMarquardt::initialize()
                              mIteration,
                              & mIterationLimit);
 
-  mVariableSize = mProblemContext.master()->getOptItemList(true).size();
+  mVariableSize = mProblemContext.active()->getOptItemList(true).size();
 
   mCurrent.resize(mVariableSize);
   mBest.resize(mVariableSize);
@@ -488,7 +488,7 @@ bool COptMethodLevenbergMarquardt::initialize()
   mGradient.resize(mVariableSize);
   mHessian.resize(mVariableSize, mVariableSize);
 
-  CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(mProblemContext.master());
+  CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(mProblemContext.active());
 
   if (pFitProblem != NULL)
     // if (false)
@@ -518,7 +518,7 @@ void COptMethodLevenbergMarquardt::gradient()
   mod1 = 1.0 + mModulation;
 
   y = evaluate(EvaluationPolicyFlag::All);
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   for (i = 0; i < mVariableSize && proceed(); i++)
     {
@@ -549,11 +549,11 @@ void COptMethodLevenbergMarquardt::hessian()
   C_FLOAT64 mod1;
 
   mod1 = 1.0 + mModulation;
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   if (mHaveResiduals)
     {
-      CFitProblem* pFit = static_cast<CFitProblem*>(mProblemContext.master());
+      CFitProblem* pFit = static_cast<CFitProblem*>(mProblemContext.active());
       bool bUseTimeSens = pFit->getUseTimeSens();
 
       const CVector< C_FLOAT64 > & Residuals = pFit->getResiduals();

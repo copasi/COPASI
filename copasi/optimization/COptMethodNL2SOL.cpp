@@ -37,7 +37,7 @@ COptMethodNL2SOL::COptMethodNL2SOL(const CDataContainer * pParent,
 
 COptMethodNL2SOL::COptMethodNL2SOL(const COptMethodNL2SOL & src,
                                    const CDataContainer * pParent)
-  : COptMethod(src, pParent)
+  : COptMethod(src, pParent, false)
   , v(NULL)
   , iv(NULL)
   , mIterations(150)
@@ -82,7 +82,7 @@ bool COptMethodNL2SOL::optimise()
 
   // generate the bound arrays
   bool pointInParameterDomain = true;
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   for (j = 0; j < mVariableSize; j++)
     {
@@ -140,13 +140,13 @@ bool COptMethodNL2SOL::initialize()
 
   if (!COptMethod::initialize()) return false;
 
-  mVariableSize = (C_INT) mProblemContext.master()->getOptItemList(true).size();
+  mVariableSize = (C_INT) mProblemContext.active()->getOptItemList(true).size();
   mCurrent.resize(mVariableSize);
   mBest.resize(mVariableSize);
 
   mIterations = getValue< unsigned C_INT32 >("Iteration Limit");
 
-  CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(mProblemContext.master());
+  CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(mProblemContext.active());
 
   if (pFitProblem != NULL)// if (false)
     {
@@ -214,7 +214,7 @@ C_INT COptMethodNL2SOL::calcr(integer *n, integer *p, doublereal *x, integer *nf
                               integer *uiparm, doublereal *urparm, U_fp /* ufparm */)
 {
   int i;
-  const std::vector< COptItem * > & OptItemList = mProblemContext.master()->getOptItemList(true);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   // set the parameter values
   for (i = 0; i < *p; i++)
@@ -232,7 +232,7 @@ C_INT COptMethodNL2SOL::calcr(integer *n, integer *p, doublereal *x, integer *nf
   if (resid != NULL)
     {
       const CVector< C_FLOAT64 > Residuals =
-        static_cast<CFitProblem *>(mProblemContext.master())->getResiduals();
+        static_cast<CFitProblem *>(mProblemContext.active())->getResiduals();
 
       for (i = 0; i < *n; i++)
         resid[i] = Residuals[i];

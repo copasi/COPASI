@@ -71,8 +71,9 @@ COptMethodPS::COptMethodPS(const CDataContainer * pParent,
 }
 
 COptMethodPS::COptMethodPS(const COptMethodPS & src,
-                           const CDataContainer * pParent)
-  : COptPopulationMethod(src, pParent)
+                           const CDataContainer * pParent,
+                           const bool & parallel)
+  : COptPopulationMethod(src, pParent, parallel)
   , mVariance(0.0)
   , mVelocities()
   , mBestValues()

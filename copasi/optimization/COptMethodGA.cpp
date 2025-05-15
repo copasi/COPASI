@@ -45,17 +45,17 @@
 
 COptMethodGA::COptMethodGA(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
-                           const CTaskEnum::Task & taskType) :
-  COptPopulationMethod(pParent, methodType, taskType, true),
-  mCrossOverFalse(0),
-  mCrossOver(0),
-  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mpPermutation(NULL),
-  mLosses(0),
-  mPivot(0),
-  mMutationVariance(0.1),
-  mStopAfterStalledGenerations(0),
-  mBestIndex(C_INVALID_INDEX)
+                           const CTaskEnum::Task & taskType)
+  : COptPopulationMethod(pParent, methodType, taskType, true)
+  , mCrossOverFalse(0)
+  , mCrossOver(0)
+  , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max())
+  , mpPermutation(NULL)
+  , mLosses(0)
+  , mPivot(0)
+  , mMutationVariance(0.1)
+  , mStopAfterStalledGenerations(0)
+  , mBestIndex(C_INVALID_INDEX)
 
 {
   assertParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
@@ -69,18 +69,21 @@ COptMethodGA::COptMethodGA(const CDataContainer * pParent,
 }
 
 COptMethodGA::COptMethodGA(const COptMethodGA & src,
-                           const CDataContainer * pParent):
-  COptPopulationMethod(src, pParent),
-  mCrossOverFalse(0),
-  mCrossOver(0),
-  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mpPermutation(NULL),
-  mLosses(0),
-  mPivot(0),
-  mMutationVariance(0.1),
-  mStopAfterStalledGenerations(0),
-  mBestIndex(C_INVALID_INDEX)
-{initObjects();}
+                           const CDataContainer * pParent,
+                           const bool & parallel)
+  : COptPopulationMethod(src, pParent, parallel)
+  , mCrossOverFalse(0)
+  , mCrossOver(0)
+  , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max())
+  , mpPermutation(NULL)
+  , mLosses(0)
+  , mPivot(0)
+  , mMutationVariance(0.1)
+  , mStopAfterStalledGenerations(0)
+  , mBestIndex(C_INVALID_INDEX)
+{
+  initObjects();
+}
 
 COptMethodGA::~COptMethodGA()
 {cleanup();}

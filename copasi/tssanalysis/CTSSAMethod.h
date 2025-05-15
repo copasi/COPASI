@@ -101,7 +101,7 @@ public:
    *  This method is used by CTSSA
    *  @param "CTSSAProblem *" problem
    */
-  void setProblem(CTSSAProblem * problem);
+  virtual bool setProblem(CCopasiProblem * pProblem) override;
 
   /**
    *  This instructs the method to calculate a time step of deltaT

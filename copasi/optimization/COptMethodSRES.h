@@ -54,7 +54,8 @@ public:
    * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodSRES(const COptMethodSRES & src,
-                 const CDataContainer * pParent);
+                 const CDataContainer * pParent,
+                 const bool & parallel);
 
   /**
    * Destructor
