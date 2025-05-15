@@ -27,7 +27,7 @@
 #
 ###############################################################################
 
-cmake_minimum_required (VERSION 2.6)
+cmake_minimum_required(VERSION 2.8...3.19)
 project (steady_state_test_wrapper)
 
 set(SOURCES ${SOURCES} copasi_wrapper.cpp)
