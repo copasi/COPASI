@@ -613,6 +613,8 @@ private:
   CMatrix< C_FLOAT64 > mJacTimeSens;
 
   CRegisteredCommonName * mpParmTimeSensCN;
+
+  bool mOldStartInSteadyStateFlag;
 };
 
 #endif  // COPASI_CFitProblem

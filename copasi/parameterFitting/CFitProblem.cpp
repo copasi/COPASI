@@ -570,6 +570,23 @@ bool CFitProblem::initialize()
 
       if (mpTrajectory == NULL) fatalError();
 
+      // iterate through set and see if we need to start in steady state for one
+      // of the trajectory tasks
+      bool startInSteadyState = false;
+      for (size_t i = 0; i < mpExperimentSet->getExperimentCount(); ++i)
+        {
+          if (mpExperimentSet->getExperiment(i)->getTimeSeriesStartInSteadyState())
+            {
+              startInSteadyState = true;
+              break;
+            }
+        }
+
+      auto *tcProblem = static_cast<CTrajectoryProblem*>(mpTrajectory->getProblem());
+
+      mOldStartInSteadyStateFlag = tcProblem->getStartInSteadyState();
+      tcProblem->setStartInSteadyState(startInSteadyState);
+
       mpTrajectory->setMathContainer(mpContainer);
       mpTrajectory->setUpdateModel(false);
       mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
@@ -1164,7 +1181,7 @@ bool CFitProblem::calculate()
                           {
                             static_cast<CTrajectoryProblem*>(mpTrajectory->getProblem())->setStepNumber(1);
 
-                            if (!mpTrajectory->processStart(true))
+                            if (!mpTrajectory->processStart(true, !pExp->getTimeSeriesStartInSteadyState()))
                               throw CCopasiMessage(CCopasiMessage::getLastMessage());
                           }
 
@@ -1300,6 +1317,10 @@ bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
   if (mpTrajectory != NULL)
     {
       success &= mpTrajectory->restore(updateModel);
+
+      // restore the old start in steady state flag
+      auto *tcProblem = static_cast<CTrajectoryProblem*>(mpTrajectory->getProblem());
+      tcProblem->setStartInSteadyState(mOldStartInSteadyStateFlag);
     }
 
   if (mpTimeSens)
@@ -2511,7 +2532,7 @@ bool CFitProblem::calculateCrossValidation()
                           {
                             static_cast<CTrajectoryProblem*>(mpTrajectory->getProblem())->setStepNumber(1);
 
-                            if (!mpTrajectory->processStart(true))
+                            if (!mpTrajectory->processStart(true, !pExp->getTimeSeriesStartInSteadyState()))
                               throw CCopasiMessage(CCopasiMessage::getLastMessage());
                           }
 

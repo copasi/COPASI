@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the </comment>
 <comment> University of Virginia, University of Heidelberg, and University </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -515,6 +515,19 @@
      </property>
     </widget>
    </item>
+   <item row="7" column="3">
+    <widget class="QRadioButton" name="mpBtnTimeCourseWithStartInSteadyState">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Time Course (start fromsteady state)</string>
+     </property>
+    </widget>
+   </item>
    <item row="8" column="0">
     <widget class="QLabel" name="mpLblWeightMethod">
      <property name="text">
@@ -752,6 +765,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+    <sender>mpBtnTimeCourse</sender>
+    <signal>toggled(bool)</signal>
+    <receiver>CQExperimentData</receiver>
+    <slot>slotExprimentType(bool)</slot>
+    <hints>
+     <hint type="sourcelabel">
+      <x>20</x>
+      <y>20</y>
+     </hint>
+     <hint type="destinationlabel">
+      <x>20</x>
+      <y>20</y>
+     </hint>
+    </hints>
+   </connection>
+   <connection>
+    <sender>mpBtnTimeCourseWithStartInSteadyState</sender>
+    <signal>toggled(bool)</signal>
+    <receiver>CQExperimentData</receiver>
+    <slot>slotExprimentType(bool)</slot>
+    <hints>
+     <hint type="sourcelabel">
+      <x>20</x>
+      <y>20</y>
+     </hint>
+     <hint type="destinationlabel">
+      <x>20</x>
+      <y>20</y>
+     </hint>
+    </hints>
+   </connection>
   <connection>
    <sender>mpBtnOK</sender>
    <signal>clicked()</signal>

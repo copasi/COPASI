@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -298,6 +298,9 @@ public:
 
   void setNormalizeWeightsPerExperiment(bool flag);
   bool getNormalizeWeightsPerExperiment() const;
+
+  void setTimeSeriesStartInSteadyState(bool flag);
+  bool getTimeSeriesStartInSteadyState() const;
 
   /**
    * Retrieve the time data of the experiment.
@@ -643,6 +646,15 @@ private:
    * Indicates whether the weights of this experiment should be normalized to 1
    */
   bool* mpNormalizeWeightsPerExperiment;
+
+  /**
+   * Indicates whether the time series should start in steady state (0) or not (1)
+   *
+   * 0: Time series does not start in steady state
+   * 1: Time series starts in steady state
+   * 2: unspecified (reads this from the trajectory problem instead) (default)
+   */
+  unsigned C_INT32* mpTimeSeriesStartInSteadyState;
 
   /**
    * This is realized as a CCopasiParameter type STRING
