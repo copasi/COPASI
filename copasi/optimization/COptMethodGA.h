@@ -48,7 +48,8 @@ public:
    */
   COptMethodGA(const CDataContainer * pParent,
                const CTaskEnum::Method & methodType = CTaskEnum::Method::GeneticAlgorithm,
-               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
+               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization,
+               const bool & parallel = true);
 
   /**
    * Copy Constructor

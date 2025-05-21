@@ -38,8 +38,9 @@
 
 COptMethodGASR::COptMethodGASR(const CDataContainer * pParent,
                                const CTaskEnum::Method & methodType,
-                               const CTaskEnum::Task & taskType)
-  : COptPopulationMethod(pParent, methodType, taskType, true)
+                               const CTaskEnum::Task & taskType,
+                               const bool & parallel)
+  : COptPopulationMethod(pParent, methodType, taskType, parallel)
   , mCrossOverFalse(0)
   , mCrossOver(0)
   , mpPermutation(NULL)

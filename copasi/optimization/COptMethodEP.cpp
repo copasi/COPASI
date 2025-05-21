@@ -37,8 +37,9 @@
 
 COptMethodEP::COptMethodEP(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
-                           const CTaskEnum::Task & taskType)
-  : COptPopulationMethod(pParent, methodType, taskType, true)
+                           const CTaskEnum::Task & taskType,
+                           const bool & parallel)
+  : COptPopulationMethod(pParent, methodType, taskType, parallel)
   , mBestIndex(C_INVALID_INDEX)
   , mLosses(0)
   , mStopAfterStalledGenerations(0)

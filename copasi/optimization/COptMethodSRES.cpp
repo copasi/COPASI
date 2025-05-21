@@ -44,8 +44,9 @@
 
 COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
                                const CTaskEnum::Method & methodType,
-                               const CTaskEnum::Task & taskType)
-  : COptPopulationMethod(pParent, methodType, taskType, true)
+                               const CTaskEnum::Task & taskType,
+                               const bool & parallel)
+  : COptPopulationMethod(pParent, methodType, taskType, parallel)
   , mStopAfterStalledGenerations(0)
 {
   assertParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);

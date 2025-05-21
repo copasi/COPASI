@@ -39,7 +39,8 @@ public:
    */
   COptMethodDE(const CDataContainer * pParent,
                const CTaskEnum::Method & methodType = CTaskEnum::Method::DifferentialEvolution,
-               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
+               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization,
+               const bool & parallel = true);
 
   /**
    * Copy Constructor

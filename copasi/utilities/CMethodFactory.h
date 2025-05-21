@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,7 +22,8 @@ public:
    */
   static CCopasiMethod * create(const CTaskEnum::Task & taskType,
                                 const CTaskEnum::Method & methodType,
-                                const CDataContainer * pParent);
+                                const CDataContainer * pParent,
+                                bool parallel = true);
 
   /**
    * Copy a COPASI method

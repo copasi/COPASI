@@ -40,8 +40,9 @@
 
 COptMethodSS::COptMethodSS(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
-                           const CTaskEnum::Task & taskType)
-  : COptPopulationMethod(pParent, methodType, taskType, true)
+                           const CTaskEnum::Task & taskType,
+                           const bool & parallel)
+  : COptPopulationMethod(pParent, methodType, taskType, parallel)
   , mPool(0)
   , mPoolVal(0)
   , mPoolSize(0)
@@ -656,7 +657,7 @@ void COptMethodSS::sortRefSet(C_INT32 lower, C_INT32 upper)
               std::swap(mValues[i], mValues[i + 1]);
               std::swap(mStuck[i], mStuck[i + 1]);
               std::swap(mIndividuals[i], mIndividuals[i + 1]);
-              
+
               k = i;
             }
         }
@@ -904,7 +905,7 @@ bool COptMethodSS::childLocalMin(void)
   // find the best child
   for (i = 0; i < mPopulationSize; i++)
     {
-      if ((mStuck[i] == 0) 
+      if ((mStuck[i] == 0)
           && (mChildVal[i] < bestVal))
         {
           bestVal = mChildVal[i];
@@ -1037,7 +1038,7 @@ bool COptMethodSS::optimise()
         }
 
       // sort the RefSet if needed
-      if (needsort) 
+      if (needsort)
         sortRefSet(0, mPopulationSize);
 
       // create children by combination

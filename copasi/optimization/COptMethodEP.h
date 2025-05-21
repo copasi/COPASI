@@ -107,7 +107,8 @@ public:
    */
   COptMethodEP(const CDataContainer * pParent,
                const CTaskEnum::Method & methodType = CTaskEnum::Method::EvolutionaryProgram,
-               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
+               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization,
+               const bool & parallel = true);
 
   /**
    * Copy Constructor

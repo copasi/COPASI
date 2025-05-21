@@ -46,8 +46,9 @@
 
 COptMethodPS::COptMethodPS(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
-                           const CTaskEnum::Task & taskType)
-  : COptPopulationMethod(pParent, methodType, taskType, true)
+                           const CTaskEnum::Task & taskType,
+                           const bool & parallel)
+  : COptPopulationMethod(pParent, methodType, taskType, parallel)
   , mVariance(0.0)
   , mVelocities()
   , mBestValues()

@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -63,7 +63,8 @@
 //static
 CCopasiMethod * CMethodFactory::create(const CTaskEnum::Task & taskType,
                                        const CTaskEnum::Method & methodType,
-                                       const CDataContainer * pParent)
+                                       const CDataContainer * pParent,
+                                       bool parallel)
 {
   const CCopasiTask * pTask = dynamic_cast< const CCopasiTask * >(pParent);
 
@@ -95,19 +96,19 @@ CCopasiMethod * CMethodFactory::create(const CTaskEnum::Task & taskType,
         break;
 
       case CTaskEnum::Method::DifferentialEvolution:
-        pMethod = new COptMethodDE(pParent, methodType, taskType);
+        pMethod = new COptMethodDE(pParent, methodType, taskType, parallel);
         break;
 
       case CTaskEnum::Method::ScatterSearch:
-        pMethod = new COptMethodSS(pParent, methodType, taskType);
+        pMethod = new COptMethodSS(pParent, methodType, taskType, parallel);
         break;
 
       case CTaskEnum::Method::GeneticAlgorithm:
-        pMethod = new COptMethodGA(pParent, methodType, taskType);
+        pMethod = new COptMethodGA(pParent, methodType, taskType, parallel);
         break;
 
       case CTaskEnum::Method::EvolutionaryProgram:
-        pMethod = new COptMethodEP(pParent, methodType, taskType);
+        pMethod = new COptMethodEP(pParent, methodType, taskType, parallel);
         break;
 
       case CTaskEnum::Method::SteepestDescent:
@@ -115,7 +116,7 @@ CCopasiMethod * CMethodFactory::create(const CTaskEnum::Task & taskType,
         break;
 
       case CTaskEnum::Method::GeneticAlgorithmSR:
-        pMethod = new COptMethodGASR(pParent, methodType, taskType);
+        pMethod = new COptMethodGASR(pParent, methodType, taskType, parallel);
         break;
 
       case CTaskEnum::Method::HookeJeeves:
@@ -135,7 +136,7 @@ CCopasiMethod * CMethodFactory::create(const CTaskEnum::Task & taskType,
         break;
 
       case CTaskEnum::Method::SRES:
-        pMethod = new COptMethodSRES(pParent, methodType, taskType);
+        pMethod = new COptMethodSRES(pParent, methodType, taskType, parallel);
         break;
 
       case CTaskEnum::Method::Statistics:
@@ -143,7 +144,7 @@ CCopasiMethod * CMethodFactory::create(const CTaskEnum::Task & taskType,
         break;
 
       case CTaskEnum::Method::ParticleSwarm:
-        pMethod = new COptMethodPS(pParent, methodType, taskType);
+        pMethod = new COptMethodPS(pParent, methodType, taskType, parallel);
         break;
 
       case CTaskEnum::Method::Praxis:

@@ -33,8 +33,9 @@
 
 COptMethodDE::COptMethodDE(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
-                           const CTaskEnum::Task & taskType)
-  : COptPopulationMethod(pParent, methodType, taskType, true)
+                           const CTaskEnum::Task & taskType,
+                           const bool & parallel)
+  : COptPopulationMethod(pParent, methodType, taskType, parallel)
   , mpPermutation(NULL)
   , mMutationVariance(0.1)
   , mStopAfterStalledGenerations(0)
@@ -104,7 +105,7 @@ bool COptMethodDE::replicate()
     {
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
       CRandom * pRandom = mRandomContext.active();
-      
+
       for (j = 0; j < mVariableSize; j++)
         {
           COptItem & OptItem = *OptItemList[j];
