@@ -952,6 +952,8 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
   mpCheckTo->blockSignals(true);
   mpCheckFrom->blockSignals(true);
   mpBtnSteadystate->blockSignals(true);
+  mpBtnTimeCourse->blockSignals(true);
+  mpBtnTimeCourseWithStartInSteadyState->blockSignals(true);
   mpEditSeparator->blockSignals(true);
   mpCheckTab->blockSignals(true);
   mpCheckNormalizeWeightsPerExperiment->blockSignals(true);
@@ -1052,6 +1054,8 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
   mpCheckTo->blockSignals(false);
   mpCheckFrom->blockSignals(false);
   mpBtnSteadystate->blockSignals(false);
+  mpBtnTimeCourse->blockSignals(false);
+  mpBtnTimeCourseWithStartInSteadyState->blockSignals(false);
   mpEditSeparator->blockSignals(false);
   mpCheckTab->blockSignals(false);
   mpCheckNormalizeWeightsPerExperiment->blockSignals(false);
