@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -115,10 +115,10 @@ bool CQOptimizationWidget::saveTaskProtected()
       pProblem->setCalculateStatistics(mpCheckStatistics->isChecked());
     }
 
-  if (mpCheckDisplayPopulation->isChecked() != pProblem->getParameter("DisplayPoplations")->getValue< bool >())
+  if (mpCheckDisplayPopulation->isChecked() != pProblem->getParameter("DisplayPopulations")->getValue< bool >())
     {
       mChanged = true;
-      pProblem->getParameter("DisplayPoplations")->setValue(mpCheckStatistics->isChecked());
+      pProblem->getParameter("DisplayPopulations")->setValue(mpCheckDisplayPopulation->isChecked());
     }
 
   mChanged |= mpParameters->save(NULL, NULL);
@@ -156,7 +156,7 @@ bool CQOptimizationWidget::loadTaskProtected()
 
   mpCheckRandomize->setChecked(pProblem->getRandomizeStartValues());
   mpCheckStatistics->setChecked(pProblem->getCalculateStatistics());
-  mpCheckDisplayPopulation->setChecked(pProblem->getParameter("DisplayPoplations")->getValue< bool >());
+  mpCheckDisplayPopulation->setChecked(pProblem->getParameter("DisplayPopulations")->getValue< bool >());
 
   mpBoxSubtask->setCurrentIndex(mpBoxSubtask->findText(FROM_UTF8(CTaskEnum::TaskName[pProblem->getSubtaskType()])));
 

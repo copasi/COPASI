@@ -205,7 +205,7 @@ void COptProblem::initializeParameter()
   mpGrpConstraints = assertGroup("OptimizationConstraintList");
 
   // only used by the GUI to display more information on opt methods during runs
-  assertParameter("DisplayPoplations", CCopasiParameter::Type::BOOL, false);
+  assertParameter("DisplayPopulations", CCopasiParameter::Type::BOOL, false);
 
   elevateChildren();
 }
@@ -272,8 +272,16 @@ bool COptProblem::elevateChildren()
 
   setObjectiveFunction(mpParmObjectiveExpression != NULL ? *mpParmObjectiveExpression : "");
 
+  CCopasiParameter * pParameter = nullptr;
+  // Fix typo in old COPASI files
+  if ((pParameter = getParameter("DisplayPoplations")) != nullptr)
+    {
+      getParameter("DisplayPopulations")->setValue(pParameter->getValue< bool >());
+      delete pParameter;
+    }
+
   mpGrpItems =
-    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpItems);
+    elevate< CCopasiParameterGroup, CCopasiParameterGroup >(mpGrpItems);
 
   if (!mpGrpItems) return false;
 

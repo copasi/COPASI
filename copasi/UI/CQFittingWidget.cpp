@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -217,10 +217,10 @@ bool CQFittingWidget::saveTaskProtected()
       pProblem->setCalculateStatistics(mpCheckStatistics->isChecked());
     }
 
-  if (mpCheckDisplayPopulation->isChecked() != pProblem->getParameter("DisplayPoplations")->getValue< bool >())
+  if (mpCheckDisplayPopulation->isChecked() != pProblem->getParameter("DisplayPopulations")->getValue< bool >())
     {
       mChanged = true;
-      pProblem->getParameter("DisplayPoplations")->setValue(mpCheckStatistics->isChecked());
+      pProblem->getParameter("DisplayPopulations")->setValue(mpCheckDisplayPopulation->isChecked());
     }
 
   if (mpUseTimeSens->isChecked() != pProblem->getUseTimeSens())
@@ -279,7 +279,7 @@ bool CQFittingWidget::loadTaskProtected()
   mpCheckRandomize->setChecked(pProblem->getRandomizeStartValues());
   mpCreateParameterSets->setChecked(pProblem->getCreateParameterSets());
   mpCheckStatistics->setChecked(pProblem->getCalculateStatistics());
-  mpCheckDisplayPopulation->setChecked(pProblem->getParameter("DisplayPoplations")->getValue< bool >());
+  mpCheckDisplayPopulation->setChecked(pProblem->getParameter("DisplayPopulations")->getValue< bool >());
   mpUseTimeSens->setChecked(pProblem->getUseTimeSens());
 
   mpParameters->load(mpDataModel, pProblem->getGroup("OptimizationItemList"), &mExperimentKeyMap, &mCrossValidationKeyMap);
