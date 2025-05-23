@@ -455,7 +455,7 @@ bool COptProblem::initialize()
             return false;
 
           ItemObjects.insert(pOptItem->getItemObject());
-          mOriginalVariables[i] = pOptItem->getItemValue();
+          mOriginalVariables[i] = pOptItem->COptItem::getItemValue();
         }
       else
         {
