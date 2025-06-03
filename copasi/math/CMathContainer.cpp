@@ -1040,6 +1040,14 @@ void CMathContainer::applyInitialValues()
   return;
 }
 
+void CMathContainer::resetEventsFound()
+{
+  updateRootValues(false);
+  CVector< C_INT > FoundRoots(mEventRoots.size());
+  FoundRoots = 0;
+  processRoots(false, FoundRoots);
+}
+
 void CMathContainer::updateSimulatedValues(const bool & useMoieties)
 {
   if (useMoieties)

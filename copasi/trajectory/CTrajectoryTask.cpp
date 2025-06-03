@@ -543,7 +543,8 @@ bool CTrajectoryTask::processStart(const bool & useInitialValues, bool ignoreSta
               success = false;
             }
 
-          * mpContainerStateTime = 0;
+          * mpContainerStateTime = 0;         
+          mpContainer->resetEventsFound();
         }
       else
         {

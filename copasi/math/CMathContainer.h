@@ -385,6 +385,8 @@ public:
    */
   void applyInitialValues();
 
+  void resetEventsFound();
+
   /**
    * Calculate all values required for simulation based on the current state
    * @param const bool & useMoieties
