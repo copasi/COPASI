@@ -3300,6 +3300,32 @@ CSBMLExporter::exportLayout(unsigned int sbmlLevel, CDataModel& dataModel)
 
               if (plugin != NULL)
                 {
+                  // iterate through all layouts and find the last used
+                  // render information objects
+                  std::set<std::string> mRenderKeys;
+                  for (int i = 0; i < dataModel.getListOfLayouts()->size(); i++)
+                    {
+                      CLayout& layout = dataModel.getListOfLayouts()->operator[](i);
+                      std::string renderKey = layout.getLastUsedRenderInformation();
+                      if (!renderKey.empty())
+                        {
+                          mRenderKeys.insert(renderKey);
+                        }
+                    }
+
+                    // now go through all keys and add them to the plugin
+                    for (auto& key : mRenderKeys)
+                      {
+                        auto* defaultStyle = getDefaultStyle(key);
+                        if (defaultStyle && plugin->getRenderInformation(defaultStyle->getKey()) == NULL)
+                          {
+                            GlobalRenderInformation* info = plugin->createGlobalRenderInformation();
+                            defaultStyle->toSBML(info, this->mpSBMLDocument->getLevel(), this->mpSBMLDocument->getVersion());
+                          }
+                      }
+
+                  // if we still dont have a render information object
+                  // save the first one
                   if (plugin->getNumGlobalRenderInformationObjects() == 0)
                     {
                       GlobalRenderInformation* info = plugin->createGlobalRenderInformation();
