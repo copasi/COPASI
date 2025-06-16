@@ -492,7 +492,19 @@ if(BUILD_GUI)
     option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit for notes" OFF)
     option(QT5_USE_DATAVISUALIZATION "Use Qt5DataVisualization instead of the deprecated QwtPlot3D" ON)
     if (QT5_USE_DATAVISUALIZATION)
-    option(WITH_DATAVISUALIZATION_NAMESPACES "The DataVisualization modeule uses c++ namespaces" ON)
+    # compile a test program against the datavisualization
+    # to figure out whether the namespace flag is needed
+    if (NOT DEFINED WITH_DATAVISUALIZATION_NAMESPACES)
+    check_cxx_source_compiles("
+      #include <QtDataVisualization/Q3DSurface>
+      int main() {
+        QtDataVisualization::Q3DSurface surface;
+        return 0;
+      }"
+      DATAVISUALIZATION_USES_NAMESPACES)
+    
+    option(WITH_DATAVISUALIZATION_NAMESPACES "The DataVisualization modeule uses c++ namespaces" ${DATAVISUALIZATION_USES_NAMESPACES})
+    endif()
     endif()
     option(COPASI_USE_QTCHARTS "Use QtCharts instead of the Qwt" OFF)
     option(COPASI_USE_QCUSTOMPLOT "Use QCustomPlot instead of the Qwt" ON)
