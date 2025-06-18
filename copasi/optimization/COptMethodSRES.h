@@ -69,12 +69,12 @@ public:
    * of its progress by the callback function set with SetCallback.
    * @ return success;
    */
-  virtual bool optimise();
+  bool optimise() override;
 
   /**
    * Returns the maximum verbosity at which the method can log.
    */
-  virtual unsigned C_INT32 getMaxLogVerbosity() const;
+  unsigned C_INT32 getMaxLogVerbosity() const override;
 
 private:
   /**
@@ -97,7 +97,7 @@ private:
    * Cleanup arrays and pointers.
    * @return bool success
    */
-  virtual bool cleanup();
+  bool cleanup() override;
 
   /**
    * Swap individuals from and to
@@ -144,7 +144,7 @@ private:
   C_FLOAT64 phi(size_t indvNum);
 
 protected:
-  virtual void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom);
+  void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom) override;
 
   // Attributes
 private:

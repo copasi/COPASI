@@ -120,7 +120,7 @@ public:
      * reimplement the virtual print function.
      * @param std::ostream * ostream
      */
-    virtual void print(std::ostream * ostream) const;
+    void print(std::ostream * ostream) const override;
 
     /**
      * Output stream operator
@@ -162,7 +162,7 @@ public:
      * reimplement the virtual print function.
      * @param std::ostream * ostream
      */
-    virtual void print(std::ostream * ostream) const;
+    void print(std::ostream * ostream) const override;
 
     /**
      * Output stream operator

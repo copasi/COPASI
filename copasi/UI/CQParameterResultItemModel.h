@@ -66,9 +66,9 @@ public:
 
   int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
-  virtual QVariant data(const QModelIndex &index, int role) const;
+  QVariant data(const QModelIndex &index, int role) const override;
 
-  virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+  QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 };
 
 #endif // CQParameterResultItemModel

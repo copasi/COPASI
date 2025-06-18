@@ -39,15 +39,15 @@ public:
   SteadyStateWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = Qt::WindowFlags());
   ~SteadyStateWidget();
 
-  virtual bool runTask();
+  bool runTask() override;
 
 protected slots:
   virtual void taskJacobianToggled();
 
 protected:
-  virtual bool loadTaskProtected();
-  virtual bool saveTaskProtected();
-  virtual bool taskFinishedEvent();
+  bool loadTaskProtected() override;
+  bool saveTaskProtected() override;
+  bool taskFinishedEvent() override;
 
 private:
   void init();

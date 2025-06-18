@@ -51,9 +51,9 @@ protected slots:
   void slotActiveTabChanged(int);
 
 protected:
-  virtual bool enterProtected();
+  bool enterProtected() override;
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool leaveProtected();
+  bool leaveProtected() override;
 
   /**
    * loads the matrices (except Jacobian) into the widget

@@ -39,23 +39,23 @@ public:
 
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-  virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+  Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-  virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+  QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
 
-  virtual QVariant headerData(int section, Qt::Orientation orientation,
-                              int role = Qt::DisplayRole) const;
+  QVariant headerData(int section, Qt::Orientation orientation,
+                              int role = Qt::DisplayRole) const override;
 
-  virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
+  bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override;
 
-  virtual bool isDefaultRow(const QModelIndex& i) const;
+  bool isDefaultRow(const QModelIndex& i) const override;
 
   void setTask(const CEFMTask * pTask);
 
 protected:
   void resetCacheProtected() override;
-  virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
-  virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+  bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override;
+  bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override;
   size_t size() const override;
 
 private:

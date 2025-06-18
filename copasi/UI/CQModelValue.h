@@ -50,11 +50,11 @@ public:
   ~CQModelValue();
 
 protected:
-  virtual bool enterProtected();
+  bool enterProtected() override;
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool leaveProtected();
+  bool leaveProtected() override;
 
-  virtual bool event(QEvent * pEvent);
+  bool event(QEvent * pEvent) override;
 
 protected slots:
 

@@ -53,7 +53,7 @@ public:
   ReactionsWidget1(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = Qt::WindowFlags());
   ~ReactionsWidget1();
 
-  virtual void setFramework(int framework);
+  void setFramework(int framework) override;
   void copy();
 
 protected slots:
@@ -76,9 +76,9 @@ protected slots:
   virtual void slotParameterStatusChanged(int index, bool local);
 
 protected:
-  virtual bool enterProtected();
+  bool enterProtected() override;
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool leaveProtected();
+  bool leaveProtected() override;
 
   bool loadFromReaction(const CReaction* reaction);
   bool saveToReaction();

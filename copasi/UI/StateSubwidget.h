@@ -44,7 +44,7 @@ public:
 
   virtual bool loadAll(const CSteadyStateTask * pTask);
   void clear();
-  virtual void setFramework(int framework);
+  void setFramework(int framework) override;
 
 protected:
   const CSteadyStateTask * mpTask;

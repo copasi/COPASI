@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -103,17 +103,17 @@ public:
 
   virtual ~CQBrowserPaneDM();
 
-  virtual int columnCount(const QModelIndex & parent = QModelIndex()) const;
+  int columnCount(const QModelIndex & parent = QModelIndex()) const override;
 
-  virtual QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+  QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const override;
 
-  virtual QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
+  QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const override;
 
-  virtual QModelIndex parent(const QModelIndex & index) const;
+  QModelIndex parent(const QModelIndex & index) const override;
 
-  virtual int rowCount(const QModelIndex & parent = QModelIndex()) const;
+  int rowCount(const QModelIndex & parent = QModelIndex()) const override;
 
-  virtual bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex());
+  bool removeRows(int row, int count, const QModelIndex & parent = QModelIndex()) override;
 
   QModelIndex index(const ListViews::WidgetType & id, const CCommonName & cn) const;
 

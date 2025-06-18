@@ -127,18 +127,18 @@ public:
    * when needed. It is noted that this procedure can give feedback
    * of its progress by the callback function set with SetCallback.
    */
-  virtual bool optimise();
+  bool optimise() override;
 
   /**
    * Returns the maximum verbosity at which the method can log.
    */
-  virtual unsigned C_INT32 getMaxLogVerbosity() const;
+  unsigned C_INT32 getMaxLogVerbosity() const override;
 
-  virtual C_FLOAT64 getCurrentValue() const;
+  C_FLOAT64 getCurrentValue() const override;
 
-  virtual const CVector< C_FLOAT64 > * getBestParameters() const;
+  const CVector< C_FLOAT64 > * getBestParameters() const override;
 
-  virtual const CVector< C_FLOAT64 > * getCurrentParameters() const;
+  const CVector< C_FLOAT64 > * getCurrentParameters() const override;
 };
 
 #endif  // COPASI_CRandomSearch

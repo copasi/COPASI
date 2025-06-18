@@ -41,22 +41,22 @@ public:
 
   virtual ~CQParameterOverviewDM();
 
-  virtual int columnCount(const QModelIndex & parent = QModelIndex()) const;
+  int columnCount(const QModelIndex & parent = QModelIndex()) const override;
 
-  virtual QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const;
+  QVariant data(const QModelIndex & index, int role = Qt::DisplayRole) const override;
 
-  virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+  Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-  virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+  QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
-  virtual QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const;
+  QModelIndex index(int row, int column, const QModelIndex & parent = QModelIndex()) const override;
 
-  virtual QModelIndex parent(const QModelIndex & index) const;
+  QModelIndex parent(const QModelIndex & index) const override;
 
-  virtual int rowCount(const QModelIndex & parent = QModelIndex()) const;
+  int rowCount(const QModelIndex & parent = QModelIndex()) const override;
 
-  virtual bool setData(const QModelIndex &index, const QVariant &value,
-                       int role = Qt::EditRole);
+  bool setData(const QModelIndex &index, const QVariant &value,
+                       int role = Qt::EditRole) override;
 
   void setModelParameterSet(CModelParameterSet * pModelParameterSet);
 
@@ -64,8 +64,8 @@ public:
 
   static CModelParameter * nodeFromIndex(const QModelIndex & index);
 
-  virtual bool insertRows(int position, int rows, const QModelIndex & source);
-  virtual bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex());
+  bool insertRows(int position, int rows, const QModelIndex & source) override;
+  bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex()) override;
   bool canFetchMore(const QModelIndex &parent) const override;
   void fetchMore(const QModelIndex &parent) override;
 

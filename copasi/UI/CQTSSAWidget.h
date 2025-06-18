@@ -44,7 +44,7 @@ public:
   CQTSSAWidget(QWidget* parent = 0, const char* name = 0);
   virtual ~CQTSSAWidget();
 
-  virtual bool runTask();
+  bool runTask() override;
 
 public slots:
   void slotDuration();
@@ -52,9 +52,9 @@ public slots:
   void slotIntervals();
 
 protected:
-  virtual bool saveTaskProtected();
-  virtual bool loadTaskProtected();
-  virtual bool taskFinishedEvent();
+  bool saveTaskProtected() override;
+  bool loadTaskProtected() override;
+  bool taskFinishedEvent() override;
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
 
 protected slots:

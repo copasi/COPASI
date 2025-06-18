@@ -37,16 +37,16 @@ public:
   void setMIRIAMInfo(CMIRIAMInfo * pMiriamInfo);
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-  QVariant data(const QModelIndex &index, int role) const;
+  QVariant data(const QModelIndex &index, int role) const override;
   QVariant headerData(int section, Qt::Orientation orientation,
-                      int role = Qt::DisplayRole) const;
+                      int role = Qt::DisplayRole) const override;
   bool setData(const QModelIndex &index, const QVariant &value,
-               int role = Qt::EditRole);
+               int role = Qt::EditRole) override;
   bool removeRows(QModelIndexList rows, const QModelIndex &index = QModelIndex());
 
 protected:
-  virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
-  virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+  bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override;
+  bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override;
   void resetCacheProtected() override;
   size_t size() const override;
 

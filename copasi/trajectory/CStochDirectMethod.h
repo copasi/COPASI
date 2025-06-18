@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -84,7 +84,7 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  bool elevateChildren() override;
 
   /**
    *  This instructs the method to calculate a time step of deltaT
@@ -96,13 +96,13 @@ public:
    *  @param const bool & final (default: false)
    *  @return Status status
    */
-  virtual Status step(const double & deltaT, const bool & final = false);
+  Status step(const double & deltaT, const bool & final = false) override;
 
   /**
    *  This instructs the method to prepare for integration
    *  starting with the initialState given.
    */
-  virtual void start();
+  void start() override;
 
   /**
   * Check if the method is suitable for this problem
@@ -115,7 +115,7 @@ public:
    * its control
    * @param const CMath::StateChange & change
    */
-  virtual void stateChange(const CMath::StateChange & change);
+  void stateChange(const CMath::StateChange & change) override;
 
   /**
    * Calculate the root value for the given time

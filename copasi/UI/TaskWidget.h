@@ -97,9 +97,9 @@ private:
 
 protected:
 
-  virtual bool enterProtected();
+  bool enterProtected() override;
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool leaveProtected();
+  bool leaveProtected() override;
 
   virtual bool loadTaskProtected() = 0;
   virtual bool saveTaskProtected() = 0;

@@ -200,7 +200,7 @@ public:
    *  starting with the initialState given.
    *  @param "const CState *" initialState
    */
-  virtual void start(/*const CState * initialState*/);
+  void start(/*const CState * initialState*/) override;
 
   /**
    * Calculate the default absolute tolerance

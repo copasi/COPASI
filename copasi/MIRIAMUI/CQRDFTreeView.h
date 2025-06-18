@@ -43,7 +43,7 @@ public:
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
 
 protected:
-  virtual bool enterProtected();
+  bool enterProtected() override;
 
 protected slots:
 

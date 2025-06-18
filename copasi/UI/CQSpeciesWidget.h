@@ -37,8 +37,8 @@ public:
   CQSpeciesWidget(QWidget* parent = 0, const char* name = 0);
   ~CQSpeciesWidget();
 
-  virtual void setFramework(int framework);
-  virtual CQBaseDataModel* getCqDataModel();
+  void setFramework(int framework) override;
+  CQBaseDataModel* getCqDataModel() override;
 
 private:
   CQSpecieDM* mpSpecieDM;
@@ -52,11 +52,11 @@ signals:
   void initFilter();
 
 protected:
-  virtual bool enterProtected();
+  bool enterProtected() override;
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool leaveProtected();
+  bool leaveProtected() override;
 
-  virtual void keyPressEvent(QKeyEvent* ev);
+  void keyPressEvent(QKeyEvent* ev) override;
   void refreshCompartments();
 
 protected slots:

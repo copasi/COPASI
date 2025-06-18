@@ -74,7 +74,7 @@ public:
    * Cleanup arrays and pointers.
    * @return bool success
    */
-  virtual bool cleanup();
+  bool cleanup() override;
 
   C_INT32 getPopulationSize();
   C_INT32 getNumGenerations();
@@ -90,7 +90,7 @@ public:
   * re implement the virtual print function.
   * @param std::ostream * ostream
   */
-  virtual void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 
   /**
   * Output stream operator

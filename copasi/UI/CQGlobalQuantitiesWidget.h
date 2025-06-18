@@ -37,12 +37,12 @@ public:
   CQGlobalQuantitiesWidget(QWidget* parent = 0, const char* name = 0);
   ~CQGlobalQuantitiesWidget();
 
-  virtual CQBaseDataModel* getCqDataModel();
+  CQBaseDataModel* getCqDataModel() override;
 
 protected:
-  virtual bool enterProtected();
+  bool enterProtected() override;
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool leaveProtected();
+  bool leaveProtected() override;
 
 private:
   CQGlobalQuantityDM* mpGlobalQuantityDM;
@@ -54,7 +54,7 @@ signals:
   void initFilter();
 
 protected:
-  virtual void keyPressEvent(QKeyEvent* ev);
+  void keyPressEvent(QKeyEvent* ev) override;
 
 protected slots:
   virtual void slotBtnNewClicked();

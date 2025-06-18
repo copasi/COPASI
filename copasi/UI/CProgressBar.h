@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -104,7 +104,7 @@ public:
    * @param const std::string & name
    * @return success
    */
-  virtual bool setName(const std::string & name);
+  bool setName(const std::string & name) override;
 
   /**
    * Add a process report item to to the list of reporting items.
@@ -117,13 +117,13 @@ public:
    * @param const void * pEndValue = NULL
    * @return size_t handle
    */
-  virtual size_t addItem(const std::string & name,
+  size_t addItem(const std::string & name,
                          const CCopasiParameter::Type & type,
                          const void * pValue,
-                         const void * pEndValue = NULL);
+                         const void * pEndValue = NULL) override;
 
 protected:
-  virtual void closeEvent(QCloseEvent *e);
+  void closeEvent(QCloseEvent *e) override;
 
   bool mSlotFinished;
 

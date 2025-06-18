@@ -95,7 +95,7 @@ protected:
    * Cleanup arrays and pointers.
    * @return bool success
    */
-  virtual bool cleanup();
+  bool cleanup() override;
 };
 
 #endif  // COPASI_COscillationMethod

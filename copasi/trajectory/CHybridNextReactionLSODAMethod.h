@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -93,7 +93,7 @@ public:
   /**
    *  This instructs the method to prepare for integration
    */
-  virtual void start();
+  void start() override;
 
   /**
    *   Integrates the deterministic reactions of the system over the
@@ -101,14 +101,14 @@ public:
    *
    *   @param ds A C_FLOAT64 specifying the stepsize.
    */
-  virtual void integrateDeterministicPart(C_FLOAT64 ds);
+  void integrateDeterministicPart(C_FLOAT64 ds) override;
 
   /**
    * Inform the trajectory method that the state has changed outside
    * its control
    * @param const CMath::StateChange & change
    */
-  virtual void stateChange(const CMath::StateChange & change);
+  void stateChange(const CMath::StateChange & change) override;
 
   void evalF(C_FLOAT64 * ydot);
 

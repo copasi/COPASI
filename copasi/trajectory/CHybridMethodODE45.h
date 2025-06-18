@@ -155,7 +155,7 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  bool elevateChildren() override;
 
   /**
    *  This instructs the method to calculate a time step of deltaT
@@ -167,20 +167,20 @@ public:
    *  @param const bool & final (default: false)
    *  @return Status status
    */
-  virtual Status step(const double & deltaT, const bool & final = false);
+  Status step(const double & deltaT, const bool & final = false) override;
 
   /**
    * Inform the trajectory method that the state has changed outside
    * its control
    * @param const CMath::StateChange & change
    */
-  virtual void stateChange(const CMath::StateChange & change);
+  void stateChange(const CMath::StateChange & change) override;
 
   /**
    *  This instructs the method to prepare for integration
    *  starting with the initialState given.
    */
-  virtual void start();
+  void start() override;
 
 private:
   /**

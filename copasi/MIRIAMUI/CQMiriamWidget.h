@@ -48,10 +48,10 @@ public:
   void updateResourcesList();
 
 protected:
-  virtual bool enterProtected();
+  bool enterProtected() override;
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool leaveProtected();
-  virtual void showEvent(QShowEvent * event);
+  bool leaveProtected() override;
+  void showEvent(QShowEvent * event) override;
 
 private:
   CMIRIAMInfo* mpMIRIAMInfo;
@@ -76,14 +76,14 @@ private:
   void deleteSelectedReferences();
   void deleteSelectedBiologicalDescriptions();
   void deleteSelectedModifieds();
-  void keyPressEvent(QKeyEvent* ev);
+  void keyPressEvent(QKeyEvent* ev) override;
   CCommonName mObjectCNToCopy;
   CAnnotation * mpAnnotation;
   std::string mMessage;
   int mMessageType;
 
 public slots:
-  virtual void slotNotifyChanges(const CUndoData::CChangeSet & changes);
+  void slotNotifyChanges(const CUndoData::CChangeSet & changes) override;
 
 protected slots:
   virtual void slotBtnDeleteClicked();

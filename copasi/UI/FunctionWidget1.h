@@ -55,9 +55,9 @@ protected slots:
   void slotTableValueChanged(const QString &);
 
 protected:
-  virtual bool enterProtected();
+  bool enterProtected() override;
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool leaveProtected();
+  bool leaveProtected() override;
 
   bool loadFromFunction(const CFunction* = NULL);
   bool loadParameterTable();

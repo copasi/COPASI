@@ -53,7 +53,7 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  bool elevateChildren() override;
 
   /**
    * Set the call back of the problem
@@ -76,7 +76,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 
   /**
    * Output stream operator
@@ -92,7 +92,7 @@ public:
    * default behavior one needs to reimplement the virtual printResult function.
    * @param std::ostream * ostream
    */
-  virtual void printResult(std::ostream * ostream) const;
+  void printResult(std::ostream * ostream) const override;
 
 private:
   /**

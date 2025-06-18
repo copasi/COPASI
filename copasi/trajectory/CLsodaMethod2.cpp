@@ -137,7 +137,7 @@ void CLsodaMethod2::stateChange(const CMath::StateChange & change)
     }
 }
 
-CTrajectoryMethod::Status CLsodaMethod2::step(const double & deltaT)
+CTrajectoryMethod::Status CLsodaMethod2::step(const double & deltaT, const bool & /*final*/)
 {
   if (mData.dim == 1 && mNumRoots == 0) //just do nothing if there are no variables except time
     {

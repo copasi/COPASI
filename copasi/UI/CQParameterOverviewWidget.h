@@ -33,7 +33,7 @@ public:
   CQParameterOverviewWidget(QWidget* parent = 0, const char* name = 0);
   virtual ~CQParameterOverviewWidget();
 
-  virtual void setFramework(int framework);
+  void setFramework(int framework) override;
 
   /**
    * Allows showing / hiding the button group at the bottom of the overview
@@ -48,9 +48,9 @@ private:
   void buildSelectionList();
 
 protected:
-  virtual bool enterProtected();
+  bool enterProtected() override;
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool leaveProtected();
+  bool leaveProtected() override;
 
 signals:
   void initFilter();

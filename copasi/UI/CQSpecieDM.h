@@ -54,12 +54,12 @@ public:
   CQSpecieDM(QObject *parent = 0);
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-  Qt::ItemFlags flags(const QModelIndex &index) const;
-  QVariant data(const QModelIndex &index, int role) const;
+  Qt::ItemFlags flags(const QModelIndex &index) const override;
+  QVariant data(const QModelIndex &index, int role) const override;
   QVariant headerData(int section, Qt::Orientation orientation,
-                      int role = Qt::DisplayRole) const;
+                      int role = Qt::DisplayRole) const override;
   bool setData(const QModelIndex &index, const QVariant &value,
-               int role = Qt::EditRole);
+               int role = Qt::EditRole) override;
   const QStringList& getTypes();
 
   bool removeRows(QModelIndexList rows, const QModelIndex & parent = QModelIndex());
@@ -71,8 +71,8 @@ private:
 
 protected:
   void resetCacheProtected() override;
-  virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
-  virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
+  bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override;
+  bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override;
   size_t size() const override;
 
   QStringList mTypes;

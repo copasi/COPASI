@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -163,17 +163,17 @@ protected:
   /**
    * Function to handle key press events.
    */
-  virtual void keyPressEvent(QKeyEvent *e);
+  void keyPressEvent(QKeyEvent *e) override;
 
   /**
    * Function to handle mouse release events.
    */
-  virtual void mouseReleaseEvent(QMouseEvent *e);
+  void mouseReleaseEvent(QMouseEvent *e) override;
 
   /**
    * Function to handle drag leave events.
    */
-  virtual void dropEvent(QDropEvent *e);
+  void dropEvent(QDropEvent *e) override;
 
   /**
    * Function to check whether the given cursor position is in an object.

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,7 @@ public:
   CQTimeSensWidget(QWidget* parent = 0, const char* name = 0);
   virtual ~CQTimeSensWidget();
 
-  virtual bool runTask();
+  bool runTask() override;
 
 public slots:
   void slotDuration();
@@ -48,9 +48,9 @@ public slots:
 
 protected:
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool saveTaskProtected();
-  virtual bool loadTaskProtected();
-  virtual bool taskFinishedEvent();
+  bool saveTaskProtected() override;
+  bool loadTaskProtected() override;
+  bool taskFinishedEvent() override;
 
 protected slots:
 

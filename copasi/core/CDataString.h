@@ -39,11 +39,11 @@ public:
 
   ~CDataString();
 
-  virtual std::string getObjectDisplayName() const;
+  std::string getObjectDisplayName() const override;
 
   CDataString & operator = (const std::string & rhs);
 
-  virtual void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 
   const std::string & getStaticString() const;
 };

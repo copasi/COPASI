@@ -41,7 +41,7 @@ public:
   CQEventsWidget(QWidget* parent = 0, const char* name = 0);
   ~CQEventsWidget();
 
-  virtual CQBaseDataModel* getCqDataModel();
+  CQBaseDataModel* getCqDataModel() override;
 
 private:
   CQEventDM* mpEventDM;
@@ -52,10 +52,10 @@ signals:
   void initFilter();
 
 protected:
-  virtual void keyPressEvent(QKeyEvent* ev);
-  virtual bool enterProtected();
+  void keyPressEvent(QKeyEvent* ev) override;
+  bool enterProtected() override;
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool leaveProtected();
+  bool leaveProtected() override;
 
 protected slots:
   virtual void slotBtnNewClicked();

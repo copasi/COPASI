@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -70,7 +75,7 @@ public:
   /**
    *  Initialize the method parameters
    */
-  virtual void initializeParameter();
+  void initializeParameter() override;
 
   /**
    *  This instructs the method to calculate a time step of deltaT
@@ -80,13 +85,13 @@ public:
    *  The return value is the actual timestep taken.
    *  @param "const double &" deltaT
    */
-  virtual void step(const double & deltaT);
+  void step(const double & deltaT) override;
 
   /**
    *  This instructs the method to prepare for integration
    *  starting with the initialState given.
    */
-  virtual void start();
+  void start() override;
 
   /**
    * @return CDataArray for visualization in ILDM-tab
@@ -120,26 +125,26 @@ public:
    * create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
    * input for each CArraAnnotations is a seperate CMatrix
    **/
-  virtual void createAnnotationsM();
+  void createAnnotationsM() override;
 
   /**
    * initialize output for the result elements, this method
    * initializes the output elements so that an output handler
    * can be used afterwards
    **/
-  virtual void initializeOutput();
+  void initializeOutput() override;
 
   /**
    * set the every CArrayAnnotation for the requested step
    * set the description of CArayAnnotation for both dimensions
    **/
-  virtual bool setAnnotationM(size_t step);
+  bool setAnnotationM(size_t step) override;
 
   /**
    *  print of the standard report sequence for ILDM Method
    *  @param std::ostream * ostream
    **/
-  virtual void printResult(std::ostream * ostream) const;
+  void printResult(std::ostream * ostream) const override;
 
 protected:
   /**
@@ -221,6 +226,5 @@ protected:
   CMatrix<C_FLOAT64> mTMP1Print;
   CMatrix<C_FLOAT64> mTMP2Print;
   CMatrix<C_FLOAT64> mTMP3Print;
-
 };
 #endif // COPASI_CILDMMethod

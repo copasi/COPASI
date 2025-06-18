@@ -79,7 +79,7 @@ public:
    */
   bool initialize(const OutputFlag & of,
                           COutputHandler * pOutputHandler,
-                          std::ostream * pOstream);
+                          std::ostream * pOstream) override;
 
   /**
    * Process the task with or without initializing to the initial state.
@@ -118,13 +118,13 @@ public:
    */
   const CTimeSeries & getTimeSeries() const;
 
-  virtual bool updateMatrices();
+  bool updateMatrices() override;
 
   /**
    * Perform an output event for the current activity
    * @param const Activity & activity
    */
-  virtual void output(const COutputInterface::Activity & activity);
+  void output(const COutputInterface::Activity & activity) override;
 
 protected:
   /**

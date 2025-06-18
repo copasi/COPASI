@@ -38,13 +38,13 @@ public:
   CQAnalyticsWidget(QWidget* parent = 0, const char* name = 0);
   virtual ~CQAnalyticsWidget();
 
-  virtual bool runTask();
+  bool runTask() override;
 
 protected:
   void commitInput();
-  virtual bool saveTaskProtected();
-  virtual bool loadTaskProtected();
-  virtual bool taskFinishedEvent();
+  bool saveTaskProtected() override;
+  bool loadTaskProtected() override;
+  bool taskFinishedEvent() override;
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
 
 protected slots:

@@ -50,12 +50,12 @@ public:
   const QStringList& getTypes();
   int rowCount(const QModelIndex &parent = QModelIndex()) const override;
   int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-  virtual Qt::ItemFlags flags(const QModelIndex &index) const;
-  virtual QVariant data(const QModelIndex &index, int role) const;
-  virtual QVariant headerData(int section, Qt::Orientation orientation,
-                              int role = Qt::DisplayRole) const;
-  virtual bool setData(const QModelIndex &index, const QVariant &value,
-                       int role = Qt::EditRole);
+  Qt::ItemFlags flags(const QModelIndex &index) const override;
+  QVariant data(const QModelIndex &index, int role) const override;
+  QVariant headerData(int section, Qt::Orientation orientation,
+                              int role = Qt::DisplayRole) const override;
+  bool setData(const QModelIndex &index, const QVariant &value,
+                       int role = Qt::EditRole) override;
   bool removeRows(QModelIndexList rows, const QModelIndex & parent = QModelIndex());
 
 private:
@@ -65,8 +65,8 @@ private:
 
 protected:
   void resetCacheProtected() override;
-  virtual bool insertRows(int position, int rows, const QModelIndex & parent = QModelIndex());
-  virtual bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex());
+  bool insertRows(int position, int rows, const QModelIndex & parent = QModelIndex()) override;
+  bool removeRows(int position, int rows, const QModelIndex & parent = QModelIndex()) override;
   size_t size() const override;
 
   QStringList mTypes;

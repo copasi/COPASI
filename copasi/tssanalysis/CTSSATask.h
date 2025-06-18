@@ -120,7 +120,7 @@ public:
    * For now we assume that this functionality is also performed when
    * initialize() is called.
    */
-  virtual bool updateMatrices();
+  bool updateMatrices() override;
 
   /**
    * Initialize the task. If an ostream is given this ostream is used
@@ -140,7 +140,7 @@ public:
    * @param const bool & useInitialValues
    * @return bool success
    */
-  virtual bool process(const bool & useInitialValues);
+  bool process(const bool & useInitialValues) override;
 
   /**
    * Starts the process of integration by calling CTSSAMethod::start

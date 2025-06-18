@@ -88,14 +88,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -106,12 +106,12 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
+  void createUndoData(CUndoData & undoData,
                               const CUndoData::Type & type,
                               const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
-  virtual const CObjectInterface * getObject(const CCommonName & cn) const;
+  const CObjectInterface * getObject(const CCommonName & cn) const override;
 
   /**
    * This methods must be called to elevate subgroups to
@@ -273,7 +273,7 @@ public:
    * @param CDataObject * pObject
    * @return bool success
    */
-  virtual bool remove(CDataObject * pObject);
+  bool remove(CDataObject * pObject) override;
 
   /**
    * Add a subgroup to the group
@@ -527,7 +527,7 @@ public:
    */
   void clear();
 
-  virtual size_t getIndex(const CDataObject * pObject) const;
+  size_t getIndex(const CDataObject * pObject) const override;
 
   /**
    * Create and insert an undo object based on the given data.
@@ -535,7 +535,7 @@ public:
    * @param const CData & data
    * @return CUndoObjectInterface * pUndoObject
    */
-  virtual CUndoObjectInterface * insert(const CData & data);
+  CUndoObjectInterface * insert(const CData & data) override;
 
   /**
    * Update the index of a contained object
@@ -543,7 +543,7 @@ public:
    * @param const size_t & index
    * @param const CUndoObjectInterface * pUndoObject
    */
-  virtual void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject);
+  void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject) override;
 
   /**
    * Retrieve the index of a parameter or subgroup with a given name
@@ -566,7 +566,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 
   /**
    * Output stream operator
@@ -595,7 +595,7 @@ public:
   const CCopasiParameterGroup & getElementTemplates() const;
   bool haveTemplate() const;
 
-  virtual void setUserInterfaceFlag(const UserInterfaceFlag & flag);
+  void setUserInterfaceFlag(const UserInterfaceFlag & flag) override;
 
   virtual void signalChanged(const CCopasiParameter * pParameter);
 

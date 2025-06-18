@@ -37,9 +37,9 @@ public:
   ~CQFunctionsWidget();
 
 protected:
-  virtual bool enterProtected();
+  bool enterProtected() override;
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool leaveProtected();
+  bool leaveProtected() override;
 
 private:
   CQFunctionDM* mpFunctionDM;
@@ -50,7 +50,7 @@ signals:
   void initFilter();
 
 protected:
-  virtual void keyPressEvent(QKeyEvent* ev);
+  void keyPressEvent(QKeyEvent* ev) override;
 
 protected slots:
   virtual void slotBtnNewClicked();

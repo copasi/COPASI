@@ -62,7 +62,7 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  bool elevateChildren() override;
 
   /**
    * Execute the optimization algorithm calling simulation routine
@@ -70,7 +70,7 @@ public:
    * of its progress by the callback function set with SetCallback.
    * @ return success;
    */
-  virtual bool optimise();
+  bool optimise() override;
 
 private:
   /**
@@ -138,7 +138,7 @@ private:
    * Cleanup arrays and pointers.
    * @return bool success
    */
-  virtual bool cleanup();
+  bool cleanup() override;
 
   /**
    * Find a local minimum

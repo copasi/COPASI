@@ -45,7 +45,7 @@ public:
   CQTrajectoryWidget(QWidget* parent = 0, const char* name = 0);
   virtual ~CQTrajectoryWidget();
 
-  virtual bool runTask();
+  bool runTask() override;
 
 public slots:
   void slotDuration();
@@ -61,9 +61,9 @@ public slots:
 
 protected:
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool saveTaskProtected();
-  virtual bool loadTaskProtected();
-  virtual bool taskFinishedEvent();
+  bool saveTaskProtected() override;
+  bool loadTaskProtected() override;
+  bool taskFinishedEvent() override;
 
 protected slots:
 

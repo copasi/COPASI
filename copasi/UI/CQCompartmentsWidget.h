@@ -37,9 +37,9 @@ public:
   CQCompartmentsWidget(QWidget* parent = 0, const char* name = 0);
   virtual ~CQCompartmentsWidget();
 
-  virtual void setFramework(int framework);
+  void setFramework(int framework) override;
 
-  virtual CQBaseDataModel* getCqDataModel();
+  CQBaseDataModel* getCqDataModel() override;
 
 private:
   CQCompartmentDM* mpCompartmentDM;
@@ -51,11 +51,11 @@ signals:
   void initFilter();
 
 protected:
-  virtual bool enterProtected();
+  bool enterProtected() override;
   bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool leaveProtected();
+  bool leaveProtected() override;
 
-  virtual void keyPressEvent(QKeyEvent* ev);
+  void keyPressEvent(QKeyEvent* ev) override;
 
 protected slots:
   virtual void slotBtnNewClicked();

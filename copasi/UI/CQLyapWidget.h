@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -32,12 +37,12 @@ public:
   CQLyapWidget(QWidget* parent = 0, const char* name = 0);
   ~CQLyapWidget();
 
-  virtual bool runTask();
+  bool runTask() override;
 
 protected:
-  virtual bool loadTaskProtected();
-  virtual bool saveTaskProtected();
-  virtual bool taskFinishedEvent();
+  bool loadTaskProtected() override;
+  bool saveTaskProtected() override;
+  bool taskFinishedEvent() override;
 
 protected slots:
 

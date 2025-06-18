@@ -71,7 +71,7 @@ public:
    * For now we assume that this functionality is also performed when
    * initialize() is called.
    */
-  virtual bool updateMatrices();
+  bool updateMatrices() override;
 
   /**
    * Initialize the task. If an ostream is given this ostream is used
@@ -109,7 +109,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 
   // Friend functions
   friend std::ostream &operator<<(std::ostream &os,

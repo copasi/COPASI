@@ -44,12 +44,12 @@ public:
   explicit SensitivitiesWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = Qt::WindowFlags());
   ~SensitivitiesWidget();
 
-  virtual bool runTask();
+  bool runTask() override;
 
 protected:
-  virtual bool loadTaskProtected();
-  virtual bool saveTaskProtected();
-  virtual bool taskFinishedEvent();
+  bool loadTaskProtected() override;
+  bool saveTaskProtected() override;
+  bool taskFinishedEvent() override;
 
 private:
 
