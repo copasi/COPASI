@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -2688,7 +2688,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       // skip initial time
       if (current == 0) continue;
 
-      CEvent* pEvent = createEvent(getNextId("pe_event_", i));
+      CEvent* pEvent = createEvent(getNextId("pe_event_", (int) i));
 
       if (pEvent == NULL)
         {
@@ -2709,7 +2709,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       for (size_t j = 0; j < data.numCols(); ++j)
         {
 
-          const CObjectInterface * currentObject = getDependentOrNull(dependentMap, j);  //objects[j + 1];
+          const CObjectInterface * currentObject = getDependentOrNull(dependentMap, (int)j);  //objects[j + 1];
 
           if (currentObject == NULL ||
               currentObject->getDataObject() ==  NULL ||

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -518,7 +518,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
         size_t i;
 
         for (i = 0; i < imax; ++i)
-          ret.push_back(static_cast< const CDataObject * >(pEV->addElementReference(i, 0)));
+          ret.push_back(static_cast< const CDataObject * >(pEV->addElementReference((int)i, 0)));
       }
       break;
 
@@ -541,7 +541,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
         size_t i;
 
         for (i = 0; i < imax; ++i)
-          ret.push_back(static_cast< const CDataObject * >(pEV->addElementReference(i, 1)));
+          ret.push_back(static_cast< const CDataObject * >(pEV->addElementReference((int)i, 1)));
       }
       break;
 

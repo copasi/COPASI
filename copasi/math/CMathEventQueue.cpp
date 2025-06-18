@@ -110,6 +110,9 @@ CMathEventQueue::CAction::CAction(CMathEvent * pEvent,
       case CEvent::Callback:
         mType = Callback;
         break;
+        
+      case CEvent::Stop:
+        break;
     }
 }
 
@@ -458,7 +461,7 @@ CMathEventQueue::iterator CMathEventQueue::getAction()
 
       // Pick one randomly
       default:
-        return PriorityActions[mpContainer->getRandomGenerator().getRandomU(PriorityActions.size() - 1)];
+        return PriorityActions[mpContainer->getRandomGenerator().getRandomU((int)PriorityActions.size() - 1)];
         break;
     }
 

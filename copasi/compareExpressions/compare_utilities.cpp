@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1076,7 +1076,7 @@ CEvaluationNode* expand_function_call(const CEvaluationNodeCall* pCall, CFunctio
       // create the mapping
       assert(pFunctionDefinition != NULL);
       const CFunctionParameters& functionParameters = pFunctionDefinition->getVariables();
-      unsigned int i, iMax = functionParameters.size();
+      unsigned int i, iMax = (unsigned int)functionParameters.size();
       // map the first function argument to the first child in the call etc.
       std::map<std::string, const CEvaluationNode*> argumentMap;
       i = 0;

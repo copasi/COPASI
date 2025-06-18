@@ -2146,7 +2146,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
   bool loadedModel = false;
 
-  int numMessagesBefore = CCopasiMessage::size();
+  int numMessagesBefore = (int)CCopasiMessage::size();
   std::vector<CCopasiMessage> importCopasiMessages;
   std::vector< CCopasiMessage > importSedMLMessages;
   std::vector< CCopasiMessage > importSbmlMessages;
@@ -2231,7 +2231,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
         }
     }
 
-  numMessagesBefore = CCopasiMessage::size();
+  numMessagesBefore = (int)CCopasiMessage::size();
 
   if (loadedModel == false && sedml_content != NULL)
     {
@@ -2258,7 +2258,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
         }
     }
 
-  numMessagesBefore = CCopasiMessage::size();
+  numMessagesBefore = (int)CCopasiMessage::size();
 
   bool loadedModelFromSedml = loadedModel;
 

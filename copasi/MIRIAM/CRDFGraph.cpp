@@ -912,7 +912,7 @@ struct TreeNode
 
   XMLNode * createNode()
   {
-    int pos = elementName.find(':');
+    auto pos = elementName.find(':');
     if (pos == std::string::npos)
       return NULL;
 

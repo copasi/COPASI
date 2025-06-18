@@ -1171,7 +1171,7 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
   if (!children.empty())
     {
       int maxChildren =
-        allowN ? children.size() : allowTwo ? 2
+        allowN ? (int)children.size() : allowTwo ? 2
                                             : 1;
 
       for (int i = 0; i < maxChildren; ++i)

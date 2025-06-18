@@ -152,7 +152,7 @@ bool COptMethodNL2SOL::initialize()
     {
       mHaveResiduals = true;
       pFitProblem->setResidualsRequired(true);
-      nResiduals = pFitProblem->getResiduals().size();
+      nResiduals = (C_INT)pFitProblem->getResiduals().size();
       mResidualJacobianT.resize(mVariableSize, nResiduals);
     }
 

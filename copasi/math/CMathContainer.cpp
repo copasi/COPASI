@@ -2666,6 +2666,7 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
                   break;
 
                 case CMath::SimulationType::__SIZE:
+                case CMath::SimulationType::Undefined:
                   break;
               }
 
@@ -2783,6 +2784,7 @@ void CMathContainer::createApplyInitialValuesSequence()
                   break;
 
                 case CMath::SimulationType::__SIZE:
+                case CMath::SimulationType::Undefined:
                   break;
               }
 

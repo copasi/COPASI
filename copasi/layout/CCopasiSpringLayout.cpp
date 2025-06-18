@@ -232,7 +232,7 @@ void CCopasiSpringLayout::addCompartmentVariables(CLCompartmentGlyph* cg)
   VariableDescription desc;
   desc.isAngle = false;
 
-  int first_index = mInitialState.size();
+  int first_index = (int)mInitialState.size();
 
   //x position
   mInitialState.push_back(cg->getX());
@@ -267,7 +267,7 @@ void CCopasiSpringLayout::addPositionVariables(CLGraphicalObject* pGO)
   VariableDescription desc;
   desc.isAngle = false;
 
-  int first_index = mInitialState.size();
+  int first_index = (int)mInitialState.size();
 
   //x position
   mInitialState.push_back(pGO->getX());
@@ -290,14 +290,14 @@ void CCopasiSpringLayout::addReactionVariables(CLReactionGlyph* rg)
   VariableDescription desc;
   desc.isAngle = false;
 
-  int first_index = mInitialState.size();
+  int first_index = (int)mInitialState.size();
 
   C_FLOAT64 xxx, yyy;
 
   //first look if the glyph is described by a curve
   if (rg->getCurve().getNumCurveSegments())
     {
-      unsigned int numsegs = rg->getCurve().getNumCurveSegments();
+      unsigned int numsegs = (unsigned int)rg->getCurve().getNumCurveSegments();
       xxx = 0.5 * (rg->getCurve().getCurveSegments()[0].getStart().getX()
                    + rg->getCurve().getCurveSegments()[numsegs - 1].getEnd().getX());
       yyy = 0.5 * (rg->getCurve().getCurveSegments()[0].getStart().getY()
@@ -382,7 +382,7 @@ void CCopasiSpringLayout::finalizeState()
       //Determine the average position of substrates and products, giving less weight to side reactants
       CLPoint s, p;
       double s_c = 0; double p_c = 0;
-      unsigned int j, jmax = pRG->getListOfMetabReferenceGlyphs().size();
+      unsigned int j, jmax = (unsigned int)pRG->getListOfMetabReferenceGlyphs().size();
 
       for (j = 0; j < jmax; ++j)
         {

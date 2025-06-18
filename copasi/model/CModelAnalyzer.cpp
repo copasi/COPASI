@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -322,6 +322,9 @@ CReactionResult CModelAnalyzer::checkReaction(const CReaction* reaction)
             ret.mFunctionParametersVar.push_back(reaction->getFunctionParameters()[i]->getObjectName());
           }
           break;
+
+          case CFunctionParameter::Role::__SIZE:
+            break;
         }
     }
 
@@ -338,12 +341,10 @@ CReactionResult CModelAnalyzer::checkReaction(const CReaction* reaction)
 
 #define WRITE(__level, __text) os << CFunctionAnalyzer::write(__level, rt, __text, "");
 
-
 CReactionResult::CReactionResult()
   : mKineticUnspecifiedReversibility(false)
   , mReversibilityMismatch(false)
 {
-
 }
 
 CReactionResult::~CReactionResult()
@@ -365,7 +366,6 @@ bool CReactionResult::writeResult(std::ostream & os, bool rt, bool verbose, bool
 
       os << "\n";
 
-
       //reaction results
       if (mKineticUnspecifiedReversibility)
         os << CFunctionAnalyzer::write(1, rt, "The kinetic function has unspecified reversibility.",
@@ -373,7 +373,6 @@ bool CReactionResult::writeResult(std::ostream & os, bool rt, bool verbose, bool
 
       if (mReversibilityMismatch)
         os << CFunctionAnalyzer::write(3, rt, "The reversibility of the reaction and the kinetic function doesn't match.", "");
-
     }
 
   size_t i, imax;
@@ -517,7 +516,6 @@ std::string CReactionResult::getResultString(bool rt, bool verbose) const
   writeResult(str, rt, verbose);
   return str.str();
 }
-
 
 const std::string& CReactionResult::getName() const
 {

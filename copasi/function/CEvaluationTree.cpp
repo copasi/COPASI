@@ -651,6 +651,7 @@ bool CEvaluationTree::setTree(const ASTNode& pRootNode, bool isFunction)
 
                     case CEvaluationNode::ValueType::Boolean:
                     case CEvaluationNode::ValueType::Unknown:
+                    case CEvaluationNode::ValueType::__SIZE:
                       // We do not convert to these type yet
                       break;
                   }
