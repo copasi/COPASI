@@ -109,6 +109,8 @@ void CUndoData::CChangeSet::add(const CUndoData::ChangeInfo & info)
               }
 
             break;
+          case Type::__SIZE:
+            break;
         }
     }
   else

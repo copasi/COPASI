@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -73,7 +73,7 @@ class QConservedSpeciesAnimation : public CQCopasiAnimation
 
     // initialize number of steps
     const CDataVector< CMoiety > & moieties = model.getMoieties();
-    mNumSteps = moieties.size();
+    mNumSteps = (int)moieties.size();
   }
 
   virtual void getScales(std::vector<qreal>& scales, int step)
@@ -82,7 +82,7 @@ class QConservedSpeciesAnimation : public CQCopasiAnimation
 
     const CModel& model = *mpDataModel->getModel();
     const CDataVector< CMoiety > & moieties = model.getMoieties();
-    mNumSteps = moieties.size();
+    mNumSteps = (int)moieties.size();
 
     if (moieties.size() <= (size_t)step) return;
 
@@ -134,7 +134,7 @@ public:
     if (problem == NULL) return;
 
     const std::vector< CFluxMode >& fluxModes = problem->getFluxModes();
-    mNumSteps = fluxModes.size();
+    mNumSteps = (int)fluxModes.size();
   }
   virtual void getScales(std::vector<qreal>& scales, int step)
   {
@@ -149,7 +149,7 @@ public:
     if (problem == NULL) return;
 
     const std::vector< CFluxMode >& fluxModes = problem->getFluxModes();
-    mNumSteps = fluxModes.size();
+    mNumSteps = (int)fluxModes.size();
 
     if (fluxModes.size() <= (size_t)step) return;
 

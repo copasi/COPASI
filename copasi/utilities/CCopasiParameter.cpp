@@ -131,6 +131,7 @@ CData CCopasiParameter::toData() const
 
       case CCopasiParameter::Type::GROUP:
       case CCopasiParameter::Type::INVALID:
+      case CCopasiParameter::Type::__SIZE:
         break;
     }
 

@@ -739,7 +739,8 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
   size_t LastMappedColumn = mpObjectMap->getLastColumn();
   const CVector< const CDataObject * > & Objects = mpObjectMap->getDataObjects();
 
-  size_t i, imax = mpObjectMap->getLastNotIgnoredColumn();
+  size_t i;
+  unsigned C_INT32 imax = mpObjectMap->getLastNotIgnoredColumn();
 
   if (*mpNumColumns < imax)
     *mpNumColumns = imax;

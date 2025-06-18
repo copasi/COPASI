@@ -405,11 +405,10 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   /* import the functions */
   unsigned int counter;
-  size_t num;
 
   CDataVectorN< CFunction > & functions = CRootContainer::getFunctionList()->loadedFunctions();
 
-  num = functions.size();
+  unsigned int num = (unsigned int)functions.size();
 
   if (createProgressStepOrStop(5, num, "Importing function definitions..."))
     return NULL;

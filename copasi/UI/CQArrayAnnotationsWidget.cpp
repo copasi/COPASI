@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 #ifdef SunOS
 #include <ieeefp.h>
@@ -312,7 +312,7 @@ void CQArrayAnnotationsWidget::initSelectionTable()
       mpSelectionTable->resizeColumnsToContents();
       mpSelectionTable->resizeRowsToContents();
 
-      mpSelectionTable->setMaximumHeight(mpSelectionTable->verticalHeader()->sectionSize(0) * (mpArray->dimensionality() + 1));
+      mpSelectionTable->setMaximumHeight(mpSelectionTable->verticalHeader()->sectionSize(0) * ((int)mpArray->dimensionality() + 1));
     }
 }
 
@@ -374,14 +374,14 @@ void CQArrayAnnotationsWidget::slotRowSelectionChanged(int row)
       mpComboColumns->setCurrentIndex(row == 0 ? 1 : 0);
       mpComboColumns->blockSignals(false);
 
-      mpSelectionTable->showRow(mColIndex);
+      mpSelectionTable->showRow((int)mColIndex);
       mColIndex = mpComboColumns->currentIndex();
-      mpSelectionTable->hideRow(mColIndex);
+      mpSelectionTable->hideRow((int)mColIndex);
     }
 
-  mpSelectionTable->showRow(mRowIndex);
+  mpSelectionTable->showRow((int)mRowIndex);
   mRowIndex = row;
-  mpSelectionTable->hideRow(mRowIndex);
+  mpSelectionTable->hideRow((int)mRowIndex);
 
   fillTable();
 }
@@ -395,14 +395,14 @@ void CQArrayAnnotationsWidget::slotColumnSelectionChanged(int col)
       mpComboRows->setCurrentIndex(col == 0 ? 1 : 0);
       mpComboRows->blockSignals(false);
 
-      mpSelectionTable->showRow(mRowIndex);
+      mpSelectionTable->showRow((int)mRowIndex);
       mRowIndex = mpComboRows->currentIndex();
-      mpSelectionTable->hideRow(mRowIndex);
+      mpSelectionTable->hideRow((int)mRowIndex);
     }
 
-  mpSelectionTable->showRow(mColIndex);
+  mpSelectionTable->showRow((int)mColIndex);
   mColIndex = col;
-  mpSelectionTable->hideRow(mColIndex);
+  mpSelectionTable->hideRow((int)mColIndex);
 
   fillTable();
 }
@@ -633,7 +633,6 @@ void CQArrayAnnotationsWidget::switchToBarChart()
               switchToTable();
               return;
             }
-          
         }
 
       fillBarChart();
@@ -947,7 +946,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (!mpArray) return;
 
 #ifdef WITH_QT5_VISUALIZATION
-  
+
   if (!m_modifier)
     return;
 
@@ -1185,7 +1184,6 @@ bool CQArrayAnnotationsWidget::createBarChart()
 
   setContextMenuPolicy(Qt::CustomContextMenu);
   connect(this, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(slotShowContextMenu(const QPoint &)));
-    
 
 #else
   mpPlot3d = new CQBarChart();

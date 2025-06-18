@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -444,7 +444,7 @@ void CQSelectionWizardPage::fillTree(const CModel& model)
               pChild1->addChild(pItem2);
               // now we add all metabolites
               j = 0;
-              jMax = pMetabs->size();
+              jMax = (int)pMetabs->size();
 
               while (j < jMax)
                 {
@@ -716,7 +716,7 @@ void CQSideCompoundWizardPage::setSpeciesList(const std::set<const CMetab*>& met
       // have to add it to the species list
       itemList = this->mpSideCompoundList->findItems(displayName.c_str(), Qt::MatchExactly);
       i = 0;
-      iMax = itemList.size();
+      iMax = (int)itemList.size();
       bool found = false;
 
       while (i < iMax)

@@ -350,6 +350,9 @@ bool CDataValue::operator == (const CDataValue & rhs) const
 
       case INVALID:
         return (raw() == rhs.raw());
+
+      case __SIZE:
+        break;
     }
 
   return false;
