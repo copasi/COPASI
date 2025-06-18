@@ -42,9 +42,9 @@ public:
 
   virtual ~CQUndoDM();
 
-  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+  int columnCount(const QModelIndex &parent = QModelIndex()) const override;
 
   virtual QVariant data(const QModelIndex &index, int role) const;
 
@@ -57,13 +57,13 @@ public:
                        int role = Qt::EditRole);
 
 protected:
-  virtual void resetCacheProtected() override;
+  void resetCacheProtected() override;
 
   virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 
   virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
 
-  virtual size_t size() const override;
+  size_t size() const override;
 
   QVariant displayData(const QModelIndex &index) const;
 

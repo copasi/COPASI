@@ -87,16 +87,16 @@ public:
    * @param std::ostream * pOstream (default: NULL)
    * @return bool success
    */
-  virtual bool initialize(const OutputFlag & of,
+  bool initialize(const OutputFlag & of,
                           COutputHandler * pOutputHandler,
-                          std::ostream * pOstream);
+                          std::ostream * pOstream) override;
 
   /**
    * Process the task with or without initializing to the initial state.
    * @param const bool & useInitialValues
    * @return bool success
    */
-  virtual bool process(const bool & useInitialValues);
+  bool process(const bool & useInitialValues) override;
 
   virtual bool processTrajectory(const bool& useInitialValues);
 
@@ -124,7 +124,7 @@ public:
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  virtual const CTaskEnum::Method * getValidMethods() const;
+  const CTaskEnum::Method * getValidMethods() const override;
 #endif
 
   /**
@@ -144,12 +144,12 @@ protected:
   /**
    * Signal that the math container has changed
    */
-  virtual void signalMathContainerChanged();
+  void signalMathContainerChanged() override;
 
   /**
    * Signal that the method has changed
    */
-  virtual void signalMethodChanged();
+  void signalMethodChanged() override;
 
 private:
   /**

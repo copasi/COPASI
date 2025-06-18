@@ -68,7 +68,7 @@ public:
    * initialized in the subclasses.
    * @return bool success
    */
-  virtual bool initialize();
+  bool initialize() override;
 
   /**
    * Cleanup arrays and pointers.

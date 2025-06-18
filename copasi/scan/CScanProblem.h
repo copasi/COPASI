@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -90,14 +90,14 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren() override;
+  bool elevateChildren() override;
 
   /**
    * Retrieve the optional sub task
    *
    * @return CCopasiTask* * pSubTask
    */
-  virtual CCopasiTask * getSubTask() const override;
+  CCopasiTask * getSubTask() const override;
 
   /**
    *  Set the type of the subtask.
@@ -248,7 +248,7 @@ public:
    * @param const bool & updateModel
    * @result bool success
    */
-  virtual bool restore(const bool & updateModel) override;
+  bool restore(const bool & updateModel) override;
 
 private:
   /**

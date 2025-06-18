@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -84,7 +84,7 @@ public:
    * @param CProcessReport * pCallBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReportLevel callBack) override;
+  bool setCallBack(CProcessReportLevel callBack) override;
 
   /**
    * Initialize the task. If an ostream is given this ostream is used
@@ -95,7 +95,7 @@ public:
    * @param std::ostream * pOstream (default: NULL)
    * @return bool success
    */
-  virtual bool initialize(const OutputFlag & of,
+  bool initialize(const OutputFlag & of,
                           COutputHandler * pOutputHandler,
                           std::ostream * pOstream) override;
 
@@ -104,14 +104,14 @@ public:
    * @param const bool & useInitialValues
    * @return bool success
    */
-  virtual bool process(const bool & useInitialValues) override;
+  bool process(const bool & useInitialValues) override;
 
 #ifndef SWIG
   /**
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  virtual const CTaskEnum::Method * getValidMethods() const override;
+  const CTaskEnum::Method * getValidMethods() const override;
 #endif
 };
 #endif // COPASI_COptTask

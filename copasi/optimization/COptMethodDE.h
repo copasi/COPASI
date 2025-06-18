@@ -62,12 +62,12 @@ public:
    * of its progress by the callback function set with SetCallback.
    * @ return success;
    */
-  virtual bool optimise();
+  bool optimise() override;
 
   /**
    * Returns the maximum verbosity at which the method can log.
    */
-  virtual unsigned C_INT32 getMaxLogVerbosity() const;
+  unsigned C_INT32 getMaxLogVerbosity() const override;
 
 private:
   /**
@@ -84,13 +84,13 @@ private:
    * Initialize arrays and pointer.
    * @return bool success
    */
-  virtual bool initialize();
+  bool initialize() override;
 
   /**
    * Cleanup arrays and pointers.
    * @return bool success
    */
-  virtual bool cleanup();
+  bool cleanup() override;
 
   /**
    * Replicate the individuals with crossover

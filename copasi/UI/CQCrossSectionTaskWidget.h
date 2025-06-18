@@ -39,7 +39,7 @@ public:
   virtual ~CQCrossSectionTaskWidget();
 
   virtual bool runTask();
-  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
+  bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
 
 protected:
   void commitInput();

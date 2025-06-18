@@ -51,7 +51,6 @@ class COptItem;
 class COptTask;
 template < class CType > class CVector;
 
-
 // YOHE: this is an abstract class that contains many virtual functions
 // without definitions
 //
@@ -149,7 +148,7 @@ public:
    * Set the problem to be optimized
    * @param "COptProblem *" problem
    */
-  virtual bool setProblem(CCopasiProblem * pProblem) override;
+  bool setProblem(CCopasiProblem * pProblem) override;
 
   /**
    * Initialize arrays and pointer.
@@ -161,7 +160,7 @@ public:
    * Check if the method is suitable for this problem
    * @return bool suitability of the method
    */
-  virtual bool isValidProblem(const CCopasiProblem * pProblem);
+  bool isValidProblem(const CCopasiProblem * pProblem) override;
 
   /**
    * Returns the maximum verbosity (0 - Basic; 1 - Iterative; 2 - Detailed) at which the method can log.
@@ -219,7 +218,7 @@ protected:
   /**
    * Signal that the math container has changed
    */
-  virtual void signalMathContainerChanged();
+  void signalMathContainerChanged() override;
 
   /**
    * Cleanup arrays and pointers.

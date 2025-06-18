@@ -52,10 +52,10 @@ private:
   CRandomSearch();
 
   /**
-      * Initialize arrays and pointer.
-      * @return bool success
-      */
-  virtual bool initialize();
+   * Initialize arrays and pointer.
+   * @return bool success
+   */
+  bool initialize() override;
 
   /**
    * Initialize contained objects.

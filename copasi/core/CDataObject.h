@@ -89,13 +89,13 @@ public:
   /**
    * Destruct the object
    */
-  virtual void destruct() override;
+  void destruct() override;
 
   /**
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const override;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
@@ -103,7 +103,7 @@ public:
    * @return bool success
    */
   // API use by setData
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -131,21 +131,21 @@ public:
   /**
    * Calculate the objects value.
    */
-  virtual void calculateValue() override;
+  void calculateValue() override;
 
   /**
    * Retrieve a descendant object by its CN.
    * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  virtual const CObjectInterface * getObject(const CCommonName & cn) const override;
+  const CObjectInterface * getObject(const CCommonName & cn) const override;
 
   /**
    * Retrieve the prerequisites, i.e., the objects which need to be evaluated
    * before this.
    * @return const CObjectInterface::ObjectSet & prerequisites
    */
-  virtual const CObjectInterface::ObjectSet & getPrerequisites() const override;
+  const CObjectInterface::ObjectSet & getPrerequisites() const override;
 
   /**
    * Check whether a given object is a prerequisite for a context.
@@ -166,18 +166,18 @@ public:
    * @param std::ostream * ostream
    */
   // API implement ostream
-  virtual void print(std::ostream * ostream) const override;
+  void print(std::ostream * ostream) const override;
 
   /**
    * Retrieve a pointer to the value of the object
    */
-  virtual void * getValuePointer() const override;
+  void * getValuePointer() const override;
 
   /**
    * Retrieve a pointer to the data object
    * @return const DATA_OBJECT * dataObject
    */
-  virtual const CDataObject * getDataObject() const override;
+  const CDataObject * getDataObject() const override;
 
   /**
    * Retrieve the display name of the object
@@ -186,14 +186,14 @@ public:
    * @return std::string objectDisplayName
    */
   // API
-  virtual std::string getObjectDisplayName() const override;
+  std::string getObjectDisplayName() const override;
 
   /**
    * Get the aggregation of any issues associated with this object
    * @return const CValidity & validity
    */
   // API
-  virtual const CValidity & getValidity() const override;
+  const CValidity & getValidity() const override;
 
   /**
    * This method is called whenever the validity of the object or a contained object changes.
@@ -268,7 +268,7 @@ protected:
    * @return CCommonName
    */
   // API (for reporting and expressions)
-  virtual CCommonName getCNProtected() const override;
+  CCommonName getCNProtected() const override;
 
 private:
   void refreshAggregateValidity();

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -60,7 +60,7 @@ public:
   /**
    * Calculate the objects value.
    */
-  virtual void calculateValue() override;
+  void calculateValue() override;
 
   /**
    * Retrieve the elapsed time.
@@ -81,9 +81,9 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const override;
+  void print(std::ostream * ostream) const override;
 
-  virtual void * getValuePointer() const override;
+  void * getValuePointer() const override;
 
 private:
   // Attributes

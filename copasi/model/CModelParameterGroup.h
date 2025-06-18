@@ -38,7 +38,7 @@ public:
    * @param const CData & data
    * @return CUndoObjectInterface * pUndoObject
    */
-  virtual CUndoObjectInterface * insert(const CData & data);
+  CUndoObjectInterface * insert(const CData & data) override;
 
   /**
    * Update the index of a contained object
@@ -46,20 +46,20 @@ public:
    * @param const size_t & index
    * @param const CUndoObjectInterface * pUndoObject
    */
-  virtual void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject);
+  void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject) override;
 
   /**
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -70,10 +70,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
+  void createUndoData(CUndoData & undoData,
                               const CUndoData::Type & type,
                               const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
   /**
    * Constructor
@@ -157,7 +157,7 @@ public:
   /**
    * Compile the parameter
    */
-  virtual void compile();
+  void compile() override;
 
   /**
    * Clear the contained parameters and delete them.
@@ -171,21 +171,21 @@ public:
    * @param const CCore::Framework & framework
    * @param const bool & createMissing = false
    */
-  const virtual CompareResult & diff(const CModelParameter& other,
+  const CompareResult & diff(const CModelParameter& other,
                                      const CCore::Framework & framework,
-                                     const bool & createMissing = false);
+                                     const bool & createMissing = false) override;
 #endif //SWIG
 
   /**
    * Update the corresponding model object with the current parameter settings
    */
-  virtual bool updateModel();
+  bool updateModel() override;
 
   /**
    * Refresh the parameter from the corresponding model object
    * @param const bool & modifyExistence
    */
-  virtual bool refreshFromModel(const bool & modifyExistence);
+  bool refreshFromModel(const bool & modifyExistence) override;
 
   /**
    * Retrieve a pointer to the parameter with the given CN
@@ -204,8 +204,8 @@ public:
                                       const CModelParameter::Type & type) const;
 
   // These methods are only here so that we can use CNodeIterator to traverse the tree.
-  virtual size_t getNumChildren() const;
-  virtual const CModelParameter * getChild(const size_t & index) const;
+  size_t getNumChildren() const override;
+  const CModelParameter * getChild(const size_t & index) const override;
 
   /**
    * Retrieve the validated unit of the object units

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -70,7 +70,7 @@ public:
   void fetchMore(const QModelIndex &parent) override;
 
 protected:
-  virtual void resetCacheProtected() override;
+  void resetCacheProtected() override;
 
 signals:
   void signalOpenEditor(const QModelIndex &) const;

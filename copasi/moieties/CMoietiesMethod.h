@@ -67,7 +67,7 @@ public:
    * Set the problem
    * @param CMoietiesProblem * pProblem
    */
-  virtual bool setProblem(CCopasiProblem * pProblem) override;
+  bool setProblem(CCopasiProblem * pProblem) override;
 
   // Attributes
 protected:

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,8 +28,8 @@ public:
   CQTimeSeriesDM(QObject *parent = 0);
   virtual ~CQTimeSeriesDM();
 
-  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  int columnCount(const QModelIndex &parent = QModelIndex()) const override;
   virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 
   virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
@@ -46,10 +46,10 @@ public:
   void setFramework(int framework);
 
 protected:
-  virtual void resetCacheProtected() override;
+  void resetCacheProtected() override;
   virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
   virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
-  virtual size_t size() const override;
+  size_t size() const override;
 
 private:
   const CTimeSeries * mpTimeSeries;

@@ -95,14 +95,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const override;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -145,7 +145,7 @@ public:
    * Retrieve the key
    * @return std::string key
    */
-  virtual const std::string & getKey() const override;
+  const std::string & getKey() const override;
 
   /**
    * Retrieve the status of the entity.
@@ -212,19 +212,19 @@ public:
   /**
    * Retrieve the object representing the value;
    */
-  virtual const CDataObject * getValueObject() const override;
+  const CDataObject * getValueObject() const override;
 
   /**
    * Retrieve a pointer to the value;
    */
-  virtual void * getValuePointer() const override;
+  void * getValuePointer() const override;
 
   /**
    * Set the object parent
    * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CDataContainer * pParent) override;
+  bool setObjectParent(const CDataContainer * pParent) override;
 
   /**
    * Sets the SBMLId.
@@ -367,7 +367,7 @@ public:
    * Retrieve the units of the child object.
    * @return const & CUnit units
    */
-  virtual std::string getChildObjectUnits(const CDataObject * pObject) const override;
+  std::string getChildObjectUnits(const CDataObject * pObject) const override;
 
   /**
    * Set whether the model entity is used during simulation

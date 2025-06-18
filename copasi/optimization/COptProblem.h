@@ -120,33 +120,33 @@ public:
   /**
    * Calculate the objects value.
    */
-  virtual void calculateValue() override;
+  void calculateValue() override;
 
   /**
    * Retrieve a pointer to the value of the object
    */
-  virtual void * getValuePointer() const override;
+  void * getValuePointer() const override;
 
   /**
    * This methods must be called to elevate subgroups to
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren() override;
+  bool elevateChildren() override;
 
   /**
   * Set the call back of the problem
   * @param CProcessReport * pCallBack
   * @result bool success
   */
-  virtual bool setCallBack(CProcessReportLevel callBack) override;
+  bool setCallBack(CProcessReportLevel callBack) override;
 
   /**
    * Do all necessary initialization so that calls to calculate will
    * be successful. This is called once from CCopasiTask::process()
    * @result bool success
    */
-  virtual bool initialize() override;
+  bool initialize() override;
 
   /**
    * perform at least the initializations of the subtask that
@@ -167,7 +167,7 @@ public:
    * @param const bool & updateModel
    * @result bool success
    */
-  virtual bool restore(const bool & updateModel) override;
+  bool restore(const bool & updateModel) override;
 
   /**
    * Reset counters and objective value.
@@ -179,7 +179,7 @@ public:
    *
    * @return CCopasiTask* * pSubTask
    */
-  virtual CCopasiTask * getSubTask() const override;
+  CCopasiTask * getSubTask() const override;
 
   /**
    * Check whether all parameters are within their boundaries.
@@ -262,7 +262,7 @@ protected:
   /**
    * Signal that the math container has changed
    */
-  virtual void signalMathContainerChanged() override;
+  void signalMathContainerChanged() override;
 
 public:
   /**
@@ -493,7 +493,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const override;
+  void print(std::ostream * ostream) const override;
 
   /**
    * Output stream operator
@@ -509,7 +509,7 @@ public:
    * default behavior one needs to reimplement the virtual printResult function.
    * @param std::ostream * ostream
    */
-  virtual void printResult(std::ostream * ostream) const override;
+  void printResult(std::ostream * ostream) const override;
 
 protected:
   /**

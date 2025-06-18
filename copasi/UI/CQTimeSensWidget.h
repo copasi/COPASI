@@ -47,7 +47,7 @@ public slots:
   void slotRemoveTarget();
 
 protected:
-  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
+  bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
   virtual bool saveTaskProtected();
   virtual bool loadTaskProtected();
   virtual bool taskFinishedEvent();

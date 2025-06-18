@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -88,7 +93,7 @@ public:
    *  This method is used by CTrajectory
    *  @param "CTrajectoryProblem *" problem
    */
-  virtual bool setProblem(CCopasiProblem * pProblem) override;
+  bool setProblem(CCopasiProblem * pProblem) override;
 
   /**
    * Inform the trajectory method that the state has changed outside
@@ -124,7 +129,7 @@ public:
    * Check if the method is suitable for this problem
    * @return bool suitability of the method
    */
-  virtual bool isValidProblem(const CCopasiProblem * pProblem);
+  bool isValidProblem(const CCopasiProblem * pProblem) override;
 
   /**
    * Check whether to integrate the reduced model
@@ -136,7 +141,7 @@ protected:
   /**
    * Signal that the math container has changed
    */
-  virtual void signalMathContainerChanged();
+  void signalMathContainerChanged() override;
 
   void output(const bool & useMoieties);
 

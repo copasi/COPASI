@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,14 +57,14 @@ public:
 
   virtual ~CDataObjectReference() {}
 
-  virtual void * getValuePointer() const override {return mpReference;}
+  void * getValuePointer() const override {return mpReference;}
 
-  virtual const CDataObject * getValueObject() const override {return this;}
+  const CDataObject * getValueObject() const override {return this;}
 
-  virtual void print(std::ostream * ostream) const override
+  void print(std::ostream * ostream) const override
   {(*ostream) << *mpReference;};
 
-  virtual std::string getObjectDisplayName() const override
+  std::string getObjectDisplayName() const override
   {
     // Suppress "Value"
     if (getObjectParent() && getObjectName() == "Value")
@@ -219,9 +219,9 @@ public:
     return NULL;
   }
 
-  virtual void * getValuePointer() const override {return &mReference;}
+  void * getValuePointer() const override {return &mReference;}
 
-  virtual const CDataObject * getValueObject() const override {return this;}
+  const CDataObject * getValueObject() const override {return this;}
 
   /**
    * This is the output method for any object. The default implementation
@@ -230,7 +230,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const override
+  void print(std::ostream * ostream) const override
   {*ostream << mReference;}
 };
 
@@ -282,7 +282,7 @@ public:
     return NULL;
   }
 
-  virtual void * getValuePointer() const override {return &mReference;}
-  virtual const CDataObject * getValueObject() const override {return this;}
+  void * getValuePointer() const override {return &mReference;}
+  const CDataObject * getValueObject() const override {return this;}
 };
 #endif // COPASI_CDataObjectReference

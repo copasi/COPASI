@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -123,23 +123,23 @@ public:
    * @param std::ostream * pOstream (default: NULL)
    * @return bool success
    */
-  virtual bool initialize(const OutputFlag & of,
+  bool initialize(const OutputFlag & of,
                           COutputHandler * pOutputHandler,
-                          std::ostream * pOstream);
+                          std::ostream * pOstream) override;
 
   /**
    * Process the task with or without initializing to the initial state.
    * @param const bool & useInitialValues
    * @return bool success
    */
-  virtual bool process(const bool & useInitialValues);
+  bool process(const bool & useInitialValues) override;
 
 #ifndef SWIG
   /**
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  virtual const CTaskEnum::Method * getValidMethods() const;
+  const CTaskEnum::Method * getValidMethods() const override;
 #endif
 
   const CVector<C_FLOAT64> & exponents() const

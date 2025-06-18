@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,7 +26,6 @@
 #include "copasi/core/CVector.h"
 #include "copasi/math/CMathEnum.h"
 #include "copasi/core/CMatrix.h"
-
 
 class CTimeSensTask;
 class CTimeSensProblem;
@@ -81,7 +80,7 @@ public:
    *  This method is used by CTrajectory
    *  @param "CTimeSensProblem *" problem
    */
-  virtual bool setProblem(CCopasiProblem * pProblem) override;
+  bool setProblem(CCopasiProblem * pProblem) override;
 
   /**
    * Inform the trajectory method that the state has changed outside
@@ -122,7 +121,7 @@ public:
    * Check if the method is suitable for this problem
    * @return bool suitability of the method
    */
-  virtual bool isValidProblem(const CCopasiProblem * pProblem);
+  bool isValidProblem(const CCopasiProblem * pProblem) override;
 
   /**
    * Check whether to integrate the reduced model
@@ -135,7 +134,6 @@ public:
    */
   virtual void copySensitivitiesToResultMatrix() = 0;
 
-
   /**
    * Initialize everything that is needed for the various derivatives,
    * e.g. lists of value pointers, update sequences, etc.
@@ -145,10 +143,9 @@ protected:
   /**
    * Signal that the math container has changed
    */
-  virtual void signalMathContainerChanged();
+  void signalMathContainerChanged() override;
 
   void output(const bool & useMoieties);
-
 
   /**
    * This calculates the derivatives of the initial state with respect to the requested parameters
@@ -251,8 +248,6 @@ protected:
   ///some methods for doing debug output
   static void printObjectSet(const std::string & s, const CObjectInterface::ObjectSet & os);
   static void printUpdateSeq(const std::string & s, const CCore::CUpdateSequence & us);
-
-
 };
 
 #endif // COPASI_CTimeSensMethod

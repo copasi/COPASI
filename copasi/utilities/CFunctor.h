@@ -1,4 +1,4 @@
-// Copyright (C) 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2023 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -43,7 +43,7 @@ public:
 
   virtual ~CStatic() {}
 
-  virtual CReturn operator()(Args... args) const override
+  CReturn operator()(Args... args) const override
   {
     return (*mpMethod)(args...);
   }
@@ -67,7 +67,7 @@ public:
 
   virtual ~CMember() {}
 
-  virtual CReturn operator()(Args... args) const override
+  CReturn operator()(Args... args) const override
   {
     return (*mpType.*mpMethod)(args...);
   }

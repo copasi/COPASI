@@ -91,7 +91,7 @@ private:
    * Initialize arrays and pointer.
    * @return bool success
    */
-  virtual bool initialize();
+  bool initialize() override;
 
   /**
    * Cleanup arrays and pointers.

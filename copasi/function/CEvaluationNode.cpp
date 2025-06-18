@@ -882,6 +882,7 @@ bool CEvaluationNode::operator<(const CEvaluationNode& right) const
       case MainType::INVALID:
         break;
 
+      case MainType::UNIT:
       case MainType::__SIZE:
         break;
     }

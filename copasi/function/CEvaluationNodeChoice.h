@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -64,53 +64,53 @@ public:
    * Calculate the numerical result of the node. It is assumed that
    * all child nodes are up to date.
    */
-  virtual void calculate() override;
+  void calculate() override;
 
   /**
    * Compile a node;
    * @param const CEvaluationTree * pTree
    * @return CIssue issue;
    */
-  virtual CIssue compile() override;
+  CIssue compile() override;
 
   /**
    * Retrieve the infix value of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getInfix(const std::vector< std::string > & children) const override;
+  std::string getInfix(const std::vector< std::string > & children) const override;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getDisplayString(const std::vector< std::string > & children) const override;
+  std::string getDisplayString(const std::vector< std::string > & children) const override;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes in C .
    * @return const Data & value
    */
-  virtual std::string getCCodeString(const std::vector< std::string > & children) const override;
+  std::string getCCodeString(const std::vector< std::string > & children) const override;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes
    * in Berkeley Madonna format.
    * @return const Data & value
    */
-  virtual std::string getBerkeleyMadonnaString(const std::vector< std::string > & children) const override;
+  std::string getBerkeleyMadonnaString(const std::vector< std::string > & children) const override;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes
    * in XPPAUT format.
    * @return const Data & value
    */
-  virtual std::string getXPPString(const std::vector< std::string > & children) const override;
+  std::string getXPPString(const std::vector< std::string > & children) const override;
 
   /**
    * Set the type the result of the node
    * @param const ValueType & valueType
    * @return CIssue issue;
    */
-  virtual CIssue setValueType(const ValueType & valueType) override;
+  CIssue setValueType(const ValueType & valueType) override;
 
   /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children
@@ -124,7 +124,7 @@ public:
    * Create a new ASTNode corresponding to this choice node.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const override;
+  ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const override;
 
   /**
    * Build the MathML string

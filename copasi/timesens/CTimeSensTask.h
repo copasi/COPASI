@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -77,7 +77,7 @@ public:
    * @param std::ostream * pOstream (default: NULL)
    * @return bool success
    */
-  virtual bool initialize(const OutputFlag & of,
+  bool initialize(const OutputFlag & of,
                           COutputHandler * pOutputHandler,
                           std::ostream * pOstream);
 
@@ -86,7 +86,7 @@ public:
    * @param const bool & useInitialValues
    * @return bool success
    */
-  virtual bool process(const bool & useInitialValues);
+  bool process(const bool & useInitialValues) override;
 
   /**
    * Starts the process of integration by calling CTimeSensMethod::start
@@ -109,7 +109,7 @@ public:
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  virtual const CTaskEnum::Method * getValidMethods() const;
+  const CTaskEnum::Method * getValidMethods() const override;
 #endif
 
   /**
@@ -130,12 +130,12 @@ protected:
   /**
    * Signal that the math container has changed
    */
-  virtual void signalMathContainerChanged();
+  void signalMathContainerChanged() override;
 
   /**
    * Signal that the method has changed
    */
-  virtual void signalMethodChanged();
+  void signalMethodChanged() override;
 
 private:
   /**

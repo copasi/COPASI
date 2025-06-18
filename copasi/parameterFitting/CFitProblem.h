@@ -71,34 +71,34 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren() override;
+  bool elevateChildren() override;
 
   /**
    * Set the call back of the problem
    * @param CProcessReport * pCallBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReportLevel callBack) override;
+  bool setCallBack(CProcessReportLevel callBack) override;
 
   /**
    * perform at least the initializations of the subtask that
    * must be done before the output is initialized.
    */
-  virtual bool initializeSubtaskBeforeOutput();
+  bool initializeSubtaskBeforeOutput() override;
 
   /**
    * Do all necessary initialization so that calls to calculate will
    * be successful. This is called once from CCopasiTask::process()
    * @result bool success
    */
-  virtual bool initialize() override;
+  bool initialize() override;
 
   /**
    * Do the calculation based on CalculateVariables and fill
    * CalculateResults with the results.
    * @result bool continue
    */
-  virtual bool calculate() override;
+  bool calculate() override;
 
   /**
    * Do all necessary restore procedures so that the
@@ -106,7 +106,7 @@ public:
    * @param const bool & updateModel
    * @result bool success
    */
-  virtual bool restore(const bool & updateModel) override;
+  bool restore(const bool & updateModel) override;
 
   bool restore(const bool& updateModel, CExperiment* pExp);
 
@@ -114,13 +114,13 @@ public:
    * Check whether all functional constraints are fulfilled.
    * @result bool fulfilled
    */
-  virtual bool checkFunctionalConstraints() override;
+  bool checkFunctionalConstraints() override;
 
   /**
    * Retrieve the L2 norm of functional constraint violation.
    * @result C_FLOAT64 violation
    */
-  virtual C_FLOAT64 getFunctionalConstraintsViolation() override;
+  C_FLOAT64 getFunctionalConstraintsViolation() override;
 
   /**
    * This is the output method for any object. The default implementation
@@ -129,7 +129,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const override;
+  void print(std::ostream * ostream) const override;
 
   /**
    * Output stream operator
@@ -145,7 +145,7 @@ public:
    * default behavior one needs to reimplement the virtual printResult function.
    * @param std::ostream * ostream
    */
-  virtual void printResult(std::ostream * ostream) const override;
+  void printResult(std::ostream * ostream) const override;
 
   /**
    * Fetch a new initial state from the model.
@@ -367,7 +367,7 @@ protected:
   /**
    * Signal that the math container has changed
    */
-  virtual void signalMathContainerChanged() override;
+  void signalMathContainerChanged() override;
 
   /**
    * Create a parameter set with the given name and the current model values

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -60,14 +60,14 @@ public:
    * @param CProcessReportLevel * pCallBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReportLevel callBack) override;
+  bool setCallBack(CProcessReportLevel callBack) override;
 
   /**
    * Do all necessary initialization so that calls to calculate will
    * be successful. This is called once from CCopasiTask::process()
    * @result bool success
    */
-  virtual bool initialize();
+  bool initialize() override;
 
   /**
    * This is the output method for any object. The default implementation

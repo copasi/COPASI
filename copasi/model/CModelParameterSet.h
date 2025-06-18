@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,20 +37,20 @@ public:
   /**
    * Destruct the object
    */
-  virtual void destruct();
+  void destruct() override;
 
   /**
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -61,10 +61,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
+  void createUndoData(CUndoData & undoData,
                               const CUndoData::Type & type,
                               const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
   /**
    * Create and insert an undo object based on the given data.
@@ -72,7 +72,7 @@ public:
    * @param const CData & data
    * @return CUndoObjectInterface * pUndoObject
    */
-  virtual CUndoObjectInterface * insert(const CData & data);
+  CUndoObjectInterface * insert(const CData & data) override;
 
   /**
    * Update the index of a contained object
@@ -80,7 +80,7 @@ public:
    * @param const size_t & index
    * @param const CUndoObjectInterface * pUndoObject
    */
-  virtual void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject);
+  void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject) override;
 
   /**
    * Constructor
@@ -117,35 +117,35 @@ public:
 
   const CModelParameterGroup * toGroup() const;
 
-  virtual CModelParameterSet * toSet();
+  CModelParameterSet * toSet() override;
 
-  virtual const CModelParameterSet * toSet() const;
+  const CModelParameterSet * toSet() const override;
 
   /**
    * Add the given parameter to the group.
    * Note, the parent of the parameter is not updated
    * @param CModelParameter * pModelParameter
    */
-  virtual void add(CModelParameter * pModelParameter);
+  void add(CModelParameter * pModelParameter) override;
 
   /**
    * Retrieve the unique key of the set.
    * @return const std::string & key
    */
-  virtual const std::string & getKey() const;
+  const std::string & getKey() const override;
 
   /**
    * Set the object parent
    * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CDataContainer * pParent);
+  bool setObjectParent(const CDataContainer * pParent) override;
 
   /**
    * Retrieve the index of the parameter in the vector of children in the parent
    * @return size_t index
    */
-  virtual size_t getIndex() const;
+  size_t getIndex() const override;
 
   /**
    * Set the model the parameter set is storing values for
@@ -173,17 +173,17 @@ public:
    * Retrieve the name of the parameter set
    * @return std::string name
    */
-  virtual std::string getName() const;
+  std::string getName() const override;
 
   /**
    * Update the corresponding model object with the current parameter settings
    */
-  virtual bool updateModel();
+  bool updateModel() override;
 
   /**
    * Compile the parameter
    */
-  virtual void compile();
+  void compile() override;
 
   /**
    * Compare the parameter to an other
@@ -218,7 +218,7 @@ public:
    * Refresh the parameter from the corresponding model object
    * @param const bool & modifyExistence
    */
-  virtual bool refreshFromModel(const bool & modifyExistence);
+  bool refreshFromModel(const bool & modifyExistence) override;
 
   /**
    * Determine whether this is parameter set is currently active, i.e., it is synchronized
@@ -253,7 +253,7 @@ protected:
    * Retrieve the CN of the object
    * @return CCommonName
    */
-  virtual CCommonName getCNProtected() const override;
+  CCommonName getCNProtected() const override;
 
 private:
   void init();

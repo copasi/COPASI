@@ -61,7 +61,7 @@ public:
    * @param const size_t & handle
    * @param bool continue
    */
-  virtual bool progressItem(const size_t & handle) override;
+  bool progressItem(const size_t & handle) override;
 
   /**
    * Reset item handle. This means that the value of the item has changed
@@ -71,7 +71,7 @@ public:
    * @param const size_t & handle
    * @param bool continue
    */
-  virtual bool resetItem(const size_t & handle) override;
+  bool resetItem(const size_t & handle) override;
 
   /**
    * Indicate that all items are finished reporting. All item handles loose
@@ -79,7 +79,7 @@ public:
    * process must halt execution and return.
    * @param bool continue
    */
-  virtual bool finish() override;
+  bool finish() override;
 
   /**
    * Indicate that item handle is finished reporting. The handle of that
@@ -88,7 +88,7 @@ public:
    * @param const size_t & handle
    * @param bool continue
    */
-  virtual bool finishItem(const size_t & handle) override;
+  bool finishItem(const size_t & handle) override;
 
   /**
    * Check whether processing shall proceed. If the return value is false
@@ -97,7 +97,7 @@ public:
    * reporting items can check whether continuation is requested.
    * @param bool continue
    */
-  virtual bool proceed() override;
+  bool proceed() override;
 
   /**
    * Set the name of the process.
@@ -153,10 +153,10 @@ protected slots:
   void slotProgressAll();
   void slotFinishItem(const int handle);
 
-  virtual void btnStopPressed() override;
-  virtual void btnKillPressed() override;
-  virtual void btnPausePressed() override;
-  virtual void btnContinuePressed() override;
+  void btnStopPressed() override;
+  void btnKillPressed() override;
+  void btnPausePressed() override;
+  void btnContinuePressed() override;
 };
 
 #endif

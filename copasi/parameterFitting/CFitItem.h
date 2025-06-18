@@ -77,13 +77,13 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren() override;
+  bool elevateChildren() override;
 
   /**
    * Check the validity of the optimization item.
    * @return bool isValid
    */
-  virtual bool isValid() const override;
+  bool isValid() const override;
 
   /**
    * Check whether the group describes a valid optimization item.
@@ -106,14 +106,14 @@ public:
    * of the optimization item.
    * @return C_INT32 result (-1: to small, 0: within boundaries, 1 to large)
    */
-  virtual C_INT32 checkConstraint() const override;
+  C_INT32 checkConstraint() const override;
 
   /**
    * Retrieve the magnitude of the constraint violation
    * This is always a positive number
    * @return C_FLOAT64 constraintViolation;
    */
-  virtual C_FLOAT64 getConstraintViolation() const override;
+  C_FLOAT64 getConstraintViolation() const override;
 
   /**
    * Output stream operator
@@ -129,13 +129,13 @@ public:
    * @param const CheckPolicyFlag & policy
    * @return bool success
    */
-  virtual bool setItemValue(C_FLOAT64 & value, const CheckPolicyFlag & policy) override;
+  bool setItemValue(C_FLOAT64 & value, const CheckPolicyFlag & policy) override;
 
   /**
    * Retrieve the local value.
    * @return const C_FLOAT64 & value
    */
-  virtual const C_FLOAT64 & getItemValue() const override;
+  const C_FLOAT64 & getItemValue() const override;
 
   /**
    * Add an experiment to the list of affected experiments.
@@ -294,7 +294,7 @@ public:
    * calculateConstraintViolation, i.e., it may not be trusted.
    * @return C_INT32 result (-1: to small, 0: within boundaries, 1 to large)
    */
-  virtual C_INT32 checkConstraint() const;
+  C_INT32 checkConstraint() const override;
 
   /**
    * Retrieve the magnitude of the constraint violation
@@ -302,7 +302,7 @@ public:
    * constraint violation for a single function evaluation.
    * @return C_FLOAT64 constraintViolation;
    */
-  virtual C_FLOAT64 getConstraintViolation() const override;
+  C_FLOAT64 getConstraintViolation() const override;
 
   // Attributes
 private:

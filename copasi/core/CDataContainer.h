@@ -86,14 +86,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const override;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -127,9 +127,9 @@ public:
 
   virtual ~CDataContainer();
 
-  virtual const CObjectInterface * getObject(const CCommonName & cn) const override;
+  const CObjectInterface * getObject(const CCommonName & cn) const override;
 
-  virtual const CDataObject * getValueObject() const override;
+  const CDataObject * getValueObject() const override;
 
   virtual const objectMap & getObjects() const;
   virtual objectMap & getObjects();
@@ -149,7 +149,7 @@ public:
    * Retrieve the units of the object.
    * @return std::string units
    */
-  virtual const std::string getUnits() const override;
+  const std::string getUnits() const override;
 
   /**
    * Retrieve the units of the child object.
@@ -165,7 +165,7 @@ public:
    * @param const CData & data
    * @return CUndoObjectInterface * pUndoObject
    */
-  virtual CUndoObjectInterface * insert(const CData & data) override;
+  CUndoObjectInterface * insert(const CData & data) override;
 
   /**
    * Retrieve all descendant objects (optionally recursive)

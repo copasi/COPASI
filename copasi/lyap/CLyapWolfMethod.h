@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,7 +49,7 @@ public:
   /**
    *  handles the complete calculation
    */
-  bool calculate();
+  bool calculate() override;
 
   // Attributes
 private:
@@ -183,7 +183,7 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  bool elevateChildren() override;
 
   /**
    *  This instructs the method to calculate a time step of deltaT
@@ -193,7 +193,7 @@ public:
    *  The return value is the actual timestep taken.
    *  @param "const double &" deltaT
    */
-  virtual double step(const double & deltaT);
+  double step(const double & deltaT) override;
 
   /**
    *  This instructs the method to prepare for integration
@@ -220,7 +220,7 @@ public:
    * Check if the method is suitable for this problem
    * @return bool suitability of the method
    */
-  virtual bool isValidProblem(const CCopasiProblem * pProblem);
+  bool isValidProblem(const CCopasiProblem * pProblem) override;
 
 private:
   /**

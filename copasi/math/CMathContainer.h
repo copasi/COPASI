@@ -534,7 +534,7 @@ public:
    * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  virtual const CObjectInterface * getObject(const CCommonName & cn) const;
+  const CObjectInterface * getObject(const CCommonName & cn) const override;
 
   /**
    * Retrieve a object by its full CN.
@@ -889,7 +889,7 @@ protected:
    * For the CN mechanism to work properly it has to pretend to be the model.
    * @return CCommonName
    */
-  virtual CCommonName getCNProtected() const override;
+  CCommonName getCNProtected() const override;
 
 private:
   /**

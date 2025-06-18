@@ -87,12 +87,12 @@ public:
   /**
    * Calculate the objects value.
    */
-  virtual void calculateValue() override;
+  void calculateValue() override;
 
   /**
    * Retrieve a pointer to the value of the object
    */
-  virtual void * getValuePointer() const override;
+  void * getValuePointer() const override;
 
   /**
    * Set the object of the optimization item.

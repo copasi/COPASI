@@ -43,7 +43,7 @@ protected slots:
 
 protected:
   virtual bool enterProtected();
-  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
+  bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
   virtual bool leaveProtected();
 
   bool loadFromBackend();

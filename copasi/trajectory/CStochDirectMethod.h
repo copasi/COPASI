@@ -108,7 +108,7 @@ public:
   * Check if the method is suitable for this problem
   * @return bool suitability of the method
   */
-  virtual bool isValidProblem(const CCopasiProblem * pProblem);
+  bool isValidProblem(const CCopasiProblem * pProblem) override;
 
   /**
    * Inform the trajectory method that the state has changed outside
