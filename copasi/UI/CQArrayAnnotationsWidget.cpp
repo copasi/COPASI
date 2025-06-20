@@ -950,7 +950,7 @@ void CQArrayAnnotationsWidget::fillBarChart()
   if (!m_modifier)
     return;
 
-  m_modifier->loadData(mpArray, mRowIndex, mColIndex);
+  m_modifier->loadData(mpArray, (unsigned int)mRowIndex, (unsigned int)mColIndex);
 
 #else
 

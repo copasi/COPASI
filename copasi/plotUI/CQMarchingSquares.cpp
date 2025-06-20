@@ -1,4 +1,4 @@
-// Copyright (C) 2023 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2023 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -84,6 +84,9 @@ QPointF CQMarchingSquares::IsoCell::normalizedPointCCW(side cellSide)
 
       case TOP:
         return QPointF(_top, 1);
+
+      case NONE:
+        break;
     }
 
   return QPointF();
@@ -560,6 +563,9 @@ void CQMarchingSquares::isoSubpath(IsoCell * input, int r, int c, levelPaths & i
 
       case IsoCell::side::TOP:
         r += 1;
+
+      case IsoCell::NONE:
+        break;
     }
 
   start->clearIso(); // Erase this isoline.
@@ -597,6 +603,9 @@ void CQMarchingSquares::isoSubpath(IsoCell * input, int r, int c, levelPaths & i
 
           case IsoCell::TOP:
             r += 1;
+            break;
+
+          case IsoCell::NONE:
             break;
         }
 

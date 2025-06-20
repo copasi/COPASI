@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -50,9 +50,8 @@ void CQTableWidget::dropEvent(QDropEvent* pEvent)
     this->setItem(currentNewRow, column, selectedItem);
   }
 
-  for (i = deleteRows.count() - 1; i >= 0; --i)
+  for (i = (int)deleteRows.count() - 1; i >= 0; --i)
     {
       this->removeRow(deleteRows.at(i));
     }
-
 }

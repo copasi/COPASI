@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -388,7 +388,7 @@ doublereal d1mach_(integer *i)
       case 5: return log10(FLT_RADIX);
     }
 
-  fprintf(stderr, "invalid argument: d1mach(%ld)\n", *i);
+  fprintf(stderr, "invalid argument: d1mach(%ld)\n", (long)*i);
   exit(1);
   return 0; /* for compilers that complain of missing return values */
 } /* d1mach_ */
@@ -9775,7 +9775,7 @@ integer i1mach_(integer *i)
       case 16: return DBL_MAX_EXP;
     }
 
-  fprintf(stderr, "invalid argument: i1mach(%ld)\n", *i);
+  fprintf(stderr, "invalid argument: i1mach(%ld)\n", (long)*i);
   exit(1);
   return 0; /* for compilers that complain of missing return values */
 } /* i1mach_ */

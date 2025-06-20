@@ -1,3 +1,8 @@
+// Copyright (C) 2024 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 #include "CQExternalToolDialog.h"
 
 #include "CQExternalTools.h"
@@ -5,7 +10,6 @@
 #include <QMenu>
 #include <QFile>
 #include <QFileDialog>
-
 
 CQExternalToolDialog::CQExternalToolDialog(QWidget * parent, const char * name, bool modal, Qt::WindowFlags fl)
   : QDialog(parent, fl)
@@ -128,7 +132,6 @@ void CQExternalToolDialog::slotBrowseCommand()
     auto command = QFileDialog::getOpenFileName(this, tr("Select Command"), QString(), tr("All Files (*)"));
     if (!command.isEmpty())
         txtCommand->setText(command);
-
 }
 
 void CQExternalToolDialog::slotShowArgs()
@@ -145,7 +148,6 @@ void CQExternalToolDialog::slotShowArgs()
       {
         txtArguments->setText(txtArguments->text() + action->text());
       }
-    
 }
 
 void CQExternalToolDialog::slotBrowseInitialDir()
@@ -197,7 +199,7 @@ void CQExternalToolDialog::slotItemChanged()
 
       mTools[mCurrentIndex] = mCurrentTool;
       // update the name in the list
-      lstExternalTools->item(mCurrentIndex)->setText(mCurrentTool.getName());
+      lstExternalTools->item((int)mCurrentIndex)->setText(mCurrentTool.getName());
     }
 
   mCurrentIndex = index;
@@ -221,7 +223,6 @@ void CQExternalToolDialog::slotItemChanged()
   chkPromptForArguments->setEnabled(true);
 
   blockSignals(block);
-
 }
 
 void CQExternalToolDialog::slotUpdateSelected()
@@ -240,5 +241,5 @@ void CQExternalToolDialog::slotUpdateSelected()
     mCurrentTool.setIniFile(txtIniFile->text());
 
     mTools[mCurrentIndex] = mCurrentTool;
-    lstExternalTools->item(mCurrentIndex)->setText(mCurrentTool.getName());
+    lstExternalTools->item((int)mCurrentIndex)->setText(mCurrentTool.getName());
 }

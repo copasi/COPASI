@@ -1048,7 +1048,7 @@ bool CFitProblem::calculate()
 
           mpContainer->applyUpdateSequence(mExperimentInitialUpdates[i]);
 
-          kmax = pExp->getNumDataRows();
+          kmax = (int)pExp->getNumDataRows();
 
           const std::map< const CObjectInterface*, size_t >& map = pExp->getDependentObjectsMap();
           std::map<size_t, const CObjectInterface*> reverseObjectMap;

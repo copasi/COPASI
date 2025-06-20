@@ -70,7 +70,7 @@ size_t CQCompartmentDM::size() const
 
 int CQCompartmentDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mFetched + 1;
+  return (int)mFetched + 1;
 }
 
 int CQCompartmentDM::columnCount(const QModelIndex&) const
@@ -331,7 +331,7 @@ bool CQCompartmentDM::removeRows(int position, int rows, const QModelIndex & par
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
+  beginRemoveRows(parent, position, std::min< int >((int)mFetched, position + rows) - 1);
 
   std::vector< CCommonName > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -399,7 +399,7 @@ bool CQCompartmentDM::removeRows(QModelIndexList rows, const QModelIndex& index)
 
       if (choice == QMessageBox::Ok)
         {
-          removeRows(index, 1);
+          removeRows((int)index, 1);
         }
     }
 

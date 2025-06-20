@@ -46,7 +46,7 @@ size_t CQReportDM::size() const
 
 int CQReportDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mFetched + 1;
+  return (int)mFetched + 1;
 }
 
 int CQReportDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
@@ -204,7 +204,7 @@ bool CQReportDM::removeRows(int position, int rows, const QModelIndex & parent)
   if (pReportList == NULL)
     return false;
 
-  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
+  beginRemoveRows(parent, position, std::min< int >((int)mFetched, position + rows) - 1);
 
   for (int row = 0; row < rows; ++row)
     {

@@ -204,7 +204,7 @@ public:
                   return Intermediate;
                 }
 
-              mpContext->mpExperiment->setFirstRow(input.toULong());
+              mpContext->mpExperiment->setFirstRow(input.toUInt());
               mpContext->mpFileInfo->sync();
               mpContext->mpBtnExperimentAdd->setEnabled(mpContext->mpFileInfo->getFirstUnusedSection(First, Last));
               break;
@@ -217,7 +217,7 @@ public:
                   return Intermediate;
                 }
 
-              mpContext->mpExperiment->setLastRow(input.toULong());
+              mpContext->mpExperiment->setLastRow(input.toUInt());
               mpContext->mpFileInfo->sync();
               mpContext->mpBtnExperimentAdd->setEnabled(mpContext->mpFileInfo->getFirstUnusedSection(First, Last));
               break;
@@ -230,7 +230,7 @@ public:
                   return Intermediate;
                 }
 
-              mpContext->mpExperiment->setHeaderRow(input.toULong());
+              mpContext->mpExperiment->setHeaderRow(input.toUInt());
               break;
 
             default:
@@ -1083,7 +1083,7 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
     }
 
   QString value = mpEditName->text();
-  int pos = value.length();
+  int pos = (int)value.length();
 
   if (full &&
       pExperiment->getObjectName() != TO_UTF8(value) &&
@@ -1103,25 +1103,25 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
     pExperiment->setSeparator(TO_UTF8_UNTRIMMED(mpEditSeparator->text()));
 
   value = mpEditFirst->text();
-  pos = value.length();
+  pos = (int)value.length();
 
   if (full &&
       mpValidatorFirst->validate(value, pos) == QValidator::Acceptable)
-    pExperiment->setFirstRow(value.toULong());
+    pExperiment->setFirstRow(value.toUInt());
 
   value = mpEditLast->text();
-  pos = value.length();
+  pos = (int)value.length();
 
   if (full &&
       mpValidatorLast->validate(value, pos) == QValidator::Acceptable)
-    pExperiment->setLastRow(value.toULong());
+    pExperiment->setLastRow(value.toUInt());
 
   value = mpEditHeader->text();
-  pos = value.length();
+  pos = (int)value.length();
 
   if (mpCheckHeader->isChecked() &&
       mpValidatorHeader->validate(value, pos) == QValidator::Acceptable)
-    pExperiment->setHeaderRow(value.toULong());
+    pExperiment->setHeaderRow(value.toUInt());
   else
     {
       pExperiment->setHeaderRow(InvalidIndex);
@@ -1386,7 +1386,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
         }
     }
 
-  setTypeItems(TimeRow);
+  setTypeItems((int)TimeRow);
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {

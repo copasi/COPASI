@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -185,6 +185,9 @@ bool FunctionWidget1::loadParameterTable()
             Variables[1].push_back(Time);
             Variables[2].push_back(Time);
             Variables[3].push_back(Time);
+            break;
+
+          case CFunctionParameter::Role::__SIZE:
             break;
         }
     }
@@ -783,7 +786,6 @@ void FunctionWidget1::slotBtnCopy()
   mObjectCNToCopy = mObjectCN;
 }
 
-
 //! Slot for being activated whenever Delete button is clicked
 void FunctionWidget1::slotBtnDelete()
 {
@@ -807,7 +809,7 @@ void FunctionWidget1::slotBtnDelete()
     {
       case QMessageBox::Ok:                                                    // Yes or Enter
       {
-        
+
         bool dataAppended = false;
 
         CDataObject::DataObjectSet dependentReactions;
@@ -832,10 +834,8 @@ void FunctionWidget1::slotBtnDelete()
               CReaction* r = const_cast<CReaction*>(dynamic_cast< const CReaction * >(reactionDo));
             if (r)
               r->setFunction(NULL);
-
           }
         }
-
 
         CRootContainer::getFunctionList()->loadedFunctions().remove(mpObject->getObjectName());
 

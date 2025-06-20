@@ -1,4 +1,4 @@
-// Copyright (C) 2023 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2023 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -90,7 +90,7 @@ void CQScanWidgetParameterSet::load(const CCopasiParameterGroup * pItem)
 
 bool CQScanWidgetParameterSet::save(CCopasiParameterGroup * pItem) const
 {
-  mpData->setValue< unsigned C_INT32 >("Number of steps", mSelection.size());
+  mpData->setValue< unsigned C_INT32 >("Number of steps", (unsigned C_INT32)mSelection.size());
   auto * group = mpData->getGroup("ParameterSet CNs");
 
   if (!group)

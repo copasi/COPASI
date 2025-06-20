@@ -1136,7 +1136,7 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
 
   assert(getObjectDataModel() != NULL);
 
-  C_INT32 stepNumber = mVec_SlowModes.size();
+  C_INT32 stepNumber = (C_INT32)mVec_SlowModes.size();
 
   for (istep = 0; istep < stepNumber; ++istep)
     {

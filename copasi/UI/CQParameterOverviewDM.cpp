@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -226,7 +226,7 @@ int CQParameterOverviewDM::rowCount(const QModelIndex & parent) const
   if (!parent.isValid())
     {
       if (mpModelParameterSet != NULL)
-        return mGroupsFetched;
+        return (int)mGroupsFetched;
       else
         return 0;
     }
@@ -237,19 +237,19 @@ int CQParameterOverviewDM::rowCount(const QModelIndex & parent) const
     {
       case CModelParameter::Type::Group:
         if (pParent == mpTimes)
-          return mTimesFetched;
+          return (int)mTimesFetched;
 
         if (pParent == mpCompartments)
-          return mCompartmentsFetched;
+          return (int)mCompartmentsFetched;
 
         if (pParent == mpSpecies)
-          return mSpeciesFetched;
+          return (int)mSpeciesFetched;
 
         if (pParent == mpModelValues)
-          return mModelValuesFetched;
+          return (int)mModelValuesFetched;
 
         if (pParent == mpReactions)
-          return mReactionsFetched;
+          return (int)mReactionsFetched;
 
         break;
 
@@ -389,6 +389,7 @@ QVariant CQParameterOverviewDM::diffData(const CModelParameter * pNode, int role
               break;
 
             case CModelParameter::CompareResult::Identical:
+            case CModelParameter::CompareResult::__SIZE:
               return QVariant();
               break;
           }
@@ -422,6 +423,9 @@ QVariant CQParameterOverviewDM::diffData(const CModelParameter * pNode, int role
 
             case CModelParameter::CompareResult::Identical:
               return QVariant(QString("The item's value is identical with the current model."));
+              break;
+
+            case CModelParameter::CompareResult::__SIZE:
               break;
           }
 
@@ -803,22 +807,22 @@ void CQParameterOverviewDM::fetchMore(const QModelIndex & parent)
   else
     return;
 
-  ToBeFetched = std::min(mFetchLimit, FetchTarget - *pFetched);
+  ToBeFetched = (int) std::min(mFetchLimit, FetchTarget - *pFetched);
 
   if (ToBeFetched <= 0)
     return;
 
-  beginInsertRows(parent, *pFetched, *pFetched + ToBeFetched - 1);
+  beginInsertRows(parent, (int)*pFetched, (int)*pFetched + ToBeFetched - 1);
   *pFetched += ToBeFetched;
   endInsertRows();
 
   if (*pFetched >= FetchTarget && mGroupsFetched < 5)
     {
-      beginInsertRows(QModelIndex(), mGroupsFetched, mGroupsFetched);
+      beginInsertRows(QModelIndex(), (int)mGroupsFetched, (int)mGroupsFetched);
       mGroupsFetched++;
       endInsertRows();
 
-      if (canFetchMore(index(mGroupsFetched - 1, 0)))
-        fetchMore(index(mGroupsFetched - 1, 0));
+      if (canFetchMore(index((int)mGroupsFetched - 1, 0)))
+        fetchMore(index((int)mGroupsFetched - 1, 0));
     }
 }

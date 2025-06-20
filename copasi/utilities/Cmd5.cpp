@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -102,7 +102,7 @@ void Cmd5::update(std::istream & stream)
   while (stream.good())
     {
       stream.read((char *) buffer, 1024); // note that return value of read is unusable.
-      len = stream.gcount();
+      len = (int)stream.gcount();
       update(buffer, len);
     }
 }

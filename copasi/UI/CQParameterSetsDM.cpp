@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -42,7 +42,7 @@ size_t CQParameterSetsDM::size() const
 
 int CQParameterSetsDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mFetched;
+  return (int)mFetched;
 }
 
 void CQParameterSetsDM::resetCacheProtected()
@@ -219,7 +219,7 @@ bool CQParameterSetsDM::removeRows(int position, int rows, const QModelIndex & p
       ToBeDeleted.push_back(&*it);
     }
 
-  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
+  beginRemoveRows(parent, position, std::min< int >((int)mFetched, position + rows) - 1);
 
   std::vector< const CModelParameterSet * >::iterator itDeleted = ToBeDeleted.begin();
   std::vector< const CModelParameterSet * >::iterator endDeleted = ToBeDeleted.end();

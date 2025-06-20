@@ -328,11 +328,11 @@ void CQExpressionWidget::dropEvent(QDropEvent * e)
   int Left;
   int Right;
 
-  if (objectBoundaries(textCursor().position() - SelectedText.length(), Left, Right))
+  if (objectBoundaries(int(textCursor().position() - SelectedText.length()), Left, Right))
     {
       mCursor = textCursor();
       // Remove the inserted text.
-      mCursor.setPosition(mCursor.position() - SelectedText.length(), QTextCursor::KeepAnchor);
+      mCursor.setPosition(int(mCursor.position() - SelectedText.length()), QTextCursor::KeepAnchor);
       mCursor.removeSelectedText();
       int CurrentPosition = mCursor.position();
       // Determine the insertion point

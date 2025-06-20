@@ -844,6 +844,9 @@ void DataModelGUI::notifyChanges(const CUndoData::CChangeSet & changes)
                 Action = ListViews::Action::DELETE;
                 CN = it->objectBefore;
                 break;
+
+              case CUndoData::Type::__SIZE:
+                break;
             }
 
           ListViews::ObjectType ObjectType = ListViews::DataObjectType.toEnum(it->objectType, ListViews::ObjectType::STATE);
@@ -978,6 +981,10 @@ void DataModelGUI::addRecentFile(const std::string & file)
 
       case CDataModel::ContentType::SEDML:
         CRootContainer::getConfiguration()->getRecentSEDMLFiles().addFile(file);
+        break;
+
+      case CDataModel::ContentType::OMEX:
+      case CDataModel::ContentType::__SIZE:
         break;
     }
 

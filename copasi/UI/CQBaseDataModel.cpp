@@ -73,7 +73,7 @@ bool CQBaseDataModel::clear()
   mFetchDisabled = true;
 
   resetCache();
-  bool success = removeRows(0, size());
+  bool success = removeRows(0, (int)size());
 
   mFetchDisabled = false;
   return success;

@@ -713,6 +713,9 @@ void CCopasiTask::separate(const COutputInterface::Activity & activity)
             mpOutputHandler->separate(activity);
 
           break;
+
+        case COutputInterface::MONITORING:
+          break;
       }
 }
 

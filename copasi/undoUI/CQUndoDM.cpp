@@ -67,7 +67,7 @@ size_t CQUndoDM::size() const
 
 int CQUndoDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mFetched;
+  return (int)mFetched;
 }
 
 // virtual
@@ -168,6 +168,7 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
                 case CDataValue::Type::DATA_VECTOR:
                 case CDataValue::Type::VOID_POINTER:
                 case CDataValue::Type::INVALID:
+                case CDataValue::Type::__SIZE:
                   break;
               }
           }
@@ -212,6 +213,7 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
                     case CDataValue::Type::DATA_VECTOR:
                     case CDataValue::Type::VOID_POINTER:
                     case CDataValue::Type::INVALID:
+                    case CDataValue::Type::__SIZE:
                       break;
                   }
               }
@@ -256,6 +258,7 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
                     case CDataValue::Type::DATA_VECTOR:
                     case CDataValue::Type::VOID_POINTER:
                     case CDataValue::Type::INVALID:
+                    case CDataValue::Type::__SIZE:
                       break;
                   }
               }
@@ -283,6 +286,8 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
         }
         break;
         */
+      case ColumnType::__SIZE:
+        break;
     }
 
   return QVariant();
@@ -322,6 +327,8 @@ QVariant CQUndoDM::headerData(int section, Qt::Orientation orientation, int role
           case ColumnType::OldValue:
             return QVariant("Old Value");
             break;
+          case ColumnType::__SIZE:
+            break;
         }
     }
   else if (orientation == Qt::Vertical &&
@@ -330,7 +337,7 @@ QVariant CQUndoDM::headerData(int section, Qt::Orientation orientation, int role
     {
       int Height = QFontMetrics(mpTableView->font()).height();
 
-      return QVariant(QSize(0, changedProperties(mpUndoStack->operator [](section)).size() * (Height + 2)));
+      return QVariant(QSize(0, (int)changedProperties(mpUndoStack->operator [](section)).size() * (Height + 2)));
     }
 
   return QVariant();

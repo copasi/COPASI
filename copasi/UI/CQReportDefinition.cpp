@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -805,7 +805,7 @@ bool CQReportDefinition::load()
   mpTableList->setRowCount(0);
 
   mpName->setText(FROM_UTF8(mpReportDefinition->getObjectName()));
-  mpTaskBox->setCurrentIndex(static_cast<size_t>(mpReportDefinition->getTaskType()));
+  mpTaskBox->setCurrentIndex((int)static_cast<size_t>(mpReportDefinition->getTaskType()));
 
   //separator
   if (mpReportDefinition->getSeparator().getStaticString() == "\t")
@@ -896,7 +896,7 @@ bool CQReportDefinition::save()
 
   mpReportDefinition->setSeparator(Separator);
 
-  mpReportDefinition->setPrecision(mpPrecision->text().toULong());
+  mpReportDefinition->setPrecision(mpPrecision->text().toUInt());
 
   mpReportDefinition->getHeaderAddr()->clear();
   mpReportDefinition->getBodyAddr()->clear();

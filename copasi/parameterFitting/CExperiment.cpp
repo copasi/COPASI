@@ -884,7 +884,7 @@ bool CExperiment::read(std::istream & in,
   size_t i, imax = mpObjectMap->size();
 
   if (*mpNumColumns < imax)
-    *mpNumColumns = imax;
+    *mpNumColumns = (unsigned int) imax;
 
   //if (*mpNumColumns < imax)
   //  {

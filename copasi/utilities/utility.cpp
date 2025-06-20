@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,7 +47,7 @@ std::string ISODateTime(tm * pTime)
   // YYYY-MM-DDTHH:mm:ss[Z|[+|-]HH:mm]
   if (pTime)
     {
-      sprintf(str, "%d-%.02d-%.02dT%.02d:%.02d:%.02d",
+      snprintf(str, sizeof(str), "%d-%.02d-%.02dT%.02d:%.02d:%.02d",
               pTime->tm_year + 1900,
               pTime->tm_mon + 1,
               pTime->tm_mday,
@@ -57,7 +57,7 @@ std::string ISODateTime(tm * pTime)
     }
   else
     {
-      sprintf(str, "0000-00-00T00:00:00");
+      snprintf(str, sizeof(str), "0000-00-00T00:00:00");
     }
 
   return (std::string) str;
@@ -725,7 +725,7 @@ std::string pointerToString(const void * pVoid)
 #else
   char String[19];
 
-  int Printed = sprintf(String, "%p", pVoid);
+  int Printed = snprintf(String, sizeof(String), "%p", pVoid);
 
   if (Printed < 0 || 18 < Printed)
     {
@@ -813,7 +813,7 @@ size_t utf8Length(const std::string & str)
   size_t q;
   int c, i, ix;
 
-  for (q = 0, i = 0, ix = str.length(); i < ix; i++, q++)
+  for (q = 0, i = 0, ix = (int)str.length(); i < ix; i++, q++)
     {
       c = (unsigned char) str[i];
 

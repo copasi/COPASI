@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,7 +47,7 @@ CColorScale::CColorScale()
 #endif
   mForeground = Palette.color(QPalette::Active, QPalette::Text);
   mBackground = Palette.color(QPalette::Active, QPalette::Base);
-    
+
   if (isLightMode())
     {
       mSmallNumbers = QColor(Qt::red);
@@ -257,7 +257,7 @@ void CColorScaleAuto::finishAutomaticParameterCalculation()
 
   if (mData.size() >= 5)
     {
-      C_INT32 q = mData.size() / 5;
+      C_INT32 q = (C_INT32)mData.size() / 5;
 
       std::nth_element(mData.begin(), mData.end() - q - 1, mData.end());
       mMax = *(mData.end() - q - 1);

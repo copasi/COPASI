@@ -212,6 +212,7 @@ void CCopasiParameter::createUndoData(CUndoData & undoData,
 
       case CCopasiParameter::Type::GROUP:
       case CCopasiParameter::Type::INVALID:
+      case CCopasiParameter::Type::__SIZE:
         break;
     }
 
@@ -460,6 +461,7 @@ std::ostream &operator<<(std::ostream &os, const CCopasiParameter & o)
 
       case CCopasiParameter::Type::GROUP:
       case CCopasiParameter::Type::INVALID:
+      case CCopasiParameter::Type::__SIZE:
         break;
     }
 
@@ -577,6 +579,7 @@ void CCopasiParameter::createValue()
         break;
 
       case CCopasiParameter::Type::INVALID:
+      case CCopasiParameter::Type::__SIZE:
         break;
     }
 }
@@ -649,6 +652,7 @@ void CCopasiParameter::assignValidValues(const void * pValidValues)
 
       case CCopasiParameter::Type::GROUP:
       case CCopasiParameter::Type::INVALID:
+      case CCopasiParameter::Type::__SIZE:
         break;
     }
 }
@@ -711,6 +715,7 @@ void CCopasiParameter::allocateValue(const Type & type, void *& pValue)
         break;
 
       case CCopasiParameter::Type::INVALID:
+      case CCopasiParameter::Type::__SIZE:
         pValue = NULL;
         break;
     }
@@ -760,6 +765,7 @@ void CCopasiParameter::assignValue(const Type & type, void *& pTarget, const voi
 
       case CCopasiParameter::Type::GROUP:
       case CCopasiParameter::Type::INVALID:
+      case CCopasiParameter::Type::__SIZE:
         break;
     }
 }
@@ -854,6 +860,7 @@ void CCopasiParameter::allocateValidValues(const Type & type, void *& pValidValu
 
       case CCopasiParameter::Type::GROUP:
       case CCopasiParameter::Type::INVALID:
+      case CCopasiParameter::Type::__SIZE:
         break;
     }
 }

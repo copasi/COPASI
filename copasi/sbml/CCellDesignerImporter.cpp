@@ -3465,7 +3465,7 @@ bool CCellDesignerImporter::createSpeciesReferenceGlyphs(ReactionGlyph* pRGlyph,
 
   if (pRGlyph != NULL)
     {
-      unsigned int i, iMax = links.size();
+      unsigned int i, iMax = (unsigned int) links.size();
       const LinkTarget*  pLink = NULL;
 
       for (i = 0; i < iMax && result == true; ++i)
@@ -5410,7 +5410,7 @@ bool CCellDesignerImporter::parseConnectScheme(const XMLNode* pNode, ConnectSche
 
       if (!err || *err != s.c_str())
         {
-          scheme.mRectangleIndex = val;
+          scheme.mRectangleIndex = (int)val;
         }
       else
         {
@@ -5580,7 +5580,7 @@ bool CCellDesignerImporter::parseEditPoints(const XMLNode* pNode, EditPoints& ed
 
               if (!err || *err != s.c_str())
                 {
-                  editpoints.mNum0 = val;
+                  editpoints.mNum0 = (int)val;
                 }
               else
                 {
@@ -5596,7 +5596,7 @@ bool CCellDesignerImporter::parseEditPoints(const XMLNode* pNode, EditPoints& ed
 
               if (!err || *err != s.c_str())
                 {
-                  editpoints.mNum1 = val;
+                  editpoints.mNum1 = (int)val;
                 }
               else
                 {
@@ -5612,7 +5612,7 @@ bool CCellDesignerImporter::parseEditPoints(const XMLNode* pNode, EditPoints& ed
 
               if (!err || *err != s.c_str())
                 {
-                  editpoints.mNum2 = val;
+                  editpoints.mNum2 = (int)val;
                 }
               else
                 {
@@ -5628,7 +5628,7 @@ bool CCellDesignerImporter::parseEditPoints(const XMLNode* pNode, EditPoints& ed
 
               if (!err || *err != s.c_str())
                 {
-                  editpoints.mTShapeIndex = val;
+                  editpoints.mTShapeIndex = (int)val;
                 }
               else
                 {
@@ -5644,7 +5644,7 @@ bool CCellDesignerImporter::parseEditPoints(const XMLNode* pNode, EditPoints& ed
 
               if (!err || *err != s.c_str())
                 {
-                  editpoints.mOmittedShapeIndex = val;
+                  editpoints.mOmittedShapeIndex = (int)val;
                 }
               else
                 {
@@ -5783,7 +5783,7 @@ bool CCellDesignerImporter::parseLineDirection(const XMLNode* pNode, LineDirecti
 
           if (!err || *err != s.c_str())
             {
-              d.mIndex = val;
+              d.mIndex = (int)val;
               d.mArm = 0;
               err = NULL;
               s = attr.getValue("value");
@@ -5799,7 +5799,7 @@ bool CCellDesignerImporter::parseLineDirection(const XMLNode* pNode, LineDirecti
 
                       if (!err || *err != s.c_str())
                         {
-                          d.mArm = val;
+                          d.mArm = (int)val;
                         }
                       else
                         {
@@ -5875,7 +5875,7 @@ bool CCellDesignerImporter::parseExtraLink(const XMLNode* pNode, ReactantLink& l
 
               if (!err || *err != s.c_str())
                 {
-                  l.mTargetLineIndex = val;
+                  l.mTargetLineIndex = (int)val;
                   // child element line is mandatory
                   const XMLNode* pLineNode = CCellDesignerImporter::findChildNode(pNode, pNode->getPrefix(), "line", false);
 
@@ -5982,7 +5982,7 @@ bool CCellDesignerImporter::parseReactionModification(const XMLNode* pNode, Reac
 
                           if (!err || *err != tmp[1].c_str())
                             {
-                              mod.mTargetLineIndex = val;
+                              mod.mTargetLineIndex = (int)val;
                             }
                           else
                             {
@@ -6023,7 +6023,7 @@ bool CCellDesignerImporter::parseReactionModification(const XMLNode* pNode, Reac
 
                   if (!err || *err != s.c_str())
                     {
-                      mod.mNum0 = val;
+                      mod.mNum0 = (int)val;
                     }
                   else
                     {
@@ -6039,7 +6039,7 @@ bool CCellDesignerImporter::parseReactionModification(const XMLNode* pNode, Reac
 
                   if (!err || *err != s.c_str())
                     {
-                      mod.mNum1 = val;
+                      mod.mNum1 = (int)val;
                     }
                   else
                     {
@@ -6055,7 +6055,7 @@ bool CCellDesignerImporter::parseReactionModification(const XMLNode* pNode, Reac
 
                   if (!err || *err != s.c_str())
                     {
-                      mod.mNum2 = val;
+                      mod.mNum2 = (int)val;
                     }
                   else
                     {
@@ -9899,7 +9899,7 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
 
   if (pRGlyph != NULL)
     {
-      unsigned int i, iMax = ranno.mModifications.size();
+      unsigned int i, iMax = (unsigned int) ranno.mModifications.size();
 
       if (iMax > 0)
         {
@@ -10025,7 +10025,7 @@ bool CCellDesignerImporter::handleModificationLinks(ReactionGlyph* pRGlyph, Reac
 
                           std::string alias = mod.mAliases[0];
                           // check if we have a target link to that alias
-                          unsigned int j, jMax = mod.mLinkTargets.size();
+                          unsigned int j, jMax = (unsigned int) mod.mLinkTargets.size();
                           POSITION targetPosition = POSITION_UNDEFINED;
                           LinkTarget linkTarget;
 

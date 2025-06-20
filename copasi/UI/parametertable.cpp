@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -231,6 +231,9 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
           case CFunctionParameter::Role::TIME:
             Variables.push_back(ri.getUnit(i));
             break;
+
+          case CFunctionParameter::Role::__SIZE:
+            break;
         }
     }
 
@@ -450,18 +453,18 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
           if (locked)
             {
               pItem->setFlags(pItem->flags() & (~Qt::ItemIsEditable));
-              mpComboDelegate->setItems(rowCounter, QStringList());
+              mpComboDelegate->setItems((int)rowCounter, QStringList());
               closePersistentEditor(pItem);
             }
           else
             {
               if (usage == CFunctionParameter::Role::SUBSTRATE)
-                mpComboDelegate->setItems(rowCounter, mSubstrates);
+                mpComboDelegate->setItems((int)rowCounter, mSubstrates);
               else if (usage == CFunctionParameter::Role::PRODUCT)
-                mpComboDelegate->setItems(rowCounter, mProducts);
+                mpComboDelegate->setItems((int)rowCounter, mProducts);
               else   // must be MODIFIER
                 {
-                  mpComboDelegate->setItems(rowCounter, mModifiers);
+                  mpComboDelegate->setItems((int)rowCounter, mModifiers);
                 }
 
               //openPersistentEditor(pItem);
@@ -513,7 +516,7 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
       // if line is for a kinetic parameter . . .
       else if (usage == CFunctionParameter::Role::PARAMETER)
         {
-          mpComboDelegate->setItems(rowCounter, mGlobalParameters);
+          mpComboDelegate->setItems((int)rowCounter, mGlobalParameters);
 
           if (ri.isLocalValue(i))
             {
@@ -561,7 +564,7 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
       // if line is for a volume . . .
       else if (usage == CFunctionParameter::Role::VOLUME)
         {
-          mpComboDelegate->setItems(rowCounter, mVolumes);
+          mpComboDelegate->setItems((int)rowCounter, mVolumes);
           pItem->setText(FROM_UTF8(ri.getMapping(i)));
           //openPersistentEditor(pItem);
         }

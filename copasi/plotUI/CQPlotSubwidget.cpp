@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -796,7 +796,7 @@ void CQPlotSubwidget::removeCurve()
 
   if (QMessageBox::question(this, "Delete Curves", QString("Do you really want to delete the %1 selected curve(s)?").arg(selection.size()), QMessageBox::Yes, QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
     {
-      for (int index = selection.size() - 1; index >= 0; --index)
+      for (int index = (int)selection.size() - 1; index >= 0; --index)
         {
           deleteCurve(selection.at(index));
         }

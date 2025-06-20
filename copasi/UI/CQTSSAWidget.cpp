@@ -141,7 +141,7 @@ void CQTSSAWidget::slotIntervals()
 {
   try
     {
-      mpTSSAProblem->setStepNumber(mpEditIntervals->text().toULong());
+      mpTSSAProblem->setStepNumber(mpEditIntervals->text().toUInt());
     }
   catch (...)
     {

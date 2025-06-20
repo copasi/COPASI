@@ -338,7 +338,7 @@ void CQFittingItemWidget::slotParamEdit()
         break;
     }
 
-  int numSelected = mSelection.size();
+  int numSelected = (int)mSelection.size();
   std::vector< const CDataObject * > currentSelection;
   currentSelection.reserve(numSelected);
   std::set< size_t >::const_iterator it = mSelection.begin();
@@ -1648,9 +1648,9 @@ void CQFittingItemWidget::slotCrossValidations()
               size_t i, imax = mpBoxCrossValidations->count();
 
               for (i = 0; i < imax && imax < (*mppCrossValidationSet)->getExperimentCount(); i++)
-                static_cast<CFitItem *>((*mpItemsCopy)[*it])->addCrossValidation((*mppCrossValidationSet)->getExperiment(TO_UTF8(mpBoxCrossValidations->itemText(i)))->CCopasiParameter::getKey());
+                static_cast<CFitItem *>((*mpItemsCopy)[*it])->addCrossValidation((*mppCrossValidationSet)->getExperiment(TO_UTF8(mpBoxCrossValidations->itemText((int)i)))->CCopasiParameter::getKey());
 
-              setTableText(*it, (*mpItemsCopy)[*it]);
+              setTableText((int)*it, (*mpItemsCopy)[*it]);
             }
         }
 
@@ -1677,7 +1677,7 @@ void CQFittingItemWidget::slotCrossValidationChanged()
         if (!CRootContainer::getKeyFactory()->get(static_cast<CFitItem *>(*it)->getCrossValidation(i)))
           static_cast<CFitItem *>(*it)->removeCrossValidation(i);
 
-      setTableText(Row, *it);
+      setTableText((int)Row, *it);
     }
 
   // Reload the current item.

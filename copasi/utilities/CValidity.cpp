@@ -295,6 +295,7 @@ void CValidity::add(const CIssue & issue)
         break;
 
       case CIssue::eSeverity::__SIZE:
+      case CIssue::eSeverity::Success:
         break;
     }
 
@@ -334,6 +335,7 @@ void CValidity::remove(const CIssue & issue)
         break;
 
       case CIssue::eSeverity::__SIZE:
+      case CIssue::eSeverity::Success:
         break;
     }
 

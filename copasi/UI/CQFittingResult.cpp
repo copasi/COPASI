@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -422,7 +422,7 @@ bool CQFittingResult::enterProtected()
   if (mpProblem->getFunctionEvaluations() == 0)
     imax = 0;
 
-  mpCrossValidationValues->setRowCount(imax);
+  mpCrossValidationValues->setRowCount((int)imax);
   mpCrossValidationValues->setSortingEnabled(false);
 
   for (i = 0; i != imax; i++)
@@ -434,23 +434,23 @@ bool CQFittingResult::enterProtected()
       else
         pItem = new QTableWidgetItem("Not Found");
 
-      mpCrossValidationValues->setItem(i, 0, pItem);
+      mpCrossValidationValues->setItem((int)i, 0, pItem);
 
       pItem = new QTableWidgetItem(QVariant::Double);
       pItem->setData(Qt::DisplayRole, CrossValidations.getDependentObjectiveValues()[i]);
-      mpCrossValidationValues->setItem(i, 1, pItem);
+      mpCrossValidationValues->setItem((int)i, 1, pItem);
 
       pItem = new QTableWidgetItem(QVariant::Double);
       pItem->setData(Qt::DisplayRole, CrossValidations.getDependentRMS()[i]);
-      mpCrossValidationValues->setItem(i, 2, pItem);
+      mpCrossValidationValues->setItem((int)i, 2, pItem);
 
       pItem = new QTableWidgetItem(QVariant::Double);
       pItem->setData(Qt::DisplayRole, CrossValidations.getDependentErrorMean()[i]);
-      mpCrossValidationValues->setItem(i, 3, pItem);
+      mpCrossValidationValues->setItem((int)i, 3, pItem);
 
       pItem = new QTableWidgetItem(QVariant::Double);
       pItem->setData(Qt::DisplayRole, CrossValidations.getDependentErrorMeanSD()[i]);
-      mpCrossValidationValues->setItem(i, 4, pItem);
+      mpCrossValidationValues->setItem((int)i, 4, pItem);
     }
 
   if (CRootContainer::getConfiguration()->resizeToContents())

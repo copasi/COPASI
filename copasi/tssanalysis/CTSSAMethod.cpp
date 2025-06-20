@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -178,7 +178,7 @@ void CTSSAMethod::step(const double & /* deltaT */)
  */
 void CTSSAMethod::start()
 {
-  mDim = mpContainer->getCountIndependentSpecies();
+  mDim = (int) mpContainer->getCountIndependentSpecies();
 
   mContainerState.initialize(mpContainer->getState(true));
 

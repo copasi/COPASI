@@ -282,7 +282,7 @@ int CQBrowserPaneDM::rowCount(const QModelIndex & parent) const
 
   CNode * pParent = nodeFromIndex(parent);
 
-  return pParent->getNumChildren();
+  return (int)pParent->getNumChildren();
 }
 
 // virtual
@@ -388,7 +388,7 @@ void CQBrowserPaneDM::add(const ListViews::WidgetType & id,
 
   if (pParent != NULL)
     {
-      row = pParent->getNumChildren();
+      row = (int)pParent->getNumChildren();
     }
 
   beginInsertRows(index(pParent), row, row);
@@ -605,9 +605,9 @@ void CQBrowserPaneDM::load(const ListViews::WidgetType & id)
   // Add missing nodes
   if (it != end)
     {
-      int first = pParent->getNumChildren();
+      int first = (int)pParent->getNumChildren();
       size_t current = pVector->getIndex(it);
-      int last = first + (pVector->size() - current) - 1;
+      int last = first + (int)(pVector->size() - current) - 1;
       // used to be
       //int last = first + (end - it) - 1;
 
@@ -1011,6 +1011,9 @@ void CQBrowserPaneDM::createStaticDM()
               case ListViews::WidgetType::Units:
                 pParent = (mFlags & Units) ? mpRoot : NULL;
                 break;
+
+              default:
+                break;
             }
         }
       else
@@ -1045,7 +1048,7 @@ void CQBrowserPaneDM::clear()
   for (const ListViews::WidgetType * pNodeIndex = NodeIndex; *pNodeIndex != ListViews::WidgetType::COPASI; ++pNodeIndex)
     {
       CNode * pNode = findNodeFromId(*pNodeIndex);
-      removeRows(0, pNode->getNumChildren(), index(pNode));
+      removeRows(0, (int)pNode->getNumChildren(), index(pNode));
     }
 }
 
