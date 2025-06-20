@@ -945,6 +945,7 @@ bool COptProblem::setSolution(const C_FLOAT64 & value,
 
   // The initialization call from SRES and GASR have NULL as variables
   if (variables.size() != 0)
+  {
     if (algorithmOrder)
       {
         mSolutionVariablesAlgorithm = variables;
@@ -961,6 +962,7 @@ bool COptProblem::setSolution(const C_FLOAT64 & value,
         for (COptItem * pOptItem : mOptItemAlgorithm)
           *pVariable++ = mSolutionVariables[mOptItem2Index[pOptItem]];
       }
+  }
 
   bool Continue = true;
 
