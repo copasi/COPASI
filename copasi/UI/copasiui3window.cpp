@@ -542,7 +542,7 @@ void CopasiUI3Window::createActions()
   connect(mpaImportSEDML, SIGNAL(triggered()), this, SLOT(slotImportSEDML()));
   mpaExportSEDML = new QAction(CQIconResource::icon(CQIconResource::fileExport), "&Export SED-ML...", this);
   connect(mpaExportSEDML, SIGNAL(triggered()), this, SLOT(slotExportSEDML()));
-  
+
   //     QAction* mpaObjectBrowser;
 
   mpaAddModel = new QAction(CQIconResource::icon(CQIconResource::fileAdd), "&Add to model...", this);
@@ -3068,7 +3068,7 @@ void CopasiUI3Window::sbwRefreshMenu()
         {
           QAction *pAction = new QAction("Register", mpSBWActionGroup);
           mpSBWMenu->addAction(pAction);
-          mSBWActionMap[pAction] = SortedNames.size();
+          mSBWActionMap[pAction] = (int)SortedNames.size();
           mpSBWMenu->addSeparator();
         }
 
