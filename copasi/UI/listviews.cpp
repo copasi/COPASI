@@ -882,6 +882,9 @@ CopasiWidget* ListViews::findTabWidgetFromId(const ListViews::WidgetType & id) c
       case WidgetType::Units:
         return mpUnitDetail;
         break;
+
+      default:
+        break;
     }
 
   //give up
@@ -1157,6 +1160,9 @@ CopasiWidget* ListViews::findWidgetFromId(const ListViews::WidgetType & id) cons
 
       case WidgetType::UnitDetail:
         return mpUnitDetail;
+        break;
+
+      default:
         break;
     }
 
