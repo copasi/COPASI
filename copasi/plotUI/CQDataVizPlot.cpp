@@ -171,7 +171,6 @@ bool CQDataVizPlot::createGraph(CQDataVizPlot::PlotMode mode)
                 qobject_cast< QValue3DAxis * > (mpAxisZ)->setLabelFormat("%g");
               }
 
-
             graph->setAxisZ(qobject_cast< QValue3DAxis * >(mpAxisZ));
             mpGraph = graph;
           }
@@ -638,6 +637,8 @@ void CQDataVizPlot::updateCurves(const size_t & activity)
 
   for (; itCurves != endCurves; ++itCurves, ++k)
     {
+      if (*itCurves == NULL) continue;
+
       auto curve_activity = (*itCurves)->property("activity").toInt();
 
       if (curve_activity != activity)
@@ -1269,7 +1270,7 @@ CQDataVizPlot::contextActionTriggered(QAction* action)
 
   if (title == "Theme")
     {
-      changeTheme(menu->actions().indexOf(action));
+      changeTheme((int)menu->actions().indexOf(action));
     }
   else if (title == "Selection Mode")
     {
