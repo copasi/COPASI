@@ -813,6 +813,7 @@ CopasiWidget* ListViews::createWidgetFromId(const ListViews::WidgetType& id)
         break;
 
       default:
+        break;
     }
 
   //give up
