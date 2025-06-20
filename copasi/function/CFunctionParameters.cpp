@@ -197,10 +197,12 @@ size_t CFunctionParameters::findParameterByName(const std::string & name,
   size_t Index = mParameters.getIndex(name);
 
   if (ppFunctionParameter != NULL)
+  {
     if (Index != C_INVALID_INDEX)
       *ppFunctionParameter = &mParameters[Index];
     else
       *ppFunctionParameter = NULL;
+  }
 
   return Index;
 }
