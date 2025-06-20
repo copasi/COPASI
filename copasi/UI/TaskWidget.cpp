@@ -94,6 +94,9 @@ TaskWidget::TaskWidget(QWidget * parent, const char * name, Qt::WindowFlags fl)
   mpMethodWidget = new CQTaskMethodWidget(this);
   mpBtnWidget = new CQTaskBtnWidget(this);
 
+  // set shortcut for run button
+  mpBtnWidget->mpBtnRun->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
+
   connect(mpBtnWidget->mpBtnRun, SIGNAL(clicked()), this, SLOT(runBtnClicked()));
   connect(mpBtnWidget->mpBtnRevert, SIGNAL(clicked()), this, SLOT(revertBtnClicked()));
   connect(mpBtnWidget->mpBtnReport, SIGNAL(clicked()), this, SLOT(reportBtnClicked()));
