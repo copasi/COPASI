@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -174,7 +174,7 @@ void CTimeSensMethod::initResult()
   mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
 
   mSystemSize = mContainerState.size() - mpContainer->getCountFixedEventTargets() - 1;
-  mNumParameters = mpProblem->getNumParameters();
+  mNumParameters = (unsigned C_INT32) mpProblem->getNumParameters();
   mNumAssTargets = mpProblem->getNumTargets();
   //mData.dim = (C_INT)(1+mSystemSize * (1 + mNumParameters)); //including time
 
@@ -650,7 +650,6 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
 
   //TODO: create update lists for the various other numerical derivatives calculations
 }
-
 
 //static
 void CTimeSensMethod::printObjectSet(const std::string & s, const CObjectInterface::ObjectSet & os)

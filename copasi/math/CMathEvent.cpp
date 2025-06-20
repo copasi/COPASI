@@ -1011,6 +1011,9 @@ CEvaluationNode * CMathEvent::CTrigger::compileLE(const CEvaluationNode * pTrigg
         pRootNode->addChild(children[1]);
         Equality = false;
         break;
+        
+      default:
+        break;
     }
 
   pRoot->compile(pRootNode, Equality, container);

@@ -381,6 +381,9 @@ bool COptMethodSS::creation(void)
                     Sol = -pow(10.0, log10(std::max(-Interval.getMaximum(), std::numeric_limits< C_FLOAT64 >::min()))
                                        + 0.25 * Interval.getLogarithmicScale() * ((C_FLOAT64) i + pRandom->getRandomCC()));
                     break;
+
+                    case CIntervalValue::Range::invalid:
+                      break;
                   }
               else
                 Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) i + pRandom->getRandomCC());
@@ -453,6 +456,9 @@ bool COptMethodSS::creation(void)
                             Sol = -pow(10.0, log10(std::max(-Interval.getMaximum(), std::numeric_limits< C_FLOAT64 >::min()))
                                               + 0.25 * Interval.getLogarithmicScale() * ((C_FLOAT64) k + pRandom->getRandomCC()));
                             break;
+
+                            case CIntervalValue::Range::invalid:
+                              break;
                           }
                       else
                         Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) k + pRandom->getRandomCC());
@@ -487,7 +493,7 @@ bool COptMethodSS::creation(void)
   for (i = 1; i < h; i++)
     {
       // bubble-up
-      child = i;
+      child = (C_INT32) i;
 
       for (;;)
         {
@@ -522,7 +528,7 @@ bool COptMethodSS::creation(void)
             {
               // keep if this leaf is worse than previous
               if (mPoolVal[child] < mPoolVal[leaf])
-                child = leaf;
+                child = (C_INT32) leaf;
             }
         }
 
@@ -921,7 +927,7 @@ bool COptMethodSS::childLocalMin(void)
   for (i = 0; i < mLocalStored; ++i)
     {
       // is the other one like me?
-      if (closerChild(best, i, mCloseValue))
+      if (closerChild((C_INT32) best, (C_INT32) i, mCloseValue))
         {
           // it is too close, exit now
           return true;
@@ -1015,7 +1021,7 @@ bool COptMethodSS::optimise()
           if (mStuck[i] == 19)
             {
               // substitute this one by a random guess
-              Running &= randomize(i);
+              Running &= randomize((C_INT32) i);
               needsort = true;
               mStuck[i] = 1;
             }
@@ -1025,11 +1031,11 @@ bool COptMethodSS::optimise()
               for (j = i + 1; j < mPopulationSize; ++j)
                 {
                   // is the other one like me?
-                  if (closerRefSet(i, j, mCloseValue))
+                  if (closerRefSet((C_INT32) i, (C_INT32) j, mCloseValue))
                     //if (distRefSet(i, j) < 0.01)
                     {
                       // randomize the other one because it has worse value
-                      Running &= randomize(j);
+                      Running &= randomize((C_INT32) j);
                       needsort = true;
                       mStuck[j] = 1;
                     }

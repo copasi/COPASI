@@ -61,6 +61,7 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
   switch (subType)
     {
       case SubType::INVALID:
+      default:
         break;
 
       case SubType::CN:
@@ -269,6 +270,7 @@ CIssue CEvaluationNodeObject::compile()
         break;
 
       case SubType::INVALID:
+      default:
         break;
     }
 
@@ -340,6 +342,7 @@ const CEvaluationNode::Data & CEvaluationNodeObject::getData() const
         break;
 
       case SubType::POINTER:
+      default:
         break;
     }
 
@@ -368,6 +371,9 @@ std::string CEvaluationNodeObject::getInfix(const std::vector< std::string > & /
 
       case SubType::POINTER:
         return mData;
+        break;
+
+      default:
         break;
     }
 
@@ -569,6 +575,7 @@ void CEvaluationNodeObject::setObjectValuePtr(C_FLOAT64 * pObjectValue)
   switch (mSubType)
     {
       case SubType::CN:
+      default:
         break;
 
       case SubType::POINTER:

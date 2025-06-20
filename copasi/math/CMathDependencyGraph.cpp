@@ -674,6 +674,14 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
             os << "Propensity";
             break;
 
+          case CMath::ValueType::Noise:
+            os << "Noise";
+            break;
+
+          case CMath::ValueType::ParticleNoise:
+            os << "ParticleNoise";
+            break;
+
           case CMath::ValueType::TotalMass:
             os << "TotalMass";
             break;
@@ -708,6 +716,21 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
 
           case CMath::ValueType::EventRootState:
             os << "EventRootState";
+            break;
+
+          case CMath::ValueType::DelayValue:
+            os << "DelayValue";
+            break;
+
+          case CMath::ValueType::DelayLag:
+            os << "DelayLag";
+            break;
+
+          case CMath::ValueType::TransitionTime:
+            os << "TransitionTime";
+            break;
+
+          case CMath::ValueType::__SIZE:
             break;
         }
 

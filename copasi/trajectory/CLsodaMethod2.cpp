@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -249,7 +249,7 @@ void CLsodaMethod2::start()
   mTargetTime = mTime;
   mPeekAheadMode = false;
 
-  mNumRoots = mpContainer->getRoots().size();
+  mNumRoots = (int) mpContainer->getRoots().size();
   mRootMask.resize(mNumRoots);
   mRootMask = CRootFinder::NONE;
 

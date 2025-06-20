@@ -263,6 +263,9 @@ ASTNode* CEvaluationNodeConstant::toAST(const CDataModel* /*pDataModel*/, int, i
         node->setType(AST_REAL);
         node->setValue(std::numeric_limits<C_FLOAT64>::quiet_NaN());
         break;
+
+      default:
+        break;
     }
 
   return node;

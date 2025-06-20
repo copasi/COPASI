@@ -528,6 +528,9 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
                   list.push_back(CObjectLists::REACTION_CONC_FLUXES);
                   list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
             break;*/
+
+      case __SIZE:
+        break;
     }
 
   return list;
@@ -600,6 +603,9 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
                   list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
                   list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
             break;*/
+
+      case __SIZE:
+        break;
     }
 
   return list;

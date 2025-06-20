@@ -1442,6 +1442,7 @@ ASTNode * CEvaluationNodeFunction::toAST(const CDataModel * pDataModel, int sbml
           }
       }
       break;
+    default:
       // :TODO: Bug 894: Implement me.
       //fatalError();
       break;
@@ -1789,6 +1790,9 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
       case SubType::NOT:
         data = "!";
+        break;
+
+      default:
         break;
     }
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -134,7 +134,7 @@ void CTimeSensProblem::removeParameterCN(const std::string & cn)
   if (mpParametersGroup == NULL)
     return;
 
-  size_t numParameters = getNumParameters();
+  int numParameters = (int)getNumParameters();
 
   for (int i = numParameters - 1; i >= 0 ; --i)
     {
@@ -206,7 +206,7 @@ void CTimeSensProblem::removeTargetCN(const std::string & cn)
   if (mpTargetsGroup == NULL)
     return;
 
-  size_t numTargets = getNumTargets();
+  int numTargets = (int) getNumTargets();
 
   for (int i = numTargets - 1; i >= 0 ; --i)
     {

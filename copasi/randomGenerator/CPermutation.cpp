@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -77,7 +77,7 @@ void CPermutation::shuffle(const size_t & swaps)
 
   if (mVector.size() > 1)
     {
-      unsigned C_INT32 max = mVector.size() - 1;
+      unsigned C_INT32 max = (unsigned C_INT32)mVector.size() - 1;
       size_t Swaps = std::min(swaps, mVector.size());
 
       // We swap each element once.
@@ -107,7 +107,7 @@ const size_t & CPermutation::pick()
 
   if (mVector.size() > 1)
     {
-      mpNext = mVector.array() + mpRandom->getRandomU(mVector.size() - 1);
+      mpNext = mVector.array() + mpRandom->getRandomU((unsigned C_INT32)mVector.size() - 1);
     }
 
   return *mpNext;

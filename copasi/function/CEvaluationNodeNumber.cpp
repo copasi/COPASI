@@ -69,6 +69,7 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
         mValue /= strToDouble(end, NULL);
         break;
 
+      default:
       case SubType::INVALID:
         fatalError();
         break;
@@ -266,6 +267,7 @@ ASTNode* CEvaluationNodeNumber::toAST(const CDataModel* /* pDataModel */, int, i
         break;
 
       case SubType::INVALID:
+      default:
         break;
     }
 
