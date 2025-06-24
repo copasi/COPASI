@@ -324,19 +324,19 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       mpTableState->setItem((int) i, 2, new QTableWidgetItem());
     }
 
-  int tmpint = st.beginIndependent() - st.getEntities().array();
+  int tmpint = int(st.beginIndependent() - st.getEntities().array());
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem("beginIndependent "));
-  tmpint = st.endIndependent() - st.getEntities().array();
+  tmpint = int(st.endIndependent() - st.getEntities().array());
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "endIndependent "));
 
-  tmpint = st.beginDependent() - st.getEntities().array();
+  tmpint = int(st.beginDependent() - st.getEntities().array());
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "beginDependent "));
-  tmpint = st.endDependent() - st.getEntities().array();
+  tmpint = int(st.endDependent() - st.getEntities().array());
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "endDependent "));
 
-  tmpint = st.beginFixed() - st.getEntities().array();
+  tmpint = int(st.beginFixed() - st.getEntities().array());
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "beginFixed "));
-  tmpint = st.endFixed() - st.getEntities().array();
+  tmpint = int(st.endFixed() - st.getEntities().array());
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem("endFixed "));
 
   QColor c(200, 250, 250);
@@ -356,7 +356,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
 
   //add absolute Tolerances to table
   CVector< C_FLOAT64 > atolv = pModel->initializeAtolVector(1, false);
-  tmpint = st.beginIndependent() - st.getEntities().array();
+  tmpint = int(st.beginIndependent() - st.getEntities().array());
 
   for (i = 0; i < atolv.size(); ++i)
     {

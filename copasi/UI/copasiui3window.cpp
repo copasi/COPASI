@@ -862,7 +862,7 @@ void CopasiUI3Window::createMenuBar()
   help->addSeparator();
   help->addAction("&Check for Update", this, SLOT(slotCheckForUpdate()));
   help->addSeparator();
-  help->addAction("&About", this, SLOT(about()), Qt::Key_F1);
+  help->addAction("&About", Qt::Key_F1, this, SLOT(about()));
   help->addAction("&License", this, SLOT(license()));
   help->addAction("About &Qt", this, SLOT(aboutQt()));
   help->addSeparator();
