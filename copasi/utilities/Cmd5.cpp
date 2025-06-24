@@ -171,7 +171,7 @@ std::string Cmd5::digest(std::istream & message)  // digest as a 33-byte ascii-h
   char * pStr = str;
 
   for (i = 0; i < 16; i++, pStr += 2)
-    sprintf(pStr, "%02x", Digest.mDigest[i]);
+    snprintf(pStr, sizeof(str), "%02x", Digest.mDigest[i]);
 
   return str;
 }

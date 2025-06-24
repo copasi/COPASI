@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -60,7 +65,7 @@ QWidget * CQPushButtonDelegate::createEditor(QWidget * parent,
 
   Data = SourceIndex.model()->data(SourceIndex, Qt::UserRole);
 
-  if (Data.type() == QVariant::Icon)
+  if (Data.typeId() == QMetaType::QIcon)
     {
       mIcon = Data.value< QIcon >();
     }
@@ -80,7 +85,7 @@ QWidget * CQPushButtonDelegate::createEditor(QWidget * parent,
           {
             Data = SourceIndex.model()->data(SourceIndex, Qt::DisplayRole);
 
-            if (Data.type() == QVariant::String)
+            if (Data.typeId() == QMetaType::QString)
               {
                 mText = Data.toString();
               }

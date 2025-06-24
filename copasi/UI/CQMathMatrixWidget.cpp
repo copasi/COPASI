@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -366,16 +366,16 @@ void CQMathMatrixWidget::calculateJacobian(CMatrix< C_FLOAT64 >& matrix,
 
   for (i = 0; i < imax; ++i)
     {
-      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem = new QTableWidgetItem(QMetaType::Double);
       pItem->setData(Qt::DisplayRole, eigen_r[i]);
       eigenValuesWidget->setItem((int)i, 0, pItem);
 
-      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem = new QTableWidgetItem(QMetaType::Double);
       pItem->setData(Qt::DisplayRole, eigen_i[i]);
       eigenValuesWidget->setItem((int)i, 1, pItem);
 
       //time scales in 3rd col
-      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem = new QTableWidgetItem(QMetaType::Double);
       pItem->setData(Qt::DisplayRole, 1 / eigen_r[i]);
 
       if (eigen_r[i] > 0)
@@ -386,11 +386,11 @@ void CQMathMatrixWidget::calculateJacobian(CMatrix< C_FLOAT64 >& matrix,
       //frequency/period of oscillations
       if (fabs(eigen_i[i]) > 1e-12)
         {
-          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem = new QTableWidgetItem(QMetaType::Double);
           pItem->setData(Qt::DisplayRole, fabs(eigen_i[i] / (2.0 * M_PI)));
           eigenValuesWidget->setItem((int) i, 3, pItem);
 
-          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem = new QTableWidgetItem(QMetaType::Double);
           pItem->setData(Qt::DisplayRole, fabs(1.0 / eigen_i[i] * (2.0 * M_PI)));
           eigenValuesWidget->setItem((int) i, 4, pItem);
         }

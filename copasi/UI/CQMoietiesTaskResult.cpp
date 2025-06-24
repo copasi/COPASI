@@ -192,13 +192,13 @@ void CQMoietiesTaskResult::load()
           pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
           mpMoieties->setItem(i, COL_SPECIES, pItem);;
 
-          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem = new QTableWidgetItem(QMetaType::Double);
           pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
           pItem->setData(Qt::DisplayRole, it->getNumber());
           mpMoieties->setItem(i, COL_NUMBER, pItem);
 
           it.constCast()->refreshAmount();
-          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem = new QTableWidgetItem(QMetaType::Double);
           pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
           pItem->setData(Qt::DisplayRole, it->getAmount());
           mpMoieties->setItem(i, COL_AMOUNT, pItem);
