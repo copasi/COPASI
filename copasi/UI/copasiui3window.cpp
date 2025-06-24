@@ -3866,8 +3866,8 @@ void CopasiUI3Window::slotClearUndoHistory()
   if (QMessageBox::question(this, "Clear Undo history?",
                             "Do you want to clear the undo history? This will prevent "
                             "all previous operations to be undone.",
-                            QMessageBox::Yes,
-                            QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
+                            QMessageBox::Yes | QMessageBox::No,
+                            QMessageBox::No) == QMessageBox::Yes)
     {
       pUndoStack->clear();
     }

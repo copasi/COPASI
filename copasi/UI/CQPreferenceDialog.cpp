@@ -165,7 +165,7 @@ void CQPreferenceDialog::initTabsFromSettings(QSettings& settings)
         edit->setToolTip(tooltip);
         layout->addRow(edit);
 
-        connect(edit, &QCheckBox::stateChanged, this, &CQPreferenceDialog::slotPropertyChanged);
+        connect(edit, &QCheckBox::checkStateChanged, this, &CQPreferenceDialog::slotPropertyChanged);
         mWidgetToParameter[edit] = pNode;
       }
       else if (type == "int")

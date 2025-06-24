@@ -44,6 +44,7 @@
 #include <QtCore/QList>
 #include <QtCore/QMap>
 #include <QMessageBox>
+#include "copasi/UI/CQMessageBox.h"
 //-----------------------------------------------------------------------------
 
 /*
@@ -794,7 +795,7 @@ void CQPlotSubwidget::removeCurve()
   if (selection.size() == 0)
     return;
 
-  if (QMessageBox::question(this, "Delete Curves", QString("Do you really want to delete the %1 selected curve(s)?").arg(selection.size()), QMessageBox::Yes, QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
+  if (CQMessageBox::question(this, "Delete Curves", QString("Do you really want to delete the %1 selected curve(s)?").arg(selection.size()), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
     {
       for (int index = (int)selection.size() - 1; index >= 0; --index)
         {

@@ -203,7 +203,7 @@ bool CQTimeSensWidget::saveTaskProtected()
   else if (mpEditIntervals->hasAcceptableInput() &&
            timeSensProblem->getStepNumber() != mpEditIntervals->text().toULong())
     {
-      timeSensProblem->setStepNumber(mpEditIntervals->text().toLong());
+      timeSensProblem->setStepNumber(mpEditIntervals->text().toInt());
       mChanged = true;
     }
 

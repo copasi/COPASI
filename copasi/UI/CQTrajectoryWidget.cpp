@@ -224,7 +224,7 @@ bool CQTrajectoryWidget::saveTaskProtected()
   else if (mpEditIntervals->hasAcceptableInput() &&
            trajectoryproblem->getStepNumber() != mpEditIntervals->text().toULong())
     {
-      trajectoryproblem->setStepNumber(mpEditIntervals->text().toLong());
+      trajectoryproblem->setStepNumber(mpEditIntervals->text().toInt());
       mChanged = true;
     }
 
