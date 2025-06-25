@@ -136,7 +136,7 @@ CJitCompilerImplementation::Function CJitCompilerImplementation::compile(const C
   if (mpExecutionBuffer->Available() == 0)
     return ReturnFunction;
 
-  NativeJIT::FunctionBuffer ExecutionBuffer(*mpExecutionBuffer,  mpExecutionBuffer->Available());
+  NativeJIT::FunctionBuffer ExecutionBuffer(*mpExecutionBuffer,  (unsigned int)mpExecutionBuffer->Available());
   allocateFunctionBuffer(mFunctionBufferSize);
 
   while (ReturnFunction == NULL)

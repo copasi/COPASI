@@ -471,7 +471,7 @@ void CQArrayAnnotationsWidget::fillTableN(size_t rowIndex, size_t colIndex,
     }
 
   int TableWidth = mpContentTableView->size().width();
-  mpContentTableView->verticalHeader()->setMaximumWidth(TableWidth / std::min< size_t >(jmax, 5));
+  mpContentTableView->verticalHeader()->setMaximumWidth(TableWidth / (int)std::min< size_t >(jmax, 5));
 
   mpDataModel->setContext(mpColorScale, mpArray, index, rowIndex, colIndex);
 

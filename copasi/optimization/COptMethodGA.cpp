@@ -149,7 +149,6 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
 
   const CVector< C_FLOAT64 > * pParent1 = & parent1;
   const CVector< C_FLOAT64 > * pParent2 = & parent2;
-  const CVector< C_FLOAT64 > * pTmp;
 
   for (size_t i = 0; i < mVariableSize; i++)
     {
@@ -398,7 +397,6 @@ bool COptMethodGA::optimise()
   size_t Stalled, Stalled10, Stalled30, Stalled50;
   Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
 
-  size_t i;
   createIndividual(C_INVALID_INDEX, COptItem::CheckPolicyFlag::All);
   mValues[0] = evaluate({EvaluationPolicy::Constraints});
   setSolution(mValues[0], *mIndividuals[0], true);

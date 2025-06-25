@@ -224,11 +224,6 @@ void COptMethodEP::finalizeCreation(const size_t & individual, const size_t & in
 bool COptMethodEP::creation()
 {
   size_t i;
-  size_t j;
-
-  C_FLOAT64 mn;
-  C_FLOAT64 mx;
-  C_FLOAT64 la;
 
   // set the first individual to the initial guess
   createIndividual(C_INVALID_INDEX, COptItem::CheckPolicyFlag::All);
@@ -320,7 +315,6 @@ size_t COptMethodEP::fittest()
 bool COptMethodEP::replicate()
 {
   size_t i;
-  size_t j;
   bool Continue = true;
 
   // iterate over parents

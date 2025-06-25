@@ -325,7 +325,6 @@ bool COptMethodSS::randomize(C_INT32 i)
 bool COptMethodSS::creation(void)
 {
   size_t i, j, k, l;   // counters
-  C_FLOAT64 mn, mx, la; // for boundaries of rnd
   C_FLOAT64 sum;        // to calculate a summation
   C_FLOAT64 a;          // to hold a random number
   bool Running = true;  // flag for invalid values
@@ -388,7 +387,7 @@ bool COptMethodSS::creation(void)
               else
                 Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) i + pRandom->getRandomCC());
             }
-          catch (const std::exception & e)
+          catch (const std::exception &)
             {
               Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) i + 0.5);
             }
@@ -463,7 +462,7 @@ bool COptMethodSS::creation(void)
                       else
                         Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) k + pRandom->getRandomCC());
                     }
-                  catch (const std::exception & e)
+                  catch (const std::exception &)
                     {
                       Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) k + 0.5);
                     }

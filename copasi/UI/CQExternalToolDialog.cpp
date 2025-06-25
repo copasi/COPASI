@@ -188,7 +188,7 @@ void CQExternalToolDialog::slotItemChanged()
     }
 
   // if current index is different from the selected index, save the current tool
-  if (mCurrentIndex != index && mCurrentIndex >= 0 && mCurrentIndex < mTools.size())
+  if (mCurrentIndex != index && mCurrentIndex >= 0 && mCurrentIndex < (size_t)mTools.size())
     {
       mCurrentTool.setName(txtTitle->text());
       mCurrentTool.setCommand(txtCommand->text());
@@ -227,7 +227,7 @@ void CQExternalToolDialog::slotItemChanged()
 
 void CQExternalToolDialog::slotUpdateSelected()
 {
-    if (mCurrentIndex < 0 || mCurrentIndex >= mTools.size())
+    if (mCurrentIndex < 0 || mCurrentIndex >= (size_t)mTools.size())
         return;
 
     if (signalsBlocked())

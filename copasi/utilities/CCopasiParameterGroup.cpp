@@ -234,7 +234,6 @@ void CCopasiParameterGroup::createUndoData(CUndoData & undoData,
     }
 
   // We add the missing parameters
-  CCopasiParameter * pParameter;
   std::map< size_t, const CCopasiParameter * >::const_iterator itToBeAdded = ToBeAdded.begin();
   std::map< size_t, const CCopasiParameter * >::const_iterator endToBeAdded = ToBeAdded.end();
 

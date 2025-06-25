@@ -789,14 +789,14 @@ void addXmlNodeToGraph(CRDFGraph & graph, XMLNode & current, CRDFSubject & subje
           newSubject.setType(CRDFSubject::BLANK_NODE);
           newSubject.setBlankNodeId(object.getBlankNodeID());
 
-          for (int i = 0; i < current.getNumChildren(); ++i)
+          for (unsigned int i = 0; i < current.getNumChildren(); ++i)
             {
               addXmlNodeToGraph(graph, current.getChild(i), newSubject, rdfUri, predicate);
             }
         }
       else
         {
-          for (int i = 0; i < current.getNumChildren(); ++i)
+          for (unsigned int i = 0; i < current.getNumChildren(); ++i)
             {
               addXmlNodeToGraph(graph, current.getChild(i), subject, rdfUri, predicate);
             }
@@ -841,7 +841,7 @@ CRDFGraph * CRDFGraph::fromString(const std::string & miriam)
       XMLNode & desc = content->getChild("Description");
       std::string about = desc.getAttrValue("about", rdfUri);
 
-      for (int i = 0; i < desc.getNumChildren(); ++i)
+      for (unsigned int i = 0; i < desc.getNumChildren(); ++i)
         {
 
           CRDFSubject subject;

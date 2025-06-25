@@ -179,11 +179,7 @@ void COptMethodDE::boost()
 bool COptMethodDE::creation(size_t first, size_t last)
 {
   size_t Last = std::min(last, (size_t) mPopulationSize);
-  size_t i, j;
-
-  C_FLOAT64 mn;
-  C_FLOAT64 mx;
-  C_FLOAT64 la;
+  size_t i;
 
 #pragma omp parallel for schedule(runtime)
   for (i = first; i < Last; i++)
@@ -281,9 +277,7 @@ bool COptMethodDE::optimise()
       )
     );
 
-  size_t i;
-
-  // initialise the population
+  // initialize the population
   // first individual is the initial guess
   bool pointInParameterDomain = true;
   createIndividual(C_INVALID_INDEX, COptItem::CheckPolicyFlag::All);

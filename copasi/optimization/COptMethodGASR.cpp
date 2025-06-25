@@ -324,11 +324,6 @@ bool COptMethodGASR::creation(size_t first,
   size_t Last = std::min< size_t >(last, mPopulationSize);
 
   size_t i;
-  size_t j;
-
-  C_FLOAT64 mn;
-  C_FLOAT64 mx;
-  C_FLOAT64 la;
 
 #pragma omp parallel for schedule(runtime)
   for (i = first; i < Last; i++)
@@ -437,8 +432,6 @@ bool COptMethodGASR::optimise()
   // They count the number of generations without advances.
   size_t Stalled, Stalled10, Stalled30, Stalled50;
   Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
-
-  size_t i;
 
   // initialize the population
   // first individual is the initial guess
