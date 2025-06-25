@@ -42,25 +42,21 @@
 
 std::string ISODateTime(tm * pTime)
 {
-  char str[20];
-
   // YYYY-MM-DDTHH:mm:ss[Z|[+|-]HH:mm]
   if (pTime)
     {
-      snprintf(str, sizeof(str), "%d-%.02d-%.02dT%.02d:%.02d:%.02d",
-              pTime->tm_year + 1900,
-              pTime->tm_mon + 1,
-              pTime->tm_mday,
-              pTime->tm_hour,
-              pTime->tm_min,
-              pTime->tm_sec);
-    }
-  else
-    {
-      snprintf(str, sizeof(str), "0000-00-00T00:00:00");
+      std::stringstream ss;
+      ss << std::setfill('0')
+         << std::setw(4) << (pTime->tm_year + 1900) << "-"
+         << std::setw(2) << (pTime->tm_mon + 1) << "-"
+         << std::setw(2) << pTime->tm_mday << "T"
+         << std::setw(2) << pTime->tm_hour << ":"
+         << std::setw(2) << pTime->tm_min << ":"
+         << std::setw(2) << pTime->tm_sec;
+      return ss.str();
     }
 
-  return (std::string) str;
+  return "0000-00-00T00:00:00";
 }
 
 std::string LocalTimeStamp()

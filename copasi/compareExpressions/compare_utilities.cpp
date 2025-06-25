@@ -268,9 +268,9 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
     }
   else if ((pLogicalChoice = dynamic_cast<CNormalChoiceLogical*>(pBase)) != NULL)
     {
-      normalize_variable_names(&pChoice->getCondition(), variableMap);
-      normalize_variable_names(&pChoice->getTrueExpression(), variableMap);
-      normalize_variable_names(&pChoice->getFalseExpression(), variableMap);
+      normalize_variable_names(&pLogicalChoice->getCondition(), variableMap);
+      normalize_variable_names(&pLogicalChoice->getTrueExpression(), variableMap);
+      normalize_variable_names(&pLogicalChoice->getFalseExpression(), variableMap);
     }
   else if ((pFraction = dynamic_cast<CNormalFraction*>(pBase)) != NULL)
     {
