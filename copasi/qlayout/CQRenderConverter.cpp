@@ -1079,15 +1079,23 @@ bool CQRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox*
   QPointF end = item->path().elementAt(item->path().elementCount() - 1);
   QPointF secondLast = item->path().elementAt(item->path().elementCount() - 2);
 
-  if (group -> isSetStartHead())
+  if (group->isSetStartHead())
     {
       const CLLineEnding *line = resolver->getLineEnding(group->getStartHead());
+      if (start == second && item->path().elementCount() == 4)
+        second = secondLast;
+      if (start == second && item->path().elementCount() == 4)
+        second = end;
       addLineEndingToItem(item, line, group, resolver, start, second, itemGroup);
     }
 
   if (group->isSetEndHead())
     {
       const CLLineEnding *line = resolver->getLineEnding(group->getEndHead());
+      if (end == secondLast && item->path().elementCount() == 4)
+        secondLast = second;
+      if (end == secondLast && item->path().elementCount() == 4)
+        secondLast = start;
       addLineEndingToItem(item, line, group, resolver, end, secondLast, itemGroup);
     }
 
