@@ -1088,12 +1088,12 @@ void CQCustomPlot::output(const Activity & activity)
   for (ItemActivity = 0; ItemActivity < ActivitySize; ItemActivity++)
     if ((ItemActivity & activity) && mData[ItemActivity].size())
       {
-        std::vector< CVector< double > * > & data = mData[ItemActivity];
+        std::vector< CVector< double > * > & activityData = mData[ItemActivity];
         size_t & ndata = mDataSize[ItemActivity];
 
-        if ((imax = data.size()) != 0)
+        if ((imax = activityData.size()) != 0)
           {
-            if (ndata >= data[0]->size())
+            if (ndata >= activityData[0]->size())
               {
                 resizeCurveData(ItemActivity);
               }
@@ -1101,9 +1101,9 @@ void CQCustomPlot::output(const Activity & activity)
             //the data that needs to be stored internally:
             for (i = 0; i < imax; ++i)
               if (mObjectInteger[ItemActivity][i])
-                (*data[i])[ndata] = *(C_INT32 *) mObjectValues[ItemActivity][i];
+                (*activityData[i])[ndata] = *(C_INT32 *) mObjectValues[ItemActivity][i];
               else
-                (*data[i])[ndata] = *mObjectValues[ItemActivity][i];
+                (*activityData[i])[ndata] = *mObjectValues[ItemActivity][i];
 
             ++ndata;
           }
@@ -1130,19 +1130,19 @@ void CQCustomPlot::separate(const Activity & activity)
   for (ItemActivity = 0; ItemActivity < ActivitySize; ItemActivity++)
     if ((ItemActivity & activity) && mData[ItemActivity].size())
       {
-        std::vector< CVector< double > * > & data = mData[ItemActivity];
+        std::vector< CVector< double > * > & activityData = mData[ItemActivity];
         size_t & ndata = mDataSize[ItemActivity];
 
-        if ((imax = data.size()) != 0)
+        if ((imax = activityData.size()) != 0)
           {
-            if (ndata >= data[0]->size())
+            if (ndata >= activityData[0]->size())
               {
                 resizeCurveData(ItemActivity);
               }
 
             //the data that needs to be stored internally:
             for (i = 0; i < imax; ++i)
-              (*data[i])[ndata] = MissingValue;
+              (*activityData[i])[ndata] = MissingValue;
 
             ++ndata;
           }
@@ -1390,10 +1390,10 @@ bool CQCustomPlot::saveData(const std::string & filename)
 
           auto * curve = dynamic_cast< QCPGraph * >(*itCurves);
 
-          for (int i = 0; i < curve->dataCount(); ++i)
+          for (int data_index = 0; data_index < curve->dataCount(); ++data_index)
             {
-              auto data = curve->data()->at(i);
-              fs << data->key << "\t" << data->value << "\n";
+              auto hostogramData = curve->data()->at(data_index);
+              fs << hostogramData->key << "\t" << hostogramData->value << "\n";
             }
         }
     }
@@ -1521,7 +1521,7 @@ void CQCustomPlot::toggleLogY(bool logY)
   toggleLog(yAxis, logY);
 }
 
-void CQCustomPlot::render(QPainter * painter, QRect rect)
+void CQCustomPlot::render(QPainter * painter, QRect /*rect*/)
 {
   QCustomPlot::render(painter);
 }
@@ -1691,20 +1691,20 @@ void CQCustomPlot::updateCurves(const size_t & activity)
       if (mDataSize[activity] == 0)
         continue;
 
-      std::vector< CVector< double > * > & data = mData[curve_activity];
+      std::vector< CVector< double > * > & activityData = mData[curve_activity];
 
       switch (curve_type)
         {
           case CPlotItem::curve2d:
           {
-            int data_size = mDataSize[activity];
+            int data_size = (int)mDataSize[activity];
             int current_count = curve->property("last_count").toInt();
             // need to store the number of data points we added,
             // so we wont replot them in case they are skipped
             curve->setProperty("last_count", data_size);
 
-            auto & x = *data[mDataIndex[k][0].second];
-            auto & y = *data[mDataIndex[k][1].second];
+            auto & x = *activityData[mDataIndex[k][0].second];
+            auto & y = *activityData[mDataIndex[k][1].second];
 
             int steadyType = xAxis->property("axis_label").toInt();
             QString experimentName = curve->property("experiment_name").toString();
@@ -1795,9 +1795,9 @@ void CQCustomPlot::updateCurves(const size_t & activity)
 
           case CPlotItem::bandedGraph:
           {
-            auto & x = *data[mDataIndex[k][0].second];
-            auto & y = *data[mDataIndex[k][1].second];
-            auto & y2 = *data[mDataIndex[k][2].second];
+            auto & x = *activityData[mDataIndex[k][0].second];
+            auto & y = *activityData[mDataIndex[k][1].second];
+            auto & y2 = *activityData[mDataIndex[k][2].second];
             auto data_size = mDataSize[activity];
             auto current_count = graph->dataCount();
             QCPGraph * pY2 = dynamic_cast< QCPGraph * >(mY2Map[graph]);
@@ -1826,7 +1826,7 @@ void CQCustomPlot::updateCurves(const size_t & activity)
 
           case CPlotItem::histoItem1d:
           {
-            auto & x = *data[mDataIndex[k][0].second];
+            auto & x = *activityData[mDataIndex[k][0].second];
             auto data_size = mDataSize[activity];
             auto current_count = graph->dataCount();
             auto * helper = mHisto[graph];
@@ -1842,9 +1842,9 @@ void CQCustomPlot::updateCurves(const size_t & activity)
 
           case CPlotItem::spectogram:
           {
-            auto & x = *data[mDataIndex[k][0].second];
-            auto & y = *data[mDataIndex[k][1].second];
-            auto & z = *data[mDataIndex[k][2].second];
+            auto & x = *activityData[mDataIndex[k][0].second];
+            auto & y = *activityData[mDataIndex[k][1].second];
+            auto & z = *activityData[mDataIndex[k][2].second];
             auto data_size = mDataSize[activity];
             auto current_count = map->data()->keySize();
             double max_scale = map->property("max_scale").toDouble();
@@ -1890,10 +1890,11 @@ void CQCustomPlot::updateCurves(const size_t & activity)
                     y_range.insert(cur_y);
                   }
 
-                map->data()->setSize(x_range.size(), y_range.size());
                 map->data()->setKeyRange(QCPRange(min_x, max_x));
                 map->data()->setValueRange(QCPRange(min_y, max_y));
                 map->setDataRange(QCPRange(min_z, max_z));
+                //std::cout << " size: " << x.size() << "x" << y.size() << std::endl;
+                map->data()->setSize((int)x_range.size(), (int)y_range.size());
 
                 //// create vectors out of x_range and y_range
                 //std::vector< double > x_vals(x_range.begin(), x_range.end());
@@ -1907,17 +1908,19 @@ void CQCustomPlot::updateCurves(const size_t & activity)
                     auto cur_z = z[count];
 
                     //// find index of cur_x in x_vals
-                    //auto x_it = std::find(x_vals.begin(), x_vals.end(), cur_x);
-                    //auto y_it = std::find(y_vals.begin(), y_vals.end(), cur_y);
+                    auto x_it = std::find(x_range.begin(), x_range.end(), cur_x);
+                    auto y_it = std::find(y_range.begin(), y_range.end(), cur_y);
 
                     //// convert iterator to integer
-                    //int x_index = std::distance(x_vals.begin(), x_it);
-                    //int y_index = std::distance(y_vals.begin(), y_it);
+                    int x_index = (int)std::distance(x_range.begin(), x_it);
+                    int y_index = (int)std::distance(y_range.begin(), y_it);
+
+                    //std::cout << "x: " << x_index << " y: " << y_index << std::endl;
 
                     if (!qIsNaN(cur_z))
                       {
-                        map->data()->setData(cur_x, cur_y, cur_z);
-                        // map->data()->setCell(x_index, y_index, cur_z);
+                        //map->data()->setData(cur_x, cur_y, cur_z);
+                        map->data()->setCell(x_index, y_index, cur_z);
                       }
                   }
 
@@ -1950,29 +1953,29 @@ void CQCustomPlot::updateCurves(const size_t & activity)
                             registerPlottable(base);
                             base->removeFromLegend();
                             mContours += base;
-                            QVector< double > x, y;
                             base->setPen(QPen(Qt::black));
                             base->setName(QString::number(contourLevels[l].toDouble()));
 
                             //base->setBrush(brushes[l]);
 
+                            QVector< double > contour_x, contour_y;
                             if (contours[l][j].size() > 4)
                               {
 
                                 for (int i = 0; i < contours[l][j].size(); i++)
                                   {
 
-                                    x.push_back(contours[l][j][i].x());
-                                    y.push_back(contours[l][j][i].y());
+                                    contour_x.push_back(contours[l][j][i].x());
+                                    contour_y.push_back(contours[l][j][i].y());
                                   }
                               }
 
-                            base->setData(x, y);
+                            base->setData(contour_x, contour_y);
                           }
                       }
                   }
 
-                //map->rescaleDataRange();
+                map->rescaleDataRange();
                 if (!qIsNaN(max_scale))
                   map->colorScale()->axis()->setRangeUpper(max_scale);
 
@@ -1994,10 +1997,10 @@ void CQCustomPlot::updateCurves(const size_t & activity)
 
 void CQCustomPlot::resizeCurveData(const size_t & activity)
 {
-  std::vector< CVector< double > * > & data = mData[activity];
-  std::vector< CVector< double > * >::iterator it = data.begin();
+  std::vector< CVector< double > * > & activityData = mData[activity];
+  std::vector< CVector< double > * >::iterator it = activityData.begin();
 
-  std::vector< CVector< double > * > OldData = data;
+  std::vector< CVector< double > * > OldData = activityData;
   std::vector< CVector< double > * >::iterator itOld = OldData.begin();
   std::vector< CVector< double > * >::iterator endOld = OldData.end();
 
@@ -2012,51 +2015,6 @@ void CQCustomPlot::resizeCurveData(const size_t & activity)
       memcpy((*it)->array(), (*itOld)->array(), oldSize * sizeof(double));
     }
 
-  // Tell the curves that the location of the data has changed
-  // otherwise repaint events could crash
-  size_t k = 0;
-  auto itCurves = mCurves.begin();
-  auto endCurves = mCurves.end();
-
-  for (; itCurves != endCurves; ++itCurves, ++k)
-    {
-      if (*itCurves == NULL)
-        continue;
-
-      if ((size_t)(*itCurves)->property("activity").toInt() == activity)
-        {
-          std::vector< CVector< double > * > & data = mData[activity];
-
-          switch ((*itCurves)->property("curve_type").toInt())
-            {
-              //case CPlotItem::curve2d:
-              //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
-              //                               data[mDataIndex[k][1].second]);
-              //  break;
-
-              //case CPlotItem::bandedGraph:
-              //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
-              //                               data[mDataIndex[k][1].second],
-              //                               data[mDataIndex[k][2].second]);
-              //  break;
-
-              //case CPlotItem::histoItem1d:
-              //  (*itCurves)->reallocatedData(data[mDataIndex[k][0].second],
-              //                               NULL);
-              //  break;
-
-              default:
-                //fatalError();
-                break;
-            }
-        }
-    }
-
-  // It is now save to delete the old data since the GUI thread has been notified.
-  for (itOld = OldData.begin(); itOld != endOld; ++itOld)
-    {
-      // pdelete(*itOld);
-    }
 }
 
 void CQCustomPlot::updatePlot()
@@ -2077,14 +2035,14 @@ void CQCustomPlot::clearBuffers()
 
   for (Activity = 0; Activity < ActivitySize; Activity++)
     {
-      std::vector< CVector< double > * > & data = mData[Activity];
+      std::vector< CVector< double > * > & activityData = mData[Activity];
 
       // Delete each QMemArray
-      for (i = 0, imax = data.size(); i < imax; i++)
-        if (data[i] != NULL)
-          delete data[i];
+      for (i = 0, imax = activityData.size(); i < imax; i++)
+        if (activityData[i] != NULL)
+          delete activityData[i];
 
-      data.clear();
+      activityData.clear();
 
       mObjectValues[Activity].clear();
       mObjectInteger[Activity].clear();
@@ -2217,7 +2175,6 @@ CQCustomPlot::initializeIndependentData(const CDataModel& model)
       if (!pExperiment)
         continue;
 
-      auto & independentObjects = pExperiment->getIndependentObjects();
       auto & matrix = pExperiment->getIndependentData();
       QString experimentName = FROM_UTF8(pExperiment->getObjectDisplayName());
       size_t numRows = matrix.numRows();
@@ -2250,8 +2207,6 @@ CQCustomPlot::initializeIndependentData(const CDataModel& model)
 
 void CQCustomPlot::updateSteadyStateInfo(int type)
 {
-  auto& model = *CRootContainer::getDatamodelList()->begin();
-
   if (type != X_AXIS_NAME && dynamic_cast< QCPAxisTickerText * >(xAxis->ticker().data()) != NULL)
     xAxis->setTicker(mDefaultTicker);
 
@@ -2261,7 +2216,7 @@ void CQCustomPlot::updateSteadyStateInfo(int type)
     }
 }
 
-void CQCustomPlot::legendClicked(QCPLegend * legend, QCPAbstractLegendItem * item, QMouseEvent * event)
+void CQCustomPlot::legendClicked(QCPLegend * pLegend, QCPAbstractLegendItem * item, QMouseEvent * event)
 {
   auto * plItem = dynamic_cast< QCPPlottableLegendItem * >(item);
 
@@ -2284,11 +2239,11 @@ void CQCustomPlot::legendClicked(QCPLegend * legend, QCPAbstractLegendItem * ite
 
       if (plItem)
         {
-          for (int index = 0; index < legend->itemCount(); ++index)
+          for (int index = 0; index < pLegend->itemCount(); ++index)
             {
-              if (legend->item(index) == plItem)
+              if (pLegend->item(index) == plItem)
                 {
-                  legend->indexToRowCol(index, mLegendRow, mLegendCol);
+                  pLegend->indexToRowCol(index, mLegendRow, mLegendCol);
                   break;
                 }
             }
@@ -2305,7 +2260,7 @@ void CQCustomPlot::displayToolTip(QCPAbstractPlottable * plottable, int dataInde
   if (graph)
     {
       auto dataPoint = graph->data()->at(dataIndex);
-      QToolTip::showText(event->globalPos(),
+      QToolTip::showText(event->globalPosition().toPoint(),
                          tr("%1: %2, %3")
                          .arg(graph->name())
                          .arg(dataPoint->key)
@@ -2319,7 +2274,7 @@ void CQCustomPlot::displayToolTip(QCPAbstractPlottable * plottable, int dataInde
   if (curve)
     {
       auto dataPoint = curve->data()->at(dataIndex);
-      QToolTip::showText(event->globalPos(),
+      QToolTip::showText(event->globalPosition().toPoint(),
                          tr("%1: %2, %3")
                          .arg(curve->name())
                          .arg(dataPoint->key)
@@ -2333,9 +2288,9 @@ void CQCustomPlot::displayToolTip(QCPAbstractPlottable * plottable, int dataInde
   if (map)
     {
       double key, value;
-      map->pixelsToCoords(event->localPos(), key, value);
+      map->pixelsToCoords(event->position(), key, value);
 
-      QToolTip::showText(event->globalPos(),
+      QToolTip::showText(event->globalPosition().toPoint(),
                          tr("(%1, %2) = %3")
                          .arg(key)
                          .arg(value)
@@ -2357,7 +2312,7 @@ void CQCustomPlot::setupLegend()
   if (maxItems == 0)
     return;
 
-  int numItems = mCurves.size();
+  int numItems = (int)mCurves.size();
   int numPages = floor((double)numItems / (double)maxItems);
 
   if (numPages * maxItems >= numItems)
