@@ -193,7 +193,7 @@ public:
    */
   virtual bool removeChild(CCopasiNode< Data > * pChild)
   {
-    if (!pChild) return false;           // Nothing to remove.
+    if (!pChild || !mpChild) return false;           // Nothing to remove.
 
     if (mpChild != pChild)
       return mpChild->removeSibling(pChild);
