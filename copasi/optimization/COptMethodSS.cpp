@@ -760,7 +760,7 @@ bool COptMethodSS::combination(void)
               // generate a child
               for (size_t k = 0; k < mVariableSize; ++k)
                 {
-                  COptItem & OptItem = *OptItemList[j];
+                  COptItem & OptItem = *OptItemList[k];
                   C_FLOAT64 & Sol = (*mPool[i])[j];
                   const CIntervalValue & Interval = OptItem.getInterval();
 
@@ -848,7 +848,7 @@ bool COptMethodSS::combination(void)
             {
               for (size_t k = 0; k < mVariableSize; ++k)
                 {
-                  COptItem & OptItem = *OptItemList[j];
+                  COptItem & OptItem = *OptItemList[k];
                   dd = (xpr[k] - (*mChild[i])[k]) * lambda;
                   xnew[k] = (*mChild[i])[k] + dd * pRandom->getRandomCC();
                   // get the bounds of this parameter
