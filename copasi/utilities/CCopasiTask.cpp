@@ -176,7 +176,7 @@ bool CCopasiTask::applyData(const CData & data, CUndoData::CChangeSet & changes)
       setMethodType(CTaskEnum::MethodName.toEnum(data.getProperty(CData::METHOD_TYPE).toString()));
     }
 
-  if (data.isSetProperty(CData::METHOD))
+  if (data.isSetProperty(CData::METHOD) && mpMethod)
     {
       mpMethod->applyData(data.getProperty(CData::METHOD).toData(), changes);
     }
@@ -619,7 +619,7 @@ bool CCopasiTask::setMethodType(const CTaskEnum::Method & type)
 {
   if (!isValidMethod(type, getValidMethods())) return false;
 
-  if (mpMethod->getSubType() == type) return true;
+  if (mpMethod && mpMethod->getSubType() == type) return true;
 
   pdelete(mpMethod);
   mpMethod = CMethodFactory::create(getType(), type, this);

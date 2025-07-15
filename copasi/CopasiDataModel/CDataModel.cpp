@@ -1516,11 +1516,15 @@ CDataModel::exportMathModelToString(
   try
     {
       if (!mData.pModel->compileIfNecessary(pProcessReport))
+      {
+        pdelete(pExporter);
         return "";
+      }
     }
 
   catch (...)
     {
+      pdelete(pExporter);
       return "";
     }
 
@@ -1540,6 +1544,8 @@ CDataModel::exportMathModelToString(
     {
       return "";
     }
+
+  pdelete(pExporter);
 
   return os.str();
 }
@@ -1625,10 +1631,14 @@ bool CDataModel::exportMathModel(const std::string & fileName, CProcessReport * 
       CCopasiMessage(CCopasiMessage::ERROR,
                      MCDirEntry + 3,
                      fileName.c_str());
+      pdelete(pExporter);
       return false;
     }
 
-  return pExporter->exportToStream(this, os);
+  bool result = pExporter->exportToStream(this, os);
+  pdelete(pExporter);
+
+  return result;
 }
 
 void CDataModel::addCopasiFileToArchive(CombineArchive * archive,

@@ -364,6 +364,8 @@ bool CODEExporterBM::exportSingleModVal(const CModelValue* modval, std::string &
 
 bool CODEExporterBM::exportSingleModelEntity(const CModelEntity* tmp, std::string & expression, std::string & comments)
 {
+  if (!tmp)
+    return true;
 
   std::string name;
 

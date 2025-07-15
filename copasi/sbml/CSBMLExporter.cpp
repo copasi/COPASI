@@ -5758,7 +5758,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
               {
                 pResult->addChild(pChild);
               }
-            else
+            else if(pResult)
               {
                 delete pResult;
                 pResult = NULL;

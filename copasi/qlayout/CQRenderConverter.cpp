@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -7,8 +12,6 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
-
-
 
 #include <QGraphicsItem>
 #include <QtCore/QSharedPointer>
@@ -464,6 +467,9 @@ void addToPath(QPainterPath &path, const CLRenderCubicBezier* cubic, const CLBou
 
 void addToPath(QPainterPath &path, const CLRenderPoint* current, const CLBoundingBox *pBB)
 {
+  if (!current || !pBB)
+    return;
+
   path.lineTo(
     pBB->getPosition().getX() + current->getXOffset().getAbsoluteValue() + current->getXOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
     pBB->getPosition().getY() + current->getYOffset().getAbsoluteValue() + current->getYOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight()
@@ -471,6 +477,9 @@ void addToPath(QPainterPath &path, const CLRenderPoint* current, const CLBoundin
 }
 void moveToPoint(QPainterPath &path, const CLRenderPoint* current, const CLBoundingBox *pBB)
 {
+  if (!current || !pBB)
+    return;
+
   path.moveTo(
     pBB->getPosition().getX() + current->getXOffset().getAbsoluteValue() + current->getXOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
     pBB->getPosition().getY() + current->getYOffset().getAbsoluteValue() + current->getYOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight()

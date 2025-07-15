@@ -841,6 +841,8 @@ bool CODEExporterC::exportSingleModVal(const CModelValue* modval, std::string & 
 
 bool CODEExporterC::exportSingleModelEntity(const CModelEntity* tmp, std::string & expression, std::string & comments)
 {
+  if (!tmp)
+    return true;
 
   std::string name;
 
@@ -1031,6 +1033,7 @@ bool CODEExporterC::exportSingleFunction(const CFunction *func, std::set<std::st
         }
     }
 
+  pdelete(tmpfunc);
   return true;
 }
 

@@ -156,8 +156,6 @@ void CFixLocalReactionParameters::changeModel()
       Infix = itChanges->second->getInfix();
 
       // There may be more than one occurrence.
-      Start = 0;
-
       while ((Start = Infix.find(OldCN), Start) != std::string::npos)
         Infix.replace(Start, OldCN.length(), NewCN);
 

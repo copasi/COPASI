@@ -87,7 +87,6 @@ protected:
   virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem* option, QWidget * widget = nullptr)
   {
     double scaleValue = scale();
-    double m11 = painter->transform().m11();
 
     painter->save();
     painter->scale(scaleValue, scaleValue);
