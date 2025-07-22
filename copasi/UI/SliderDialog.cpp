@@ -1170,7 +1170,11 @@ bool SliderDialog::eventFilter(QObject*, QEvent* event)
 
   if (pQME && pQME->type() == QEvent::MouseButtonPress && pQME->button() == Qt::LeftButton)
     {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      CopasiSlider* pSlider = findCopasiSliderAtPosition(mapFromGlobal(pQME->globalPos()));
+#else
       CopasiSlider* pSlider = findCopasiSliderAtPosition(mapFromGlobal(pQME->globalPosition().toPoint()));
+#endif
       assert(pSlider);
       setCurrentSlider(pSlider);
     }

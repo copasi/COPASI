@@ -1579,7 +1579,7 @@ void CQCustomPlot::mouseReleaseEvent(QMouseEvent * event)
 
 void CQCustomPlot::wheelEvent(QWheelEvent * event)
 {
-#if QT_VERSION > QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
   QCPLayerable * element = layerableAt(event->position(), true);
 #else
   QCPLayerable * element = layerableAt(event->pos(), true);
@@ -2014,7 +2014,6 @@ void CQCustomPlot::resizeCurveData(const size_t & activity)
       *it = new CVector< double >(newSize);
       memcpy((*it)->array(), (*itOld)->array(), oldSize * sizeof(double));
     }
-
 }
 
 void CQCustomPlot::updatePlot()
@@ -2260,7 +2259,12 @@ void CQCustomPlot::displayToolTip(QCPAbstractPlottable * plottable, int dataInde
   if (graph)
     {
       auto dataPoint = graph->data()->at(dataIndex);
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      QToolTip::showText(event->globalPos(),
+#else
       QToolTip::showText(event->globalPosition().toPoint(),
+#endif
                          tr("%1: %2, %3")
                          .arg(graph->name())
                          .arg(dataPoint->key)
@@ -2274,13 +2278,19 @@ void CQCustomPlot::displayToolTip(QCPAbstractPlottable * plottable, int dataInde
   if (curve)
     {
       auto dataPoint = curve->data()->at(dataIndex);
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      QToolTip::showText(event->globalPos(),
+#else
       QToolTip::showText(event->globalPosition().toPoint(),
+#endif
                          tr("%1: %2, %3")
                          .arg(curve->name())
                          .arg(dataPoint->key)
                          .arg(dataPoint->value),
                          this, rect());
-      return;
+
+                         return;
     }
 
   auto * map(dynamic_cast< QCPColorMap * >(plottable));
@@ -2288,9 +2298,14 @@ void CQCustomPlot::displayToolTip(QCPAbstractPlottable * plottable, int dataInde
   if (map)
     {
       double key, value;
-      map->pixelsToCoords(event->position(), key, value);
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+      map->pixelsToCoords(event->localPos(), key, value);
+      QToolTip::showText(event->globalPos(),
+#else
+      map->pixelsToCoords(event->position(), key, value);
       QToolTip::showText(event->globalPosition().toPoint(),
+#endif
                          tr("(%1, %2) = %3")
                          .arg(key)
                          .arg(value)

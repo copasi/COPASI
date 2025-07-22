@@ -65,7 +65,11 @@ QWidget * CQPushButtonDelegate::createEditor(QWidget * parent,
 
   Data = SourceIndex.model()->data(SourceIndex, Qt::UserRole);
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  if (Data.type() == QVariant::Icon)
+#else
   if (Data.typeId() == QMetaType::QIcon)
+#endif
     {
       mIcon = Data.value< QIcon >();
     }
@@ -85,7 +89,11 @@ QWidget * CQPushButtonDelegate::createEditor(QWidget * parent,
           {
             Data = SourceIndex.model()->data(SourceIndex, Qt::DisplayRole);
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+            if (Data.type() == QVariant::String)
+#else
             if (Data.typeId() == QMetaType::QString)
+#endif
               {
                 mText = Data.toString();
               }

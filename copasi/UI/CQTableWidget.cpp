@@ -17,7 +17,11 @@ void CQTableWidget::dropEvent(QDropEvent* pEvent)
   if (pEvent->source() != this)
     return;
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+  int newRow = this->indexAt(pEvent->pos()).row();
+#else
   int newRow = this->indexAt(pEvent->position().toPoint()).row();
+#endif
 
   QTableWidgetItem* selectedItem;
   QList<QTableWidgetItem*> selectedItems = this->selectedItems();
