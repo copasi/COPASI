@@ -135,19 +135,19 @@ bool COptPopulationMethod::createIndividual(const size_t & index, const COptItem
 
   C_FLOAT64 * pIndividual = mIndividuals[Index]->begin();
   C_FLOAT64 * pEnd = mIndividuals[Index]->end();
-  std::vector< COptItem * >::const_iterator itOptItem = pProblem->getOptItemList(true).begin();
+  const std::vector< COptItem * > & OptItemList = pProblem->getOptItemList(true);
 
   if (useStartValues)
     {
       bool pointInParameterDomain = true;
 
-      for (size_t item = 0; pIndividual != pEnd; ++pIndividual, ++itOptItem, ++item)
+      for (size_t item = 0; pIndividual != pEnd; ++pIndividual, ++item)
         {
-          COptItem & OptItem = **itOptItem;
-          *pIndividual = OptItem.getStartValue();
-          success &= OptItem.setItemValue(*pIndividual, policy);
-          pointInParameterDomain &= (*pIndividual == OptItem.getStartValue());
-          finalizeCreation(Index, item, OptItem, pRandom);
+          COptItem * pOptItem = OptItemList[item];
+          *pIndividual = pOptItem->getStartValue();
+          success &= pOptItem->setItemValue(*pIndividual, policy);
+          pointInParameterDomain &= (*pIndividual == pOptItem->getStartValue());
+          finalizeCreation(Index, item, *pOptItem, pRandom);
         }
 
       if (!pointInParameterDomain && !success && (mLogVerbosity > 0))
@@ -155,12 +155,12 @@ bool COptPopulationMethod::createIndividual(const size_t & index, const COptItem
     }
   else
     {
-      for (size_t item = 0; pIndividual != pEnd; ++pIndividual, ++itOptItem, ++item)
+      for (size_t item = 0; pIndividual != pEnd; ++pIndividual, ++item)
         {
-          COptItem & OptItem = **itOptItem;
-          *pIndividual = OptItem.getRandomValue(pRandom);
-          success &= OptItem.setItemValue(*pIndividual, policy);
-          finalizeCreation(Index, item, OptItem, pRandom);
+          COptItem * pOptItem = OptItemList[item];
+          *pIndividual = pOptItem->getRandomValue(pRandom);
+          success &= pOptItem->setItemValue(*pIndividual, policy);
+          finalizeCreation(Index, item, *pOptItem, pRandom);
         }
     }
 

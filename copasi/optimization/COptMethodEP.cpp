@@ -132,12 +132,10 @@ bool COptMethodEP::optimise()
       // get the index of the fittest
       mBestIndex = fittest();
 
-      if (mBestIndex != C_INVALID_INDEX &&
-          mValues[mBestIndex] < getBestValue())
-        {
-          Stalled = 0;
-          setSolution(mValues[mBestIndex], *mIndividuals[mBestIndex], true);
-        }
+      if (mBestIndex != C_INVALID_INDEX
+          && mValues[mBestIndex] < getBestValue()
+          && setSolution(mValues[mBestIndex], *mIndividuals[mBestIndex], true))
+        Stalled = 0;
 
       if (mProcessReport
           && !mProcessReport.progressItem(mhGenerations))

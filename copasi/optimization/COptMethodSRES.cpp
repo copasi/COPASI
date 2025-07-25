@@ -131,16 +131,9 @@ bool COptMethodSRES::replicate()
 //mutate one individual
 bool COptMethodSRES::mutate()
 {
-  std::vector< CVector < C_FLOAT64 > * >::iterator it = mIndividuals.begin() + mPopulationSize;
-  std::vector< CVector < C_FLOAT64 > * >::iterator end = mIndividuals.end();
-  std::vector< CVector < C_FLOAT64 > * >::iterator itVariance = mVariance.begin() + mPopulationSize;
-
-  size_t i, j;
-  C_FLOAT64 v1;
-
   // Mutate each new individual
 #pragma omp parallel for schedule(runtime)
-  for (i = mPopulationSize; i < 2 * mPopulationSize; ++i)
+  for (size_t i = mPopulationSize; i < 2 * mPopulationSize; ++i)
     {
       CRandom * pRandom = mRandomContext.active();
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
@@ -150,9 +143,9 @@ bool COptMethodSRES::mutate()
       C_FLOAT64 * pVariance = mVariance[i]->array();
       C_FLOAT64 * pMaxVariance = mMaxVariance.array();
 
-      v1 = pRandom->getRandomNormal01();
+      C_FLOAT64 v1 = pRandom->getRandomNormal01();
 
-      for (j = 0; pVariable != pVariableEnd; ++pVariable, ++pVariance, ++pMaxVariance, ++j)
+      for (size_t j = 0; pVariable != pVariableEnd; ++pVariable, ++pVariance, ++pMaxVariance, ++j)
         {
           C_FLOAT64 & mut = *pVariable;
           C_FLOAT64 Store = mut;
@@ -257,8 +250,6 @@ void COptMethodSRES::finalizeCreation(const size_t & individual, const size_t & 
 // Initialize the population
 bool COptMethodSRES::creation(size_t first)
 {
-  size_t i;
-
   // set the first individual to the initial guess
   if (first == 0)
     {
@@ -271,7 +262,7 @@ bool COptMethodSRES::creation(size_t first)
     }
 
 #pragma omp parallel for schedule(runtime)
-  for (i = first; i < mPopulationSize; ++i)
+  for (size_t i = first; i < mPopulationSize; ++i)
     {
       createIndividual(i, COptItem::CheckPolicyFlag::All);
 

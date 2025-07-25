@@ -912,31 +912,35 @@ bool CFitProblem::initialize()
 
 bool CFitProblem::checkFunctionalConstraints()
 {
+  sCounter Counters;
   std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
   std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
 
   if (!mpConstraintItems->empty())
-    mCounters.ConstraintCounter++;
+    Counters.ConstraintCounter++;
 
   for (; it != end; ++it)
     if (static_cast<CFitConstraint *>(*it)->getConstraintViolation() > 0.0)
       {
-        mCounters.FailedConstraintCounter++;
+        Counters.FailedConstraintCounter++;
         return false;
       }
+
+  incrementCounters(Counters);
 
   return true;
 }
 
 C_FLOAT64 CFitProblem::getFunctionalConstraintsViolation()
 {
+  sCounter Counters;
   C_FLOAT64 L2norm = 0.0;
 
   std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
   std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
 
   if (!mpConstraintItems->empty())
-    mCounters.ConstraintCounter++;
+    Counters.ConstraintCounter++;
 
   for (; it != end; ++it)
     {
@@ -945,8 +949,9 @@ C_FLOAT64 CFitProblem::getFunctionalConstraintsViolation()
     }
 
   if (L2norm > 0.0)
-    mCounters.FailedConstraintCounter++;
+    Counters.FailedConstraintCounter++;
 
+  incrementCounters(Counters);
   return sqrt(L2norm);
 }
 
@@ -1000,7 +1005,9 @@ void CFitProblem::createParameterSet(const std::string & Name)
 
 bool CFitProblem::calculate()
 {
-  mCounters.Counter++;
+  sCounter Counters;
+
+  Counters.Counter++;
   bool Continue = true;
 
   size_t i, imax = mpExperimentSet->getExperimentCount();
@@ -1090,7 +1097,7 @@ bool CFitProblem::calculate()
 
                     if (!Continue)
                       {
-                        mCounters.FailedCounterException++;
+                        Counters.FailedCounterException++;
                         mCalculateValue = mWorstValue;
                         break;
                       }
@@ -1272,7 +1279,7 @@ bool CFitProblem::calculate()
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();
 
-      mCounters.FailedCounterException++;
+      Counters.FailedCounterException++;
       mCalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
@@ -1282,7 +1289,7 @@ bool CFitProblem::calculate()
 
   catch (...)
     {
-      mCounters.FailedCounterException++;
+      Counters.FailedCounterException++;
       mCalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
@@ -1292,9 +1299,11 @@ bool CFitProblem::calculate()
 
   if (std::isnan(mCalculateValue))
     {
-      mCounters.FailedCounterNaN++;
+      Counters.FailedCounterNaN++;
       mCalculateValue = mWorstValue;
     }
+
+  incrementCounters(Counters);
 
   if (mProcessReport)
     return mProcessReport.progressItem(mhCounter);
@@ -2377,7 +2386,9 @@ const C_FLOAT64 & CFitProblem::getCrossValidationSD() const
 
 bool CFitProblem::calculateCrossValidation()
 {
-  mCounters.Counter++;
+  sCounter Counters;
+  Counters.Counter++;
+
   bool Continue = true;
 
   size_t i, imax = mpCrossValidationSet->getExperimentCount();
@@ -2589,7 +2600,7 @@ bool CFitProblem::calculateCrossValidation()
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();
 
-      mCounters.FailedCounterException++;
+      Counters.FailedCounterException++;
       CalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
@@ -2599,7 +2610,7 @@ bool CFitProblem::calculateCrossValidation()
 
   catch (...)
     {
-      mCounters.FailedCounterException++;
+      Counters.FailedCounterException++;
       CalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
@@ -2609,7 +2620,7 @@ bool CFitProblem::calculateCrossValidation()
 
   if (std::isnan(CalculateValue))
     {
-      mCounters.FailedCounterNaN++;
+      Counters.FailedCounterNaN++;
       CalculateValue = mWorstValue;
     }
 
@@ -2633,6 +2644,7 @@ bool CFitProblem::calculateCrossValidation()
     }
 
   Continue &= (mThresholdCounter < mpCrossValidationSet->getThreshold());
+  incrementCounters(Counters);
 
   return Continue;
 }

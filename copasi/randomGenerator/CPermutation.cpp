@@ -77,11 +77,10 @@ void CPermutation::shuffle(const size_t & swaps)
 
   if (mVector.size() > 1)
     {
-      unsigned C_INT32 max = (unsigned C_INT32)mVector.size() - 1;
+      unsigned C_INT32 max = (unsigned C_INT32) mVector.size() - 1;
       size_t Swaps = std::min(swaps, mVector.size());
 
       // We swap each element once.
-      size_t tmp;
       size_t * pBegin = mVector.array();
       size_t * pIt = pBegin;
       size_t * pEnd = pIt + Swaps;
@@ -92,11 +91,7 @@ void CPermutation::shuffle(const size_t & swaps)
           pTo = pBegin + mpRandom->getRandomU(max);
 
           if (pTo != pIt)
-            {
-              tmp = *pTo;
-              *pTo = *pIt;
-              *pIt = tmp;
-            }
+            std::swap(*pIt, *pTo);
         }
     }
 }
@@ -106,9 +101,7 @@ const size_t & CPermutation::pick()
   if (mpRandom == NULL || mpNext == NULL) return InvalidIndex;
 
   if (mVector.size() > 1)
-    {
-      mpNext = mVector.array() + mpRandom->getRandomU((unsigned C_INT32)mVector.size() - 1);
-    }
+    mpNext = mVector.array() + mpRandom->getRandomU((unsigned C_INT32)mVector.size() - 1);
 
   return *mpNext;
 }
@@ -117,12 +110,8 @@ const size_t & CPermutation::next()
 {
   if (mpRandom == NULL || mpNext == NULL) return InvalidIndex;
 
-  mpNext++;
-
-  if (mpNext >= mpBeyond)
-    {
-      mpNext -= mVector.size();
-    }
+  if (++mpNext >= mpBeyond)
+    mpNext = mVector.array();
 
   return *mpNext;
 }

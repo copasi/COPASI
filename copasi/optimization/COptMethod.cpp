@@ -129,26 +129,15 @@ bool COptMethod::initialize()
     return false;
 
   if (mMathContext.sync())
-    {
-      mProblemContext.setMathContext(mMathContext);
+    mProblemContext.setMathContext(mMathContext);
 
-      if (mProblemContext.size() > 1)
+  if (mProblemContext.size() > 1)
 #pragma omp parallel for
-        for (size_t i = 0; i < mProblemContext.size(); ++i)
-          {
-            mProblemContext.threadData()[i]->initializeSubtaskBeforeOutput();
-            mProblemContext.threadData()[i]->initialize();
-          }
-    }
-  else
-    {
-      mProblemContext.master()->reset();
-
-      if (mProblemContext.size() > 1)
-#pragma omp parallel for
-        for (size_t i = 0; i < mProblemContext.size(); ++i)
-          mProblemContext.threadData()[i]->reset();
-    }
+    for (size_t i = 0; i < mProblemContext.size(); ++i)
+      {
+        mProblemContext.threadData()[i]->initializeSubtaskBeforeOutput();
+        mProblemContext.threadData()[i]->initialize();
+      }
 
   mpParentTask = dynamic_cast< COptTask * >(getObjectParent());
 
@@ -222,7 +211,7 @@ C_FLOAT64 COptMethod::evaluate(const EvaluationPolicyFlag & policy)
 {
   if (!mProceed)
     return std::numeric_limits< C_FLOAT64 >::infinity();
-    
+
   // We do not need to check whether the parametric constraints are fulfilled
   // since the parameters are created within the bounds.
   COptProblem *& pOptProblem = mProblemContext.active();
@@ -273,11 +262,7 @@ bool COptMethod::setSolution(const C_FLOAT64 & value,
       if (!mProblemContext.master()->setSolution(value, variables, algorithmOrder))
         signalStop();
 
-      if (!mProblemContext.singleThreadedExecution())
-        {
-          mProblemContext.master()->incrementCounters(mProblemContext.active()->getCounters());
-          mProblemContext.active()->resetCounters();
-        }
+      aggregateCounters();
 
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
@@ -286,6 +271,19 @@ bool COptMethod::setSolution(const C_FLOAT64 & value,
     }
 
   return solutionUpdated;
+}
+
+void  COptMethod::aggregateCounters()
+{
+  if (mProblemContext.multiThreaded())
+    {
+      COptProblem * pMaster = mProblemContext.master();
+      COptProblem ** ppProblem = mProblemContext.threadData();
+      COptProblem ** ppProblemEnd = ppProblem + mProblemContext.size();
+
+      for (; ppProblem != ppProblemEnd; ++ppProblem)
+        pMaster->aggregateCounters(**ppProblem);
+    }
 }
 
 const bool & COptMethod::proceed() const

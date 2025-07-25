@@ -305,7 +305,12 @@ CIssue CEvaluationTree::parse()
   std::istringstream buffer(mInfix);
   CEvaluationLexer Parser(&buffer);
 
-  if (Parser.yyparse() != 0)
+  int result = 0;
+
+#pragma omp critical (evaluation_tree_parse)
+  result = Parser.yyparse();
+
+  if (result != 0)
     {
       lastIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::ExpressionInvalid);
       mValidity.add(lastIssue);

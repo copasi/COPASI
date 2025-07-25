@@ -69,25 +69,27 @@ COptMethodDE::~COptMethodDE()
 
 bool COptMethodDE::replicate()
 {
-  size_t i, j;
-  size_t a, b, c;
-
   mpPermutation->shuffle();
 
 #pragma omp parallel for schedule(runtime)
-  for (i = mPopulationSize; i < 2 * mPopulationSize; i++)
+  for (size_t i = mPopulationSize; i < 2 * mPopulationSize; i++)
     {
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
       // MUTATION a, b, c in [0, mPopulationSize - 1]
-      a = mpPermutation->pick();
-      // b is guaranteed to be different from a
-      b = mpPermutation->next();
-      // c is guaranteed to be different from a and b
-      c = mpPermutation->next();
+      size_t a, b, c;
+
+# pragma omp critical (opt_method_de_permutation)
+      {
+        a = mpPermutation->pick();
+        // b is guaranteed to be different from a
+        b = mpPermutation->next();
+        // c is guaranteed to be different from a and b
+        c = mpPermutation->next();
+      }
 
       // MUTATE CURRENT GENERATION
-      for (j = 0; j < mVariableSize; j++)
+      for (size_t j = 0; j < mVariableSize; j++)
         {
           COptItem & OptItem = *OptItemList[j];
           C_FLOAT64 & mut = (*mIndividuals[i])[j];
@@ -101,12 +103,12 @@ bool COptMethodDE::replicate()
 
   //CROSSOVER MUTATED GENERATION WITH THE CURRENT ONE
 #pragma omp parallel for schedule(runtime)
-  for (i = 2 * mPopulationSize; i < 3 * mPopulationSize; i++)
+  for (size_t i = 2 * mPopulationSize; i < 3 * mPopulationSize; ++i)
     {
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
       CRandom * pRandom = mRandomContext.active();
 
-      for (j = 0; j < mVariableSize; j++)
+      for (size_t j = 0; j < mVariableSize; ++j)
         {
           COptItem & OptItem = *OptItemList[j];
           C_FLOAT64 & mut = (*mIndividuals[i])[j];
@@ -114,10 +116,7 @@ bool COptMethodDE::replicate()
           size_t r = pRandom->getRandomU(mPopulationSize - 1);
 
           if (r < 0.6 * mPopulationSize)
-            {
-              mut = (*mIndividuals[i - mPopulationSize])[j] *
-                    pRandom->getRandomNormal(1, mMutationVariance);
-            }
+            mut = (*mIndividuals[i - mPopulationSize])[j] * pRandom->getRandomNormal(1, mMutationVariance);
           else
             mut = (*mIndividuals[i - 2 * mPopulationSize])[j];
 
@@ -128,7 +127,7 @@ bool COptMethodDE::replicate()
     }
 
   //SELECT NEXT GENERATION
-  for (i = 2 * mPopulationSize; i < 3 * mPopulationSize; i++)
+  for (size_t i = 2 * mPopulationSize; i < 3 * mPopulationSize; i++)
     {
       if (mValues[i - mPopulationSize] > mValues[i]
           && mValues[i - 2 * mPopulationSize] > mValues[i])

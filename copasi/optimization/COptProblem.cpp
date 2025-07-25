@@ -778,7 +778,9 @@ bool COptProblem::adjustStartValuesForIntervals()
  */
 bool COptProblem::calculate()
 {
-  mCounters.Counter++;
+  sCounter Counters;
+
+  Counters.Counter++;
   bool success = false;
   COutputHandler * pOutputHandler = NULL;
 
@@ -830,18 +832,20 @@ bool COptProblem::calculate()
 
   if (!success)
     {
-      mCounters.FailedCounterException++;
+      Counters.FailedCounterException++;
       mCalculateValue = std::numeric_limits< C_FLOAT64 >::infinity();
     }
 
   if (std::isnan(mCalculateValue))
     {
-      mCounters.FailedCounterNaN++;
+      Counters.FailedCounterNaN++;
       mCalculateValue = std::numeric_limits< C_FLOAT64 >::infinity();
     }
 
   if (mProcessReport)
     return mProcessReport.progressItem(mhCounter);
+
+  incrementCounters(Counters);
 
   return true;
 }
@@ -1064,7 +1068,11 @@ bool COptProblem::setObjectiveFunction(const std::string & infix)
   if (mpObjectiveExpression == NULL)
     mpObjectiveExpression = new CExpression("Expression", this);
 
-  return mpObjectiveExpression->setInfix(infix);
+  bool success = true;
+
+  success = mpObjectiveExpression->setInfix(infix);
+
+  return success;
 }
 
 const std::string COptProblem::getObjectiveFunction()
@@ -1183,18 +1191,30 @@ const unsigned C_INT32 & COptProblem::getConstraintEvaluations() const
   return mCounters.ConstraintCounter;
 }
 
-const COptProblem::sCounter & COptProblem::getCounters() const
+void COptProblem::aggregateCounters(COptProblem & OptProblem)
 {
-  return mCounters;
+#pragma omp critical (opt_problem_counters)
+  {
+    mCounters.Counter += OptProblem.mCounters.Counter;
+    mCounters.FailedCounterException += OptProblem.mCounters.FailedCounterException;
+    mCounters.FailedCounterNaN += OptProblem.mCounters.FailedCounterNaN;
+    mCounters.ConstraintCounter += OptProblem.mCounters.ConstraintCounter;
+    mCounters.FailedConstraintCounter += OptProblem.mCounters.FailedConstraintCounter;
+
+    OptProblem.mCounters = sCounter();
+  }
 }
 
 void COptProblem::incrementCounters(const COptProblem::sCounter & increment)
 {
-  mCounters.Counter += increment.Counter;
-  mCounters.FailedCounterException += increment.FailedCounterException;
-  mCounters.FailedCounterNaN += increment.FailedCounterNaN;
-  mCounters.ConstraintCounter += increment.ConstraintCounter;
-  mCounters.FailedConstraintCounter += increment.FailedConstraintCounter;
+#pragma omp critical (opt_problem_counters)
+  {
+    mCounters.Counter += increment.Counter;
+    mCounters.FailedCounterException += increment.FailedCounterException;
+    mCounters.FailedCounterNaN += increment.FailedCounterNaN;
+    mCounters.ConstraintCounter += increment.ConstraintCounter;
+    mCounters.FailedConstraintCounter += increment.FailedConstraintCounter;
+  }
 
   if (mProcessReport)
     mProcessReport.progressItem(mhCounter);
@@ -1202,6 +1222,7 @@ void COptProblem::incrementCounters(const COptProblem::sCounter & increment)
 
 void COptProblem::resetCounters()
 {
+#pragma omp critical (opt_problem_counters)
   mCounters = sCounter();
 }
 

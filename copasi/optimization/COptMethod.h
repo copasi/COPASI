@@ -203,6 +203,8 @@ protected:
                            const CVector< C_FLOAT64 > & variables,
                            const bool & algorithmOrder) final;
 
+  void aggregateCounters();
+
   const bool & proceed() const;
 
   void signalStop();

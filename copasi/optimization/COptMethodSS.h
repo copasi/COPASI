@@ -277,11 +277,7 @@ private:
    */
   COptMethod * mpLocalMinimizer;
 
-  /**
-   * The context for the local method
-   */
-
-   CMethodContext< COptMethod > mLocalMinimizerContext;
+  COptProblem * mpLocalProblem;
 };
 
 #endif  // COPASI_COptMethodSS

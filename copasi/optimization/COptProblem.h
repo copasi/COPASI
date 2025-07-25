@@ -453,9 +453,9 @@ public:
 
   /**
    * Retrieve the internal counter
-   * @return const sCounter & counter
+   * @param COptProblem & OptProblem
    */
-  const sCounter & getCounters() const;
+  void aggregateCounters(COptProblem & OptProblem);
 
   /**
    * Resets the internal counter
