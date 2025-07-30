@@ -46,6 +46,9 @@
 # define YYDEBUG 0
 #endif // COPASI_DEBUG
 
+#define yychar CEvaluationParserchar
+#define yynerrs CEvaluationParsernerrs
+
 /**
  * This is a base class for the CEvaluationLexer adding member
  * attributes to enhance the internal functionality.
@@ -96,6 +99,8 @@ protected:
   CEvaluationNode::ValueType mValueType;
   std::vector< CEvaluationNode * > * mpNodeList;
   size_t mPosition;
+  int yychar;
+  int yynerrs;
 
 private:
   void correctErrorPosition()

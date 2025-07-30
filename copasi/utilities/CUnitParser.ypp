@@ -24,6 +24,8 @@
 #define yyparse CUnitParserBase::yyparse
 %}
 
+%no-lines
+
 /* yacc Declarations */
 %token SCALE
 %token KIND

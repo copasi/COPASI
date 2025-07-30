@@ -4,6 +4,7 @@
 %option prefix="CChemEqParser"
 %option never-interactive
 %option c++
+%option noline
 
 %{
 #include <vector>

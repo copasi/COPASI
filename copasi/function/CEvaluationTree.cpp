@@ -305,10 +305,7 @@ CIssue CEvaluationTree::parse()
   std::istringstream buffer(mInfix);
   CEvaluationLexer Parser(&buffer);
 
-  int result = 0;
-
-#pragma omp critical (evaluation_tree_parse)
-  result = Parser.yyparse();
+  int result = Parser.yyparse();
 
   if (result != 0)
     {
