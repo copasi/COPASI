@@ -538,6 +538,8 @@ bool COptMethodGASR::optimise()
           && !mProcessReport.progressItem(mhGenerations))
         signalStop();
 
+      aggregateCounters();
+
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
     }

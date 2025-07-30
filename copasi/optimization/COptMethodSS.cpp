@@ -1076,6 +1076,8 @@ bool COptMethodSS::optimise()
       if (mProcessReport)
         Running &= mProcessReport.progressItem(mhGenerations);
 
+      aggregateCounters();
+
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
     }

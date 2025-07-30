@@ -69,10 +69,7 @@ CFitTask::CFitTask(const CDataContainer * pParent,
   COptTask(pParent, type)
 {
   if (getType() == CTaskEnum::Task::parameterFitting)
-    {
-      mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::EvolutionaryProgram, this);
-      static_cast< COptMethod * >(mpMethod)->setProblem(static_cast< COptProblem * >(mpProblem));
-    }
+    mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::EvolutionaryProgram, this);
 }
 
 CFitTask::CFitTask(const CFitTask & src,

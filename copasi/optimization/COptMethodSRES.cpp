@@ -133,7 +133,7 @@ bool COptMethodSRES::mutate()
 {
   // Mutate each new individual
 #pragma omp parallel for schedule(runtime)
-  for (size_t i = mPopulationSize; i < 2 * mPopulationSize; ++i)
+  for (size_t i = mPopulationSize; i < childrate * mPopulationSize; ++i)
     {
       CRandom * pRandom = mRandomContext.active();
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
@@ -309,10 +309,11 @@ bool COptMethodSRES::initialize()
     mVariance[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   mMaxVariance.resize(mVariableSize);
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   for (i = 0; i < mVariableSize; i++)
     {
-      const COptItem & OptItem = *mProblemContext.active()->getOptItemList(true)[i];
+      const COptItem & OptItem = *OptItemList[i];
 
       try
         {
@@ -371,8 +372,9 @@ C_FLOAT64 COptMethodSRES::phi(size_t indivNum)
   C_FLOAT64 phiVal = 0.0;
   C_FLOAT64 phiCalc;
 
-  std::vector< COptItem * >::const_iterator it = mProblemContext.active()->getOptItemList(true).begin();
-  std::vector< COptItem * >::const_iterator end = mProblemContext.active()->getOptItemList(true).end();
+  COptProblem * pProblem = mProblemContext.active();
+  std::vector< COptItem * >::const_iterator it = pProblem->getOptItemList(true).begin();
+  std::vector< COptItem * >::const_iterator end = pProblem->getOptItemList(true).end();
   C_FLOAT64 * pValue = mIndividuals[indivNum]->array();
 
   for (; it != end; ++it, pValue++)
@@ -391,8 +393,8 @@ C_FLOAT64 COptMethodSRES::phi(size_t indivNum)
         }
     }
 
-  it = mProblemContext.active()->getConstraintList().begin();
-  end = mProblemContext.active()->getConstraintList().end();
+  it = pProblem->getConstraintList().begin();
+  end = pProblem->getConstraintList().end();
 
   for (; it != end; ++it)
     {
@@ -551,6 +553,8 @@ bool COptMethodSRES::optimise()
       if (mProcessReport
           && !mProcessReport.progressItem(mhGenerations))
         signalStop();
+
+      aggregateCounters();
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);

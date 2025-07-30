@@ -115,3 +115,8 @@ const size_t & CPermutation::next()
 
   return *mpNext;
 }
+
+const CVector< size_t > & CPermutation::getVector() const
+{
+  return mVector;
+}

@@ -412,7 +412,7 @@ bool COptProblem::initialize()
   CObjectInterface::ContainerList ContainerList;
   ContainerList.push_back(mpContainer);
 
-  COptTask * pTask = dynamic_cast< COptTask * >(getObjectParent());
+  COptTask * pTask = dynamic_cast< COptTask * >(getObjectAncestor("Task"));
 
   if (pTask)
     {
@@ -435,7 +435,8 @@ bool COptProblem::initialize()
   mSolutionVariables = std::numeric_limits<C_FLOAT64>::quiet_NaN();
   mOriginalVariables = std::numeric_limits<C_FLOAT64>::quiet_NaN();
 
-  if (mpOptItems->size() == 0 && pTask->getMethod()->getSubType() != CTaskEnum::Method::Statistics)
+  if (mpOptItems->size() == 0
+      && pTask->getMethod()->getSubType() != CTaskEnum::Method::Statistics)
     {
       CCopasiMessage(CCopasiMessage::ERROR, MCOptimization + 6);
       return false;

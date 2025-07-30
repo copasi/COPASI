@@ -48,7 +48,6 @@ COptMethodGA::COptMethodGA(const CDataContainer * pParent,
                            const CTaskEnum::Task & taskType,
                            const bool & parallel)
   : COptPopulationMethod(pParent, methodType, taskType, parallel)
-  , mCrossOverFalse(0)
   , mCrossOver(0)
   , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max())
   , mpPermutation(NULL)
@@ -73,7 +72,6 @@ COptMethodGA::COptMethodGA(const COptMethodGA & src,
                            const CDataContainer * pParent,
                            const bool & parallel)
   : COptPopulationMethod(src, pParent, parallel)
-  , mCrossOverFalse(0)
   , mCrossOver(0)
   , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max())
   , mpPermutation(NULL)
@@ -128,7 +126,7 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
   size_t nCross = 0;
 
   CRandom *& pRandom = mRandomContext.active();
-  mCrossOver = mCrossOverFalse;
+  mCrossOver = false;
 
   if (mVariableSize > 1)
     nCross = pRandom->getRandomU((unsigned C_INT32)(mVariableSize / 2));
@@ -164,16 +162,19 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
 
 bool COptMethodGA::replicate()
 {
-  size_t i;
   // generate a random order for the parents
   mpPermutation->shuffle();
+  const CVector< size_t > & Permutation = mpPermutation->getVector();
 
   // reproduce in consecutive pairs
-  for (i = 0; i < mPopulationSize / 2; i++)
-    crossover(*mIndividuals[mpPermutation->next()],
-              *mIndividuals[mpPermutation->next()],
-              *mIndividuals[mPopulationSize + i * 2],
-              *mIndividuals[mPopulationSize + i * 2 + 1]);
+#pragma omp parallel for schedule(runtime)
+  for (size_t i = 0; i < mPopulationSize / 2; i++)
+    {
+      crossover(*mIndividuals[Permutation[i * 2]],
+                *mIndividuals[Permutation[i * 2 + 1]],
+                *mIndividuals[mPopulationSize + i * 2],
+                *mIndividuals[mPopulationSize + i * 2 + 1]);
+    }
 
   // check if there is one left over and just copy it
   if (mPopulationSize % 2 > 0)
@@ -182,7 +183,7 @@ bool COptMethodGA::replicate()
   // mutate the offspring
 
 #pragma omp parallel for schedule(runtime)
-  for (i = mPopulationSize; i < 2 * mPopulationSize; i++)
+  for (size_t i = mPopulationSize; i < 2 * mPopulationSize; i++)
     if (proceed())
       {
         mutate(i);
@@ -195,7 +196,7 @@ bool COptMethodGA::replicate()
 // select mPopulationSize individuals
 bool COptMethodGA::select()
 {
-  size_t i, j, nopp, opp;
+  size_t nopp;
   size_t TotalPopulation = 2 * mPopulationSize;
 
   // tournament competition
@@ -203,24 +204,28 @@ bool COptMethodGA::select()
 
   // compete with ~ 20% of the TotalPopulation
   nopp = std::max<size_t>(1, mPopulationSize / 5);
-  CRandom * pRandom = mRandomContext.master();
 
   // parents and offspring are all in competition
-  for (i = 0; i < TotalPopulation; i++)
-    for (j = 0; j < nopp; j++)
-      {
-        // get random opponent
-        do
-          {
-            opp = pRandom->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
-          }
-        while (i == opp);
+#pragma omp parallel for schedule(runtime)
+  for (size_t i = 0; i < TotalPopulation; ++i)
+    {
+      CRandom * pRandom = mRandomContext.active();
+      size_t opp;
 
-        if (mValues[i] < mValues[opp])
-          mLosses[opp]++;
-        else
-          mLosses[i]++;
-      }
+      for (size_t j = 0; j < nopp; ++j)
+        {
+          // get random opponent
+          do
+            {
+              opp = pRandom->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
+          } while (i == opp);
+
+          size_t Lost = (mValues[i] < mValues[opp]) ? opp : i;
+
+#pragma omp critical
+          mLosses[Lost]++;
+        }
+    }
 
   // selection of top mPopulationSize winners
   partialSortWithPivot(mLosses.array(),
@@ -334,8 +339,6 @@ bool COptMethodGA::initialize()
   for (i = 0; i < 2 * mPopulationSize; i++)
     mIndividuals[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
-  mCrossOverFalse.resize(mVariableSize);
-  mCrossOverFalse = false;
   mCrossOver.resize(mVariableSize);
 
   mValues.resize(2 * mPopulationSize);
@@ -499,6 +502,8 @@ bool COptMethodGA::optimise()
       if (mProcessReport
           && !mProcessReport.progressItem(mhGenerations))
         signalStop();
+
+      aggregateCounters();
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);

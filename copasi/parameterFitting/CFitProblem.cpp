@@ -175,8 +175,8 @@ CFitProblem::CFitProblem(const CFitProblem & src,
   , mJacTimeSens()
   , mpParmTimeSensCN(NULL)
 {
-  initObjects();
   initializeParameter();
+  initObjects();
 }
 
 // Destructor

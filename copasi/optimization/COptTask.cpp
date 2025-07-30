@@ -71,10 +71,7 @@ COptTask::COptTask(const CDataContainer * pParent,
   CCopasiTask(pParent, type)
 {
   if (getType() == CTaskEnum::Task::optimization)
-    {
-      mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::RandomSearch, this);
-      static_cast< COptMethod * >(mpMethod)->setProblem(static_cast< COptProblem * >(mpProblem));
-    }
+    mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::RandomSearch, this);
 }
 
 COptTask::COptTask(const COptTask & src,

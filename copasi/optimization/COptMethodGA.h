@@ -165,11 +165,6 @@ private:
 private:
 
   /**
-   * Vector used to initialize the crossover point to false
-   */
-  CVector< bool > mCrossOverFalse;
-
-  /**
    * Vector of crossover points.
    */
   CVector< bool > mCrossOver;
