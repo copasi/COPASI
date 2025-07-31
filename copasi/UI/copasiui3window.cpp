@@ -421,7 +421,7 @@ CopasiUI3Window::CopasiUI3Window():
   mpListView->mpTreeView->setFocus();
 
   QTimer::singleShot(10, this, SLOT(slotAutoCheckForUpdates()));
-  connect(this, SIGNAL(signalDefferedLoadFile(QString)), this, SLOT(slotDefferedLoadFile(QString)));
+  connect(this, SIGNAL(signalDeferredLoadFile(QString)), this, SLOT(slotDeferredLoadFile(QString)));
 
   mpExternaltools->init(mpTools, mpaShowExternalToolDialog);
 }
@@ -910,7 +910,7 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
       mpDataModelGUI->commit();
 
       setCursor(Qt::WaitCursor);
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotFileSaveFinished(const std::string &, bool)));
       mpDataModelGUI->saveModel(TO_UTF8(tmp), true);
 #ifdef COPASI_Provenance
       CProvenanceXMLWriter *ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mpVersionHierarchy->getVersionsPathToCurrentModel());
@@ -921,9 +921,12 @@ void CopasiUI3Window::slotFileSaveAs(QString str)
     }
 }
 
-void CopasiUI3Window::slotFileSaveFinished(bool success)
+void CopasiUI3Window::slotFileSaveFinished(const std::string & thread, bool success)
 {
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
+  if (thread != "saveModel")
+    return;
+
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotFileSaveFinished(const std::string &, bool)));
 
   if (success)
     {
@@ -972,7 +975,7 @@ void CopasiUI3Window::slotFileSaveFinished(bool success)
       mNewFile.clear();
 
       if (mpDeferredLoadFile != NULL)
-        emit signalDefferedLoadFile(FileToLoad);
+        emit signalDeferredLoadFile(FileToLoad);
     }
 }
 
@@ -1089,7 +1092,7 @@ void CopasiUI3Window::openInitialDocument(const QString &file)
 #endif // COPASI_SBW_INTEGRATION
 }
 
-void CopasiUI3Window::slotDefferedLoadFile(QString str)
+void CopasiUI3Window::slotDeferredLoadFile(QString str)
 {
   if (str.isEmpty())
     mpDeferredLoadFile = NULL;
@@ -1206,19 +1209,22 @@ void CopasiUI3Window::slotFileOpen(QString file)
       this->setCursor(Qt::WaitCursor);
       CCopasiMessage::clearDeque();
       mNewFile = newFile;
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotFileOpenFinished(const std::string &, bool)));
       mpDataModelGUI->loadModel(TO_UTF8(newFile));
     }
 }
 
-void CopasiUI3Window::slotFileOpenFinished(bool success)
+void CopasiUI3Window::slotFileOpenFinished(const std::string & thread, bool success)
 {
+  if (thread != "loadModel")
+    return;
+
 #ifdef COPASI_Provenance
   //mProvenanceParentOfCurrentModel = mpVersionHierarchy->getParentOfCurrentModel();
   mProvenanceOrigionFileType = QString("Opened");
   mProvenanceOrigionTime = QDateTime::currentDateTime().toString();
 #endif
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFinished(bool)));
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotFileOpenFinished(const std::string &, bool)));
   unsetCursor();
   mCommitRequired = true;
   CCopasiMessage msg = CCopasiMessage::getLastMessage();
@@ -1366,14 +1372,17 @@ void CopasiUI3Window::slotAddFileOpen(QString file)
       this->setCursor(Qt::WaitCursor);
       CCopasiMessage::clearDeque();
       mNewFile = newFile;
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotAddFileOpenFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotAddFileOpenFinished(const std::string &, bool)));
       mpDataModelGUI->addModel(TO_UTF8(newFile));
     }
 }
 
-void CopasiUI3Window::slotAddFileOpenFinished(bool success)
+void CopasiUI3Window::slotAddFileOpenFinished(const std::string & thread, bool success)
 {
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotAddFileOpenFinished(bool)));
+  if (thread != "addModel")
+    return;
+
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotAddFileOpenFinished(const std::string &, bool)));
   unsetCursor();
   mCommitRequired = true;
 
@@ -1470,7 +1479,7 @@ void CopasiUI3Window::slotFileSave()
       mpDataModelGUI->commit();
 
       setCursor(Qt::WaitCursor);
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileSaveFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotFileSaveFinished(const std::string &, bool)));
       mpDataModelGUI->saveModel(FileName, true);
 #ifdef COPASI_Provenance
       //update Current Session Provenance and Origion of Provenance
@@ -1498,12 +1507,12 @@ void CopasiUI3Window::slotQuit()
   mQuitApplication = true;
   mpDataModelGUI->commit();
   assert(CRootContainer::getDatamodelList()->size() > 0);
+  connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotQuitFinished(const std::string &, bool)));
 
   if (mpDataModelGUI &&
       (mpDataModel->isChanged() ||
        this->mpSliders->isChanged()))
     {
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotQuitFinished(bool)));
 
       switch (CQMessageBox::question(this, "COPASI",
                                      "The document contains unsaved changes\n"
@@ -1512,22 +1521,22 @@ void CopasiUI3Window::slotQuit()
                                      QMessageBox::Save))
         {
           case QMessageBox::Save:
-            slotFileSave();
+            slotFileSave(); // saveModel
             break;
 
           case QMessageBox::Discard:
-            slotQuitFinished(true);
+            slotQuitFinished("saveModel", true);
             break;
 
           case QMessageBox::Cancel:
           default:
-            slotQuitFinished(false);
+            slotQuitFinished("saveModel", false);
             break;
         }
     }
   else
     {
-      slotQuitFinished(true);
+      slotQuitFinished("saveModel", true);
     }
 
 #ifdef COPASI_Provenance
@@ -1540,8 +1549,11 @@ void CopasiUI3Window::slotQuit()
   //#endif
 }
 
-void CopasiUI3Window::slotQuitFinished(bool success)
+void CopasiUI3Window::slotQuitFinished(const std::string & thread, bool success)
 {
+  if (thread != "saveModel")
+    return;
+
   disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotQuitFinished(bool)));
   mQuitApplication &= success;
 
@@ -1700,19 +1712,22 @@ void CopasiUI3Window::importSBMLFromString(const std::string &sbmlDocumentText)
                              mpDataModel->getModel()->getCN());
       mpListView->switchToOtherWidget(ListViews::WidgetType::COPASI, CRegisteredCommonName());
       setCursor(Qt::WaitCursor);
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFromStringFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotImportSBMLFromStringFinished(const std::string &, bool)));
       mpDataModelGUI->importSBMLFromString(sbmlDocumentText);
     }
 }
 
-void CopasiUI3Window::slotImportSBMLFromStringFinished(bool success)
+void CopasiUI3Window::slotImportSBMLFromStringFinished(const std::string & thread, bool success)
 {
+  if (thread != "importSBMLFromString")
+    return;
+
 #ifdef COPASI_Provenance
   //mProvenanceParentOfCurrentModel = QString("");
   mProvenanceOrigionFileType = QString("Imported");
   mProvenanceOrigionTime = QDateTime::currentDateTime().toString();
 #endif
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFromStringFinished(bool)));
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotImportSBMLFromStringFinished(const std::string &, bool)));
   unsetCursor();
   mCommitRequired = true;
 
@@ -1812,20 +1827,23 @@ void CopasiUI3Window::slotImportSBML(QString file)
       if (this->mpSliders) this->mpSliders->reset();
 
       setCursor(Qt::WaitCursor);
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotImportSBMLFinished(const std::string &, bool)));
       mNewFile = SBMLFile;
       mpDataModelGUI->importSBML(TO_UTF8(SBMLFile));
     }
 }
 
-void CopasiUI3Window::slotImportSBMLFinished(bool success)
+void CopasiUI3Window::slotImportSBMLFinished(const std::string & thread, bool success)
 {
+  if (thread != "importSBML")
+    return;
+
 #ifdef COPASI_Provenance
   //mProvenanceParentOfCurrentModel = QString("");
   mProvenanceOrigionFileType = QString("Imported");
   mProvenanceOrigionTime = QDateTime::currentDateTime().toString();
 #endif
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSBMLFinished(bool)));
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotImportSBMLFinished(const std::string &, bool)));
   unsetCursor();
   mCommitRequired = true;
 
@@ -1898,14 +1916,17 @@ void CopasiUI3Window::slotExportSBML()
   if (mpDataModelGUI && !tmp.isNull())
     {
       setCursor(Qt::WaitCursor);
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSBMLFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotExportSBMLFinished(const std::string &, bool)));
       mpDataModelGUI->exportSBML(TO_UTF8(tmp), true, sbmlLevel, sbmlVersion, exportIncomplete);
     }
 }
 
-void CopasiUI3Window::slotExportSBMLFinished(bool /* success */)
+void CopasiUI3Window::slotExportSBMLFinished(const std::string & thread, bool /* success */)
 {
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSBMLFinished(bool)));
+  if (thread != "exportSBML")
+    return;
+
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotExportSBMLFinished(const std::string &, bool)));
   unsetCursor();
   checkPendingMessages();
   refreshRecentSBMLFileMenu();
@@ -1941,15 +1962,18 @@ void CopasiUI3Window::slotExportMathModel()
   if (mpDataModelGUI && !tmp.isNull())
     {
       setCursor(Qt::WaitCursor);
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportMathModelFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotExportMathModelFinished(const std::string &, bool)));
       mpDataModelGUI->exportMathModel(TO_UTF8(tmp), TO_UTF8(*userFilter), true);
     }
 }
 
-void CopasiUI3Window::slotExportMathModelFinished(bool success)
+void CopasiUI3Window::slotExportMathModelFinished(const std::string & thread, bool success)
 {
+  if (thread != "exportMathModel")
+    return;
+
   unsetCursor();
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportMathModelFinished(bool)));
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotExportMathModelFinished(const std::string &, bool)));
 
   if (!success &&
       CCopasiMessage::peekLastMessage().getNumber() != MCCopasiMessage + 1)
@@ -2422,15 +2446,18 @@ void CopasiUI3Window::exportSBMLToString(std::string &SBML)
   if (mpDataModelGUI)
     {
       setCursor(Qt::WaitCursor);
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSBMLToStringFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotExportSBMLToStringFinished(const std::string &, bool)));
       mpDataModelGUI->exportSBMLToString(SBML);
     }
 }
 
-void CopasiUI3Window::slotExportSBMLToStringFinished(bool success)
+void CopasiUI3Window::slotExportSBMLToStringFinished(const std::string & thread, bool success)
 {
+  if (thread != "exportSBMLToString")
+    return;
+
   unsetCursor();
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSBMLToStringFinished(bool)));
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotExportSBMLToStringFinished(const std::string &, bool)));
 
   if (!success)
     {
@@ -2641,9 +2668,12 @@ void CopasiUI3Window::slotCheckModel()
   checkModelWindow->show();
 }
 
-void CopasiUI3Window::slotUpdateMIRIAMFinished(bool success)
+void CopasiUI3Window::slotUpdateMIRIAMFinished(const std::string & thread, bool success)
 {
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotUpdateMIRIAMFinished(bool)));
+  if (thread != "updateMIRIAM")
+    return;
+
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotUpdateMIRIAMFinished(const std::string &, bool)));
   QCursor oldCursor = cursor();
   setCursor(Qt::WaitCursor);
 
@@ -2677,7 +2707,7 @@ void CopasiUI3Window::slotUpdateMIRIAM()
 {
   bool success = true;
   CCopasiMessage::clearDeque();
-  connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotUpdateMIRIAMFinished(bool)));
+  connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotUpdateMIRIAMFinished(const std::string &, bool)));
 
   try
     {
@@ -3283,56 +3313,18 @@ void CopasiUI3Window::slotFileExamplesSEDMLFiles(QString file)
   CopasiFileDialog::openExampleDir(this); //Sets CopasiFileDialog::LastDir
   slotImportSEDML(file);
 }
-void CopasiUI3Window::slotImportSEDMLFromStringFinished(bool success)
+
+void CopasiUI3Window::slotImportSEDMLFinished(const std::string & thread, bool success)
 {
+  if (thread != "importSEDML")
+    return;
+
 #ifdef COPASI_Provenance
   //mProvenanceParentOfCurrentModel = QString("");
   mProvenanceOrigionFileType = QString("Imported");
   mProvenanceOrigionTime = QDateTime::currentDateTime().toString();
 #endif
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFromStringFinished(bool)));
-  unsetCursor();
-  mCommitRequired = true;
-
-  if (!success)
-    {
-      QString Message = "Error while importing SED-ML model!\n\n";
-      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
-      CQMessageBox::critical(this, QString("Import Error"), Message,
-                             QMessageBox::Ok, QMessageBox::Ok);
-      CCopasiMessage::clearDeque();
-      mpDataModelGUI->createModel();
-    }
-
-  /* still check for warnings.
-   * Maybe events or rules were ignored while reading
-   * the file.
-   */
-  if (success)
-    {
-      this->checkPendingMessages();
-    }
-
-  mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD,
-                         mpDataModel->getModel()->getCN());
-  //if (!bobject_browser_open)
-  //       mpFileMenu->setItemEnabled(nsaveas_menu_id, true);
-  //       msave_button->setEnabled(true);
-  //       mpFileMenu->setItemEnabled(nsave_menu_id, true);
-  mpListView->switchToOtherWidget(ListViews::WidgetType::Model, mpDataModel->getModel()->getCN(), 0);
-
-  updateTitle();
-  mSaveAsRequired = true;
-}
-
-void CopasiUI3Window::slotImportSEDMLFinished(bool success)
-{
-#ifdef COPASI_Provenance
-  //mProvenanceParentOfCurrentModel = QString("");
-  mProvenanceOrigionFileType = QString("Imported");
-  mProvenanceOrigionTime = QDateTime::currentDateTime().toString();
-#endif
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFinished(bool)));
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotImportSEDMLFinished(const std::string &, bool)));
   unsetCursor();
   mCommitRequired = true;
 
@@ -3434,7 +3426,7 @@ void CopasiUI3Window::slotImportSEDML(QString file)
       if (this->mpSliders) this->mpSliders->reset();
 
       setCursor(Qt::WaitCursor);
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportSEDMLFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotImportSEDMLFinished(const std::string &, bool)));
       mNewFile = SEDMLFile;
       mpDataModelGUI->importSEDML(TO_UTF8(SEDMLFile), &options);
     }
@@ -3522,15 +3514,18 @@ void CopasiUI3Window::exportSEDMLToString(std::string &SEDML)
   if (mpDataModelGUI)
     {
       setCursor(Qt::WaitCursor);
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSEDMLToStringFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotExportSEDMLToStringFinished(const std::string &, bool)));
       mpDataModelGUI->exportSEDMLToString(SEDML);
     }
 }
 
-void CopasiUI3Window::slotExportSEDMLToStringFinished(bool success)
+void CopasiUI3Window::slotExportSEDMLToStringFinished(const std::string & thread, bool success)
 {
+  if (thread != "exportSEDMLToString")
+    return;
+
   unsetCursor();
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSEDMLToStringFinished(bool)));
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotExportSEDMLToStringFinished(const std::string &, bool)));
 
   if (!success)
     {
@@ -3542,9 +3537,12 @@ void CopasiUI3Window::slotExportSEDMLToStringFinished(bool success)
     }
 }
 
-void CopasiUI3Window::slotExportSEDMLFinished(bool /* success */)
+void CopasiUI3Window::slotExportSEDMLFinished(const std::string & thread, bool /* success */)
 {
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSEDMLFinished(bool)));
+  if (thread != "exportSEDML")
+    return;
+
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotExportSEDMLFinished(const std::string &, bool)));
   unsetCursor();
   checkPendingMessages();
   refreshRecentSEDMLFileMenu();
@@ -3590,7 +3588,7 @@ void CopasiUI3Window::slotExportSEDML()
   if (mpDataModelGUI && !tmp.isNull())
     {
       setCursor(Qt::WaitCursor);
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportSEDMLFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotExportSEDMLFinished(const std::string &, bool)));
       mpDataModelGUI->exportSEDML(TO_UTF8(tmp), true, sedmlLevel, sedmlVersion, exportIncomplete);
     }
 }
@@ -3674,19 +3672,22 @@ void CopasiUI3Window::slotImportCombine(QString file)
       if (this->mpSliders) this->mpSliders->reset();
 
       setCursor(Qt::WaitCursor);
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportCombineFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotImportCombineFinished(const std::string &, bool)));
       mNewFile = combineArchiveFile;
       mpDataModelGUI->openCombineArchive(TO_UTF8(combineArchiveFile), &options);
     }
 }
-void CopasiUI3Window::slotImportCombineFinished(bool success)
+void CopasiUI3Window::slotImportCombineFinished(const std::string & thread, bool success)
 {
+  if (thread != "openCombineArchive")
+    return;
+
 #ifdef COPASI_Provenance
   //mProvenanceParentOfCurrentModel = QString("");
   mProvenanceOrigionFileType = QString("Imported");
   mProvenanceOrigionTime = QDateTime::currentDateTime().toString();
 #endif
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotImportCombineFinished(bool)));
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotImportCombineFinished(const std::string &, bool)));
   unsetCursor();
   mCommitRequired = true;
 
@@ -3750,7 +3751,7 @@ void CopasiUI3Window::slotExportShiny(QString str)
   if (mpDataModelGUI && !tmp.isNull())
     {
       setCursor(Qt::WaitCursor);
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportCombineFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotExportShinyFinished(const std::string &, bool)));
       mpDataModelGUI->exportShinyArchive(TO_UTF8(tmp), true);
 #ifdef COPASI_Provenance
       //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel(), mpVersionHierarchy->getVersionsPathToCurrentModel());
@@ -3760,6 +3761,16 @@ void CopasiUI3Window::slotExportShiny(QString str)
       ProvenanceXMLWriter->updateOrigionOfProvenance(mProvenanceOfOrigionOfFile);
 #endif
     }
+}
+
+void CopasiUI3Window::slotExportShinyFinished(const std::string & thread, bool success)
+{
+  if (thread != "exportShinyArchive")
+    return;
+
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotExportShinyFinished(const std::string &, bool)));
+  unsetCursor();
+  checkPendingMessages();
 }
 
 void CopasiUI3Window::slotExportCombine(QString str)
@@ -3795,7 +3806,7 @@ void CopasiUI3Window::slotExportCombine(QString str)
   if (mpDataModelGUI && !tmp.isNull())
     {
       setCursor(Qt::WaitCursor);
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportCombineFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotExportCombineFinished(const std::string &, bool)));
       mpDataModelGUI->exportCombineArchive(TO_UTF8(tmp), true);
 #ifdef COPASI_Provenance
       //CProvenanceXMLWriter* ProvenanceXMLWriter = new CProvenanceXMLWriter(this, mpUndoStack, FROM_UTF8(CRootContainer::getConfiguration()->getWorkingDirectory()), mProvenanceOrigionFileType, mProvenanceOrigionTime, mProvenanceParentOfCurrentModel, mpVersionHierarchy->getParentOfCurrentModel(), mpVersionHierarchy->getVersionsPathToCurrentModel());
@@ -3806,9 +3817,13 @@ void CopasiUI3Window::slotExportCombine(QString str)
 #endif
     }
 }
-void CopasiUI3Window::slotExportCombineFinished(bool success)
+
+void CopasiUI3Window::slotExportCombineFinished(const std::string & thread, bool success)
 {
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotExportCombineFinished(bool)));
+  if (thread != "exportCombineArchive")
+    return;
+
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotExportCombineFinished(const std::string &, bool)));
 
   if (success)
     {
@@ -3857,7 +3872,7 @@ void CopasiUI3Window::slotExportCombineFinished(bool success)
       mNewFile.clear();
 
       if (mpDeferredLoadFile != NULL)
-        emit signalDefferedLoadFile(FileToLoad);
+        emit signalDeferredLoadFile(FileToLoad);
     }
 }
 
@@ -3932,7 +3947,7 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
   TmpFileName = CDirEntry::createTmpName(TmpFileName, ".tmp");
 
   // open url
-  connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFromUrlFinished(bool)));
+  connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotFileOpenFromUrlFinished(const std::string &, bool)));
   mpDataModelGUI->downloadFileFromUrl(TO_UTF8(url), TmpFileName);
 }
 
@@ -4232,7 +4247,7 @@ void CopasiUI3Window::slotCheckForUpdate()
   COptions::getValue("Tmp", TmpFileName);
   TmpFileName = CDirEntry::createTmpName(TmpFileName, ".json");
 
-  connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCheckForUpdateFinished(bool)));
+  connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotCheckForUpdateFinished(const std::string &, bool)));
 
   std::string url = TO_UTF8(QString("http://latest.copasi.org?version=%1.%2.%3").arg(CVersion::VERSION.getVersionMajor()).arg(CVersion::VERSION.getVersionMinor()).arg(CVersion::VERSION.getVersionDevel()));
   mpDataModelGUI->downloadFileFromUrl(url, TmpFileName, false);
@@ -4291,7 +4306,7 @@ bool getVersionFromFile(const std::string& fileName, CVersion & latest)
 
 void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
 {
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCheckForUpdateFinished(bool)));
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotCheckForUpdateFinished(const std::string &, bool)));
 
   CVersion Latest;
 
@@ -4369,7 +4384,7 @@ void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
     }
   else if (mpDataModelGUI->getLastDownloadUrl() != "https://api.github.com/repos/copasi/COPASI/releases/latest")
     {
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotCheckForUpdateFinished(bool)));
+      connect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotCheckForUpdateFinished(const std::string &, bool)));
       mpDataModelGUI->downloadFileFromUrl("https://api.github.com/repos/copasi/COPASI/releases/latest", mpDataModelGUI->getLastDownloadDestination(), false);
     }
   else
@@ -4385,9 +4400,12 @@ void CopasiUI3Window::slotClearSbmlIds()
   mpDataModel->getModel()->clearSbmlIds();
 }
 
-void CopasiUI3Window::slotFileOpenFromUrlFinished(bool success)
+void CopasiUI3Window::slotFileOpenFromUrlFinished(const std::string & thread, bool success)
 {
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotFileOpenFromUrlFinished(bool)));
+  if (thread != "downloadFileFromUrl")
+    return;
+
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotFileOpenFromUrlFinished(const std::string &, bool)));
 
   if (success)
     {

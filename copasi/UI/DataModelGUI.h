@@ -126,7 +126,7 @@ public slots:
   void importSBMLFromStringFinished();
   void exportSBMLToStringFinished();
   void exportMathModelFinished();
-  void importCombineFinished();
+  void openCombineArchiveFinished();
   void exportCombineFinished();
   void exportShinyFinished();
   void slotSaveConfigurationFinished();
@@ -178,7 +178,7 @@ signals:
   void updateCompleteView();
   void notifyView(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn);
   void signalSwitchWidget(ListViews::WidgetType widgetType, const CRegisteredCommonName & cn, int tabIndex);
-  void finished(bool success);
+  void finished(const std::string & thread, bool success);
 
 private:
   CDataModel * mpDataModel;
@@ -189,11 +189,11 @@ private:
   struct sThreadData {
     CQThread * pThread = nullptr;
     CProgressBar * pProgressBar = nullptr;
+    bool success = false;
   };
 
   std::map< std::string, sThreadData > mRunningThreads;
 
-  bool mSuccess;
   std::string mSBMLImportString;
   std::string *mpSBMLExportString;
   std::string mFileName;
