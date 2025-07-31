@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -28,13 +28,19 @@
 ###############################################################################
 
 if (ENABLE_FLEX_BISON)
-  BISON_TARGET(CChemEqParser model/CChemEqParser.ypp ${COPASI_SOURCE_DIR}/model/CChemEqParser_yacc.cpp COMPILE_FLAGS ${BISON_BINARY})
-  set(COPASI_SOURCES ${COPASI_SOURCES} ${COPASI_SOURCE_DIR}/model/CChemEqParser_yacc.cpp)
-  set(COPASI_HEADERS ${COPASI_HEADERS} ${COPASI_SOURCE_DIR}/model/CChemEqParser_yacc.hpp)
-  
   get_filename_component(COPASI_FLEX_SOURCE ${COPASI_SOURCE_DIR}/model/CChemEqParser.lpp ABSOLUTE)
   get_filename_component(COPASI_FLEX_TARGET ${COPASI_SOURCE_DIR}/model/CChemEqParser_lex.cpp ABSOLUTE)
-  FLEX_TARGET(CChemEqParser ${COPASI_FLEX_SOURCE} ${COPASI_FLEX_TARGET} COMPILE_FLAGS ${FLEX_BINARY})
+
+  if (${CMAKE_VERSION} VERSION_LESS 4.0.0)
+    BISON_TARGET(CChemEqParser model/CChemEqParser.ypp ${COPASI_SOURCE_DIR}/model/CChemEqParser_yacc.cpp COMPILE_FLAGS ${BISON_BINARY})
+    FLEX_TARGET(CChemEqParser ${COPASI_FLEX_SOURCE} ${COPASI_FLEX_TARGET} COMPILE_FLAGS ${FLEX_BINARY})
+  else ()
+    bison_target(CChemEqParser model/CChemEqParser.ypp ${COPASI_SOURCE_DIR}/model/CChemEqParser_yacc.cpp COMPILE_FLAGS ${BISON_BINARY})
+    flex_target(CChemEqParser ${COPASI_FLEX_SOURCE} ${COPASI_FLEX_TARGET} COMPILE_FLAGS ${FLEX_BINARY})
+  endif (${CMAKE_VERSION} VERSION_LESS 4.0.0)
+
+  set(COPASI_SOURCES ${COPASI_SOURCES} ${COPASI_SOURCE_DIR}/model/CChemEqParser_yacc.cpp)
+  set(COPASI_HEADERS ${COPASI_HEADERS} ${COPASI_SOURCE_DIR}/model/CChemEqParser_yacc.hpp)
   set(COPASI_SOURCES ${COPASI_SOURCES} ${COPASI_SOURCE_DIR}/model/CChemEqParser_lex.cpp)
 endif (ENABLE_FLEX_BISON)
 
