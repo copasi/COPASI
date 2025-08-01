@@ -167,6 +167,7 @@ signals:
   void signalDeferredLoadFile(QString newFile);
   void signalQuit();
   void signalPreferenceUpdated();
+  void exportSBMLToStringFinished(bool);
 
 protected:
   virtual void closeEvent(QCloseEvent* e);

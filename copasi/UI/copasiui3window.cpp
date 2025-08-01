@@ -1554,7 +1554,7 @@ void CopasiUI3Window::slotQuitFinished(const std::string & thread, bool success)
   if (thread != "saveModel")
     return;
 
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(slotQuitFinished(bool)));
+  disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotQuitFinished(const std::string &, bool)));
   mQuitApplication &= success;
 
   if (mQuitApplication)
@@ -2467,6 +2467,8 @@ void CopasiUI3Window::slotExportSBMLToStringFinished(const std::string & thread,
                              QMessageBox::Ok, QMessageBox::Ok);
       CCopasiMessage::clearDeque();
     }
+
+  emit exportSBMLToStringFinished(success);
 }
 
 const QMap< QPointer<QMainWindow>, QPointer<QAction> > &CopasiUI3Window::getWindows() const
@@ -3144,14 +3146,14 @@ void CopasiUI3Window::sbwSlotMenuTriggered(QAction *pAction)
     }
   else
     {
-      connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(sbwSlotMenuTriggeredFinished(bool)));
+      connect(this, SIGNAL(exportSBMLToStringFinished(bool)), this, SLOT(sbwSlotMenuTriggeredFinished(bool)));
       exportSBMLToString(mSBWDocumentString);
     }
 }
 
 void CopasiUI3Window::sbwSlotMenuTriggeredFinished(bool success)
 {
-  disconnect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(sbwSlotMenuTriggeredFinished(bool)));
+  disconnect(this, SIGNAL(exportSBMLToStringFinished(bool)), this, SLOT(sbwSlotMenuTriggeredFinished(bool)));
 
   if (success)
     {
@@ -3219,16 +3221,18 @@ SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::sbwAnalysis(SystemsBio
 
 SystemsBiologyWorkbench::DataBlockWriter CopasiUI3Window::sbwGetSBML(SystemsBiologyWorkbench::Module /*from*/, SystemsBiologyWorkbench::DataBlockReader /*reader*/)
 {
-  connect(mpDataModelGUI, SIGNAL(finished(bool)), this, SLOT(sbwSlotGetSBMLFinished(bool)));
   QMutexLocker Locker(&mSBWMutex);
   mSBWCallFinished = false;
-  mpDataModelGUI->exportSBMLToString(mSBWDocumentString);
+
+  connect(this, SIGNAL(exportSBMLToStringFinished(bool)), this, SLOT(sbwSlotGetSBMLFinished(bool)));
+  exportSBMLToString(mSBWDocumentString);
 
   if (!mSBWCallFinished)
     {
       mSBWWaitSlot.wait(&mSBWMutex);
     }
 
+  disconnect(this, SIGNAL(exportSBMLToStringFinished(bool)), this, SLOT(sbwSlotGetSBMLFinished(bool)));
   SystemsBiologyWorkbench::DataBlockWriter result;
 
   if (mSBWSuccess)
