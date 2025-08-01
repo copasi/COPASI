@@ -355,6 +355,10 @@ bool COptProblem::setCallBack(CProcessReportLevel callBack)
 void COptProblem::initObjects()
 {
   addObjectReference("Function Evaluations", mCounters.Counter, CDataObject::ValueInt);
+  addObjectReference("Failed Evaluations (Exception)", mCounters.FailedCounterException, CDataObject::ValueInt);
+  addObjectReference("Failed Evaluations (NaN)", mCounters.FailedCounterException, CDataObject::ValueInt);
+  addObjectReference("Constraint Evaluations", mCounters.ConstraintCounter, CDataObject::ValueInt);
+  addObjectReference("Failed Constraint Evaluations", mCounters.FailedConstraintCounter, CDataObject::ValueInt);
   addObjectReference("Best Value", mSolutionValue, CDataObject::ValueDbl);
   addVectorReference("Best Parameters", mSolutionVariables, CDataObject::ValueDbl);
 }
