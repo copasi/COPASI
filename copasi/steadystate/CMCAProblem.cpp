@@ -124,7 +124,7 @@ CCopasiTask * CMCAProblem::getSubTask() const
 
   if (isSteadyStateRequested())
     {
-      pSubTask = dynamic_cast< CCopasiTask * >(CRootContainer::getKeyFactory()->get(getValue< std::string >("Steady-State")));
+      pSubTask = dynamic_cast< CSteadyStateTask * >(CRootContainer::getKeyFactory()->get(getValue< std::string >("Steady-State")));
 
       if (pSubTask == nullptr)
         {
