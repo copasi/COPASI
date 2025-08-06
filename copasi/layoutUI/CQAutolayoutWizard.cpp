@@ -38,6 +38,8 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
 
+#include "copasi/resourcesUI/CQIconResource.h"
+
 /**
  * Constructor which in addition to the attributes of the original class
  * also takes a string which is the key of the object that is represented
@@ -901,6 +903,16 @@ CQAutolayoutWizard::CQAutolayoutWizard(const CModel& model, QWidget * parent , Q
   , mModel(model)
   , mLastPageId(CQAutolayoutWizard::NO_PAGE)
 {
+
+#ifndef Darwin
+  setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+#endif // not Darwin
+
+#ifdef Q_OS_WIN
+      setWizardStyle(QWizard::WizardStyle::ModernStyle);
+#endif // Q_OS_WIN
+
+ 
   this->setOptions(this->options() | QWizard::HaveFinishButtonOnEarlyPages);
   this->setOptions(this->options() & ~QWizard::NoCancelButton);
   this->setWindowTitle(tr("Autolayout Wizard"));
@@ -909,6 +921,7 @@ CQAutolayoutWizard::CQAutolayoutWizard(const CModel& model, QWidget * parent , Q
   this->setPage(SIDE_COMPOUND_PAGE_ID, this->createSideCompoundPage());
   //this->setPage(LAYOUT_PARAMETER_PAGE_ID,this->createLayoutParameterPage());
   connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(slotCurrentIdChanged(int)));
+
 }
 
 // Destructor
