@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -69,7 +69,7 @@ CStochDirectMethod::CStochDirectMethod(const CDataContainer * pParent,
   mUpdateSequences(),
   mUpdateTimeDependentRoots(),
   mHaveTimeDependentRoots(false),
-  mpRootValueCalculator(NULL),
+  mRootValueCalculator(),
   mMaxStepsReached(false),
   mTargetTime(0.0),
   mNumRoot(0),
@@ -99,7 +99,7 @@ CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
   mUpdateSequences(),
   mUpdateTimeDependentRoots(),
   mHaveTimeDependentRoots(false),
-  mpRootValueCalculator(NULL),
+  mRootValueCalculator(),
   mMaxStepsReached(false),
   mTargetTime(src.mTargetTime),
   mNumRoot(src.mNumRoot),
@@ -126,7 +126,7 @@ void CStochDirectMethod::initializeParameter()
   assertParameter("Use Random Seed", CCopasiParameter::Type::BOOL, false);
   assertParameter("Random Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 1);
 
-  mpRootValueCalculator = new CBrent::EvalTemplate< CStochDirectMethod >(this, &CStochDirectMethod::rootValue);
+  mRootValueCalculator = std::bind(&CStochDirectMethod::rootValue, this, std::placeholders::_1);
 }
 
 bool CStochDirectMethod::elevateChildren()
@@ -363,7 +363,7 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 startTime, const C_FLOAT64 
           // Interpolate to find the first root
           C_FLOAT64 RootTime;
           C_FLOAT64 RootValue;
-          CBrent::findRoot(startTime, mNextReactionTime, mpRootValueCalculator, &RootTime, &RootValue, 1e-9);
+          CBrent::findRoot(startTime, mNextReactionTime, mRootValueCalculator, &RootTime, &RootValue, 1e-9);
 
           if (RootTime > endTime)
             {

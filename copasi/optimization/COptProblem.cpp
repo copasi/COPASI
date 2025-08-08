@@ -818,7 +818,6 @@ bool COptProblem::calculate()
     {
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();
-
       success = false;
     }
 
@@ -840,8 +839,7 @@ bool COptProblem::calculate()
       Counters.FailedCounterException++;
       mCalculateValue = std::numeric_limits< C_FLOAT64 >::infinity();
     }
-
-  if (std::isnan(mCalculateValue))
+  else if (std::isnan(mCalculateValue))
     {
       Counters.FailedCounterNaN++;
       mCalculateValue = std::numeric_limits< C_FLOAT64 >::infinity();

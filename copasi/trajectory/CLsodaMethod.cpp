@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -824,7 +824,9 @@ void CLsodaMethod::createRootMask()
     {
       *pMask = (fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::min() ||
 //                (fabs(*pRootDerivative) < *mpAbsoluteTolerance && !*pIsDiscrete) ||
-                (*pRootFound > 0 && *pRootDerivative * *pRootValue < 0 && fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::epsilon())) ? (*pRootValue < 0 ? -1 : 1) : 0;
+                (*pRootFound > 0
+                  && *pRootDerivative * *pRootValue < 0
+                  && fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::epsilon())) ? (*pRootValue < 0 ? -1 : 1) : 0;
     }
 
 #ifdef DEBUG_NUMERICS

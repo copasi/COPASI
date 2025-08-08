@@ -521,11 +521,11 @@ bool COptItem::setItemValue(C_FLOAT64 & value, const CheckPolicyFlag & policy)
 
 bool COptItem::adjust()
 {
-  CBrent::EvalTemplate< COptItem > eval(this, & COptItem::evalMinimizeIntervals);
+  CBrent::Eval eval(std::bind(&COptItem::evalMinimizeIntervals, this, std::placeholders::_1));
   C_FLOAT64 Min = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
   C_FLOAT64 MinValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
-  if (!CBrent::findMinimum(*mpLowerBound, *mpUpperBound, &eval, &Min, &MinValue, 1e-12, 100))
+  if (!CBrent::findMinimum(*mpLowerBound, *mpUpperBound, eval, &Min, &MinValue, 1e-12, 100))
     return false;
 
   *const_cast< C_FLOAT64 * >(mpObjectValue) = Min;

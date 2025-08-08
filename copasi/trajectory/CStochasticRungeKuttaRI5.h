@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -125,8 +125,6 @@ private:
   CTrajectoryMethod::Status internalStep();
 
   C_FLOAT64 calculateSmallestPhysicalValue() const;
-  void createRootMask();
-  void destroyRootMask();
 
   CVectorCore< C_FLOAT64 > mContainerVariables;
   CVectorCore< C_FLOAT64 > mContainerRates;
@@ -208,17 +206,12 @@ private:
   CVector< bool > mPhysicalValues;
 
   CRootFinder mRootFinder;
-  CRootFinder::Eval * mpRootValueCalculator;
+  CRootFinder::Eval mRootValueCalculator;
   CVectorCore< C_FLOAT64 > mRoots;
   size_t mRootCounter;
 
-  CVector< C_INT > mRootMask;
-  CRootFinder::RootMasking mRootMasking;
-
-  /**
-   * A pointer to the value which indicate the physical correctness root was found.
-   */
-  C_INT * mpPhysicalCorrectnessRootFound;
+  CRootMask mRootMask;
+  RootMask mRootMasking;
 };
 
 #endif // COPASI_CStochasticRungeKuttaRI5

@@ -177,8 +177,8 @@ bool COptMethodSteepestDescent::optimise()
               //md = mn + (mx-mn)/2;
               //Brent(mn, md, mx, descent_line, &alpha, &tmp, 1e-6, 50);
 
-              CBrent::EvalTemplate< COptMethodSteepestDescent > eval(this, & COptMethodSteepestDescent::descentLine);
-              CBrent::findMinimum(mn, mx, &eval, &alpha, &tmp, mTolerance, 100);
+              CBrent::Eval eval(std::bind(&COptMethodSteepestDescent::descentLine, this, std::placeholders::_1));
+              CBrent::findMinimum(mn, mx, eval, &alpha, &tmp, mTolerance, 100);
 
               // take one step in that direction
               fmx = descentLine(alpha);

@@ -260,7 +260,7 @@ protected:
    * A functor pointing to the call back method provided to the root finder.
    * The points to void CLsoda2::evalRoot(const double & time, CVectorCore< C_FLOAT64 > & rootValues)
    */
-  CRootFinder::Eval * mpRootValueCalculator;
+  CRootFinder::Eval mRootValueCalculator;
 
   /**
    * The current root values of the root finder (may include additional internal roots)
@@ -270,12 +270,12 @@ protected:
   /**
    * A vector containing the root mask
    */
-  CVector< C_INT > mRootMask;
+  CRootMask mRootMask;
 
   /**
    * The current root masking mode
    */
-  CRootFinder::RootMasking mRootMasking;
+  RootMask mRootMasking;
 
 private:
   /**

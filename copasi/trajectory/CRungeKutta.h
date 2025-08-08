@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,7 +32,7 @@
 #include <sstream>
 
 #include "copasi/core/CVector.h"
-#include "copasi/utilities/CBrent.h"
+#include "copasi/trajectory/CRootFinder.h"
 
 #define MAX_STAGE 8
 #define EPS1      2.220446049250313e-16
@@ -68,6 +68,7 @@ public:
     RESTART, // ODE solver starts a new integration, without initialization
     CONTINUE, // ODE solver continues integration, coming back from event
     ROOTFOUND, // ODE solver stops at time t < tEnd, indicating having found roots
+    NOTADVANCED, // Root found at the start of the interval
     END, // ODE solver finishes integration at t == tEnd*
     ERROR // some errors happened
   };
@@ -106,14 +107,17 @@ public:
                             C_FLOAT64 * pTime,
                             C_FLOAT64 * pEndTime,
                             const size_t rootCount,
-                            C_INT * pRoots,
+                            CVectorCore< C_INT > & rootsFound,
+                            const CVectorCore< const RootMask > & rootMask,
                             const RKMethodStatus & status,
                             const bool & oneStep,
                             C_FLOAT64 * rtol,
                             C_FLOAT64 * atol,
                             unsigned C_INT32 * pMaxSteps,
                             EvalDeriv pEvalDerivatives,
-                            EvalRoot pEvalRoots);
+                            EvalRoot pEvalRoots,
+                            CRootFinder::PhysicalRoot physicalRoot = CRootFinder::PhysicalRoot(),
+                            bool * pPhysicalRootFound = nullptr);
 
   std::string getErrorMesssage() const;
 
@@ -152,13 +156,15 @@ private:
                   C_FLOAT64 * pTime,
                   C_FLOAT64 * pEndTime,
                   const size_t rootCount,
-                  C_INT * pRoots,
+                  CVectorCore< C_INT > & rootsFound,
+                  const CVectorCore< const RootMask > & rootMask,
                   const RKMethodStatus & status,
                   C_FLOAT64 * rtol,
                   C_FLOAT64 * atol,
                   unsigned C_INT32 * pMaxSteps,
                   EvalDeriv pEvalDerivatives,
-                  EvalRoot pEvalRoots);
+                  EvalRoot pEvalRoots,
+                  CRootFinder::PhysicalRoot physicalRoot);
 
   /**
    * Allocate space for arrays used
@@ -198,16 +204,6 @@ private:
    */
   void checkRoots();
 
-  /**
-   * Calculate the maximum root value for the given time for all
-   * roots changing sign between mRootValueLeft and mRootValueRight.
-   * rootValue is a continuous function which is positive at the right
-   * and negative at the left.
-   * @param const C_FLOAT64 & time
-   * @return const C_FLOAT64 rootValue
-   */
-  C_FLOAT64 rootValue(const C_FLOAT64 & time);
-
   //*****************************//
   //* Parameters Check Function *//
   //*****************************//
@@ -219,7 +215,7 @@ private:
                       C_FLOAT64 * pTime,
                       C_FLOAT64 * pEndTime,
                       const size_t rootCount,
-                      C_INT * pRoots,
+                      const CVectorCore< const RootMask > & rootMask,
                       const RKMethodStatus & status,
                       C_FLOAT64 * rtol,
                       C_FLOAT64 * atol,
@@ -476,29 +472,6 @@ private:
   C_FLOAT64 mI[MAX_STAGE][MAX_STAGE];
 
   /**
-   * mRootValueLeft, a C_FLOAT64 array pointer, recording root values
-   * at previous step
-   */
-  C_FLOAT64 *mRootValuesLeft;
-
-  /**
-   * mRootValueRight, a C_FLOAT64 array pointer, recording root value at
-   * current time mT
-   */
-  C_FLOAT64 *mRootValueRight;
-
-  /**
-   * mRootValueRight, a C_FLOAT64 array pointer, recording root value at
-   * current time mT
-   */
-  C_FLOAT64 *mRootValueTmp;
-
-  /**
-   * Pointer to method used for function evaluations for the Brent root finding method.
-   */
-  CBrent::Eval * mpRootValueCalculator;
-
-  /**
    * mOrderY, the order of Y interpolation can achieve
    */
   size_t mOrderY;
@@ -514,6 +487,17 @@ private:
   C_FLOAT64 *mZ1, *mZ2, *mZ3;
 
   std::stringstream mErrorMessage;
+
+  CRootFinder mRootFinder;
+  CRootFinder::Eval mRootValueCalculator;
+  bool * mpPhysicalRootFound;
+  CVectorCore< C_FLOAT64 > mRoots;
+  size_t mRootCounter;
+
+  CRootMask * mpRootMask;
+  RootMask mRootMasking;
+
+  void evalRoot(const C_FLOAT64 & time, CVectorCore< C_FLOAT64 > & rootValues);
 };
 
 #endif // COPASI_CRingeKutta

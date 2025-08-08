@@ -210,7 +210,7 @@ protected:
   /**
    * Pointer to method used for function evaluations for the Brent root finding method.
    */
-  CBrent::Eval * mpRootValueCalculator;
+  CBrent::Eval mRootValueCalculator;
 
   /**
    * A boolean flag indicating whether the maximum steps have been reached. This

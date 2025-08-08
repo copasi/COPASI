@@ -1036,6 +1036,8 @@ bool CFitProblem::calculate()
   CFitConstraint **ppConstraint = mExperimentConstraints.array();
   CFitConstraint **ppConstraintEnd;
 
+  bool success = true;
+
   try
     {
       for (i = 0; i < imax && Continue; i++) // For each experiment
@@ -1278,16 +1280,15 @@ bool CFitProblem::calculate()
     {
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();
-
-      Counters.FailedCounterException++;
-      mCalculateValue = mWorstValue;
-
-      // Restore the containers initial state. This includes all local reaction parameter
-      // Additionally this state is synchronized, i.e. nothing to compute.
-      mpContainer->setCompleteInitialState(mCompleteInitialState);
+      success = false;
     }
 
   catch (...)
+    {
+      success = false;
+    }
+
+  if (!success)
     {
       Counters.FailedCounterException++;
       mCalculateValue = mWorstValue;
@@ -1296,8 +1297,7 @@ bool CFitProblem::calculate()
       // Additionally this state is synchronized, i.e. nothing to compute.
       mpContainer->setCompleteInitialState(mCompleteInitialState);
     }
-
-  if (std::isnan(mCalculateValue))
+  else if (std::isnan(mCalculateValue))
     {
       Counters.FailedCounterNaN++;
       mCalculateValue = mWorstValue;

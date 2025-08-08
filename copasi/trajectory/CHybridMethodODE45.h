@@ -237,6 +237,8 @@ protected:
    */
   void evalR(const C_FLOAT64 * t, const C_FLOAT64 * y, const size_t *nr, C_FLOAT64 *r);
 
+  C_FLOAT64 calculateNextReactionRoot() const;
+
 protected:
   /**
    * Simulates the system over the next interval of time. The current time
@@ -366,8 +368,6 @@ private:
   CVectorCore< C_FLOAT64 > mAmuVariables;
   CVector< C_FLOAT64 * > mAmuPointers;
   C_FLOAT64 mA0;
-  CVector< C_INT > mMethodRootsFound;
-  C_INT * mpHybridRoot;
 
   CVectorCore< C_FLOAT64 > mContainerFluxes;
   CVector< C_FLOAT64 > mSavedFluxes;
@@ -385,7 +385,7 @@ private:
   /**
    * A mask which hides all roots being constant and zero.
    */
-  CVector< bool > mRootMask;
+  CRootMask mRootMask;
 
   /**
    * A which indicates whether roots change only discretely.
@@ -402,10 +402,14 @@ protected:
   /**
    * A Boolean flag indicating whether we should try masking roots
    */
-  RootMasking mRootMasking;
+  RootMask mRootMasking;
 
   //=================Root Dealing Part for Stochastic Part================
 private:
+
+  CRootFinder mRootFinder;
+  CRootFinder::PhysicalRoot mNextReactionRootCalculator;
+  C_FLOAT64 mNextReactionRoot;
 
   /**
    * Value of Roots before a reaction event
@@ -416,11 +420,6 @@ private:
    * Value of Roots after a reaction event
    */
   CVectorCore< C_FLOAT64 > mRootValuesRight;
-
-  /**
-   * 2 Vector for storing root value
-   */
-  CVector< C_FLOAT64 > mRootsNonZero;
 
   //================Stochastic Related================
   /**
