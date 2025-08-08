@@ -160,8 +160,9 @@ void CQLayoutsWidget::deleteSelectedLayouts()
 
       if (itWindow != mLayoutWindowMap.end())
         {
+          auto * ptr = itWindow->second;
           mLayoutWindowMap.erase(itWindow);
-          delete itWindow->second;
+          delete ptr;
         }
     }
 
