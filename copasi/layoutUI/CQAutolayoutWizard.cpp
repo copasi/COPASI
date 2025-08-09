@@ -908,11 +908,8 @@ CQAutolayoutWizard::CQAutolayoutWizard(const CModel& model, QWidget * parent , Q
   setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
 #endif // not Darwin
 
-#ifdef Q_OS_WIN
-      setWizardStyle(QWizard::WizardStyle::ModernStyle);
-#endif // Q_OS_WIN
+  setWizardStyle(QWizard::WizardStyle::ModernStyle);
 
- 
   this->setOptions(this->options() | QWizard::HaveFinishButtonOnEarlyPages);
   this->setOptions(this->options() & ~QWizard::NoCancelButton);
   this->setWindowTitle(tr("Autolayout Wizard"));
@@ -921,7 +918,6 @@ CQAutolayoutWizard::CQAutolayoutWizard(const CModel& model, QWidget * parent , Q
   this->setPage(SIDE_COMPOUND_PAGE_ID, this->createSideCompoundPage());
   //this->setPage(LAYOUT_PARAMETER_PAGE_ID,this->createLayoutParameterPage());
   connect(this, SIGNAL(currentIdChanged(int)), this, SLOT(slotCurrentIdChanged(int)));
-
 }
 
 // Destructor
