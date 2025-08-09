@@ -192,13 +192,13 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
   // std::cout << "mRootsRight = " << mRootsRight << std::endl;
 #endif // DEBUG_OUTPUT
 
-  bool HaveRoots = (mPhysicalRootLeft * mPhysicalRootRight < 0
-                    || (mPhysicalRootLeft > 0  && mPhysicalRootRight == 0));
+  bool HaveRoots = (mPhysicalRootLeft * mPhysicalRootRight < 0.0
+                    || (mPhysicalRootLeft > 0.0  && mPhysicalRootRight == 0.0));
 
   for (; pLeftRoot != pLeftRootEnd && !HaveRoots; ++pLeftRoot, ++pRightRoot, ++pMask)
     if ((*pMask & mRootMasking) == RootMask::NONE
-        && (*pLeftRoot * *pRightRoot < 0
-            || (pLeftRoot < 0  && *pRightRoot == 0)))
+        && (*pLeftRoot * *pRightRoot < 0.0
+            || (*pLeftRoot < 0.0  && *pRightRoot == 0.0)))
       HaveRoots = true;
 
   if (HaveRoots)
@@ -360,8 +360,8 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const CVector< C_FLOAT64 > & r
 
   for (; pMask != pMaskEnd; ++pMask, ++pLeftRoot, ++pRightRoot, ++pToggledRoot)
     if ((*pMask & mRootMasking) == RootMask::NONE
-        && (*pLeftRoot * *pRightRoot < 0
-            || (pLeftRoot < 0  && *pRightRoot == 0)))
+        && (*pLeftRoot * *pRightRoot < 0.0
+            || (*pLeftRoot < 0.0  && *pRightRoot == 0.0)))
       {
         *pToggledRoot = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
         Status = RootFound;
