@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,14 +32,6 @@
 #include "copasi/copasi.h"
 
 #include "CInternalSolver.h"
-
-#define dls001_1 (mdls001_._1)
-#define dls001_2 (mdls001_._2)
-#define dls001_3 (mdls001_._3)
-
-#define dlsa01_1 (mdlsa01_._1)
-#define dlsa01_2 (mdlsa01_._2)
-#define dlsa01_3 (mdlsa01_._3)
 
 static C_INT c__0 = 0;
 

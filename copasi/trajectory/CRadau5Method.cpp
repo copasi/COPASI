@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -808,8 +808,6 @@ void CRadau5Method::saveState(CRadau5Method::State & state, const CTrajectoryMet
   state.RootMask = mRootMask;
   state.RootMasking = mRootMasking;
   state.Status = status;
-
-  mRADAU.saveState(state.LsodaState);
 }
 
 void CRadau5Method::resetState(CRadau5Method::State & state)
@@ -823,6 +821,4 @@ void CRadau5Method::resetState(CRadau5Method::State & state)
   mRootsFound = state.RootsFound;
   mRootMask = state.RootMask;
   mRootMasking = state.RootMasking;
-
-  mRADAU.resetState(state.LsodaState);
 }

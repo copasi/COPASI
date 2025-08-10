@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -59,13 +59,12 @@ static double c_b103 = 1.;
 static double c_b113 = .8;
 static double c_b115 = .25;
 
-CRadau5::CRadau5(): CInternalSolver()
-{
-}
+CRadau5::CRadau5()
+  : Cxerrwd(true)
+{}
 
 CRadau5::~CRadau5()
-{
-}
+{}
 
 /* Subroutine */
 C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *

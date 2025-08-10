@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,25 +32,30 @@
 #include "copasi/odepack++/common.h"
 #include "copasi/odepack++/Cxerrwd.h"
 
-class CInternalSolver
+class CInternalSolver : public Cxerrwd
 {
 public:
-  struct State
-  {
-    dls001 mdls001;
-    dlsa01 mdlsa01;
-    dlsr01 mdlsr01;
-  };
+  typedef C_INT(CInternalSolver::*CheckRoots)(const C_INT * job,
+                                              evalG g,
+                                              C_INT *neq,
+                                              double *
+                                              y,
+                                              double *yh,
+                                              C_INT *nyh,
+                                              double *g0,
+                                              double *g1,
+                                              double *gx,
+                                              C_INT *jroot,
+                                              C_INT *irt);
 
-protected:
-  CInternalSolver();
+  typedef CommonData State;
 
 public:
+  CInternalSolver() = delete;
+
+  CInternalSolver(State & state);
+
   ~CInternalSolver();
-
-  void setOstream(std::ostream & os);
-
-  void enablePrint(const bool & print = true);
 
   void saveState(State & state) const;
   void resetState(const State & state);
@@ -79,11 +84,23 @@ protected:
                 double *acor, double *wm, C_INT *iwm, evalF f, evalJ jac,
                 PJAC * pjac, SLVS * slvs);
 
+#define dls001_1 (mState.mdls001_._1)
+#define dls001_2 (mState.mdls001_._2)
+#define dls001_3 (mState.mdls001_._3)
+
+#define dlsa01_1 (mState.mdlsa01_._1)
+#define dlsa01_2 (mState.mdlsa01_._2)
+#define dlsa01_3 (mState.mdlsa01_._3)
+
+#define dlsr01_1 (mState.mdlsr01_._1)
+#define dlsr01_2 (mState.mdlsr01_._2)
+#define dlsr01_3 (mState.mdlsr01_._3)
+
+  C_INT rootCheck;
+
 protected:
-  Cxerrwd mxerrwd;
-  dls001 mdls001_;
-  dlsa01 mdlsa01_;
-  dlsr01 mdlsr01_;
+  State & mState;
+  CheckRoots mpCheckRoots;
 };
 
 #endif // ODEPACK_CInternalSolver
