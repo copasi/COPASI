@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,17 +57,13 @@ public:
     mpBuffer(buffer)
   {}
 
-private:
   /**
    * Copy constructor.
    * Note, this is intentionally private as this constructor must not be accessed,
    * i.e., do not declare any class or method as friend.
    * @param const CVectorCore< CType > & src
    */
-  CVectorCore(const CVectorCore< CType > & src):
-    mSize(src.mSize),
-    mpBuffer(src.mpBuffer)
-  {}
+  CVectorCore(const CVectorCore< CType > & src) = delete;
 
 public:
   /**
@@ -106,9 +102,6 @@ public:
    */
   CVectorCore< CType > & operator = (const CVectorCore <CType> & rhs)
   {
-    if (this == &rhs)
-      return *this;
-
     // Nothing to do
     if (this == &rhs ||
         (mpBuffer == rhs.mpBuffer && mSize == rhs.mSize))

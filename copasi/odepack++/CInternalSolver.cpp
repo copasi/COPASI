@@ -22,7 +22,6 @@
 CInternalSolver::CInternalSolver(CInternalSolver::State & state)
   : Cxerrwd(true)
   , mState(state)
-  , mpCheckRoots(&CInternalSolver::drchek_)
 {}
 
 CInternalSolver::~CInternalSolver()

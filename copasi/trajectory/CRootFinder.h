@@ -72,7 +72,7 @@ public:
   void restart();
 
   /**
-   * Check for roots in the interval [timeLeft, timeRight]. If a root is found true is returned
+   * Check for roots in the interval [timeLeft, timeRight]. If a root is found RootFound is returned
    * and the time is returned in timeRoot, otherwise timeRoot is set to timeRight
    * @param const C_FLOAT64 & timeLeft
    * @param const C_FLOAT64 & timeRight
@@ -81,11 +81,24 @@ public:
    */
   ReturnStatus checkRoots(const C_FLOAT64 & timeLeft, const C_FLOAT64 & timeRight, const RootMask & rootMasking);
 
+  ReturnStatus checkLeftRoot(const C_FLOAT64 & timeLeft,
+                             const CVector< C_FLOAT64 > &rootsLeft,
+                             const RootMask & rootMasking);
+
   /**
-   * Check for roots in the interval [timeLeft, timeRight]. If a root is found true is returned
+   * Check for roots in the interval [mTimeLeft, timeRight]. If a root is found RootFound is returned
    * and the time is returned in timeRoot, otherwise timeRoot is set to timeRight
-   * @param const C_FLOAT64 & timeLeft
    * @param const C_FLOAT64 & timeRight
+   * @param const RootMasking &
+   * @return bool ReturnStatus
+   */
+  ReturnStatus checkRoots(const C_FLOAT64 & timeRight, const RootMask & rootMasking);
+
+  /**
+   * Check for whether roots have changed sign. If a root is found RootFound is returned
+   * and the time is returned in timeRoot, otherwise timeRoot is set to timeRight
+   * @param const CVector< C_FLOAT64 > & rootsLeft
+   * @param const CVector< C_FLOAT64 > & rootsRight
    * @param const RootMask & rootMask
    * @return bool ReturnStatus
    */

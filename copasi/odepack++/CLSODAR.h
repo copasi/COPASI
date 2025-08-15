@@ -30,6 +30,7 @@
 #define ODEPACK_CLSODAR
 
 #include "copasi/odepack++/CInternalSolver.h"
+#include "copasi/odepack++/CRootCheck.h"
 
 class PJAC;
 class SLVS;
@@ -37,10 +38,29 @@ class SLVS;
 class CLSODAR : private CInternalSolver::State, public CInternalSolver
 {
 public:
+  typedef std::function< C_INT(const C_INT * job,
+                               evalG g,
+                               C_INT *neq,
+                               double *
+                               y,
+                               double *yh,
+                               C_INT *nyh,
+                               double *g0,
+                               double *g1,
+                               double *gx,
+                               C_INT *jroot,
+                               C_INT *irt) > CheckRoots;
+
   CLSODAR();
+
   ~CLSODAR();
 
-  C_INT operator()(evalF f,        //  1. evaluate f
+  void initializeExternalRootFinder(const C_FLOAT64 & relativeTolerance,
+                                    const CVectorCore< const RootMask > & rootMask);
+
+  void updateMaskedRootValues(const CVectorCore< C_FLOAT64 > & maskedRoots, double * rwork);
+
+  C_INT operator()(evalF f,       //  1. evaluate f
                    C_INT *neq,    //  2. number of equations
                    double *y,     //  3. y
                    double *t,     //  4. time
@@ -68,6 +88,10 @@ private:
   static const C_INT mxstp0;
   static const C_INT mxhnl0;
   static const C_INT mord[2];
+
+  CheckRoots mCheckRoots;
+
+  CRootCheck * mpRootCheck;
 };
 
 #endif // ODEPACK_CLSODAR

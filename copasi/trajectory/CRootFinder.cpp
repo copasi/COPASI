@@ -339,6 +339,51 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
   return Status;
 }
 
+CRootFinder::ReturnStatus CRootFinder::checkLeftRoot(const C_FLOAT64 & timeLeft,
+                                                     const CVector< C_FLOAT64 > &rootsLeft,
+                                                     const RootMask & rootMasking)
+{
+  // Default return values
+  ReturnStatus Status = NotFound;
+  mRootMasking = rootMasking;
+
+  mTimeCurrent = timeLeft;
+  mRootsCurrent = rootsLeft;
+  mToggledRootsCurrent = (C_INT) CMath::RootToggleType::NoToggle;
+
+  const RootMask * pMask = mpRootMask->begin();
+  const RootMask * pMaskEnd = mpRootMask->end();
+  C_FLOAT64 * pRoot = mRootsCurrent.begin();
+  C_INT * pToggled = mToggledRootsCurrent.begin();
+
+  for (; pMask != pMaskEnd; ++pRoot, ++pMask, ++pToggled)
+    if ((*pMask & mRootMasking) == RootMask::NONE
+        && fabs(*pRoot) <= 0.0)
+      {
+        *pToggled = (C_INT) CMath::RootToggleType::ToggleEquality;
+        Status = ReturnStatus::RootFound;
+      }
+
+  mTimeLeft = mTimeCurrent;
+  mRootsLeft = mRootsCurrent;
+  mToggledRootsLeft = mToggledRootsCurrent;
+  mToggledRootsLeftValid = true;
+
+  return Status;
+}
+
+  /**
+   * Check for roots in the interval [mTimeLeft, timeRight]. If a root is found RootFound is returned
+   * and the time is returned in timeRoot, otherwise timeRoot is set to timeRight
+   * @param const C_FLOAT64 & timeRight
+   * @param const RootMasking &
+   * @return bool ReturnStatus
+   */
+CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeRight, const RootMask & rootMasking)
+{
+  return checkRoots(mTimeLeft, timeRight, rootMasking);
+}
+
 /**
  * Check for roots in the interval [timeLeft, timeRight]. If a root is found true is returned
  * and the time is returned in timeRoot, otherwise timeRoot is set to timeRight

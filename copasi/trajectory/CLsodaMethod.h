@@ -61,8 +61,8 @@ private:
     CVector< C_FLOAT64 > DWork;
     CVector< C_INT > IWork;
     CVector< C_INT > RootsFound;
-    CVector< C_INT > RootMask;
-    eRootMasking RootMasking;
+    CRootMask RootMask_;
+    RootMask RootMasking;
     CTrajectoryMethod::Status Status;
     CInternalSolver::State LsodaState;
   };
@@ -181,18 +181,20 @@ private:
   /**
    * A mask which hides all roots being constant and zero.
    */
-  CVector< C_INT > mRootMask;
+  CRootMask mRootMask;
 
   /**
-   * A which indicates whether roots change only discretely.
+   * A flag indicating which root finder is in use.
    */
-  CVectorCore< bool > mDiscreteRoots;
+  bool mUseExternalRootFinder;
+
+  CVector< C_INT > mRootsFoundInternal;
 
 protected:
   /**
    * A Boolean flag indicating whether we should try masking roots
    */
-  eRootMasking mRootMasking;
+  RootMask mRootMasking;
 
 private:
   /**
@@ -306,34 +308,12 @@ private:
   void initializeParameter();
 
   /**
-   * Mask roots which are constant and zero.
-   * @param CVectorCore< C_FLOAT64 > & rootValues
-   */
-  void maskRoots(CVectorCore< C_FLOAT64 > & rootValues);
-
-  /**
-   * Create a mask which hides all roots being constant and zero.
-   */
-  void createRootMask();
-
-  /**
-   * Set the root mask type and update the root mask accordingly
-   */
-  void setRootMaskType(const eRootMasking & maskType);
-
-  /**
    * Peek ahead to detect simultaneous roots.
    */
   CTrajectoryMethod::Status peekAhead();
 
-  bool hasStateChanged(const CVectorCore< C_FLOAT64 > & startState) const;
+  bool hasStateChanged(const State & startState) const;
   void saveState(State & state, const CTrajectoryMethod::Status & status) const;
   void resetState(State & state);
-
-protected:
-  /**
-   * Destroy the mask which hides all roots being constant and zero.
-   */
-  void destroyRootMask();
 };
 #endif // COPASI_CLsodaMethod

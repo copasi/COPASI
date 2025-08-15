@@ -35,22 +35,8 @@
 class CInternalSolver : public Cxerrwd
 {
 public:
-  typedef C_INT(CInternalSolver::*CheckRoots)(const C_INT * job,
-                                              evalG g,
-                                              C_INT *neq,
-                                              double *
-                                              y,
-                                              double *yh,
-                                              C_INT *nyh,
-                                              double *g0,
-                                              double *g1,
-                                              double *gx,
-                                              C_INT *jroot,
-                                              C_INT *irt);
-
   typedef CommonData State;
 
-public:
   CInternalSolver() = delete;
 
   CInternalSolver(State & state);
@@ -96,11 +82,8 @@ protected:
 #define dlsr01_2 (mState.mdlsr01_._2)
 #define dlsr01_3 (mState.mdlsr01_._3)
 
-  C_INT rootCheck;
-
 protected:
   State & mState;
-  CheckRoots mpCheckRoots;
 };
 
 #endif // ODEPACK_CInternalSolver

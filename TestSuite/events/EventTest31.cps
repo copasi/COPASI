@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.23.178+ (Debug) (http://www.copasi.org) at 2018-03-28 21:08:09 UTC -->
+<!-- generated with COPASI 4.45 (Build 298) (http://www.copasi.org) at 2025-08-15T23:32:32Z -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
-<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="23" versionDevel="178" copasiSourcesModified="1">
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="45" versionDevel="298" copasiSourcesModified="0">
   <ListOfFunctions>
     <Function key="Function_6" name="Constant flux (irreversible)" type="PreDefined" reversible="false">
+      <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Function_6">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         v
       </Expression>
@@ -12,6 +18,12 @@
       </ListOfParameterDescriptions>
     </Function>
     <Function key="Function_7" name="Constant flux (reversible)" type="PreDefined" reversible="true">
+      <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Function_7">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         v
       </Expression>
@@ -48,10 +60,10 @@ Reaction scheme where the products are created from the reactants and the change
         <ParameterDescription key="FunctionParameter_81" name="substrate" order="1" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_40" name="Mass Action (irreversible, two substrates)" type="UserDefined" reversible="unspecified">
+    <Function key="Function_81" name="Mass Action (irreversible, two substrates)" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_40">
+  <rdf:Description rdf:about="#Function_81">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2017-01-10T16:14:57Z</dcterms:W3CDTF>
@@ -64,15 +76,15 @@ Reaction scheme where the products are created from the reactants and the change
         k1*substrate1*substrate2
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_264" name="k1" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_263" name="substrate1" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_262" name="substrate2" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_677" name="k1" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_676" name="substrate1" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_675" name="substrate2" order="2" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_41" name="06F_IP3 [1]" type="UserDefined" reversible="unspecified">
+    <Function key="Function_82" name="06F_IP3 [1]" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_41">
+  <rdf:Description rdf:about="#Function_82">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2017-02-17T17:41:51Z</dcterms:W3CDTF>
@@ -85,14 +97,14 @@ Reaction scheme where the products are created from the reactants and the change
         k*modifier
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_265" name="k" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_250" name="modifier" order="1" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_672" name="k" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_673" name="modifier" order="1" role="modifier"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_42" name="5F_PLC activation [1]" type="UserDefined" reversible="unspecified">
+    <Function key="Function_83" name="5F_PLC activation [1]" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_42">
+  <rdf:Description rdf:about="#Function_83">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2017-02-17T17:42:31Z</dcterms:W3CDTF>
@@ -105,16 +117,16 @@ Reaction scheme where the products are created from the reactants and the change
         k_e2 * Gaq* PLC / (PLC + k_Ee)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_266" name="k_e2" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_261" name="Gaq" order="1" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_267" name="PLC" order="2" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_268" name="k_Ee" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_671" name="k_e2" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_674" name="Gaq" order="1" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_670" name="PLC" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_669" name="k_Ee" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_43" name="actN special [1]" type="UserDefined" reversible="unspecified">
+    <Function key="Function_84" name="actN special [1]" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_43">
+  <rdf:Description rdf:about="#Function_84">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2017-02-17T17:43:11Z</dcterms:W3CDTF>
@@ -127,15 +139,15 @@ Reaction scheme where the products are created from the reactants and the change
         k*substrate*(1-actN)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_272" name="k" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_271" name="substrate" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_270" name="actN" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_680" name="k" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_679" name="substrate" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_678" name="actN" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_44" name="Nuclear Import [1]" type="UserDefined" reversible="unspecified">
+    <Function key="Function_85" name="Nuclear Import [1]" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_44">
+  <rdf:Description rdf:about="#Function_85">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2017-02-17T18:01:36Z</dcterms:W3CDTF>
@@ -148,15 +160,15 @@ Reaction scheme where the products are created from the reactants and the change
         substrate*k*v_beginning
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_274" name="substrate" order="0" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_273" name="k" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_269" name="v_beginning" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_682" name="substrate" order="0" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_681" name="k" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_668" name="v_beginning" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_45" name="17" type="UserDefined" reversible="unspecified">
+    <Function key="Function_86" name="17" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_45">
+  <rdf:Description rdf:about="#Function_86">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2017-02-17T21:43:31Z</dcterms:W3CDTF>
@@ -169,15 +181,15 @@ Reaction scheme where the products are created from the reactants and the change
         kcat*modifier/(kd+modifier)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_277" name="kcat" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_276" name="modifier" order="1" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_275" name="kd" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_685" name="kcat" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_684" name="modifier" order="1" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_683" name="kd" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_46" name="16" type="UserDefined" reversible="unspecified">
+    <Function key="Function_87" name="16" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_46">
+  <rdf:Description rdf:about="#Function_87">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2017-02-17T21:43:31Z</dcterms:W3CDTF>
@@ -190,9 +202,9 @@ Reaction scheme where the products are created from the reactants and the change
         kcat*modifier^2/(kd^2+modifier^2)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_280" name="kcat" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_279" name="modifier" order="1" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_278" name="kd" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_688" name="kcat" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_687" name="modifier" order="1" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_686" name="kd" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
   </ListOfFunctions>
@@ -655,18 +667,60 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </MiriamAnnotation>
       </Metabolite>
       <Metabolite key="Metabolite_28" name="GSU_par_OR" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Metabolite_28">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </Metabolite>
       <Metabolite key="Metabolite_29" name="GSU_par_AND" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Metabolite_29">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </Metabolite>
       <Metabolite key="Metabolite_30" name="GSU_par_COOP" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Metabolite_30">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </Metabolite>
       <Metabolite key="Metabolite_31" name="GSU_seq_OR" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Metabolite_31">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </Metabolite>
       <Metabolite key="Metabolite_32" name="GSU_seq_AND" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Metabolite_32">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </Metabolite>
       <Metabolite key="Metabolite_33" name="GSU_seq_COOP" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Metabolite_33">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </Metabolite>
       <Metabolite key="Metabolite_34" name="GSU_seq_OR_copy" simulationType="reactions" compartment="Compartment_0" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Metabolite_34">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </Metabolite>
     </ListOfMetabolites>
     <ListOfModelValues>
@@ -801,6 +855,12 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_10" name="K_p" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_10">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_11" name="V_e" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
@@ -907,12 +967,36 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_19" name="K_d" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_19">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_20" name="k_d1" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_20">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_21" name="k_f1" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_21">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_22" name="k_r1" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_22">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_23" name="k_f2" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
@@ -928,10 +1012,28 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_24" name="k_f3" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_24">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_25" name="k_f4" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_25">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_26" name="k_mn" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_26">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_27" name="M" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
@@ -1012,6 +1114,12 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_33" name="h1" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_33">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_34" name="h2" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
@@ -1092,6 +1200,12 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_40" name="k_dppEn" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_40">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_41" name="MEK_t" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
@@ -1120,6 +1234,12 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_43" name="K_de" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_43">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_44" name="MKP_3t" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
@@ -1213,28 +1333,100 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_51" name="K_dppETF1" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_51">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_52" name="K_dTF1TF2" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_52">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_53" name="k_11" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_53">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_54" name="kk_2" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_54">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_55" name="kk_3" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_55">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_56" name="k_33" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_56">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_57" name="k_3intmid" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_57">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_58" name="Km_1intmid" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_58">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_59" name="k_4int" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_59">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_60" name="k_4intmid" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_60">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_61" name="k_e2" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_61">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_62" name="k_(-e2)" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_62">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_63" name="PLC_0" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
@@ -1302,8 +1494,20 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_68" name="K_dTF1" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_68">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_69" name="K_dTF2" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_69">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_70" name="kk_1" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
@@ -1319,12 +1523,36 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_71" name="h_11" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_71">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_72" name="h_33" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_72">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_73" name="h_44" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_73">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_74" name="h_66" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_74">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_75" name="fi/Vi" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
@@ -1356,8 +1584,20 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_77" name="Km_1int" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_77">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_78" name="Km_2intmid" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_78">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_79" name="n_int" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
@@ -1415,6 +1655,12 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </Unit>
       </ModelValue>
       <ModelValue key="ModelValue_83" name="K_Ee" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_83">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_84" name="k_(-4)" simulationType="fixed" addNoise="false">
         <MiriamAnnotation>
@@ -1494,6 +1740,12 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </Expression>
       </ModelValue>
       <ModelValue key="ModelValue_89" name="kk_4" simulationType="fixed" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_89">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
       </ModelValue>
       <ModelValue key="ModelValue_90" name="k_m3" simulationType="assignment" addNoise="false">
         <MiriamAnnotation>
@@ -1602,6 +1854,12 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </Expression>
       </ModelValue>
       <ModelValue key="ModelValue_97" name="act_N" simulationType="assignment" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_97">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
         <Expression>
           &lt;CN=Root,Model=Pratap2016,Vector=Compartments[cytosol],Vector=Metabolites[Ca2+_cytosol],Reference=Concentration>^&lt;CN=Root,Model=Pratap2016,Vector=Values[n],Reference=Value>/(&lt;CN=Root,Model=Pratap2016,Vector=Compartments[cytosol],Vector=Metabolites[Ca2+_cytosol],Reference=Concentration>^&lt;CN=Root,Model=Pratap2016,Vector=Values[n],Reference=Value>+&lt;CN=Root,Model=Pratap2016,Vector=Values[k_mn],Reference=Value>^&lt;CN=Root,Model=Pratap2016,Vector=Values[n],Reference=Value>*(1+&lt;CN=Root,Model=Pratap2016,Vector=Values[k_d1],Reference=Value>/&lt;CN=Root,Model=Pratap2016,Vector=Values[M],Reference=Value>))
         </Expression>
@@ -1671,6 +1929,12 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </Expression>
       </ModelValue>
       <ModelValue key="ModelValue_102" name="J_impE" simulationType="assignment" addNoise="false">
+        <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelValue_102">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
         <Expression>
           &lt;CN=Root,Model=Pratap2016,Vector=Values[k_2cat],Reference=Value>*&lt;CN=Root,Model=Pratap2016,Vector=Compartments[cytosol],Vector=Metabolites[MEK_act],Reference=Concentration>*&lt;CN=Root,Model=Pratap2016,Vector=Compartments[cytosol],Vector=Metabolites[Ep_c],Reference=Concentration>/&lt;CN=Root,Model=Pratap2016,Vector=Values[k_m2],Reference=Value>/(1+&lt;CN=Root,Model=Pratap2016,Vector=Compartments[cytosol],Vector=Metabolites[Ep_c],Reference=Concentration>/&lt;CN=Root,Model=Pratap2016,Vector=Values[k_m2],Reference=Value>+&lt;CN=Root,Model=Pratap2016,Vector=Compartments[cytosol],Vector=Metabolites[E_c],Reference=Concentration>/&lt;CN=Root,Model=Pratap2016,Vector=Values[k_m1],Reference=Value>)
         </Expression>
@@ -2407,17 +2671,17 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5144" name="k1" value="2500"/>
+          <Constant key="Parameter_1" name="k1" value="2500"/>
         </ListOfConstants>
-        <KineticLaw function="Function_40" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
+        <KineticLaw function="Function_81" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_264">
+            <CallParameter functionParameter="FunctionParameter_677">
               <SourceParameter reference="ModelValue_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_263">
+            <CallParameter functionParameter="FunctionParameter_676">
               <SourceParameter reference="Metabolite_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_262">
+            <CallParameter functionParameter="FunctionParameter_675">
               <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -2443,7 +2707,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_1" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5146" name="k1" value="5"/>
+          <Constant key="Parameter_0" name="k1" value="5"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -2479,17 +2743,17 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5147" name="k1" value="0.5"/>
+          <Constant key="Parameter_2" name="k1" value="0.5"/>
         </ListOfConstants>
-        <KineticLaw function="Function_40" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
+        <KineticLaw function="Function_81" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_264">
+            <CallParameter functionParameter="FunctionParameter_677">
               <SourceParameter reference="ModelValue_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_263">
+            <CallParameter functionParameter="FunctionParameter_676">
               <SourceParameter reference="Metabolite_2"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_262">
+            <CallParameter functionParameter="FunctionParameter_675">
               <SourceParameter reference="Metabolite_4"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -2515,7 +2779,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5141" name="k1" value="1"/>
+          <Constant key="Parameter_3" name="k1" value="1"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -2550,21 +2814,21 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Modifier metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5143" name="k_e2" value="20"/>
-          <Constant key="Parameter_5142" name="k_Ee" value="0.1"/>
+          <Constant key="Parameter_4" name="k_e2" value="20"/>
+          <Constant key="Parameter_5" name="k_Ee" value="0.1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_42" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
+        <KineticLaw function="Function_83" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_266">
+            <CallParameter functionParameter="FunctionParameter_671">
               <SourceParameter reference="ModelValue_61"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_261">
+            <CallParameter functionParameter="FunctionParameter_674">
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_267">
+            <CallParameter functionParameter="FunctionParameter_670">
               <SourceParameter reference="Metabolite_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_268">
+            <CallParameter functionParameter="FunctionParameter_669">
               <SourceParameter reference="ModelValue_83"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -2589,7 +2853,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_3" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5145" name="k1" value="5"/>
+          <Constant key="Parameter_6" name="k1" value="5"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -2621,18 +2885,18 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_22" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5148" name="k" value="0.0732"/>
-          <Constant key="Parameter_5139" name="actN" value="0.981921"/>
+          <Constant key="Parameter_7" name="k" value="0.0732"/>
+          <Constant key="Parameter_8" name="actN" value="0.981921"/>
         </ListOfConstants>
-        <KineticLaw function="Function_43" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[nucleus]">
+        <KineticLaw function="Function_84" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_272">
+            <CallParameter functionParameter="FunctionParameter_680">
               <SourceParameter reference="ModelValue_24"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_271">
+            <CallParameter functionParameter="FunctionParameter_679">
               <SourceParameter reference="Metabolite_20"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_270">
+            <CallParameter functionParameter="FunctionParameter_678">
               <SourceParameter reference="ModelValue_97"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -2657,14 +2921,14 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Modifier metabolite="Metabolite_6" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5137" name="k" value="36"/>
+          <Constant key="Parameter_9" name="k" value="36"/>
         </ListOfConstants>
-        <KineticLaw function="Function_41" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
+        <KineticLaw function="Function_82" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_265">
+            <CallParameter functionParameter="FunctionParameter_672">
               <SourceParameter reference="ModelValue_5"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_250">
+            <CallParameter functionParameter="FunctionParameter_673">
               <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -2689,7 +2953,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_20" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5136" name="k1" value="3.46795"/>
+          <Constant key="Parameter_10" name="k1" value="3.46795"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
@@ -2722,18 +2986,18 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_8" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5140" name="k" value="0.3605"/>
-          <Constant key="Parameter_5138" name="actN" value="0.981921"/>
+          <Constant key="Parameter_11" name="k" value="0.3605"/>
+          <Constant key="Parameter_12" name="actN" value="0.981921"/>
         </ListOfConstants>
-        <KineticLaw function="Function_43" unitType="ConcentrationPerTime" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
+        <KineticLaw function="Function_84" unitType="ConcentrationPerTime" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_272">
+            <CallParameter functionParameter="FunctionParameter_680">
               <SourceParameter reference="ModelValue_22"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_271">
+            <CallParameter functionParameter="FunctionParameter_679">
               <SourceParameter reference="Metabolite_19"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_270">
+            <CallParameter functionParameter="FunctionParameter_678">
               <SourceParameter reference="ModelValue_97"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -2759,17 +3023,17 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5113" name="k1" value="25.3452"/>
+          <Constant key="Parameter_13" name="k1" value="25.3452"/>
         </ListOfConstants>
-        <KineticLaw function="Function_40" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
+        <KineticLaw function="Function_81" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_264">
+            <CallParameter functionParameter="FunctionParameter_677">
               <SourceParameter reference="ModelValue_21"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_263">
+            <CallParameter functionParameter="FunctionParameter_676">
               <SourceParameter reference="Metabolite_21"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_262">
+            <CallParameter functionParameter="FunctionParameter_675">
               <SourceParameter reference="Metabolite_8"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -2791,7 +3055,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Substrate metabolite="Metabolite_10" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5111" name="k1" value="30"/>
+          <Constant key="Parameter_14" name="k1" value="30"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -2823,17 +3087,17 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_20" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5110" name="k" value="0.0104"/>
+          <Constant key="Parameter_15" name="k" value="0.0104"/>
         </ListOfConstants>
-        <KineticLaw function="Function_44" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
+        <KineticLaw function="Function_85" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_274">
+            <CallParameter functionParameter="FunctionParameter_682">
               <SourceParameter reference="Metabolite_19"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_273">
+            <CallParameter functionParameter="FunctionParameter_681">
               <SourceParameter reference="ModelValue_23"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_269">
+            <CallParameter functionParameter="FunctionParameter_668">
               <SourceParameter reference="Compartment_0"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -2858,7 +3122,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5114" name="k1" value="8.6772"/>
+          <Constant key="Parameter_16" name="k1" value="8.6772"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -2890,17 +3154,17 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5112" name="k" value="94.8693"/>
+          <Constant key="Parameter_17" name="k" value="94.8693"/>
         </ListOfConstants>
-        <KineticLaw function="Function_44" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
+        <KineticLaw function="Function_85" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_274">
+            <CallParameter functionParameter="FunctionParameter_682">
               <SourceParameter reference="Metabolite_22"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_273">
+            <CallParameter functionParameter="FunctionParameter_681">
               <SourceParameter reference="ModelValue_25"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_269">
+            <CallParameter functionParameter="FunctionParameter_668">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -2925,18 +3189,18 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Modifier metabolite="Metabolite_15" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5116" name="kcat" value="0.018"/>
-          <Constant key="Parameter_5131" name="kd" value="0.5"/>
+          <Constant key="Parameter_18" name="kcat" value="0.018"/>
+          <Constant key="Parameter_19" name="kd" value="0.5"/>
         </ListOfConstants>
-        <KineticLaw function="Function_46" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[nucleus]">
+        <KineticLaw function="Function_87" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_280">
+            <CallParameter functionParameter="FunctionParameter_688">
               <SourceParameter reference="ModelValue_49"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_279">
+            <CallParameter functionParameter="FunctionParameter_687">
               <SourceParameter reference="Metabolite_15"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_278">
+            <CallParameter functionParameter="FunctionParameter_686">
               <SourceParameter reference="ModelValue_51"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -2961,18 +3225,18 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Modifier metabolite="Metabolite_17" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5119" name="kcat" value="0.045"/>
-          <Constant key="Parameter_5133" name="kd" value="0.26"/>
+          <Constant key="Parameter_20" name="kcat" value="0.045"/>
+          <Constant key="Parameter_21" name="kd" value="0.26"/>
         </ListOfConstants>
-        <KineticLaw function="Function_45" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[nucleus]">
+        <KineticLaw function="Function_86" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_277">
+            <CallParameter functionParameter="FunctionParameter_685">
               <SourceParameter reference="ModelValue_50"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_276">
+            <CallParameter functionParameter="FunctionParameter_684">
               <SourceParameter reference="Metabolite_17"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_275">
+            <CallParameter functionParameter="FunctionParameter_683">
               <SourceParameter reference="ModelValue_52"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -2994,7 +3258,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Substrate metabolite="Metabolite_17" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5134" name="k1" value="0.011"/>
+          <Constant key="Parameter_22" name="k1" value="0.011"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
@@ -3023,7 +3287,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Substrate metabolite="Metabolite_18" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5128" name="k1" value="0.023"/>
+          <Constant key="Parameter_23" name="k1" value="0.023"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
@@ -3055,17 +3319,17 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5115" name="k" value="2.6665"/>
+          <Constant key="Parameter_24" name="k" value="2.6665"/>
         </ListOfConstants>
-        <KineticLaw function="Function_44" unitType="Default">
+        <KineticLaw function="Function_85" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_274">
+            <CallParameter functionParameter="FunctionParameter_682">
               <SourceParameter reference="Metabolite_15"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_273">
+            <CallParameter functionParameter="FunctionParameter_681">
               <SourceParameter reference="ModelValue_81"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_269">
+            <CallParameter functionParameter="FunctionParameter_668">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3090,17 +3354,17 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_15" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5123" name="k" value="1.5"/>
+          <Constant key="Parameter_25" name="k" value="1.5"/>
         </ListOfConstants>
-        <KineticLaw function="Function_44" unitType="Default">
+        <KineticLaw function="Function_85" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_274">
+            <CallParameter functionParameter="FunctionParameter_682">
               <SourceParameter reference="Metabolite_13"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_273">
+            <CallParameter functionParameter="FunctionParameter_681">
               <SourceParameter reference="ModelValue_46"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_269">
+            <CallParameter functionParameter="FunctionParameter_668">
               <SourceParameter reference="Compartment_0"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3125,7 +3389,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_14" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5130" name="v" value="0.0371578"/>
+          <Constant key="Parameter_26" name="v" value="0.0371578"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[nucleus]">
           <ListOfCallParameters>
@@ -3154,17 +3418,17 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_14" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5117" name="k" value="0.01"/>
+          <Constant key="Parameter_27" name="k" value="0.01"/>
         </ListOfConstants>
-        <KineticLaw function="Function_44" unitType="Default">
+        <KineticLaw function="Function_85" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_274">
+            <CallParameter functionParameter="FunctionParameter_682">
               <SourceParameter reference="Metabolite_12"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_273">
+            <CallParameter functionParameter="FunctionParameter_681">
               <SourceParameter reference="ModelValue_82"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_269">
+            <CallParameter functionParameter="FunctionParameter_668">
               <SourceParameter reference="Compartment_0"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3189,17 +3453,17 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_12" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5129" name="k" value="0.45"/>
+          <Constant key="Parameter_28" name="k" value="0.45"/>
         </ListOfConstants>
-        <KineticLaw function="Function_44" unitType="Default">
+        <KineticLaw function="Function_85" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_274">
+            <CallParameter functionParameter="FunctionParameter_682">
               <SourceParameter reference="Metabolite_14"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_273">
+            <CallParameter functionParameter="FunctionParameter_681">
               <SourceParameter reference="ModelValue_47"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_269">
+            <CallParameter functionParameter="FunctionParameter_668">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3224,7 +3488,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5122" name="v" value="1.32234e-08"/>
+          <Constant key="Parameter_29" name="v" value="1.32234e-08"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3253,7 +3517,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_16" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5126" name="v" value="0.569915"/>
+          <Constant key="Parameter_30" name="v" value="0.569915"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3282,7 +3546,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_12" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5121" name="v" value="0.0350156"/>
+          <Constant key="Parameter_31" name="v" value="0.0350156"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3311,7 +3575,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_16" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5125" name="v" value="3.60944e-06"/>
+          <Constant key="Parameter_32" name="v" value="3.60944e-06"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3340,7 +3604,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_13" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5124" name="k1" value="0.17"/>
+          <Constant key="Parameter_33" name="k1" value="0.17"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3369,7 +3633,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5127" name="v" value="6e-05"/>
+          <Constant key="Parameter_34" name="v" value="6e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3395,7 +3659,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Substrate metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5132" name="v" value="6e-05"/>
+          <Constant key="Parameter_35" name="v" value="6e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3424,7 +3688,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_9" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5118" name="v" value="3.0929"/>
+          <Constant key="Parameter_36" name="v" value="3.0929"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3453,7 +3717,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_24" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5120" name="v" value="2.93926"/>
+          <Constant key="Parameter_37" name="v" value="2.93926"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3479,7 +3743,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_25" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5135" name="v" value="0"/>
+          <Constant key="Parameter_38" name="v" value="0"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3505,7 +3769,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Substrate metabolite="Metabolite_25" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5149" name="v" value="0"/>
+          <Constant key="Parameter_39" name="v" value="0"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3531,7 +3795,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_26" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5150" name="v" value="0"/>
+          <Constant key="Parameter_40" name="v" value="0"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3557,7 +3821,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Substrate metabolite="Metabolite_26" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5156" name="k1" value="5.8109"/>
+          <Constant key="Parameter_41" name="k1" value="5.8109"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3589,7 +3853,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5155" name="v" value="0.002"/>
+          <Constant key="Parameter_42" name="v" value="0.002"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3615,7 +3879,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_27" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5157" name="v" value="-0.023628"/>
+          <Constant key="Parameter_43" name="v" value="-0.023628"/>
         </ListOfConstants>
         <KineticLaw function="Function_7" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3641,7 +3905,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_28" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5154" name="v" value="0.000765163"/>
+          <Constant key="Parameter_44" name="v" value="0.000765163"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3667,7 +3931,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Substrate metabolite="Metabolite_28" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5153" name="k1" value="0.05"/>
+          <Constant key="Parameter_45" name="k1" value="0.05"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3696,7 +3960,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_29" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5152" name="v" value="1.42768e-05"/>
+          <Constant key="Parameter_46" name="v" value="1.42768e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3722,7 +3986,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Substrate metabolite="Metabolite_29" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5151" name="k1" value="0.05"/>
+          <Constant key="Parameter_47" name="k1" value="0.05"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3751,7 +4015,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_30" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5158" name="v" value="1.42972e-05"/>
+          <Constant key="Parameter_48" name="v" value="1.42972e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3777,7 +4041,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Substrate metabolite="Metabolite_30" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5162" name="k1" value="0.05"/>
+          <Constant key="Parameter_49" name="k1" value="0.05"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3806,7 +4070,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Substrate metabolite="Metabolite_31" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5160" name="k1" value="0.05"/>
+          <Constant key="Parameter_50" name="k1" value="0.05"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3835,7 +4099,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Substrate metabolite="Metabolite_32" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5159" name="k1" value="0.05"/>
+          <Constant key="Parameter_51" name="k1" value="0.05"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3864,7 +4128,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Substrate metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5163" name="k1" value="0.05"/>
+          <Constant key="Parameter_52" name="k1" value="0.05"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3893,7 +4157,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_31" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5161" name="v" value="0.000953211"/>
+          <Constant key="Parameter_53" name="v" value="0.000953211"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3919,7 +4183,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_32" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5165" name="v" value="2.03429e-05"/>
+          <Constant key="Parameter_54" name="v" value="2.03429e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3945,7 +4209,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           <Product metabolite="Metabolite_33" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5167" name="v" value="2.03844e-05"/>
+          <Constant key="Parameter_55" name="v" value="2.03844e-05"/>
         </ListOfConstants>
         <KineticLaw function="Function_6" unitType="Default" scalingCompartment="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol]">
           <ListOfCallParameters>
@@ -3973,7 +4237,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           abs(&lt;CN=Root,Model=Pratap2016,Reference=Time>-&lt;CN=Root,Model=Pratap2016,Vector=Values[spike_offset_total],Reference=Value>)%&lt;CN=Root,Model=Pratap2016,Vector=Values[spike_period],Reference=Value> == 0 AND &lt;CN=Root,Model=Pratap2016,Reference=Time> > &lt;CN=Root,Model=Pratap2016,Vector=Values[spike_offset_total],Reference=Value>
         </TriggerExpression>
         <ListOfAssignments>
-          <Assignment targetKey="Metabolite_0">
+          <Assignment target="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol],Vector=Metabolites[GnRH]">
             <Expression>
               &lt;CN=Root,Model=Pratap2016,Vector=Values[spike_amplitude],Reference=Value>
             </Expression>
@@ -3996,7 +4260,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
           abs(&lt;CN=Root,Model=Pratap2016,Reference=Time>-&lt;CN=Root,Model=Pratap2016,Vector=Values[spike_offset_total],Reference=Value>-&lt;CN=Root,Model=Pratap2016,Vector=Values[spike_length],Reference=Value>)%&lt;CN=Root,Model=Pratap2016,Vector=Values[spike_period],Reference=Value> == 0
         </TriggerExpression>
         <ListOfAssignments>
-          <Assignment targetKey="Metabolite_0">
+          <Assignment target="CN=Root,Model=Pratap2016,Vector=Compartments[cytosol],Vector=Metabolites[GnRH]">
             <Expression>
               0
             </Expression>
@@ -4006,6 +4270,14 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
     </ListOfEvents>
     <ListOfModelParameterSets activeSet="ModelParameterSet_0">
       <ModelParameterSet key="ModelParameterSet_0" name="Initial State">
+        <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelParameterSet_0">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
         <ModelParameterGroup cn="String=Initial Time" type="Group">
           <ModelParameter cn="CN=Root,Model=Pratap2016" value="0" type="Model" simulationType="time"/>
         </ModelParameterGroup>
@@ -4849,8 +5121,8 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_12" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
-      <Report reference="Report_8" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_13" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+      <Report reference="Report_10" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
@@ -4865,10 +5137,11 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Parameter name="Iteration Limit" type="unsignedInteger" value="50"/>
         <Parameter name="Maximum duration for forward integration" type="unsignedFloat" value="1000000000"/>
         <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1000000"/>
+        <Parameter name="Target Criterion" type="string" value="Distance and Rate"/>
       </Method>
     </Task>
-    <Task key="Task_11" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
-      <Report reference="Report_17" target="EventTest31.1.txt" append="0" confirmOverwrite="0"/>
+    <Task key="Task_12" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
+      <Report reference="Report_22" target="EventTest31.1.txt" append="0" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="200"/>
@@ -4878,6 +5151,8 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Parameter name="OutputStartTime" type="float" value="0"/>
         <Parameter name="Output Event" type="bool" value="0"/>
         <Parameter name="Start in Steady State" type="bool" value="0"/>
+        <Parameter name="Use Values" type="bool" value="0"/>
+        <Parameter name="Values" type="string" value=""/>
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
@@ -4887,8 +5162,8 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_10" name="Scan" type="scan" scheduled="false" updateModel="false">
-      <Report reference="Report_19" target="totalScan_P2" append="0" confirmOverwrite="1"/>
+    <Task key="Task_11" name="Scan" type="scan" scheduled="false" updateModel="false">
+      <Report reference="Report_0" target="totalScan_P2" append="0" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="1"/>
         <ParameterGroup name="ScanItems">
@@ -4899,23 +5174,26 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
             <Parameter name="Object" type="cn" value="CN=Root,Model=Pratap2016,Vector=Values[spike_period],Reference=InitialValue"/>
             <Parameter name="Type" type="unsignedInteger" value="1"/>
             <Parameter name="log" type="bool" value="0"/>
+            <Parameter name="Use Values" type="bool" value="0"/>
+            <Parameter name="Values" type="string" value=""/>
           </ParameterGroup>
         </ParameterGroup>
-        <Parameter name="Output in subtask" type="bool" value="1"/>
+        <Parameter name="Subtask Output" type="string" value="subTaskDuring"/>
         <Parameter name="Adjust initial conditions" type="bool" value="0"/>
+        <Parameter name="Continue on Error" type="bool" value="0"/>
       </Problem>
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_9" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
-      <Report reference="Report_7" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_10" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
+      <Report reference="Report_9" target="" append="1" confirmOverwrite="1"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
       </Method>
     </Task>
-    <Task key="Task_8" name="Optimization" type="optimization" scheduled="false" updateModel="false">
-      <Report reference="Report_6" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_9" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+      <Report reference="Report_8" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
         <ParameterText name="ObjectiveExpression" type="expression">
@@ -4928,16 +5206,19 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </ParameterGroup>
         <ParameterGroup name="OptimizationConstraintList">
         </ParameterGroup>
+        <Parameter name="DisplayPoplations" type="bool" value="0"/>
+        <Parameter name="DisplayPopulations" type="bool" value="0"/>
       </Problem>
       <Method name="Random Search" type="RandomSearch">
+        <Parameter name="Log Verbosity" type="unsignedInteger" value="0"/>
         <Parameter name="Number of Iterations" type="unsignedInteger" value="100000"/>
         <Parameter name="Random Number Generator" type="unsignedInteger" value="1"/>
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
         <Parameter name="#LogVerbosity" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_7" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
-      <Report reference="Report_5" target="fitdataGQERK" append="0" confirmOverwrite="1"/>
+    <Task key="Task_8" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+      <Report reference="Report_7" target="fitdataGQERK" append="0" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
@@ -4976,9 +5257,12 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         </ParameterGroup>
         <ParameterGroup name="OptimizationConstraintList">
         </ParameterGroup>
+        <Parameter name="DisplayPoplations" type="bool" value="0"/>
         <Parameter name="Steady-State" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
         <Parameter name="Time-Course" type="cn" value="CN=Root,Vector=TaskList[Time-Course]"/>
         <Parameter name="Create Parameter Sets" type="bool" value="0"/>
+        <Parameter name="Use Time Sens" type="bool" value="0"/>
+        <Parameter name="Time-Sens" type="cn" value=""/>
         <ParameterGroup name="Experiment Set">
           <ParameterGroup name="Experiment_1">
             <Parameter name="Data is Row Oriented" type="bool" value="1"/>
@@ -5005,6 +5289,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
             <Parameter name="Row containing Names" type="unsignedInteger" value="1"/>
             <Parameter name="Separator" type="string" value=","/>
             <Parameter name="Weight Method" type="unsignedInteger" value="1"/>
+            <Parameter name="Time Series Start in Steady State" type="unsignedInteger" value="2"/>
           </ParameterGroup>
           <ParameterGroup name="Experiment_2">
             <Parameter name="Data is Row Oriented" type="bool" value="1"/>
@@ -5031,6 +5316,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
             <Parameter name="Row containing Names" type="unsignedInteger" value="1"/>
             <Parameter name="Separator" type="string" value=","/>
             <Parameter name="Weight Method" type="unsignedInteger" value="1"/>
+            <Parameter name="Time Series Start in Steady State" type="unsignedInteger" value="2"/>
           </ParameterGroup>
           <ParameterGroup name="Experiment">
             <Parameter name="Data is Row Oriented" type="bool" value="1"/>
@@ -5057,26 +5343,30 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
             <Parameter name="Row containing Names" type="unsignedInteger" value="1"/>
             <Parameter name="Separator" type="string" value=","/>
             <Parameter name="Weight Method" type="unsignedInteger" value="1"/>
+            <Parameter name="Time Series Start in Steady State" type="unsignedInteger" value="2"/>
           </ParameterGroup>
         </ParameterGroup>
         <ParameterGroup name="Validation Set">
           <Parameter name="Weight" type="unsignedFloat" value="1"/>
           <Parameter name="Threshold" type="unsignedInteger" value="5"/>
         </ParameterGroup>
+        <Parameter name="DisplayPopulations" type="bool" value="0"/>
       </Problem>
       <Method name="Particle Swarm" type="ParticleSwarm">
+        <Parameter name="Log Verbosity" type="unsignedInteger" value="0"/>
         <Parameter name="Iteration Limit" type="unsignedInteger" value="2000"/>
         <Parameter name="Swarm Size" type="unsignedInteger" value="50"/>
         <Parameter name="Std. Deviation" type="unsignedFloat" value="9.9999999999999995e-07"/>
         <Parameter name="Random Number Generator" type="unsignedInteger" value="1"/>
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
+        <Parameter name="Stop after # Stalled Iterations" type="unsignedInteger" value="0"/>
         <Parameter name="#LogVerbosity" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_6" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_4" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_7" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_6" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_12"/>
+        <Parameter name="Steady-State" type="key" value="Task_13"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="Modulation Factor" type="unsignedFloat" value="1.0000000000000001e-09"/>
@@ -5084,8 +5374,8 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Parameter name="Use Smallbone" type="bool" value="1"/>
       </Method>
     </Task>
-    <Task key="Task_5" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
-      <Report reference="Report_3" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_6" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+      <Report reference="Report_5" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -5099,8 +5389,8 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_4" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_2" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_5" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_4" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -5112,8 +5402,8 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="9.9999999999999995e-07"/>
       </Method>
     </Task>
-    <Task key="Task_3" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
-      <Report reference="Report_1" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_16" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
+      <Report reference="Report_3" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
         <ParameterGroup name="TargetFunctions">
@@ -5136,13 +5426,14 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Parameter name="Delta minimum" type="unsignedFloat" value="9.9999999999999998e-13"/>
       </Method>
     </Task>
-    <Task key="Task_2" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+    <Task key="Task_15" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+      <Report reference="Report_24" target="" append="1" confirmOverwrite="1"/>
       <Problem>
       </Problem>
       <Method name="Householder Reduction" type="Householder">
       </Method>
     </Task>
-    <Task key="Task_1" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
+    <Task key="Task_4" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
@@ -5152,6 +5443,8 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Parameter name="OutputStartTime" type="float" value="0"/>
         <Parameter name="Output Event" type="bool" value="0"/>
         <Parameter name="Start in Steady State" type="bool" value="0"/>
+        <Parameter name="Use Values" type="bool" value="0"/>
+        <Parameter name="Values" type="string" value=""/>
         <Parameter name="LimitCrossings" type="bool" value="0"/>
         <Parameter name="NumCrossingsLimit" type="unsignedInteger" value="0"/>
         <Parameter name="LimitOutTime" type="bool" value="0"/>
@@ -5176,17 +5469,42 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_13" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
-      <Report reference="Report_0" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_3" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
+      <Report reference="Report_2" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_12"/>
+        <Parameter name="Steady-State" type="key" value="Task_13"/>
       </Problem>
       <Method name="Linear Noise Approximation" type="LinearNoiseApproximation">
       </Method>
     </Task>
+    <Task key="Task_2" name="Time-Course Sensitivities" type="timeSensitivities" scheduled="false" updateModel="false">
+      <Problem>
+        <Parameter name="AutomaticStepSize" type="bool" value="0"/>
+        <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
+        <Parameter name="StepSize" type="float" value="0.01"/>
+        <Parameter name="Duration" type="float" value="1"/>
+        <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
+        <Parameter name="OutputStartTime" type="float" value="0"/>
+        <Parameter name="Output Event" type="bool" value="0"/>
+        <Parameter name="Start in Steady State" type="bool" value="0"/>
+        <Parameter name="Use Values" type="bool" value="0"/>
+        <Parameter name="Values" type="string" value=""/>
+        <ParameterGroup name="ListOfParameters">
+        </ParameterGroup>
+        <ParameterGroup name="ListOfTargets">
+        </ParameterGroup>
+      </Problem>
+      <Method name="LSODA Sensitivities" type="Sensitivities(LSODA)">
+        <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="9.9999999999999995e-07"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="9.9999999999999998e-13"/>
+        <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+        <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
+      </Method>
+    </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_8" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_10" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -5194,7 +5512,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_7" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+    <Report key="Report_9" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -5202,7 +5520,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_6" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_8" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -5226,7 +5544,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_5" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_7" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -5250,7 +5568,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_4" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_6" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -5262,7 +5580,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_3" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_5" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -5274,7 +5592,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_2" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_4" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -5286,7 +5604,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Object cn="CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_1" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
+    <Report key="Report_3" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -5298,7 +5616,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Object cn="CN=Root,Vector=TaskList[Sensitivities],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_0" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
+    <Report key="Report_2" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -5310,7 +5628,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Object cn="CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_18" name="conc" taskType="timeCourse" separator="&#x09;" precision="6">
+    <Report key="Report_1" name="conc" taskType="timeCourse" separator="&#x09;" precision="6">
       <Comment>
       </Comment>
       <Table printTitle="1">
@@ -5358,7 +5676,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Object cn="CN=Root,Model=Pratap2016,Vector=Values[Total_TF2],Reference=Value"/>
       </Table>
     </Report>
-    <Report key="Report_19" name="total_conc" taskType="timeCourse" separator="&#x09;" precision="6">
+    <Report key="Report_0" name="total_conc" taskType="timeCourse" separator="&#x09;" precision="6">
       <Comment>
       </Comment>
       <Table printTitle="1">
@@ -5379,7 +5697,7 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Object cn="CN=Root,Model=Pratap2016,Vector=Values[Total_HR],Reference=Value"/>
       </Table>
     </Report>
-    <Report key="Report_17" name="Time, Concentrations, Volumes, and Global Quantity Values" taskType="timeCourse" separator="&#x09;" precision="6">
+    <Report key="Report_22" name="Time, Concentrations, Volumes, and Global Quantity Values" taskType="timeCourse" separator="&#x09;" precision="6">
       <Comment>
         A table of time, variable species concentrations, variable compartment volumes, and variable global quantity values.
       </Comment>
@@ -5470,6 +5788,29 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
         <Object cn="CN=Root,Model=Pratap2016,Vector=Values[Total_HR],Reference=Value"/>
       </Table>
     </Report>
+    <Report key="Report_23" name="Time-Course" taskType="timeCourse" separator="&#x09;" precision="6">
+      <Comment>
+        Automatically generated report.
+      </Comment>
+      <Header>
+        <Object cn="CN=Root,Vector=TaskList[Time-Course],Object=Description"/>
+      </Header>
+      <Footer>
+        <Object cn="CN=Root,Vector=TaskList[Time-Course],Object=Result"/>
+      </Footer>
+    </Report>
+    <Report key="Report_24" name="Moieties" taskType="moieties" separator="&#x09;" precision="6">
+      <Comment>
+        Automatically generated report.
+      </Comment>
+      <Header>
+        <Object cn="CN=Root,Vector=TaskList[Moieties],Object=Description"/>
+      </Header>
+      <Footer>
+        <Object cn="String=&#x0a;"/>
+        <Object cn="CN=Root,Vector=TaskList[Moieties],Object=Result"/>
+      </Footer>
+    </Report>
   </ListOfReports>
   <ListOfPlots>
     <PlotSpecification name="plot" type="Plot2D" active="1" taskTypes="">
@@ -5493,47 +5834,111 @@ Gonadotropin-releasing hormone (GnRH) acts via G-protein coupled receptors on pi
   </ListOfPlots>
   <GUI>
     <ListOfSliders>
-      <Slider key="Slider_0" associatedEntityKey="Task_11" objectCN="CN=Root,Model=Pratap2016,Vector=Values[k_catTF1],Reference=InitialValue" objectType="float" objectValue="0.018" minValue="0.01" maxValue="0.02" tickNumber="1000" tickFactor="100" scaling="linear"/>
-      <Slider key="Slider_1" associatedEntityKey="Task_11" objectCN="CN=Root,Model=Pratap2016,Vector=Values[d_TF1],Reference=InitialValue" objectType="float" objectValue="0.011" minValue="0.0055" maxValue="0.022" tickNumber="1000" tickFactor="100" scaling="linear"/>
+      <Slider key="Slider_0" associatedEntityKey="Task_12" objectCN="CN=Root,Model=Pratap2016,Vector=Values[k_catTF1],Reference=InitialValue" objectType="float" objectValue="0.018" minValue="0.01" maxValue="0.02" tickNumber="1000" tickFactor="100" scaling="linear"/>
+      <Slider key="Slider_1" associatedEntityKey="Task_12" objectCN="CN=Root,Model=Pratap2016,Vector=Values[d_TF1],Reference=InitialValue" objectType="float" objectValue="0.011" minValue="0.0055" maxValue="0.022" tickNumber="1000" tickFactor="100" scaling="linear"/>
     </ListOfSliders>
   </GUI>
   <ListOfUnitDefinitions>
-    <UnitDefinition key="Unit_0" name="meter" symbol="m">
+    <UnitDefinition key="Unit_1" name="meter" symbol="m">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_0">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         m
       </Expression>
     </UnitDefinition>
-    <UnitDefinition key="Unit_2" name="second" symbol="s">
+    <UnitDefinition key="Unit_5" name="second" symbol="s">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_4">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         s
       </Expression>
     </UnitDefinition>
-    <UnitDefinition key="Unit_6" name="Avogadro" symbol="Avogadro">
+    <UnitDefinition key="Unit_13" name="Avogadro" symbol="Avogadro">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_12">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         Avogadro
       </Expression>
     </UnitDefinition>
-    <UnitDefinition key="Unit_7" name="dimensionless" symbol="1">
+    <UnitDefinition key="Unit_15" name="dimensionless" symbol="1">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_14">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         1
       </Expression>
     </UnitDefinition>
-    <UnitDefinition key="Unit_8" name="item" symbol="#">
+    <UnitDefinition key="Unit_17" name="item" symbol="#">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_16">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         #
       </Expression>
     </UnitDefinition>
-    <UnitDefinition key="Unit_17" name="liter" symbol="l">
+    <UnitDefinition key="Unit_35" name="liter" symbol="l">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_34">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         0.001*m^3
       </Expression>
     </UnitDefinition>
-    <UnitDefinition key="Unit_20" name="mole" symbol="mol">
+    <UnitDefinition key="Unit_41" name="mole" symbol="mol">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_40">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         Avogadro*#
       </Expression>
     </UnitDefinition>
-    <UnitDefinition key="Unit_32" name="minute" symbol="min">
+    <UnitDefinition key="Unit_65" name="minute" symbol="min">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_64">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         60*s
       </Expression>

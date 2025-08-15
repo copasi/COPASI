@@ -107,13 +107,27 @@ const C_INT CLSODAR::mxstp0 = 500;
 const C_INT CLSODAR::mxhnl0 = 10;
 const C_INT CLSODAR::mord[] = {12, 5};
 
-CLSODAR::CLSODAR() :
-  State(),
-  CInternalSolver(*static_cast< State *>(this)),
-  mpPJAC(NULL),
-  mpSLVS(NULL)
+CLSODAR::CLSODAR()
+  : State()
+  , CInternalSolver(*static_cast< State * >(this))
+  , mpPJAC(NULL)
+  , mpSLVS(NULL)
+  , mCheckRoots(std::bind(&CLSODAR::drchek_, this,
+                          std::placeholders::_1, // const C_INT * job,
+                          std::placeholders::_2, // evalG g,
+                          std::placeholders::_3, // C_INT *neq,
+                          std::placeholders::_4, // double * y,
+                          std::placeholders::_5, // double *yh,
+                          std::placeholders::_6, // C_INT *nyh,
+                          std::placeholders::_7, // double *g0,
+                          std::placeholders::_8, // double *g1,
+                          std::placeholders::_9, // double *gx,
+                          std::placeholders::_10, // C_INT *jroot,
+                          std::placeholders::_11 // C_INT *irt
+                          ))
+  , mpRootCheck(nullptr)
 {
-  mpPJAC = new PJACFunctor<CLSODAR>(this, &CLSODAR::dprja_);
+  mpPJAC = new PJACFunctor< CLSODAR >(this, &CLSODAR::dprja_);
   mpSLVS = new SLVSFunctor<CLSODAR>(this, &CLSODAR::dsolsy_);
 }
 
@@ -128,6 +142,43 @@ CLSODAR::~CLSODAR()
     {
       delete mpSLVS; mpSLVS = NULL;
     }
+
+  if (mpRootCheck != nullptr)
+    {
+      delete mpRootCheck; mpRootCheck = nullptr;
+    }
+}
+
+void CLSODAR::initializeExternalRootFinder(const C_FLOAT64 & relativeTolerance,
+                                           const CVectorCore< const RootMask > & rootMask)
+{
+  if (mpRootCheck == nullptr)
+    {
+      mpRootCheck = new CRootCheck(*this);
+    }
+
+  mCheckRoots = std::bind(&CRootCheck::operator(), mpRootCheck,
+                          std::placeholders::_1, // const C_INT * job,
+                          std::placeholders::_2, // evalG g,
+                          std::placeholders::_3, // C_INT *neq,
+                          std::placeholders::_4, // double * y,
+                          std::placeholders::_5, // double *yh,
+                          std::placeholders::_6, // C_INT *nyh,
+                          std::placeholders::_7, // double *g0,
+                          std::placeholders::_8, // double *g1,
+                          std::placeholders::_9, // double *gx,
+                          std::placeholders::_10, // C_INT *jroot,
+                          std::placeholders::_11 // C_INT *irt
+                          );
+
+  mpRootCheck->initialize(relativeTolerance, rootMask);
+}
+
+void CLSODAR::updateMaskedRootValues(const CVectorCore< C_FLOAT64 > & maskedRoots, double * rwork)
+{
+  --rwork;
+  CVectorCore< C_FLOAT64 > LeftRoots(dlsr01_lsoda.ngc, rwork + dlsr01_lsoda.lg0);
+  LeftRoots = maskedRoots;
 }
 
 /* DECK DLSODAR */
@@ -1965,7 +2016,7 @@ L180:
       goto L270;
     }
 
-  (this->*mpCheckRoots)(&c__1, (evalG) g, &neq[1], &y[1], &rwork[dls001_lsoda.lyh], &dls001_lsoda.nyh, &rwork[dlsr01_lsoda.lg0], &rwork[dlsr01_lsoda.lg1], &rwork[dlsr01_lsoda.lgx], &jroot[1], &irt);
+  mCheckRoots(&c__1, (evalG) g, &neq[1], &y[1], &rwork[dls001_lsoda.lyh], &dls001_lsoda.nyh, &rwork[dlsr01_lsoda.lg0], &rwork[dlsr01_lsoda.lg1], &rwork[dlsr01_lsoda.lgx], &jroot[1], &irt);
 
   if (irt == 0)
     {
@@ -1997,7 +2048,7 @@ L200:
       dlsr01_lsoda.toutc = *tout;
     }
 
-  (this->*mpCheckRoots)(&c__2, (evalG) g, &neq[1], &y[1], &rwork[dls001_lsoda.lyh], &dls001_lsoda.nyh, &rwork[dlsr01_lsoda.lg0], &rwork[dlsr01_lsoda.lg1], &rwork[dlsr01_lsoda.lgx], &jroot[1], &irt);
+  mCheckRoots(&c__2, (evalG) g, &neq[1], &y[1], &rwork[dls001_lsoda.lyh], &dls001_lsoda.nyh, &rwork[dlsr01_lsoda.lg0], &rwork[dlsr01_lsoda.lg1], &rwork[dlsr01_lsoda.lgx], &jroot[1], &irt);
 
   if (irt != 1)
     {
@@ -2306,7 +2357,7 @@ L310:
       goto L315;
     }
 
-  (this->*mpCheckRoots)(&c__3, (evalG) g, &neq[1], &y[1], &rwork[dls001_lsoda.lyh], &dls001_lsoda.nyh, &rwork[dlsr01_lsoda.lg0], &rwork[dlsr01_lsoda.lg1], &rwork[dlsr01_lsoda.lgx], &jroot[1], &irt);
+  mCheckRoots(&c__3, (evalG) g, &neq[1], &y[1], &rwork[dls001_lsoda.lyh], &dls001_lsoda.nyh, &rwork[dlsr01_lsoda.lg0], &rwork[dlsr01_lsoda.lg1], &rwork[dlsr01_lsoda.lgx], &jroot[1], &irt);
 
   if (irt != 1)
     {
