@@ -26,7 +26,7 @@
 #include "copasi/copasi.h"
 
 CQComboDelegate::CQComboDelegate(QObject *parent, const QStringList & comboItems, bool commitOnSelect):
-  QItemDelegate(parent),
+  QStyledItemDelegate(parent),
   mEditorToIndex(),
   mRowToItems(),
   mCommitOnSelect(commitOnSelect)
@@ -152,7 +152,7 @@ bool CQComboDelegate::isCommitOnSelect() const
 
 QSize CQComboDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
-  return QItemDelegate::sizeHint(option, index);
+  return QStyledItemDelegate::sizeHint(option, index);
 
   //// ISSUE 3250: The code below is called for every combobox, filling it repeatedly
   //// with all items, which turns out to be too expensive, for little to know benefit
@@ -187,7 +187,7 @@ QSize CQComboDelegate::sizeHint(const QStyleOptionViewItem & option, const QMode
 
   //delete pTmp;
 
-  //return SizeHint; // QItemDelegate::sizeHint(option, index);
+  //return SizeHint; // QStyledItemDelegate::sizeHint(option, index);
 }
 
 void CQComboDelegate::setCommitOnSelect(bool commitOnSelect)
