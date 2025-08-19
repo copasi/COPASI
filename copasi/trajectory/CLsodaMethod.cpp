@@ -360,9 +360,10 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
               std::cout << fabs(mTime - mLastRootState.ContainerState[mpContainer->getCountFixedEventTargets()]) << ", " << 100.0 * (fabs(mTime) + fabs(mLastRootState.ContainerState[mpContainer->getCountFixedEventTargets()])) * std::numeric_limits< C_FLOAT64 >::epsilon() << std::endl;
 #endif // DEBUG_FLOW
 
-              if ((fabs(mTime - StartTime) < 100.0 * (fabs(mTime) + fabs(StartTime)) * std::numeric_limits< C_FLOAT64 >::epsilon() &&
-                   (fabs(mTime - mLastRootState.ContainerState[mpContainer->getCountFixedEventTargets()]) < 100.0 * (fabs(mTime) + fabs(mLastRootState.ContainerState[mpContainer->getCountFixedEventTargets()])) * std::numeric_limits< C_FLOAT64 >::epsilon() &&
-                    !hasStateChanged(mLastRootState))))
+              if (fabs(mTime - StartTime) < 100.0 * (fabs(mTime) + fabs(StartTime)) * std::numeric_limits< C_FLOAT64 >::epsilon()
+                  && (fabs(mTime - mLastRootState.ContainerState[mpContainer->getCountFixedEventTargets()]) < 100.0 * (fabs(mTime) + fabs(mLastRootState.ContainerState[mpContainer->getCountFixedEventTargets()])) * std::numeric_limits< C_FLOAT64 >::epsilon()
+                  && !hasStateChanged(mLastRootState)
+                  && !haveRootsChanged(mLastRootState)))
                 {
                   mLsodaStatus = -33;
                   mRootCounter = 0;
@@ -537,11 +538,14 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
                   {
                     mLastRootState.Status = FAILURE;
 
-                    // removing the masking may result in a change of sign for the roots leading to LSODAR finding a root a the start
-                    // we must update LSODA's internal root values.
-                    CVector< C_FLOAT64 > Roots = mpContainer->getRoots();
-                    mRootMask.apply(Roots);
-                    mLSODAR.updateMaskedRootValues(Roots, mDWork.array());
+                    if (!mUseExternalRootFinder)
+                      {
+                        // removing the masking may result in a change of sign for the roots leading to LSODAR finding a root a the start
+                        // we must update LSODA's internal root values.
+                        CVector< C_FLOAT64 > Roots = mpContainer->getRoots();
+                        mRootMask.apply(Roots);
+                        mLSODAR.updateMaskedRootValues(Roots, mDWork.array());
+                      }
                   }
               }
             break;
@@ -928,6 +932,11 @@ bool CLsodaMethod::hasStateChanged(const CLsodaMethod::State & startState) const
         }
     }
 
+  return false;
+}
+
+bool CLsodaMethod::haveRootsChanged(const CLsodaMethod::State & startState) const
+{
   // Check whether new roots where found
   const C_INT * pOldRoot = startState.RootsFound.begin();
   const C_INT * pOldRootEnd = startState.RootsFound.end();
@@ -939,6 +948,7 @@ bool CLsodaMethod::hasStateChanged(const CLsodaMethod::State & startState) const
 
   return false;
 }
+
 void CLsodaMethod::saveState(CLsodaMethod::State & state, const CTrajectoryMethod::Status & status) const
 {
   *mpContainerStateTime = mTime;

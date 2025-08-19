@@ -74,25 +74,25 @@ public:
   /**
    * Check for roots in the interval [timeLeft, timeRight]. If a root is found RootFound is returned
    * and the time is returned in timeRoot, otherwise timeRoot is set to timeRight
-   * @param const C_FLOAT64 & timeLeft
-   * @param const C_FLOAT64 & timeRight
+   * @param C_FLOAT64 timeLeft
+   * @param C_FLOAT64 timeRight
    * @param const RootMask & rootMask
    * @return bool ReturnStatus
    */
-  ReturnStatus checkRoots(const C_FLOAT64 & timeLeft, const C_FLOAT64 & timeRight, const RootMask & rootMasking);
+  ReturnStatus checkRoots(C_FLOAT64 timeLeft, C_FLOAT64 timeRight, const RootMask & rootMasking);
 
-  ReturnStatus checkLeftRoot(const C_FLOAT64 & timeLeft,
-                             const CVector< C_FLOAT64 > &rootsLeft,
+  ReturnStatus checkLeftRoot(C_FLOAT64 timeLeft,
+                             const CVectorCore< C_FLOAT64 > & rootsLeft,
                              const RootMask & rootMasking);
 
   /**
    * Check for roots in the interval [mTimeLeft, timeRight]. If a root is found RootFound is returned
    * and the time is returned in timeRoot, otherwise timeRoot is set to timeRight
-   * @param const C_FLOAT64 & timeRight
-   * @param const RootMasking &
+   * @param C_FLOAT64 timeRight
+   * @param const RootMasking & rootMasking
    * @return bool ReturnStatus
    */
-  ReturnStatus checkRoots(const C_FLOAT64 & timeRight, const RootMask & rootMasking);
+  ReturnStatus checkRoots(C_FLOAT64 timeRight, const RootMask & rootMasking);
 
   /**
    * Check for whether roots have changed sign. If a root is found RootFound is returned
@@ -155,7 +155,7 @@ private:
 
   CVector< C_INT > mToggledRootsLeft;
   CVector< C_INT > mToggledRootsCurrent;
-  bool mToggledRootsLeftValid;
+  bool mToggledRootsCurrentValid;
 
   const CVectorCore< const RootMask > * mpRootMask;
   RootMask mRootMasking;

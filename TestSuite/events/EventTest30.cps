@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.45 (Build 298) (http://www.copasi.org) at 2025-08-15T23:30:40Z -->
+<!-- generated with COPASI 4.45 (Build 298) (http://www.copasi.org) at 2025-08-18T20:51:57Z -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
 <COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="45" versionDevel="298" copasiSourcesModified="0">
   <ListOfFunctions>
@@ -1476,7 +1476,9 @@ Reaction scheme where the products are created from the reactants and the change
       </ModelValue>
       <ModelValue key="ModelValue_109" name="int" simulationType="ode" addNoise="false">
         <MiriamAnnotation>
-<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:RDF
+   xmlns:dcterms="http://purl.org/dc/terms/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#ModelValue_109">
     <dcterms:created>
       <rdf:Description>
@@ -1485,6 +1487,7 @@ Reaction scheme where the products are created from the reactants and the change
     </dcterms:created>
   </rdf:Description>
 </rdf:RDF>
+
         </MiriamAnnotation>
         <Expression>
           &lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65],Reference=Concentration>
@@ -2945,7 +2948,9 @@ Reaction scheme where the products are created from the reactants and the change
     <ListOfEvents>
       <Event key="Event_0" name="min" fireAtInitialTime="0" persistentTrigger="0">
         <MiriamAnnotation>
-<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:RDF
+   xmlns:dcterms="http://purl.org/dc/terms/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Event_0">
     <dcterms:created>
       <rdf:Description>
@@ -2954,6 +2959,7 @@ Reaction scheme where the products are created from the reactants and the change
     </dcterms:created>
   </rdf:Description>
 </rdf:RDF>
+
         </MiriamAnnotation>
         <TriggerExpression>
           &lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65],Reference=Rate> > 0
@@ -2978,7 +2984,9 @@ Reaction scheme where the products are created from the reactants and the change
       </Event>
       <Event key="Event_1" name="max" fireAtInitialTime="0" persistentTrigger="0">
         <MiriamAnnotation>
-<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:RDF
+   xmlns:dcterms="http://purl.org/dc/terms/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#Event_1">
     <dcterms:created>
       <rdf:Description>
@@ -2987,6 +2995,7 @@ Reaction scheme where the products are created from the reactants and the change
     </dcterms:created>
   </rdf:Description>
 </rdf:RDF>
+
         </MiriamAnnotation>
         <TriggerExpression>
           &lt;CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65],Reference=Rate> &lt; 0
@@ -4216,7 +4225,7 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_1" name="Time, Concentrations, Volumes, and Global Quantity Values" taskType="timeCourse" separator="&#x09;" precision="6">
+    <Report key="Report_1" name="Time, Concentrations, Volumes, and Global Quantity Values" taskType="timeCourse" separator="&#x09;" precision="7">
       <Comment>
         A table of time, variable species concentrations, variable compartment volumes, and variable global quantity values.
       </Comment>
@@ -4285,8 +4294,6 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
         <Object cn="CN=Root,Model=beuke1,Vector=Values[amp],Reference=Value"/>
         <Object cn="CN=Root,Model=beuke1,Vector=Values[time1],Reference=Value"/>
         <Object cn="CN=Root,Model=beuke1,Vector=Values[period],Reference=Value"/>
-        <Object cn="CN=Root,Model=beuke1,Vector=Values[avg],Reference=Value"/>
-        <Object cn="CN=Root,Model=beuke1,Vector=Values[int],Reference=Value"/>
         <Object cn="CN=Root,Model=beuke1,Vector=Values[sign],Reference=Value"/>
         <Object cn="CN=Root,Model=beuke1,Vector=Values[counter],Reference=Value"/>
       </Table>
@@ -4409,6 +4416,10 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
     <PlotSpecification name="plot" type="Plot2D" active="1" taskTypes="">
       <Parameter name="log X" type="bool" value="0"/>
       <Parameter name="log Y" type="bool" value="0"/>
+      <Parameter name="x axis" type="string" value=""/>
+      <Parameter name="y axis" type="string" value=""/>
+      <Parameter name="z axis" type="string" value=""/>
+      <Parameter name="plot engine" type="string" value="QWT"/>
       <ListOfPlotItems>
         <PlotItem name="Values[counter]|Time" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
@@ -4444,6 +4455,18 @@ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Compartments[cytoplasm],Vector=Metabolites[p65],Reference=Rate"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[int]|Time" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=beuke1,Vector=Values[int],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
       </ListOfPlotItems>

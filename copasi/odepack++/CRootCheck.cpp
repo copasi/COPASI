@@ -40,8 +40,7 @@ void CRootCheck::initialize(const C_FLOAT64 & relativeTolerance, const CVectorCo
 C_INT CRootCheck::operator()(const C_INT * job,
                              evalG g,
                              C_INT *neq,
-                             double *
-                             y,
+                             double * y,
                              double *yh,
                              C_INT *nyh,
                              double *g0,
@@ -55,7 +54,6 @@ C_INT CRootCheck::operator()(const C_INT * job,
   CVectorCore< C_FLOAT64 > RightRoots(dlsr01_1.ngc, g1);
   CVectorCore< C_FLOAT64 > CurrentRoots(dlsr01_1.ngc, gx);
   CVectorCore< C_INT > JRoot(dlsr01_1.ngc, jroot);
-  JRoot = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
 
   /* System generated locals */
   C_INT yh_dim1, yh_offset, i__1;
@@ -116,13 +114,16 @@ C_INT CRootCheck::operator()(const C_INT * job,
 
   // &c__0, &yh[yh_offset], nyh, &y[1], &iflag
   mData.g = g;
-  mData.neq = neq;
+  mData.neq = &neq[1];
   mData.y = &y[1];
   mData.yh = &yh[yh_offset];
   mData.nyh = nyh;
 
   /* Function Body */
   *irt = 0;
+  JRoot = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
+
+#ifdef XXXX
   i__1 = dlsr01_1.ngc;
 
   for (i__ = 1; i__ <= i__1; ++i__)
@@ -130,6 +131,7 @@ C_INT CRootCheck::operator()(const C_INT * job,
       /* L10: */
       jroot[i__] = 0;
     }
+#endif // XXXX
 
   hming = (fabs(dls001_1.tn) + fabs(dls001_1.h__)) * dls001_1.uround * 100.;
 
@@ -146,6 +148,7 @@ C_INT CRootCheck::operator()(const C_INT * job,
 L100:
   dlsr01_1.t0 = dls001_1.tn;
   dlsr01_1.nge = 0;
+
   (*g)(&neq[1], &dlsr01_1.t0, &y[1], &dlsr01_1.ngc, &g0[1]);
   ++dlsr01_1.nge;
 
@@ -390,8 +393,8 @@ L310:
     }
 
 L330:
-  (*g)(&neq[1], &t1, &y[1], &dlsr01_1.ngc, &g1[1]);
-  ++dlsr01_1.nge;
+  // (*g)(&neq[1], &t1, &y[1], &dlsr01_1.ngc, &g1[1]);
+  // ++dlsr01_1.nge;
 
   switch (mRootFinder.checkRoots(t1, RootMask::ALL))
     {
@@ -492,6 +495,10 @@ void CRootCheck::calculateRootValues(const double & time,
   C_INT iflag = 0;
 
   dintdy_(const_cast< double * >(&time), &c__0, mData.yh, mData.nyh, mData.y, &iflag);
-  (*mData.g)(mData.neq, const_cast< double * >(&time), mData.y, &dlsr01_1.ngc, rootValues.array());
-  ++dlsr01_1.nge;
+
+  if (iflag == 0)
+    {
+      (*mData.g)(mData.neq, const_cast< double * >(&time), mData.y, &dlsr01_1.ngc, rootValues.array());
+      ++dlsr01_1.nge;
+    }
 }

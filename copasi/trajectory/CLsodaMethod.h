@@ -313,6 +313,7 @@ private:
   CTrajectoryMethod::Status peekAhead();
 
   bool hasStateChanged(const State & startState) const;
+  bool haveRootsChanged(const State & startState) const;
   void saveState(State & state, const CTrajectoryMethod::Status & status) const;
   void resetState(State & state);
 };

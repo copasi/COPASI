@@ -112,7 +112,6 @@ void CRootMask::create(RootMask type, const CVectorCore< C_INT > & rootsFound)
           else if ((RootMask::CONTINUOUS & mType) != RootMask::NONE
                    && (fabs(*pRootValue) < 1e50 * std::numeric_limits< C_FLOAT64 >::min()
                        || ((*pFound > 0)
-                           && *pRootDerivative * *pRootValue <= 0
                            && fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::epsilon())))
             {
               if (*pRootValue < 0

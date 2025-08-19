@@ -31,7 +31,7 @@ CRootFinder::CRootFinder()
   , mRootsCurrent()
   , mToggledRootsLeft()
   , mToggledRootsCurrent()
-  , mToggledRootsLeftValid(false)
+  , mToggledRootsCurrentValid(false)
   , mpRootMask(nullptr)
   , mRootMasking(RootMask::NONE)
   , mRootError(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
@@ -54,7 +54,7 @@ CRootFinder::CRootFinder(const CRootFinder & src)
   , mRootsCurrent(src.mRootsCurrent)
   , mToggledRootsLeft(src.mToggledRootsLeft)
   , mToggledRootsCurrent(src.mToggledRootsCurrent)
-  , mToggledRootsLeftValid(src.mToggledRootsLeftValid)
+  , mToggledRootsCurrentValid(src.mToggledRootsCurrentValid)
   , mpRootMask(nullptr)
   , mRootMasking(src.mRootMasking)
   , mRootError(src.mRootError)
@@ -93,7 +93,7 @@ void CRootFinder::initialize(const C_FLOAT64 & relativeTolerance,
   mToggledRootsCurrent.resize(numRoots);
   mToggledRootsCurrent = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
 
-  mToggledRootsLeftValid = false;
+  mToggledRootsCurrentValid = false;
   mRootError = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
   restart();
@@ -105,9 +105,9 @@ void CRootFinder::addPhysicalRoot(CRootFinder::PhysicalRoot & physicalRootCalcul
   mPhysicalRootLeft = mPhysicalRootCurrent = mPhysicalRootRight = std::numeric_limits< C_FLOAT64 >::infinity();
 }
 
-CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
-    const C_FLOAT64 & timeRight,
-    const RootMask & rootMasking)
+CRootFinder::ReturnStatus CRootFinder::checkRoots(C_FLOAT64 timeLeft,
+                                                  C_FLOAT64 timeRight,
+                                                  const RootMask & rootMasking)
 {
   if (!mRootValueCalculator && !mPhysicalRootCalculator)
     return NotFound;
@@ -118,40 +118,52 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
 
   // Sanity check
   if (timeLeft >= timeRight)
-    return InvalidInterval;
+    {
+      // It is possible that time right is smaller than mTimeRight or mTimeCurrent from a previous call.
+      // All we can do in that case to check whether there are roots in the interval [timeRight, mTimeCurrent]
+      // as we may not be able to interpolate past timeRight.
+      if (mToggledRootsCurrentValid
+          && mTimeCurrent == timeLeft)
+        {
+          CVector< C_FLOAT64 > LeftRoots(mpRootMask->size());
+          C_FLOAT64 LeftPhysicalRoot(std::numeric_limits< C_FLOAT64 >::infinity());
+
+          calculateRoots(timeRight, LeftRoots, LeftPhysicalRoot);
+
+          return checkRoots(LeftRoots, mRootsCurrent, mRootMasking);
+        }
+
+      return InvalidInterval;
+    }
 
   // Check whether we are restarting
   if (std::isnan(mTimeLeft) &&
       std::isnan(mTimeRight) &&
       timeLeft == mTimeCurrent)
     {
-      mTimeCurrent = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-      calculateCurrentRoots(timeLeft);
+      mTimeCurrent = timeLeft;
+      calculateCurrentRoots(mTimeCurrent);
 
       // If the newly calculated roots do not differ we can resume
       C_FLOAT64 * pLeftRoot = mRootsLeft.begin();
       C_FLOAT64 * pLeftRootEnd = mRootsLeft.end();
       C_FLOAT64 * pRoot = mRootsCurrent.begin();
       C_INT * pRootFound = mToggledRootsCurrent.begin();
-      bool Reset = false;
+      mToggledRootsCurrentValid = true;
 
       for (; pLeftRoot != pLeftRootEnd; ++pLeftRoot, ++pRoot, ++pRootFound)
         if (*pRootFound != static_cast< C_INT >(CMath::RootToggleType::NoToggle) &&
             *pRoot != *pLeftRoot)
-          Reset = true;
-
-      mTimeLeft = mTimeCurrent;
-
-      if (Reset)
-        {
-          // We have a clean restart and reset
-          mToggledRootsLeft = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
-          mToggledRootsLeftValid = false;
-        }
+          {
+            mToggledRootsCurrentValid = false;
+            break;
+          }
     }
 
-  if (mToggledRootsLeftValid)
+  if (mToggledRootsCurrentValid)
     mToggledRootsLeft = mToggledRootsCurrent;
+  else
+    mToggledRootsLeft = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
 
   // Check whether we have roots for timeLeft
   if (timeLeft != mTimeLeft)
@@ -229,7 +241,7 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
         }
 
       // Handle interval size which are near the numerical resolution indicating a discontinuity
-      if (!fabs(RightRootTime - LeftRootTime) <= (fabs(RightRootTime) + fabs(LeftRootTime)) * 50.0 * std::numeric_limits< double >::epsilon())
+      if (!fabs(RightRootTime - LeftRootTime) <= (fabs(RightRootTime) + fabs(LeftRootTime)) * mRelativeTolerance * 1e-6)
         CBrent::findRootInterval(LeftRootTime,
                                  RightRootTime,
                                  mBrentRootValueCalculator,
@@ -271,7 +283,7 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
                   *pRootToggled = static_cast< C_INT >(CMath::RootToggleType::ToggleBoth);
                   Status = RootFound;
 
-                  if (mToggledRootsLeftValid
+                  if (mToggledRootsCurrentValid
                       && *pRootToggledLeft == static_cast< C_INT >(CMath::RootToggleType::NoToggle))
                     Advanced = true;
                 }
@@ -303,7 +315,7 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
         }
 
       if (Status == RootFound && Advanced == false)
-        return NotAdvanced;
+        Status = NotAdvanced;
 
       if (Status == RootFound)
         {
@@ -322,27 +334,26 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeLeft,
           std::cout << "mRootMask:                    " << *reinterpret_cast< const CVector< RootMask > * >(mpRootMask) << std::endl;
 #endif // DEBUG_OUTPUT
 
-          mTimeLeft = mTimeCurrent;
-          mRootsLeft = mRootsCurrent;
-          mPhysicalRootLeft = mPhysicalRootCurrent;
-          mToggledRootsLeft = mToggledRootsCurrent;
+          mToggledRootsCurrentValid = true;
         }
+      else
+        mToggledRootsCurrentValid = false;
     }
   else
     {
-      mToggledRootsLeft = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
-      mTimeCurrent = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+      mToggledRootsCurrentValid = false;
     }
-
-  mToggledRootsLeftValid = true;
 
   return Status;
 }
 
-CRootFinder::ReturnStatus CRootFinder::checkLeftRoot(const C_FLOAT64 & timeLeft,
-                                                     const CVector< C_FLOAT64 > &rootsLeft,
+CRootFinder::ReturnStatus CRootFinder::checkLeftRoot(C_FLOAT64 timeLeft,
+                                                     const CVectorCore< C_FLOAT64 > & rootsLeft,
                                                      const RootMask & rootMasking)
 {
+  mTimeLeft = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+  mTimeRight = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+
   // Default return values
   ReturnStatus Status = NotFound;
   mRootMasking = rootMasking;
@@ -364,10 +375,16 @@ CRootFinder::ReturnStatus CRootFinder::checkLeftRoot(const C_FLOAT64 & timeLeft,
         Status = ReturnStatus::RootFound;
       }
 
-  mTimeLeft = mTimeCurrent;
-  mRootsLeft = mRootsCurrent;
-  mToggledRootsLeft = mToggledRootsCurrent;
-  mToggledRootsLeftValid = true;
+#ifdef DEBUG_OUTPUT
+  std::cout << "checkLeftRoot: timeLeft = " << timeLeft << ", mTimeCurrent = " << mTimeCurrent << std::endl;
+  std::cout << "               mRootsCurrent:        " << mRootsCurrent << std::endl;
+  std::cout << "               mToggledRootsCurrent: " << mToggledRootsCurrent << std::endl;
+  std::cout << "               mPhysicalRootCurrent: " << mPhysicalRootCurrent << std::endl;
+#endif // DEBUG_OUTPUT
+  // mTimeLeft = mTimeCurrent;
+  // mRootsLeft = mRootsCurrent;
+  // mToggledRootsLeft = mToggledRootsCurrent;
+  mToggledRootsCurrentValid = true;
 
   return Status;
 }
@@ -379,9 +396,13 @@ CRootFinder::ReturnStatus CRootFinder::checkLeftRoot(const C_FLOAT64 & timeLeft,
    * @param const RootMasking &
    * @return bool ReturnStatus
    */
-CRootFinder::ReturnStatus CRootFinder::checkRoots(const C_FLOAT64 & timeRight, const RootMask & rootMasking)
+CRootFinder::ReturnStatus CRootFinder::checkRoots(C_FLOAT64 timeRight, const RootMask & rootMasking)
 {
-  return checkRoots(mTimeLeft, timeRight, rootMasking);
+#ifdef DEBUG_OUTPUT
+  std::cout << "checkRightRoot: timeLeft = " << (mToggledRootsCurrentValid ? mTimeCurrent : mTimeRight) << ", timeRight = " << timeRight << ", mToggledRootsCurrentValid = " << mToggledRootsCurrentValid << std::endl;
+#endif // DEBUG_OUTPUT
+
+  return checkRoots(mToggledRootsCurrentValid ? mTimeCurrent : mTimeRight, timeRight, rootMasking);
 }
 
 /**
@@ -419,6 +440,7 @@ void CRootFinder::restart()
 {
 #ifdef DEBUG_OUTPUT
   std::cout << "<-- restart root finder -->" << std::endl;
+  std::cout.precision(16);
 #endif // DEBUG_OUTPUT
 
   mTimeLeft = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -515,7 +537,7 @@ void CRootFinder::calculateRoots(const C_FLOAT64 & time, CVectorCore< C_FLOAT64 
 #ifdef DEBUG_OUTPUT
   std::cout << "Time: " << time << ", ";
   std::cout << "Physical Root: " << physicalRoot << ", ";
-  std::cout << "mRootsCurrent: " << mRootsCurrent << std::endl;
+  std::cout << "mRootsCurrent: " << roots << std::endl;
 #endif // DEBUG_OUTPUT
 }
 
