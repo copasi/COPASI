@@ -54,6 +54,9 @@ protected:
                C_INT *nyh, double *ewt, double *ftem, double *savf,
                double *wm, C_INT *iwm, evalF f, evalJ jac);
 
+  C_INT drchek2_(const C_INT *job, evalG g, C_INT *neq, double *
+                 y, C_INT *nyh, double *rwork, C_INT *jroot, C_INT *irt);
+
   C_INT drchek_(const C_INT * job, evalG g, C_INT *neq, double *
                 y, double *yh, C_INT *nyh, double *g0, double *g1,
                 double *gx, C_INT *jroot, C_INT *irt);
@@ -73,14 +76,17 @@ protected:
 #define dls001_1 (mState.mdls001_._1)
 #define dls001_2 (mState.mdls001_._2)
 #define dls001_3 (mState.mdls001_._3)
+#define dls001_lsoda (mState.mdls001_.lsoda)
 
 #define dlsa01_1 (mState.mdlsa01_._1)
 #define dlsa01_2 (mState.mdlsa01_._2)
 #define dlsa01_3 (mState.mdlsa01_._3)
+#define dlsa01_lsoda (mState.mdlsa01_.lsoda)
 
 #define dlsr01_1 (mState.mdlsr01_._1)
 #define dlsr01_2 (mState.mdlsr01_._2)
 #define dlsr01_3 (mState.mdlsr01_._3)
+#define dlsr01_lsodar (mState.mdlsr01_.lsodar)
 
 protected:
   State & mState;

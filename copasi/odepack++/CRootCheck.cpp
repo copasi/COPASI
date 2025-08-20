@@ -35,20 +35,30 @@ void CRootCheck::initialize(const C_FLOAT64 & relativeTolerance, const CVectorCo
   mRootFinder.initialize(relativeTolerance, rootMask, std::bind(&CRootCheck::calculateRootValues, this, std::placeholders::_1, std::placeholders::_2));
 }
 
+C_INT CRootCheck::operator()(const C_INT *job, evalG g, C_INT *neq, double *
+                                y, C_INT *nyh, double *rwork, C_INT *jroot, C_INT *irt)
+{
+  return check(job, g, neq, y, &rwork[dls001_lsoda.lyh], nyh, &rwork[dlsr01_lsodar.lg0], &rwork[dlsr01_lsodar.lg1],
+                               &rwork[dlsr01_lsodar.lgx], jroot, irt);
+}
+
 /* DECK DRCHEK */
 /* Subroutine */
-C_INT CRootCheck::operator()(const C_INT * job,
-                             evalG g,
-                             C_INT *neq,
-                             double * y,
-                             double *yh,
-                             C_INT *nyh,
-                             double *g0,
-                             double *g1,
-                             double *gx,
-                             C_INT *jroot,
-                             C_INT *irt)
+C_INT CRootCheck::check(const C_INT * job,
+                        evalG g,
+                        C_INT *neq,
+                        double * y,
+                        double *yh,
+                        C_INT *nyh,
+                        double *g0,
+                        double *g1,
+                        double *gx,
+                        C_INT *jroot,
+                        C_INT *irt)
 {
+  // drchek_(job, g, neq, y, &rwork[dls001_lsoda.lyh], nyh, &rwork[dlsr01_lsodar.lg0], &rwork[dlsr01_lsodar.lg0],
+  //         &rwork[dlsr01_lsodar.lg0], jroot, irt);
+
   // Convenience variables for interfacing CRootFinder
   CVectorCore< C_FLOAT64 > LeftRoots(dlsr01_1.ngc, g0);
   CVectorCore< C_FLOAT64 > RightRoots(dlsr01_1.ngc, g1);

@@ -45,10 +45,6 @@ double d_sign(const double & a, const double & b);
 #include "dmnorm.h"
 #include "dewset.h"
 
-#define dls001_lsoda (mdls001_.lsoda)
-#define dlsa01_lsoda (mdlsa01_.lsoda)
-#define dlsr01_lsoda (mdlsr01_.lsodar)
-
 static const double c_b76 = 0.0;
 
 static const C_INT c__0 = 0;
@@ -112,18 +108,15 @@ CLSODAR::CLSODAR()
   , CInternalSolver(*static_cast< State * >(this))
   , mpPJAC(NULL)
   , mpSLVS(NULL)
-  , mCheckRoots(std::bind(&CLSODAR::drchek_, this,
+  , mCheckRoots(std::bind(&CLSODAR::drchek2_, this,
                           std::placeholders::_1, // const C_INT * job,
                           std::placeholders::_2, // evalG g,
                           std::placeholders::_3, // C_INT *neq,
                           std::placeholders::_4, // double * y,
-                          std::placeholders::_5, // double *yh,
-                          std::placeholders::_6, // C_INT *nyh,
-                          std::placeholders::_7, // double *g0,
-                          std::placeholders::_8, // double *g1,
-                          std::placeholders::_9, // double *gx,
-                          std::placeholders::_10, // C_INT *jroot,
-                          std::placeholders::_11 // C_INT *irt
+                          std::placeholders::_5, // C_INT *nyh,
+                          std::placeholders::_6, // double *rwork,
+                          std::placeholders::_7, // C_INT *jroot,
+                          std::placeholders::_8  // C_INT *irt
                           ))
   , mpRootCheck(nullptr)
 {
@@ -162,13 +155,10 @@ void CLSODAR::initializeExternalRootFinder(const C_FLOAT64 & relativeTolerance,
                           std::placeholders::_2, // evalG g,
                           std::placeholders::_3, // C_INT *neq,
                           std::placeholders::_4, // double * y,
-                          std::placeholders::_5, // double *yh,
-                          std::placeholders::_6, // C_INT *nyh,
-                          std::placeholders::_7, // double *g0,
-                          std::placeholders::_8, // double *g1,
-                          std::placeholders::_9, // double *gx,
-                          std::placeholders::_10, // C_INT *jroot,
-                          std::placeholders::_11 // C_INT *irt
+                          std::placeholders::_5, // C_INT *nyh,
+                          std::placeholders::_6, // double *rwork,
+                          std::placeholders::_7, // C_INT *jroot,
+                          std::placeholders::_8 // C_INT *irt
                           );
 
   mpRootCheck->initialize(relativeTolerance, rootMask);
@@ -177,7 +167,7 @@ void CLSODAR::initializeExternalRootFinder(const C_FLOAT64 & relativeTolerance,
 void CLSODAR::updateMaskedRootValues(const CVectorCore< C_FLOAT64 > & maskedRoots, double * rwork)
 {
   --rwork;
-  CVectorCore< C_FLOAT64 > LeftRoots(dlsr01_lsoda.ngc, rwork + dlsr01_lsoda.lg0);
+  CVectorCore< C_FLOAT64 > LeftRoots(dlsr01_lsodar.ngc, rwork + dlsr01_lsodar.lg0);
   LeftRoots = maskedRoots;
 }
 
@@ -1378,7 +1368,7 @@ C_INT CLSODAR::operator()(evalF f, C_INT *neq, double *y, double
       goto L602;
     }
 
-  dlsr01_lsoda.itaskc = *itask;
+  dlsr01_lsodar.itaskc = *itask;
 
   if (*istate == 1)
     {
@@ -1480,13 +1470,13 @@ L30:
       goto L35;
     }
 
-  if (dlsr01_lsoda.irfnd == 0 && *ng != dlsr01_lsoda.ngc)
+  if (dlsr01_lsodar.irfnd == 0 && *ng != dlsr01_lsodar.ngc)
     {
       goto L631;
     }
 
 L35:
-  dlsr01_lsoda.ngc = *ng;
+  dlsr01_lsodar.ngc = *ng;
 
   /* Next process and check the optional inputs. -------------------------- */
   if (*iopt == 1)
@@ -1627,10 +1617,10 @@ L60:
       dls001_lsoda.nyh = dls001_lsoda.n;
     }
 
-  dlsr01_lsoda.lg0 = 21;
-  dlsr01_lsoda.lg1 = dlsr01_lsoda.lg0 + *ng;
-  dlsr01_lsoda.lgx = dlsr01_lsoda.lg1 + *ng;
-  lyhnew = dlsr01_lsoda.lgx + *ng;
+  dlsr01_lsodar.lg0 = 21;
+  dlsr01_lsodar.lg1 = dlsr01_lsodar.lg0 + *ng;
+  dlsr01_lsodar.lgx = dlsr01_lsodar.lg1 + *ng;
+  lyhnew = dlsr01_lsodar.lgx + *ng;
 
   if (*istate == 1)
     {
@@ -2008,15 +1998,16 @@ L180:
     }
 
   /* Check for a zero of g at T. ------------------------------------------ */
-  dlsr01_lsoda.irfnd = 0;
-  dlsr01_lsoda.toutc = *tout;
+  dlsr01_lsodar.irfnd = 0;
+  dlsr01_lsodar.toutc = *tout;
 
-  if (dlsr01_lsoda.ngc == 0)
+  if (dlsr01_lsodar.ngc == 0)
     {
       goto L270;
     }
 
-  mCheckRoots(&c__1, (evalG) g, &neq[1], &y[1], &rwork[dls001_lsoda.lyh], &dls001_lsoda.nyh, &rwork[dlsr01_lsoda.lg0], &rwork[dlsr01_lsoda.lg1], &rwork[dlsr01_lsoda.lgx], &jroot[1], &irt);
+  // mCheckRoots(&c__1, (evalG) g, &neq[1], &y[1], &rwork[dls001_lsoda.lyh], &dls001_lsoda.nyh, &rwork[dlsr01_lsodar.lg0], &rwork[dlsr01_lsodar.lg1], &rwork[dlsr01_lsodar.lgx], &jroot[1], &irt);
+  mCheckRoots(&c__1, (evalG) g, &neq[1], &y[1], &dls001_lsoda.nyh, rwork, &jroot[1], &irt);
 
   if (irt == 0)
     {
@@ -2036,33 +2027,34 @@ L180:
 L200:
   dls001_lsoda.nslast = dls001_lsoda.nst;
 
-  irfp = dlsr01_lsoda.irfnd;
+  irfp = dlsr01_lsodar.irfnd;
 
-  if (dlsr01_lsoda.ngc == 0)
+  if (dlsr01_lsodar.ngc == 0)
     {
       goto L205;
     }
 
   if (*itask == 1 || *itask == 4)
     {
-      dlsr01_lsoda.toutc = *tout;
+      dlsr01_lsodar.toutc = *tout;
     }
 
-  mCheckRoots(&c__2, (evalG) g, &neq[1], &y[1], &rwork[dls001_lsoda.lyh], &dls001_lsoda.nyh, &rwork[dlsr01_lsoda.lg0], &rwork[dlsr01_lsoda.lg1], &rwork[dlsr01_lsoda.lgx], &jroot[1], &irt);
+  // mCheckRoots(&c__2, (evalG) g, &neq[1], &y[1], &rwork[dls001_lsoda.lyh], &dls001_lsoda.nyh, &rwork[dlsr01_lsoda.lg0], &rwork[dlsr01_lsoda.lg1], &rwork[dlsr01_lsoda.lgx], &jroot[1], &irt);
+  mCheckRoots(&c__2, (evalG) g, &neq[1], &y[1], &dls001_lsoda.nyh, rwork, &jroot[1], &irt);
 
   if (irt != 1)
     {
       goto L205;
     }
 
-  dlsr01_lsoda.irfnd = 1;
+  dlsr01_lsodar.irfnd = 1;
   *istate = 3;
-  *t = dlsr01_lsoda.t0;
+  *t = dlsr01_lsodar.t0;
   goto L425;
 L205:
-  dlsr01_lsoda.irfnd = 0;
+  dlsr01_lsodar.irfnd = 0;
 
-  if (irfp == 1 && dlsr01_lsoda.tlast != dls001_lsoda.tn && *itask == 2)
+  if (irfp == 1 && dlsr01_lsodar.tlast != dls001_lsoda.tn && *itask == 2)
     {
       goto L400;
     }
@@ -2156,7 +2148,7 @@ L245:
       *t = tcrit;
     }
 
-  if (irfp == 1 && dlsr01_lsoda.tlast != dls001_lsoda.tn && *itask == 5)
+  if (irfp == 1 && dlsr01_lsodar.tlast != dls001_lsoda.tn && *itask == 5)
     {
       goto L400;
     }
@@ -2352,21 +2344,22 @@ L300:
           dls001_lsoda.tn, &dls001_lsoda.h__, (C_INT)60);
 L310:
 
-  if (dlsr01_lsoda.ngc == 0)
+  if (dlsr01_lsodar.ngc == 0)
     {
       goto L315;
     }
 
-  mCheckRoots(&c__3, (evalG) g, &neq[1], &y[1], &rwork[dls001_lsoda.lyh], &dls001_lsoda.nyh, &rwork[dlsr01_lsoda.lg0], &rwork[dlsr01_lsoda.lg1], &rwork[dlsr01_lsoda.lgx], &jroot[1], &irt);
+  // mCheckRoots(&c__3, (evalG) g, &neq[1], &y[1], &rwork[dls001_lsoda.lyh], &dls001_lsoda.nyh, &rwork[dlsr01_lsoda.lg0], &rwork[dlsr01_lsoda.lg1], &rwork[dlsr01_lsoda.lgx], &jroot[1], &irt);
+  mCheckRoots(&c__3, (evalG) g, &neq[1], &y[1], &dls001_lsoda.nyh, rwork, &jroot[1], &irt);
 
   if (irt != 1)
     {
       goto L315;
     }
 
-  dlsr01_lsoda.irfnd = 1;
+  dlsr01_lsodar.irfnd = 1;
   *istate = 3;
-  *t = dlsr01_lsoda.t0;
+  *t = dlsr01_lsodar.t0;
   goto L425;
 L315:
 
@@ -2486,8 +2479,8 @@ L425:
   iwork[15] = dls001_lsoda.nq;
   iwork[19] = dlsa01_lsoda.mused;
   iwork[20] = dls001_lsoda.meth;
-  iwork[10] = dlsr01_lsoda.nge;
-  dlsr01_lsoda.tlast = *t;
+  iwork[10] = dlsr01_lsodar.nge;
+  dlsr01_lsodar.tlast = *t;
   return 0;
   /* ----------------------------------------------------------------------- */
   /* Block H. */
@@ -2600,8 +2593,8 @@ L580:
   iwork[15] = dls001_lsoda.nq;
   iwork[19] = dlsa01_lsoda.mused;
   iwork[20] = dls001_lsoda.meth;
-  iwork[10] = dlsr01_lsoda.nge;
-  dlsr01_lsoda.tlast = *t;
+  iwork[10] = dlsr01_lsodar.nge;
+  dlsr01_lsodar.tlast = *t;
   return 0;
   /* ----------------------------------------------------------------------- */
   /* Block I. */
@@ -2745,7 +2738,7 @@ L630:
 L631:
   mxerrwd("DLSODAR-  NG changed (from I1 to I2) illegally,   ", &c__50, &c__31, &c__0, &c__0, &c__0, &c__0, &c__0, &c_b76, &
           c_b76, (C_INT)60);
-  mxerrwd("      i.e. not immediately after a root was found.", &c__50, &c__31, &c__0, &c__2, &dlsr01_lsoda.ngc, ng, &c__0, &
+  mxerrwd("      i.e. not immediately after a root was found.", &c__50, &c__31, &c__0, &c__2, &dlsr01_lsodar.ngc, ng, &c__0, &
           c_b76, &c_b76, (C_INT)60);
   goto L700;
 L632:

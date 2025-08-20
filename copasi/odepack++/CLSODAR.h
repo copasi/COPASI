@@ -51,6 +51,15 @@ public:
                                C_INT *jroot,
                                C_INT *irt) > CheckRoots;
 
+  typedef std::function< C_INT(const C_INT * job,
+                               evalG g,
+                               C_INT *neq,
+                               double *y,
+                               C_INT *nyh,
+                               double *rwork, // double *yh = &rwork[dls001_lsoda.lyh], double *g0 = &rwork[dlsr01_lsoda.lg0], double *g1 = &rwork[dlsr01_lsoda.lg1], double *gx = &rwork[dlsr01_lsoda.lgx]
+                               C_INT *jroot,
+                               C_INT *irt) > CheckRootsNew;
+
   CLSODAR();
 
   ~CLSODAR();
@@ -89,7 +98,7 @@ private:
   static const C_INT mxhnl0;
   static const C_INT mord[2];
 
-  CheckRoots mCheckRoots;
+  CheckRootsNew mCheckRoots;
 
   CRootCheck * mpRootCheck;
 };

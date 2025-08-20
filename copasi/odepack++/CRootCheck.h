@@ -21,19 +21,28 @@ public:
 
   void initialize(const C_FLOAT64 & relativeTolerance, const CVectorCore< const RootMask > & mRootMask);
 
-  C_INT operator()(const C_INT * job,
+  C_INT operator()(const C_INT *job,
                    evalG g,
                    C_INT *neq,
                    double *y,
-                   double *yh,
                    C_INT *nyh,
-                   double *g0,
-                   double *g1,
-                   double *gx,
+                   double *rwork,
                    C_INT *jroot,
                    C_INT *irt);
 
 protected:
+  C_INT check(const C_INT * job,
+              evalG g,
+              C_INT *neq,
+              double *y,
+              double *yh,
+              C_INT *nyh,
+              double *g0,
+              double *g1,
+              double *gx,
+              C_INT *jroot,
+              C_INT *irt);
+
   void calculateRootValues(const double & time,
                            CVectorCore< C_FLOAT64 > & rootValues);
 

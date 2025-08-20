@@ -43,6 +43,13 @@ static double c_b3 = 1.0;
 static const C_INT c__0 = 0;
 static C_INT c__1 = 1;
 
+C_INT CInternalSolver::drchek2_(const C_INT *job, evalG g, C_INT *neq, double *
+                                y, C_INT *nyh, double *rwork, C_INT *jroot, C_INT *irt)
+{
+  return drchek_(job, g, neq, y, &rwork[dls001_lsoda.lyh], nyh, &rwork[dlsr01_lsodar.lg0], &rwork[dlsr01_lsodar.lg1],
+                               &rwork[dlsr01_lsodar.lgx], jroot, irt);
+}
+
 /* DECK DRCHEK */
 /* Subroutine */
 C_INT CInternalSolver::drchek_(const C_INT *job, evalG g, C_INT *neq, double *

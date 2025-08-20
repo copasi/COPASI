@@ -43,9 +43,6 @@ double d_sign(const double & a, const double & b);
 #include "dmnorm.h"
 #include "dewset.h"
 
-#define dls001_lsoda (mdls001_.lsoda)
-#define dlsa01_lsoda (mdlsa01_.lsoda)
-
 static const double c_b76 = 0.0;
 
 static const C_INT c__0 = 0;
