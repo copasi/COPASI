@@ -327,7 +327,7 @@ bool CQMiriamWidget::updateProtected(ListViews::ObjectType objectType, ListViews
       mpModifiedDM->setMIRIAMInfo(NULL);
 
       mpMIRIAMInfo = NULL;
-      mObjectCN = CRegisteredCommonName();
+      mObjectCN = CCommonName();
 
       return true;
     }

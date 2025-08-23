@@ -71,13 +71,13 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
             mSubType = SubType::AVOGADRO;
           }
 
-        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), nullptr);
+        mRegisteredObjectCN.assign(mData.substr(1, mData.length() - 2), mpTree);
 
         break;
 
       case SubType::AVOGADRO:
         mData = "<Reference=Avogadro Constant>";
-        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), nullptr);
+        mRegisteredObjectCN.assign(mData.substr(1, mData.length() - 2), mpTree);
 
         break;
 
@@ -142,7 +142,7 @@ CIssue CEvaluationNodeObject::compile()
           }
 
         getData();
-        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), mpTree);
+        mRegisteredObjectCN.assign(mData.substr(1, mData.length() - 2), mpTree);
         mpObject = mpTree->getNodeObject(mRegisteredObjectCN);
 
         const CDataObject * pDataObject = CObjectInterface::DataObject(mpObject);
@@ -164,7 +164,7 @@ CIssue CEvaluationNodeObject::compile()
             if (mpObject != pObject && pObject != NULL)
               {
                 mpObject = pObject;
-                mRegisteredObjectCN = mpObject->getCN();
+                mRegisteredObjectCN.assign(mpObject->getStringCN(), mpTree);
                 getData();
               }
 
@@ -230,7 +230,7 @@ CIssue CEvaluationNodeObject::compile()
           }
 
         getData();
-        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), mpTree);
+        mRegisteredObjectCN.assign(mData.substr(1, mData.length() - 2), mpTree);
         mpObject = mpTree->getNodeObject(mRegisteredObjectCN);
 
         if (mpObject != NULL)
@@ -354,7 +354,7 @@ bool CEvaluationNodeObject::setData(const Data & data)
   mData = data;
 
   if (mSubType == SubType::CN)
-    mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), nullptr);
+    mRegisteredObjectCN.assign(mData.substr(1, mData.length() - 2), mpTree);
 
   return true;
 }

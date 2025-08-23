@@ -979,7 +979,7 @@ bool CEvaluationTree::mapObjectNodes(const CDataContainer * pSrc, const CDataCon
   mCalculationSequence.resize(0);
 
   bool success = true;
-  std::string SrcCN = pSrc->getCN();
+  std::string SrcCN = pSrc->getStringCN();
 
   std::vector< CEvaluationNode * >::iterator it = mpNodeList->begin();
   std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();

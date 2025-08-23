@@ -287,7 +287,7 @@ bool CMetab::setCompartment(const std::string& compName)
   if (success)
     {
       oldComp->getMetabolites().remove(getObjectName());
-      CRegisteredCommonName::handle(oldCN, getCN());
+      CRegisteredCommonName::handle(oldCN, getStringCN(), getObjectDataModel());
       mpModel->setCompileFlag();
       mpModel->initializeMetabolites();
     }

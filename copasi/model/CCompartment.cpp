@@ -217,7 +217,7 @@ bool CCompartment::addMetabolite(CMetab * pMetabolite)
   //the metabolite is changed. This needs to be handled similarly to a
   //rename.
   if (success && getObjectParent())
-    CRegisteredCommonName::handle(oldCN, pMetabolite->getCN());
+    CRegisteredCommonName::handle(oldCN, pMetabolite->getStringCN(), pMetabolite->getObjectDataModel());
 
   return success;
 }

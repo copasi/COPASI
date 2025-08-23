@@ -300,7 +300,7 @@ bool CDataObject::setObjectName(const std::string & name)
 
       if (CRegisteredCommonName::isEnabled() && mpObjectParent != NULL)
         {
-          CRegisteredCommonName::handle(oldCN, getCN());
+          CRegisteredCommonName::handle(oldCN, getStringCN(), getObjectDataModel());
         }
     }
   return true;
@@ -380,7 +380,7 @@ bool CDataObject::setObjectParent(const CDataContainer * pParent)
   if (CRegisteredCommonName::isEnabled() &&
       !OldCN.empty())
     {
-      CRegisteredCommonName::handle(OldCN, getCN());
+      CRegisteredCommonName::handle(OldCN, getStringCN(), getObjectDataModel());
     }
 
   return true;
