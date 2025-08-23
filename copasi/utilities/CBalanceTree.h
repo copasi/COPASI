@@ -43,7 +43,7 @@ struct BalanceTree
             const CType & First = *it;
             const CType & Second = *++it;
 
-            Tmp.emplace_back(joinFunction.operator()(First, Second));
+            Tmp.emplace_back(joinFunction(First, Second));
           }
 
         Balanced = Tmp;
