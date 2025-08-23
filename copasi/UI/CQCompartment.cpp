@@ -579,9 +579,9 @@ void CQCompartment::slotMetaboliteTableCurrentChanged(int row, int col)
   std::string s1, s2;
   s1 = TO_UTF8(pItem->text());
 
-  CDataContainer::objectMap::const_iterator it =
+  CDataContainer::ObjectMap::const_iterator it =
     mpCompartment->getMetabolites().getObjects().begin();
-  CDataContainer::objectMap::const_iterator end =
+  CDataContainer::ObjectMap::const_iterator end =
     mpCompartment->getMetabolites().getObjects().end();
 
   for (; it != end; ++it)
@@ -646,9 +646,9 @@ void CQCompartment::loadMetaboliteTable()
 
   mpMetaboliteTable->setRowCount((int)mpCompartment->getMetabolites().size());
 
-  CDataContainer::objectMap::const_iterator it =
+  CDataContainer::ObjectMap::const_iterator it =
     mpCompartment->getMetabolites().getObjects().begin();
-  CDataContainer::objectMap::const_iterator end =
+  CDataContainer::ObjectMap::const_iterator end =
     mpCompartment->getMetabolites().getObjects().end();
 
   for (int i = 0; it != end; ++it)

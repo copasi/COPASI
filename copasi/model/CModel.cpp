@@ -1423,7 +1423,7 @@ const C_FLOAT64 & CModel::getTime() const
  */
 CMetab * CModel::findMetabByName(const std::string & name) const
 {
-  objectMap::range Range = mMetabolites.getObjects().equal_range(unQuote(name));
+  ObjectMap::range Range = mMetabolites.getObjects().equal_range(unQuote(name));
   CMetab * pSpecies = NULL;
 
   for (; Range.first != Range.second; ++Range.first)

@@ -42,10 +42,10 @@ class CDataContainer: public CDataObject
 public:
   static const CObjectInterface::ContainerList EmptyList;
 
-  typedef CDataObjectMap objectMap;
+  typedef CDataObjectMap ObjectMap;
 
 protected:
-  objectMap mObjects;
+  ObjectMap mObjects;
 
 private:
   // Operations
@@ -131,8 +131,8 @@ public:
 
   const CDataObject * getValueObject() const override;
 
-  virtual const objectMap & getObjects() const;
-  virtual objectMap & getObjects();
+  virtual const ObjectMap & getObjects() const;
+  virtual ObjectMap & getObjects();
 
   virtual bool add(CDataObject * pObject, const bool & adopt = true);
 

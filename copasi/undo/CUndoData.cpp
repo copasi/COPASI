@@ -1076,7 +1076,7 @@ CUndoObjectInterface * CUndoData::getObject(const CDataModel & dataModel, const 
       else if (data.isSetProperty(CData::OBJECT_HASH))
         {
           // We need to search all objects with the same OBJECT_TYPE and OBJECT_NAME for the given hash.
-          CDataContainer::objectMap::range Range = pParent->getObjects().equal_range(data.getProperty(CData::OBJECT_NAME).toString());
+          CDataContainer::ObjectMap::range Range = pParent->getObjects().equal_range(data.getProperty(CData::OBJECT_NAME).toString());
           const std::string & ObjectType = data.getProperty(CData::OBJECT_TYPE).toString();
           const std::string & ObjectHash = data.getProperty(CData::OBJECT_HASH).toString();
 

@@ -750,7 +750,7 @@ bool CCopasiParameterGroup::remove(CDataObject * pObject)
 CCopasiParameter * CCopasiParameterGroup::getParameter(std::string name)
 {
   sanitizeObjectName(name);
-  objectMap::range range = getObjects().equal_range(name);
+  ObjectMap::range range = getObjects().equal_range(name);
 
   if (range.first == range.second) return NULL;
 
@@ -768,7 +768,7 @@ CCopasiParameter * CCopasiParameterGroup::getParameter(std::string name)
 const CCopasiParameter * CCopasiParameterGroup::getParameter(std::string name) const
 {
   sanitizeObjectName(name);
-  objectMap::range range = getObjects().equal_range(name);
+  ObjectMap::range range = getObjects().equal_range(name);
 
   if (range.first == range.second) return NULL;
 

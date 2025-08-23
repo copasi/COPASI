@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -431,8 +431,8 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
         {
           //for mca the result is in the method
           CMCAMethod *pMethod = dynamic_cast<CMCAMethod *>(task->getMethod());
-          const CDataContainer::objectMap *pObjects = & pMethod->getObjects();
-          CDataContainer::objectMap::const_iterator its = pObjects->begin();
+          const CDataContainer::ObjectMap *pObjects = & pMethod->getObjects();
+          CDataContainer::ObjectMap::const_iterator its = pObjects->begin();
           CDataArray *ann;
 
           for (; its != pObjects->end(); ++its)
@@ -463,8 +463,8 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
 
           if (pMethod->getSubType() == CTaskEnum::Method::tssCSP)
             {
-              const CDataContainer::objectMap *pObjects = & pMethod->getObjects();
-              CDataContainer::objectMap::const_iterator its = pObjects->begin();
+              const CDataContainer::ObjectMap *pObjects = & pMethod->getObjects();
+              CDataContainer::ObjectMap::const_iterator its = pObjects->begin();
               CDataArray *ann;
 
               for (; its != pObjects->end(); ++its)
@@ -506,8 +506,8 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
 
   try
     {
-      const CDataContainer::objectMap *pObjects = & task->getObjects();
-      CDataContainer::objectMap::const_iterator its = pObjects->begin();
+      const CDataContainer::ObjectMap *pObjects = & task->getObjects();
+      CDataContainer::ObjectMap::const_iterator its = pObjects->begin();
 
       for (; its != pObjects->end(); ++its)
         {
@@ -538,8 +538,8 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
       if (task && task->updateMatrices())
         {
           //for steady state the results are in the task
-          const CDataContainer::objectMap *pObjects = & task->getObjects();
-          CDataContainer::objectMap::const_iterator its = pObjects->begin();
+          const CDataContainer::ObjectMap *pObjects = & task->getObjects();
+          CDataContainer::ObjectMap::const_iterator its = pObjects->begin();
           CDataArray *ann;
           CEigen* pEigen;
 
@@ -562,8 +562,8 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
                   QTreeWidgetItem* pSubtree  = new QTreeWidgetItem(this->mpResultSteadyStateSubtree, QStringList("Properties of reduced model jacobian Eigenvalues"));
 
                   //loop over children of CEigen object
-                  const CDataContainer::objectMap *pO = & pEigen->getObjects();
-                  CDataContainer::objectMap::const_iterator itss = pO->begin();
+                  const CDataContainer::ObjectMap *pO = & pEigen->getObjects();
+                  CDataContainer::ObjectMap::const_iterator itss = pO->begin();
 
                   for (; itss != pO->end(); ++itss)
                     {
@@ -592,8 +592,8 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
         {
           //for sensitivities the result is in the problem
           CSensProblem *sens = dynamic_cast<CSensProblem *>(task->getProblem());
-          const CDataContainer::objectMap *pObjects = & sens->getObjects();
-          CDataContainer::objectMap::const_iterator its = pObjects->begin();
+          const CDataContainer::ObjectMap *pObjects = & sens->getObjects();
+          CDataContainer::ObjectMap::const_iterator its = pObjects->begin();
           CDataArray *ann;
 
           for (; its != pObjects->end(); ++its)
@@ -622,8 +622,8 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
         {
           //for sensitivities the result is in the problem
           CTimeSensProblem *sens = dynamic_cast<CTimeSensProblem *>(task->getProblem());
-          const CDataContainer::objectMap *pObjects = & sens->getObjects();
-          CDataContainer::objectMap::const_iterator its = pObjects->begin();
+          const CDataContainer::ObjectMap *pObjects = & sens->getObjects();
+          CDataContainer::ObjectMap::const_iterator its = pObjects->begin();
           CDataArray *ann;
 
           for (; its != pObjects->end(); ++its)
@@ -650,8 +650,8 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
     {
       if (task && task->updateMatrices())
         {
-          const CDataContainer::objectMap *pObjects = & task->getMethod()->getObjects();
-          CDataContainer::objectMap::const_iterator its = pObjects->begin();
+          const CDataContainer::ObjectMap *pObjects = & task->getMethod()->getObjects();
+          CDataContainer::ObjectMap::const_iterator its = pObjects->begin();
           CDataArray *ann;
 
           for (; its != pObjects->end(); ++its)

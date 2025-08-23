@@ -48,8 +48,8 @@ class CCopasiParameterGroup: public CCopasiParameter
 public:
   typedef std::vector< CCopasiParameter * > elements;
   typedef elements::iterator index_iterator;
-  typedef CDataObjectMap::type_iterator< CCopasiParameter > name_iterator;
-  typedef CDataObjectMap::const_type_iterator< CCopasiParameter > const_name_iterator;
+  typedef ObjectMap::type_iterator< CCopasiParameter > name_iterator;
+  typedef ObjectMap::const_type_iterator< CCopasiParameter > const_name_iterator;
 
   // Operations
 protected:

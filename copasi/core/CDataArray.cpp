@@ -258,7 +258,7 @@ const CObjectInterface * CDataArray::getObject(const CCommonName & cn) const
   const CDataObject* pObject = NULL; //this will contain the element reference
 
   //if the reference object already exists, its name will be identical to the index
-  objectMap::range range = mObjects.equal_range(ObjectName);
+  ObjectMap::range range = mObjects.equal_range(ObjectName);
 
   while (range.first != range.second && (*range.first)->getObjectType() != "ElementReference") ++range.first;
 

@@ -44,8 +44,8 @@ template < class CType > class CDataVector:
   protected std::vector< CType * >, public CDataContainer
 {
 public:
-  typedef CDataObjectMap::type_iterator< CType > name_iterator;
-  typedef CDataObjectMap::const_type_iterator< CType > const_name_iterator;
+  typedef ObjectMap::type_iterator< CType > name_iterator;
+  typedef ObjectMap::const_type_iterator< CType > const_name_iterator;
 
 public:
 #ifndef SWIG
@@ -957,8 +957,8 @@ template < class CType > class CDataVectorN: public CDataVector < CType >
 {
   // Operations
 public:
-  typedef CDataObjectMap::type_iterator< CType > name_iterator;
-  typedef CDataObjectMap::const_type_iterator< CType > const_name_iterator;
+  typedef typename CDataVector < CType >::name_iterator name_iterator;
+  typedef typename CDataVector < CType >::const_name_iterator const_name_iterator;
 
   /**
    * Retrieve the data describing the object
@@ -1284,14 +1284,12 @@ public:
    */
   CType & operator[](const std::string & name)
   {
-    CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(name);
+    CDataContainer::ObjectMap::range Range = CDataVector< CType >::getObjects().equal_range(name);
 
     CType * pType = NULL;
 
     for (; Range.first != Range.second && pType == NULL; ++Range.first)
-      {
-        pType = dynamic_cast< CType * >(*Range.first);
-      }
+      pType = dynamic_cast< CType * >(*Range.first);
 
     if (pType == NULL)
       {
@@ -1309,7 +1307,7 @@ public:
    */
   const CType & operator[](const std::string &name) const
   {
-    CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(name);
+    CDataContainer::ObjectMap::range Range = CDataVector< CType >::getObjects().equal_range(name);
 
     CType * pType = NULL;
 
@@ -1338,7 +1336,7 @@ public:
 
     if (!ElementName.empty())
       {
-        CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(ElementName);
+        CDataContainer::ObjectMap::range Range = CDataVector< CType >::getObjects().equal_range(ElementName);
 
         for (; Range.first != Range.second; ++Range.first)
           {
@@ -1401,7 +1399,7 @@ private:
   virtual bool isInsertAllowed(const CType * src)
   {
     bool isInserAllowed = true;
-    CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(src->getObjectName());
+    CDataContainer::ObjectMap::range Range = CDataVector< CType >::getObjects().equal_range(src->getObjectName());
 
     for (; Range.first != Range.second && isInserAllowed; ++Range.first)
       {
