@@ -24,6 +24,7 @@
 
 #include <string>
 #include <list>
+#include <memory>
 
 #include "copasi/core/CObjectInterface.h"
 #include "copasi/core/CFlags.h"
@@ -40,7 +41,9 @@ template <class CType> class CDataObjectReference;
 
 //********************************************************************************
 
-class CDataObject: public CObjectInterface, public CUndoObjectInterface
+class CDataObject
+  : public CObjectInterface
+  , public CUndoObjectInterface
 {
 public:
   typedef std::set< const CDataObject * > DataObjectSet;
@@ -69,6 +72,18 @@ public:
     __SIZE
   };
 
+  template < class Derived, class ... Args >
+  static std::shared_ptr< CObjectInterface > create(Args ... args)
+  {
+    return std::make_shared< Derived >(args...);
+  }
+
+  template < class Derived, class ... Args >
+  static std::shared_ptr< CObjectInterface > copy(const Derived & src, Args ... args)
+  {
+    return std::make_shared< Derived >(src, args...);
+  }
+
 protected:
   //Operations
   CDataObject();
@@ -77,6 +92,11 @@ protected:
               const CDataContainer * pParent = NO_PARENT,
               const std::string & type = "CN",
               const CFlags< Flag > & flag = CFlags< Flag >::None);
+
+  // API
+  CDataObject(const CDataObject & src,
+              const CDataContainer * pParent = NULL,
+              const std::string & objectType = "");
 
 public:
   /**
@@ -120,11 +140,6 @@ public:
                               const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
   static void sanitizeObjectName(std::string & name);
-
-  // API
-  CDataObject(const CDataObject & src,
-              const CDataContainer * pParent = NULL,
-              const std::string & objectType = "");
 
   virtual ~CDataObject();
 

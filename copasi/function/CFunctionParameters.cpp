@@ -61,11 +61,6 @@ CFunctionParameters & CFunctionParameters::operator=(const CFunctionParameters &
   return *this;
 }
 
-void CFunctionParameters::add(const CFunctionParameter & parameter)
-{
-  mParameters.add(parameter);
-}
-
 bool CFunctionParameters::add(CFunctionParameter * parameter,
                               const bool & adopt)
 {

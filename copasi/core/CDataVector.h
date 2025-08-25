@@ -477,7 +477,7 @@ public:
     const_iterator end = rhs.end();
 
     for (; it != end; ++it)
-      add(*it);
+      add(new CType(*it, this), true);
 
     return *this;
   }
@@ -589,34 +589,6 @@ public:
         }
 
     CDataVector< CType >::clear();
-  }
-
-  /**
-   * Add a copy of the object to the end of the vector.
-   * @param const CType & src
-   * @return bool success.
-   */
-  virtual bool add(const CType & src)
-  {
-    CType * pCopy = NULL;
-
-    try
-      {
-        pCopy = new CType(src, this);
-      }
-
-    catch (...)
-      {
-        pCopy = NULL;
-      }
-
-    if (pCopy == NULL)
-      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCopasiBase + 1, sizeof(CType));
-
-    // This is not very efficient !!!
-    // It results in a lot of resizing of the vector !!!
-    std::vector< CType * >::push_back(pCopy);
-    return CDataContainer::add(pCopy, true);
   }
 
   /**
@@ -1179,38 +1151,6 @@ public:
   {
     CDataVector< CType >::operator=(rhs);
     return *this;
-  }
-
-  /**
-   * Add a copy of the object to the end of the vector.
-   * @param const CType & src
-   * @return bool success.
-   */
-  virtual bool add(const CType & src)
-  {
-    if (!isInsertAllowed(&src))
-      {
-        CCopasiMessage ex(CCopasiMessage::ERROR,
-                          MCDataVector + 2, src.getObjectName().c_str());
-        return false;
-      }
-
-    CType * Element;
-
-    try
-      {
-        Element = new CType(src, this);
-      }
-    catch (...)
-      {
-        Element = NULL;
-      }
-
-    if (Element == NULL)
-      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCopasiBase + 1, sizeof(CType));
-
-    std::vector< CType * >::push_back(Element);
-    return CDataContainer::add(Element, true);
   }
 
   /**

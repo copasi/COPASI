@@ -592,7 +592,7 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
         {
           // match not found
           //changed = true;
-          functParam.add(*pfunctParam[i]);
+          functParam.add(new CFunctionParameter(*pfunctParam[i], &functParam), true);
         }
     }
 

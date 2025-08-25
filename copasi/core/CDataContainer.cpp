@@ -187,11 +187,6 @@ bool CDataContainer::appendDeletedDependentData(CUndoData & undoData) const
   return dataAppended;
 }
 
-CDataContainer::CDataContainer()
-  : CDataObject()
-  , mObjects()
-{}
-
 CDataContainer::CDataContainer(const std::string & name,
                                const CDataContainer * pParent,
                                const std::string & type,

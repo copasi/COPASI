@@ -49,10 +49,9 @@ protected:
 
 private:
   // Operations
-  CDataContainer();
+  CDataContainer() = delete;
 
-protected:
-  CDataContainer(const CDataContainer & src);
+  CDataContainer(const CDataContainer & src) = delete;
 
 public:
   template < class CType > static bool findObjectAncestor(const CDataObject * pObject, CType *& pAncestor)
