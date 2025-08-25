@@ -292,6 +292,11 @@ else()
   if (ENABLE_OMP)
     target_compile_options(libCOPASISE-core PRIVATE ${OpenMP_CXX_FLAGS})
   endif (ENABLE_OMP)
+
+  if (COPASI_USE_ASAN)
+    target_compile_options(libCOPASISE-core PRIVATE "-fsanitize=address")
+  endif (COPASI_USE_ASAN)
+
 endif()
 
 set_target_properties (libCOPASISE-static PROPERTIES 
@@ -332,6 +337,10 @@ target_link_libraries(libCOPASISE-static
 if (ENABLE_OMP)
   target_link_libraries(libCOPASISE-static OpenMP::OpenMP_CXX)
 endif (ENABLE_OMP)
+
+if (COPASI_USE_ASAN)
+  target_compile_options(libCOPASISE-static PUBLIC "-fsanitize=address")
+endif (COPASI_USE_ASAN)
 
 #need to link against iconv
 if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
@@ -415,6 +424,9 @@ if(ENABLE_LIBCOPASISE_SHARED)
     target_link_libraries(libCOPASISE-shared OpenMP::OpenMP_CXX)
   endif (ENABLE_OMP)
 
+  if (COPASI_USE_ASAN)
+    target_compile_options(libCOPASISE-shared PUBLIC "-fsanitize=address")
+  endif (COPASI_USE_ASAN)
 
   #need to link against iconv
   if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
