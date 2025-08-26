@@ -568,6 +568,22 @@ CMathContainer::CMathContainer(const CMathContainer & src)
   mOldValues.initialize(mValues);
   mOldObjects.initialize(mObjects);
 
+  // mRootProcessors points to the source processors
+  initializeRootProcessors();
+
+  // If we have ignored roots we need to resize all relevant vectors
+  if (mNumTotalRootsIgnored)
+    {
+      size_t RootCount = mSize.nEventRoots - mNumTotalRootsIgnored;
+
+      mEventRoots.initialize(RootCount, mEventRoots.array());
+      mEventRootStates.initialize(RootCount, mEventRootStates.array());
+      mRootProcessors.resize(RootCount, true);
+      mRootIsDiscrete.resize(RootCount, true);
+      mRootIsTimeDependent.resize(RootCount, true);
+      mRootDerivatives.resize(RootCount, true);
+    }
+
   map();
 
 #ifdef USE_JIT
@@ -3041,9 +3057,14 @@ void CMathContainer::analyzeRoots()
   mRootDerivativesState.resize(mState.size());
   mRootDerivativesState = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
+  initializeRootProcessors();
+}
+
+void CMathContainer::initializeRootProcessors()
+{
   CMathEvent * pEvent = mEvents.array();
   CMathEvent * pEventEnd = pEvent + mEvents.size();
-  pRoot = getMathObject(mEventRoots.array());
+  CMathObject * pRoot = getMathObject(mEventRoots.array());
   CMathEvent::CTrigger::CRootProcessor ** pRootProcessorPtr = mRootProcessors.array();
 
   for (; pEvent != pEventEnd; ++pEvent)
@@ -5221,11 +5242,18 @@ void CMathContainer::ignoreDiscontinuityEvent(CMathEvent * pEvent)
     }
 
   mNumTotalRootsIgnored += NumRootsIgnored;
-  mEventRoots.initialize(mEventRoots.size() - mNumTotalRootsIgnored, mEventRoots.array());
-  mEventRootStates.initialize(mEventRootStates.size() - mNumTotalRootsIgnored, mEventRootStates.array());
-  mRootProcessors.resize(mRootProcessors.size() - mNumTotalRootsIgnored, true);
-  mRootIsDiscrete.resize(mRootIsDiscrete.size() - mNumTotalRootsIgnored, true);
-  mRootIsTimeDependent.resize(mRootIsTimeDependent.size() - mNumTotalRootsIgnored, true);
+
+  if (NumRootsIgnored)
+    {
+      size_t RootCount = mSize.nEventRoots - mNumTotalRootsIgnored;
+
+      mEventRoots.initialize(RootCount, mEventRoots.array());
+      mEventRootStates.initialize(RootCount, mEventRootStates.array());
+      mRootProcessors.resize(RootCount, true);
+      mRootIsDiscrete.resize(RootCount, true);
+      mRootIsTimeDependent.resize(RootCount, true);
+      mRootDerivatives.resize(RootCount, true);
+    }
 }
 
 std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & size)

@@ -985,6 +985,8 @@ private:
    */
   bool compileEvents();
 
+  void initializeRootProcessors();
+
   /**
    * Convert nodes which generate discrete changes into events
    * and compiles them.
