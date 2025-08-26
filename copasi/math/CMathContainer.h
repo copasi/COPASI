@@ -250,6 +250,11 @@ public:
   bool isStateValid() const;
 
   /**
+   * Check whether the current roots are valid.
+   */
+  bool areRootsValid() const;
+
+  /**
    * Check whether the model is autonomous
    * @return const bool &isAutonomous
    */

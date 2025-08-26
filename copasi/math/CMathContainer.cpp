@@ -699,16 +699,24 @@ void CMathContainer::setState(const CVectorCore< C_FLOAT64 > & state)
 
 bool CMathContainer::isStateValid() const
 {
-  const C_FLOAT64 * pIt = mState.array();
-  const C_FLOAT64 * pEnd = pIt + mState.size();
+  const C_FLOAT64 * pIt = mState.begin();
+  const C_FLOAT64 * pEnd = mState.end();
 
   for (; pIt != pEnd; ++pIt)
-    {
-      if (std::isnan(*pIt))
-        {
-          return false;
-        }
-    }
+    if (std::isnan(*pIt))
+      return false;
+
+  return true;
+}
+
+bool CMathContainer::areRootsValid() const
+{
+  const C_FLOAT64 * pIt = mEventRoots.begin();
+  const C_FLOAT64 * pEnd = mEventRoots.end();
+
+  for (; pIt != pEnd; ++pIt)
+    if (std::isnan(*pIt))
+      return false;
 
   return true;
 }
