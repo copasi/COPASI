@@ -185,10 +185,14 @@ const COptLog &COptMethod::getMethodLog() const
 {
   return mMethodLog;
 }
-
-const C_FLOAT64 & COptMethod::getBestValue() const
+C_FLOAT64 COptMethod::getBestValue() const
 {
-  return mBestValue;
+  C_FLOAT64 BestValue;
+
+#pragma omp atomic read
+  BestValue = mBestValue;
+
+  return BestValue;
 }
 
 C_FLOAT64 COptMethod::getCurrentValue() const
@@ -222,7 +226,8 @@ C_FLOAT64 COptMethod::evaluate(const EvaluationPolicyFlag & policy)
 
   C_FLOAT64 EvaluationValue = pOptProblem->getCalculateValue();
 
-  if (!std::isnan(EvaluationValue))
+  if (!std::isnan(EvaluationValue)
+      && EvaluationValue != std::numeric_limits< C_FLOAT64 >::infinity())
     {
       if ((policy & EvaluationPolicy::Parameter
            && !pOptProblem->checkParametricConstraints())
@@ -231,8 +236,13 @@ C_FLOAT64 COptMethod::evaluate(const EvaluationPolicyFlag & policy)
         {
           if (policy & EvaluationPolicy::Reflect)
             {
-              C_FLOAT64 BestValue = std::min(mBestValue, 0.5 * std::numeric_limits< C_FLOAT64 >::max());
-              EvaluationValue = BestValue + (BestValue - EvaluationValue);
+              EvaluationValue *= 1.0 + pOptProblem->getFunctionalConstraintsViolation();
+              C_FLOAT64 BestValue;
+
+#pragma omp atomic read
+              BestValue = mBestValue;
+
+              EvaluationValue += BestValue / (EvaluationValue/BestValue + 1.0);
             }
           else
             EvaluationValue = std::numeric_limits< C_FLOAT64 >::infinity();
@@ -253,21 +263,27 @@ bool COptMethod::setSolution(const C_FLOAT64 & value,
   bool solutionUpdated = false;
 
   // We have a possible race condition therefore we check again
+
 #pragma omp critical (opt_method_set_solution)
   if (value < mBestValue)
     {
       // and store that value
+#pragma omp atomic write
       mBestValue = value;
+      solutionUpdated = true;
+    }
 
+  if (solutionUpdated
+      && mBestValue < 1.e-6 * std::numeric_limits< C_FLOAT64 >::max())
+    {
+      aggregateCounters();
+
+      // If the best value is sufficiently large we are not reporting
       if (!mProblemContext.master()->setSolution(value, variables, algorithmOrder))
         signalStop();
 
-      aggregateCounters();
-
       // We found a new best value lets report it.
       mpParentTask->output(COutputInterface::DURING);
-
-      solutionUpdated = true;
     }
 
   return solutionUpdated;
@@ -286,7 +302,7 @@ void  COptMethod::aggregateCounters()
     }
 }
 
-const bool & COptMethod::proceed() const
+bool COptMethod::proceed() const
 {
   return mProceed;
 }

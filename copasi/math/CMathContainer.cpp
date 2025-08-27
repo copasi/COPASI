@@ -3431,7 +3431,9 @@ void CMathContainer::processRoots(const bool & equality,
   // Compare Before and the current mEventTriggers
   for (; pEvent != pEventEnd; ++pEvent, ++pBefore, ++pAfter)
     {
-      if (*pBefore != *pAfter)
+      if (*pBefore != *pAfter
+          && !std::isnan(*pBefore)
+          && !std::isnan(*pAfter))
         {
           // We fire on any change. It is the responsibility of the event to add or remove
           // actions to the process queue.
@@ -3489,7 +3491,9 @@ void CMathContainer::processRoots(const CVector< C_INT > & rootsFound)
   // Compare Before and the current mEventTriggers
   for (; pEvent != pEventEnd; ++pEvent, ++pBefore, ++pAfter)
     {
-      if (*pBefore != *pAfter)
+      if (*pBefore != *pAfter
+          && !std::isnan(*pBefore)
+          && !std::isnan(*pAfter))
         {
           // We fire on any change. It is the responsibility of the event to add or remove
           // actions to the process queue.

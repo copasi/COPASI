@@ -177,7 +177,7 @@ public:
    * @return bool success
    */
   virtual bool compile(CObjectInterface::ContainerList listOfContainer =
-                         CDataContainer::EmptyList);
+                       CDataContainer::EmptyList);
 
   /**
    * This functions check whether the current value is within the limits

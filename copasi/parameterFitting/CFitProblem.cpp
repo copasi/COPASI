@@ -704,6 +704,7 @@ bool CFitProblem::initialize()
     }
 
   // Build a matrix of experiment and constraint items;
+  mUpdateConstraints.clear();
   mExperimentConstraints.resize(mpExperimentSet->getExperimentCount(),
                                 mpConstraintItems->size());
   mExperimentConstraints = NULL;
@@ -908,51 +909,6 @@ bool CFitProblem::initialize()
     mpTimeSens = NULL;
 
   return success;
-}
-
-bool CFitProblem::checkFunctionalConstraints()
-{
-  sCounter Counters;
-  std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
-  std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
-
-  if (!mpConstraintItems->empty())
-    Counters.ConstraintCounter++;
-
-  for (; it != end; ++it)
-    if (static_cast<CFitConstraint *>(*it)->getConstraintViolation() > 0.0)
-      {
-        Counters.FailedConstraintCounter++;
-        return false;
-      }
-
-  incrementCounters(Counters);
-
-  return true;
-}
-
-C_FLOAT64 CFitProblem::getFunctionalConstraintsViolation()
-{
-  sCounter Counters;
-  C_FLOAT64 L2norm = 0.0;
-
-  std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
-  std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
-
-  if (!mpConstraintItems->empty())
-    Counters.ConstraintCounter++;
-
-  for (; it != end; ++it)
-    {
-      C_FLOAT64 Violation = (*it)->getConstraintViolation();
-      L2norm += Violation * Violation;
-    }
-
-  if (L2norm > 0.0)
-    Counters.FailedConstraintCounter++;
-
-  incrementCounters(Counters);
-  return sqrt(L2norm);
 }
 
 CFitItem & CFitProblem::addFitItem(const CRegisteredCommonName & objectCN)
@@ -1216,7 +1172,8 @@ bool CFitProblem::calculate()
                         ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
 
                         for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
-                          if (*ppConstraint)(*ppConstraint)->calculateConstraintViolation();
+                          if (*ppConstraint)
+                            (*ppConstraint)->calculateConstraintViolation();
                       }
 
                     if (mStoreResults)

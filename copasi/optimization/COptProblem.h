@@ -197,13 +197,13 @@ public:
    * Check whether all functional constraints are fulfilled.
    * @result bool fulfilled
    */
-  virtual bool checkFunctionalConstraints();
+  bool checkFunctionalConstraints();
 
   /**
    * Retrieve the L2 norm of functional constraint violation.
    * @result C_FLOAT64 violation
    */
-  virtual C_FLOAT64 getFunctionalConstraintsViolation();
+  C_FLOAT64 getFunctionalConstraintsViolation() const;
 
   /**
    * Check whether all item intervals are valid.
@@ -709,6 +709,10 @@ protected:
   // mutable CVector < C_FLOAT64 * > mContainerVariablesAlgorithm;
 
   CVector < C_FLOAT64 > mSolutionVariablesAlgorithm;
+
+  bool mFunctionalConstraintPassed;
+
+  C_FLOAT64 mFunctionalConstraintError;
 };
 
 #endif  // the end

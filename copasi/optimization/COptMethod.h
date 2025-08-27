@@ -175,7 +175,7 @@ public:
   /**
    * @return the objective value
    */
-  virtual const C_FLOAT64 & getBestValue() const final;
+  virtual C_FLOAT64 getBestValue() const final;
 
   /**
    * @return the objective value
@@ -205,7 +205,7 @@ protected:
 
   void aggregateCounters();
 
-  const bool & proceed() const;
+  bool proceed() const;
 
   void signalStop();
 

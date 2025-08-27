@@ -543,7 +543,7 @@ bool CTrajectoryTask::processStart(const bool & useInitialValues, bool ignoreSta
               success = false;
             }
 
-          * mpContainerStateTime = 0;         
+          * mpContainerStateTime = 0;
           mpContainer->resetEventsFound();
         }
       else
@@ -593,6 +593,12 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime, const bool & final)
             mpContainer->setState(mContainerState);
             mpContainer->updateSimulatedValues(mUpdateMoieties);
 
+            if (!mpContainer->isStateValid())
+              {
+                CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 25, *mpContainerStateTime);
+                return false;
+              }
+
             if ((*mpLessOrEqual)(mOutputStartTime, *mpContainerStateTime) &&
                 *mpContainerStateTime == mpContainer->getProcessQueueExecutionTime() &&
                 mpTrajectoryProblem->getOutputEvent())
@@ -640,6 +646,13 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime, const bool & final)
             mpContainer->setState(mContainerState);
             mpContainer->updateSimulatedValues(mUpdateMoieties);
             mpContainer->updateRootValues(mUpdateMoieties);
+
+            if (!mpContainer->isStateValid()
+                || !mpContainer->areRootsValid())
+              {
+                CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 25, *mpContainerStateTime);
+                return false;
+              }
 
             mpContainer->processRoots(true, mpTrajectoryMethod->getRoots());
 

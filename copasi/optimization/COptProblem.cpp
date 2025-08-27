@@ -699,48 +699,47 @@ C_FLOAT64 COptProblem::getParametricConstraintsViolation()
 
 bool COptProblem::checkFunctionalConstraints()
 {
-  // Make sure the constraint values are up to date.
-  mpContainer->applyUpdateSequence(mUpdateConstraints);
+  if (mpConstraintItems->empty())
+    {
+      mFunctionalConstraintPassed = true;
+      mFunctionalConstraintError = 0.0;
 
-  std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
-  std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
-
-  if (!mpConstraintItems->empty())
-    mCounters.ConstraintCounter++;
-
-  for (; it != end; ++it)
-    if ((*it)->checkConstraint())
-      {
-        mCounters.FailedConstraintCounter++;
-        return false;
-      }
-
-  return true;
-}
-
-C_FLOAT64 COptProblem::getFunctionalConstraintsViolation()
-{
-  C_FLOAT64 L2norm = 0.0;
+      return mFunctionalConstraintPassed;
+    }
 
   // Make sure the constraint values are up to date.
   mpContainer->applyUpdateSequence(mUpdateConstraints);
 
+  sCounter Counters;
   std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
   std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
-
-  if (!mpConstraintItems->empty())
-    mCounters.ConstraintCounter++;
+  mFunctionalConstraintError = 0.0;
 
   for (; it != end; ++it)
     {
       C_FLOAT64 Violation = (*it)->getConstraintViolation();
-      L2norm += Violation * Violation;
+      mFunctionalConstraintError += Violation * Violation;
     }
 
-  if (L2norm > 0.0)
-    mCounters.FailedConstraintCounter++;
+  Counters.ConstraintCounter++;
 
-  return sqrt(L2norm);
+  if (mFunctionalConstraintError > 0.0)
+    {
+      mFunctionalConstraintError = sqrt(mFunctionalConstraintError);
+      mFunctionalConstraintPassed = false;
+      Counters.FailedConstraintCounter++;
+    }
+  else
+    mFunctionalConstraintPassed = true;
+
+  incrementCounters(Counters);
+
+  return mFunctionalConstraintPassed;
+}
+
+C_FLOAT64 COptProblem::getFunctionalConstraintsViolation() const
+{
+  return mFunctionalConstraintError;
 }
 
 // virtual

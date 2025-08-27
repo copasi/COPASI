@@ -38,9 +38,9 @@ protected:
   /**
    * Default constructor
    */
-  CFitItem();
+  CFitItem() = delete;
 
-  CFitItem(const CFitItem & src);
+  CFitItem(const CFitItem & src) = delete;
 
 public:
   /**
@@ -98,8 +98,8 @@ public:
    * @param const CObjectInterface::ContainerList listOfContainer
    * @return bool success
    */
-  virtual bool compile(CObjectInterface::ContainerList listOfContainer =
-                         CDataContainer::EmptyList) override;
+  bool compile(CObjectInterface::ContainerList listOfContainer =
+               CDataContainer::EmptyList) override;
 
   /**
    * This functions check whether the current value is within the limits
@@ -244,9 +244,9 @@ protected:
   /**
    * Default constructor
    */
-  CFitConstraint();
+  CFitConstraint() = delete;
 
-  CFitConstraint(const CFitConstraint & src);
+  CFitConstraint(const CFitConstraint & src) = delete;
 
 public:
   /**

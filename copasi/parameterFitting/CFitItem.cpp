@@ -331,22 +331,15 @@ void CFitConstraint::resetConstraintViolation()
 
 void CFitConstraint::calculateConstraintViolation()
 {
-  if (*mpLowerBound > *mpObjectValue) mCheckConstraint = -1;
-  else if (*mpObjectValue > *mpUpperBound) mCheckConstraint = 1;
-  else mCheckConstraint = 0;
-
-  switch (mCheckConstraint)
+  if (*mpLowerBound > *mpObjectValue)
     {
-      case - 1:
-        mConstraintViolation += *mpLowerBound - *mpObjectValue;
-        break;
-
-      case 1:
-        mConstraintViolation += *mpObjectValue - *mpUpperBound;
-        break;
-
-      default:
-        break;
+      mConstraintViolation += *mpLowerBound - *mpObjectValue;
+      ++mCheckConstraint;
+    }
+  else if (*mpObjectValue > *mpUpperBound)
+    {
+      mConstraintViolation += *mpObjectValue - *mpUpperBound;
+      ++mCheckConstraint;
     }
 }
 
