@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,6 +12,9 @@ extern std::string getTestFile(const std::string& fileName);
 bool verify_cn(const CDataModel* dm, const std::string& cn)
 {
   auto* ref = dm->getObject({cn });
+  CCommonName objName(cn);
+  auto* ref2 = objName.resolve(dm);
+  REQUIRE(ref == ref2);
 
   if (ref == NULL)
     return false;

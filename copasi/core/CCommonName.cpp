@@ -96,21 +96,23 @@ void CCommonName::fixSpelling()
 
 void CCommonName::createComponent()
 {
-  CCommonNameComponent::shared_ptr pComponent = nullptr;
-  CCommonNameComponent::shared_ptr pParent = nullptr;
-  CCommonName ParentCN(*this);
-
+  CCommonName CN(*this);
   std::vector< std::pair< std::string, std::string > > Objects;
   Objects.reserve(10);
 
-  while (!ParentCN.empty())
+  while (!CN.empty())
     {
+      CCommonName ParentCN;
       std::string Type;
       std::string Name;
 
-      ParentCN.split(ParentCN, Type, Name);
+      CN.split(ParentCN, Type, Name);
       Objects.push_back(std::make_pair(Type, Name));
+      CN = ParentCN;
     }
+
+  CCommonNameComponent::shared_ptr pComponent = nullptr;
+  CCommonNameComponent::shared_ptr pParent = nullptr;
 
   for (auto it = Objects.rbegin(); it != Objects.rend(); ++it)
     {
@@ -174,8 +176,13 @@ const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
   for (auto it = Components.rbegin(); it != Components.rend(); ++it)
     {
       // Find the container component matching this component
-      if (pContainer->getCNComponent()->getPartialCN() != (*it)->getPartialCN())
-        continue;
+      if (resolved == nullptr)
+        {
+          if (pContainer->getCNComponent()->getPartialCN() == (*it)->getPartialCN())
+            resolved = pContainer->getCNComponent();
+
+          continue;
+        }
 
       const CObjectInterface * pObject = resolved->getObject()->getObject((*it)->getPartialCN());
 
@@ -185,7 +192,7 @@ const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
           break;
         }
 
-       (*it) = resolved;
+      resolved = pObject->getCNComponent();
     }
 
   if (resolved == nullptr)
