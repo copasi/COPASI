@@ -25,8 +25,12 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/utilities/utility.h"
 #include "copasi/undo/CData.h"
+#include "copasi/core/CRootContainer.h"
 
 using std::string;
+
+// static
+std::set< CCommonName * > CCommonName::UnresolvedCNs;
 
 // static
 std::string CCommonName::nameFromCN(const CCommonName & cn)
@@ -86,6 +90,24 @@ CObjectInterface * CCommonName::GetObjectFromCN(const CObjectInterface::Containe
   return pObject;
 }
 
+// static
+void CCommonName::ResolveAll(const CDataContainer * pContainer)
+{
+  for (auto it = UnresolvedCNs.begin(); it != UnresolvedCNs.end();)
+    {
+      CCommonName * pCN = *it;
+
+      if (pCN->resolve(pContainer) != nullptr)
+        it = UnresolvedCNs.lower_bound(pCN);
+      else
+        ++it;
+    }
+
+  for (auto it = UnresolvedCNs.begin(); it != UnresolvedCNs.end(); ++it)
+    std::cout << *it << ": " << **it << std::endl;
+  std::cout << UnresolvedCNs.size() << std::endl;
+}
+
 void CCommonName::fixSpelling()
 {
   if (!compare("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Simulation Counter"))
@@ -131,13 +153,20 @@ CCommonName::CCommonName()
 CCommonName::CCommonName(const CCommonNameComponent::shared_ptr & pComponent)
   : std::string(pComponent ? pComponent->getCN() : "")
   , mpComponent(pComponent)
-{};
+{
+  if (mpComponent == nullptr
+      || !mpComponent->isResolved())
+    UnresolvedCNs.insert(this);
+};
 
 CCommonName::CCommonName(const char * name)
   : string(name)
   , mpComponent(nullptr)
 {
   fixSpelling();
+
+  if (!empty())
+    UnresolvedCNs.insert(this);
 }
 
 CCommonName::CCommonName(const std::string & name)
@@ -145,23 +174,97 @@ CCommonName::CCommonName(const std::string & name)
   , mpComponent(nullptr)
 {
   fixSpelling();
+
+  if (!empty())
+    UnresolvedCNs.insert(this);
 }
 
 CCommonName::CCommonName(const CCommonName & src)
   : string(src)
   , mpComponent(src.mpComponent)
-{}
+{
+  UnresolvedCNs.erase(this);
+
+  if (!empty()
+      && (mpComponent == nullptr
+          || !mpComponent->isResolved()))
+    UnresolvedCNs.insert(this);
+}
 
 CCommonName::~CCommonName()
-{}
+{
+  UnresolvedCNs.erase(this);
+}
+
+CCommonName & CCommonName::operator=(const CCommonName & rhs)
+{
+  if (this != &rhs)
+    {
+      if (!empty()
+          && (mpComponent == nullptr
+              || !mpComponent->isResolved()))
+        UnresolvedCNs.erase(this);
+
+      std::string::operator=(rhs);
+      mpComponent = rhs.mpComponent;
+
+      if (!empty()
+          && (mpComponent == nullptr
+              || !mpComponent->isResolved()))
+        UnresolvedCNs.insert(this);
+    }
+
+  return *this;
+}
+
+CCommonName & CCommonName::operator=(const std::string & rhs)
+{
+  if (this->compare(rhs) != 0)
+    {
+      if (!empty())
+        UnresolvedCNs.erase(this);
+
+      std::string::operator=(rhs);
+      mpComponent = nullptr;
+
+      fixSpelling();
+
+      if (!empty())
+        UnresolvedCNs.insert(this);
+    }
+
+  return *this;
+}
+
+CCommonName & CCommonName::operator=(const CCommonNameComponent::shared_ptr & rhs)
+{
+  if (mpComponent != rhs)
+    {
+      if (!empty()
+          && (mpComponent == nullptr
+              || !mpComponent->isResolved()))
+        UnresolvedCNs.erase(this);
+
+      mpComponent = rhs;
+      std::string::operator=(mpComponent ? mpComponent->getCN() : "");
+
+      if (!empty()
+          && (mpComponent == nullptr
+              || !mpComponent->isResolved()))
+        UnresolvedCNs.insert(this);
+    }
+
+  return *this;
+}
 
 const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
 {
+  if (empty()
+      || pContainer == nullptr)
+    return nullptr;
+
   if (mpComponent == nullptr)
     createComponent();
-
-  if (pContainer == nullptr)
-    return nullptr;
 
   if (mpComponent->isResolved()
       && mpComponent->hasAncestor(pContainer))
@@ -196,7 +299,24 @@ const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
     }
 
   if (resolved == nullptr)
-    return nullptr;
+    {
+      // This handles static strings and separators
+      const CObjectInterface * pObject = pContainer->getObject(mpComponent->getPartialCN());
+
+      if (pObject != nullptr)
+        resolved = pObject->getCNComponent();
+    }
+
+  // We need to handle the root container objects like functions and unit definitions
+  if (resolved == nullptr)
+    {
+      const CDataContainer * pRoot = CRootContainer::getRoot();
+
+      if (pRoot != pContainer)
+        return resolve(pRoot);
+
+      return nullptr;
+    }
 
   // We have resolved the full common name
   mpComponent = resolved;
@@ -209,6 +329,7 @@ const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
       && (pObject = dynamic_cast< const CMathContainer * >(pContainer)->getMathObject(pObject)) != nullptr)
     return pObject;
 
+  UnresolvedCNs.erase(this);
   return mpComponent->getObject();
 }
 
@@ -222,30 +343,10 @@ const CObjectInterface * CCommonName::getObject() const
   return mpComponent ? mpComponent->getObject() : nullptr;
 }
 
-void CCommonName::setObject(const CObjectInterface * pObject)
-{
-  if (dynamic_cast< const CDataObject * >(pObject) != nullptr)
-    mpComponent = pObject->getCNComponent();
-  else if (mpComponent != nullptr)
-    mpComponent->signalObjectDeleted();
-
-  refresh();
-}
-
 void CCommonName::refresh()
 {
   if (mpComponent != nullptr)
     std::string::operator=(mpComponent->getCN());
-}
-
-bool CCommonName::hasAncestor(const CDataContainer * pObject) const
-{
-  if (pObject == nullptr)
-    return false;
-
-  const_cast< CCommonName * >(this)->refresh();
-
-  return find(pObject->getCNComponent()->getCN()) == 0;
 }
 
 CCommonName CCommonName::getPrimary() const

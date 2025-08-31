@@ -175,6 +175,10 @@ bool CCommonNameComponent::mayHaveAncestor(const CDataContainer * pAncestor) con
   if (pAncestor == nullptr)
     return false;
 
+  if (mType== "String"
+      || mType == "Separator")
+    return true;
+
   std::string CN = getCN();
   std::string AncestorCN = pAncestor->getCNComponent()->getPartialCN();
 

@@ -38,6 +38,8 @@ public:
   static CObjectInterface * GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
     CCommonName & objName);
 
+  static void ResolveAll(const CDataContainer * pContainer);
+
   /**
    * Default Constructor
    */
@@ -71,13 +73,15 @@ public:
    */
   CCommonName(const std::string & name);
 
+  CCommonName & operator=(const CCommonName & rhs);
+  CCommonName & operator=(const std::string & rhs);
+  CCommonName & operator=(const CCommonNameComponent::shared_ptr & rhs);
+
   bool isResolved() const;
 
   const CObjectInterface * resolve(const CDataContainer * pContainer);
   const CObjectInterface * getObject() const;
-  void setObject(const CObjectInterface * pObject);
   void refresh();
-  bool hasAncestor(const CDataContainer * pObject) const;
 
   CCommonName getPrimary() const;
 
@@ -111,6 +115,8 @@ public:
 private:
   void createComponent();
   void fixSpelling();
+
+  static std::set< CCommonName * > UnresolvedCNs;
 
   CCommonNameComponent::shared_ptr mpComponent;
 };

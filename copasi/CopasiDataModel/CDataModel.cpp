@@ -3473,6 +3473,8 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
     {
       CDataModel::deleteOldData();
     }
+
+  CCommonName::ResolveAll(this);
 }
 
 CUndoData::CChangeSet CDataModel::applyData(const CUndoData & data)
