@@ -139,6 +139,13 @@ CObjectInterface::CObjectInterface(const CObjectInterface & src)
 CObjectInterface::~CObjectInterface()
 {};
 
+// virtual
+const CCommonNameComponent::shared_ptr & CObjectInterface::getCNComponent() const
+{
+  static const CCommonNameComponent::shared_ptr empty;
+  return empty;
+}
+
 CCommonName CObjectInterface::getStringCN() const
 {
   return getCNProtected();

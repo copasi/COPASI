@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,7 +19,8 @@
 #include <sstream>
 
 #include "copasi/copasi.h"
-#include "CCommonName.h"
+#include "copasi/core/CCommonName.h"
+#include "copasi/core/CDataContainer.h"
 #include "copasi/utilities/utility.h"
 #include "copasi/undo/CData.h"
 
@@ -63,28 +64,151 @@ void CCommonName::fixSpelling()
     assign("CN=Root,CN=Information,Timer=Current Date/Time");
 }
 
-CCommonName::CCommonName():
-  string()
+void CCommonName::createComponent()
+{
+  CCommonNameComponent::shared_ptr pComponent = nullptr;
+  CCommonNameComponent::shared_ptr pParent = nullptr;
+  CCommonName ParentCN(*this);
+
+  std::vector< std::pair< std::string, std::string > > Objects;
+  Objects.reserve(10);
+
+  while (!ParentCN.empty())
+    {
+      std::string Type;
+      std::string Name;
+
+      ParentCN.split(ParentCN, Type, Name);
+      Objects.push_back(std::make_pair(Type, Name));
+    }
+
+  for (auto it = Objects.rbegin(); it != Objects.rend(); ++it)
+    {
+      pComponent = CCommonNameComponent::create(it->first, it->second, pParent);
+      pParent = pComponent;
+    }
+
+  mpComponent = pComponent;
+}
+
+CCommonName::CCommonName()
+  : string()
+  , mpComponent(nullptr)
 {}
 
-CCommonName::CCommonName(const char * name):
-  string(name)
+CCommonName::CCommonName(const CCommonNameComponent::shared_ptr & pComponent)
+  : std::string(pComponent ? pComponent->getCN() : "")
+  , mpComponent(pComponent)
+{};
+
+CCommonName::CCommonName(const char * name)
+  : string(name)
+  , mpComponent(nullptr)
 {
   fixSpelling();
 }
 
-CCommonName::CCommonName(const std::string & name):
-  string(name)
+CCommonName::CCommonName(const std::string & name)
+  : string(name)
+  , mpComponent(nullptr)
 {
   fixSpelling();
 }
 
-CCommonName::CCommonName(const CCommonName & src):
-  string(src)
+CCommonName::CCommonName(const CCommonName & src)
+  : string(src)
+  , mpComponent(src.mpComponent)
 {}
 
 CCommonName::~CCommonName()
 {}
+
+const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
+{
+  if (mpComponent == nullptr)
+    createComponent();
+
+  if (pContainer == nullptr)
+    return nullptr;
+
+  if (mpComponent->isResolved()
+      && mpComponent->hasAncestor(pContainer))
+    return mpComponent->getObject();
+
+  if (!mpComponent->mayHaveAncestor(pContainer))
+    return nullptr;
+
+  std::vector< CCommonNameComponent::shared_ptr > Components = mpComponent->getComponentList();
+  std::vector< CCommonNameComponent::shared_ptr > ContainerComponent = pContainer->getCNComponent()->getComponentList();
+  auto itc = ContainerComponent.rbegin();
+  auto etc = ContainerComponent.rend();
+  CCommonNameComponent::shared_ptr resolved = nullptr;
+
+  for (auto it = Components.rbegin(); it != Components.rend(); ++it)
+    {
+      if (itc != etc
+          && (*itc)->getPartialCN() == (*it)->getPartialCN())
+        {
+          resolved = (*itc);
+          ++itc;
+          continue;
+        }
+
+      const CObjectInterface * pObject = resolved->getObject()->getObject((*it)->getPartialCN());
+
+      if (pObject == nullptr)
+        {
+          resolved = nullptr;
+          break;
+        }
+
+       (*it) = resolved;
+    }
+
+  if (resolved != nullptr)
+    {
+      mpComponent = resolved;
+      std::string::operator=(mpComponent->getCN());
+    }
+
+  return mpComponent->getObject();
+}
+
+bool CCommonName::isResolved() const
+{
+  return mpComponent != nullptr && mpComponent->isResolved();
+}
+
+const CObjectInterface * CCommonName::getObject() const
+{
+  return mpComponent ? mpComponent->getObject() : nullptr;
+}
+
+void CCommonName::setObject(const CObjectInterface * pObject)
+{
+  if (dynamic_cast< const CDataObject * >(pObject) != nullptr)
+    mpComponent = pObject->getCNComponent();
+  else if (mpComponent != nullptr)
+    mpComponent->signalObjectDeleted();
+
+  refresh();
+}
+
+void CCommonName::refresh()
+{
+  if (mpComponent != nullptr)
+    std::string::operator=(mpComponent->getCN());
+}
+
+bool CCommonName::hasAncestor(const CDataContainer * pObject) const
+{
+  if (pObject == nullptr)
+    return false;
+
+  const_cast< CCommonName * >(this)->refresh();
+
+  return find(pObject->getCNComponent()->getCN()) == 0;
+}
 
 CCommonName CCommonName::getPrimary() const
 {return substr(0, findNext(","));}

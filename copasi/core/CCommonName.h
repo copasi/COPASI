@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,7 +22,10 @@
 #include <string>
 #include <set>
 
+#include "copasi/core/CCommonNameComponent.h"
+
 class CData;
+class CObjectInterface;
 
 /** @dia:pos 21.4754,29.8662 */
 class CCommonName: public std::string
@@ -38,8 +41,13 @@ public:
   CCommonName();
 
   /**
+   * Default Constructor
+   */
+  CCommonName(const CCommonNameComponent::shared_ptr & component);
+
+  /**
    * Copy Constructor
-   * @param const CRegisteredCommonName & src
+   * @param const CCommonName & src
    */
   CCommonName(const CCommonName & src);
 
@@ -59,6 +67,14 @@ public:
    * @param const std::string & name
    */
   CCommonName(const std::string & name);
+
+  bool isResolved() const;
+
+  const CObjectInterface * resolve(const CDataContainer * pContainer);
+  const CObjectInterface * getObject() const;
+  void setObject(const CObjectInterface * pObject);
+  void refresh();
+  bool hasAncestor(const CDataContainer * pObject) const;
 
   CCommonName getPrimary() const;
 
@@ -90,7 +106,10 @@ public:
                                       const std::string::size_type & pos = std::string::npos) const;
 
 private:
+  void createComponent();
   void fixSpelling();
+
+  CCommonNameComponent::shared_ptr mpComponent;
 };
 
 #endif // COPASI_CCommonName

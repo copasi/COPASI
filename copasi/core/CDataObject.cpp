@@ -25,7 +25,7 @@
 #include "copasi/copasi.h"
 
 #include "copasi/core/CDataContainer.h"
-#include "copasi/core/CRegisteredCommonName.h"
+#include "copasi/core/CCommonName.h"
 #include "copasi/undo/CData.h"
 #include <copasi/utilities/utility.h>
 
@@ -35,6 +35,7 @@ CDataObject::CDataObject()
   , mObjectName("No Name")
   , mObjectType("Unknown Type")
   , mpObjectParent(NULL)
+  , mpCNComponent(nullptr)
   , mObjectDisplayName()
   , mpObjectDisplayName(NULL)
   , mpObjectName(NULL)
@@ -43,7 +44,9 @@ CDataObject::CDataObject()
   , mAggregateValidity()
   , mReferences()
   , mPrerequisits()
-{}
+{
+  mpCNComponent = CCommonNameComponent::create(this);
+}
 
 CDataObject::CDataObject(const std::string & name,
                          const CDataContainer * pParent,
@@ -54,6 +57,7 @@ CDataObject::CDataObject(const std::string & name,
   , mObjectName()
   , mObjectType(type)
   , mpObjectParent(const_cast< CDataContainer * >(pParent))
+  , mpCNComponent(nullptr)
   , mObjectDisplayName()
   , mpObjectDisplayName(NULL)
   , mpObjectName(NULL)
@@ -81,6 +85,7 @@ CDataObject::CDataObject(const std::string & name,
     }
 
   addReference(mpObjectParent);
+  mpCNComponent = CCommonNameComponent::create(this);
 }
 
 CDataObject::CDataObject(const CDataObject & src,
@@ -91,6 +96,7 @@ CDataObject::CDataObject(const CDataObject & src,
   , mObjectName(src.mObjectName)
   , mObjectType(objectType.empty() ? src.mObjectType : objectType)
   , mpObjectParent(src.mpObjectParent)
+  , mpCNComponent(nullptr)
   , mObjectDisplayName()
   , mpObjectDisplayName(NULL)
   , mpObjectName(NULL)
@@ -111,10 +117,14 @@ CDataObject::CDataObject(const CDataObject & src,
     }
 
   addReference(mpObjectParent);
+
+  mpCNComponent = CCommonNameComponent::create(this);
 }
 
 CDataObject::~CDataObject()
 {
+  mpCNComponent->signalObjectDeleted();
+
   mAggregateValidity.clear();
 
   if (mpObjectParent)
@@ -171,7 +181,7 @@ CCommonName CDataObject::getCNProtected() const
           if (mpObjectParent->hasFlag(NameVector))
             tmp << "[" << CCommonName::escape(mObjectName) << "]";
           else if (mpObjectParent->hasFlag(Vector))
-            tmp << "[" << mpObjectParent->getIndex(this) << "]";
+            tmp << "[" << Index << "]";
         }
       else
         tmp << "," << CCommonName::escape(mObjectType)
@@ -186,6 +196,11 @@ CCommonName CDataObject::getCNProtected() const
     }
 
   return CN;
+}
+
+const CCommonNameComponent::shared_ptr & CDataObject::getCNComponent() const
+{
+  return mpCNComponent;
 }
 
 const CObjectInterface * CDataObject::getObject(const CCommonName & cn) const
@@ -303,6 +318,10 @@ bool CDataObject::setObjectName(const std::string & name)
           CRegisteredCommonName::handle(oldCN, getStringCN(), getObjectDataModel());
         }
     }
+
+  if (mpCNComponent)
+    mpCNComponent->signalObjectNameChanged();
+
   return true;
 }
 
@@ -382,6 +401,9 @@ bool CDataObject::setObjectParent(const CDataContainer * pParent)
     {
       CRegisteredCommonName::handle(OldCN, getStringCN(), getObjectDataModel());
     }
+
+  if (mpCNComponent)
+    mpCNComponent->signalObjectParentChanged();
 
   return true;
 }

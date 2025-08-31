@@ -27,7 +27,7 @@
 #include "copasi/core/CDataContainer.h"
 #include "copasi/core/CDataVector.h"
 #include "copasi/core/CRootContainer.h"
-#include "copasi/core/CRegisteredCommonName.h"
+#include "copasi/core/CCommonName.h"
 #include "copasi/core/CDataTimer.h"
 #include "copasi/core/CDataString.h"
 

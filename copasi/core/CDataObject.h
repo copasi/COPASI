@@ -27,6 +27,7 @@
 #include <memory>
 
 #include "copasi/core/CObjectInterface.h"
+#include "copasi/core/CCommonNameComponent.h"
 #include "copasi/core/CFlags.h"
 #include "copasi/undo/CUndoObjectInterface.h"
 #include "copasi/utilities/CValidity.h"
@@ -154,6 +155,8 @@ public:
    * @return const CObjectInterface * pObject
    */
   const CObjectInterface * getObject(const CCommonName & cn) const override;
+
+  const CCommonNameComponent::shared_ptr & getCNComponent() const override;
 
   /**
    * Retrieve the prerequisites, i.e., the objects which need to be evaluated
@@ -293,7 +296,7 @@ private:
   std::string mObjectType;
 
   CDataContainer * mpObjectParent;
-
+  std::shared_ptr< CCommonNameComponent > mpCNComponent;
   mutable std::string mObjectDisplayName;
   mutable CDataObjectReference< std::string > * mpObjectDisplayName;
   mutable CDataObjectReference< std::string > * mpObjectName;

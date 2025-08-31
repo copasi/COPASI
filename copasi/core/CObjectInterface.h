@@ -17,6 +17,7 @@
 #include <memory>
 
 #include "copasi/core/CCore.h"
+#include "copasi/core/CCommonNameComponent.h"
 #include "copasi/utilities/CValidity.h"
 
 class CDataObject;
@@ -27,7 +28,6 @@ class CRegisteredCommonName;
 //********************************************************************************
 
 class CObjectInterface
-  : public std::enable_shared_from_this< CObjectInterface >
 {
 public:
   typedef std::set< const CObjectInterface * > ObjectSet;
@@ -53,37 +53,7 @@ protected:
   CObjectInterface(const CObjectInterface & src);
 
 public:
-  template < class Derived >
-  std::shared_ptr< Derived > sharedFromThis()
-  {
-    return std::dynamic_pointer_cast< Derived >(shared_from_this());
-  }
-
-  template < class Derived >
-  std::shared_ptr< const Derived > sharedFromThis() const
-  {
-    return std::dynamic_pointer_cast< const Derived >(shared_from_this());
-  }
-
-  template < class Derived >
-  std::weak_ptr< Derived > weakFromThis()
-  {
-#if __cpp_lib_enable_shared_from_this	< 201603L
-    return sharedFromThis< Derived >();
-#else
-    return std::dynamic_pointer_cast< Derived >(weak_from_this());
-#endif
-  }
-
-  template < class Derived >
-  std::weak_ptr< const Derived > weakFromThis() const
-  {
-#if __cpp_lib_enable_shared_from_this	< 201603L
-    return sharedFromThis< const Derived >();
-#else
-    return std::dynamic_pointer_cast< const Derived >(weak_from_this());
-#endif
-  }
+  virtual const CCommonNameComponent::shared_ptr & getCNComponent() const;
 
   /**
    * Destructor
