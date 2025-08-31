@@ -16,6 +16,12 @@ bool verify_cn(const CDataModel* dm, const std::string& cn)
   auto* ref2 = objName.resolve(dm);
   REQUIRE(ref == ref2);
 
+  if (cn != objName)
+    {
+      ref = dm->getObject(objName);
+      REQUIRE(ref == ref2);
+    }
+
   if (ref == NULL)
     return false;
 

@@ -247,28 +247,43 @@ const CObjectInterface * CDataArray::getObject(const CCommonName & cn) const
   std::vector< std::string > DisplayNames;
   C_INT32 ii = 0;
 
-  while ((tmp = cn.getElementName(ii, false)) != "")
+  while ((tmp = cn.getElementName(ii++, false)) != "")
     {
       ObjectName += "[" + CCommonName::escape(tmp) + "]";
       DisplayNames.push_back(tmp);
-
-      ++ii;
     }
 
   const CDataObject* pObject = NULL; //this will contain the element reference
 
-  //if the reference object already exists, its name will be identical to the index
+  // if the reference object already exists, its name will be identical to the index
   ObjectMap::range range = mObjects.equal_range(ObjectName);
 
   while (range.first != range.second && (*range.first)->getObjectType() != "ElementReference") ++range.first;
 
   if (range.first != range.second) //not found
-    {
-      pObject = *range.first;
-    }
+    pObject = *range.first;
   else
     {
       pObject = addElementReference(displayNamesToCN(DisplayNames));
+
+      range = mObjects.equal_range(pObject->getObjectName());
+      const CDataObject * pExisting = nullptr;
+
+      while (range.first != range.second
+             && pExisting == nullptr)
+        {
+          if (*range.first != pObject
+              && (*range.first)->getObjectType() == "ElementReference")
+            pExisting = *range.first;
+
+          ++range.first;
+        }
+
+      if (pExisting != nullptr)
+        {
+          delete pObject;
+          pObject = pExisting;
+        }
     }
 
   if (pObject)

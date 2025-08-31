@@ -345,58 +345,90 @@ void CCommonName::split(CCommonName & parentCN, std::string & objectType, std::s
       Primary = *this;
     }
 
-  objectName = Primary.getElementName(0);
   objectType = Primary.getObjectType();
 
-  if (objectName.empty())
+  // We have an array
+  if (Primary.getObjectType() == "Array")
     {
-      objectName = Primary.getObjectName();
+      std::string Index;
+      size_t pos = 0;
+
+      while ((Index = Primary.getElementName(pos++, false)) != "")
+        objectName += "[" + Index + "]";
+
+      if (objectName.empty())
+        objectName = Primary.getObjectName();
+      else
+        {
+          objectType = "ElementReference";
+          parentCN += "," + escape(Primary.getObjectType()) + "=" + escape(Primary.getObjectName());
+        }
     }
   // We may have a vector and based on it's name we can determine the type
   else if (Primary.getObjectType() == "Vector")
     {
-      objectType = Primary.getObjectName();
+      objectName = Primary.getElementName(0, false);
 
-      // Vector:                    ObjectType:
-      // Compartments               Compartment
-      // Metabolites                Metabolite
-      // Reduced Model Metabolites  Metabolite
-      // Reactions                  Reaction
-      // Events                     Event
-      // Values                     ModelValue
-      // ParameterSets              ModelParameterSet
-      // Moieties                   Moiety
-      // ListOflayouts              Layout
-      // TaskList                   Task
-      // ReportDefinitions          ReportDefinition
-      // OutputDefinitions          PlotItem
-      // Functions                  Function
-      // ModelList                  CN
-      // Units list                 Unit
-      if (objectType == "Compartments") objectType = "Compartment";
-      else if (objectType == "Metabolites") objectType = "Metabolite";
-      else if (objectType == "Reduced Model Metabolites") objectType = "Metabolite";
-      else if (objectType == "Reactions") objectType = "Reaction";
-      else if (objectType == "Events") objectType = "Event";
-      else if (objectType == "Values") objectType = "ModelValue";
-      else if (objectType == "ParameterSets") objectType = "ModelParameterSet";
-      else if (objectType == "Moieties") objectType = "Moiety";
-      else if (objectType == "ListOflayouts") objectType = "Layout";
-      else if (objectType == "TaskList") objectType = "Task";
-      else if (objectType == "ReportDefinitions") objectType = "ReportDefinition";
-      else if (objectType == "OutputDefinitions") objectType = "PlotItem";
-      else if (objectType == "Functions") objectType = "Function";
-      else if (objectType == "ModelList") objectType = "CN";
-      else if (objectType == "Units list") objectType = "Unit";
-      else objectType.clear();
+      if (objectName.empty())
+        objectName = Primary.getObjectName();
+      else
+        {
+          objectType = Primary.getObjectName();
+          // Vector:                    ObjectType:
+          // Compartments               Compartment
+          // Metabolites                Metabolite
+          // Reduced Model Metabolites  Metabolite
+          // Reactions                  Reaction
+          // Events                     Event
+          // Values                     ModelValue
+          // ParameterSets              ModelParameterSet
+          // Moieties                   Moiety
+          // ListOflayouts              Layout
+          // TaskList                   Task
+          // ReportDefinitions          ReportDefinition
+          // OutputDefinitions          PlotItem
+          // Functions                  Function
+          // ModelList                  CN
+          // Units list                 Unit
+          if (objectType == "Compartments")
+            objectType = "Compartment";
+          else if (objectType == "Metabolites")
+            objectType = "Metabolite";
+          else if (objectType == "Reduced Model Metabolites")
+            objectType = "Metabolite";
+          else if (objectType == "Reactions")
+            objectType = "Reaction";
+          else if (objectType == "Events")
+            objectType = "Event";
+          else if (objectType == "Values")
+            objectType = "ModelValue";
+          else if (objectType == "ParameterSets")
+            objectType = "ModelParameterSet";
+          else if (objectType == "Moieties")
+            objectType = "Moiety";
+          else if (objectType == "ListOflayouts")
+            objectType = "Layout";
+          else if (objectType == "TaskList")
+            objectType = "Task";
+          else if (objectType == "ReportDefinitions")
+            objectType = "ReportDefinition";
+          else if (objectType == "OutputDefinitions")
+            objectType = "PlotItem";
+          else if (objectType == "Functions")
+            objectType = "Function";
+          else if (objectType == "ModelList")
+            objectType = "CN";
+          else if (objectType == "Units list")
+            objectType = "Unit";
+          else
+            objectType.clear();
 
-      parentCN += "," + escape(Primary.getObjectType()) + "=" + escape(Primary.getObjectName());
+          parentCN += "," + escape(Primary.getObjectType()) + "=" + escape(Primary.getObjectName());
+        }
     }
-  // We have an array
   else
     {
-      objectType.clear(); // We don't know
-      parentCN += "," + escape(Primary.getObjectType()) + "=" + escape(Primary.getObjectName());
+      objectName = Primary.getObjectName();
     }
 
   return;
