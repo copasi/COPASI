@@ -821,7 +821,7 @@ public:
    * @param const CDataObject * pObject
    * @return size_t index
    */
-  virtual size_t getIndex(const CDataObject * pObject) const
+  size_t getIndex(const CDataObject * pObject) const override
   {
     size_t i, imax = size();
     typename std::vector< CType * >::const_iterator itTarget = std::vector< CType * >::begin();
