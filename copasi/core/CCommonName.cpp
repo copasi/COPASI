@@ -20,7 +20,9 @@
 
 #include "copasi/copasi.h"
 #include "copasi/core/CCommonName.h"
-#include "copasi/core/CDataContainer.h"
+
+#include "copasi/math/CMathContainer.h"
+#include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/utilities/utility.h"
 #include "copasi/undo/CData.h"
 
@@ -54,6 +56,34 @@ std::string CCommonName::compartmentNameFromCN(const CCommonName & cn)
   while (!CN.empty() && ObjectType != "Compartment");
 
   return ObjectName;
+}
+
+// static
+CObjectInterface * CCommonName::GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
+  CCommonName & objName)
+{
+  bool CheckDataModel = true;
+  const CDataModel * pDataModel = nullptr;
+  CObjectInterface * pObject = nullptr;
+
+  for (const CDataContainer * pContainer : listOfContainer)
+    {
+      if (pDataModel == nullptr)
+        pDataModel = pContainer->getObjectDataModel();
+
+      if (dynamic_cast< const CDataModel * >(pContainer) != nullptr)
+        CheckDataModel = false;
+
+      if ((pObject = const_cast< CObjectInterface * >(objName.resolve(pContainer))) != nullptr)
+        break;
+    }
+
+  if (pObject == nullptr
+      && CheckDataModel
+      && pDataModel != nullptr)
+    pObject = const_cast< CObjectInterface * >(objName.resolve(pDataModel));
+
+  return pObject;
 }
 
 void CCommonName::fixSpelling()
@@ -139,20 +169,13 @@ const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
     return nullptr;
 
   std::vector< CCommonNameComponent::shared_ptr > Components = mpComponent->getComponentList();
-  std::vector< CCommonNameComponent::shared_ptr > ContainerComponent = pContainer->getCNComponent()->getComponentList();
-  auto itc = ContainerComponent.rbegin();
-  auto etc = ContainerComponent.rend();
   CCommonNameComponent::shared_ptr resolved = nullptr;
 
   for (auto it = Components.rbegin(); it != Components.rend(); ++it)
     {
-      if (itc != etc
-          && (*itc)->getPartialCN() == (*it)->getPartialCN())
-        {
-          resolved = (*itc);
-          ++itc;
-          continue;
-        }
+      // Find the container component matching this component
+      if (pContainer->getCNComponent()->getPartialCN() != (*it)->getPartialCN())
+        continue;
 
       const CObjectInterface * pObject = resolved->getObject()->getObject((*it)->getPartialCN());
 
@@ -165,11 +188,19 @@ const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
        (*it) = resolved;
     }
 
-  if (resolved != nullptr)
-    {
-      mpComponent = resolved;
-      std::string::operator=(mpComponent->getCN());
-    }
+  if (resolved == nullptr)
+    return nullptr;
+
+  // We have resolved the full common name
+  mpComponent = resolved;
+  std::string::operator=(mpComponent->getCN());
+
+  const CObjectInterface * pObject = mpComponent->getObject();
+
+  // Special case for MathContainers to allow resolving to MathObjects
+  if (dynamic_cast< const CMathContainer * >(pContainer) != nullptr
+      && (pObject = dynamic_cast< const CMathContainer * >(pContainer)->getMathObject(pObject)) != nullptr)
+    return pObject;
 
   return mpComponent->getObject();
 }

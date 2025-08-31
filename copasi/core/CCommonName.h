@@ -23,9 +23,9 @@
 #include <set>
 
 #include "copasi/core/CCommonNameComponent.h"
+#include "copasi/core/CObjectInterface.h"
 
 class CData;
-class CObjectInterface;
 
 /** @dia:pos 21.4754,29.8662 */
 class CCommonName: public std::string
@@ -34,6 +34,9 @@ class CCommonName: public std::string
 public:
   static std::string nameFromCN(const CCommonName & cn);
   static std::string compartmentNameFromCN(const CCommonName & cn);
+
+  static CObjectInterface * GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
+    CCommonName & objName);
 
   /**
    * Default Constructor

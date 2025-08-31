@@ -176,9 +176,9 @@ bool CCommonNameComponent::mayHaveAncestor(const CDataContainer * pAncestor) con
     return false;
 
   std::string CN = getCN();
-  std::string AncestorCN = pAncestor->getCNComponent()->getCN();
+  std::string AncestorCN = pAncestor->getCNComponent()->getPartialCN();
 
-  return CN.find(AncestorCN) == 0;
+  return CN.find(AncestorCN) != std::string::npos;
 }
 
 void CCommonNameComponent::updatePartialCN() {
