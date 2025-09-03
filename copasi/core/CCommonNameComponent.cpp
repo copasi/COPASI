@@ -127,7 +127,8 @@ std::string CCommonNameComponent::getCN() const
   if (CN.empty())
     return mPartialCN;
 
-  if (mPartialCN.front() == '[')
+  if (mPartialCN.size()
+      && mPartialCN.front() == '[')
     return CN + mPartialCN;
 
   return CN + "," + mPartialCN;
@@ -200,7 +201,8 @@ void CCommonNameComponent::updatePartialCN() {
           || mpParent->mpObject == nullptr)
         {
           // We rely on the current form of the CN
-          if (mPartialCN.front() == '[')
+          if (mPartialCN.size()
+              && mPartialCN.front() == '[')
             {
               // We might have an index or a name
               if (mPartialCN.find_first_not_of("0123456789]") == std::string::npos)
