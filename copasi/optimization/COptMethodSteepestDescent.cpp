@@ -87,10 +87,11 @@ bool COptMethodSteepestDescent::optimise()
   // initial point is first guess but we have to make sure that we
   // are within the parameter domain
   bool pointInParameterDomain = true;
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
   for (i = 0; i < mVariableSize; i++)
     {
-      COptItem & OptItem = *mProblemContext.active()->getOptItemList(true)[i];
+      COptItem & OptItem = *OptItemList[i];
       mIndividual[i] = OptItem.getStartValue();
       pointInParameterDomain &= OptItem.setItemValue(mIndividual[i], COptItem::CheckPolicyFlag::All);
       pointInParameterDomain &= (mIndividual[i] == OptItem.getStartValue());
@@ -100,7 +101,22 @@ bool COptMethodSteepestDescent::optimise()
     mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   fmx = evaluate(EvaluationPolicyFlag::All);
+
   setSolution(fmx, mIndividual, true);
+
+  if (mLogVerbosity > 1)
+    {
+      C_INT oit;
+      std::ostringstream string1, string2;
+
+      string1 << "niter=" << mCurrentIteration << ", f=" << fmx << ", fbest=" << getBestValue();
+      string2 << "position: ";
+
+      for (oit = 0; (size_t) oit < mVariableSize; ++oit)
+        string2 << "x[" << oit << "]=" << mIndividual[oit] << " ";
+
+      mMethodLog.enterLogEntry(COptLogEntry(string1.str(), "", string2.str()));
+    }
 
   bool SolutionFound = false;
 
@@ -122,12 +138,12 @@ bool COptMethodSteepestDescent::optimise()
             {
               if (mGradient[i] > 0)
                 {
-                  tmp = *mProblemContext.active()->getOptItemList(true)[i]->getUpperBoundValue();
+                  tmp = *OptItemList[i]->getUpperBoundValue();
                 }
 
               else
                 {
-                  tmp = *mProblemContext.active()->getOptItemList(true)[i]->getLowerBoundValue();
+                  tmp = *OptItemList[i]->getLowerBoundValue();
                 }
 
               // calculate the size of the largest jump
@@ -187,12 +203,15 @@ bool COptMethodSteepestDescent::optimise()
               calc_grad = true;
             }
 
-          if (fabs(fmx - getBestValue()) < 2.0 * mTolerance * fabs(fmx + getBestValue()))
+          if (fabs(fmx - getBestValue()) < 0.5 * mTolerance * fabs(fmx + getBestValue()))
             SolutionFound = true;
         }
 
       for (i = 0; i < mVariableSize; i++)
-        mIndividual[i] = mProblemContext.active()->getOptItemList(true)[i]->getItemValue();
+        mIndividual[i] = OptItemList[i]->getItemValue();
+
+      if (fmx < getBestValue())
+        setSolution(fmx, mIndividual, true);
 
       if (mLogVerbosity > 1)
         {
@@ -207,10 +226,6 @@ bool COptMethodSteepestDescent::optimise()
 
           mMethodLog.enterLogEntry(COptLogEntry(string1.str(), "", string2.str()));
         }
-
-      if (fmx < getBestValue())
-        setSolution(fmx, mIndividual, true);
-
       mpParentTask->output(COutputInterface::MONITORING);
     }
 
@@ -314,7 +329,7 @@ C_FLOAT64 COptMethodSteepestDescent::descentLine(const C_FLOAT64 & x)
   C_FLOAT64 * pGradient = mGradient.array();
   C_FLOAT64 * pIndividual = mIndividual.array();
 
-  for (; it != end; ++it, ++pGradient, ++pGradient)
+  for (; it != end; ++it, ++pIndividual, ++pGradient)
     {
       C_FLOAT64 X = *pIndividual + x * *pGradient;
       (*it)->setItemValue(X, COptItem::CheckPolicyFlag::None);
