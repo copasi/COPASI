@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -15,14 +15,19 @@
 // Uncomment the line below to enable debug output
 // #define DEBUG_UUID
 CUndoObjectInterface::CUndoObjectInterface()
-  : mpUuid(NULL)
-  , mUuidLocked(false)
+  : mUuidLocked(false)
+#ifdef COPASI_USE_CROSSGUID
+  , mpUuid(NULL)
+#endif
 {}
 
 CUndoObjectInterface::CUndoObjectInterface(const CUndoObjectInterface & src)
-  : mpUuid(src.mpUuid != NULL ? new xg::Guid(*src.mpUuid) : NULL)
-  , mUuidLocked(false)
+  : mUuidLocked(false)
+#ifdef COPASI_USE_CROSSGUID
+  , mpUuid(src.mpUuid != NULL ? new xg::Guid(*src.mpUuid) : NULL)
+#endif
 {
+#ifdef COPASI_USE_CROSSGUID
 #ifdef DEBUG_UUID
 
   if (mpUuid != NULL)
@@ -42,13 +47,16 @@ CUndoObjectInterface::CUndoObjectInterface(const CUndoObjectInterface & src)
     }
 
 #endif // DEBUG_UUID
+#endif
 }
 
 // virtual
 CUndoObjectInterface::~CUndoObjectInterface()
 {
+#ifdef COPASI_USE_CROSSGUID
   if (mpUuid != NULL)
     delete mpUuid;
+#endif
 }
 
 // virtual
@@ -60,6 +68,12 @@ CUndoObjectInterface * CUndoObjectInterface::insert(const CData & data)
 // virtual
 void CUndoObjectInterface::updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject)
 {}
+
+std::string CUndoObjectInterface::getUuidString() const
+{
+  return getUuid().str();
+}
+#ifdef COPASI_USE_CROSSGUID
 
 const xg::Guid & CUndoObjectInterface::getUuid() const
 {
@@ -111,9 +125,11 @@ bool CUndoObjectInterface::setUuid(const xg::Guid & uuid)
 
   return true;
 }
-
+#endif
 bool CUndoObjectInterface::setUuid(const std::string & uuid)
 {
+#ifdef COPASI_USE_CROSSGUID
+
   xg::Guid UUID(uuid);
 
   if (!UUID.isValid())
@@ -122,10 +138,13 @@ bool CUndoObjectInterface::setUuid(const std::string & uuid)
     }
 
   return setUuid(UUID);
+#endif
 }
 
 bool CUndoObjectInterface::generateUuid()
 {
+#ifdef COPASI_USE_CROSSGUID
+
   if (mUuidLocked &&
       mpUuid != NULL &&
       mpUuid->isValid())
@@ -142,4 +161,5 @@ bool CUndoObjectInterface::generateUuid()
   mUuidLocked = mpUuid->isValid();
 
   return true;
+#endif
 }
