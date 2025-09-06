@@ -79,14 +79,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -97,10 +97,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
+  void createUndoData(CUndoData & undoData,
                               const CUndoData::Type & type,
                               const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
   /**
    * Default constructor
@@ -131,13 +131,13 @@ public:
    * Retrieve the units of the child object.
    * @return std::string units
    */
-  virtual std::string getChildObjectUnits(const CDataObject * pObject) const;
+  std::string getChildObjectUnits(const CDataObject * pObject) const override;
 
   /**
    * Overload display name. Special treatment for reaction to
    * provide a shorter display
    */
-  virtual std::string getObjectDisplayName() const;
+  std::string getObjectDisplayName() const override;
 
   /**
    * Loads an object with data coming from a CReadConfig object.
@@ -153,13 +153,13 @@ public:
    * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CDataContainer * pParent);
+  bool setObjectParent(const CDataContainer * pParent) override;
 
   /**
    *  Retrieves the key of the reaction
    *  @return std::string key
    */
-  virtual const std::string & getKey() const;
+  const std::string & getKey() const override;
 
   /**
    * Retrieves the chemical equation of the reaction

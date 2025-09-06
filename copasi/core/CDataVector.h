@@ -214,7 +214,7 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const
+  CData toData() const override
   {
     CData Data;
     std::vector< CData > Content;
@@ -240,7 +240,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes)
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override
   {
     bool success = true;
     const std::vector< CData > & Content = data.getProperty(CData::VECTOR_CONTENT).toDataVector();
@@ -282,10 +282,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
+  void createUndoData(CUndoData & undoData,
                               const CUndoData::Type & /* type */,
                               const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override
   {
     const std::vector< CData > & OldContent = oldData.getProperty(CData::VECTOR_CONTENT).toDataVector();
     std::vector< CData >::const_iterator itOld = OldContent.begin();
@@ -332,7 +332,7 @@ public:
    * @param const CData & data
    * @return CUndoObjectInterface * pUndoObject
    */
-  virtual CUndoObjectInterface * insert(const CData & data)
+  CUndoObjectInterface * insert(const CData & data) override
   {
     CType * pNew = NULL;
     size_t Index = 0;
@@ -386,7 +386,7 @@ public:
    * @param const size_t & index
    * @param const CUndoObjectInterface * pUndoObject
    */
-  virtual void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject)
+  void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject) override
   {
     const CType * pObject = dynamic_cast< const CType * >(pUndoObject);
 
@@ -621,7 +621,7 @@ public:
    * @param const bool & adopt (Default: false)
    * @return bool success
    */
-  virtual bool add(CDataObject * pObject, const bool & adopt = true)
+  bool add(CDataObject * pObject, const bool & adopt = true) override
   {
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
@@ -667,7 +667,7 @@ public:
    * @param CDataObject * pObject
    * @return bool success
    */
-  virtual bool remove(CDataObject * pObject)
+  bool remove(CDataObject * pObject) override
   {
     const size_t index = getIndex(pObject);
 
@@ -718,7 +718,7 @@ public:
    * @param const CCommonName &name
    * @return const CObjectInterface * object
    */
-  virtual const CObjectInterface * getObject(const CCommonName &name) const
+  const CObjectInterface * getObject(const CCommonName &name) const override
   {
     size_t Index = name.getElementIndex();
 
