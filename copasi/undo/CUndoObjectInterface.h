@@ -11,7 +11,11 @@
 #ifndef COPASI_CUndoObjectInterface
 #define COPASI_CUndoObjectInterface
 
+#include <copasi/config.h>
+
+#ifdef COPASI_USE_CROSSGUID
 #include <crossguid/guid.hpp>
+#endif
 
 #include "copasi/undo/CUndoData.h"
 
@@ -95,6 +99,9 @@ public:
   virtual void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject);
 
 private:
+
+#ifdef COPASI_USE_CROSSGUID
+
   /**
    * Retrieve the UUID
    * @return const xg::Guid & uuid
@@ -107,6 +114,7 @@ private:
    * @return bool success
    */
   bool setUuid(const xg::Guid & uuid);
+#endif
 
 public:
 
@@ -130,8 +138,10 @@ public:
   bool generateUuid();
 
 private:
-  xg::Guid * mpUuid;
   bool mUuidLocked;
+#ifdef COPASI_USE_CROSSGUID
+  xg::Guid * mpUuid;
+#endif
 };
 
 // std::ostream & operator << (std::ostream & os, const uuid_t & o);
