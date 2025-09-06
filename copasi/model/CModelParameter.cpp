@@ -110,7 +110,7 @@ CData CModelParameter::toData() const
   if (mType != Type::Set)
     {
       Data.addProperty(CData::OBJECT_NAME, mCN);
-      Data.addProperty(CData::OBJECT_UUID, getUuid().str());
+      Data.addProperty(CData::OBJECT_UUID, getUuidString());
       Data.addProperty(CData::OBJECT_PARENT_CN, getSet() != NULL ? getSet()->getStringCN() : CCommonName());
       Data.addProperty(CData::OBJECT_TYPE, TypeNames[mType]);
       Data.addProperty(CData::OBJECT_INDEX, getIndex());

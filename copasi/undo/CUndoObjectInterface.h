@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -94,6 +94,7 @@ public:
    */
   virtual void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject);
 
+private:
   /**
    * Retrieve the UUID
    * @return const xg::Guid & uuid
@@ -106,6 +107,13 @@ public:
    * @return bool success
    */
   bool setUuid(const xg::Guid & uuid);
+
+public:
+
+  /**
+      @return string representation of the uuid
+   */
+  std::string getUuidString() const;
 
   /**
    * Set the  UUID. This method will fail once the UUID has been set for the object.
