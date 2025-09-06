@@ -390,8 +390,20 @@ endif ()
 include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LAPACK_CFLAGS}")
 
+option(COPASI_USE_CROSSGUID "Use CrossGUID for UUID generation" ON)
+if (COPASI_USE_CROSSGUID)
 find_package(CROSSGUID REQUIRED)
 include_directories(BEFORE ${CROSSGUID_INCLUDE_DIR})
+SET(UUID_MESSAGE "
+   UUID library         = CrossGUID
+   crossguid Libs       = ${CROSSGUID_LIBRARY}
+   cross include        = ${CROSSGUID_INCLUDE_DIR}
+")
+else()
+SET(UUID_MESSAGE "
+   UUID library         = stduuid
+")
+endif()
 
 if (ENABLE_JIT)
   find_package(NATIVEJIT REQUIRED)
@@ -959,8 +971,7 @@ message(STATUS "-----------------------------------------------------------
    LAPACK LDFLAGS       = ${CLAPACK_LINKER_FLAGS}
    LAPACK include       = ${CLAPACK_INCLUDE_DIR}
 
-   crossguid Libs       = ${CROSSGUID_LIBRARY}
-   cross include        = ${CROSSGUID_INCLUDE_DIR}
+   ${UUID_MESSAGE}
 
    Expat version        = ${EXPAT_VERSION}
    Expat Libs           = ${EXPAT_LIBRARY}

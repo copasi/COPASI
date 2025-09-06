@@ -273,7 +273,6 @@ else()
   endif()
 
   target_link_libraries(libCOPASISE-core
-    ${CROSSGUID_LIBRARY} 
     ${LIBSBML_LIBRARY_NAME} 
     ${LIBSEDML_LIBRARY_NAME}
     ${LIBCOMBINE_LIBRARY_NAME}
@@ -283,6 +282,10 @@ else()
     ${CPUFEATURES_LIBRARY}
   )
   
+  if (COPASI_USE_CROSSGUID)
+    target_link_libraries(libCOPASISE-core ${CROSSGUID_LIBRARY})
+  endif()
+
   if (COPASI_USE_RAPTOR)
     target_link_libraries(libCOPASISE-core RAPTOR::RAPTOR)
   endif()
