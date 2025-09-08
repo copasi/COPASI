@@ -15,6 +15,9 @@
 
 #ifdef COPASI_USE_CROSSGUID
 #include <crossguid/guid.hpp>
+#else
+#include <copasi/stduuid/gsl/span>
+#include <copasi/stduuid/uuid.h>
 #endif
 
 #include "copasi/undo/CUndoData.h"
@@ -114,6 +117,22 @@ private:
    * @return bool success
    */
   bool setUuid(const xg::Guid & uuid);
+
+#else
+
+  /**
+   * Retrieve the UUID
+   * @return const uuids::uuid& uuid
+   */
+  const uuids::uuid& getUuid() const;
+
+  /**
+   * Set the  UUID. This method will fail once the UUID has been set for the object.
+   * @param const uuids::uuid & uuid
+   * @return bool success
+   */
+  bool setUuid(const uuids::uuid & uuid);
+
 #endif
 
 public:
@@ -141,6 +160,8 @@ private:
   bool mUuidLocked;
 #ifdef COPASI_USE_CROSSGUID
   xg::Guid * mpUuid;
+#else
+  uuids::uuid mUuid;
 #endif
 };
 

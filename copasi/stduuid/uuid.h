@@ -33,7 +33,7 @@
 #ifdef LIBUUID_CPP20_OR_GREATER
 #include <span>
 #else
-#include <gsl/span>
+#include <copasi/stduuid/gsl/span>
 #endif
 
 #ifdef _WIN32
