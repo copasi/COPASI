@@ -77,18 +77,10 @@ void CPointerContext< Data >::setMaster(Data * pMaster)
       Base::master() = pMaster;
 
       {
-        bool renameEnabled = CRegisteredCommonName::isEnabled();
-
-        if (renameEnabled)
-          CRegisteredCommonName::setEnabled(false);
-
         if (Base::size() > 1)
 #pragma omp parallel for
           for (size_t i = 0; i < Base::size(); ++i)
             Base::threadData()[i] = dynamic_cast< Data * >(pMaster->copy());
-
-        if (renameEnabled)
-          CRegisteredCommonName::setEnabled(true);
       }
     }
 }

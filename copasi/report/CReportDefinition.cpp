@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,7 +45,7 @@
 //
 //////////////////////////////////////////////////
 // static
-CReportDefinition * CReportDefinition::fromData(const CData & data, CUndoObjectInterface * pParent)
+CReportDefinition * CReportDefinition::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CReportDefinition(data.getProperty(CData::OBJECT_NAME).toString(),
                                NO_PARENT);
@@ -128,31 +128,35 @@ void CReportDefinition::createUndoData(CUndoData & undoData,
 }
 
 CReportDefinition::CReportDefinition(const std::string & name,
-                                     const CDataContainer * pParent):
-  CDataObject(name, pParent, "ReportDefinition"),
-  mKey(CRootContainer::getKeyFactory()->add("Report", this)),
-  mComment(""),
-  mTaskType(CTaskEnum::Task::timeCourse),
-  mSeparator("\t"),
-  mTable(true),
-  mbTitle(true),
-  mPrecision(6)
+                                     const CDataContainer * pParent)
+  : CDataObject(name, pParent, "ReportDefinition")
+  , mKey(CRootContainer::getKeyFactory()->add("Report", this))
+  , mComment("")
+  , mTaskType(CTaskEnum::Task::timeCourse)
+  , mSeparator("\t")
+  , mTable(true)
+  , mbTitle(true)
+  , mPrecision(6)
+  , mHeaderVector()
+  , mBodyVector()
+  , mFooterVector()
+  , mTableVector()
 {}
 
 CReportDefinition::CReportDefinition(const CReportDefinition & src,
-                                     const CDataContainer * pParent):
-  CDataObject(src, pParent),
-  mKey(CRootContainer::getKeyFactory()->add("Report", this)),
-  mComment(src.mComment),
-  mTaskType(src.mTaskType),
-  mSeparator(src.mSeparator, NO_PARENT),
-  mTable(src.mTable),
-  mbTitle(src.mbTitle),
-  mPrecision(src.mPrecision),
-  mHeaderVector(src.mHeaderVector),
-  mBodyVector(src.mBodyVector),
-  mFooterVector(src.mFooterVector),
-  mTableVector(src.mTableVector)
+                                     const CDataContainer * pParent)
+  : CDataObject(src, pParent)
+  , mKey(CRootContainer::getKeyFactory()->add("Report", this))
+  , mComment(src.mComment)
+  , mTaskType(src.mTaskType)
+  , mSeparator(src.mSeparator, NO_PARENT)
+  , mTable(src.mTable)
+  , mbTitle(src.mbTitle)
+  , mPrecision(src.mPrecision)
+  , mHeaderVector(src.mHeaderVector)
+  , mBodyVector(src.mBodyVector)
+  , mFooterVector(src.mFooterVector)
+  , mTableVector(src.mTableVector)
 {}
 
 CReportDefinition::~CReportDefinition()
@@ -298,18 +302,18 @@ void CReportDefinition::addTableElement(const CDataObject * pObject)
       if (pObject->getObjectParent())
         {
           if (pObject->getObjectType() == "Separator")
-            mHeaderVector.push_back(CRegisteredCommonName("Separator=" + pObject->getStringCN().getObjectName(), pObject));
+            mHeaderVector.push_back(CCommonName("Separator=" + pObject->getStringCN().getObjectName()));
           else
-            mHeaderVector.push_back(CRegisteredCommonName(pObject->getStringCN() + ",Property=DisplayName", pObject));
+            mHeaderVector.push_back(CCommonName(pObject->getStringCN() + ",Property=DisplayName"));
         }
       else
-        mHeaderVector.push_back(CRegisteredCommonName(CDataString(pObject->getObjectName()).getStringCN(), pObject));
+        mHeaderVector.push_back(CCommonName(CDataString(pObject->getObjectName()).getStringCN()));
     }
 
   if (pObject->getObjectType() == "Separator")
-    mBodyVector.push_back(CRegisteredCommonName("Separator=" + pObject->getStringCN().getObjectName(), pObject));
+    mBodyVector.push_back(CCommonName("Separator=" + pObject->getStringCN().getObjectName()));
   else
-    mBodyVector.push_back(CRegisteredCommonName(pObject->getStringCN(), pObject));
+    mBodyVector.push_back(CCommonName(pObject->getStringCN()));
 
   return;
 }

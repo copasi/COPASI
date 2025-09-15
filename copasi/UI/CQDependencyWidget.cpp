@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -227,9 +227,9 @@ CQDependencyWidget::rowDoubleClicked(int row, int)
 
   if (mpListView == NULL)
     {
-      CopasiUI3Window::getMainWindow()->getMainWidget()->switchToOtherWidget(ListViews::WidgetType::NotFound, CRegisteredCommonName(cn, this->mpDataModel));
+      CopasiUI3Window::getMainWindow()->getMainWidget()->switchToOtherWidget(ListViews::WidgetType::NotFound, CCommonName(cn));
       return;
     }
 
-  mpListView->switchToOtherWidget(ListViews::WidgetType::NotFound, CRegisteredCommonName(cn, this->mpDataModel));
+  mpListView->switchToOtherWidget(ListViews::WidgetType::NotFound, CCommonName(cn));
 }

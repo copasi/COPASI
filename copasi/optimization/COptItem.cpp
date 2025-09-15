@@ -133,8 +133,8 @@ void * COptItem::getValuePointer() const
 void COptItem::initializeParameter()
 {
   mpParmObjectCN = assertParameter("ObjectCN", CCopasiParameter::Type::CN, CRegisteredCommonName());
-  mpParmLowerBound = assertParameter("LowerBound", CCopasiParameter::Type::CN, CRegisteredCommonName("1e-06", nullptr));
-  mpParmUpperBound = assertParameter("UpperBound", CCopasiParameter::Type::CN, CRegisteredCommonName("1e+06", nullptr));
+  mpParmLowerBound = assertParameter("LowerBound", CCopasiParameter::Type::CN, CRegisteredCommonName(CCommonName("1e-06")));
+  mpParmUpperBound = assertParameter("UpperBound", CCopasiParameter::Type::CN, CRegisteredCommonName(CCommonName("1e+06")));
   mpParmStartValue = assertParameter("StartValue", CCopasiParameter::Type::DOUBLE, NaN);
 }
 
@@ -176,15 +176,17 @@ std::string COptItem::getObjectDisplayName() const
 
 bool COptItem::setLowerBound(const CRegisteredCommonName & lowerBound)
 {
-  if (lowerBound[0] == '-' &&
-      lowerBound[lowerBound.length() - 1] == '%' &&
-      isNumber(lowerBound.substr(1, lowerBound.length() - 2)))
+  std::string LowerBound = lowerBound;
+
+  if (LowerBound[0] == '-' &&
+      LowerBound[LowerBound.length() - 1] == '%' &&
+      isNumber(LowerBound.substr(1, LowerBound.length() - 2)))
     {
-      std::stringstream LowerBound;
+      std::stringstream ssLowerBound;
       C_FLOAT64 StartValue = getStartValue();
 
-      LowerBound << StartValue + fabs(StartValue) * strToDouble(lowerBound.c_str(), NULL) / 100.0;
-      *mpParmLowerBound =  CRegisteredCommonName(LowerBound.str(), nullptr);
+      ssLowerBound << StartValue + fabs(StartValue) * strToDouble(LowerBound.c_str(), NULL) / 100.0;
+      *mpParmLowerBound =  CCommonName(ssLowerBound.str());
 
       return true;
     }
@@ -201,7 +203,7 @@ bool COptItem::setLowerBound(const C_FLOAT64 & lowerBound)
   std::stringstream LowerBound;
   LowerBound << lowerBound;
 
-  return setLowerBound(CRegisteredCommonName(LowerBound.str(), nullptr));
+  return setLowerBound(CCommonName(LowerBound.str()));
 }
 
 const CRegisteredCommonName & COptItem::getLowerBound() const
@@ -209,15 +211,17 @@ const CRegisteredCommonName & COptItem::getLowerBound() const
 
 bool COptItem::setUpperBound(const CRegisteredCommonName & upperBound)
 {
-  if (upperBound[0] == '+' &&
-      upperBound[upperBound.length() - 1] == '%' &&
-      isNumber(upperBound.substr(1, upperBound.length() - 2)))
+  std::string UpperBound = upperBound;
+
+  if (UpperBound[0] == '+' &&
+      UpperBound[UpperBound.length() - 1] == '%' &&
+      isNumber(UpperBound.substr(1, UpperBound.length() - 2)))
     {
-      std::stringstream UpperBound;
+      std::stringstream ssUpperBound;
       C_FLOAT64 StartValue = getStartValue();
 
-      UpperBound << StartValue + fabs(StartValue) * strToDouble(upperBound.c_str(), NULL) / 100.0;
-      *mpParmUpperBound = CRegisteredCommonName(UpperBound.str(), nullptr);
+      ssUpperBound << StartValue + fabs(StartValue) * strToDouble(UpperBound.c_str(), NULL) / 100.0;
+      *mpParmUpperBound = CCommonName(ssUpperBound.str());
 
       return true;
     }
@@ -234,7 +238,7 @@ bool COptItem::setUpperBound(const C_FLOAT64 & upperBound)
   std::stringstream UpperBound;
   UpperBound << upperBound;
 
-  return setUpperBound(CRegisteredCommonName(UpperBound.str(), nullptr));
+  return setUpperBound(CCommonName(UpperBound.str()));
 }
 
 const CRegisteredCommonName & COptItem::getUpperBound() const
@@ -465,9 +469,6 @@ void COptItem::updatePrerequisites(const std::vector< COptItem * > & influencing
 {
   ObjectSet Original = mPrerequisits;
   mPrerequisits.clear();
-
-  std::vector< COptItem * >::const_iterator it = influencingIntervals.begin();
-  std::vector< COptItem * >::const_iterator end = influencingIntervals.end();
 
   for (COptItem * pOptItem : influencingIntervals)
     if (Original.find(pOptItem->getItemObject()) != Original.end())

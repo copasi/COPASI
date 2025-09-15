@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -584,9 +584,7 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
   if (SelectionList.indexOf(Name) <= 0)
     {
       CModelParameterSet * pNew = new CModelParameterSet(*pParameterSet, pModel, false);
-      CRegisteredCommonName::setEnabled(false);
       pNew->setObjectName(TO_UTF8(Name));
-      CRegisteredCommonName::setEnabled(true);
 
       // We are sure that a set with that name does not exist.
       Sets.add(pNew, true);

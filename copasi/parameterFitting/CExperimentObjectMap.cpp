@@ -211,15 +211,17 @@ bool CExperimentObjectMap::setObjectCN(const size_t & index,
     return false;
 }
 
-CRegisteredCommonName CExperimentObjectMap::getObjectCN(const size_t & index) const
+const CRegisteredCommonName & CExperimentObjectMap::getObjectCN(const size_t & index) const
 {
+  static const CRegisteredCommonName Empty;
+
   const CDataColumn * pColumn =
     dynamic_cast< const CDataColumn * >(getGroup(StringPrint("%d", index)));
 
   if (pColumn)
     return pColumn->getObjectCN();
   else
-    return CRegisteredCommonName();
+    return Empty;
 }
 
 bool CExperimentObjectMap::setScale(const size_t & index,
@@ -281,11 +283,10 @@ bool CExperimentObjectMap::compile(const CMathContainer * pMathContainer)
   mObjects = NULL;
 
   const CDataObject * pObject = NULL;
-  std::string CN;
-
   for (i = 0; i < imax; i++)
     {
-      if ((CN = getObjectCN(i)) == "") continue;
+      const CCommonName & CN = getObjectCN(i);
+      if (CN == "") continue;
 
       if ((pObject = CObjectInterface::DataObject(pMathContainer->getObjectFromCN(CN))) != NULL &&
           pObject->hasFlag(CDataObject::ValueDbl))
@@ -415,12 +416,14 @@ bool CExperimentObjectMap::CDataColumn::setObjectCN(const CRegisteredCommonName 
   return true;
 }
 
-CRegisteredCommonName CExperimentObjectMap::CDataColumn::getObjectCN() const
+const CRegisteredCommonName & CExperimentObjectMap::CDataColumn::getObjectCN() const
 {
+  static const CRegisteredCommonName Empty;
+
   if (mpObjectCN != NULL)
     return *mpObjectCN;
   else
-    return CRegisteredCommonName();
+    return Empty;
 }
 
 bool CExperimentObjectMap::CDataColumn::setScale(const C_FLOAT64 & weight)

@@ -113,7 +113,7 @@ std::vector< CDataObject * > CSensItem::getVariablesPointerList(CDataModel * pDa
 
   if (isSingleObject())
     {
-      const CDataObject * tmpObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(getSingleObjectCN()));
+      const CDataObject * tmpObject = CObjectInterface::DataObject(pDataModel->getObjectFromCN(mSingleObjectCN));
 
       if (!tmpObject)
         {

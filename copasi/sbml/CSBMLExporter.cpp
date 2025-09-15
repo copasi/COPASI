@@ -2031,7 +2031,7 @@ void addToInitialValueMap(std::map<const std::string, Parameter*>* initialMap
   if (initialMap == NULL || pObject == NULL || pObjectParent == NULL)
     return;
 
-  const std::string& cn = pObject->getStringCN();
+  const std::string & cn = pObject->getStringCN();
 
   if ((*initialMap)[cn] != NULL)
     {
@@ -3107,13 +3107,13 @@ void addSymbolComponentToUnitDefinition(UnitDefinition* result, CUnit::SymbolCom
       use_d_prefix = false;
     }
 
-  int unitKind = (int)convertSymbol(possibleUnit);
+  size_t unitKind = convertSymbol(possibleUnit);
   int scale = 0;
 
   if (unitKind != C_INVALID_INDEX && use_d_prefix)
     scale = static_cast<int>(CBaseUnit::scaleFromPrefix(possibleScale));
   else
-    unitKind = (int)convertSymbol(symbol);
+    unitKind = convertSymbol(symbol);
 
   if (unitKind == C_INVALID_INDEX)
     {
@@ -3303,7 +3303,7 @@ CSBMLExporter::exportLayout(unsigned int sbmlLevel, CDataModel& dataModel)
                   // iterate through all layouts and find the last used
                   // render information objects
                   std::set<std::string> mRenderKeys;
-                  for (int i = 0; i < dataModel.getListOfLayouts()->size(); i++)
+                  for (size_t i = 0; i < dataModel.getListOfLayouts()->size(); i++)
                     {
                       CLayout& layout = dataModel.getListOfLayouts()->operator[](i);
                       std::string renderKey = layout.getLastUsedRenderInformation();
@@ -3424,7 +3424,7 @@ CSBMLExporter::addInitialAssignmentsToModel(const CDataModel &dataModel)
     {
       Parameter* param = it->second;
       // add parameter to model
-      int result = model->addParameter(param);
+      model->addParameter(param);
       model->getParameter(param->getId())->setUserData((void *) "1");
 
       const CDataObject *obj = static_cast<const CDataObject *>(dataModel.getObject(it->first));

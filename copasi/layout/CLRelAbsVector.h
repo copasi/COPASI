@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -94,8 +94,6 @@ public:
   bool operator==(const CLRelAbsVector& other) const;
 
   bool operator!=(const CLRelAbsVector& other) const;
-
-  CLRelAbsVector& operator=(const CLRelAbsVector& src);
 
   /**
    * Converts this object to the corresponding SBML object.

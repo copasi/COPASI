@@ -1,8 +1,7 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
-
 
 #include "copasi/copasi.h"
 
@@ -11,8 +10,6 @@
 #include "copasi/math/CMathContainer.h"
 #include "copasi/math/CMathExpression.h"
 #include "copasi/function/CDerive.h"
-
-
 
 CMathDerive::CMathDerive(const CMathContainer* pContainer, size_t fun, size_t var):
   mpContainer(pContainer),
@@ -24,8 +21,6 @@ CMathDerive::CMathDerive(const CMathContainer* pContainer, size_t fun, size_t va
   initOneVar(fun, var);
 }
 
-
-
 void CMathDerive::initOneVar(size_t fun, size_t var)
 {
   size_t max = mpContainer->getValues().size();
@@ -36,9 +31,8 @@ void CMathDerive::initOneVar(size_t fun, size_t var)
   if (var >= max)
     return;
 
-
   CMathObject* pFMO = mpContainer->getMathObject(&mpContainer->getValues()[fun]);
-  CMathObject* pVMO = mpContainer->getMathObject(&mpContainer->getValues()[var]);
+  // CMathObject* pVMO = mpContainer->getMathObject(&mpContainer->getValues()[var]);
 
   const CMathExpression* pMExp = pFMO->getExpressionPtr();
 
@@ -48,15 +42,12 @@ void CMathDerive::initOneVar(size_t fun, size_t var)
 
   CDerive derive;
   derive.deriveBranch(pMExp->getRoot(), NULL);
-
-
 }
 
 const CEvaluationNode* CMathDerive::getRootNode()
 {
   return mpRootNode;
 }
-
 
 #ifdef XXX
 

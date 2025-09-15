@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,9 +8,9 @@
 #include "CArrayElementReference.h"
 
 // static
-CArrayElementReference * CArrayElementReference::fromData(const CData & data, CUndoObjectInterface * pParent)
+CArrayElementReference * CArrayElementReference::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
-  std::vector< std::string > Index;
+  CDataArray::name_index_type Index;
 
   if (data.isSetProperty(CData::ARRAY_ELEMENT_INDEX))
     {
@@ -19,7 +19,7 @@ CArrayElementReference * CArrayElementReference::fromData(const CData & data, CU
 
       std::vector< CDataValue >::const_iterator it = DataIndex.begin();
       std::vector< CDataValue >::const_iterator end = DataIndex.end();
-      std::vector< std::string >::iterator itIndex = Index.begin();
+      CDataArray::name_index_type::iterator itIndex = Index.begin();
 
       for (; it != end; ++it, ++itIndex)
         {
@@ -56,14 +56,14 @@ bool CArrayElementReference::applyData(const CData & data, CUndoData::CChangeSet
 
       for (; it != end; ++it, ++itIndex)
         {
-          mIndex.push_back(CRegisteredCommonName(it->toString(), this));
+          mIndex.push_back(CCommonName(it->toString()));
         }
     }
 
   return success;
 }
 
-CArrayElementReference::CArrayElementReference(const std::vector< std::string > & index,
+CArrayElementReference::CArrayElementReference(const CDataArray::name_index_type & index,
     const CDataContainer * pParent,
     const CFlags< Flag > & flag)
   : CDataObject("Value", pParent, "ElementReference",
@@ -74,8 +74,8 @@ CArrayElementReference::CArrayElementReference(const std::vector< std::string > 
 {
   assert(pParent != NULL);
 
-  for (const std::string & CN : index)
-    mIndex.push_back(CRegisteredCommonName(CN, this));
+  for (const CCommonName & CN : index)
+    mIndex.push_back(CN);
 
   updateObjectName();
 }

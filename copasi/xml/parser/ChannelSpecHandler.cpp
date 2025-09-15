@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -52,7 +52,7 @@ CXMLHandler * ChannelSpecHandler::processStart(const XML_Char * pszName,
       case ChannelSpec:
         name = mpParser->getAttributeValue("cn", papszAttrs);
 
-        mpData->pCurrentChannelSpec = new CPlotDataChannelSpec(CRegisteredCommonName(name, mpData->pModel));
+        mpData->pCurrentChannelSpec = new CPlotDataChannelSpec(CCommonName(name));
         sMin = mpParser->getAttributeValue("min", papszAttrs, false);
 
         if (sMin == NULL)

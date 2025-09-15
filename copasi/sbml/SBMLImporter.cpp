@@ -145,7 +145,7 @@ public:
     return prefix;
   }
 
-  virtual int transform(SBase* element)
+  int transform(SBase* element) override
   {
     if (element == NULL || getPrefix().empty())
       return LIBSBML_OPERATION_SUCCESS;
@@ -183,7 +183,7 @@ public:
     : mpProcessReport(pProcessReport)
   {}
 
-  virtual int process(SBMLDocument* doc)
+  int process(SBMLDocument* /* doc */) override
   {
     if (mpProcessReport != NULL
         && !mpProcessReport->progress())
@@ -3581,7 +3581,7 @@ void SBMLImporter::restoreFunctionDB()
 void
 SBMLImporter::preprocessNode(ConverterASTNode * pNode, Model * pSBMLModel,
                              std::map< const CDataObject *, SBase * > & copasi2sbmlmap,
-                             Reaction * pSBMLReaction, bool ignoreRate /*= false*/)
+                             Reaction * pSBMLReaction, bool /* ignoreRate = false*/)
 {
   // this function goes through the tree several times.
   // this can probably be handled more intelligently
@@ -3723,7 +3723,7 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
             {
               std::string id1 = pChild1->getName();
               std::string id2 = pChild2->getName();
-              ASTNode *pAvogadro = NULL, *pSpecies = NULL;
+              ASTNode *pAvogadro = NULL;
 
               if (pChild1 != NULL && pChild2 != NULL)
                 {
@@ -3732,7 +3732,6 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
                       if (id1 == (*avoIt)->getId())
                         {
                           pAvogadro = pChild1;
-                          pSpecies = pChild2;
                           // store the id of the species in id1 for use below
                           id1 = id2;
                           break;
@@ -3741,7 +3740,6 @@ void SBMLImporter::replaceAmountReferences(ConverterASTNode* pASTNode, Model* pS
                       if (id2 == (*avoIt)->getId())
                         {
                           pAvogadro = pChild2;
-                          pSpecies = pChild1;
                           break;
                         }
 
@@ -4274,7 +4272,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
               if (pNode->mainType() == CEvaluationNode::MainType::OBJECT)
                 {
                   // it can be a global or a local parameter or an metabolite
-                  std::string objectCN = pNode->getData().substr(1, pNode->getData().length() - 2);
+                  const CCommonName & objectCN = static_cast< const CEvaluationNodeObject * >(pNode)->getObjectCN();
                   const CDataObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
 
                   if (!pObject)
@@ -4328,7 +4326,7 @@ std::vector<CEvaluationNodeObject*>* SBMLImporter::isMassActionExpression(const 
 
                   if (pChildNode->mainType() == CEvaluationNode::MainType::OBJECT)
                     {
-                      std::string objectCN = pChildNode->getData().substr(1, pChildNode->getData().length() - 2);
+                      const CCommonName & objectCN = static_cast< const CEvaluationNodeObject * >(pChildNode)->getObjectCN();
                       const CDataObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
                       assert(pObject);
 
@@ -4570,7 +4568,8 @@ void SBMLImporter::setCorrectUsage(CReaction* pCopasiReaction, const CEvaluation
           fatalError();
         }
 
-      const CDataObject* object = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(pObjectNode->getData().substr(1, pObjectNode->getData().length() - 2)));
+      const CCommonName & objectCN = static_cast< const CEvaluationNodeObject * >(pObjectNode)->getObjectCN();
+      const CDataObject* object = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
 
       if (!object)
         {
@@ -4678,8 +4677,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
   if (dynamic_cast<const CMassAction*>(pCopasiReaction->getFunction()))
     {
       const CEvaluationNodeObject* pChild = dynamic_cast<const CEvaluationNodeObject*>(pCallNode->getChild());
-      std::string objectCN = pChild->getData();
-      objectCN = objectCN.substr(1, objectCN.length() - 2);
+      const CCommonName & objectCN = static_cast< const CEvaluationNodeObject * >(pChild)->getObjectCN();
       const CDataObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
 
       if (!pObject)
@@ -4713,8 +4711,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
       if (pCopasiReaction->isReversible())
         {
           pChild = dynamic_cast<const CEvaluationNodeObject*>(pChild->getSibling());
-          std::string objectCN = pChild->getData();
-          objectCN = objectCN.substr(1, objectCN.length() - 2);
+          const CCommonName & objectCN = static_cast< const CEvaluationNodeObject * >(pChild)->getObjectCN();
           const CDataObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
 
           if (!pObject)
@@ -4757,8 +4754,7 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
               fatalError();
             }
 
-          std::string objectCN = pChild->getData();
-          objectCN = objectCN.substr(1, objectCN.length() - 2);
+          CCommonName objectCN = pChild->getObjectCN();
           const CDataObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
 
           if (!pObject)
@@ -8002,11 +7998,9 @@ void SBMLImporter::applyConversionFactors()
   double v;
   const CMetab* pMetab = NULL;;
   CChemEq* pChemEq = NULL;
-  const CChemEqElement* pE = NULL;
 
   while (it != endit)
     {
-      pE = it->first;
       pos = this->mSpeciesConversionParameterMap.find(it->second.first);
 
       if (pos != endpos)

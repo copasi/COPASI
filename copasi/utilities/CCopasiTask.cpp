@@ -87,7 +87,7 @@ const CCopasiTask::OutputFlag CCopasiTask::OUTPUT_UI = CCopasiTask::OutputFlag(C
 const CCopasiTask::OutputFlag CCopasiTask::ONLY_TIME_SERIES = CCopasiTask::OutputFlag(CCopasiTask::OutputFlagBase::TIME_SERIES) | CCopasiTask::OutputFlagBase::INITIALIZE | CCopasiTask::OutputFlagBase::STREAM | CCopasiTask::OutputFlagBase::FINISH;
 
 // static
-CCopasiTask * CCopasiTask::fromData(const CData & data, CUndoObjectInterface * pParent)
+CCopasiTask * CCopasiTask::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   CCopasiTask * pNew = CTaskFactory::create(CTaskEnum::TaskName.toEnum(data.getProperty(CData::TASK_TYPE).toString()), NO_PARENT);
 
@@ -145,7 +145,8 @@ bool CCopasiTask::applyData(const CData & data, CUndoData::CChangeSet & changes)
 
   if (data.isSetProperty(CData::TASK_REPORT))
     {
-      const CReportDefinition * pReportDefinition = dynamic_cast< const CReportDefinition * >(getObjectFromCN(data.getProperty(CData::TASK_REPORT).toString()));
+      CCommonName CN = data.getProperty(CData::TASK_REPORT).toString();
+      const CReportDefinition * pReportDefinition = dynamic_cast< const CReportDefinition * >(getObjectFromCN(CN));
       mReport.setReportDefinition(pReportDefinition);
     }
 
@@ -277,8 +278,8 @@ CCopasiTask::CCopasiTask()
   , mpProblem(NULL)
   , mpMethod(NULL)
   , mReport()
-  , mInitialState()
   , mpContainer(NULL)
+  , mInitialState()
   , mProcessReport()
   , mpSliders(NULL)
   , mDoOutput(OUTPUT_SE)

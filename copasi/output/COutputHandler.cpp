@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -176,9 +176,8 @@ void COutputHandler::applyUpdateSequence()
   const_cast< CMathContainer * >(mpContainer)->applyUpdateSequence(mUpdateSequence);
 }
 
-bool COutputHandler::compileUpdateSequence(const CObjectInterface::ContainerList & listOfContainer)
+bool COutputHandler::compileUpdateSequence(const CObjectInterface::ContainerList & /* listOfContainer */)
 {
-
   mpContainer->getTransientDependencies().getUpdateSequence(mUpdateSequence, CCore::SimulationContext::Default, mpContainer->getStateObjects(), mObjects,
       mpContainer->getSimulationUpToDateObjects());
 

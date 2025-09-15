@@ -88,8 +88,6 @@ bool COptMethodStatistics::initialize()
  */
 bool COptMethodStatistics::optimise()
 {
-  bool Continue = true;
-
   if (!initialize()) return false;
 
   size_t j;

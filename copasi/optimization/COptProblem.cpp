@@ -179,9 +179,6 @@ void  COptProblem::calculateValue()
 {
   mMinInterval = std::numeric_limits< C_FLOAT64 >::infinity();
 
-  std::vector< COptItem * >::const_iterator it = mpOptItems->begin();
-  std::vector< COptItem * >::const_iterator end = mpOptItems->end();
-
   for (COptItem * pOptItem : *mpOptItems)
     if (*static_cast< C_FLOAT64 * >(pOptItem->getValuePointer()) < mMinInterval)
       mMinInterval = *static_cast< C_FLOAT64 * >(pOptItem->getValuePointer());
@@ -552,7 +549,9 @@ bool COptProblem::initialize()
       if (!mpReport->getStream()) mpReport = NULL;
     }
 
-  if (mpSubTaskSrc != NULL)
+  if (mpSubTask != nullptr)
+    ContainerList.push_back(mpSubTask);
+  else if (mpSubTaskSrc != NULL)
     ContainerList.push_back(mpSubTaskSrc);
 
   size_t Size = mpOptItems->size();

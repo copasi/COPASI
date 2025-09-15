@@ -131,7 +131,6 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
                                CVector< C_FLOAT64 > & child1,
                                CVector< C_FLOAT64 > & child2)
 {
-  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
   CRandom * pRandom = mRandomContext.active();
 
   size_t i, crp;

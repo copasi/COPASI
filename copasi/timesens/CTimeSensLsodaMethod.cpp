@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -562,7 +562,7 @@ void CTimeSensLsodaMethod::start()
   for (i = 0; i < mSystemSize + 1; ++i)
     mAtol[i] = tmpAtol[i + mpContainer->getCountFixedEventTargets()]; //TODO shift? + mpContainer->getCountFixedEventTargets()
 
-  for (i = mSystemSize + 1; i < mData.dim; ++i)
+  for (C_INT i = mSystemSize + 1; i < mData.dim; ++i)
     mAtol[i] = mAtol[i - mSystemSize]; // 1e-12;
 
   /* Configure lsoda(r) */
@@ -682,8 +682,8 @@ void CTimeSensLsodaMethod::EvalJ(const C_INT * n, const C_FLOAT64 * t, const C_F
 {static_cast<Data *>((void *) n)->pMethod->evalJ(t, y, ml, mu, pd, nRowPD);}
 
 // virtual
-void CTimeSensLsodaMethod::evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
-                                 const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
+void CTimeSensLsodaMethod::evalJ(const C_FLOAT64 * /* t */, const C_FLOAT64 * /* y */,
+                                 const C_INT * /* ml */, const C_INT * /* mu */, C_FLOAT64 * /* pd */ , const C_INT * /* nRowPD */)
 {
   // TODO Implement me.
 }

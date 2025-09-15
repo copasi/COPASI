@@ -452,7 +452,7 @@ CSEDMLExporter::createScanTask()
   subTask->setTask(subTaskId);
 
   // create first range
-  bool result = exportNthScanItem(pProblem, numItems - 1, task);
+  exportNthScanItem(pProblem, numItems - 1, task);
 
   std::string lastTaskId = task->getId();
 
@@ -639,8 +639,6 @@ std::string CSEDMLExporter::createSteadyStateTask()
   SedSteadyState *steady  = mpSEDMLDocument->createSteadyState();
   SEDML_SET_ID(steady, SEDMLUtils::getNextId("steady", mpSEDMLDocument->getNumSimulations()));
   //presently SEDML only supports time course
-  CCopasiTask* pTask = &mpDataModel->getTaskList()->operator[]("Steady-State");
-  CTrajectoryProblem* tProblem = static_cast<CTrajectoryProblem*>(pTask->getProblem());
 
   // set the correct KISAO Term
   SedAlgorithm* alg = steady->createAlgorithm();

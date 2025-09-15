@@ -61,11 +61,11 @@ public:
 #ifdef JIT_IMPLEMENTATION
   typedef NativeJIT::NodeBase Node;
 
-  virtual CJitCompiler * copy() const;
+  CJitCompiler * copy() const override;
 
-  virtual bool compile();
+  bool compile() override;
 
-  virtual Function compile(const CMathExpression & mathExpression);
+  Function compile(const CMathExpression & mathExpression) override;
 
   bool allocateExecutionBuffer(const size_t & size);
 

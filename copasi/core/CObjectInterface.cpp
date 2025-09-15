@@ -35,6 +35,9 @@ const CDataObject * CObjectInterface::DataObject(const CObjectInterface * pInter
 CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
     const CCommonName & objName)
 {
+  return GetObjectFromCN(listOfContainer, CCommonName(objName));
+
+#ifdef XXXX
   CCommonName Primary = objName.getPrimary();
   std::string Type = Primary.getObjectType();
 
@@ -108,31 +111,11 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
     }
 
   return const_cast< CObjectInterface * >(pObject);
-}
-
-// static
-CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
-    const CRegisteredCommonName & objName)
-{
-  const CDataModel * pDataModel = objName.getDataModel();
-
-  if (pDataModel != nullptr)
-    {
-      CObjectInterface::ContainerList ListOfContainer = listOfContainer;
-      ListOfContainer.push_back(pDataModel);
-
-      return GetObjectFromCN(ListOfContainer, CCommonName(objName));
-    }
-
-  return GetObjectFromCN(listOfContainer, CCommonName(objName));
+#endif // XXXX
 }
 
 CObjectInterface::CObjectInterface()
   : mValidity(this)
-{}
-
-CObjectInterface::CObjectInterface(const CObjectInterface & src)
-  : mValidity(src.mValidity, this)
 {}
 
 // virtual
@@ -153,7 +136,7 @@ CCommonName CObjectInterface::getStringCN() const
 
 CRegisteredCommonName CObjectInterface::getCN() const
 {
-  return CRegisteredCommonName(getCNProtected(), DataObject(this));
+  return getCNProtected();
 }
 
 bool CObjectInterface::appendPrerequisites(CObjectInterface::ObjectSet & prerequisites) const

@@ -61,6 +61,12 @@ public:
 
     ~iterator() {}
 
+    iterator & operator=(const iterator & rhs)
+    {
+      std::vector< CType * >::iterator::operator=(rhs);
+      return *this;
+    }
+
     CType & operator*() const
     {
       return *std::vector< CType * >::iterator::operator*();
@@ -139,6 +145,12 @@ public:
     const_iterator(const typename std::vector< CType * >::const_iterator & src): std::vector< CType * >::const_iterator(src) {}
 
     ~const_iterator() {}
+
+    const_iterator & operator =(const const_iterator & rhs)
+    {
+      std::vector< CType * >::const_iterator::operator=(rhs);
+      return *this;
+    }
 
     const CType & operator*() const
     {
@@ -284,9 +296,9 @@ public:
    * @return CUndoData undoData
    */
   void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & /* type */,
-                              const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override
+                      const CUndoData::Type & /* type */,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override
   {
     const std::vector< CData > & OldContent = oldData.getProperty(CData::VECTOR_CONTENT).toDataVector();
     std::vector< CData >::const_iterator itOld = OldContent.begin();
@@ -937,7 +949,7 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const
+  CData toData() const override
   {
     CData Data;
     std::vector< CData > Content;
@@ -960,7 +972,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes)
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override
   {
     bool success = true;
     bool inserted = false;
@@ -1020,10 +1032,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & /* type */,
-                              const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const
+  void createUndoData(CUndoData & undoData,
+                      const CUndoData::Type & /* type */,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override
   {
     const std::vector< CData > & OldContent = oldData.getProperty(CData::VECTOR_CONTENT).toDataVector();
     std::vector< CData >::const_iterator itOld = OldContent.begin();
@@ -1161,7 +1173,7 @@ public:
    * @param const bool & adopt (Default: false)
    * @return bool success
    */
-  virtual bool add(CDataObject * pObject, const bool & adopt = true)
+  bool add(CDataObject * pObject, const bool & adopt = true) override
   {
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
@@ -1271,9 +1283,9 @@ public:
    * @param const std::string & name
    * @return const CObjectInterface * pObject
    */
-  virtual const CObjectInterface * getObject(const CCommonName &name) const
+  const CObjectInterface * getObject(const CCommonName &name) const override
   {
-    CCommonName ElementName = name.getElementName(0);
+    std::string ElementName = name.getElementName(0);
 
     if (!ElementName.empty())
       {

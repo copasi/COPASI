@@ -27,7 +27,7 @@
 #include "copasi/report/CKeyFactory.h"
 
 // static
-CLLineEnding * CLLineEnding::fromData(const CData & data, CUndoObjectInterface * pParent)
+CLLineEnding * CLLineEnding::fromData(const CData & /* data */, CUndoObjectInterface * /* pParent */)
 {
   return new CLLineEnding(NO_PARENT);
 }
@@ -44,7 +44,7 @@ CData CLLineEnding::toData() const
 }
 
 // virtual
-bool CLLineEnding::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CLLineEnding::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 

@@ -28,7 +28,7 @@
 class CData;
 
 /** @dia:pos 21.4754,29.8662 */
-class CCommonName: public std::string
+class CCommonName
 {
   // Operations
 public:
@@ -36,9 +36,7 @@ public:
   static std::string compartmentNameFromCN(const CCommonName & cn);
 
   static CObjectInterface * GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
-    CCommonName & objName);
-
-  static void ResolveAll(const CDataContainer * pContainer);
+    const CCommonName & objName);
 
   /**
    * Default Constructor
@@ -63,12 +61,6 @@ public:
 
   /**
    * Constructor from base class
-   * @param const char * name
-   */
-  CCommonName(const char * name);
-
-  /**
-   * Constructor from base class
    * @param const std::string & name
    */
   CCommonName(const std::string & name);
@@ -76,12 +68,27 @@ public:
   CCommonName & operator=(const CCommonName & rhs);
   CCommonName & operator=(const std::string & rhs);
   CCommonName & operator=(const CCommonNameComponent::shared_ptr & rhs);
+  bool operator ==(const CCommonName & rhs) const;
+  bool operator !=(const CCommonName & rhs) const;
+  bool operator <(const CCommonName & rhs) const;
 
+  virtual const CObjectInterface * resolve(const CDataContainer * pContainer) const;
   bool isResolved() const;
+  bool hasAncestor(const CDataContainer * pContainer) const;
+  bool mayHaveAncestor(const CDataContainer * pContainer) const;
+  bool isValid() const;
 
-  const CObjectInterface * resolve(const CDataContainer * pContainer);
   const CObjectInterface * getObject() const;
-  void refresh();
+
+  operator std::string() const;
+  bool empty() const;
+  bool operator ==(const std::string & rhs) const;
+  bool operator !=(const std::string & rhs) const;
+  CCommonName & operator +=(const std::string & rhs);
+  std::string operator +(const std::string & rhs) const;
+  std::string::size_type size() const;
+  void clear();
+  const char* c_str() const;
 
   CCommonName getPrimary() const;
 
@@ -96,7 +103,7 @@ public:
   std::string getElementName(const size_t & pos /*= 0*/,
                              const bool & unescape = true) const;
 
-  void split(CCommonName & parentCN, std::string & objectType, std::string & objectName) const;
+  void split(CCommonName & parentCN, std::string & objectType, std::string & objectName, std::string * pPartialCN = nullptr) const;
 
   static std::string escape(const std::string & name);
 
@@ -113,12 +120,20 @@ public:
                                       const std::string::size_type & pos = std::string::npos) const;
 
 private:
-  void createComponent();
+  static CCommonNameComponent::shared_ptr createComponent(const std::string & cn);
+  CCommonNameComponent::shared_ptr findAncestorCandidate(const CDataContainer * pContainer) const;
+
   void fixSpelling();
 
-  static std::set< CCommonName * > UnresolvedCNs;
-
-  CCommonNameComponent::shared_ptr mpComponent;
+protected:
+  void refresh() const;
+  mutable CCommonNameComponent::shared_ptr mpComponent;
+  mutable CCommonNameComponent::cn_ptr mpCN;
 };
 
+bool operator ==(const std::string & lhs, const CCommonName & rhs);
+bool operator !=(const std::string & lhs, const CCommonName & rhs);
+std::string operator +(const std::string & lhs, const CCommonName & rhs);
+
+std::ostream & operator <<(std::ostream & os, const CCommonName & cn);
 #endif // COPASI_CCommonName

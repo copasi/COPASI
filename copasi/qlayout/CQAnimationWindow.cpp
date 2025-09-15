@@ -378,7 +378,7 @@ class QCustomTimeCourseAnimation : public CQCopasiAnimation
     for (auto & entry : entries)
       {
         mEntries.push_back(entry);
-        mpDataHandler->addDuringName({entry.getDataCN(), mpDataModel});
+        mpDataHandler->addDuringName(CCommonName(entry.getDataCN()));
         mCNs.push_back(entry.getCN());
       }
 

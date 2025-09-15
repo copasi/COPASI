@@ -43,11 +43,9 @@ bool CUnitDefinitionDB::add(const CUnitDefinition & src)
       return false;
     }
 
-  CUnitDefinition * pCopy = NULL;
-
   try
     {
-      pCopy = new CUnitDefinition(src, this);
+      new CUnitDefinition(src, this);
     }
 
   catch (...)

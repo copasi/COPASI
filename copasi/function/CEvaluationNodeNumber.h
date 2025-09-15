@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -72,7 +77,7 @@ public:
    * Create a new ASTNode corresponding to this NumberNode.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const;
+  ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const override;
 
   /**
    * Build the MathML string
@@ -81,15 +86,15 @@ public:
    * @param const std::vector< std::vector< std::string > > & variables
    * @return std::string MMLString
    */
-  virtual std::string getMMLString(const std::vector< std::string > & children,
-                                   bool expand,
-                                   const std::vector< std::vector< std::string > > & variables) const;
+  std::string getMMLString(const std::vector< std::string > & children,
+                           bool expand,
+                           const std::vector< std::vector< std::string > > & variables) const override;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes in C.
    * @return string representing a double value
    */
-  virtual std::string getCCodeString(const std::vector< std::string > & children) const;
+  std::string getCCodeString(const std::vector< std::string > & children) const override;
 };
 
 #endif // COPASI_CEvaluationNodeNumber

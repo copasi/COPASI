@@ -38,19 +38,11 @@ public:
   static CObjectInterface * GetObjectFromCN(const ContainerList & listOfContainer,
       const CCommonName & objName);
 
-  static CObjectInterface * GetObjectFromCN(const ContainerList & listOfContainer,
-      const CRegisteredCommonName & objName);
-
 protected:
   /**
    * Constructor
    */
   CObjectInterface();
-
-  /**
-   * Copy Constructor
-   */
-  CObjectInterface(const CObjectInterface & src);
 
 public:
   virtual const CCommonNameComponent::shared_ptr & getCNComponent() const;

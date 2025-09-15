@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -105,11 +105,6 @@ CIssue::CIssue(const CIssue::eSeverity & severity,
                const CIssue::eKind & kind):
   mSeverity(severity),
   mKind(kind)
-{}
-
-CIssue::CIssue(const CIssue & src):
-  mSeverity(src.mSeverity),
-  mKind(src.mKind)
 {}
 
 CIssue::~CIssue()

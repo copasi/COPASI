@@ -45,11 +45,6 @@ public:
   CMathObject();
 
   /**
-   * Copy constructor
-   */
-  CMathObject(const CMathObject & src);
-
-  /**
    * Destructor
    */
   virtual ~CMathObject();

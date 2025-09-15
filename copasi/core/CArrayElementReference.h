@@ -13,7 +13,7 @@
 
 #include "copasi/core/CDataObject.h"
 #include "copasi/core/CRegisteredCommonName.h"
-#include "CArray.h"
+#include "copasi/core/CDataArray.h"
 
 /**
  * Class CArrayElementReference
@@ -75,7 +75,7 @@ public:
    * The object name will be the index string, the type is "ElementReference"
    * pParent may not be NULL.
    */
-  CArrayElementReference(const std::vector< std::string > & index,
+  CArrayElementReference(const CDataArray::name_index_type & index,
                          const CDataContainer * pParent,
                          const CFlags< Flag > & flag = CFlags< Flag >::None);
 

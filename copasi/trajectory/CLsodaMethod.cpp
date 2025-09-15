@@ -740,8 +740,8 @@ void CLsodaMethod::EvalJ(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 *
 {static_cast<Data *>((void *) n)->pMethod->evalJ(t, y, ml, mu, pd, nRowPD);}
 
 // virtual
-void CLsodaMethod::evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
-                         const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
+void CLsodaMethod::evalJ(const C_FLOAT64 * /* t */ , const C_FLOAT64 * /* y */,
+                         const C_INT * /* ml */, const C_INT * /* mu */, C_FLOAT64 * /* pd */, const C_INT * /* nRowPD */)
 {
   // TODO Implement me.
 }

@@ -44,7 +44,7 @@
 #include "copasi/undo/CUndoData.h"
 
 // static
-CCompartment * CCompartment::fromData(const CData & data, CUndoObjectInterface * pParent)
+CCompartment * CCompartment::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CCompartment(data.getProperty(CData::OBJECT_NAME).toString(),
                           NO_PARENT);
@@ -212,12 +212,6 @@ bool CCompartment::addMetabolite(CMetab * pMetabolite)
   std::string oldCN = pMetabolite->getStringCN();
 
   bool success = mMetabolites.add(pMetabolite, true);
-
-  //if a metabolite is added to a compartment successfully the CN of
-  //the metabolite is changed. This needs to be handled similarly to a
-  //rename.
-  if (success && getObjectParent())
-    CRegisteredCommonName::handle(oldCN, pMetabolite->getStringCN(), pMetabolite->getObjectDataModel());
 
   return success;
 }

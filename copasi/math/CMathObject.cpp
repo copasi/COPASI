@@ -82,26 +82,6 @@ CMathObject::CMathObject():
   mpDataObject(NULL)
 {}
 
-CMathObject::CMathObject(const CMathObject & src):
-  CObjectInterface(src),
-  mpExpression(src.mpExpression),
-  mpValue(src.mpValue),
-  mPrerequisites(src.mPrerequisites),
-  mValueType(src.mValueType),
-  mEntityType(src.mEntityType),
-  mSimulationType(src.mSimulationType),
-  mIsIntensiveProperty(src.mIsIntensiveProperty),
-  mIsInitialValue(src.mIsInitialValue),
-  mpCorrespondingProperty(src.mpCorrespondingProperty),
-  mpCorrespondingPropertyValue(src.mpCorrespondingPropertyValue),
-  mpCompartmentValue(src.mpCompartmentValue),
-  mpQuantity2NumberValue(src.mpQuantity2NumberValue),
-  mStoichiometryVector(src.mStoichiometryVector),
-  mRateVector(src.mRateVector),
-  mpCalculate(src.mpCalculate),
-  mpDataObject(src.mpDataObject)
-{}
-
 // virtual
 CMathObject::~CMathObject()
 {
@@ -1824,14 +1804,10 @@ bool CMathObject::createConvertedExpression(const CExpression * pExpression,
   return success;
 }
 
-bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
+bool CMathObject::createIntensiveValueExpression(const CMetab * /* pSpecies */,
     CMathContainer & container)
 {
   bool success = true;
-
-  // mConc = *mpValue / (mpModel->getQuantity2NumberFactor() * mpCompartment->getValue());
-  CObjectInterface * pNumber = NULL;
-  CObjectInterface * pCompartment = NULL;
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
@@ -1858,26 +1834,10 @@ bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
   return success;
 }
 
-bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
+bool CMathObject::createExtensiveValueExpression(const CMetab * /* pSpecies */,
     CMathContainer & container)
 {
   bool success = true;
-
-  // mConc * mpCompartment->getValue() * mpModel->getQuantity2NumberFactor();
-
-  CObjectInterface * pIntensiveValue = NULL;
-  CObjectInterface * pCompartment = NULL;
-
-  if (mIsInitialValue)
-    {
-      pIntensiveValue = pSpecies->getInitialConcentrationReference();
-      pCompartment = pSpecies->getCompartment()->getInitialValueReference();
-    }
-  else
-    {
-      pIntensiveValue = pSpecies->getConcentrationReference();
-      pCompartment = pSpecies->getCompartment()->getValueReference();
-    }
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());

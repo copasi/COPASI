@@ -169,7 +169,6 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
       // we make copies of the unit definitions so that we do not have to remember
       // if we created them or not
       std::string units;
-      UnitDefinition * pUDef = NULL;
       Unit unit(sbmlModel->getLevel(), sbmlModel->getVersion());
       unit.initDefaults();
 
@@ -1029,7 +1028,6 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
   std::vector< std::string > nonDefaultCompartmentsVolume;
   std::vector< std::string > nonDefaultCompartmentsArea;
   std::vector< std::string > nonDefaultCompartmentsLength;
-  std::vector< std::string > nonDefaultCompartmentsDimensionless;
   std::vector< std::string > nonDefaultSpecies;
   std::vector< std::string > nonDefaultKineticTime;
   std::vector< std::string > nonDefaultKineticSubstance;
@@ -1045,10 +1043,6 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
   bool inconsistentVolumeUnits = false;
   bool inconsistentAreaUnits = false;
   bool inconsistentLengthUnits = false;
-  bool inconsistentDimensionlessUnits = false;
-  bool defaultVolumeUsed = false;
-  bool defaultAreaUsed = false;
-  bool defaultLengthUsed = false;
 
   for (i = 0; i < iMax; ++i)
     {
@@ -1173,12 +1167,6 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
                 {
                   if (pDimensionlessUnit == nullptr)
                     pDimensionlessUnit = &UnitInfo;
-
-                  if (pDimensionlessUnit != nullptr
-                      && !areSBMLUnitDefinitionsIdentical(*pDimensionlessUnit, UnitInfo))
-                    {
-                      inconsistentDimensionlessUnits = true;
-                    }
                 }
               else
                 {

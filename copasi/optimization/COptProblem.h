@@ -674,12 +674,12 @@ protected:
    */
   // mutable CVector< C_FLOAT64 * > mContainerVariables;
 
-  sCounter mCounters;
-
   /**
    * A vector of solution results
    */
   C_FLOAT64 mSolutionValue;
+
+  sCounter mCounters;
 
   /**
    * A CPU Timer

@@ -349,7 +349,7 @@ void CExperiment::updateFittedPoints()
   for (i = 0; i < imax; i++)
     if (mpObjectMap->getRole(i) == dependent)
       {
-        pPoint = new CFittingPoint(CRegisteredCommonName(mpObjectMap->getObjectCN(i), this));
+        pPoint = new CFittingPoint(mpObjectMap->getObjectCN(i));
         mFittingPoints.add(pPoint, true);
       }
 }
@@ -1766,9 +1766,9 @@ void CExperiment::fixBuild55()
 
 /* CFittingPoint Implementation */
 // static
-CFittingPoint * CFittingPoint::fromData(const CData & data, CUndoObjectInterface * pParent)
+CFittingPoint * CFittingPoint::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
-  return new CFittingPoint(CRegisteredCommonName(data.getProperty(CData::OBJECT_NAME).toString(), nullptr), NO_PARENT);
+  return new CFittingPoint(CCommonName(data.getProperty(CData::OBJECT_NAME).toString()), NO_PARENT);
 }
 
 // virtual
@@ -1783,7 +1783,7 @@ CData CFittingPoint::toData() const
 }
 
 // virtual
-bool CFittingPoint::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CFittingPoint::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 
@@ -1835,7 +1835,7 @@ std::string CFittingPoint::getObjectDisplayName() const
   return pObject->getObjectDisplayName();
 }
 
-const std::string & CFittingPoint::getModelObjectCN() const
+const CCommonName & CFittingPoint::getModelObjectCN() const
 {
   return mModelObjectCN;
 }

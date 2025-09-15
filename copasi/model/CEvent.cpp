@@ -40,7 +40,7 @@
 #include "copasi/MIRIAM/CRDFUtilities.h"
 
 // static
-CEventAssignment * CEventAssignment::fromData(const CData & data, CUndoObjectInterface * pParent)
+CEventAssignment * CEventAssignment::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CEventAssignment(data.getProperty(CData::OBJECT_NAME).toString(),
                               NO_PARENT);
@@ -71,7 +71,7 @@ bool CEventAssignment::applyData(const CData & data, CUndoData::CChangeSet & cha
 
   if (data.isSetProperty(CData::OBJECT_REFERENCE_CN))
     {
-      setTargetCN(CRegisteredCommonName(data.getProperty(CData::OBJECT_REFERENCE_CN).toString(), this));
+      setTargetCN(CCommonName(data.getProperty(CData::OBJECT_REFERENCE_CN).toString()));
       compileModel = true;
     }
 
@@ -113,7 +113,7 @@ CEventAssignment::CEventAssignment(const std::string & targetCN,
   CDataContainer(targetCN, pParent, "EventAssignment"),
   mKey(CRootContainer::getKeyFactory()->add("EventAssignment", this)),
   mpModel(static_cast<CModel *>(getObjectAncestor("Model"))),
-  mTargetCN(CRegisteredCommonName(targetCN, mpModel)),
+  mTargetCN(CCommonName(targetCN)),
   mpTarget(nullptr),
   mpExpression(nullptr)
 {
@@ -365,7 +365,7 @@ CExpression* CEventAssignment::getExpressionPtr()
 
 //****************************************************************
 // static
-CEvent * CEvent::fromData(const CData & data, CUndoObjectInterface * pParent)
+CEvent * CEvent::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CEvent(data.getProperty(CData::OBJECT_NAME).toString(),
                     NO_PARENT);

@@ -52,7 +52,7 @@ C_FLOAT64 CMetab::convertToConcentration(const C_FLOAT64 & number, const CCompar
 {return number / compartment.getInitialValue() * compartment.getModel()->getNumber2QuantityFactor();}
 
 // static
-CMetab * CMetab::fromData(const CData & data, CUndoObjectInterface * pParent)
+CMetab * CMetab::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CMetab(data.getProperty(CData::OBJECT_NAME).toString(),
                     NO_PARENT);
@@ -277,22 +277,15 @@ bool CMetab::setCompartment(const std::string& compName)
 
   if (!newComp) return false;
 
-  bool success = false;
-  bool wasEnabled = CRegisteredCommonName::isEnabled();
-  CRegisteredCommonName::setEnabled(true);
-  auto oldCN = getCNProtected();
-
-  success = newComp->addMetabolite(this);
+  bool success = newComp->addMetabolite(this);
 
   if (success)
     {
       oldComp->getMetabolites().remove(getObjectName());
-      CRegisteredCommonName::handle(oldCN, getStringCN(), getObjectDataModel());
       mpModel->setCompileFlag();
       mpModel->initializeMetabolites();
     }
 
-  CRegisteredCommonName::setEnabled(wasEnabled);
   return success;
 }
 
@@ -677,7 +670,7 @@ size_t CMetab::getCountOfDependentReactions() const
 //******************* CMetabOld ***************************************************
 
 // static
-CMetabOld * CMetabOld::fromData(const CData & data, CUndoObjectInterface * pParent)
+CMetabOld * CMetabOld::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CMetabOld(data.getProperty(CData::OBJECT_NAME).toString(),
                        NO_PARENT);
@@ -695,7 +688,7 @@ CData CMetabOld::toData() const
 }
 
 // virtual
-bool CMetabOld::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CMetabOld::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 

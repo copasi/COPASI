@@ -334,9 +334,10 @@ bool CFitProblem::elevateChildren()
   if (pTasks)
     {
       size_t i, imax = pTasks->size();
+      std::string TaskCN = *mpParmSteadyStateCN;
 
-      if (!mpParmSteadyStateCN->compare(0, 5, "Task_") ||
-          *mpParmSteadyStateCN == "")
+      if (!TaskCN.compare(0, 5, "Task_") ||
+          TaskCN == "")
         for (i = 0; i < imax; i++)
           if (pTasks->operator[](i).getType() == CTaskEnum::Task::steadyState)
             {
@@ -344,8 +345,10 @@ bool CFitProblem::elevateChildren()
               break;
             }
 
-      if (!mpParmTimeCourseCN->compare(0, 5, "Task_") ||
-          *mpParmTimeCourseCN == "")
+      TaskCN = *mpParmTimeCourseCN;
+
+      if (!TaskCN.compare(0, 5, "Task_") ||
+          TaskCN == "")
         for (i = 0; i < imax; i++)
           if (pTasks->operator[](i).getType() == CTaskEnum::Task::timeCourse)
             {
@@ -934,16 +937,13 @@ bool CFitProblem::calculate()
 
   size_t i, imax = mpExperimentSet->getExperimentCount();
   size_t j;
-  int kmax;
+  size_t kmax;
   mCalculateValue = 0.0;
 
   CExperiment * pExp = NULL;
 
   C_FLOAT64 * Residuals = mResiduals.array();
   C_FLOAT64 * DependentValues = mExperimentDependentValues.array();
-
-  std::vector<COptItem *>::iterator itItem;
-  std::vector<COptItem *>::iterator endItem = mpOptItems->end();
 
   std::vector<COptItem *>::iterator itConstraint;
   std::vector<COptItem *>::iterator endConstraint = mpConstraintItems->end();
@@ -979,7 +979,7 @@ bool CFitProblem::calculate()
 
           mpContainer->applyUpdateSequence(mExperimentInitialUpdates[i]);
 
-          kmax = (int)pExp->getNumDataRows();
+          kmax = pExp->getNumDataRows();
 
           const std::map< const CObjectInterface*, size_t >& map = pExp->getDependentObjectsMap();
           std::map<size_t, const CObjectInterface*> reverseObjectMap;
@@ -1058,7 +1058,7 @@ bool CFitProblem::calculate()
                     //calculate a reasonable number of intermediate points
                     numIntermediateSteps = 4; //TODO
                     //resize the storage for the extended time series
-                    pExp->initExtendedTimeSeries(numIntermediateSteps * std::max(kmax - 1, 0));
+                    pExp->initExtendedTimeSeries(numIntermediateSteps * (kmax > 0 ? kmax - 1 : 0));
                   }
 
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
@@ -1162,8 +1162,6 @@ bool CFitProblem::calculate()
                             CTimeSensProblem* pProblem = static_cast<CTimeSensProblem*>(mpTimeSens->getProblem());
                             // get current target result
                             CDataArray* pCurrentResult = pProblem->getTargetsResultAnnotated();
-
-                            auto it = mpOptItems->begin();
 
                             for (size_t i = 0 ; i < mpOptItems->size(); ++i)
                               {
@@ -1316,9 +1314,6 @@ void CFitProblem::createParameterSets()
 
   // Loop through all experiments and create
   size_t i, imax = mpExperimentSet->getExperimentCount();
-  std::vector<COptItem *>::iterator itItem;
-  std::vector<COptItem *>::iterator endItem = mpOptItems->end();
-
   CExperiment * pExp = NULL;
 
   for (i = 0; i < imax; i++) // For each experiment

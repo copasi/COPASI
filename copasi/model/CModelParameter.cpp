@@ -58,7 +58,7 @@ const CEnumAnnotation< std::string, CModelParameter::CompareResult > CModelParam
 });
 
 // static
-CModelParameter * CModelParameter::fromData(const CData & data, CUndoObjectInterface * pParent)
+CModelParameter * CModelParameter::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   CModelParameter * pModelParameter = NULL;
 
@@ -141,7 +141,7 @@ CData CModelParameter::toData() const
 }
 
 // virtual
-bool CModelParameter::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CModelParameter::applyData(const CData & data, CUndoData::CChangeSet & /* changes */)
 {
   if (mType == Type::Set)
     {
@@ -150,7 +150,7 @@ bool CModelParameter::applyData(const CData & data, CUndoData::CChangeSet & chan
 
   if (data.isSetProperty(CData::OBJECT_NAME))
     {
-      setCN(CRegisteredCommonName(data.getProperty(CData::OBJECT_NAME).toString(), getSet()));
+      setCN(CCommonName(data.getProperty(CData::OBJECT_NAME).toString()));
     }
 
   if (mpParent != NULL && data.isSetProperty(CData::OBJECT_INDEX))
@@ -1029,7 +1029,8 @@ void CModelParameterSpecies::setCN(const CRegisteredCommonName & cn)
 
   // Determine the CN for the compartment.
   // "CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A]"
-  mCompartmentCN = CRegisteredCommonName(mCN.substr(0, mCN.find(",Vector=Metabolites")), getSet());
+  std::string CN = mCN;
+  mCompartmentCN = CCommonName(CN.substr(0, CN.find(",Vector=Metabolites")));
 }
 
 void CModelParameterSpecies::unsetDataModel()
@@ -1202,7 +1203,8 @@ const CReaction * CModelParameterReactionParameter::getReaction() const
 // static
 CCommonName CModelParameterReactionParameter::getReactionCN(const CCommonName & reactionParameterCN)
 {
-  return reactionParameterCN.substr(0, reactionParameterCN.find(",ParameterGroup=Parameters"));
+  std::string CN = reactionParameterCN;
+  return CN.substr(0, CN.find(",ParameterGroup=Parameters"));
 }
 
 void CModelParameterReactionParameter::setGlobalQuantityCN(const std::string & globalQuantityCN)

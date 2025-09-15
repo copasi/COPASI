@@ -1040,8 +1040,6 @@ bool CCopasiXML::saveModel()
 
           if (Assignments.size() > 0)
             {
-              CDataModel * pDataModel = Assignments.getObjectDataModel();
-
               startSaveElement("ListOfAssignments");
 
               CXMLAttributeList Attr;
@@ -1860,7 +1858,7 @@ bool CCopasiXML::saveLayoutList()
               if (!cg->getBoundingBox().isEmpty())
                 saveBoundingBox(cg->getBoundingBox());
 
-              if (cg->getCurve().getNumCurveSegments() >= 0)
+              if (cg->getCurve().getNumCurveSegments() > 0)
                 saveCurve(cg->getCurve());
 
               // metab reference glyphs
@@ -2246,7 +2244,7 @@ void CCopasiXML::fixBuild113()
 void CCopasiXML::fixBuild171()
 {
   // We need to go through all registered object names and sanitize them.
-  CRegisteredCommonName::sanitizeObjectNames();
+  // Registered object names are self correcting see copasi/core/CCommonNameComponent.cpp CCommonNameComponent::create
 }
 
 /**

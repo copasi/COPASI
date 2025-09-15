@@ -209,14 +209,14 @@ private:
   bool * mpCitation;
 
   /**
-   * A pointer to a bool indication the the resource an be used as reference
-   */
-  bool * mpNamespaceEmbeddedInPattern;
-
-  /**
    * A parameter group holding all deprecated URIs
    */
   CCopasiParameterGroup * mpDeprecated;
+
+  /**
+   * A pointer to a bool indication the the resource an be used as reference
+   */
+  bool * mpNamespaceEmbeddedInPattern;
 }; //class CMIRIAMResource
 
 /////////////////////////////////////////////////////////////////////////////////////////

@@ -84,8 +84,8 @@ CMathEventQueue::CAction::CAction():
 
 CMathEventQueue::CAction::CAction(const CAction & src):
   mType(src.mType),
-  mpPriority(src.mpPriority),
   mValues(src.mValues),
+  mpPriority(src.mpPriority),
   mpEvent(src.mpEvent),
   mpProcessQueue(src.mpProcessQueue)
 {}

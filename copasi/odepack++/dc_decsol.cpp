@@ -918,7 +918,7 @@ L55:
                              integer *mljac, integer *mujac, doublereal *fmas, integer *ldmas,
                              integer *mlmas, integer *mumas, integer *m1, integer *m2, integer *
                              nm1, doublereal *fac1, doublereal *e1, integer *lde1, doublereal *z1,
-                             doublereal *f1, integer *ip1, integer *iphes, integer *ier, integer *
+                             doublereal *f1, integer *ip1, integer *iphes, integer * /* ier */, integer *
                              ijob)
 {
   /* System generated locals */
@@ -1329,8 +1329,8 @@ L55:
                              integer *mlmas, integer *mumas, integer *m1, integer *m2, integer *
                              nm1, doublereal *alphn, doublereal *betan, doublereal *e2r,
                              doublereal *e2i, integer *lde1, doublereal *z2, doublereal *z3,
-                             doublereal *f2, doublereal *f3, doublereal *cont, integer *ip2,
-                             integer *iphes, integer *ier, integer *ijob)
+                             doublereal *f2, doublereal *f3, doublereal * /* cont */, integer *ip2,
+                             integer *iphes, integer * /* ier */, integer *ijob)
 {
   /* System generated locals */
   integer fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e2r_dim1,
@@ -1835,8 +1835,8 @@ L55:
                              nm1, doublereal *fac1, doublereal *alphn, doublereal *betan,
                              doublereal *e1, doublereal *e2r, doublereal *e2i, integer *lde1,
                              doublereal *z1, doublereal *z2, doublereal *z3, doublereal *f1,
-                             doublereal *f2, doublereal *f3, doublereal *cont, integer *ip1,
-                             integer *ip2, integer *iphes, integer *ier, integer *ijob)
+                             doublereal *f2, doublereal *f3, doublereal * /* cont */, integer *ip1,
+                             integer *ip2, integer *iphes, integer * /* ier */, integer *ijob)
 {
   /* System generated locals */
   integer fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e1_dim1,
@@ -3101,7 +3101,7 @@ L55:
                              integer *mlmas, integer *mumas, doublereal *h__, doublereal *dd, S_fp
                              fcn, integer *nfcn, doublereal *y0, doublereal *y, integer *ijob,
                              doublereal *x, integer *m1, integer *m2, integer *nm1, integer *ns,
-                             integer *nns, doublereal *e1, integer *lde1, doublereal *zz,
+                             integer * /* nns */, doublereal *e1, integer *lde1, doublereal *zz,
                              doublereal *cont, doublereal *ff, integer *ip1, integer *iphes,
                              doublereal *scal, doublereal *err, logical *first, logical *reject,
                              doublereal *fac1, doublereal *rpar, integer *ipar)
@@ -4332,7 +4332,7 @@ L55:
 
 /* Subroutine */ int slvseu_(integer *n, doublereal *fjac, integer *ldjac,
                              integer *mljac, integer *mujac, doublereal *fmas, integer *ldmas,
-                             integer *mlmas, integer *mumas, integer *m1, integer *m2, integer *
+                             integer * /* mlmas */, integer * /* mumas */, integer *m1, integer *m2, integer *
                              nm1, doublereal *fac1, doublereal *e, integer *lde, integer *ip,
                              integer *iphes, doublereal *del, integer *ijob)
 {

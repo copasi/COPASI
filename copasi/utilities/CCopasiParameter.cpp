@@ -77,7 +77,7 @@ const CEnumAnnotation< std::string, CCopasiParameter::Type > CCopasiParameter::X
 });
 
 // static
-CCopasiParameter * CCopasiParameter::fromData(const CData & data, CUndoObjectInterface * pParent)
+CCopasiParameter * CCopasiParameter::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   CCopasiParameter * pNew = NULL;
 
@@ -401,6 +401,13 @@ bool CCopasiParameter::isValidValue(const std::string & value) const
       mType != CCopasiParameter::Type::EXPRESSION) return false;
 
   return inValidValues(value);
+}
+
+bool CCopasiParameter::isValidValue(const CCommonName & /* value */) const
+{
+  if (mType != CCopasiParameter::Type::CN) return false;
+
+  return true;
 }
 
 bool CCopasiParameter::isValidValue(const CRegisteredCommonName & /* value */) const

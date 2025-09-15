@@ -416,7 +416,7 @@ CEvaluationNode * CEvaluationNodeOperator::fromAST(const ASTNode * pASTNode, con
 {
   assert(pASTNode->getNumChildren() == children.size());
 
-  size_t i = 0, iMax = children.size();
+  size_t iMax = children.size();
 
   int type = (int)pASTNode->getType();
 

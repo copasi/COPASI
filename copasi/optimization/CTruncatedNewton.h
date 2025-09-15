@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -30,8 +35,8 @@ class FTruncatedNewton
 public:
   virtual ~FTruncatedNewton() {};
 
-  virtual C_INT operator()(C_INT * C_UNUSED(n), C_FLOAT64 * C_UNUSED(value),
-                           C_FLOAT64 * C_UNUSED(value1), C_FLOAT64 * C_UNUSED(value2))
+  virtual C_INT operator()(C_INT * /* n */, C_FLOAT64 * /* value */,
+                           C_FLOAT64 * /* value1 */, C_FLOAT64 * /* value2 */)
   {return std::numeric_limits<C_INT>::quiet_NaN();}
 };
 
@@ -55,7 +60,7 @@ public:
   virtual ~FTruncatedNewtonTemplate() {};
 
   // override operator "()"
-  virtual C_INT operator()(C_INT * n, C_FLOAT64 * value, C_FLOAT64 * value1, C_FLOAT64 * value2)
+  C_INT operator()(C_INT * n, C_FLOAT64 * value, C_FLOAT64 * value1, C_FLOAT64 * value2) override
   {return (*mpType.*mMethod)(n, value, value1, value2);}    ;  // execute member function
 };
 

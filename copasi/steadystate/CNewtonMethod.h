@@ -88,8 +88,8 @@ private:
 
   CCore::CUpdateSequence mUpdateConcentrations;
   eTargetCriterion mTargetCriterion;
-  C_FLOAT64 mTargetDistance;
   C_FLOAT64 mTargetRate;
+  C_FLOAT64 mTargetDistance;
 
   // Operations
 private:

@@ -92,7 +92,7 @@ std::string SEDMLUtils::findIdByNameAndType(
 std::string
 SEDMLUtils::getXPathAndName(std::string & sbmlId,
                             const std::string & type,
-                            const CModel * pModel,
+                            const CModel * /* pModel */,
                             const CDataModel & dataModel)
 {
   std::vector< std::string > stringsContainer;
@@ -807,8 +807,13 @@ std::map< std::string, std::string > SEDMLUtils::PARAMETER_KISAO_MAP =
 };
 
 VariableInfo::VariableInfo(const CDataObject * pObject)
-  : mpObject(pObject)
+  : name()
+  , term()
+  , symbol()
+  , xpath()
+  , sbmlId()
   , mIsValid(false)
+  , mpObject(pObject)
 {
   if (!pObject)
     return;

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -73,14 +73,14 @@ public:
 
   void setCurve(const CLCurve & c);
 
-  virtual void moveBy(const CLPoint &p);
+  void moveBy(const CLPoint &p) override;
 
   /**
    * insert operator
    */
   friend std::ostream & operator<<(std::ostream &os, const CLGlyphWithCurve & g);
 
-  void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 };
 
 /**
@@ -111,14 +111,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   CLReferenceGlyph(const std::string & name = "ReferenceGlyph",
                    const CDataContainer * pParent = NO_PARENT);
@@ -149,7 +149,7 @@ public:
 
   void setTargetGlyphKey(const std::string & k);
 
-  virtual CLGraphicalObject* clone() const;
+  CLGraphicalObject* clone() const override;
 
   /**
    * This method writes the information of the COPASI layout object into the
@@ -167,7 +167,7 @@ public:
    */
   friend std::ostream & operator<<(std::ostream &os, const CLReferenceGlyph & g);
 
-  void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 };
 
 /**
@@ -239,14 +239,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   CLMetabReferenceGlyph(const std::string & name = "MetabReferenceGlyph",
                         const CDataContainer * pParent = NO_PARENT);
@@ -283,7 +283,7 @@ public:
 
   const std::string & getRoleDisplayName() const;
 
-  virtual CLGraphicalObject* clone() const;
+  CLGraphicalObject* clone() const override;
 
   /**
    * This method writes the information of the COPASI layout object into the
@@ -301,7 +301,7 @@ public:
    */
   friend std::ostream & operator<<(std::ostream &os, const CLMetabReferenceGlyph & g);
 
-  void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 };
 
 /**
@@ -326,14 +326,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   CLGeneralGlyph(const std::string & name = "GeneralGlyph",
                  const CDataContainer * pParent = NO_PARENT);
@@ -378,9 +378,9 @@ public:
    */
   void addSubglyph(CLGraphicalObject * glyph);
 
-  virtual void moveBy(const CLPoint &p);
+  void moveBy(const CLPoint &p) override;
 
-  virtual CLGraphicalObject* clone() const;
+  CLGraphicalObject* clone() const override;
 
   /**
    * this exports the general glyph to a generic SBML GraphicalObject (throwing away most of the information)
@@ -395,7 +395,7 @@ public:
    * insert operator
    */
   friend std::ostream & operator<<(std::ostream &os, const CLGeneralGlyph & g);
-  void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 };
 
 /**
@@ -420,14 +420,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   CLReactionGlyph(const std::string & name = "ReactionGlyph",
                   const CDataContainer * pParent = NO_PARENT);
@@ -458,9 +458,9 @@ public:
    */
   void addMetabReferenceGlyph(CLMetabReferenceGlyph * glyph);
 
-  virtual void moveBy(const CLPoint &p);
+  void moveBy(const CLPoint &p) override;
 
-  virtual CLGraphicalObject* clone() const;
+  CLGraphicalObject* clone() const override;
 
   /**
    * This method writes the information of the COPASI layout object into the
@@ -478,7 +478,7 @@ public:
    */
   friend std::ostream & operator<<(std::ostream &os, const CLReactionGlyph & g);
 
-  void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 };
 
 #endif

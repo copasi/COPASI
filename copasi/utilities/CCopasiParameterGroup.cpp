@@ -353,7 +353,7 @@ const CObjectInterface * CCopasiParameterGroup::getObject(const CCommonName & cn
         }
     }
 
-  return NULL;
+  return CCopasiParameter::getObject(cn);
 }
 
 bool CCopasiParameterGroup::elevateChildren() {return true;}

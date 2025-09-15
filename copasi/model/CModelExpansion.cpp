@@ -1410,9 +1410,6 @@ void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
       CCompartment* oldComp = const_cast<CCompartment*>(pX->getCompartment());
       CCompartment* newComp = const_cast<CCompartment*>(dynamic_cast<const CCompartment*>(emap.getDuplicateFromObject(pX->getCompartment())));
       bool success = false;
-      bool wasEnabled = CRegisteredCommonName::isEnabled();
-      CRegisteredCommonName::setEnabled(true);
-      auto oldCN = pX->getStringCN();
 
       do
         {
@@ -1421,7 +1418,6 @@ void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
           if (success)
             {
               oldComp->getMetabolites().remove(pX->getObjectName());
-              CRegisteredCommonName::handle(oldCN, pX->getStringCN(), pX->getObjectDataModel());
               mpModel->setCompileFlag();
               mpModel->initializeMetabolites();
             }
@@ -1433,8 +1429,6 @@ void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
             }
         }
       while (!success);
-
-      CRegisteredCommonName::setEnabled(wasEnabled);
     }
 }
 

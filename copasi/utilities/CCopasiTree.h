@@ -116,14 +116,6 @@ public:
     {}
 
     /**
-     * Copy constructor
-     * @param const iterator & src
-     */
-    iterator(const iterator & src):
-      mCurrent(src.mCurrent)
-    {}
-
-    /**
      * Destructor
      */
     ~iterator() {}

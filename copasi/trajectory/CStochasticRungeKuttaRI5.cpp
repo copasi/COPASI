@@ -882,8 +882,10 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::internalStep()
 
                         for (; pRootFound != pRootFoundEnd; ++pRootFound)
                           if (*pRootFound != static_cast< C_INT >(CMath::RootToggleType::NoToggle))
-                            Result = ROOT;
-                            break;
+                            {
+                              Result = ROOT;
+                              break;
+                            }
                       }
                   }
 

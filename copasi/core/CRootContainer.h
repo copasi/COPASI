@@ -77,12 +77,10 @@ protected:
   CMIRIAMResource *mpUnknownResource;
   CMIRIAMResources *mpMIRIAMResources;
   CFunctionDB* mpFunctionList;
+  CUnitDefinitionDB * mpUnitDefinitionList;
   CConfigurationFile* mpConfiguration;
   CDataVector< CDataModel > * mpDataModelList;
-  CUnitDefinitionDB * mpUnitDefinitionList;
-  // flag to store if we are running a GUI or not
   bool mWithGUI;
-
   CFunction * mpUndefined;
 
 public:

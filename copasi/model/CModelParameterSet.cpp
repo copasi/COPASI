@@ -26,7 +26,7 @@
 #include "copasi/utilities/CValidatedUnit.h"
 
 // static
-CModelParameterSet * CModelParameterSet::fromData(const CData & data, CUndoObjectInterface * pParent)
+CModelParameterSet * CModelParameterSet::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CModelParameterSet(data.getProperty(CData::OBJECT_NAME).toString(),
                                 NO_PARENT);
@@ -107,7 +107,7 @@ CUndoObjectInterface * CModelParameterSet::insert(const CData & data)
         if (pReaction == NULL)
           {
             pReaction = static_cast< CModelParameterGroup * >(mpReactions->add(CModelParameter::Type::Reaction));
-            pReaction->setCN(CRegisteredCommonName(ReactionCN, this));
+            pReaction->setCN(ReactionCN);
           }
 
         if (pReaction != NULL)
@@ -140,8 +140,8 @@ void CModelParameterSet::updateIndex(const size_t & index, const CUndoObjectInte
 CModelParameterSet::CModelParameterSet(const std::string & name,
                                        const CDataContainer * pParent):
   CDataContainer(name, pParent, "ModelParameterSet"),
-  CAnnotation(),
   CModelParameterGroup(NULL, CModelParameter::Type::Set),
+  CAnnotation(),
   mKey(CRootContainer::getKeyFactory()->add("ModelParameterSet", this)),
   mpModel(NULL),
   mpTimes(NULL),
@@ -175,8 +175,8 @@ CModelParameterSet::CModelParameterSet(const CModelParameterSet & src,
                                        const CDataContainer * pParent,
                                        const bool & createMissing):
   CDataContainer(src, pParent),
-  CAnnotation(src),
   CModelParameterGroup(src, NULL, createMissing),
+  CAnnotation(src),
   mKey(CRootContainer::getKeyFactory()->add("ModelParameterSet", this)),
   mpModel(NULL),
   mpTimes(NULL),
@@ -207,8 +207,8 @@ CModelParameterSet::CModelParameterSet(const CModelParameterSet & src,
 CModelParameterSet::CModelParameterSet(CModel * pModel,
                                        const CDataContainer * pParent):
   CDataContainer("No Name", pParent, "ModelParameterSet"),
-  CAnnotation(),
   CModelParameterGroup(NULL, CModelParameter::Type::Set),
+  CAnnotation(),
   mKey(CRootContainer::getKeyFactory()->add("ModelParameterSet", this)),
   mpModel(pModel),
   mpTimes(NULL),

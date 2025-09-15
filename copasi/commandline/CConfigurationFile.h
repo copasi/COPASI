@@ -492,6 +492,11 @@ private:
   std::string * mpApplicationFont;
 
   /**
+   * A pointer indicating whether units will always be validated
+   */
+  bool * mpValidateUnits;
+
+  /**
    * A pointer indicating the severity level of issues
    * to be displayed.
    */
@@ -502,11 +507,6 @@ private:
    * should be displayed.
    */
   CCopasiParameterGroup * mpDisplayIssueKinds;
-
-  /**
-   * A pointer indicating whether units will always be validated
-   */
-  bool * mpValidateUnits;
 
   /**
   * A pointer indicating whether to use the OpenGL rendering, or the Qt based one

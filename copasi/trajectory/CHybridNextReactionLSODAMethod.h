@@ -56,7 +56,7 @@ class CHybridNextReactionLSODAMethod : public CHybridMethod
     }
 
   protected:
-    virtual void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+    void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot) override;
   };
 
 private:

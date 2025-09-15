@@ -40,14 +40,6 @@ public:
   {}
 
   /**
-   * Copy constructor
-   * @param const CFlags & src
-   */
-  CFlags(const CFlags & src):
-    bitset(src)
-  {}
-
-  /**
    * Enum constructor
    * @param const Enum & flag
    */

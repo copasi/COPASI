@@ -36,7 +36,7 @@ class CDataArray: public CDataContainer
 public:
   typedef C_FLOAT64 data_type;
   typedef CArray::index_type index_type;
-  typedef std::vector< std::string > name_index_type;
+  typedef std::vector< CCommonName > name_index_type;
 
   /**
    * The annotation to an array can work in different modes. The mode
@@ -238,7 +238,7 @@ public:
   name_index_type displayNamesToCN(const std::vector< std::string > & DisplayNames) const;
   index_type cnToIndex(const name_index_type & cnIndex) const;
 private:
-  std::string createDisplayName(const std::string & cn) const;
+  std::string createDisplayName(const CCommonName & cn) const;
   void updateDisplayNames() const;
 
   CArrayInterface * mpArray;

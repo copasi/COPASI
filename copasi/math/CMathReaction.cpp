@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,16 +28,6 @@ CMathReaction::CMathReaction():
   mChangedSpecies(),
   mObjectBalance(),
   mNumberBalance()
-{}
-
-CMathReaction::CMathReaction(const CMathReaction & src):
-  mpReaction(src.mpReaction),
-  mpParticleFlux(src.mpParticleFlux),
-  mpFlux(src.mpFlux),
-  mpPropensity(src.mpPropensity),
-  mChangedSpecies(src.mChangedSpecies),
-  mObjectBalance(src.mObjectBalance),
-  mNumberBalance(src.mNumberBalance)
 {}
 
 CMathReaction::~CMathReaction()

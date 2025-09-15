@@ -173,14 +173,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   CDataModel();
 
@@ -493,7 +493,7 @@ protected:
                        const bool & deleteOldData);
 
   void replaceCnInGroup(CModelParameter* pParam,
-                        const std::string &oldCn, const std::string& newCN);
+                        const CCommonName & ldCn, const CCommonName & newCN);
 
   // Attributes
 protected:

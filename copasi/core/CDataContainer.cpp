@@ -41,7 +41,7 @@
 const CObjectInterface::ContainerList CDataContainer::EmptyList;
 
 // static
-CDataContainer * CDataContainer::fromData(const CData & data, CUndoObjectInterface * pParent)
+CDataContainer * CDataContainer::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CDataContainer(data.getProperty(CData::OBJECT_NAME).toString(),
                             NO_PARENT,
@@ -368,7 +368,7 @@ bool CDataContainer::remove(CDataObject * pObject)
 }
 
 // virtual
-size_t CDataContainer::getIndex(const CDataObject * pObject) const
+size_t CDataContainer::getIndex(const CDataObject * /* pObject */) const
 {
   return C_INVALID_INDEX;
 }
@@ -406,7 +406,7 @@ std::string CDataContainer::getChildObjectUnits(const CDataObject * /* pObject *
 {return "?";}
 
 // virtual
-CUndoObjectInterface * CDataContainer::insert(const CData & data)
+CUndoObjectInterface * CDataContainer::insert(const CData & /* data */)
 {
   return NULL;
 }

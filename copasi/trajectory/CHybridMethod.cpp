@@ -404,7 +404,6 @@ C_FLOAT64 CHybridMethod::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime)
  */
 void CHybridMethod::calculateDerivative(CVectorCore< C_FLOAT64 > & deriv)
 {
-  C_INT32 bal = 0;
   CHybridStochFlag * j;
 
   mpContainer->updateSimulatedValues(false);

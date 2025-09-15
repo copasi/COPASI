@@ -23,258 +23,111 @@ using std::string;
 //********** CRegisteredCommonName ***************
 
 // static
-std::set<CRegisteredCommonName*> CRegisteredCommonName::mSet;
+std::set< const CRegisteredCommonName * > CRegisteredCommonName::UnresolvedCNs;
 
 // static
-bool CRegisteredCommonName::mEnabled(true);
-
-// static
-std::set< CRegisteredCommonName::RenameInterface * > CRegisteredCommonName::mRegisteredHandlers;
-
-CRegisteredCommonName::Rename::Rename(CRegisteredCommonName::Rename::Type method)
-  : CRegisteredCommonName::RenameInterface()
-  , mMethod(method)
-{}
-
-// virtual
-CRegisteredCommonName::Rename::~Rename() {}
-
-// virtual
-void CRegisteredCommonName::Rename::operator()(const std::string & oldCN,
-    const std::string & newCN)
+void CRegisteredCommonName::ResolveAll(const CDataContainer * pContainer)
 {
-  // execute member function
-  return (*mMethod)(oldCN, newCN);
+#pragma omp critical(cregisteredcommonname_access)
+  {
+    for (auto it = UnresolvedCNs.begin(); it != UnresolvedCNs.end();)
+      {
+        const CRegisteredCommonName * pCN = *it;
+
+        if (pCN->CCommonName::resolve(pContainer) != nullptr)
+          it = UnresolvedCNs.erase(it);
+        else if (!pCN->isValid())
+          it = UnresolvedCNs.erase(it);
+        else
+          ++it;
+      }
+
+    for (auto it = UnresolvedCNs.begin(); it != UnresolvedCNs.end(); ++it)
+      std::cout << *it << ": " << **it << std::endl;
+
+    std::cout << UnresolvedCNs.size() << std::endl;
+  }
 }
 
 CRegisteredCommonName::CRegisteredCommonName()
   : CCommonName()
-  , mpDataModel(nullptr)
-{
-#pragma omp critical (cregisteredcommonname_access)
-  mSet.insert(this);
-}
+{}
 
-#ifndef DEPRECATE_CONSTRUCTOR
-CRegisteredCommonName::CRegisteredCommonName(const std::string & name)
+CRegisteredCommonName::CRegisteredCommonName(const CCommonName & name)
   : CCommonName(name)
-  , mpDataModel(nullptr)
 {
-  const CDataObject * pObject = CObjectInterface::DataObject(CRootContainer::getRoot()->getObject(name));
-
-  if (pObject != nullptr)
-    mpDataModel = pObject->getObjectDataModel();
-
+  if (!empty())
 #pragma omp critical (cregisteredcommonname_access)
-  mSet.insert(this);
-}
-#endif // DEPRECATE_CONSTRUCTOR
-
-CRegisteredCommonName::CRegisteredCommonName(const std::string & name, const CObjectInterface * pObject)
-  : CCommonName(name)
-  , mpDataModel(CObjectInterface::DataObject(pObject) != nullptr
-                ? CObjectInterface::DataObject(pObject)->getObjectDataModel() : nullptr)
-{
-#pragma omp critical (cregisteredcommonname_access)
-  mSet.insert(this);
+    UnresolvedCNs.insert(this);
 }
 
 CRegisteredCommonName::CRegisteredCommonName(const CRegisteredCommonName & src)
   : CCommonName(src)
-  , mpDataModel(src.mpDataModel)
 {
+  if (!empty()
+      && (mpComponent == nullptr
+          || !mpComponent->isResolved()))
 #pragma omp critical (cregisteredcommonname_access)
-  mSet.insert(this);
+    UnresolvedCNs.insert(this);
 }
 
 CRegisteredCommonName::~CRegisteredCommonName()
 {
 #pragma omp critical (cregisteredcommonname_access)
-  mSet.erase(this);
+  UnresolvedCNs.erase(this);
 }
 
-void CRegisteredCommonName::assign(const std::string & CN, const CObjectInterface * pObject)
-{
-  CCommonName::assign(CN);
-  mpDataModel = CObjectInterface::DataObject(pObject) != nullptr
-                ? CObjectInterface::DataObject(pObject)->getObjectDataModel() : nullptr;
-}
-
-const CDataModel * CRegisteredCommonName::getDataModel() const
-{
-  return mpDataModel;
-}
-
-void CRegisteredCommonName::setDataModel(const CDataModel* pDM)
-{
-  mpDataModel = pDM;
-}
-
-// static
-void CRegisteredCommonName::handle(const std::string & oldCN,
-                                   const std::string & newCN,
-                                   CDataModel * pDataModel)
-{
-  if (mEnabled)
+CRegisteredCommonName & CRegisteredCommonName::operator=(const CCommonName & rhs)
+  {
+    if (this != &rhs)
     {
-      std::set< CRegisteredCommonName * >::const_iterator it = mSet.begin();
-      std::set< CRegisteredCommonName * >::const_iterator itEnd = mSet.end();
+      if (!empty()
+          && (mpComponent == nullptr
+              || !mpComponent->isResolved()))
+#pragma omp critical (cregisteredcommonname_access)
+        UnresolvedCNs.erase(this);
 
-      size_t oldSize = oldCN.size();
-      size_t currentSize;
+      CCommonName::operator=(rhs);
 
-      std::map< std::string, CRegisteredCommonName * > Renamed;
-
-      for (; it != itEnd; ++it)
-        {
-          // either need to take currentSize out, or need to use the variable
-          // using it uninitialized makes no sense.
-          currentSize = (*it)->size();
-
-          // We need to make sure that we not change partial names
-          if ((currentSize == oldSize ||
-               (currentSize > oldSize && (**it)[oldSize] == ','))
-              && (pDataModel == nullptr
-                  || pDataModel == (*it)->mpDataModel)
-              && oldCN.compare(0, oldSize, **it, 0, oldSize) == 0)
-            {
-              Renamed.insert(std::make_pair(**it, *it));
-              (*it)->replace(0, oldSize, newCN);
-            }
-        }
-
-      std::set< RenameInterface * >::const_iterator itHandler = mRegisteredHandlers.begin();
-      std::set< RenameInterface * >::const_iterator endHandler = mRegisteredHandlers.end();
-
-      for (; itHandler != endHandler; ++itHandler)
-        {
-          std::map< std::string, CRegisteredCommonName * >::const_iterator itRenamed = Renamed.begin();
-          std::map< std::string, CRegisteredCommonName * >::const_iterator endRenamed = Renamed.end();
-
-          for (; itRenamed != endRenamed; ++itRenamed)
-            (*itHandler)->operator()(itRenamed->first, *itRenamed->second);
-        }
+      if (!empty()
+          && (mpComponent == nullptr
+              || !mpComponent->isResolved()))
+#pragma omp critical (cregisteredcommonname_access)
+        UnresolvedCNs.insert(this);
     }
 
-  return;
-}
+  return *this;
+  }
 
-// static
-void CRegisteredCommonName::sanitizeObjectNames()
+CRegisteredCommonName & CRegisteredCommonName::operator=(const CRegisteredCommonName & rhs)
 {
-  std::set< CRegisteredCommonName * >::const_iterator it = mSet.begin();
-  std::set< CRegisteredCommonName * >::const_iterator itEnd = mSet.end();
-
-  for (; it != itEnd; ++it)
+    if (this != &rhs)
     {
-      CCommonName OldCN = **it;
-      CRegisteredCommonName & NewCN = **it;
-      NewCN.clear();
+      if (!empty()
+          && (mpComponent == nullptr
+              || !mpComponent->isResolved()))
+#pragma omp critical (cregisteredcommonname_access)
+        UnresolvedCNs.erase(this);
 
-      std::string Separator = "";
-      bool ContinueFromElement = false;
+      CCommonName::operator=(rhs);
 
-      while (!OldCN.empty())
-        {
-          std::string::size_type pos = OldCN.findNext(",");
-          CCommonName Primary(OldCN.substr(0, pos));
-
-          if (pos != std::string::npos)
-            {
-              OldCN = OldCN.substr(pos + 1);
-            }
-          else
-            {
-              OldCN.clear();
-            }
-
-          while (!Primary.empty())
-            {
-              std::string ObjectType = Primary.getObjectType();
-
-              // If the object type is String or Separator we must not sanitize.
-              if (ObjectType == "Separator" ||
-                  ObjectType == "String")
-                {
-                  NewCN += Separator + Primary;
-                }
-              else
-                {
-                  if (!ContinueFromElement)
-                    {
-                      NewCN += Separator + ObjectType;
-
-                      std::string ObjectName = Primary.getObjectName();
-                      CDataObject::sanitizeObjectName(ObjectName);
-
-                      if (!ObjectName.empty())
-                        {
-                          NewCN += "=" + escape(ObjectName);
-                        }
-                    }
-
-                  size_t pos = 0;
-                  std::string ElementName = Primary.getElementName(pos);
-                  std::string IndexSeparator = "[";
-
-                  while (!ElementName.empty())
-                    {
-                      CDataObject::sanitizeObjectName(ElementName);
-                      NewCN += IndexSeparator + escape(ElementName);
-
-                      if (ObjectType != "Array")
-                        {
-                          IndexSeparator = ",";
-                        }
-                      else
-                        {
-                          IndexSeparator = "][";
-                        }
-
-                      ElementName = Primary.getElementName(++pos);
-                    }
-
-                  if (pos != 0)
-                    {
-                      Primary = Primary.getRemainder();
-                      NewCN += "]";
-                    }
-                }
-
-              Primary = Primary.getRemainder();
-              ContinueFromElement = !Primary.empty();
-              Separator.clear();
-            }
-
-          Separator = ",";
-        }
+      if (!empty()
+          && (mpComponent == nullptr
+              || !mpComponent->isResolved()))
+#pragma omp critical (cregisteredcommonname_access)
+        UnresolvedCNs.insert(this);
     }
+
+  return *this;
 }
 
-/**
- * Enable and disable the rename handler
- * @param const bool & enabled
- */
-// static
-void CRegisteredCommonName::setEnabled(const bool & enabled)
+const CObjectInterface * CRegisteredCommonName::resolve(const CDataContainer * pContainer) const
 {
-  mEnabled = enabled;
-}
+  const CObjectInterface * pObject = CCommonName::resolve(pContainer);
 
-// static
-const bool & CRegisteredCommonName::isEnabled()
-{
-  return mEnabled;
-}
+  if (pObject != nullptr)
+#pragma omp critical (cregisteredcommonname_access)
+    UnresolvedCNs.erase(this);
 
-// static
-void CRegisteredCommonName::registerHandler(CRegisteredCommonName::RenameInterface * pRenameHandler)
-{
-  mRegisteredHandlers.insert(pRenameHandler);
-}
-
-// static
-void CRegisteredCommonName::deregisterHandler(CRegisteredCommonName::RenameInterface * pRenameHandler)
-{
-  mRegisteredHandlers.erase(pRenameHandler);
+  return pObject;
 }

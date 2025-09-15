@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -56,14 +56,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   CLMetabGlyph(const std::string & name = "MetabGlyph",
                const CDataContainer * pParent = NO_PARENT);
@@ -86,7 +86,7 @@ public:
 
   //virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
 
-  virtual CLGraphicalObject* clone() const {return new CLMetabGlyph(*this, NULL);};
+  CLGraphicalObject* clone() const  override {return new CLMetabGlyph(*this, NULL);};
 
   /**
    * This method writes the information of the copasi layout object into the
@@ -100,7 +100,7 @@ public:
    * insert operator
    */
   friend std::ostream & operator<<(std::ostream &os, const CLMetabGlyph & g);
-  void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 };
 
 /**
@@ -123,14 +123,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   CLCompartmentGlyph(const std::string & name = "CompartmentGlyph",
                      const CDataContainer * pParent = NO_PARENT);
@@ -157,9 +157,9 @@ public:
    * insert operator
    */
   friend std::ostream & operator<<(std::ostream &os, const CLCompartmentGlyph & g);
-  void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 
-  virtual CLGraphicalObject* clone() const {return new CLCompartmentGlyph(*this, NULL);};
+  CLGraphicalObject* clone() const  override {return new CLCompartmentGlyph(*this, NULL);};
 
   /**
    * This method writes the information of the copasi layout object into the
@@ -204,14 +204,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   CLTextGlyph(const std::string & name = "TextGlyph",
               const CDataContainer * pParent = NO_PARENT);
@@ -244,7 +244,7 @@ public:
   CLGraphicalObject* getGraphicalObject() const;
   void setGraphicalObjectKey(const std::string & k);
 
-  virtual CLGraphicalObject* clone() const {return new CLTextGlyph(*this, NULL);};
+  CLGraphicalObject* clone() const  override {return new CLTextGlyph(*this, NULL);};
 
   //virtual void scale (const double & scaleFactor){this->mBBox.scale(scaleFactor);}
 
@@ -270,7 +270,7 @@ public:
    * insert operator
    */
   friend std::ostream & operator<<(std::ostream &os, const CLTextGlyph & g);
-  void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 };
 
 #endif

@@ -302,7 +302,7 @@ bool CReactionInterface::loadMappingAndValues()
   return success;
 }
 
-bool CReactionInterface::writeBackToReaction(CReaction * pReaction, bool compile)
+bool CReactionInterface::writeBackToReaction(CReaction * pReaction, bool /* compile */)
 {
   CReaction * pRea = (pReaction != NULL) ? pReaction : const_cast< CReaction * >(mpReaction);
 
@@ -508,8 +508,6 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
       NewMap.addProperty(CData::OBJECT_NAME, ParameterName);
       std::vector< CDataValue > ParameterSource;
 
-      const CDataObject * pObject = NULL;
-
       switch (getUsage(i))
         {
           case CFunctionParameter::Role::PARAMETER:
@@ -567,8 +565,6 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
       CData NewMap;
       NewMap.addProperty(CData::OBJECT_NAME, ParameterName);
       std::vector< CDataValue > ParameterSource;
-
-      const CDataObject * pObject = NULL;
 
       switch (getUsage(i))
         {

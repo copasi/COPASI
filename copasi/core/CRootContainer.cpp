@@ -109,8 +109,6 @@ void CRootContainer::init(int argc, char *argv[], const bool & withGUI)
   // CLogger::setLogDir(COptions::getPWD() + CDirEntry::Separator + "COPASI");
 #endif // USE_OMP
 
-  CRegisteredCommonName::setEnabled(false);
-
   CCopasiMessage::setIsGUI(withGUI);
 
   if (pRootContainer == NULL)
@@ -118,8 +116,6 @@ void CRootContainer::init(int argc, char *argv[], const bool & withGUI)
 
   if (pRootContainer != NULL)
     pRootContainer->initializeChildren();
-
-  CRegisteredCommonName::setEnabled(true);
 }
 
 // static

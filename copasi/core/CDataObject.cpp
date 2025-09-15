@@ -67,16 +67,7 @@ CDataObject::CDataObject(const std::string & name,
   , mReferences()
   , mPrerequisits()
 {
-  if (CRegisteredCommonName::isEnabled())
-    {
-      CRegisteredCommonName::setEnabled(false);
-      setObjectName(name);
-      CRegisteredCommonName::setEnabled(true);
-    }
-  else
-    {
-      setObjectName(name);
-    }
+  setObjectName(name);
 
   if (mpObjectParent != NULL &&
       mpObjectParent->hasFlag(Container))
@@ -297,26 +288,15 @@ bool CDataObject::setObjectName(const std::string & name)
     return false;
 
   std::string OldName = mObjectName;
+  mObjectName = Name;
 
-  if (OldName.empty())
+  if (!OldName.empty())
     {
-      mObjectName = Name;
-    }
-  else
-    {
-      std::string oldCN = this->getCNProtected();
-      mObjectName = Name;
-
       std::set< CDataContainer * >::iterator it = mReferences.begin();
       std::set< CDataContainer * >::iterator end = mReferences.end();
 
       for (; it != end; ++it)
         (*it)->objectRenamed(this, OldName);
-
-      if (CRegisteredCommonName::isEnabled() && mpObjectParent != NULL)
-        {
-          CRegisteredCommonName::handle(oldCN, getStringCN(), getObjectDataModel());
-        }
     }
 
   if (mpCNComponent)
@@ -379,28 +359,13 @@ bool CDataObject::setObjectParent(const CDataContainer * pParent)
   if (pParent == mpObjectParent)
     return true;
 
-  CCommonName OldCN;
-
   if (mpObjectParent != NULL &&
       pParent != NULL) // we only remove if we have a new parent otherwise we may have a memory leak.
-    {
-      if (CRegisteredCommonName::isEnabled())
-        {
-          OldCN = getCNProtected();
-        }
-
       mpObjectParent->remove(this);
-    }
 
   removeReference(mpObjectParent);
   mpObjectParent = const_cast<CDataContainer *>(pParent);
   addReference(mpObjectParent);
-
-  if (CRegisteredCommonName::isEnabled() &&
-      !OldCN.empty())
-    {
-      CRegisteredCommonName::handle(OldCN, getStringCN(), getObjectDataModel());
-    }
 
   if (mpCNComponent)
     mpCNComponent->signalObjectParentChanged();
@@ -499,7 +464,7 @@ const CDataObject * CDataObject::getValueObject() const
 }
 
 // static
-CDataObject * CDataObject::fromData(const CData & data, CUndoObjectInterface * pParent)
+CDataObject * CDataObject::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   CDataObject * pDataObject = new CDataObject(data.getProperty(CData::OBJECT_NAME).toString(),
       NO_PARENT,
@@ -527,7 +492,7 @@ CData CDataObject::toData() const
   Data.addProperty(CData::OBJECT_TYPE, mObjectType);
   Data.addProperty(CData::OBJECT_FLAG, mObjectFlag.to_string());
 
-  std::string CN = (mpObjectParent != NULL) ? mpObjectParent->getCNProtected() : std::string("");
+  std::string CN = (mpObjectParent != NULL) ? mpObjectParent->getStringCN() : CCommonName();
   size_t Index = (mpObjectParent != NULL) ? mpObjectParent->getIndex(this) : C_INVALID_INDEX;
 
   std::vector< CData > References;
@@ -565,7 +530,7 @@ CData CDataObject::toData() const
 }
 
 // virtual
-bool CDataObject::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CDataObject::applyData(const CData & data, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 
@@ -614,7 +579,7 @@ bool CDataObject::applyData(const CData & data, CUndoData::CChangeSet & changes)
 }
 
 // virtual
-void CDataObject::createUndoData(CUndoData & undoData, const CUndoData::Type & type, const CData & oldData, const CCore::Framework & framework) const
+void CDataObject::createUndoData(CUndoData & undoData, const CUndoData::Type & type, const CData & oldData, const CCore::Framework & /* framework */) const
 {
   if (type != CUndoData::Type::CHANGE)
     {
@@ -626,7 +591,7 @@ void CDataObject::createUndoData(CUndoData & undoData, const CUndoData::Type & t
   // The UUID of an object must never be changed.
   // undoData.addProperty(CData::OBJECT_UUID, oldData.getProperty(CData::OBJECT_UUID), getUuid().str());
   undoData.addProperty(CData::OBJECT_TYPE, oldData.getProperty(CData::OBJECT_TYPE), mObjectType);
-  undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), (mpObjectParent != NULL) ? mpObjectParent->getCNProtected() : std::string(""));
+  undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), (mpObjectParent != NULL) ? mpObjectParent->getCNProtected() : CCommonName());
   undoData.addProperty(CData::OBJECT_FLAG, oldData.getProperty(CData::OBJECT_FLAG), mObjectFlag.to_string());
   undoData.addProperty(CData::OBJECT_INDEX, oldData.getProperty(CData::OBJECT_INDEX), (mpObjectParent != NULL) ? mpObjectParent->getIndex(this) : C_INVALID_INDEX);
 

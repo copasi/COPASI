@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -835,7 +835,7 @@ COutputAssistant::createDefaultOutput(
 
             while (itItem != endItem)
               {
-                itItem->getChannels()[0] = CPlotDataChannelSpec(CRegisteredCommonName(*itChannelX++, pDataModel));
+                itItem->getChannels()[0] = CPlotDataChannelSpec(CCommonName(*itChannelX++));
                 itItem->setTitle(*itName++);
                 itItem->setActivity(COutputInterface::AFTER);
                 itItem->setValue("Line type", *itLineType++);
@@ -1555,7 +1555,7 @@ COutputAssistant::createDefaultOutput(
 
               for (i = 0; i < num_scanitems; ++i)
                 {
-                  std::string tmpString = pSP->getScanItem(i)->getValue< CRegisteredCommonName >("Object");
+                  CCommonName & tmpString = pSP->getScanItem(i)->getValue< CRegisteredCommonName >("Object");
 
                   if (tmpString.size()) //the scan item references an object, this is the scan parameter
                     {
@@ -1596,7 +1596,7 @@ COutputAssistant::createDefaultOutput(
 
               for (i = 0; i < num_scanitems; ++i)
                 {
-                  std::string tmpString = pSP->getScanItem(i)->getValue< CRegisteredCommonName >("Object");
+                  CCommonName & tmpString = pSP->getScanItem(i)->getValue< CRegisteredCommonName >("Object");
 
                   if (tmpString.size()) //the scan item references an object, this is the scan parameter
                     {

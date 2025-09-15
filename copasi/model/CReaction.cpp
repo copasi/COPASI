@@ -66,7 +66,7 @@ CEnumAnnotation< std::string, CReaction::KineticLawUnit > CReaction::KineticLawU
 });
 
 // static
-CReaction * CReaction::fromData(const CData & data, CUndoObjectInterface * pParent)
+CReaction * CReaction::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CReaction(data.getProperty(CData::OBJECT_NAME).toString(),
                        NO_PARENT);
@@ -181,7 +181,7 @@ bool CReaction::applyData(const CData & data, CUndoData::CChangeSet & changes)
 
           for (; it != end; ++it)
             {
-              CNs.push_back(CRegisteredCommonName(it->toString(), this));
+              CNs.push_back(CCommonName(it->toString()));
             }
 
           Success &= setParameterCNs(Name, CNs);
@@ -228,7 +228,7 @@ bool CReaction::applyData(const CData & data, CUndoData::CChangeSet & changes)
 
           for (; it != end; ++it)
             {
-              CNs.push_back(CRegisteredCommonName(it->toString(), this));
+              CNs.push_back(CCommonName(it->toString()));
             }
 
           Success &= setParameterCNs(Name, CNs);
@@ -2315,7 +2315,7 @@ std::string CReaction::getKineticLawUnit() const
 
 void CReaction::setScalingCompartmentCN(const std::string & compartmentCN)
 {
-  mScalingCompartmentCN = CRegisteredCommonName(compartmentCN, this);
+  mScalingCompartmentCN = CCommonName(compartmentCN);
   ContainerList Containers;
   Containers.push_back(getObjectDataModel());
 
@@ -2344,7 +2344,6 @@ const CCompartment * CReaction::getScalingCompartment() const
 std::string
 CReaction::getReactionScheme() const
 {
-  CDataModel* pModel = getObjectDataModel();
   CReactionInterface reactionInterface;
   reactionInterface.init(*this);
   return reactionInterface.getChemEqString();

@@ -434,8 +434,6 @@ void SEDMLImporter::importOutputs()
 
   unsigned int i, numOutput = pSEDMLDocument->getNumOutputs();
 
-  std::map< const CDataObject *, SBase * > & copasiMap = pModel->getObjectDataModel()->getCopasi2SBMLMap();
-
   for (i = 0; i < numOutput; ++i)
     {
       SedOutput * current = pSEDMLDocument->getOutput(i);
@@ -473,9 +471,6 @@ void SEDMLImporter::importOutputs()
                         SEDMLUtils::getNextId(name + " ", ++count), CPlotItem::plot2d);
               }
 
-            bool logX = false;
-            bool logY = false;
-
             for (unsigned int ic = 0; ic < p->getNumCurves(); ++ic)
               {
                 auto * pCurve = p->getCurve(ic);
@@ -506,9 +501,6 @@ void SEDMLImporter::importOutputs()
                 pPl = pLotList->createPlotSpec(
                         SEDMLUtils::getNextId(name + " ", ++count), CPlotItem::plot2d);
               }
-
-            bool logX = false;
-            bool logY = false;
 
             for (unsigned int ic = 0; ic < p->getNumSurfaces(); ++ic)
               {
@@ -1198,7 +1190,7 @@ void SEDMLImporter::assignReportDefinitions(CDataVectorN< CCopasiTask > * pTaskL
 
 void SEDMLImporter::importTask(
   SedAbstractTask * task,
-  bool importModel,
+  bool /* importModel */,
   CDataVectorN< CCopasiTask > * pTaskList)
 {
   if (task == NULL)

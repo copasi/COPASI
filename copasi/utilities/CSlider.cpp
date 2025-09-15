@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,7 +39,7 @@ const char * CSlider::ScaleName[] =
 {"linear", "logarithmic", "undefined", NULL};
 
 // static
-CSlider * CSlider::fromData(const CData & data, CUndoObjectInterface * pParent)
+CSlider * CSlider::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CSlider(data.getProperty(CData::OBJECT_NAME).toString(),
                      NO_PARENT);
@@ -57,7 +57,7 @@ CData CSlider::toData() const
 }
 
 // virtual
-bool CSlider::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CSlider::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 
@@ -221,7 +221,7 @@ bool CSlider::setSliderObject(const CRegisteredCommonName & objectCN)
 const CDataObject * CSlider::getSliderObject() const
 {return mpSliderObject;}
 
-const std::string & CSlider::getSliderObjectCN() const
+const CCommonName & CSlider::getSliderObjectCN() const
 {return mCN; /*getObjectName();*/}
 
 bool CSlider::setSliderType(const CSlider::Type type)

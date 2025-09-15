@@ -212,7 +212,7 @@ public:
     size_t Index = cn.getElementIndex();
 
     if (Index < mReference.size())
-      return new CDataObjectReference< typename referenceType::elementType >(getObjectName() + cn,
+      return new CDataObjectReference< typename referenceType::elementType >((getObjectName() + cn),
              getObjectParent(),
              mReference[Index]);
 

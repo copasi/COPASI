@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -619,8 +619,6 @@ bool CScanMethod::loop(size_t level)
   bool isLastMasterItem = (level == (mScanItems.size() - 1)); //TODO
 
   CScanItem* currentSI = mScanItems[level];
-  size_t failCounter = 0;
-
   mInitialStateChanged = dynamic_cast< CScanItemParameterSet * >(currentSI) != NULL;
 
   for (currentSI->reset(); !currentSI->isFinished(); currentSI->step())
@@ -793,7 +791,7 @@ void CScanItemParameterSet::step()
   ++mIndex;
 }
 
-bool CScanItemParameterSet::isValidScanItem(const bool & continueFromCurrentState)
+bool CScanItemParameterSet::isValidScanItem(const bool & /* continueFromCurrentState */)
 {
   if (mSets.empty())
     {

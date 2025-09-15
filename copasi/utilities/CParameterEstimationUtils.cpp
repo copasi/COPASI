@@ -478,7 +478,7 @@ FittingItem *ResultParser::parseItem(const std::string &line)
   item->mStartValue = saveToDouble(line.substr(lastEq + 1));
   std::string::size_type firstLeq = line.find("<=");
 
-  if (firstLeq == -1)
+  if (firstLeq == std::string::npos)
   {
     pdelete(item);
     return NULL;
@@ -488,7 +488,7 @@ FittingItem *ResultParser::parseItem(const std::string &line)
   std::string::size_type lastLeq = line.find("<=", firstLeq + 2);
   std::string::size_type square = line.find("]", firstLeq + 2);
 
-  if (square == -1)
+  if (square == std::string::npos)
     square = line.find(")", firstLeq + 2);
 
   std::string::size_type lastSep = line.find(";", square);

@@ -86,7 +86,7 @@ void CDataArray::setAnnotation(size_t d, size_t i, const CDataObject * pObject)
     }
   else
     {
-      mAnnotationsCN[d][i] = CRegisteredCommonName("", this);
+      mAnnotationsCN[d][i] = CRegisteredCommonName();
       mAnnotationsString[d][i] = "";
     }
 }
@@ -96,7 +96,7 @@ void CDataArray::setAnnotationString(size_t d, size_t i, const std::string s)
   assert(d < dimensionality());
   assert(i < mAnnotationsString[d].size());
 
-  mAnnotationsCN[d][i] = CRegisteredCommonName("String=" + CCommonName::escape(s), this);
+  mAnnotationsCN[d][i] = CCommonName("String=" + CCommonName::escape(s));
   mAnnotationsString[d][i] = s;
 }
 
@@ -105,7 +105,7 @@ const std::vector<CRegisteredCommonName> & CDataArray::getAnnotationsCN(size_t d
   return mAnnotationsCN[d];
 }
 
-const std::vector<std::string> & CDataArray::getAnnotationsString(size_t d, bool display) const
+const std::vector<std::string> & CDataArray::getAnnotationsString(size_t d, bool /* display */) const
 {
   assert(d < mModes.size());
 
@@ -194,7 +194,7 @@ const CDataObject * CDataArray::addElementReference(const CDataArray::index_type
 
   for (; it != end; ++it, ++to, ++itCN)
     {
-      *to = *it < itCN->size() ? static_cast< std::string >(itCN->operator [](*it)) : std::string("");
+      *to = *it < itCN->size() ? itCN->operator [](*it) : CRegisteredCommonName();
 
       if (to->empty())
         {
@@ -226,15 +226,15 @@ const CDataObject * CDataArray::addElementReference(C_INT32 u) const
 
 const CObjectInterface * CDataArray::getObject(const CCommonName & cn) const
 {
-  if (cn == "")
-    {
-      return this;
-    }
+  if (cn.isResolved())
+      cn.getObject();
 
-  if (cn == "Property=DisplayName")
-    {
-      return CDataObject::getObject(cn);
-    }
+  if (cn.empty())
+    return this;
+
+  if (cn.getObjectType() == "Property"
+      && cn.getObjectName() == "DisplayName")
+    return CDataObject::getObject(cn);
 
   //if there are no indices there could still be other children. This can be handled
   //by the container base class
@@ -289,7 +289,7 @@ const CObjectInterface * CDataArray::getObject(const CCommonName & cn) const
   if (pObject)
     return pObject->getObject(cn.getRemainder().getRemainder());
   else
-    return NULL;
+    return nullptr;
 }
 
 void CDataArray::print(std::ostream * ostream) const
@@ -486,8 +486,8 @@ CDataArray::index_type CDataArray::cnToIndex(const CDataArray::name_index_type &
     }
 
   index_type::iterator to = Index.begin();
-  std::vector< std::string >::const_iterator it = cnIndex.begin();
-  std::vector< std::string >::const_iterator itEnd = cnIndex.end();
+  name_index_type::const_iterator it = cnIndex.begin();
+  name_index_type::const_iterator itEnd = cnIndex.end();
   std::vector< std::vector<CRegisteredCommonName> >::const_iterator itCNs = mAnnotationsCN.begin();
   size_t index = 0;
 
@@ -510,7 +510,7 @@ CDataArray::index_type CDataArray::cnToIndex(const CDataArray::name_index_type &
   return Index;
 }
 
-std::string CDataArray::createDisplayName(const std::string & cn) const
+std::string CDataArray::createDisplayName(const CCommonName & cn) const
 {
   const CDataObject * pObject = CObjectInterface::DataObject(getObjectFromCN(cn));
 

@@ -543,10 +543,10 @@ public:
 
   /**
    * Retrieve a object by its full CN.
-   * @param const CCommonName & cn
+   * @param CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  virtual const CObjectInterface * getObjectFromCN(const CCommonName & cn) const;
+  const CObjectInterface * getObjectFromCN(const CCommonName & cn) const override;
 
   /**
    * Retrieve a pointer to the corresponding the mathematical object

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -38,11 +38,6 @@ public:
      * Default constructor
      */
     CAssignment();
-
-    /**
-     * Copy constructor
-     */
-    CAssignment(const CAssignment & src);
 
     /**
      * Destructor
@@ -99,11 +94,6 @@ public:
        * Default constructor
        */
       CRootProcessor();
-
-      /**
-       * Copy constructor
-       */
-      CRootProcessor(const CRootProcessor & src);
 
       /**
        * Destructor
@@ -194,11 +184,6 @@ public:
      * Default constructor
      */
     CTrigger();
-
-    /**
-     * Copy constructor
-     */
-    CTrigger(const CTrigger & src);
 
     /**
      * Destructor

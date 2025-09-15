@@ -128,13 +128,12 @@ bool COptMethodLevenbergMarquardt::optimise()
       )
     );
 
-  C_INT dim, starts, info, nrhs;
+  C_INT dim, starts, info;
   C_INT one = 1;
 
   size_t i;
   C_FLOAT64 LM_lambda, nu, convp, convx;
   bool calc_hess;
-  nrhs = 1;
 
   dim = (C_INT) mVariableSize;
 

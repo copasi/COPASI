@@ -274,7 +274,7 @@ public:
 
   virtual const std::string & getKey() const;
 
-  const CObjectInterface * getObjectFromCN(const CCommonName & cn) const;
+  virtual const CObjectInterface * getObjectFromCN(const CCommonName & cn) const;
 
   void addIssue(const CIssue & issue);
 

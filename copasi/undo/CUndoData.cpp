@@ -248,7 +248,7 @@ CUndoData::CUndoData(const Type & type, const CData & data, const size_t & autho
   mPreProcessData(),
   mPostProcessData(),
   mTime(),
-  mAuthorID(C_INVALID_INDEX),
+  mAuthorID(authorId),
   mChangedProperties(),
   mMetaData()
 {
@@ -310,6 +310,24 @@ CUndoData::CUndoData(const CUndoData & src):
 
 CUndoData::~CUndoData()
 {}
+
+CUndoData & CUndoData::operator =(const CUndoData & rhs)
+{
+  if (this != &rhs)
+    {
+      mType = rhs.mType;
+      mOldData = rhs.mOldData;
+      mNewData = rhs.mNewData;
+      mPreProcessData = rhs.mPreProcessData;
+      mPostProcessData = rhs.mPostProcessData;
+      mTime = rhs.mTime;
+      mAuthorID = rhs.mAuthorID;
+      mChangedProperties = rhs.mChangedProperties;
+      mMetaData = rhs.mMetaData;
+    }
+
+  return * this;
+}
 
 const CUndoData::Type & CUndoData::getType() const
 {
@@ -685,7 +703,7 @@ std::string CUndoData::getObjectDisplayName() const
   // Species will always have the name of the parent compartment appended.
   if (getObjectType() == "Metabolite")
     {
-      CCommonName CN;
+      std::string CN;
 
       switch (mType)
         {
@@ -706,7 +724,7 @@ std::string CUndoData::getObjectDisplayName() const
 
       if (!CN.empty())
         {
-          DisplayName += "{" + CN.getElementName(0) + "}";
+          DisplayName += "{" + CCommonName(CN).getElementName(0) + "}";
         }
     }
 

@@ -48,10 +48,6 @@ struct
 
 /* Table of constant values */
 
-static C_INT c__9 = 9;
-static C_INT c__1 = 1;
-static C_INT c__5 = 5;
-static C_INT c__3 = 3;
 static double c_b54 = .5;
 static double c_b91 = 81.;
 static double c_b92 = .33333333333333331;
@@ -122,24 +118,6 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
   static C_INT istore;
   static C_LOGICAL startn;
   static double uround;
-
-  /* Fortran I/O blocks */
-  static cilist io___10 = {0, 6, 0, 0, 0 };
-  static cilist io___12 = {0, 6, 0, 0, 0 };
-  static cilist io___15 = {0, 6, 0, 0, 0 };
-  static cilist io___17 = {0, 6, 0, 0, 0 };
-  static cilist io___19 = {0, 6, 0, 0, 0 };
-  static cilist io___24 = {0, 6, 0, 0, 0 };
-  static cilist io___29 = {0, 6, 0, 0, 0 };
-  static cilist io___31 = {0, 6, 0, 0, 0 };
-  static cilist io___33 = {0, 6, 0, 0, 0 };
-  static cilist io___36 = {0, 6, 0, 0, 0 };
-  static cilist io___39 = {0, 6, 0, 0, 0 };
-  static cilist io___43 = {0, 6, 0, 0, 0 };
-  static cilist io___50 = {0, 6, 0, 0, 0 };
-  static cilist io___52 = {0, 6, 0, 0, 0 };
-  static cilist io___68 = {0, 6, 0, 0, 0 };
-  static cilist io___72 = {0, 6, 0, 0, 0 };
 
   /* ---------------------------------------------------------- */
   /*     NUMERICAL SOLUTION OF A STIFF (OR DIFFERENTIAL ALGEBRAIC) */
@@ -1032,9 +1010,6 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
                              C_INT *njac, C_INT *nstep, C_INT *naccpt, C_INT *nrejct,
                              C_INT *ndec, C_INT *nsol, double *rpar, C_INT *ipar)
 {
-  /* Format strings */
-  static char fmt_979[] = "(\002 EXIT OF RADAU5 AT X=\002,e18.4)";
-
   /* System generated locals */
   C_INT fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e1_dim1,
         e1_offset, e2r_dim1, e2r_offset, e2i_dim1, e2i_offset, i__1, i__2,
@@ -1068,7 +1043,7 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
   static C_LOGICAL first;
   static C_INT irtrn, nrsol, nsolu;
   static double qnewt, xosol, acont3;
-  static C_LOGICAL index1, index2, index3, caljac;
+  static C_LOGICAL index2, index3, caljac;
   static double faccon;
   extern /* Subroutine */ int decomc_(C_INT *, double *, C_INT *,
                                       double *, C_INT *, C_INT *, C_INT *, C_INT *, C_INT
@@ -1102,15 +1077,6 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
                                       double *, double *, double *, C_INT *, C_INT *,
                                       C_INT *, C_INT *, C_INT *);
   static double thqold;
-
-  /* Fortran I/O blocks */
-  static cilist io___176 = {0, 6, 0, fmt_979, 0 };
-  static cilist io___177 = {0, 6, 0, 0, 0 };
-  static cilist io___178 = {0, 6, 0, fmt_979, 0 };
-  static cilist io___179 = {0, 6, 0, 0, 0 };
-  static cilist io___180 = {0, 6, 0, fmt_979, 0 };
-  static cilist io___181 = {0, 6, 0, 0, 0 };
-  static cilist io___182 = {0, 6, 0, fmt_979, 0 };
 
   /* ---------------------------------------------------------- */
   /*     CORE INTEGRATOR FOR RADAU5 */
@@ -1162,7 +1128,6 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
   conra5_1.nn3 = *n * 3;
   lrc = *n << 2;
   /* -------- CHECK THE INDEX OF THE PROBLEM ----- */
-  index1 = *nind1 != 0;
   index2 = *nind2 != 0;
   index3 = *nind3 != 0;
 
@@ -1907,7 +1872,7 @@ L179:
 
 /* *********************************************************** */
 
-double contr5_(C_INT *i__, double *x, double *cont, C_INT *lrc)
+double contr5_(C_INT *i__, double *x, double *cont, C_INT * /* lrc */)
 {
   /* System generated locals */
   double ret_val;

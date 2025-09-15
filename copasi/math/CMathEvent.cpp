@@ -42,12 +42,6 @@ CMathEvent::CAssignment::CAssignment()
   , mIsStateValue(false)
 {}
 
-CMathEvent::CAssignment::CAssignment(const CMathEvent::CAssignment & src)
-  : mpTarget(src.mpTarget)
-  , mpAssignment(src.mpAssignment)
-  , mIsStateValue(src.mIsStateValue)
-{}
-
 CMathEvent::CAssignment::~CAssignment()
 {}
 
@@ -176,16 +170,6 @@ CMathEvent::CTrigger::CRootProcessor::CRootProcessor():
   mLastToggleTime(),
   mpRootValue(NULL),
   mpRootStateValue(NULL)
-{}
-
-CMathEvent::CTrigger::CRootProcessor::CRootProcessor(const CMathEvent::CTrigger::CRootProcessor & src):
-  mpRoot(src.mpRoot),
-  mpRootState(src.mpRootState),
-  mEquality(src.mEquality),
-  mDiscrete(src.mDiscrete),
-  mLastToggleTime(src.mLastToggleTime),
-  mpRootValue(src.mpRootValue),
-  mpRootStateValue(src.mpRootStateValue)
 {}
 
 CMathEvent::CTrigger::CRootProcessor::~CRootProcessor()
@@ -352,13 +336,6 @@ CMathEvent::CTrigger::CTrigger():
   mpInitialTrigger(NULL),
   mRoots(),
   mInfix()
-{}
-
-CMathEvent::CTrigger::CTrigger(const CMathEvent::CTrigger & src):
-  mpTrigger(src.mpTrigger),
-  mpInitialTrigger(src.mpInitialTrigger),
-  mRoots(src.mRoots.size()),
-  mInfix(src.mInfix)
 {}
 
 CMathEvent::CTrigger::~CTrigger()
@@ -948,7 +925,7 @@ CEvaluationNode * CMathEvent::CTrigger::compileEQ(const CEvaluationNode * pTrigg
 }
 
 // static
-CEvaluationNode * CMathEvent::CTrigger::compileNE(const CEvaluationNode * pTriggerNode,
+CEvaluationNode * CMathEvent::CTrigger::compileNE(const CEvaluationNode * /* pTriggerNode */,
     const std::vector< CEvaluationNode * > & children,
     const CMath::Variables< CEvaluationNode * > & variables,
     CMathEvent::CTrigger::CRootProcessor *& pRoot,
@@ -1011,7 +988,7 @@ CEvaluationNode * CMathEvent::CTrigger::compileLE(const CEvaluationNode * pTrigg
         pRootNode->addChild(children[1]);
         Equality = false;
         break;
-        
+
       default:
         break;
     }

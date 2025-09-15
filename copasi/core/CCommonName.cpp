@@ -30,9 +30,6 @@
 using std::string;
 
 // static
-std::set< CCommonName * > CCommonName::UnresolvedCNs;
-
-// static
 std::string CCommonName::nameFromCN(const CCommonName & cn)
 {
   CCommonName ParentCN;
@@ -64,7 +61,7 @@ std::string CCommonName::compartmentNameFromCN(const CCommonName & cn)
 
 // static
 CObjectInterface * CCommonName::GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
-  CCommonName & objName)
+  const CCommonName & objName)
 {
   bool CheckDataModel = true;
   const CDataModel * pDataModel = nullptr;
@@ -90,46 +87,43 @@ CObjectInterface * CCommonName::GetObjectFromCN(const CObjectInterface::Containe
   return pObject;
 }
 
-// static
-void CCommonName::ResolveAll(const CDataContainer * pContainer)
-{
-  for (auto it = UnresolvedCNs.begin(); it != UnresolvedCNs.end();)
-    {
-      CCommonName * pCN = *it;
-
-      if (pCN->resolve(pContainer) != nullptr)
-        it = UnresolvedCNs.lower_bound(pCN);
-      else
-        ++it;
-    }
-
-  for (auto it = UnresolvedCNs.begin(); it != UnresolvedCNs.end(); ++it)
-    std::cout << *it << ": " << **it << std::endl;
-  std::cout << UnresolvedCNs.size() << std::endl;
-}
-
 void CCommonName::fixSpelling()
 {
-  if (!compare("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Simulation Counter"))
-    assign("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations");
-  else if (!compare("CN=Root,CN=Information,Timer=Current Date/Dime"))
-    assign("CN=Root,CN=Information,Timer=Current Date/Time");
+  if (!mpCN->compare("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Simulation Counter"))
+    mpCN->assign("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations");
+  else if (!mpCN->compare("CN=Root,CN=Information,Timer=Current Date/Dime"))
+    mpCN->assign("CN=Root,CN=Information,Timer=Current Date/Time");
 }
 
-void CCommonName::createComponent()
+// static
+CCommonNameComponent::shared_ptr CCommonName::createComponent(const std::string & cn)
 {
-  CCommonName CN(*this);
-  std::vector< std::pair< std::string, std::string > > Objects;
+  CCommonName CN(cn);
+
+  struct ComponentData {
+    std::string type = "";
+    std::string name = "";
+    std::string partialCN = "";
+  };
+
+  std::vector< ComponentData > Objects;
   Objects.reserve(10);
 
   while (!CN.empty())
     {
       CCommonName ParentCN;
+      ComponentData Data;
       std::string Type;
       std::string Name;
 
-      CN.split(ParentCN, Type, Name);
-      Objects.push_back(std::make_pair(Type, Name));
+      CN.split(ParentCN, Data.type, Data.name, &Data.partialCN);
+      Objects.push_back(Data);
+
+      // String and Separator are always resolved locally;
+      if (Type == "String"
+          || Type == "Separator")
+        break;
+
       CN = ParentCN;
     }
 
@@ -138,80 +132,47 @@ void CCommonName::createComponent()
 
   for (auto it = Objects.rbegin(); it != Objects.rend(); ++it)
     {
-      pComponent = CCommonNameComponent::create(it->first, it->second, pParent);
+      pComponent = CCommonNameComponent::create(it->partialCN, it->type, it->name, pParent);
       pParent = pComponent;
     }
 
-  mpComponent = pComponent;
+  if (!pComponent)
+    pComponent = CCommonNameComponent::create(cn, "", "", nullptr);
+
+  return pComponent;
 }
 
 CCommonName::CCommonName()
-  : string()
-  , mpComponent(nullptr)
+  : mpComponent()
+  , mpCN(std::make_shared< std::string >())
 {}
 
 CCommonName::CCommonName(const CCommonNameComponent::shared_ptr & pComponent)
-  : std::string(pComponent ? pComponent->getCN() : "")
-  , mpComponent(pComponent)
-{
-  if (mpComponent == nullptr
-      || !mpComponent->isResolved())
-    UnresolvedCNs.insert(this);
-};
-
-CCommonName::CCommonName(const char * name)
-  : string(name)
-  , mpComponent(nullptr)
-{
-  fixSpelling();
-
-  if (!empty())
-    UnresolvedCNs.insert(this);
-}
+  : mpComponent(pComponent)
+  , mpCN(pComponent ? pComponent->getCN() : std::make_shared< std::string >())
+{}
 
 CCommonName::CCommonName(const std::string & name)
-  : string(name)
-  , mpComponent(nullptr)
+  : mpComponent()
+  , mpCN(std::make_shared< std::string >(name))
 {
   fixSpelling();
-
-  if (!empty())
-    UnresolvedCNs.insert(this);
 }
 
 CCommonName::CCommonName(const CCommonName & src)
-  : string(src)
-  , mpComponent(src.mpComponent)
-{
-  UnresolvedCNs.erase(this);
-
-  if (!empty()
-      && (mpComponent == nullptr
-          || !mpComponent->isResolved()))
-    UnresolvedCNs.insert(this);
-}
+  : mpComponent(src.mpComponent)
+  , mpCN(src.mpCN)
+{}
 
 CCommonName::~CCommonName()
-{
-  UnresolvedCNs.erase(this);
-}
+{}
 
 CCommonName & CCommonName::operator=(const CCommonName & rhs)
 {
   if (this != &rhs)
     {
-      if (!empty()
-          && (mpComponent == nullptr
-              || !mpComponent->isResolved()))
-        UnresolvedCNs.erase(this);
-
-      std::string::operator=(rhs);
       mpComponent = rhs.mpComponent;
-
-      if (!empty()
-          && (mpComponent == nullptr
-              || !mpComponent->isResolved()))
-        UnresolvedCNs.insert(this);
+      mpCN = rhs.mpCN;
     }
 
   return *this;
@@ -219,18 +180,10 @@ CCommonName & CCommonName::operator=(const CCommonName & rhs)
 
 CCommonName & CCommonName::operator=(const std::string & rhs)
 {
-  if (this->compare(rhs) != 0)
+  if (mpCN->compare(rhs) != 0)
     {
-      if (!empty())
-        UnresolvedCNs.erase(this);
-
-      std::string::operator=(rhs);
       mpComponent = nullptr;
-
-      fixSpelling();
-
-      if (!empty())
-        UnresolvedCNs.insert(this);
+      mpCN = std::make_shared< std::string >(rhs);
     }
 
   return *this;
@@ -240,97 +193,135 @@ CCommonName & CCommonName::operator=(const CCommonNameComponent::shared_ptr & rh
 {
   if (mpComponent != rhs)
     {
-      if (!empty()
-          && (mpComponent == nullptr
-              || !mpComponent->isResolved()))
-        UnresolvedCNs.erase(this);
-
       mpComponent = rhs;
-      std::string::operator=(mpComponent ? mpComponent->getCN() : "");
-
-      if (!empty()
-          && (mpComponent == nullptr
-              || !mpComponent->isResolved()))
-        UnresolvedCNs.insert(this);
+      mpCN = mpComponent ? mpComponent->getCN() : std::make_shared< std::string >();
     }
 
   return *this;
 }
 
-const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
+bool CCommonName::operator ==(const CCommonName & rhs) const
 {
-  if (empty()
+  return *mpCN == *rhs.mpCN;
+}
+
+bool CCommonName::operator !=(const CCommonName & rhs) const
+{
+  return *mpCN != *rhs.mpCN;
+}
+
+bool CCommonName::operator <(const CCommonName & rhs) const
+{
+  return *mpCN < *rhs.mpCN;
+}
+
+const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer) const
+{
+  if (mpCN->empty()
       || pContainer == nullptr)
     return nullptr;
 
   if (mpComponent == nullptr)
-    createComponent();
+    {
+      mpComponent = createComponent(*mpCN);
 
-  if (mpComponent->isResolved()
-      && mpComponent->hasAncestor(pContainer))
-    return mpComponent->getObject();
+      if (mpComponent == nullptr)
+        return nullptr;
+
+      mpCN = mpComponent->getCN();
+    }
 
   if (!mpComponent->mayHaveAncestor(pContainer))
     return nullptr;
 
-  std::vector< CCommonNameComponent::shared_ptr > Components = mpComponent->getComponentList();
-  CCommonNameComponent::shared_ptr resolved = nullptr;
-
-  for (auto it = Components.rbegin(); it != Components.rend(); ++it)
-    {
-      // Find the container component matching this component
-      if (resolved == nullptr)
-        {
-          if (pContainer->getCNComponent()->getPartialCN() == (*it)->getPartialCN())
-            resolved = pContainer->getCNComponent();
-
-          continue;
-        }
-
-      const CObjectInterface * pObject = resolved->getObject()->getObject((*it)->getPartialCN());
-
-      if (pObject == nullptr)
-        {
-          resolved = nullptr;
-          break;
-        }
-
-      resolved = pObject->getCNComponent();
-    }
-
-  if (resolved == nullptr)
-    {
-      // This handles static strings and separators
-      const CObjectInterface * pObject = pContainer->getObject(mpComponent->getPartialCN());
-
-      if (pObject != nullptr)
-        resolved = pObject->getCNComponent();
-    }
-
-  // We need to handle the root container objects like functions and unit definitions
-  if (resolved == nullptr)
-    {
-      const CDataContainer * pRoot = CRootContainer::getRoot();
-
-      if (pRoot != pContainer)
-        return resolve(pRoot);
-
-      return nullptr;
-    }
-
-  // We have resolved the full common name
-  mpComponent = resolved;
-  std::string::operator=(mpComponent->getCN());
-
   const CObjectInterface * pObject = mpComponent->getObject();
+
+  if (!mpComponent->isResolved()
+      || !mpComponent->hasAncestor(pContainer))
+    {
+      const std::string & ContainerPartialCN = pContainer->getCNComponent()->getPartialCN();
+      std::vector< CCommonNameComponent::shared_ptr > Components = mpComponent->getComponentList();
+      CCommonNameComponent::shared_ptr resolved = nullptr;
+
+      for (auto it = Components.rbegin(); it != Components.rend(); ++it)
+        {
+          // Find the container component matching this component
+          if (!resolved)
+            {
+              if (ContainerPartialCN == (*it)->getPartialCN())
+                // This may lead to a structural change of the CN, e.g., an absolute CN may become relative
+                resolved = pContainer->getCNComponent();
+
+              continue;
+            }
+
+          const CObjectInterface * pObject = resolved->getObject()->getObject((*it)->getPartialCN());
+
+          if (pObject == nullptr)
+            {
+              resolved = nullptr;
+              break;
+            }
+
+          resolved = pObject->getCNComponent();
+        }
+
+      if (!resolved)
+        {
+          // This handles static strings and separators
+          const CObjectInterface * pObject = pContainer->getObject(mpComponent->getPartialCN());
+
+          if (pObject != nullptr)
+            resolved = pObject->getCNComponent();
+        }
+
+      // We need to handle the root container objects like functions and unit definitions
+      if (!resolved)
+        {
+          const CDataContainer * pRoot = CRootContainer::getRoot();
+
+          if (pRoot != pContainer)
+            return CCommonName::resolve(pRoot);
+        }
+
+      // We have resolved the full common name
+      if (resolved)
+        {
+          pObject = resolved->getObject();
+
+          if (mpCN->find(*resolved->getCN()) == 0)
+            {
+              mpComponent = resolved;
+              mpCN = mpComponent->getCN();
+            }
+        }
+    }
+
+  if (pObject == nullptr
+      && mpComponent->isValid())
+    std::cout << *mpCN << std::endl;
 
   // Special case for MathContainers to allow resolving to MathObjects
   if (dynamic_cast< const CMathContainer * >(pContainer) != nullptr
-      && (pObject = dynamic_cast< const CMathContainer * >(pContainer)->getMathObject(pObject)) != nullptr)
-    return pObject;
+      && static_cast< const CMathContainer * >(pContainer)->getMathObject(pObject) != nullptr)
+    return static_cast< const CMathContainer * >(pContainer)->getMathObject(pObject);
 
-  UnresolvedCNs.erase(this);
-  return mpComponent->getObject();
+  return pObject;
+}
+
+CCommonNameComponent::shared_ptr CCommonName::findAncestorCandidate(const CDataContainer * pContainer) const
+{
+  if (pContainer == nullptr)
+    return nullptr;
+
+  const std::string & ContainerPartialCN = pContainer->getCNComponent()->getPartialCN();
+  std::vector< CCommonNameComponent::shared_ptr > Components = mpComponent->getComponentList();
+
+  for (auto it = Components.rbegin(); it != Components.rend(); ++it)
+    if (ContainerPartialCN == (*it)->getPartialCN())
+      return pContainer->getCNComponent();
+
+  return nullptr;
 }
 
 bool CCommonName::isResolved() const
@@ -338,45 +329,127 @@ bool CCommonName::isResolved() const
   return mpComponent != nullptr && mpComponent->isResolved();
 }
 
+bool CCommonName::hasAncestor(const CDataContainer * pContainer) const
+{
+  if (mpComponent)
+    return mpComponent->hasAncestor(pContainer);
+
+  return false;
+}
+
+bool CCommonName::mayHaveAncestor(const CDataContainer * pContainer) const
+{
+  if (mpComponent)
+    return mpComponent->mayHaveAncestor(pContainer);
+
+  return findAncestorCandidate(pContainer) != nullptr;
+}
+
+bool CCommonName::isValid() const
+{
+  if (mpComponent == nullptr)
+    mpComponent = createComponent(*mpCN);
+
+  if (mpComponent)
+    return mpComponent->isValid();
+
+  return false;
+}
+
 const CObjectInterface * CCommonName::getObject() const
 {
   return mpComponent ? mpComponent->getObject() : nullptr;
 }
 
-void CCommonName::refresh()
+void CCommonName::refresh() const
 {
-  if (mpComponent != nullptr)
-    std::string::operator=(mpComponent->getCN());
+  if (mpComponent)
+    mpCN = mpComponent->getCN();
+}
+
+// explicit
+CCommonName::operator std::string() const
+{
+  return *mpCN;
+}
+
+bool CCommonName::empty() const
+{
+  return mpCN->empty();
+}
+
+bool CCommonName::operator ==(const std::string & rhs) const
+{
+  return *mpCN == rhs;
+}
+
+bool CCommonName::operator !=(const std::string & rhs) const
+{
+  return *mpCN != rhs;
+}
+
+CCommonName & CCommonName::operator +=(const std::string & rhs)
+{
+  if (!rhs.empty())
+    {
+      mpComponent = nullptr;
+      mpCN = std::make_shared< std::string >(*mpCN + rhs);
+    }
+
+  return *this;
+}
+
+std::string CCommonName::operator +(const std::string & rhs) const
+{
+  return *mpCN + rhs;
+}
+
+std::string::size_type CCommonName::size() const
+{
+  return mpCN->size();
+}
+
+void CCommonName::clear()
+{
+  mpComponent = nullptr;
+  mpCN->clear();
+}
+
+const char* CCommonName::c_str() const
+{
+  return mpCN->c_str();
 }
 
 CCommonName CCommonName::getPrimary() const
-{return substr(0, findNext(","));}
+{
+  return mpCN->substr(0, findNext(","));
+}
 
 CCommonName CCommonName::getRemainder() const
 {
-  if (empty()) return CCommonName();
+  if (mpCN->empty())
+    return CCommonName();
 
   std::string Separator = ",";
 
-  if (at(0) != '[')
-    {
-      Separator += "[";
-    }
+  if (mpCN->at(0) != '[')
+    Separator += "[";
 
   std::string::size_type pos = findNext(Separator);
 
-  if (pos == std::string::npos) return CCommonName();
+  if (pos == std::string::npos)
+    return CCommonName();
 
-  if (at(pos) == ',') pos++;
+  if (mpCN->at(pos) == ',') pos++;
 
-  return substr(pos);
+  return mpCN->substr(pos);
 }
 
 std::string CCommonName::getObjectType() const
 {
   CCommonName Primary(getPrimary());
 
-  return CCommonName::unescape(Primary.substr(0, Primary.findNext("=")));
+  return CCommonName::unescape(Primary.mpCN->substr(0, Primary.findNext("=")));
 }
 
 std::string CCommonName::getObjectName() const
@@ -386,14 +459,12 @@ std::string CCommonName::getObjectName() const
 
   if (pos == std::string::npos) return "";
 
-  CCommonName tmp = Primary.substr(pos + 1);
+  CCommonName tmp = Primary.mpCN->substr(pos + 1);
 
   if (getObjectType() != "String")
-    {
-      tmp = tmp.substr(0, tmp.findNext("["));
-    }
+    tmp = tmp.mpCN->substr(0, tmp.findNext("["));
 
-  return CCommonName::unescape(tmp);
+  return CCommonName::unescape(*tmp.mpCN);
 }
 
 size_t CCommonName::getElementIndex(const size_t & pos) const
@@ -401,9 +472,7 @@ size_t CCommonName::getElementIndex(const size_t & pos) const
   size_t Index = C_INVALID_INDEX;
 
   if (strToIndex(getElementName(pos), Index))
-    {
-      return Index;
-    }
+    return Index;
 
   return C_INVALID_INDEX;
 }
@@ -421,28 +490,29 @@ std::string CCommonName::getElementName(const size_t & pos,
 
   std::string::size_type close = Primary.findNext("]", open + 1);
 
-  if (open == std::string::npos || close == std::string::npos) return "";
+  if (open == std::string::npos
+      || close == std::string::npos)
+    return "";
 
   if (unescape)
-    return CCommonName::unescape(Primary.substr(open + 1,
-                                 close - open - 1));
+    return CCommonName::unescape(Primary.mpCN->substr(open + 1, close - open - 1));
 
-  return Primary.substr(open + 1, close - open - 1);
+  return Primary.mpCN->substr(open + 1, close - open - 1);
 }
 
-void CCommonName::split(CCommonName & parentCN, std::string & objectType, std::string & objectName) const
+void CCommonName::split(CCommonName & parentCN, std::string & objectType, std::string & objectName, std::string * pPartialCN) const
 {
   std::string::size_type LastComma = findPrevious(",");
   CCommonName Primary;
 
   if (LastComma != std::string::npos)
     {
-      parentCN = substr(0, LastComma);
-      Primary = substr(LastComma + 1);
+      parentCN = mpCN->substr(0, LastComma);
+      Primary = mpCN->substr(LastComma + 1);
     }
   else
     {
-      parentCN.clear();
+      parentCN = "";
       Primary = *this;
     }
 
@@ -462,7 +532,11 @@ void CCommonName::split(CCommonName & parentCN, std::string & objectType, std::s
       else
         {
           objectType = "ElementReference";
-          parentCN += "," + escape(Primary.getObjectType()) + "=" + escape(Primary.getObjectName());
+
+          if (!parentCN.empty())
+            parentCN += ",";
+
+          parentCN +=  escape(Primary.getObjectType()) + "=" + escape(Primary.getObjectName());
         }
     }
   // We may have a vector and based on it's name we can determine the type
@@ -474,62 +548,26 @@ void CCommonName::split(CCommonName & parentCN, std::string & objectType, std::s
         objectName = Primary.getObjectName();
       else
         {
-          objectType = Primary.getObjectName();
-          // Vector:                    ObjectType:
-          // Compartments               Compartment
-          // Metabolites                Metabolite
-          // Reduced Model Metabolites  Metabolite
-          // Reactions                  Reaction
-          // Events                     Event
-          // Values                     ModelValue
-          // ParameterSets              ModelParameterSet
-          // Moieties                   Moiety
-          // ListOflayouts              Layout
-          // TaskList                   Task
-          // ReportDefinitions          ReportDefinition
-          // OutputDefinitions          PlotItem
-          // Functions                  Function
-          // ModelList                  CN
-          // Units list                 Unit
-          if (objectType == "Compartments")
-            objectType = "Compartment";
-          else if (objectType == "Metabolites")
-            objectType = "Metabolite";
-          else if (objectType == "Reduced Model Metabolites")
-            objectType = "Metabolite";
-          else if (objectType == "Reactions")
-            objectType = "Reaction";
-          else if (objectType == "Events")
-            objectType = "Event";
-          else if (objectType == "Values")
-            objectType = "ModelValue";
-          else if (objectType == "ParameterSets")
-            objectType = "ModelParameterSet";
-          else if (objectType == "Moieties")
-            objectType = "Moiety";
-          else if (objectType == "ListOflayouts")
-            objectType = "Layout";
-          else if (objectType == "TaskList")
-            objectType = "Task";
-          else if (objectType == "ReportDefinitions")
-            objectType = "ReportDefinition";
-          else if (objectType == "OutputDefinitions")
-            objectType = "PlotItem";
-          else if (objectType == "Functions")
-            objectType = "Function";
-          else if (objectType == "ModelList")
-            objectType = "CN";
-          else if (objectType == "Units list")
-            objectType = "Unit";
-          else
-            objectType.clear();
+          objectType = CCommonNameComponent::ObjectTypeFromVectorName(Primary.getObjectName());
 
-          parentCN += "," + escape(Primary.getObjectType()) + "=" + escape(Primary.getObjectName());
+          if (!parentCN.empty())
+            parentCN += ",";
+
+          parentCN += escape(Primary.getObjectType()) + "=" + escape(Primary.getObjectName());
         }
     }
   else
     {
       objectName = Primary.getObjectName();
+    }
+
+  if (pPartialCN != nullptr)
+    {
+      pPartialCN->assign(mpCN->substr(parentCN.size()));
+
+      if (pPartialCN->size()
+          && pPartialCN->front() == ',')
+        pPartialCN->assign(pPartialCN->substr(1));
     }
 
   return;
@@ -588,7 +626,7 @@ std::string CCommonName::construct(const CCommonName & parent, const std::string
       CN += "," + CCommonName::escape(objectType) + "=" + CCommonName::escape(objectName);
     }
 
-  return CN;
+  return *CN.mpCN;
 }
 
 // static
@@ -605,18 +643,19 @@ std::string::size_type
 CCommonName::findNext(const std::string & toFind,
                       const std::string::size_type & pos) const
 {
-  std::string::size_type where = find_first_of(toFind, pos);
+  std::string::size_type where = mpCN->find_first_of(toFind, pos);
 
   std::string::size_type tmp;
 
-  while (where && where != std::string::npos)
+  while (where
+         && where != std::string::npos)
     {
-      tmp = find_last_not_of("\\", where - 1);
+      tmp = mpCN->find_last_not_of("\\", where - 1);
 
       if ((where - tmp) % 2)
         return where;
 
-      where = find_first_of(toFind, where + 1);
+      where = mpCN->find_first_of(toFind, where + 1);
     }
 
   return where;
@@ -625,19 +664,42 @@ CCommonName::findNext(const std::string & toFind,
 std::string::size_type CCommonName::findPrevious(const std::string & toFind,
     const std::string::size_type & pos) const
 {
-  std::string::size_type where = find_last_of(toFind, pos);
+  std::string::size_type where = mpCN->find_last_of(toFind, pos);
 
   std::string::size_type tmp;
 
-  while (where && where != std::string::npos)
+  while (where
+         && where != std::string::npos)
     {
-      tmp = find_last_not_of("\\", where - 1);
+      tmp = mpCN->find_last_not_of("\\", where - 1);
 
       if ((where - tmp) % 2)
         return where;
 
-      where = find_last_of(toFind, where - 1);
+      where = mpCN->find_last_of(toFind, where - 1);
     }
 
   return where;
+}
+
+bool operator ==(const std::string & lhs, const CCommonName & rhs)
+{
+  return rhs.operator ==(lhs);
+}
+
+bool operator !=(const std::string & lhs, const CCommonName & rhs)
+{
+  return rhs.operator !=(lhs);
+}
+
+std::string operator +(const std::string & lhs, const CCommonName & rhs)
+{
+  return lhs + std::string(rhs);
+}
+
+std::ostream & operator <<(std::ostream & os, const CCommonName & cn)
+{
+  os << std::string(cn);
+
+  return os;
 }

@@ -899,7 +899,7 @@ void DataModelGUI::notifyChanges(const CUndoData::CChangeSet & changes)
                 }
             }
 
-          notify(ObjectType, Action, CRegisteredCommonName(MappedCN, mpDataModel));
+          notify(ObjectType, Action, CCommonName(MappedCN));
         }
 
       std::pair< const CUndoData *, bool > LastExecution = mpDataModel->getUndoStack()->getLastExecution();
@@ -922,9 +922,9 @@ void DataModelGUI::notifyChanges(const CUndoData::CChangeSet & changes)
 
           if (CN.find("CN=Root,FunctionDB=FunctionDB") == 0
               || CN.find("CN=Root,Vector=Units list") == 0)
-            emit this->signalSwitchWidget(Id, CRegisteredCommonName(CN, nullptr), TabIndex);
+            emit this->signalSwitchWidget(Id, CCommonName(CN), TabIndex);
           else
-            emit this->signalSwitchWidget(Id, CRegisteredCommonName(CN, mpDataModel), TabIndex);
+            emit this->signalSwitchWidget(Id, CCommonName(CN), TabIndex);
         }
     }
 }

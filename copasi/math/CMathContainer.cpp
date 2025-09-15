@@ -311,9 +311,7 @@ CMathContainer::CMathContainer()
   , mpJITCompiler(CJitCompiler::create())
 #endif
   , mCompileTime()
-{
-  memset(&mSize, 0, sizeof(mSize));
-}
+{}
 
 CMathContainer::CMathContainer(CModel & model)
   : CDataContainer("Math Container", NULL, "CMathContainer")
@@ -414,8 +412,6 @@ CMathContainer::CMathContainer(CModel & model)
 #endif
   , mCompileTime()
 {
-  memset(&mSize, 0, sizeof(mSize));
-
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CDataContainer
   setObjectParent(mpModel);

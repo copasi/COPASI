@@ -73,7 +73,7 @@ const CEnumAnnotation< std::string, CModel::ModelType > CModel::ModelTypeNames(
 });
 
 // static
-CModel * CModel::fromData(const CData & data, CUndoObjectInterface * pParent)
+CModel * CModel::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   CModel * pModel = new CModel(NO_PARENT);
   pModel->setObjectName(data.getProperty(CData::OBJECT_NAME).toString());
@@ -215,10 +215,10 @@ CModel::CModel(CDataContainer* pParent):
   mSteps("Reactions", this),
   mEvents("Events", this),
   mParticleFluxes(),
-  mReactionsPerSpecies(),
   mValues("Values", this),
   mParameterSet("Initial State", this),
   mParameterSets("ParameterSets", this),
+  mReactionsPerSpecies(),
   mActiveParameterSetKey(""),
   mMoieties("Moieties", this),
   mpStoiAnnotation(NULL),
@@ -493,9 +493,6 @@ CIssue CModel::compile()
 {
   //bool success = true;
   CIssue firstWorstIssue;
-  bool RenameHandlerEnabled = CRegisteredCommonName::isEnabled();
-
-  CRegisteredCommonName::setEnabled(false);
 
   unsigned C_INT32 CompileStep = 0;
   size_t hCompileStep;
@@ -709,11 +706,6 @@ finish:
   // on consistency between the stoichiometry matrix, reduced stoichiometry matrix and the Link matrix..
   mL.clearPivoting();
 
-  if (RenameHandlerEnabled)
-    {
-      CRegisteredCommonName::setEnabled(true);
-    }
-
   mCompileIsNecessary = !firstWorstIssue;
 
   if (mpProcessReport != NULL) mpProcessReport->finishItem(hCompileStep);
@@ -925,9 +917,8 @@ bool CModel::handleUnusedMetabolites()
   numRows = mStoi.numRows();
   numCols = mStoi.numCols();
 
-  C_FLOAT64 * pStoi, *pStoiEnd, *pRowEnd;
-  pStoi = mStoi.array();
-  pStoiEnd = mStoi.array() + numRows * numCols;
+  C_FLOAT64 * pStoi = mStoi.array();
+  C_FLOAT64 * pRowEnd;
 
   size_t i, NumUnused;
   C_FLOAT64 tmp;
@@ -2567,7 +2558,7 @@ std::string getNextId(const std::string& base, int count)
   return str.str();
 }
 
-const CObjectInterface * getDependentOrNull(const std::map< const CObjectInterface *, size_t > &  dependentMap, int index)
+const CObjectInterface * getDependentOrNull(const std::map< const CObjectInterface *, size_t > &  dependentMap, size_t index)
 {
 
   std::map< const CObjectInterface *, size_t >::const_iterator it = dependentMap.begin();
@@ -2585,9 +2576,6 @@ const CObjectInterface * getDependentOrNull(const std::map< const CObjectInterfa
 bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
-
-#pragma region   //find_experiment
-
   if (experiment == NULL)
     {
       // find experiment and invoke with it
@@ -2635,8 +2623,6 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
-
-#pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::Task::timeCourse)
     {
@@ -2698,7 +2684,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
         }
 
       std::stringstream trigger; trigger
-          << "<"  << getObject("Reference=Time")->getStringCN()
+          << "<"  << getObject(CCommonName("Reference=Time"))->getStringCN()
           << ">" << " > " << current;
       pEvent->setTriggerExpression(trigger.str());
       pEvent->getTriggerExpressionPtr()->compile();
@@ -3344,7 +3330,8 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
                 TreesWithDiscontinuities.push_back((*ppEntity)->getNoiseExpressionPtr());
               }
 
-          // Intentionally no break statement!
+            [[fallthrough]];
+            // Intentionally no break statement!
 
           case Status::ASSIGNMENT:
 
@@ -3415,7 +3402,7 @@ CIssue CModel::compileEvents()
 
 void CModel::updateInitialValues(std::set< const CDataObject * > & changedObjects, bool refreshParameterSet)
 {
-  bool success = compileIfNecessary(NULL);
+  compileIfNecessary(NULL);
 
   CCore::CUpdateSequence UpdateSequence = buildInitialRefreshSequence(changedObjects);
 

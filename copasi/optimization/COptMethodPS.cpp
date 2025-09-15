@@ -305,8 +305,6 @@ bool COptMethodPS::reachedStdDeviation()
     mNumInformed--;
 
   // Check whether the swarm has settled
-  C_FLOAT64 * pValue = mValues.array();
-  C_FLOAT64 * pEnd = pValue + mPopulationSize;
 
   if (calcFValVariance() > mVariance)
     return false;
