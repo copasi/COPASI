@@ -844,10 +844,10 @@ bool COptProblem::calculate()
       mCalculateValue = std::numeric_limits< C_FLOAT64 >::infinity();
     }
 
+  incrementCounters(Counters);
+
   if (mProcessReport)
     return mProcessReport.progressItem(mhCounter);
-
-  incrementCounters(Counters);
 
   return true;
 }
