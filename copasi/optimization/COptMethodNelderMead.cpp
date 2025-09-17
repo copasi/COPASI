@@ -287,7 +287,7 @@ First:
         mSimplex[i][j] = mCurrent[i];
 
       // Calculate the value for the corner
-      OptItem.setItemValue(mCurrent[j], COptItem::CheckPolicyFlag::None);
+      OptItem.setItemValue(mCurrent[j], COptItem::CheckPolicyFlag::All);
       mValue[j] = evaluate(EvaluationPolicyFlag::All);
 
       if (mEvaluationValue < getBestValue())
@@ -351,7 +351,7 @@ First:
           for (i = 0; i < mVariableSize; ++i)
             {
               mCurrent[i] = (1.0 + rcoeff) * mCentroid[i] - rcoeff * mSimplex[i][iWorst];
-              OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::None);
+              OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
 
               // enforce_bounds(&pstar[i], i);  /* make sure it is inside */
             }
@@ -376,7 +376,7 @@ First:
               for (i = 0; i < mVariableSize; ++i)
                 {
                   mCurrent[i] = ecoeff * mCurrent[i] + (1.0 - ecoeff) * mCentroid[i];
-                  OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::None);
+                  OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
 
                   // enforce_bounds(&p2star[i], i);  /* make sure it is inside */
                 }
@@ -436,7 +436,7 @@ First:
                   for (i = 0; i < mVariableSize; ++i)
                     {
                       mCurrent[i] = ccoeff * mSimplex[i][iWorst] + (1.0 - ccoeff) * mCentroid[i];
-                      OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::None);
+                      OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
 
                       // may not need to check boundaries since it is contraction
                       // enforce_bounds(&p2star[i], i);  /* make sure it is inside */
@@ -463,7 +463,7 @@ First:
                             {
                               mSimplex[i][j] = (mSimplex[i][j] + mSimplex[i][iBest]) * 0.5;
                               mCurrent[i] = mSimplex[i][j];
-                              OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::None);
+                              OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
 
                               //enforce_bounds(&xmin[i], i);  /* make sure it is inside */
                             }
@@ -542,7 +542,7 @@ First:
   mCurrent = mProblemContext.master()->getSolutionVariables(true);
 
   for (i = 0; i < mVariableSize; ++i)
-    OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::None);
+    OptItemList[i]->setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
 
   for (i = 0; i < mVariableSize; ++i)
     {
@@ -551,7 +551,7 @@ First:
 
       /* -- check along one direction -- */
       C_FLOAT64 X = mCurrent[i] + delta;
-      OptItemList[i]->setItemValue(X, COptItem::CheckPolicyFlag::None);
+      OptItemList[i]->setItemValue(X, COptItem::CheckPolicyFlag::All);
       mEvaluationValue = evaluate(EvaluationPolicyFlag::All);
 
       if ((mEvaluationValue - getBestValue()) < -small)
@@ -559,7 +559,7 @@ First:
 
       /* -- now check the other way -- */
       X = mCurrent[i] - delta;
-      OptItemList[i]->setItemValue(X, COptItem::CheckPolicyFlag::None);
+      OptItemList[i]->setItemValue(X, COptItem::CheckPolicyFlag::All);
       mEvaluationValue = evaluate(EvaluationPolicyFlag::All);
 
       if ((mEvaluationValue - getBestValue()) < -small)
