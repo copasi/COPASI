@@ -297,7 +297,13 @@ CQPlotEditWidget *CQPlotSubwidget::selectControl(CPlotItem::Type type)
       }
 
       default:
-        return NULL;
+        {
+          // reset current widget
+          CQPlotEditWidget * current = dynamic_cast< CQPlotEditWidget * >(mpStack->currentWidget());
+          if (current != NULL)
+            current->LoadFromCurveSpec(NULL);
+          return NULL;
+        }
     }
 }
 
