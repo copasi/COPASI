@@ -312,6 +312,9 @@ void CQPlotSubwidget::selectPlotItem(CPlotItem *item)
       current = selectControl(item->getType());
     }
 
+  if (current == NULL)
+    return;
+
   if (item == NULL)
     {
       mpStack->setEnabled(false);
