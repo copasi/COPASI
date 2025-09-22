@@ -6,6 +6,7 @@
 #include "copasi/core/CCommonNameComponent.h"
 #include "copasi/core/CCommonName.h"
 #include "copasi/utilities/CCopasiParameter.h"
+#include "copasi/utilities/utility.h"
 
 // static
 const std::map< std::string, std::string > CCommonNameComponent::VectorName2ObjectType = {
@@ -201,6 +202,16 @@ const std::string & CCommonNameComponent::getPartialCN() const
   return mPartialCN;
 }
 
+const std::string & CCommonNameComponent::getObjectName() const
+{
+  return mName;
+}
+
+const std::string & CCommonNameComponent::getObjectType() const
+{
+  return mType;
+}
+
 const CDataObject * CCommonNameComponent::getObject()
 {
   return mpObject;
@@ -283,9 +294,9 @@ void CCommonNameComponent::appendPartialCN(cn_ptr pParentCN) const
 }
 
 bool CCommonNameComponent::updatePartialCN() {
-  // Root object
   std::string OldPartialCN = mPartialCN;
 
+  // Root object
   if (mType == "CN")
     {
       mPartialCN = "CN=Root";
@@ -301,7 +312,7 @@ bool CCommonNameComponent::updatePartialCN() {
               && mPartialCN.front() == '[')
             {
               // We might have an index or a name
-              if (mPartialCN.find_first_not_of("0123456789]") == std::string::npos)
+              if (mPartialCN.find_first_not_of("0123456789]", 1) == std::string::npos)
                 mPartialCN = "[" + CCommonName::escape(mName) + "]";
               // else we have an index and must rely on it, i.e., nothing to do
             }
@@ -344,6 +355,9 @@ bool CCommonNameComponent::updatePartialCN() {
   else
     mPartialCN = CCommonName::escape(mType) + "=" + CCommonName::escape(mName);
 
+  if (mpObject != nullptr)
+    mpObject->getObjectDisplayName();
+
   return OldPartialCN != mPartialCN;
 }
 
@@ -354,4 +368,84 @@ std::string CCommonNameComponent::getObjectTypeFromParent() const
     return ObjectTypeFromVectorName(mpParent->mName);
 
   return " "; // This is an invalid type.
+}
+
+// static
+std::string::size_type CCommonNameComponent::findNext(const std::string & cn,
+                                                      const std::string & toFind,
+                                                      const std::string::size_type & pos)
+{
+  std::string::size_type where = cn.find_first_of(toFind, pos);
+
+  std::string::size_type tmp;
+
+  while (where
+         && where != std::string::npos)
+    {
+      tmp = cn.find_last_not_of("\\", where - 1);
+
+      if ((where - tmp) % 2)
+        return where;
+
+      where = cn.find_first_of(toFind, where + 1);
+    }
+
+  return where;
+}
+
+// static
+std::string::size_type CCommonNameComponent::findPrevious(const std::string & cn,
+                                                          const std::string & toFind,
+                                                          const std::string::size_type & pos)
+{
+  std::string::size_type where = cn.find_last_of(toFind, pos);
+
+  std::string::size_type tmp;
+
+  while (where
+         && where != std::string::npos)
+    {
+      tmp = cn.find_last_not_of("\\", where - 1);
+
+      if ((where - tmp) % 2)
+        return where;
+
+      where = cn.find_last_of(toFind, where - 1);
+    }
+
+  return where;
+}
+
+// static
+size_t CCommonNameComponent::getElementIndex(const std::string & cn,
+                                             const size_t & pos)
+{
+  size_t Index = C_INVALID_INDEX;
+
+  if (strToIndex(getElementName(cn, pos), Index))
+    return Index;
+
+  return C_INVALID_INDEX;
+}
+
+// static
+std::string CCommonNameComponent::getElementName(const std::string & cn,
+                                                 const size_t & pos,
+                                                 const bool & unescape)
+{
+  std::string::size_type open = findNext(cn, "[");
+
+  for (size_t i = 0; i < pos && open != std::string::npos; i++)
+    open = findNext(cn, "[", open + 1);
+
+  std::string::size_type close = findNext(cn, "]", open + 1);
+
+  if (open == std::string::npos
+      || close == std::string::npos)
+    return "";
+
+  if (unescape)
+    return CCommonName::unescape(cn.substr(open + 1, close - open - 1));
+
+  return cn.substr(open + 1, close - open - 1);
 }

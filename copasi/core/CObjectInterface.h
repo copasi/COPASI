@@ -47,6 +47,8 @@ protected:
 public:
   virtual const CCommonNameComponent::shared_ptr & getCNComponent() const;
 
+  virtual const CObjectInterface * getChildObject(const CCommonNameComponent::shared_ptr & pCN) const final;
+
   /**
    * Destructor
    */
@@ -134,6 +136,8 @@ protected:
    * @return CCommonName
    */
   virtual CCommonName getCNProtected() const = 0;
+
+  virtual const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const = 0;
 
   mutable CValidity mValidity;
 };

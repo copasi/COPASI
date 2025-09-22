@@ -237,6 +237,10 @@ public:
 
   name_index_type displayNamesToCN(const std::vector< std::string > & DisplayNames) const;
   index_type cnToIndex(const name_index_type & cnIndex) const;
+
+protected:
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override;
+
 private:
   std::string createDisplayName(const CCommonName & cn) const;
   void updateDisplayNames() const;

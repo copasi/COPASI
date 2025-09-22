@@ -224,10 +224,73 @@ const CDataObject * CDataArray::addElementReference(C_INT32 u) const
   return addElementReference(CIndex);
 }
 
+// virtual
+const CObjectInterface * CDataArray::resolve(const CCommonNameComponent::shared_ptr & pCN) const
+{
+  const CObjectInterface * pObject = nullptr;
+
+  if (pCN)
+    {
+      if (pCN->isResolved())
+        {
+          pObject = pCN->getObject();
+        }
+      // Check whether we have an unresolved element reference;
+      else if (pCN->getObjectType() == "ElementReference")
+        {
+          ObjectMap::range range = mObjects.equal_range(pCN->getObjectName());
+
+          while (range.first != range.second
+                 && (*range.first)->getObjectType() != "ElementReference")
+            ++range.first;
+
+          if (range.first != range.second) //not found
+            pObject = *range.first;
+          else
+            {
+              std::string tmp;
+              std::vector< std::string > DisplayNames;
+              C_INT32 ii = 0;
+
+              while ((tmp = CCommonNameComponent::getElementName(pCN->getObjectName(), ii++, false)) != "")
+                DisplayNames.push_back(tmp);
+
+              const CDataObject * pNew = addElementReference(displayNamesToCN(DisplayNames));
+              const CDataObject * pExisting = nullptr;
+              range = mObjects.equal_range(pNew->getObjectName());
+
+              while (range.first != range.second
+                     && pExisting == nullptr)
+                {
+                  if (*range.first != pNew
+                      && (*range.first)->getObjectType() == "ElementReference")
+                    pExisting = *range.first;
+
+                  ++range.first;
+                }
+
+              if (pExisting != nullptr)
+                {
+                  delete pNew;
+                  pObject = pExisting;
+                }
+              else
+                pObject = pNew;
+            }
+          }
+      else
+        {
+          pObject = CDataContainer::resolve(pCN);
+        }
+    }
+
+  return pObject;
+}
+
 const CObjectInterface * CDataArray::getObject(const CCommonName & cn) const
 {
   if (cn.isResolved())
-      cn.getObject();
+      return cn.getObject();
 
   if (cn.empty())
     return this;

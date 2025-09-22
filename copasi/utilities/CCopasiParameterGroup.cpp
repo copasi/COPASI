@@ -321,6 +321,37 @@ CUndoObjectInterface * CCopasiParameterGroup::insert(const CData & data)
 }
 
 // virtual
+const CObjectInterface * CCopasiParameterGroup::resolve(const CCommonNameComponent::shared_ptr & pCN) const
+{
+  const CObjectInterface * pObject = nullptr;
+
+  if (pCN)
+    {
+      if (pCN->isResolved())
+        pObject = pCN->getObject();
+      else if ((pObject = CCopasiParameter::resolve(pCN)) == nullptr)
+        {
+          std::string UniqueName = pCN->getObjectName();
+
+          std::string::size_type pos = UniqueName.find_last_of('[');
+          std::string Name = UniqueName.substr(0, pos);
+          size_t Index = strToUnsignedInt(UniqueName.substr(pos + 1).c_str());
+          size_t counter = C_INVALID_INDEX;
+
+          index_iterator it = beginIndex();
+          index_iterator end = endIndex();
+
+          for (; it != end && pObject == nullptr; ++it)
+            if ((*it)->getObjectName() == Name)
+              if (++counter == Index)
+                pObject = *it;
+        }
+    }
+
+  return pObject;
+}
+
+// virtual
 const CObjectInterface * CCopasiParameterGroup::getObject(const CCommonName & cn) const
 {
   const CObjectInterface * pObjectInterface = CDataContainer::getObject(cn);

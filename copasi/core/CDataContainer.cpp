@@ -223,6 +223,51 @@ CDataContainer::~CDataContainer()
       }
 }
 
+// virtual
+const CObjectInterface * CDataContainer::resolve(const CCommonNameComponent::shared_ptr & pCN) const
+{
+  const CObjectInterface * pObject = nullptr;
+
+  if (pCN)
+    {
+      if (pCN->isResolved())
+        {
+          pObject = pCN->getObject();
+        }
+      else
+        {
+          const std::string & Name = pCN->getObjectName();
+          const std::string & Type = pCN->getObjectType();
+
+          if (Name == "CMIRIAMInfoObject"
+              && Type == "CMIRIAMInfo"
+              && CAnnotation::castObject(this) != NULL)
+            {
+              // Create a MIRIAM Info if needed.
+              pObject = CAnnotation::allocateMiriamInfo(const_cast< CDataContainer * >(this));
+            }
+          else
+            {
+              ObjectMap::range range = mObjects.equal_range(Name);
+
+              while (range.first != range.second && (*range.first)->getObjectType() != Type)
+                ++range.first;
+
+              if (range.first != range.second) //found in the list of children
+                pObject = (*range.first);
+              else if (Type == "String")
+                pObject = new CDataString(Name, this);
+              else if (Type == "Separator")
+                pObject = new CCopasiReportSeparator(Name, this);
+              else
+                pObject = CDataObject::resolve(pCN);
+            }
+        }
+    }
+
+  return pObject;
+}
+
 const CObjectInterface * CDataContainer::getObject(const CCommonName & cn) const
 {
   if (cn == "")

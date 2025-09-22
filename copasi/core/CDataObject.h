@@ -287,6 +287,7 @@ protected:
    */
   // API (for reporting and expressions)
   CCommonName getCNProtected() const override;
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override;
 
 private:
   void refreshAggregateValidity();

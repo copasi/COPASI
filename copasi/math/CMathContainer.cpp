@@ -1370,6 +1370,12 @@ CCommonName CMathContainer::getCNProtected() const
 }
 
 // virtual
+const CObjectInterface * CMathContainer::resolve(const CCommonNameComponent::shared_ptr & pCN) const
+{
+  return mpModel->getChildObject(pCN);
+}
+
+// virtual
 const CObjectInterface * CMathContainer::getObject(const CCommonName & cn) const
 {
   // Since the CN should be relative we check in the model first

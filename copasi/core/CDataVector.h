@@ -733,7 +733,7 @@ public:
    */
   const CObjectInterface * getObject(const CCommonName &name) const override
   {
-    size_t Index = name.getElementIndex();
+    size_t Index = name.getElementIndex(0);
 
     if (Index < size())
       {
@@ -868,6 +868,28 @@ public:
                                       const CDataVector<CType> & d);
 #endif // WIN32
 #endif // SWIG
+protected:
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override
+  {
+    const CObjectInterface * pObject = nullptr;
+
+    if (pCN)
+    {
+      if (pCN->isResolved())
+        pObject = pCN->getObject();
+      else
+        {
+          size_t Index = CCommonNameComponent::getElementIndex(pCN->getPartialCN(), 0);
+
+          if (Index < size())
+            pObject = std::vector< CType * >::at(Index);
+          else
+            pObject = CDataContainer::resolve(pCN);
+        }
+    }
+
+    return pObject;
+  }
 };
 
 template < class CType > class CDataVectorS: public CDataVector < CType >
@@ -1340,6 +1362,36 @@ public:
         tmp << Name << "_" << Index;
         name = tmp.str();
       }
+  }
+
+protected:
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override
+  {
+    const CObjectInterface * pObject = nullptr;
+
+    if (pCN)
+    {
+      if (pCN->isResolved())
+        pObject = pCN->getObject();
+      else
+        {
+          std::string ElementName = CCommonNameComponent::getElementName(pCN->getPartialCN(), 0);
+
+          if (!ElementName.empty())
+            {
+              CDataContainer::ObjectMap::range Range = CDataVector< CType >::getObjects().equal_range(ElementName);
+
+              for (; Range.first != Range.second; ++Range.first)
+                if (dynamic_cast< CType * >(*Range.first) != NULL)
+                  pObject = *Range.first;
+            }
+
+          if (pObject == nullptr)
+            pObject = CDataVector< CType >::resolve(pCN);
+        }
+    }
+
+    return pObject;
   }
 
 private:

@@ -34,11 +34,11 @@ CDataObject::CDataObject()
   , CUndoObjectInterface()
   , mObjectName("No Name")
   , mObjectType("Unknown Type")
-  , mpObjectParent(NULL)
+  , mpObjectParent(nullptr)
   , mpCNComponent(nullptr)
   , mObjectDisplayName()
-  , mpObjectDisplayName(NULL)
-  , mpObjectName(NULL)
+  , mpObjectDisplayName(nullptr)
+  , mpObjectName(nullptr)
   , mObjectFlag()
   , mReferencedValidities()
   , mAggregateValidity()
@@ -59,8 +59,8 @@ CDataObject::CDataObject(const std::string & name,
   , mpObjectParent(const_cast< CDataContainer * >(pParent))
   , mpCNComponent(nullptr)
   , mObjectDisplayName()
-  , mpObjectDisplayName(NULL)
-  , mpObjectName(NULL)
+  , mpObjectDisplayName(nullptr)
+  , mpObjectName(nullptr)
   , mObjectFlag(flag)
   , mReferencedValidities()
   , mAggregateValidity()
@@ -69,7 +69,7 @@ CDataObject::CDataObject(const std::string & name,
 {
   setObjectName(name);
 
-  if (mpObjectParent != NULL &&
+  if (mpObjectParent != nullptr &&
       mpObjectParent->hasFlag(Container))
     {
       mpObjectParent->add(this, true);
@@ -89,8 +89,8 @@ CDataObject::CDataObject(const CDataObject & src,
   , mpObjectParent(src.mpObjectParent)
   , mpCNComponent(nullptr)
   , mObjectDisplayName()
-  , mpObjectDisplayName(NULL)
-  , mpObjectName(NULL)
+  , mpObjectDisplayName(nullptr)
+  , mpObjectName(nullptr)
   , mObjectFlag(src.mObjectFlag)
   , mReferencedValidities()
   , mAggregateValidity()
@@ -102,7 +102,7 @@ CDataObject::CDataObject(const CDataObject & src,
       mpObjectParent = const_cast< CDataContainer * >(pParent);
     }
 
-  if (mpObjectParent != NULL)
+  if (mpObjectParent != nullptr)
     {
       mpObjectParent->add(this, true);
     }
@@ -135,15 +135,15 @@ CDataObject::~CDataObject()
         (*it)->remove(this);
     }
 
-  if (mpObjectDisplayName != NULL)
+  if (mpObjectDisplayName != nullptr)
     {
-      mpObjectDisplayName->mpObjectParent = NULL;
+      mpObjectDisplayName->mpObjectParent = nullptr;
       delete mpObjectDisplayName;
     }
 
-  if (mpObjectName != NULL)
+  if (mpObjectName != nullptr)
     {
-      mpObjectName->mpObjectParent = NULL;
+      mpObjectName->mpObjectParent = nullptr;
       delete mpObjectName;
     }
 }
@@ -194,6 +194,47 @@ const CCommonNameComponent::shared_ptr & CDataObject::getCNComponent() const
   return mpCNComponent;
 }
 
+// virtual
+const CObjectInterface * CDataObject::resolve(const CCommonNameComponent::shared_ptr & pCN) const
+{
+  const CObjectInterface * pObject = nullptr;
+
+  if (pCN)
+    {
+      if (pCN->isResolved())
+        {
+          pObject = pCN->getObject();
+        }
+      else if (pCN->getPartialCN() == "Property=DisplayName")
+        {
+          if (mpObjectDisplayName == nullptr)
+            {
+              mpObjectDisplayName = new CDataObjectReference< std::string >("DisplayName", nullptr, mObjectDisplayName, DisplayName);
+              mpObjectDisplayName->mpObjectParent = static_cast< CDataContainer * >(const_cast< CDataObject * >(this));
+            }
+
+          pObject = mpObjectDisplayName;
+        }
+      else if (pCN->getPartialCN() == "Reference=Name"
+               || pCN->getPartialCN() == "Property=Name")
+        {
+          if (mpObjectName == nullptr)
+            {
+              mpObjectName = new CDataObjectReference< std::string >("Name", nullptr, *const_cast< std::string * >(&mObjectName));
+              mpObjectName->mpObjectParent = static_cast< CDataContainer * >(const_cast< CDataObject * >(this));
+            }
+
+          pObject = mpObjectName;
+        }
+
+      if (pObject != nullptr
+          && pObject == mpObjectDisplayName)
+        mObjectDisplayName = getObjectDisplayName();
+    }
+
+  return pObject;
+}
+
 const CObjectInterface * CDataObject::getObject(const CCommonName & cn) const
 {
   if (cn == "")
@@ -203,9 +244,9 @@ const CObjectInterface * CDataObject::getObject(const CCommonName & cn) const
 
   if (cn == "Property=DisplayName")
     {
-      if (mpObjectDisplayName == NULL)
+      if (mpObjectDisplayName == nullptr)
         {
-          mpObjectDisplayName = new CDataObjectReference< std::string >("DisplayName", NULL, mObjectDisplayName, DisplayName);
+          mpObjectDisplayName = new CDataObjectReference< std::string >("DisplayName", nullptr, mObjectDisplayName, DisplayName);
           mpObjectDisplayName->mpObjectParent = static_cast< CDataContainer * >(const_cast< CDataObject * >(this));
         }
 
@@ -216,16 +257,16 @@ const CObjectInterface * CDataObject::getObject(const CCommonName & cn) const
   else if (cn == "Reference=Name"
            || cn == "Property=Name")
     {
-      if (mpObjectName == NULL)
+      if (mpObjectName == nullptr)
         {
-          mpObjectName = new CDataObjectReference< std::string >("Name", NULL, *const_cast< std::string * >(&mObjectName));
+          mpObjectName = new CDataObjectReference< std::string >("Name", nullptr, *const_cast< std::string * >(&mObjectName));
           mpObjectName->mpObjectParent = static_cast< CDataContainer * >(const_cast< CDataObject * >(this));
         }
 
       return mpObjectName;
     }
 
-  return NULL;
+  return nullptr;
 }
 
 const CObjectInterface * CDataObject::getObjectFromCN(const CCommonName & cn) const
@@ -282,9 +323,9 @@ bool CDataObject::setObjectName(const std::string & name)
   if (isNumber(name))
     escapedName = "\"" + escapedName + "\"";
 
-  if (mpObjectParent != NULL &&
+  if (mpObjectParent != nullptr &&
       mpObjectParent->hasFlag(NameVector) &&
-      mpObjectParent->getObject("[" + escapedName + "]") != NULL)
+      mpObjectParent->getObject("[" + escapedName + "]") != nullptr)
     return false;
 
   std::string OldName = mObjectName;
@@ -359,8 +400,8 @@ bool CDataObject::setObjectParent(const CDataContainer * pParent)
   if (pParent == mpObjectParent)
     return true;
 
-  if (mpObjectParent != NULL &&
-      pParent != NULL) // we only remove if we have a new parent otherwise we may have a memory leak.
+  if (mpObjectParent != nullptr &&
+      pParent != nullptr) // we only remove if we have a new parent otherwise we may have a memory leak.
       mpObjectParent->remove(this);
 
   removeReference(mpObjectParent);
@@ -377,7 +418,7 @@ CDataContainer * CDataObject::getObjectParent() const {return mpObjectParent;}
 
 void CDataObject::addReference(const CDataContainer * pReference)
 {
-  if (pReference != NULL)
+  if (pReference != nullptr)
     {
       mReferences.insert(const_cast< CDataContainer * >(pReference));
     }
@@ -400,7 +441,7 @@ CDataObject::getObjectAncestor(const std::string & type) const
       p = p->getObjectParent();
     }
 
-  return NULL;
+  return nullptr;
 }
 
 const CObjectInterface::ObjectSet & CDataObject::getPrerequisites() const
@@ -449,7 +490,7 @@ bool CDataObject::isPrerequisiteForContext(const CObjectInterface * pObject,
 
 void * CDataObject::getValuePointer() const
 {
-  return NULL;
+  return nullptr;
 }
 
 // virtual
@@ -460,7 +501,7 @@ const CDataObject * CDataObject::getDataObject() const
 
 const CDataObject * CDataObject::getValueObject() const
 {
-  return NULL;
+  return nullptr;
 }
 
 // static
@@ -492,8 +533,8 @@ CData CDataObject::toData() const
   Data.addProperty(CData::OBJECT_TYPE, mObjectType);
   Data.addProperty(CData::OBJECT_FLAG, mObjectFlag.to_string());
 
-  std::string CN = (mpObjectParent != NULL) ? mpObjectParent->getStringCN() : CCommonName();
-  size_t Index = (mpObjectParent != NULL) ? mpObjectParent->getIndex(this) : C_INVALID_INDEX;
+  std::string CN = (mpObjectParent != nullptr) ? mpObjectParent->getStringCN() : CCommonName();
+  size_t Index = (mpObjectParent != nullptr) ? mpObjectParent->getIndex(this) : C_INVALID_INDEX;
 
   std::vector< CData > References;
   std::set< CDataContainer * >::iterator it = mReferences.begin();
@@ -544,7 +585,7 @@ bool CDataObject::applyData(const CData & data, CUndoData::CChangeSet & /* chang
       success &= setUuid(data.getProperty(CData::OBJECT_UUID).toString());
     }
 
-  if (mpObjectParent != NULL &&
+  if (mpObjectParent != nullptr &&
       data.isSetProperty(CData::OBJECT_INDEX))
     {
       mpObjectParent->updateIndex(data.getProperty(CData::OBJECT_INDEX).toSizeT(), this);
@@ -553,7 +594,7 @@ bool CDataObject::applyData(const CData & data, CUndoData::CChangeSet & /* chang
   if (data.isSetProperty(CData::OBJECT_REFERENCES))
     {
       CDataModel * pDataModel = getObjectDataModel();
-      assert(pDataModel != NULL);
+      assert(pDataModel != nullptr);
 
       const std::vector< CData > & References = data.getProperty(CData::OBJECT_REFERENCES).toDataVector();
 
@@ -567,7 +608,7 @@ bool CDataObject::applyData(const CData & data, CUndoData::CChangeSet & /* chang
         {
           CDataContainer * pReference = dynamic_cast< CDataContainer * >(const_cast< CObjectInterface * >(pDataModel->getObject(it->getProperty(CData::OBJECT_REFERENCE_CN).toString())));
 
-          if (pReference != NULL)
+          if (pReference != nullptr)
             {
               Data.addProperty(CData::OBJECT_REFERENCE_INDEX, it->getProperty(CData::OBJECT_REFERENCE_INDEX));
               pReference->insert(Data);
@@ -591,9 +632,9 @@ void CDataObject::createUndoData(CUndoData & undoData, const CUndoData::Type & t
   // The UUID of an object must never be changed.
   // undoData.addProperty(CData::OBJECT_UUID, oldData.getProperty(CData::OBJECT_UUID), getUuid().str());
   undoData.addProperty(CData::OBJECT_TYPE, oldData.getProperty(CData::OBJECT_TYPE), mObjectType);
-  undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), (mpObjectParent != NULL) ? mpObjectParent->getCNProtected() : CCommonName());
+  undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), (mpObjectParent != nullptr) ? mpObjectParent->getCNProtected() : CCommonName());
   undoData.addProperty(CData::OBJECT_FLAG, oldData.getProperty(CData::OBJECT_FLAG), mObjectFlag.to_string());
-  undoData.addProperty(CData::OBJECT_INDEX, oldData.getProperty(CData::OBJECT_INDEX), (mpObjectParent != NULL) ? mpObjectParent->getIndex(this) : C_INVALID_INDEX);
+  undoData.addProperty(CData::OBJECT_INDEX, oldData.getProperty(CData::OBJECT_INDEX), (mpObjectParent != nullptr) ? mpObjectParent->getIndex(this) : C_INVALID_INDEX);
 
   std::vector< CData > References;
   std::set< CDataContainer * >::iterator it = mReferences.begin();
@@ -633,7 +674,7 @@ const std::string & CDataObject::getKey() const
 // virtual
 const std::string CDataObject::getUnits() const
 {
-  if (mpObjectParent != NULL)
+  if (mpObjectParent != nullptr)
     return mpObjectParent->getChildObjectUnits(this);
 
   return "?";
@@ -657,14 +698,14 @@ std::ostream &operator<<(std::ostream &os, const CDataObject & o)
 
 /**
  * Returns a pointer to the CDataModel the element belongs to.
- * If there is no instance of CDataModel in the ancestor tree, NULL
+ * If there is no instance of CDataModel in the ancestor tree, nullptr
  * is returned.
  */
 CDataModel * CDataObject::getObjectDataModel() const
 {
   const CDataObject * pObject = this;
 
-  while (pObject != NULL)
+  while (pObject != nullptr)
     {
       if (pObject->hasFlag(DataModel))
         return const_cast< CDataModel * >(static_cast<const CDataModel * >(pObject));
@@ -672,7 +713,7 @@ CDataModel * CDataObject::getObjectDataModel() const
       pObject = pObject->getObjectParent();
     }
 
-  return NULL;
+  return nullptr;
 }
 
 const CValidity & CDataObject::getValidity() const

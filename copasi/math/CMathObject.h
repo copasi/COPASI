@@ -292,6 +292,7 @@ protected:
    * @return CCommonName
    */
   CCommonName getCNProtected() const override;
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override;
 
 private:
   void calculateExpression();

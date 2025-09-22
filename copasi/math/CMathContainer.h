@@ -888,6 +888,8 @@ public:
   void deregisterUpdateSequence(CMathUpdateSequence * pUpdateSequence);
 
 protected:
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override;
+
   /**
    * Retrieve the CN of the math container
    * The math container provides values for the numerical values of model objects.

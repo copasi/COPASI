@@ -138,6 +138,15 @@ CCommonName CMathObject::getCNProtected() const
   return mpDataObject->getStringCN();
 }
 
+// virtual
+const CObjectInterface * CMathObject::resolve(const CCommonNameComponent::shared_ptr & pCN) const
+{
+  if (mpDataObject != nullptr)
+    return mpDataObject->getChildObject(pCN);
+
+  return nullptr;
+}
+
 std::string CMathObject::getObjectDisplayName() const
 {
   if (mpDataObject == NULL)

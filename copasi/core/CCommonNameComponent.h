@@ -17,6 +17,8 @@ class CDataContainer;
 class CCommonNameComponent : public std::enable_shared_from_this< CCommonNameComponent >
 {
 private:
+  static const std::map< std::string, std::string > VectorName2ObjectType;
+
   /**
    * @brief Construct a new CCommonNameComponent object
    *
@@ -35,7 +37,6 @@ private:
   CCommonNameComponent & operator = (const CCommonNameComponent & src) = delete;
 
 public:
-  static const std::map< std::string, std::string > VectorName2ObjectType;
   static std::string ObjectTypeFromVectorName(const std::string & name);
 
   typedef std::shared_ptr< CCommonNameComponent > shared_ptr;
@@ -49,14 +50,31 @@ public:
                            const std::string & name,
                            const std::shared_ptr< CCommonNameComponent > & parent = nullptr);
 
-  std::vector< shared_ptr > getComponentList() const;
+  static std::string::size_type findNext(const std::string & cn,
+                                         const std::string & toFind,
+                                         const std::string::size_type & pos = 0);
+
+  static std::string::size_type findPrevious(const std::string & cn,
+                                             const std::string & toFind,
+                                             const std::string::size_type & pos = std::string::npos);
+
+  static size_t getElementIndex(const std::string & cn,
+                                const size_t & pos);
+
+  static std::string getElementName(const std::string & cn,
+                                    const size_t & pos,
+                                    const bool & unescape = true);
 
   ~CCommonNameComponent();
   void signalObjectDeleted();
   void signalObjectNameChanged();
   void signalObjectParentChanged();
   cn_ptr getCN() const;
+  std::vector< shared_ptr > getComponentList() const;
   const std::string & getPartialCN() const;
+  const std::string & getObjectType() const;
+  const std::string & getObjectName() const;
+
   const CDataObject * getObject();
   bool isResolved() const;
   bool hasAncestor(const CDataContainer * pObject) const;

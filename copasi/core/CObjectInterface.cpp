@@ -120,7 +120,13 @@ CObjectInterface::CObjectInterface()
 
 // virtual
 CObjectInterface::~CObjectInterface()
-{};
+{}
+
+// virtual
+const CObjectInterface * CObjectInterface::getChildObject(const CCommonNameComponent::shared_ptr & pCN) const
+{
+  return resolve(pCN);
+}
 
 // virtual
 const CCommonNameComponent::shared_ptr & CObjectInterface::getCNComponent() const

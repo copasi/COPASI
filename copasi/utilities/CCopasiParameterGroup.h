@@ -599,6 +599,9 @@ public:
 
   virtual void signalChanged(const CCopasiParameter * pParameter);
 
+protected:
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override;
+
 private:
   CCopasiParameterGroup *mpElementTemplates {NULL };
 };

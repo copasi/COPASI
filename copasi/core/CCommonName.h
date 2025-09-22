@@ -100,7 +100,7 @@ public:
 
   size_t getElementIndex(const size_t & pos = 0) const;
 
-  std::string getElementName(const size_t & pos /*= 0*/,
+  std::string getElementName(const size_t & pos,
                              const bool & unescape = true) const;
 
   void split(CCommonName & parentCN, std::string & objectType, std::string & objectName, std::string * pPartialCN = nullptr) const;
