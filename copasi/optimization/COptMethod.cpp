@@ -229,20 +229,38 @@ C_FLOAT64 COptMethod::evaluate(const EvaluationPolicyFlag & policy)
   if (!std::isnan(EvaluationValue)
       && EvaluationValue != std::numeric_limits< C_FLOAT64 >::infinity())
     {
-      if ((policy & EvaluationPolicy::Parameter
-           && !pOptProblem->checkParametricConstraints())
-          || (policy & EvaluationPolicy::Constraints
-              && !pOptProblem->checkFunctionalConstraints()))
+      bool ParametricConstraintsViolated = ((policy & EvaluationPolicy::Parameter)
+                                            && !pOptProblem->checkParametricConstraints());
+      bool FunctionalConstraintsViolated = ((policy & EvaluationPolicy::Constraints)
+                                            && !pOptProblem->checkFunctionalConstraints());
+
+      if (ParametricConstraintsViolated
+          || FunctionalConstraintsViolated)
         {
           if (policy & EvaluationPolicy::Reflect)
             {
-              EvaluationValue *= 1.0 + pOptProblem->getFunctionalConstraintsViolation();
+              C_FLOAT64 Factor = 0.0;
+
+              if (ParametricConstraintsViolated)
+                Factor += pOptProblem->getParametricConstraintsViolation();
+
+              if (FunctionalConstraintsViolated)
+                Factor += pOptProblem->getFunctionalConstraintsViolation();
+
+              if (EvaluationValue < 0.0)
+                EvaluationValue *= 1.0 - Factor;
+              else
+                EvaluationValue *= 1.0 + Factor;
+
               C_FLOAT64 BestValue;
 
 #pragma omp atomic read
               BestValue = mBestValue;
 
-              EvaluationValue += BestValue / (EvaluationValue/BestValue + 1.0);
+              if (EvaluationValue < BestValue)
+                EvaluationValue = BestValue + exp(EvaluationValue - BestValue);
+              else
+                EvaluationValue += exp(BestValue - EvaluationValue);
             }
           else
             EvaluationValue = std::numeric_limits< C_FLOAT64 >::infinity();
