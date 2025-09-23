@@ -160,10 +160,12 @@ bool COptMethodLevenbergMarquardt::optimise()
       COptItem & OptItem = *OptItemList[i];
 
       mCurrent[i] = OptItem.getStartValue();
-      OptItem.setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
+      pointInParameterDomain &= OptItem.setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
+      pointInParameterDomain &= (mCurrent[i] == OptItem.getStartValue());
     }
 
-  if (!pointInParameterDomain && (mLogVerbosity > 0))
+  if (!pointInParameterDomain
+      && (mLogVerbosity > 0))
     mMethodLog.enterLogEntry(COptLogEntry("Initial point outside parameter domain."));
 
   // keep the current parameter for later
@@ -271,7 +273,7 @@ bool COptMethodLevenbergMarquardt::optimise()
       C_FLOAT64 Target;
       pointInParameterDomain = false;
 
-      for (size_t Attempt = 0; Attempt < mVariableSize && !pointInParameterDomain; ++Attempt)
+      for (size_t Attempt = 0; Attempt <= mVariableSize && !pointInParameterDomain; ++Attempt)
         {
           pointInParameterDomain = true;
 
@@ -341,6 +343,16 @@ bool COptMethodLevenbergMarquardt::optimise()
           // decrease LM_lambda
           LM_lambda /= mLambdaDown; // nu
 
+          if (mLogVerbosity > 1)
+            {
+              std::ostringstream auxStream;
+              auxStream << LM_lambda;
+              mMethodLog.enterLogEntry(
+                COptLogEntry(
+                  "Iteration " + std::to_string(mIteration) + ": Improved, decreasing lambda.",
+                  "Lambda = " + auxStream.str()));
+            }
+
           if ((convp < mTolerance)
               && (convx < mTolerance))
             {
@@ -398,8 +410,6 @@ bool COptMethodLevenbergMarquardt::optimise()
               LM_lambda *= mLambdaUp; // nu * 2;
               // don't recalculate the Hessian
               calc_hess = false;
-              // correct the number of iterations
-              mIteration--;
 
               if (mLogVerbosity > 1)
                 {
