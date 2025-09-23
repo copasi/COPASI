@@ -464,6 +464,11 @@ bool CQwtPlot::initFromSpec(const CPlotSpecification* plotspec)
         }
 
       // set up the curve
+      if (itPlotItem->getType() != CPlotItem::curve2d
+          && itPlotItem->getType() != CPlotItem::histoItem1d
+          && itPlotItem->getType() != CPlotItem::bandedGraph)
+        continue;
+
       C2DPlotCurve * pCurve = new C2DPlotCurve(&mMutex,
           itPlotItem->getType(),
           itPlotItem->getActivity(),
@@ -871,7 +876,6 @@ bool CQwtPlot::compile(CObjectInterface::ContainerList listOfContainer)
             break;
 
           default:
-            fatalError();
             break;
         }
     }
