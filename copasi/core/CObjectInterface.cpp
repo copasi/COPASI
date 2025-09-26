@@ -35,7 +35,7 @@ const CDataObject * CObjectInterface::DataObject(const CObjectInterface * pInter
 CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
     const CCommonName & objName)
 {
-  return GetObjectFromCN(listOfContainer, CCommonName(objName));
+  return CRegisteredCommonName::GetObjectFromCN(listOfContainer, objName);
 
 #ifdef XXXX
   CCommonName Primary = objName.getPrimary();
