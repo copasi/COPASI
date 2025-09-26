@@ -209,6 +209,9 @@ public:
 
   const CObjectInterface * getObject(const CCommonName & cn) const override
   {
+    if (cn.empty())
+      return this;
+
     size_t Index = cn.getElementIndex(0);
 
     if (Index < mReference.size())
@@ -294,6 +297,9 @@ public:
 
   const CObjectInterface * getObject(const CCommonName & cn) const override
   {
+    if (cn.empty())
+      return this;
+
     size_t Index_0 = cn.getElementIndex(0);
     size_t Index_1 = cn.getElementIndex(1);
 
