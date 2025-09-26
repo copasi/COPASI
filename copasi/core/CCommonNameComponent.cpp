@@ -122,11 +122,13 @@ std::vector< CCommonNameComponent::shared_ptr > CCommonNameComponent::getCompone
 
 void CCommonNameComponent::addChild(const CCommonNameComponent * pChild)
 {
+#pragma omp critical (common_name_component_children)
   mChildren.insert(pChild);
 }
 
 void CCommonNameComponent::removeChild(const CCommonNameComponent * pChild)
 {
+#pragma omp critical (common_name_component_children)
   mChildren.erase(pChild);
 }
 
@@ -139,6 +141,7 @@ void CCommonNameComponent::signalChanged()
 {
   cn_ptr pCN = getCN();
 
+#pragma omp critical (common_name_component_children)
   for (auto & pChild : mChildren)
     pChild->signalParentCNChanged(pCN);
 }
@@ -355,7 +358,10 @@ bool CCommonNameComponent::updatePartialCN() {
   else
     mPartialCN = CCommonName::escape(mType) + "=" + CCommonName::escape(mName);
 
-  if (mpObject != nullptr)
+  if (mpObject != nullptr
+      && mPartialCN == "Property=DisplayName"
+      && mpParent
+      && mpParent->mpObject != nullptr)
     mpObject->getObjectDisplayName();
 
   return OldPartialCN != mPartialCN;
