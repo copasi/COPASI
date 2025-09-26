@@ -40,6 +40,7 @@
 
 #include "copasi/undo/CData.h"
 #include "copasi/undo/CUndoData.h"
+#include "copasi/model/CReaction.h"
 
 CCopasiParameterGroup::CCopasiParameterGroup():
   CCopasiParameter("NoName", CCopasiParameter::Type::GROUP),
@@ -346,6 +347,19 @@ const CObjectInterface * CCopasiParameterGroup::resolve(const CCommonNameCompone
               if (++counter == Index)
                 pObject = *it;
         }
+    }
+
+  const CDataObject * pDataObject = CObjectInterface::DataObject(pObject);
+
+  // We are hiding non local reaction parameters.
+  if (pDataObject != nullptr
+      && getObjectName() == "Parameters")
+    {
+      const CReaction * pReaction = dynamic_cast< const CReaction * >(getObjectParent());
+
+      if (pReaction != nullptr
+          && !pReaction->isLocalParameter(pDataObject->getObjectName()))
+        pObject = nullptr;
     }
 
   return pObject;
