@@ -631,14 +631,10 @@ C_INT32 CMetab::load(CReadConfig &configbuffer)
 
 std::string CMetab::getObjectDisplayName() const
 {
-  CModel* tmp = dynamic_cast<CModel*>(this->getObjectAncestor("Model"));
+  CModel * pModel = dynamic_cast< CModel * >(this->getObjectAncestor("Model"));
+  CCompartment * pCompartment = dynamic_cast< CCompartment * >(getObjectAncestor("Compartment"));
 
-  if (tmp)
-    {
-      return CMetabNameInterface::getDisplayName(tmp, *this, false);
-    }
-
-  return CDataObject::getObjectDisplayName();
+  return CMetabNameInterface::getDisplayName(pModel, getObjectName(), (pCompartment != nullptr) ? pCompartment->getObjectName() : std::string(""), false);
 }
 
 void CMetab::setDependsOnMoiety(const CMoiety * pMoiety)
