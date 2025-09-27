@@ -26,6 +26,7 @@
 #include "copasi/utilities/utility.h"
 #include "copasi/undo/CData.h"
 #include "copasi/core/CRootContainer.h"
+#include "copasi/model/CModel.h"
 
 using std::string;
 
@@ -232,7 +233,34 @@ const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
     }
 
   if (!mpComponent->mayHaveAncestor(pContainer))
-    return nullptr;
+    {
+      // We may have a math container
+      if (dynamic_cast< const CMathContainer * >(pContainer) != nullptr)
+        {
+          const CMathContainer * pMathContainer = static_cast< const CMathContainer * >(pContainer);
+          const CObjectInterface * pObject = resolve(&pMathContainer->getModel());
+          const CObjectInterface * pMathObject = pMathContainer->getMathObject(pObject);
+
+          return (pMathObject != nullptr) ? pMathObject : pObject;
+        }
+
+      if (mpComponent->getPartialCN() == "Reference=Avogadro Constant")
+        {
+          const CDataModel * pDataModel = pContainer->getObjectDataModel();
+          const CModel * pModel = pDataModel->getModel();
+          const CObjectInterface * pObject = pModel->getObject(mpComponent->getPartialCN());
+
+          if (pObject != nullptr)
+            {
+              mpComponent = pObject->getCNComponent();
+              mpCN = mpComponent->getCN();
+            }
+
+          return pObject;
+        }
+
+      return nullptr;
+    }
 
   const CObjectInterface * pObject = mpComponent->getObject();
 
@@ -300,11 +328,6 @@ const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
   if (pObject == nullptr
       && mpComponent->isValid())
     std::cout << *mpCN << std::endl;
-
-  // Special case for MathContainers to allow resolving to MathObjects
-  if (dynamic_cast< const CMathContainer * >(pContainer) != nullptr
-      && static_cast< const CMathContainer * >(pContainer)->getMathObject(pObject) != nullptr)
-    return static_cast< const CMathContainer * >(pContainer)->getMathObject(pObject);
 
   return pObject;
 }

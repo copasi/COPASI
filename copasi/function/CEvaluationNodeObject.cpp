@@ -67,9 +67,7 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
       case SubType::CN:
 
         if (mData == "<Reference=Avogadro Constant>")
-          {
-            mSubType = SubType::AVOGADRO;
-          }
+          mSubType = SubType::AVOGADRO;
 
         mRegisteredObjectCN = mData.substr(1, mData.length() - 2);
 

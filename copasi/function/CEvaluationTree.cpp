@@ -606,10 +606,10 @@ CIssue CEvaluationTree::updateTree()
 // virtual
 const CObjectInterface * CEvaluationTree::getNodeObject(const CCommonName & CN) const
 {
-  if (CN == "Reference=Avogadro Constant")
-    return CRootContainer::getFunctionList()->getObject(CN);
+  CObjectInterface::ContainerList ListOfContainer;
+  ListOfContainer.push_back(getObjectDataModel());
 
-  return getObjectFromCN(CN);
+  return CObjectInterface::GetObjectFromCN(ListOfContainer, CN);
 }
 
 bool CEvaluationTree::setTree(const ASTNode& pRootNode, bool isFunction)

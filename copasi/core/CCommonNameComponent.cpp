@@ -189,6 +189,7 @@ CCommonNameComponent::cn_ptr CCommonNameComponent::getCN() const
 
   *pCN = mpParent
              && mPartialCN != "CN=Root"
+             && mPartialCN != "Reference=Avogadro Constant"
              && mType != "String"
              && mType != "Separator"
            ? *mpParent->getCN()

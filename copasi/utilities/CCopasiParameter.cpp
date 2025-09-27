@@ -125,8 +125,11 @@ CData CCopasiParameter::toData() const
       case CCopasiParameter::Type::KEY:
       case CCopasiParameter::Type::FILE:
       case CCopasiParameter::Type::EXPRESSION:
-      case CCopasiParameter::Type::CN:
         Data.addProperty(CData::PARAMETER_VALUE, * static_cast< std::string * >(mpValue));
+        break;
+
+      case CCopasiParameter::Type::CN:
+        Data.addProperty(CData::PARAMETER_VALUE, * static_cast< CRegisteredCommonName * >(mpValue));
         break;
 
       case CCopasiParameter::Type::GROUP:
@@ -206,8 +209,11 @@ void CCopasiParameter::createUndoData(CUndoData & undoData,
       case CCopasiParameter::Type::KEY:
       case CCopasiParameter::Type::FILE:
       case CCopasiParameter::Type::EXPRESSION:
-      case CCopasiParameter::Type::CN:
         undoData.addProperty(CData::PARAMETER_VALUE, oldData.getProperty(CData::PARAMETER_VALUE), * static_cast< std::string * >(mpValue));
+        break;
+
+      case CCopasiParameter::Type::CN:
+        undoData.addProperty(CData::PARAMETER_VALUE, oldData.getProperty(CData::PARAMETER_VALUE), * static_cast< CRegisteredCommonName * >(mpValue));
         break;
 
       case CCopasiParameter::Type::GROUP:
