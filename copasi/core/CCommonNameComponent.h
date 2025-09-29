@@ -65,6 +65,10 @@ public:
                                     const size_t & pos,
                                     const bool & unescape = true);
 
+  static std::string escape(const std::string & name);
+
+  static std::string unescape(const std::string & name);
+
   ~CCommonNameComponent();
   void signalObjectDeleted();
   void signalObjectNameChanged();

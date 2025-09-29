@@ -443,15 +443,15 @@ const char* CCommonName::c_str() const
   return mpCN->c_str();
 }
 
-CCommonName CCommonName::getPrimary() const
+std::string CCommonName::getPrimary() const
 {
   return mpCN->substr(0, findNext(","));
 }
 
-CCommonName CCommonName::getRemainder() const
+std::string CCommonName::getRemainder() const
 {
   if (mpCN->empty())
-    return CCommonName();
+    return "";
 
   std::string Separator = ",";
 
@@ -461,7 +461,7 @@ CCommonName CCommonName::getRemainder() const
   std::string::size_type pos = findNext(Separator);
 
   if (pos == std::string::npos)
-    return CCommonName();
+    return "";
 
   if (mpCN->at(pos) == ',') pos++;
 
@@ -470,57 +470,35 @@ CCommonName CCommonName::getRemainder() const
 
 std::string CCommonName::getObjectType() const
 {
-  CCommonName Primary(getPrimary());
+  std::string Primary(getPrimary());
 
-  return CCommonName::unescape(Primary.mpCN->substr(0, Primary.findNext("=")));
+  return unescape(Primary.substr(0, CCommonNameComponent::findNext(Primary, "=")));
 }
 
 std::string CCommonName::getObjectName() const
 {
-  CCommonName Primary = getPrimary();
-  std::string::size_type pos = Primary.findNext("=");
+  std::string Primary = getPrimary();
+  std::string::size_type pos = CCommonNameComponent::findNext(Primary, "=");
 
   if (pos == std::string::npos) return "";
 
-  CCommonName tmp = Primary.mpCN->substr(pos + 1);
+  std::string tmp = Primary.substr(pos + 1);
 
   if (getObjectType() != "String")
-    tmp = tmp.mpCN->substr(0, tmp.findNext("["));
+    tmp = tmp.substr(0, CCommonNameComponent::findNext(tmp, "["));
 
-  return CCommonName::unescape(*tmp.mpCN);
+  return unescape(tmp);
 }
 
 size_t CCommonName::getElementIndex(const size_t & pos) const
 {
-  size_t Index = C_INVALID_INDEX;
-
-  if (strToIndex(getElementName(pos), Index))
-    return Index;
-
-  return C_INVALID_INDEX;
+  return CCommonNameComponent::getElementIndex(*mpCN, pos);
 }
 
 std::string CCommonName::getElementName(const size_t & pos,
                                         const bool & unescape) const
 {
-  CCommonName Primary = getPrimary();
-
-  std::string::size_type open = Primary.findNext("[");
-  size_t i;
-
-  for (i = 0; i < pos && open != std::string::npos; i++)
-    open = Primary.findNext("[", open + 1);
-
-  std::string::size_type close = Primary.findNext("]", open + 1);
-
-  if (open == std::string::npos
-      || close == std::string::npos)
-    return "";
-
-  if (unescape)
-    return CCommonName::unescape(Primary.mpCN->substr(open + 1, close - open - 1));
-
-  return Primary.mpCN->substr(open + 1, close - open - 1);
+  return CCommonNameComponent::getElementName(*mpCN, pos, unescape);
 }
 
 void CCommonName::split(CCommonName & parentCN, std::string & objectType, std::string & objectName, std::string * pPartialCN) const
@@ -596,36 +574,16 @@ void CCommonName::split(CCommonName & parentCN, std::string & objectType, std::s
   return;
 }
 
+// static
 std::string CCommonName::escape(const std::string & name)
 {
-#define toBeEscaped "\\[]=,>"
-  std::string Escaped(name);
-  std::string::size_type pos = Escaped.find_first_of(toBeEscaped);
-
-  while (pos != std::string::npos)
-    {
-      Escaped.insert(pos, "\\");
-      pos += 2;
-      pos = Escaped.find_first_of(toBeEscaped, pos);
-    }
-
-  return Escaped;
-#undef toBeEscaped
+  return CCommonNameComponent::escape(name);
 }
 
+// static
 std::string CCommonName::unescape(const std::string & name)
 {
-  std::string Unescaped(name);
-  std::string::size_type pos = Unescaped.find("\\");
-
-  while (pos != std::string::npos)
-    {
-      Unescaped.erase(pos, 1);
-      pos++;
-      pos = Unescaped.find("\\", pos);
-    }
-
-  return Unescaped;
+  return CCommonNameComponent::unescape(name);
 }
 
 // static
@@ -642,11 +600,11 @@ std::string CCommonName::construct(const CCommonName & parent, const std::string
   if (ParentObjectType == "Vector" ||
       objectType.empty())
     {
-      CN += "[" + CCommonName::escape(objectName) + "]";
+      CN += "[" + escape(objectName) + "]";
     }
   else
     {
-      CN += "," + CCommonName::escape(objectType) + "=" + CCommonName::escape(objectName);
+      CN += "," + escape(objectType) + "=" + escape(objectName);
     }
 
   return *CN.mpCN;
@@ -666,43 +624,13 @@ std::string::size_type
 CCommonName::findNext(const std::string & toFind,
                       const std::string::size_type & pos) const
 {
-  std::string::size_type where = mpCN->find_first_of(toFind, pos);
-
-  std::string::size_type tmp;
-
-  while (where
-         && where != std::string::npos)
-    {
-      tmp = mpCN->find_last_not_of("\\", where - 1);
-
-      if ((where - tmp) % 2)
-        return where;
-
-      where = mpCN->find_first_of(toFind, where + 1);
-    }
-
-  return where;
+  return CCommonNameComponent::findNext(*mpCN, toFind, pos);
 }
 
 std::string::size_type CCommonName::findPrevious(const std::string & toFind,
     const std::string::size_type & pos) const
 {
-  std::string::size_type where = mpCN->find_last_of(toFind, pos);
-
-  std::string::size_type tmp;
-
-  while (where
-         && where != std::string::npos)
-    {
-      tmp = mpCN->find_last_not_of("\\", where - 1);
-
-      if ((where - tmp) % 2)
-        return where;
-
-      where = mpCN->find_last_of(toFind, where - 1);
-    }
-
-  return where;
+  return CCommonNameComponent::findPrevious(*mpCN, toFind, pos);
 }
 
 bool operator ==(const std::string & lhs, const CCommonName & rhs)

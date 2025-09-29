@@ -90,9 +90,9 @@ public:
   void clear();
   const char* c_str() const;
 
-  CCommonName getPrimary() const;
+  std::string getPrimary() const;
 
-  CCommonName getRemainder() const;
+  std::string getRemainder() const;
 
   std::string getObjectType() const;
 

@@ -317,14 +317,14 @@ bool CCommonNameComponent::updatePartialCN() {
             {
               // We might have an index or a name
               if (mPartialCN.find_first_not_of("0123456789]", 1) == std::string::npos)
-                mPartialCN = "[" + CCommonName::escape(mName) + "]";
+                mPartialCN = "[" + escape(mName) + "]";
               // else we have an index and must rely on it, i.e., nothing to do
             }
           else
-            mPartialCN = CCommonName::escape(mType) + "=" + CCommonName::escape(mName);
+            mPartialCN = escape(mType) + "=" + escape(mName);
         }
       else if (mpParent->mpObject->hasFlag(CDataObject::NameVector))
-        mPartialCN = "[" + CCommonName::escape(mName) + "]";
+        mPartialCN = "[" + escape(mName) + "]";
       else
         {
           size_t Index = static_cast< const CDataContainer * >(mpParent->mpObject)->getIndex(mpObject);
@@ -332,7 +332,7 @@ bool CCommonNameComponent::updatePartialCN() {
           if (Index != C_INVALID_INDEX)
             mPartialCN = "[" + std::to_string(Index) + "]";
           else
-            mPartialCN = CCommonName::escape(mType) + "=" + CCommonName::escape(mName);
+            mPartialCN = escape(mType) + "=" + escape(mName);
         }
     }
   // Special case for parameters in parameter groups
@@ -342,8 +342,8 @@ bool CCommonNameComponent::updatePartialCN() {
           && mpParent->mpObject != nullptr
           && dynamic_cast< const CCopasiParameterGroup * >(mpParent->mpObject) != nullptr))
     {
-      mPartialCN = CCommonName::escape(mType) + "="
-        + CCommonName::escape(static_cast< const CCopasiParameterGroup * >(mpParent->mpObject)->getUniqueParameterName(static_cast< const CCopasiParameter * >(mpObject)));
+      mPartialCN = escape(mType) + "="
+        + escape(static_cast< const CCopasiParameterGroup * >(mpParent->mpObject)->getUniqueParameterName(static_cast< const CCopasiParameter * >(mpObject)));
     }
   // Special case for element references
   else if (mType == "ElementReference")
@@ -357,12 +357,10 @@ bool CCommonNameComponent::updatePartialCN() {
     }
   // Default case
   else
-    mPartialCN = CCommonName::escape(mType) + "=" + CCommonName::escape(mName);
+    mPartialCN = escape(mType) + "=" + escape(mName);
 
   if (mpObject != nullptr
-      && mPartialCN == "Property=DisplayName"
-      && mpParent
-      && mpParent->mpObject != nullptr)
+      && mPartialCN == "Property=DisplayName")
     mpObject->getObjectDisplayName();
 
   return OldPartialCN != mPartialCN;
@@ -452,7 +450,39 @@ std::string CCommonNameComponent::getElementName(const std::string & cn,
     return "";
 
   if (unescape)
-    return CCommonName::unescape(cn.substr(open + 1, close - open - 1));
+    return CCommonNameComponent::unescape(cn.substr(open + 1, close - open - 1));
 
   return cn.substr(open + 1, close - open - 1);
+}
+
+std::string CCommonNameComponent::escape(const std::string & name)
+{
+  static const std::string toBeEscaped("\\[]=,>");
+
+  std::string Escaped(name);
+  std::string::size_type pos = Escaped.find_first_of(toBeEscaped);
+
+  while (pos != std::string::npos)
+    {
+      Escaped.insert(pos, "\\");
+      pos += 2;
+      pos = Escaped.find_first_of(toBeEscaped, pos);
+    }
+
+  return Escaped;
+}
+
+std::string CCommonNameComponent::unescape(const std::string & name)
+{
+  std::string Unescaped(name);
+  std::string::size_type pos = Unescaped.find("\\");
+
+  while (pos != std::string::npos)
+    {
+      Unescaped.erase(pos, 1);
+      pos++;
+      pos = Unescaped.find("\\", pos);
+    }
+
+  return Unescaped;
 }
