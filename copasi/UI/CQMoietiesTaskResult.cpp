@@ -317,7 +317,7 @@ void CQMoietiesTaskResult::slotCreateGlobalQuantity(const QModelIndex & index)
     pMV = pModel->createModelValue("Moiety[" + pMoiety->getObjectName() + "].TotalAmount_" + TO_UTF8(QString::number(++i)));
 
   pMV->setInitialExpression("(" + pMoiety->getExpression() + ")/<" +
-                            pModel->getObject(CCommonName("Reference=Quantity Conversion Factor"))->getStringCN() + ">");
+                            pModel->getObject(CCommonName("Reference=Quantity Conversion Factor"))->getCN() + ">");
 
   protectedNotify(ListViews::ObjectType::MODELVALUE, ListViews::ADD);
 }

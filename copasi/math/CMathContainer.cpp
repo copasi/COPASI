@@ -1366,7 +1366,7 @@ void CMathContainer::pushAllTransientValues()
 // virtual
 CCommonName CMathContainer::getCNProtected() const
 {
-  return mpModel->getStringCN();
+  return mpModel->getCN();
 }
 
 // virtual
@@ -1391,7 +1391,7 @@ const CObjectInterface * CMathContainer::getObject(const CCommonName & cn) const
       ListOfContainer.push_back(mpModel);
       ListOfContainer.push_back(mpModel->getObjectDataModel());
 
-      CCommonName ModelCN = mpModel->getStringCN();
+      CCommonName ModelCN = mpModel->getCN();
 
       if (cn.getPrimary() != ModelCN.getPrimary())
         {

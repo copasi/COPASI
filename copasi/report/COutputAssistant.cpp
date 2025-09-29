@@ -772,7 +772,7 @@ COutputAssistant::createDefaultOutput(
                 if (needMeasured)
                   {
                     data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Measured Value"))));
-                    ChannelX.push_back(data2->getStringCN());
+                    ChannelX.push_back(data2->getCN());
                     Names.push_back(Name + "(Measured Value)");
                     LineTypes.push_back(3);      //symbols & lines
                     SymbolSubTypes.push_back(1); //fat cross
@@ -784,7 +784,7 @@ COutputAssistant::createDefaultOutput(
                 if (needFitted)
                   {
                     data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Fitted Value"))));
-                    ChannelX.push_back(data2->getStringCN());
+                    ChannelX.push_back(data2->getCN());
                     Names.push_back(Name + "(Fitted Value)");
 
                     if (pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse)
@@ -806,7 +806,7 @@ COutputAssistant::createDefaultOutput(
                   {
                     //3
                     data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Weighted Error"))));
-                    ChannelX.push_back(data2->getStringCN());
+                    ChannelX.push_back(data2->getCN());
                     Names.push_back(Name + "(Weighted Error)");
                     LineTypes.push_back(2);      //symbols
                     SymbolSubTypes.push_back(2); //circles

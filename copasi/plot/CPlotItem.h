@@ -64,7 +64,7 @@ public:
       maxAutoscale(true)
   {}
 
-  CPlotDataChannelSpec(const CRegisteredCommonName & obj)
+  CPlotDataChannelSpec(const CCommonName & obj)
     : CRegisteredCommonName(obj),
       min(0.0),
       max(0.0),
@@ -72,7 +72,7 @@ public:
       maxAutoscale(true)
   {}
 
-  CPlotDataChannelSpec(const CRegisteredCommonName & obj, C_FLOAT64 minimum, C_FLOAT64 maximum)
+  CPlotDataChannelSpec(const CCommonName & obj, C_FLOAT64 minimum, C_FLOAT64 maximum)
     : CRegisteredCommonName(obj),
       min(minimum),
       max(maximum),

@@ -268,23 +268,23 @@ std::string getInitialCNForSBase(SBase* sbase, std::map<const CDataObject*, SBas
           auto obj = it->first->getObject(std::string("Reference=") + type);
 
           if (obj)
-            return obj->getStringCN();
+            return obj->getCN();
         }
 
       const CMetab *metab = dynamic_cast<const CMetab*>(it->first);
 
       if (metab != NULL)
-        return metab->getInitialConcentrationReference()->getStringCN();
+        return metab->getInitialConcentrationReference()->getCN();
 
       const CCompartment *comp = dynamic_cast<const CCompartment*>(it->first);
 
       if (comp != NULL)
-        return comp->getInitialValueReference()->getStringCN();
+        return comp->getInitialValueReference()->getCN();
 
       const CModelValue *param = dynamic_cast<const CModelValue*>(it->first);
 
       if (param != NULL)
-        return param->getInitialValueReference()->getStringCN();
+        return param->getInitialValueReference()->getCN();
     }
 
   return "";
@@ -844,7 +844,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
           if (it == mParameterFluxMap.end())
             continue;
 
-          it->second->setExpression("<" + reaction.getFluxReference()->getStringCN() + ">");
+          it->second->setExpression("<" + reaction.getFluxReference()->getCN() + ">");
         }
     }
 
@@ -2449,7 +2449,7 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                   if (pParamObject->getObjectType() == "Parameter")
                     {
                       const_cast< CDataObject * >(pParamObject)->setObjectName("v");
-                      dynamic_cast<CEvaluationNode*>(pCallNode->getChild())->setData("<" + pParamObject->getStringCN() + ">");
+                      dynamic_cast<CEvaluationNode*>(pCallNode->getChild())->setData("<" + pParamObject->getCN() + ">");
                     }
 
                   copasiReaction->setFunction(pCFFun);
@@ -3422,7 +3422,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
             }
           else if (pParam)
             {
-              itNode->setName(pParam->getStringCN().c_str());
+              itNode->setName(pParam->getCN().c_str());
             }
           else
             {
@@ -3450,7 +3450,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
 
                         if (sbmlId == itNode->getName())
                           {
-                            itNode->setName(dynamic_cast< const CCompartment * >(it->first)->getObject(CCommonName("Reference=InitialVolume"))->getStringCN().c_str());
+                            itNode->setName(dynamic_cast< const CCompartment * >(it->first)->getObject(CCommonName("Reference=InitialVolume"))->getCN().c_str());
                             found = true;
                           }
 
@@ -3470,7 +3470,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
 
                         if (sbmlId == itNode->getName())
                           {
-                            itNode->setName(dynamic_cast< const CMetab * >(it->first)->getObject(CCommonName("Reference=InitialConcentration"))->getStringCN().c_str());
+                            itNode->setName(dynamic_cast< const CMetab * >(it->first)->getObject(CCommonName("Reference=InitialConcentration"))->getCN().c_str());
                             found = true;
                           }
 
@@ -3490,7 +3490,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
 
                         if (sbmlId == itNode->getName())
                           {
-                            itNode->setName(dynamic_cast< const CReaction * >(it->first)->getObject(CCommonName("Reference=ParticleFlux"))->getStringCN().c_str());
+                            itNode->setName(dynamic_cast< const CReaction * >(it->first)->getObject(CCommonName("Reference=ParticleFlux"))->getCN().c_str());
                             found = true;
                           }
 
@@ -3510,7 +3510,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
 
                         if (sbmlId == itNode->getName())
                           {
-                            itNode->setName(dynamic_cast< const CModelValue * >(it->first)->getValueReference()->getStringCN().c_str());
+                            itNode->setName(dynamic_cast< const CModelValue * >(it->first)->getValueReference()->getCN().c_str());
                             found = true;
                           }
 
@@ -3898,11 +3898,11 @@ void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pASTNode)
 
       if (itNode->getType() == AST_NAME_TIME)
         {
-          itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Time"))->getStringCN().c_str());
+          itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Time"))->getCN().c_str());
         }
       else if (itNode->getType() == AST_NAME_AVOGADRO)
         {
-          itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Avogadro Constant"))->getStringCN().c_str());
+          itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Avogadro Constant"))->getCN().c_str());
         }
     }
 }
@@ -4980,7 +4980,7 @@ void SBMLImporter::renameMassActionParameters(CEvaluationNodeCall* pCallNode)
   if (dynamic_cast<CCopasiParameter*>(pObject))
     {
       pObject->setObjectName("k1");
-      pObjectNode->setData("<" + pObject->getStringCN() + ">");
+      pObjectNode->setData("<" + pObject->getCN() + ">");
     }
 
   pObjectNode = dynamic_cast<CEvaluationNodeObject*>(pObjectNode->getSibling());
@@ -4994,7 +4994,7 @@ void SBMLImporter::renameMassActionParameters(CEvaluationNodeCall* pCallNode)
       if (dynamic_cast<CCopasiParameter*>(pObject))
         {
           pObject->setObjectName("k2");
-          pObjectNode->setData("<" + pObject->getStringCN() + ">");
+          pObjectNode->setData("<" + pObject->getCN() + ">");
         }
     }
 }
@@ -5942,9 +5942,9 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
                       if (haveData)
                         {
                           if (hasOnlySubstance)
-                            itNode->setName((pObject->getStringCN() + ",Reference=ParticleNumberRate").c_str());
+                            itNode->setName((pObject->getCN() + ",Reference=ParticleNumberRate").c_str());
                           else
-                            itNode->setName((pObject->getStringCN() + ",Reference=Rate").c_str());
+                            itNode->setName((pObject->getCN() + ",Reference=Rate").c_str());
 
                           break;
                         }
@@ -5955,11 +5955,11 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
                           case SBML_COMPARTMENT:
                             if (!initialExpression)
                               {
-                                itNode->setName((pObject->getStringCN() + ",Reference=Volume").c_str());
+                                itNode->setName((pObject->getCN() + ",Reference=Volume").c_str());
                               }
                             else
                               {
-                                itNode->setName((pObject->getStringCN() + ",Reference=InitialVolume").c_str());
+                                itNode->setName((pObject->getCN() + ",Reference=InitialVolume").c_str());
                               }
 
                             break;
@@ -5974,22 +5974,22 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
                               {
                                 if (!initialExpression)
                                   {
-                                    itNode->setName((pObject->getStringCN() + ",Reference=Concentration").c_str());
+                                    itNode->setName((pObject->getCN() + ",Reference=Concentration").c_str());
                                   }
                                 else
                                   {
-                                    itNode->setName((pObject->getStringCN() + ",Reference=InitialConcentration").c_str());
+                                    itNode->setName((pObject->getCN() + ",Reference=InitialConcentration").c_str());
                                   }
                               }
                             else
                               {
                                 if (!initialExpression)
                                   {
-                                    itNode->setName((pObject->getStringCN() + ",Reference=ParticleNumber").c_str());
+                                    itNode->setName((pObject->getCN() + ",Reference=ParticleNumber").c_str());
                                   }
                                 else
                                   {
-                                    itNode->setName((pObject->getStringCN() + ",Reference=InitialParticleNumber").c_str());
+                                    itNode->setName((pObject->getCN() + ",Reference=InitialParticleNumber").c_str());
                                   }
                               }
 
@@ -6002,18 +6002,18 @@ void SBMLImporter::replaceObjectNames(ASTNode* pNode, const std::map<const CData
                                 CCopasiMessage(CCopasiMessage::EXCEPTION, MCSBML + 80, sbmlId.c_str());
                               }
 
-                            itNode->setName((pObject->getStringCN() + ",Reference=Flux").c_str());
+                            itNode->setName((pObject->getCN() + ",Reference=Flux").c_str());
                             break;
 
                           case SBML_PARAMETER:
 
                             if (!initialExpression)
                               {
-                                itNode->setName((pObject->getStringCN() + ",Reference=Value").c_str());
+                                itNode->setName((pObject->getCN() + ",Reference=Value").c_str());
                               }
                             else
                               {
-                                itNode->setName((pObject->getStringCN() + ",Reference=InitialValue").c_str());
+                                itNode->setName((pObject->getCN() + ",Reference=InitialValue").c_str());
                               }
 
                             break;
@@ -7101,7 +7101,7 @@ void SBMLImporter::replace_time_with_initial_time(ASTNode* pASTNode, const CMode
           itNode->setType(AST_NAME);
           const CDataObject* pReference = pCopasiModel->getInitialValueReference();
           assert(pReference);
-          itNode->setName(pReference->getStringCN().c_str());
+          itNode->setName(pReference->getCN().c_str());
         }
     }
 }
@@ -7443,7 +7443,7 @@ void SBMLImporter::importEvent(const Event* pEvent, Model* pSBMLModel, CModel* p
           std::string target = pObject->getKey();
 
           if (isEventAssignmentToParticleNumber && pMetab)
-            target = pMetab->getValueReference()->getStringCN();
+            target = pMetab->getValueReference()->getCN();
 
           pAssignment = new CEventAssignment(target, pCOPASIEvent);
           pAssignment->setExpressionPtr(pExpression);
@@ -8153,7 +8153,7 @@ CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, 
           // either child can be the object
           const CEvaluationNode* pChild = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild());
 
-          if (pChild->mainType() == CEvaluationNode::MainType::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getStringCN() + ">"))
+          if (pChild->mainType() == CEvaluationNode::MainType::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
             {
 
               pResult = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
@@ -8164,7 +8164,7 @@ CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, 
             {
               pChild = dynamic_cast<const CEvaluationNode*>(pChild->getSibling());
 
-              if (pChild->mainType() == CEvaluationNode::MainType::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getStringCN() + ">"))
+              if (pChild->mainType() == CEvaluationNode::MainType::OBJECT && dynamic_cast<const CEvaluationNodeObject*>(pChild)->getData() == std::string("<" + pObject->getCN() + ">"))
                 {
 
                   pResult = dynamic_cast<const CEvaluationNode*>(pOrigNode->getChild())->copyBranch();
@@ -8175,7 +8175,7 @@ CEvaluationNode* SBMLImporter::divideByObject(const CEvaluationNode* pOrigNode, 
 
       if (reverse == false)
         {
-          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getStringCN() + ">");
+          CEvaluationNodeObject* pVolumeNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ">");
           pResult = new CEvaluationNodeOperator(CEvaluationNode::SubType::DIVIDE, "/");
           pResult->addChild(pOrigNode->copyBranch());
           pResult->addChild(pVolumeNode);

@@ -599,7 +599,7 @@ std::string CEvent::getOriginFor(const DataObjectSet & deletedObjects) const
 
           for (; setIt != setEnd; ++setIt)
             {
-              if (assignment.getTargetObject()->getStringCN() == (*setIt)->getStringCN())
+              if (assignment.getTargetObject()->getCN() == (*setIt)->getCN())
                 {
 
                   Origin += Separator + "Target (" + (assignment.getTargetObject() != nullptr ? assignment.getTargetObject()->getObjectDisplayName() : "not found") + ")";

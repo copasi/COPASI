@@ -164,7 +164,7 @@ CCommonName CArrayElementReference::getCNProtected() const
 
   if (getObjectParent())
     {
-      return getObjectParent()->getStringCN() + getObjectName();
+      return getObjectParent()->getCN() + getObjectName();
     }
   else
     return "Array" + getObjectName();

@@ -80,7 +80,7 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
 
       CheckDataModel &= (pDataModel != *it);
 
-      ContainerName = (*it)->getStringCN();
+      ContainerName = (*it)->getCN();
 
       while (ContainerName.getRemainder() != "")
         {
@@ -135,13 +135,12 @@ const CCommonNameComponent::shared_ptr & CObjectInterface::getCNComponent() cons
   return empty;
 }
 
-CCommonName CObjectInterface::getStringCN() const
+CCommonName CObjectInterface::getCN() const
 {
-  return getCNProtected();
-}
+  CCommonNameComponent::shared_ptr pCNComponent = getCNComponent();
+  if (pCNComponent)
+    assert((*pCNComponent->getCN()) == getCNProtected());
 
-CRegisteredCommonName CObjectInterface::getCN() const
-{
   return getCNProtected();
 }
 

@@ -110,7 +110,7 @@ void CQEventWidget1::slotBtnNew()
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpEvent);
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", mpEvent->getStringCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpEvent->getCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", mpEvent->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
@@ -144,7 +144,7 @@ void CQEventWidget1::slotBtnCopy()
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpEvent);
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", mpEvent->getStringCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpEvent->getCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", mpEvent->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
@@ -201,7 +201,7 @@ void CQEventWidget1::slotAddTarget()
   if (!mpLBTarget->findItems(displayName, Qt::MatchExactly).isEmpty())
     return;
 
-  mAssignments.add(new CEventAssignment(pObject->getStringCN()), true);
+  mAssignments.add(new CEventAssignment(pObject->getCN()), true);
   mpLBTarget->addItem(displayName);
 
   mpLBTarget->setCurrentRow((int)(mAssignments.size() - 1));

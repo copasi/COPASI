@@ -533,7 +533,7 @@ CData CDataObject::toData() const
   Data.addProperty(CData::OBJECT_TYPE, mObjectType);
   Data.addProperty(CData::OBJECT_FLAG, mObjectFlag.to_string());
 
-  std::string CN = (mpObjectParent != nullptr) ? mpObjectParent->getStringCN() : CCommonName();
+  std::string CN = (mpObjectParent != nullptr) ? mpObjectParent->getCN() : CCommonName();
   size_t Index = (mpObjectParent != nullptr) ? mpObjectParent->getIndex(this) : C_INVALID_INDEX;
 
   std::vector< CData > References;

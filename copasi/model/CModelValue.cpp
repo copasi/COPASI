@@ -502,7 +502,7 @@ const CExpression* CModelEntity::getInitialExpressionPtr() const
 
 std::string CModelEntity::getDefaultNoiseExpression() const
 {
-  return "sqrt(abs(<" + mpRateReference->getStringCN() + ">))";
+  return "sqrt(abs(<" + mpRateReference->getCN() + ">))";
 }
 
 bool CModelEntity::setNoiseExpression(const std::string & expression)

@@ -162,7 +162,7 @@ CIssue CEvaluationNodeObject::compile()
             if (mpObject != pObject && pObject != NULL)
               {
                 mpObject = pObject;
-                mRegisteredObjectCN = mpObject->getStringCN();
+                mRegisteredObjectCN = mpObject->getCN();
                 getData();
               }
 

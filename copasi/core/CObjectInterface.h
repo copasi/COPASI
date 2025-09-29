@@ -59,9 +59,7 @@ public:
    */
   virtual void calculateValue() = 0;
 
-  CCommonName getStringCN() const;
-
-  CRegisteredCommonName getCN() const;
+  virtual CCommonName getCN() const final;
 
   /**
    * Retrieve a descendant object by its CN.

@@ -274,7 +274,7 @@ std::string CMoiety::getExpression() const
           fabs(it->first) < 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
         Infix << fabs(it->first) << "*";
 
-      Infix << "<" << it->second->getInitialValueReference()->getStringCN() << ">";
+      Infix << "<" << it->second->getInitialValueReference()->getCN() << ">";
     }
 
   return Infix.str();

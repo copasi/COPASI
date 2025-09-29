@@ -97,7 +97,7 @@ void ObjectDebug::addObjectRecursive(QTreeWidgetItem * parent, const void * ptr)
   const CDataObject * obj = static_cast<const CDataObject *>(ptr);
   QTreeWidgetItem* element;
 
-  std::string cn = obj->getStringCN();
+  std::string cn = obj->getCN();
   const CDataModel * pDM = obj->getObjectDataModel();
   const CDataObject* testObj = NULL;
 
@@ -150,7 +150,7 @@ void ObjectDebug::addObjectRecursive(QTreeWidgetItem * parent, const void * ptr)
           << flags
           << value
           << FROM_UTF8(obj->getObjectDisplayName())
-          << FROM_UTF8(obj->getStringCN());
+          << FROM_UTF8(obj->getCN());
 
   element = new MyListViewItemWithPtr((QTreeWidgetItem*)parent, obj,
                                       columns);

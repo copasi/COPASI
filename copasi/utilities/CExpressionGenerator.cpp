@@ -175,7 +175,7 @@ std::string CExpressionGenerator::generate(Operation operation, const std::vecto
   result << parts.entryStart;
 
   if (useCn)
-    result << "<" << entry->getStringCN() << ">";
+    result << "<" << entry->getCN() << ">";
   else
     result << "{" << escapeDisplayName(entry) << "}";
 
@@ -189,7 +189,7 @@ std::string CExpressionGenerator::generate(Operation operation, const std::vecto
       result << parts.entryStart;
 
       if (useCn)
-        result << "<" << entry->getStringCN() << ">";
+        result << "<" << entry->getCN() << ">";
       else
         result << "{" << escapeDisplayName(entry) << "}";
 

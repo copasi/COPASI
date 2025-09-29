@@ -929,7 +929,7 @@ bool CCopasiXML::saveModel()
 
               if (pReaction->getScalingCompartment() != NULL)
                 {
-                  Attr.add("scalingCompartment", pReaction->getScalingCompartment()->getStringCN());
+                  Attr.add("scalingCompartment", pReaction->getScalingCompartment()->getCN());
                 }
 
               startSaveElement("KineticLaw", Attr);

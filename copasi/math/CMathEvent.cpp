@@ -113,7 +113,7 @@ bool CMathEvent::CAssignment::compile(const CEventAssignment * pDataAssignment,
 
       Infix << pointerToString(&container.getQuantity2NumberFactor());
       Infix << "*<";
-      Infix << pSpecies->getCompartment()->getValueReference()->getStringCN();
+      Infix << pSpecies->getCompartment()->getValueReference()->getCN();
       Infix << ">*(";
       Infix << pDataAssignment->getExpression();
       Infix << ")";

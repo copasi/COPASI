@@ -1367,7 +1367,7 @@ void CReaction::initObjects()
 
 std::string CReaction::getDefaultNoiseExpression() const
 {
-  return "sqrt(abs(<" + mpParticleFluxReference->getStringCN() + ">))";
+  return "sqrt(abs(<" + mpParticleFluxReference->getCN() + ">))";
 }
 
 bool CReaction::setNoiseExpression(const std::string & expression)
@@ -2179,7 +2179,7 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9, mParameterIndexToCNs[index][0].c_str());
     }
 
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getStringCN() + ">");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ">");
   return pObjectNode;
 }
 

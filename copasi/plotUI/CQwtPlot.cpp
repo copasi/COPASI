@@ -733,7 +733,7 @@ bool CQwtPlot::compile(CObjectInterface::ContainerList listOfContainer)
           if (pObj)
             {
               mObjects.insert(pObj);
-              objectCN = pObj->getStringCN();
+              objectCN = pObj->getCN();
               mCnNameMap[objectCN] = pObj->getObjectDisplayName();
             }
           else

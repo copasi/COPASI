@@ -25,7 +25,7 @@ bool verify_cn(const CDataModel* dm, const std::string& cn)
   if (ref == NULL)
     return false;
 
-  std::string resolved = ref->getStringCN();
+  std::string resolved = ref->getCN();
 
   if (resolved.find("not found") != std::string::npos)
     return false;

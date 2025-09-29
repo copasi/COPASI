@@ -539,7 +539,7 @@ CCommonName CCopasiParameter::getCNProtected() const
   if (pObjectParent != NULL &&
       (pGroup = dynamic_cast< CCopasiParameterGroup * >(pObjectParent)) != NULL)
     {
-      return pObjectParent->getStringCN() + "," + CCommonName::escape(getObjectType()) + "=" + CCommonName::escape(pGroup->getUniqueParameterName(this));
+      return pObjectParent->getCN() + "," + CCommonName::escape(getObjectType()) + "=" + CCommonName::escape(pGroup->getUniqueParameterName(this));
     }
 
   return CDataObject::getCNProtected();

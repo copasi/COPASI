@@ -135,7 +135,7 @@ CCommonName CMathObject::getCNProtected() const
   if (mpDataObject == NULL)
     return CCommonName("CMathObject: no data equivalence.");
 
-  return mpDataObject->getStringCN();
+  return mpDataObject->getCN();
 }
 
 // virtual
@@ -2239,7 +2239,7 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 {
   if (o.mpDataObject != NULL)
     {
-      os << o.mpDataObject->getStringCN() << "\n";
+      os << o.mpDataObject->getCN() << "\n";
     }
   else
     {

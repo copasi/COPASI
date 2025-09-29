@@ -285,7 +285,7 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex & parent
       else
         {
           *itDeletedKey = itRow->getKey();
-          *itDeletedCN = itRow->getStringCN();
+          *itDeletedCN = itRow->getCN();
         }
     }
 

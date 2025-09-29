@@ -686,7 +686,7 @@ void CSensProblem::initDebugProblem()
 {
   CSensItem item;
 
-  item.setSingleObjectCN(CRegisteredCommonName(this->getStringCN()));
+  item.setSingleObjectCN(CRegisteredCommonName(this->getCN()));
   addVariables(item);
 
   item.setListType(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);

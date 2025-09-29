@@ -1218,7 +1218,7 @@ void CQExperimentData::selectModelObject(const int & row)
   if (pObject)
     {
       mpTable->item(row, COL_OBJECT)->setText(FROM_UTF8(pObject->getObjectDisplayName()));
-      mpTable->item(row, COL_OBJECT_HIDDEN)->setText(FROM_UTF8(pObject->getStringCN()));
+      mpTable->item(row, COL_OBJECT_HIDDEN)->setText(FROM_UTF8(pObject->getCN()));
     }
 
   updateScales();

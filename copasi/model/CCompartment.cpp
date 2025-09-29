@@ -75,7 +75,7 @@ bool CCompartment::applyData(const CData & data, CUndoData::CChangeSet & changes
       const CData & Data = data.getProperty(CData::INITIAL_VALUE).toData();
       mIValue = Data.getProperty(CData::VALUE).toDouble();
       mpModel->updateInitialValues(CCore::FrameworkNames.toEnum(Data.getProperty(CData::FRAMEWORK).toString(), CCore::Framework::ParticleNumbers), false);
-      changes.add({CUndoData::Type::CHANGE, "State", mpModel->getStringCN(), mpModel->getStringCN()});
+      changes.add({CUndoData::Type::CHANGE, "State", mpModel->getCN(), mpModel->getCN()});
     }
 
   if (data.isSetProperty(CData::SPATIAL_DIMENSION))
@@ -209,7 +209,7 @@ bool CCompartment::addMetabolite(CMetab * pMetabolite)
 {
   if (!pMetabolite) return false;
 
-  std::string oldCN = pMetabolite->getStringCN();
+  std::string oldCN = pMetabolite->getCN();
 
   bool success = mMetabolites.add(pMetabolite, true);
 

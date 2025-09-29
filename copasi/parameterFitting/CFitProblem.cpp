@@ -888,7 +888,7 @@ bool CFitProblem::initialize()
 
       for (auto dep : dependents)
         {
-          pProblem->addTargetCN(dep->getStringCN());
+          pProblem->addTargetCN(dep->getCN());
         }
 
       mpTimeSens->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
@@ -991,7 +991,7 @@ bool CFitProblem::calculate()
               for (auto it = map.begin(); it != map.end(); ++it)
                 {
                   reverseObjectMap[it->second] = it->first;
-                  reverseCnMap[it->second] = it->first->getStringCN();
+                  reverseCnMap[it->second] = it->first->getCN();
                 }
 
               for (size_t i = 0; i < mpOptItems->size(); ++i)

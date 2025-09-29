@@ -132,7 +132,7 @@ std::string CMetabNameInterface::getSpeciesCN(const CModel* pModel,
 {
   assert(pModel != NULL);
 
-  return  pModel->getStringCN() + ",Vector=Compartments[" + CCommonName::escape(compartment) + "],Vector=Metabolites[" + CCommonName::escape(species) + "]";
+  return  pModel->getCN() + ",Vector=Compartments[" + CCommonName::escape(compartment) + "],Vector=Metabolites[" + CCommonName::escape(species) + "]";
 }
 
 CMetab *

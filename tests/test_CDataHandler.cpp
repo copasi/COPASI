@@ -111,7 +111,7 @@ TEST_CASE("ensure that data handler with function evaluations can be compiled", 
 
   std::stringstream exp;
   exp << "<"
-      << (dm->getModel()->getMetabolites()[0]).getConcentrationRateReference()->getStringCN()
+      << (dm->getModel()->getMetabolites()[0]).getConcentrationRateReference()->getCN()
       << ">";
 
   problem->setObjectiveFunction(exp.str());

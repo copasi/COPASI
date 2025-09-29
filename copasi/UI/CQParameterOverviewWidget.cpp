@@ -314,7 +314,7 @@ void CQParameterOverviewWidget::buildSelectionList()
 {
   // We build the selection for the global parameters for kinetic constants.
   const CModelParameterGroup *pGlobalQuantities =
-    static_cast< const CModelParameterGroup * >(mpParameterSetCopy->getModelParameter(CDataString("Initial Global Quantities").getStringCN()));
+    static_cast< const CModelParameterGroup * >(mpParameterSetCopy->getModelParameter(CDataString("Initial Global Quantities").getCN()));
 
   CModelParameterGroup::const_iterator it = pGlobalQuantities->begin();
   CModelParameterGroup::const_iterator end = pGlobalQuantities->end();
@@ -457,7 +457,7 @@ void CQParameterOverviewWidget::slotBtnCopy()
 
   CUndoData UndoData(CUndoData::Type::INSERT, pNew->toData());
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", pNew->getStringCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", pNew->CObjectInterface::getCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", pNew->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
@@ -591,7 +591,7 @@ void CQParameterOverviewWidget::saveParameterSet(CModelParameterSet * pParameter
 
       CUndoData UndoData(CUndoData::Type::INSERT, pNew->toData());
       ListViews::addUndoMetaData(this, UndoData);
-      UndoData.addMetaDataProperty("Widget Object CN (after)", pNew->getStringCN());
+      UndoData.addMetaDataProperty("Widget Object CN (after)", pNew->CObjectInterface::getCN());
       UndoData.addMetaDataProperty("Widget Object Name (after)", pNew->getObjectName());
 
       slotNotifyChanges(mpDataModel->recordData(UndoData));

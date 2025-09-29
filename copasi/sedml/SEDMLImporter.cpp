@@ -1477,7 +1477,7 @@ SEDMLImporter::convertSimpleFunctionalRange(SedFunctionalRange * frange, SedRepe
 
 bool applyValueToParameterSet(CModelParameterSet & set, CDataObject * obj, double newValue)
 {
-  const CModelParameter * pParameter = set.getModelParameter(obj->getStringCN());
+  const CModelParameter * pParameter = set.getModelParameter(obj->getCN());
 
   if (pParameter != NULL)
     {

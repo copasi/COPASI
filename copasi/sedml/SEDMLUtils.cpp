@@ -386,8 +386,8 @@ CModelValue * SEDMLUtils::createAmountMV(CModel * pModel, const CMetab * pMetab)
 
   pMV->setStatus(CModelEntity::Status::ASSIGNMENT);
   std::stringstream expr;
-  expr << "<" << pMetab->getConcentrationReference()->getStringCN() << "> * "
-       << "<" << pMetab->getCompartment()->getValueReference()->getStringCN() << ">";
+  expr << "<" << pMetab->getConcentrationReference()->getCN() << "> * "
+       << "<" << pMetab->getCompartment()->getValueReference()->getCN() << ">";
   pMV->setExpression(expr.str());
 
   return pMV;

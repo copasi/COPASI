@@ -302,18 +302,18 @@ void CReportDefinition::addTableElement(const CDataObject * pObject)
       if (pObject->getObjectParent())
         {
           if (pObject->getObjectType() == "Separator")
-            mHeaderVector.push_back(CCommonName("Separator=" + pObject->getStringCN().getObjectName()));
+            mHeaderVector.push_back(CCommonName("Separator=" + pObject->getCN().getObjectName()));
           else
-            mHeaderVector.push_back(CCommonName(pObject->getStringCN() + ",Property=DisplayName"));
+            mHeaderVector.push_back(CCommonName(pObject->getCN() + ",Property=DisplayName"));
         }
       else
-        mHeaderVector.push_back(CCommonName(CDataString(pObject->getObjectName()).getStringCN()));
+        mHeaderVector.push_back(CCommonName(CDataString(pObject->getObjectName()).getCN()));
     }
 
   if (pObject->getObjectType() == "Separator")
-    mBodyVector.push_back(CCommonName("Separator=" + pObject->getStringCN().getObjectName()));
+    mBodyVector.push_back(CCommonName("Separator=" + pObject->getCN().getObjectName()));
   else
-    mBodyVector.push_back(CCommonName(pObject->getStringCN()));
+    mBodyVector.push_back(CCommonName(pObject->getCN()));
 
   return;
 }

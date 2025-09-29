@@ -930,7 +930,7 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
           if (pObj)
             {
               mObjects.insert(pObj);
-              objectCN = pObj->getStringCN();
+              objectCN = pObj->getCN();
               mCnNameMap[objectCN] = pObj->getObjectDisplayName();
 
               objectCNs << FROM_UTF8(objectCN);
@@ -945,7 +945,7 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
 
                   if (pCurve)
                     {
-                      pCurve->setProperty("experiment_cn", FROM_UTF8(pExp->getStringCN()));
+                      pCurve->setProperty("experiment_cn", FROM_UTF8(pExp->getCN()));
                       pCurve->setProperty("experiment_name", FROM_UTF8(pExp->getObjectDisplayName()));
                     }
                 }
