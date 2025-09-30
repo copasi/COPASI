@@ -246,17 +246,28 @@ const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
 
       if (mpComponent->getPartialCN() == "Reference=Avogadro Constant")
         {
-          const CDataModel * pDataModel = pContainer->getObjectDataModel();
-          const CModel * pModel = pDataModel->getModel();
-          const CObjectInterface * pObject = pModel->getObject(mpComponent->getPartialCN());
+          const CModel * pModel = dynamic_cast< const CModel * >(pContainer);
 
-          if (pObject != nullptr)
+          if (pModel == nullptr)
             {
-              mpComponent = pObject->getCNComponent();
-              mpCN = mpComponent->getCN();
+              const CDataModel * pDataModel = pContainer->getObjectDataModel();
+
+              if (pDataModel != nullptr)
+                pModel = pDataModel->getModel();
             }
 
-          return pObject;
+          if (pModel != nullptr)
+            {
+              const CObjectInterface * pObject = pModel->getObject(mpComponent->getPartialCN());
+
+              if (pObject != nullptr)
+                {
+                  mpComponent = pObject->getCNComponent();
+                  mpCN = mpComponent->getCN();
+                }
+
+              return pObject;
+            }
         }
 
       return nullptr;

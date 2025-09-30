@@ -137,11 +137,7 @@ const CCommonNameComponent::shared_ptr & CObjectInterface::getCNComponent() cons
 
 CCommonName CObjectInterface::getCN() const
 {
-  CCommonNameComponent::shared_ptr pCNComponent = getCNComponent();
-  if (pCNComponent)
-    assert((*pCNComponent->getCN()) == getCNProtected());
-
-  return getCNProtected();
+  return getCNComponent();
 }
 
 bool CObjectInterface::appendPrerequisites(CObjectInterface::ObjectSet & prerequisites) const

@@ -139,7 +139,17 @@ void CCommonNameComponent::signalObjectDeleted()
 
 void CCommonNameComponent::signalChanged()
 {
-  cn_ptr pCN = getCN();
+  // We must not use getCN() which would return the stored value if it exists
+  // It is assumed that an existing CN is correct. This is the time to update.
+  cn_ptr pCN = mpCN.lock();
+
+  if (!pCN)
+    pCN = std::make_shared< std::string >();
+
+  *pCN = getParentCN();
+  appendPartialCN(pCN);
+
+  mpCN = pCN;
 
 #pragma omp critical (common_name_component_children)
   for (auto & pChild : mChildren)
@@ -187,13 +197,7 @@ CCommonNameComponent::cn_ptr CCommonNameComponent::getCN() const
   pCN = std::make_shared< std::string >();
   mpCN = pCN;
 
-  *pCN = mpParent
-             && mPartialCN != "CN=Root"
-             && mPartialCN != "Reference=Avogadro Constant"
-             && mType != "String"
-             && mType != "Separator"
-           ? *mpParent->getCN()
-           : "";
+  *pCN = getParentCN();
   appendPartialCN(pCN);
 
   // Just retrieving the CN does not change children's CN
@@ -270,6 +274,16 @@ bool CCommonNameComponent::isValid() const
          || mpParent
          || (!mType.empty()
              && !mName.empty());
+}
+
+std::string CCommonNameComponent::getParentCN() const
+{
+  return mpParent
+         && mPartialCN != "CN=Root"
+         && mType != "String"
+         && mType != "Separator"
+           ? *mpParent->getCN()
+           : "";
 }
 
 void CCommonNameComponent::signalParentCNChanged(CCommonNameComponent::cn_ptr pParentCN) const

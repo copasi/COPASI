@@ -92,6 +92,7 @@ protected:
   std::string getObjectTypeFromParent() const;
   void signalChanged();
   void signalParentCNChanged(cn_ptr pParentCN) const;
+  std::string getParentCN() const;
   void appendPartialCN(cn_ptr pParentCN) const;
 
   std::string mPartialCN;
