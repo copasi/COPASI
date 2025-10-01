@@ -84,6 +84,8 @@ public:
   bool hasAncestor(const CDataContainer * pObject) const;
   bool mayHaveAncestor(const CDataContainer * pObject) const;
   bool isValid() const;
+  void addPrerequisite(shared_ptr prerequisite);
+  void clearPrerequisites();
 
 protected:
   void addChild(const CCommonNameComponent * pChild);
@@ -94,6 +96,9 @@ protected:
   void signalParentCNChanged(cn_ptr pParentCN) const;
   std::string getParentCN() const;
   void appendPartialCN(cn_ptr pParentCN) const;
+  void addDependent(const CCommonNameComponent * pDependent);
+  void removeDependent(const CCommonNameComponent * pDependent);
+  void signalPrerequisiteChanged(shared_ptr prerequisite) const;
 
   std::string mPartialCN;
   const std::string mType;
@@ -102,5 +107,7 @@ protected:
   const CDataObject * mpObject;
   mutable std::weak_ptr< std::string > mpCN;
   std::set< const CCommonNameComponent * > mChildren;
+  std::set< const CCommonNameComponent * > mDependents;
+  std::vector< shared_ptr > mPrerequisites;
   bool mChanged;
 };

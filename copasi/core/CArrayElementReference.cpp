@@ -47,8 +47,11 @@ bool CArrayElementReference::applyData(const CData & data, CUndoData::CChangeSet
 
   if (data.isSetProperty(CData::ARRAY_ELEMENT_INDEX))
     {
+      CCommonNameComponent::shared_ptr pComponent = getCNComponent();
       const std::vector< CDataValue > & Index = data.getProperty(CData::ARRAY_ELEMENT_INDEX).toDataValues();
+
       mIndex.clear();
+      pComponent->clearPrerequisites();
 
       std::vector< CDataValue >::const_iterator it = Index.begin();
       std::vector< CDataValue >::const_iterator end = Index.end();
@@ -57,6 +60,7 @@ bool CArrayElementReference::applyData(const CData & data, CUndoData::CChangeSet
       for (; it != end; ++it, ++itIndex)
         {
           mIndex.push_back(CCommonName(it->toString()));
+          pComponent->addPrerequisite(mIndex.back());
         }
     }
 
@@ -74,8 +78,13 @@ CArrayElementReference::CArrayElementReference(const CDataArray::name_index_type
 {
   assert(pParent != NULL);
 
+  CCommonNameComponent::shared_ptr pComponent = getCNComponent();
+
   for (const CCommonName & CN : index)
-    mIndex.push_back(CN);
+    {
+      mIndex.push_back(CN);
+      pComponent->addPrerequisite(mIndex.back());
+    }
 
   updateObjectName();
 }

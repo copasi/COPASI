@@ -5,6 +5,7 @@
 
 #include "copasi/core/CCommonNameComponent.h"
 #include "copasi/core/CCommonName.h"
+#include "copasi/core/CArrayElementReference.h"
 #include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/utilities/utility.h"
 
@@ -77,6 +78,8 @@ CCommonNameComponent::~CCommonNameComponent()
 
   if (mpParent)
     mpParent->removeChild(this);
+
+  clearPrerequisites();
 }
 
 // static
@@ -154,6 +157,10 @@ void CCommonNameComponent::signalChanged()
 #pragma omp critical (common_name_component_children)
   for (auto & pChild : mChildren)
     pChild->signalParentCNChanged(pCN);
+
+#pragma omp critical (common_name_component_dependent)
+  for (auto & pDependent : mDependents)
+    pDependent->signalPrerequisiteChanged(const_cast< CCommonNameComponent * >(this)->shared_from_this());
 }
 
 void CCommonNameComponent::signalObjectNameChanged()
@@ -378,6 +385,46 @@ bool CCommonNameComponent::updatePartialCN() {
     mpObject->getObjectDisplayName();
 
   return OldPartialCN != mPartialCN;
+}
+
+void CCommonNameComponent::addPrerequisite(shared_ptr pPrerequisite)
+{
+  if (pPrerequisite)
+    {
+      mPrerequisites.push_back(pPrerequisite);
+      pPrerequisite->addDependent(this);
+    }
+}
+
+void CCommonNameComponent::clearPrerequisites()
+{
+  for (auto & pPrerequisite: mPrerequisites)
+    if (pPrerequisite)
+      pPrerequisite->removeDependent(this);
+
+  mPrerequisites.clear();
+}
+
+void CCommonNameComponent::addDependent(const CCommonNameComponent * pDependent)
+{
+#pragma omp critical (common_name_component_dependent)
+  mDependents.insert(pDependent);
+}
+
+void CCommonNameComponent::removeDependent(const CCommonNameComponent * pDependent)
+{
+#pragma omp critical (common_name_component_dependent)
+  mDependents.erase(pDependent);
+}
+
+void CCommonNameComponent::signalPrerequisiteChanged(shared_ptr /* prerequisite */) const
+{
+  if (mType == "ElementReference"
+      && mpObject != nullptr)
+    {
+      const CArrayElementReference * pObject = dynamic_cast< const CArrayElementReference * >(mpObject);
+      pObject->updateObjectName();
+    }
 }
 
 std::string CCommonNameComponent::getObjectTypeFromParent() const
