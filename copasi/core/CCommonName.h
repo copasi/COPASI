@@ -81,6 +81,8 @@ public:
   const CObjectInterface * getObject() const;
 
   operator std::string() const;
+  operator CCommonNameComponent::shared_ptr() const;
+
   bool empty() const;
   bool operator ==(const std::string & rhs) const;
   bool operator !=(const std::string & rhs) const;

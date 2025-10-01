@@ -407,6 +407,11 @@ CCommonName::operator std::string() const
   return *mpCN;
 }
 
+CCommonName::operator CCommonNameComponent::shared_ptr() const
+{
+  return mpComponent;
+}
+
 bool CCommonName::empty() const
 {
   return mpCN->empty();
