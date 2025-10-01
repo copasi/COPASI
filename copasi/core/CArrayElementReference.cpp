@@ -80,7 +80,7 @@ CArrayElementReference::CArrayElementReference(const CDataArray::name_index_type
   updateObjectName();
 }
 
-void CArrayElementReference::updateObjectName()
+void CArrayElementReference::updateObjectName() const
 {
   if (mIgnoreUpdateObjectName) return;
 
@@ -118,7 +118,7 @@ void CArrayElementReference::updateObjectName()
       ObjectName = "[.]";
     }
 
-  setObjectName(ObjectName);
+  const_cast< CArrayElementReference * >(this)->setObjectName(ObjectName);
 
   mIgnoreUpdateObjectName = false;
 }
@@ -153,18 +153,6 @@ std::string CArrayElementReference::getObjectDisplayName() const
 
       //now part contains the display name of the task, or the parent of the parent
       return part + getObjectParent()->getObjectName() + getObjectName();
-    }
-  else
-    return "Array" + getObjectName();
-}
-
-CCommonName CArrayElementReference::getCNProtected() const
-{
-  const_cast< CArrayElementReference * >(this)->updateObjectName();
-
-  if (getObjectParent())
-    {
-      return getObjectParent()->getCN() + getObjectName();
     }
   else
     return "Array" + getObjectName();

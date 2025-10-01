@@ -25,6 +25,7 @@
  */
 class CArrayElementReference: public CDataObject
 {
+  friend class CCommonNameComponent;
 
 private:
   //CCopasiAbstractArray::data_type * mpReference;
@@ -33,7 +34,7 @@ private:
    * this contains the index in string format, e.g. "[2][7]"
    */
   std::vector< CRegisteredCommonName > mIndex;
-  bool mIgnoreUpdateObjectName;
+  mutable bool mIgnoreUpdateObjectName;
 
 private:
   /**
@@ -46,7 +47,7 @@ private:
    */
   CArrayElementReference(const CArrayElementReference & src);
 
-  void updateObjectName();
+  void updateObjectName() const;
 
 public:
   /**
@@ -98,12 +99,6 @@ public:
    * generate a display name.
    */
   std::string getObjectDisplayName() const override;
-
-protected:
-  /**
-   *
-   */
-  CCommonName getCNProtected() const override;
 };
 
 #endif
