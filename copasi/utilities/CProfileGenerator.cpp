@@ -128,25 +128,6 @@ void CProfileGenerator::saveBaseModel()
   int scanInterval = mpGroup->getValue< int >("Scan Interval");
   int numIterations = mpGroup->getValue< int >("Iterations");
 
-
-  // save the model in the target directory, including experimental data
-  // for parameter estimation tasks
-
-  // save original model in target directory
-  if (mCurrentSolution.mIsParameterEstimation)
-    mpDM->copyExperimentalDataTo(mDirectory);
-
-  mCpsModelFile = mDirectory + "/" + mPrefix + "original.cps";
-  mpDM->saveModel(mCpsModelFile, NULL, true);
-
-  // now create a new data model, and loading the file we just saved
-  mpDM = CRootContainer::addDatamodel();
-  if (!mpDM->loadFromFile(mCpsModelFile))
-  {
-    mMessages << "E: Could not load model from file: " << mCpsModelFile << std::endl;
-    return;
-  }
-
   // change opt method and apply method settings
   auto& task = mCurrentSolution.mIsParameterEstimation ? (*mpDM->getTaskList())["Parameter Estimation"]
                                                        : (*mpDM->getTaskList())["Optimization"];
@@ -259,7 +240,33 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
     return;
 
   mpSettings = pSettings;
-  mpDM = pDM;
+  
+  // first of all create a copy of the current model
+  // save the model in the target directory, including experimental data
+  // for parameter estimation tasks
+
+  // create target directory, if it does not exist yet
+  mDirectory = mpSettings->getValue< std::string >("Directory");
+  if (!CDirEntry::createDir(mDirectory))
+    {
+      mMessages << "Could not create target directory: " << mDirectory << std::endl;
+      return;
+    }
+
+  // save original model in target directory
+  if (mCurrentSolution.mIsParameterEstimation)
+    pDM->copyExperimentalDataTo(mDirectory);
+
+  mCpsModelFile = mDirectory + "/" + mPrefix + "original.cps";
+  pDM->saveModel(mCpsModelFile, NULL, true);
+
+  // now create a new data model, and loading the file we just saved
+  mpDM = CRootContainer::addDatamodel();
+  if (!mpDM->loadFromFile(mCpsModelFile))
+    {
+      mMessages << "E: Could not load model from file: " << mCpsModelFile << std::endl;
+      return;
+    }
 
   // get current solution
   getCurrentSolution();
@@ -277,14 +284,6 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
   if (mCurrentSolution.mParameterCNs.empty())
   {
     mMessages << "no opt items defined, stopping." << std::endl;
-    return;
-  }
-
-  // create target directory, if it does not exist yet
-  mDirectory = mpSettings->getValue< std::string >("Directory");
-  if (!CDirEntry::createDir(mDirectory))
-  {
-    mMessages << "Could not create target directory: " << mDirectory << std::endl;
     return;
   }
 
