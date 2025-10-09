@@ -229,6 +229,9 @@ public:
    */
   void removeReportTargets();
 
+    void listViewsFolderChanged(const QModelIndex & index);
+
+
 protected slots:
   void slotFileOpenFinished(const std::string & thread, bool success);
   void slotFileOpenFromUrlFinished(const std::string & thread, bool success);
@@ -265,7 +268,6 @@ protected slots:
   void slotPromoteLocalParameters();
   void slotCreateEventsForTimeseries();
 
-  void listViewsFolderChanged(const QModelIndex & index);
   void slotOpenRecentFile(QAction * pAction);
   void slotOpenRecentSBMLFile(QAction * pAction);
   void slotCheckModel();
@@ -326,6 +328,7 @@ protected slots:
 #endif
 
   void slotLoadParameterEstimationProtocol();
+  void slotProfileLikelihood();
 
   void slotShowDebugInfo();
 
@@ -413,6 +416,7 @@ private:
   QAction* mpaExpandModel;
   QAction* mpaFontSelectionDialog;
   QAction* mpaParameterEstimationResult;
+  QAction * mpaProfileWizard;
 
   QAction* mpaCopy;
   QAction* mpaCloseAllWindows;

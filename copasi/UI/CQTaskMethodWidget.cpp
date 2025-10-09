@@ -232,6 +232,15 @@ CCopasiMethod * CQTaskMethodWidget::getFromHistory(const CTaskEnum::Method & Typ
   return NULL;
 }
 
+CTaskEnum::Method CQTaskMethodWidget::getActiveMethodType() const
+{
+  for (int i = 0; i < (int) CTaskEnum::Method::__SIZE; ++i)
+    if (mpBoxMethod->currentText() == FROM_UTF8(CTaskEnum::MethodName[i]))
+      return (CTaskEnum::Method) i;
+
+  return CTaskEnum::Method::UnsetMethod;
+}
+
 void CQTaskMethodWidget::setActiveMethod(const CTaskEnum::Method & Type)
 {
   if (mShowMethodParameters)

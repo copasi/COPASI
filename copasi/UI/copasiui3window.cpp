@@ -280,6 +280,7 @@ CopasiUI3Window::CopasiUI3Window():
   mpaExpandModel(NULL),
   mpaFontSelectionDialog(NULL),
   mpaParameterEstimationResult(NULL),
+  mpaProfileWizard(NULL),
   mpaCopy(NULL),
   mpaCloseAllWindows(NULL),
   mpaShowDebugInfo(NULL),
@@ -588,12 +589,24 @@ void CopasiUI3Window::createActions()
 
   mpaShowExternalToolDialog = new QAction("External Tools...", this);
   connect(mpaShowExternalToolDialog, &QAction::triggered, this, &CopasiUI3Window::slotConfigureExternalTools);
+
+  mpaProfileWizard = new QAction("Profile Likelihood", this);
+  connect(mpaProfileWizard, SIGNAL(triggered()), this, SLOT(slotProfileLikelihood()));
 }
 
 void
 CopasiUI3Window::slotLoadParameterEstimationProtocol()
 {
   CQParameterEstimationResult *dlg = new CQParameterEstimationResult(this, mpDataModel);
+  dlg->exec();
+  dlg->deleteLater();
+}
+
+#include <copasi/UI/CQProfileWizard.h>
+
+void CopasiUI3Window::slotProfileLikelihood()
+{
+  auto * dlg = new CQProfileWizard(this);
   dlg->exec();
   dlg->deleteLater();
 }
@@ -836,6 +849,7 @@ void CopasiUI3Window::createMenuBar()
   mpTools->addAction("Create &Events For Timeseries Experiment", this, SLOT(slotCreateEventsForTimeseries()));
   mpTools->addAction("&Remove SBML Ids from model", this, SLOT(slotClearSbmlIds()));
   mpTools->addAction(mpaParameterEstimationResult);
+  mpTools->addAction(mpaProfileWizard);
 #ifdef COPASI_SBW_INTEGRATION
   // create and populate SBW menu
   mpSBWMenu = new QMenu("&SBW", this);
@@ -1555,6 +1569,7 @@ void CopasiUI3Window::slotQuitFinished(const std::string & thread, bool success)
     return;
 
   disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotQuitFinished(const std::string &, bool)));
+
   mQuitApplication &= success;
 
   if (mQuitApplication)

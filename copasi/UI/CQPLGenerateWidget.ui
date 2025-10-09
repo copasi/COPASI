@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <comment> All rights reserved. </comment>
+ <class>CQPLGenerateWidget</class>
+ <widget class="QWidget" name="CQPLGenerateWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>640</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <layout class="QFormLayout" name="formLayout_4">
+       <item row="0" column="0">
+        <widget class="QLabel" name="mpLblTarget">
+         <property name="text">
+          <string>Directory</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLineEdit" name="mpTxtTarget"/>
+         </item>
+         <item>
+          <widget class="QToolButton" name="mpCmdBrowse">
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QFormLayout" name="formLayout_3">
+       <item row="0" column="0">
+        <widget class="QLabel" name="mpLblUpper_2">
+         <property name="text">
+          <string>Prefix</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="mpTxtPrefix">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="CQTaskMethodWidget" name="mpMethodWidget" native="true"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="mpLblSettings">
+     <property name="text">
+      <string>Settings</string>
+     </property>
+     <property name="margin">
+      <number>0</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <layout class="QFormLayout" name="formLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="mpLblIterations">
+         <property name="text">
+          <string>Iterations</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="mpTxtIterations"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="mpLblLower">
+         <property name="text">
+          <string>Lower Adjustement</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="mpTxtLower"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QFormLayout" name="formLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="mpLblScanInterval">
+         <property name="text">
+          <string>Scan Interval</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="mpTxtScanInterval"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="mpLblUpper">
+         <property name="text">
+          <string>Upper Adjustement</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="mpTxtUpper"/>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QCheckBox" name="mpChkDisablePlots">
+       <property name="text">
+        <string>Disable Plots</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mpChkDisableTasks">
+       <property name="text">
+        <string>Disable Tasks</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mpChkIsParameterEstimation">
+       <property name="toolTip">
+        <string>If checked, profiles will be generated for the Parameter Estimation Task, otherwise for Optimization.</string>
+       </property>
+       <property name="text">
+        <string>Is Parameter Estimation</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mpChkRunStatistics">
+       <property name="text">
+        <string>Run Statistics</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mpChkDeleteExisting">
+       <property name="text">
+        <string>Delete Existing</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mpCmdGenerate">
+       <property name="text">
+        <string>Generate</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>619</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="5" column="0">
+    <widget class="QPlainTextEdit" name="mpTxtMessages">
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CQTaskMethodWidget</class>
+   <extends>QWidget</extends>
+   <header>copasi/UI/CQTaskMethodWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>mpTxtTarget</tabstop>
+  <tabstop>mpCmdBrowse</tabstop>
+  <tabstop>mpTxtPrefix</tabstop>
+  <tabstop>mpTxtIterations</tabstop>
+  <tabstop>mpTxtScanInterval</tabstop>
+  <tabstop>mpTxtLower</tabstop>
+  <tabstop>mpTxtUpper</tabstop>
+  <tabstop>mpChkDisablePlots</tabstop>
+  <tabstop>mpChkDisableTasks</tabstop>
+  <tabstop>mpCmdGenerate</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mpCmdBrowse</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPLGenerateWidget</receiver>
+   <slot>browseDirectory()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>442</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpCmdGenerate</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPLGenerateWidget</receiver>
+   <slot>generateFiles()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>229</x>
+     <y>161</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>browseDirectory()</slot>
+  <slot>generateFiles()</slot>
+ </slots>
+</ui>
