@@ -1,3 +1,8 @@
+// Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 #include "CQPLGenerateWidget.h"
 #include "qtUtilities.h"
 #include "DataModelGUI.h"
@@ -14,15 +19,31 @@
 CQPLGenerateWidget::CQPLGenerateWidget(QWidget * parent)
 {
   setupUi(this);
-  
+
   CTaskEnum::Method validMethods[] = {
-    CTaskEnum::Method::NelderMead,
-    CTaskEnum::Method::LevenbergMarquardt,
+    // CTaskEnum::Method::NelderMead,
+    // CTaskEnum::Method::LevenbergMarquardt,
+    // CTaskEnum::Method::HookeJeeves,
+    // CTaskEnum::Method::Statistics,
+    CTaskEnum::Method::DifferentialEvolution,
+    CTaskEnum::Method::SRES,
+    CTaskEnum::Method::EvolutionaryProgram,
+    CTaskEnum::Method::GeneticAlgorithm,
+    CTaskEnum::Method::GeneticAlgorithmSR,
     CTaskEnum::Method::HookeJeeves,
-    CTaskEnum::Method::Statistics,
+    CTaskEnum::Method::LevenbergMarquardt,
+    CTaskEnum::Method::NL2SOL,
+    CTaskEnum::Method::NelderMead,
+    CTaskEnum::Method::ParticleSwarm,
+    CTaskEnum::Method::Praxis,
+    CTaskEnum::Method::RandomSearch,
+    CTaskEnum::Method::ScatterSearch,
+    CTaskEnum::Method::SimulatedAnnealing,
+    CTaskEnum::Method::SteepestDescent,
+    CTaskEnum::Method::TruncatedNewton,
     CTaskEnum::Method::UnsetMethod
   };
-  
+
   mpMethodWidget->setValidMethods(validMethods);
   mpMethodWidget->showMethodParameters(true);
   mpMethodWidget->showMethodCheckbox(true);
@@ -49,10 +70,10 @@ void CQPLGenerateWidget::loadSettings(const CProfileSettings * pSettings)
   mpChkDeleteExisting->setChecked(pSettings->getValue< bool >("Delete Existing"));
   bool isPE = pSettings->getValue< bool >("IsParameterEstimation");
   mpChkIsParameterEstimation->setChecked(isPE);
-  
+
   if (CRootContainer::getDatamodelList()->size() == 0)
     return;
-  
+
   auto taskName = isPE ? CTaskEnum::TaskName[CTaskEnum::Task::parameterFitting]
   :CTaskEnum::TaskName[CTaskEnum::Task::optimization];
   auto& pDataModel = (*CRootContainer::getDatamodelList())[0];
@@ -69,7 +90,7 @@ void CQPLGenerateWidget::saveSettings(CProfileSettings * pSettings)
   pSettings->setValue< bool >("IsParameterEstimation", mpChkIsParameterEstimation->isChecked());
   pSettings->setValue< bool >("Run Statistics", mpChkRunStatistics->isChecked());
   pSettings->setValue< bool >("Delete Existing", mpChkDeleteExisting->isChecked());
-  
+
   auto * pGroup = pSettings->getGroup("Generate");
   if (!pGroup)
     return;
@@ -82,8 +103,6 @@ void CQPLGenerateWidget::saveSettings(CProfileSettings * pSettings)
   pGroup->setValue< std::string >("Upper Adjustment", TO_UTF8(mpTxtUpper->text()));
   pGroup->setValue< bool >("Disable Other Tasks", mpChkDisableTasks->isChecked());
   pGroup->setValue< bool >("Disable Other Plots", mpChkDisablePlots->isChecked());
-  
-  
 }
 
 void CQPLGenerateWidget::browseDirectory()
@@ -124,7 +143,7 @@ void CQPLGenerateWidget::generateFiles()
       QFile::remove(fullPath);
     }
   }
-  
+
   generator.generateProfiles(&settings, dmGui->getDataModel());
 
   mpTxtMessages->clear();
