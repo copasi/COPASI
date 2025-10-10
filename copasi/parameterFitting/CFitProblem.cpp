@@ -1176,7 +1176,7 @@ bool CFitProblem::calculate()
                             (*ppConstraint)->calculateConstraintViolation();
                       }
 
-                    if (mStoreResults)
+                    if (mStoreResults && DependentValues)
                       {
                         mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
                       }
