@@ -1162,7 +1162,7 @@ bool CFitProblem::calculate()
                           }
                       }
 
-                    if (Advanced)
+                    if (Advanced && mExperimentConstraintUpdates.size() > 0)
                       {
                         // We check after each simulation step whether the constraints are violated.
                         // Make sure the constraint values are up to date.
