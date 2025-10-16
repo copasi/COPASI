@@ -178,10 +178,16 @@ public:
   void sort();
 
   /**
-   * Retrieve the list of file names
+   * Retrieve the list of file names (this will modify the filenames of all experiments to the current position)
    * @return std::vector< std::string > fileNames
    */
   std::vector< std::string > getFileNames() const;
+
+  /**
+   * Retrieve the list of file names (this will retrieve the filenames without modification)
+   * @return std::vector< std::string > fileNames
+   */
+  std::vector< std::string > getFileNamesOnly() const;
 
   /**
    * Retrieve the number of data points of all experiments combined.

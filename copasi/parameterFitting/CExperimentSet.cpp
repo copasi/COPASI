@@ -489,6 +489,24 @@ std::vector< std::string > CExperimentSet::getFileNames() const
   return List;
 }
 
+std::vector< std::string > CExperimentSet::getFileNamesOnly() const
+{
+  std::vector< std::string > List;
+  std::string currentFile = "";
+
+  std::vector< CExperiment * >::iterator it = mpExperiments->begin() + mNonExperiments;
+  std::vector< CExperiment * >::iterator end = mpExperiments->end();
+
+  for (; it != end; ++it)
+    if (currentFile != (*it)->getFileNameOnly())
+      {
+        currentFile = (*it)->getFileNameOnly();
+        List.push_back(currentFile);
+      }
+
+  return List;
+}
+
 size_t CExperimentSet::getDataPointCount() const
 {
   size_t Count = 0;
