@@ -140,11 +140,14 @@ void CQPLGenerateWidget::generateFiles()
   if (!dmGui)
     return;
 
+  // clear previous messages
+  mpTxtMessages->clear();
+
   if (settings.at("Delete Existing").get<bool>())
   {
     auto dir = QDir(mpTxtTarget->text());
     QStringList filters;
-        filters << "*profile*.  cps" // Files containing "profile" and ending with "cps"
+        filters << "*profile*.cps" // Files containing "profile" and ending with "cps"
                 << "*_high.txt"   // Files ending with "_high.txt"
                 << "*_low.txt";   // Files ending with "_low.txt"
 
@@ -164,6 +167,5 @@ void CQPLGenerateWidget::generateFiles()
 
   generator.generateProfiles(&settings, dmGui->getDataModel());
 
-  mpTxtMessages->clear();
   mpTxtMessages->setPlainText(FROM_UTF8(generator.getMessages()));
 }
