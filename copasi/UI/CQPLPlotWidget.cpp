@@ -23,14 +23,14 @@ void CQPLPlotWidget::loadSettings(const CProfileSettings * pSettings)
 {
   mpTxtTarget->setText(FROM_UTF8(pSettings->getDirectory()));
 
-  auto * pGroup = pSettings->getGroup("Plot");
-  if (!pGroup)
-    return;
+  auto & plot = (*pSettings)["Plot"];
 
-  mpTxtScaleBottom->setText(QString::number(pGroup->getValue< double >("Scale Bottom")));
-  mpTxtScaleTop->setText(QString::number(pGroup->getValue< double >("Scale Top")));
-  mpTxtThresholds->setText(FROM_UTF8(pGroup->getValue< std::string >("Thresholds")));
-  mpTxtVertical->setText(FROM_UTF8(pGroup->getValue< std::string >("Vertical Lines")));
+  mpTxtScaleBottom->setText(QString::number(plot.at("Scale Bottom").get<double>()));
+  mpTxtScaleTop->setText(QString::number(plot.at("Scale Top").get<double>()));
+  mpTxtThresholds->setText(FROM_UTF8(plot.at("Thresholds").get<std::string>()));
+  mpTxtVertical->setText(FROM_UTF8(plot.at("Vertical Lines").get<std::string>()));
+
+  mpSettings = const_cast< CProfileSettings * >(pSettings);
 }
 
 void CQPLPlotWidget::saveSettings(CProfileSettings * pSettings)
@@ -38,17 +38,16 @@ void CQPLPlotWidget::saveSettings(CProfileSettings * pSettings)
   if (!pSettings)
     return;
 
-  pSettings->setValue< std::string >("Directory", TO_UTF8(mpTxtTarget->text()));
-  
-  auto * pGroup = pSettings->getGroup("Plot");
-  if (!pGroup)
-    return;
+  (*pSettings)["Directory"] = TO_UTF8(mpTxtTarget->text());
 
-  pGroup->setValue<double>("Scale Bottom", mpTxtScaleBottom->text().toDouble());
-  pGroup->setValue<double>("Scale Top", mpTxtScaleTop->text().toDouble());
-  pGroup->setValue<std::string>("Thresholds", TO_UTF8(mpTxtThresholds->text()));
-  pGroup->setValue<std::string>("Vertical Lines", TO_UTF8(mpTxtVertical->text()));
-  
+  auto & plot = (*pSettings)["Plot"];
+
+  plot["Scale Bottom"] = mpTxtScaleBottom->text().toDouble();
+  plot["Scale Top"] = mpTxtScaleTop->text().toDouble();
+  plot["Thresholds"] = TO_UTF8(mpTxtThresholds->text());
+  plot["Vertical Lines"] = TO_UTF8(mpTxtVertical->text());
+
+  pSettings->save();
 }
 
 QResultMap CQPLPlotWidget::globFiles(const QString& directory, const QString& pattern)
@@ -185,6 +184,8 @@ std::vector< std::pair<double, QPen> > computeVerticals(const QStringList& verti
 
 void CQPLPlotWidget::generatePlots()
 {
+  saveSettings(mpSettings);
+
   mMap = globFiles(mpTxtTarget->text(), "*.txt");
 
   // clear all widgets from mpScrollContents widget
@@ -212,13 +213,20 @@ void CQPLPlotWidget::generatePlots()
   if (file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
       QTextStream stream(&file);
-      auto info = nlohmann::json::parse(stream.readAll().toStdString());
-      obj_val = info["obj"].get<double>();
-      num_params = info["num_params"].get<int>();
-      num_data = info["num_data"].get<int>();
-      param_sds = info["param_sds"].get<std::vector<double>>();
-      param_values = info["param_values"].get< std::vector< double > >();
-      param_names = info["param_names"].get< std::vector< std::string > >();
+      try
+      {
+          auto info = nlohmann::json::parse(stream.readAll().toStdString());
+          obj_val = info["obj"].get< double >();
+          num_params = info["num_params"].get< int >();
+          num_data = info["num_data"].get< int >();
+          param_values = info["param_values"].get< std::vector< double > >();
+          param_names = info["param_names"].get< std::vector< std::string > >();
+          param_sds = info["param_sds"].get< std::vector< double > >();
+        }
+      catch (...)
+      {
+          param_sds.resize(param_values.size());
+      }
       file.close();
     }
 
@@ -277,6 +285,9 @@ void CQPLPlotWidget::generatePlots()
       x.append(parts[0].toDouble());
       y.append(parts[2].toDouble());
     }
+
+    if (x.empty() || y.empty())
+      continue;
 
     // compute y_min and y_max
     auto y_min = *std::min_element(y.begin(), y.end());

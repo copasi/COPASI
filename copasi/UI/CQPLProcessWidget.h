@@ -54,6 +54,7 @@ class CQPLProcessWidget : public QWidget
   QList<CQPLProcessWorker*> mWorkers;
   QList<CQPLProcessWorker*> mAvailableWorkers;
   QStringList mFiles;
+  CProfileSettings * mpSettings;
 
 public:
   CQPLProcessWidget(QWidget * parent = 0);

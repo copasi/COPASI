@@ -17,6 +17,8 @@
 #include <copasi/CopasiTaskTypes.h>
 
 CQPLGenerateWidget::CQPLGenerateWidget(QWidget * parent)
+  : QWidget(parent)
+  , mpOptTask(NULL)
 {
   setupUi(this);
 
@@ -49,26 +51,31 @@ CQPLGenerateWidget::CQPLGenerateWidget(QWidget * parent)
   mpMethodWidget->showMethodCheckbox(true);
 }
 
+CQPLGenerateWidget::~CQPLGenerateWidget()
+{
+  mpMethodWidget->setTask(NULL);
+  pdelete(mpOptTask);
+}
+
 void CQPLGenerateWidget::loadSettings(const CProfileSettings * pSettings)
 {
   if (!pSettings)
     return;
 
   mpTxtTarget->setText(FROM_UTF8(pSettings->getDirectory()));
-  auto * pGroup = pSettings->getGroup("Generate");
-  if (!pGroup)
-    return;
 
-  mpTxtPrefix->setText(FROM_UTF8(pGroup->getValue<std::string>("Prefix")));
-  mpTxtIterations->setText(QString::number(pGroup->getValue< int >("Iterations")));
-  mpTxtScanInterval->setText(QString::number(pGroup->getValue< int >("Scan Interval")));
-  mpTxtLower->setText(FROM_UTF8(pGroup->getValue< std::string >("Lower Adjustment")));
-  mpTxtUpper->setText(FROM_UTF8(pGroup->getValue< std::string >("Upper Adjustment")));
-  mpChkDisableTasks->setChecked(pGroup->getValue< bool >("Disable Other Tasks"));
-  mpChkDisablePlots->setChecked(pGroup->getValue< bool >("Disable Other Plots"));
-  mpChkRunStatistics->setChecked(pSettings->getValue< bool >("Run Statistics"));
-  mpChkDeleteExisting->setChecked(pSettings->getValue< bool >("Delete Existing"));
-  bool isPE = pSettings->getValue< bool >("IsParameterEstimation");
+  mpTxtPrefix->setText(FROM_UTF8((*pSettings).at("Prefix").get<std::string>()));
+
+  auto & generate = (*pSettings)["Generate"];
+  mpTxtIterations->setText(QString::number(generate.at("Iterations").get<int>()));
+  mpTxtScanInterval->setText(QString::number(generate.at("Scan Interval").get<int>()));
+  mpTxtLower->setText(FROM_UTF8(generate.at("Lower Adjustment").get<std::string>()));
+  mpTxtUpper->setText(FROM_UTF8(generate.at("Upper Adjustment").get<std::string>()));
+  mpChkDisableTasks->setChecked(generate.at("Disable Other Tasks").get<bool>());
+  mpChkDisablePlots->setChecked(generate.at("Disable Other Plots").get<bool>());
+  mpChkRunStatistics->setChecked((*pSettings)["Run Statistics"]);
+  mpChkDeleteExisting->setChecked((*pSettings)["Delete Existing"]);
+  bool isPE = (*pSettings)["IsParameterEstimation"];
   mpChkIsParameterEstimation->setChecked(isPE);
 
   if (CRootContainer::getDatamodelList()->size() == 0)
@@ -77,8 +84,12 @@ void CQPLGenerateWidget::loadSettings(const CProfileSettings * pSettings)
   auto taskName = isPE ? CTaskEnum::TaskName[CTaskEnum::Task::parameterFitting]
   :CTaskEnum::TaskName[CTaskEnum::Task::optimization];
   auto& pDataModel = (*CRootContainer::getDatamodelList())[0];
-  mpMethodWidget->setTask(dynamic_cast<CCopasiTask*>(&pDataModel.getTaskList()->operator[](taskName)));
-  mpMethodWidget->setActiveMethod((CTaskEnum::Method)(pGroup->getValue<int>("Method")));
+  mpMethodWidget->setTask(NULL);
+  pdelete(mpOptTask);
+  mpOptTask = isPE ? new CFitTask(*dynamic_cast< CFitTask * >(&pDataModel.getTaskList()->operator[](taskName)), NO_PARENT)
+                   : new COptTask(*dynamic_cast< COptTask * >(&pDataModel.getTaskList()->operator[](taskName)), NO_PARENT);
+  mpMethodWidget->setTask(mpOptTask);
+  mpMethodWidget->setActiveMethod((CTaskEnum::Method)(generate.at("Method").get<int>()));
 }
 
 void CQPLGenerateWidget::saveSettings(CProfileSettings * pSettings)
@@ -86,23 +97,29 @@ void CQPLGenerateWidget::saveSettings(CProfileSettings * pSettings)
   if (!pSettings)
     return;
 
-  pSettings->setValue< std::string >("Directory", TO_UTF8(mpTxtTarget->text()));
-  pSettings->setValue< bool >("IsParameterEstimation", mpChkIsParameterEstimation->isChecked());
-  pSettings->setValue< bool >("Run Statistics", mpChkRunStatistics->isChecked());
-  pSettings->setValue< bool >("Delete Existing", mpChkDeleteExisting->isChecked());
+  (*pSettings)["Directory"] = TO_UTF8(mpTxtTarget->text());
+  (*pSettings)["IsParameterEstimation"] = mpChkIsParameterEstimation->isChecked();
+  (*pSettings)["Run Statistics"] = mpChkRunStatistics->isChecked();
+  (*pSettings)["Delete Existing"] = mpChkDeleteExisting->isChecked();
 
-  auto * pGroup = pSettings->getGroup("Generate");
-  if (!pGroup)
-    return;
+  auto & generate = (*pSettings)["Generate"];
 
-  pGroup->setValue< std::string >("Prefix", TO_UTF8(mpTxtPrefix->text()));
-  pGroup->setValue< int >("Method", (int) mpMethodWidget->getActiveMethodType());
-  pGroup->setValue< int >("Iterations", mpTxtIterations->text().toInt());
-  pGroup->setValue< int >("Scan Interval", mpTxtScanInterval->text().toInt());
-  pGroup->setValue< std::string >("Lower Adjustment", TO_UTF8(mpTxtLower->text()));
-  pGroup->setValue< std::string >("Upper Adjustment", TO_UTF8(mpTxtUpper->text()));
-  pGroup->setValue< bool >("Disable Other Tasks", mpChkDisableTasks->isChecked());
-  pGroup->setValue< bool >("Disable Other Plots", mpChkDisablePlots->isChecked());
+  generate["Prefix"] = TO_UTF8(mpTxtPrefix->text());
+  generate["Method"] = (int) mpMethodWidget->getActiveMethodType();
+  generate["Iterations"] = mpTxtIterations->text().toInt();
+  generate["Scan Interval"] = mpTxtScanInterval->text().toInt();
+  generate["Lower Adjustment"] = TO_UTF8(mpTxtLower->text());
+  generate["Upper Adjustment"] = TO_UTF8(mpTxtUpper->text());
+  generate["Disable Other Tasks"] = mpChkDisableTasks->isChecked();
+  generate["Disable Other Plots"] = mpChkDisablePlots->isChecked();
+
+  // save method settings
+  if (mpOptTask)
+    {
+      mpMethodWidget->saveMethod();
+      generate["Settings"] = CProfileSettings::toJson(mpOptTask->getMethod());
+    }
+
 }
 
 void CQPLGenerateWidget::browseDirectory()
@@ -123,7 +140,7 @@ void CQPLGenerateWidget::generateFiles()
   if (!dmGui)
     return;
 
-  if (settings.getValue<bool>("Delete Existing"))
+  if (settings.at("Delete Existing").get<bool>())
   {
     auto dir = QDir(mpTxtTarget->text());
     QStringList filters;
@@ -140,6 +157,7 @@ void CQPLGenerateWidget::generateFiles()
     QStringList matchingFiles = dir.entryList(QDir::Files | QDir::NoDotAndDotDot); // Apply filter here too for clarity
     for (const QString &fileName : matchingFiles) {
       QString fullPath = dir.absoluteFilePath(fileName);
+      mpTxtMessages->appendPlainText(QString("Deleting %1").arg(fileName));
       QFile::remove(fullPath);
     }
   }

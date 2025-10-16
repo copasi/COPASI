@@ -22,6 +22,7 @@ class CQPLPlotWidget : public QWidget
 
   QStringList mFiles;
   QResultMap mMap;
+  CProfileSettings * mpSettings;
 
 public:
   CQPLPlotWidget(QWidget * parent = 0);

@@ -46,7 +46,6 @@ class CProfileGenerator
 
     std::string mPrefix;
     std::string mDirectory;
-    CCopasiParameterGroup * mpGroup;
 
     std::string mLowerAdjustment;
     std::string mUpperAdjustment;

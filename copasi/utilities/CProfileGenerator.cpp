@@ -30,7 +30,7 @@ void CProfileGenerator::getCurrentSolution()
   if (!mpDM || !mpSettings)
     return;
 
-  mCurrentSolution.mIsParameterEstimation = mpSettings->getValue< bool >("IsParameterEstimation");
+  mCurrentSolution.mIsParameterEstimation = (*mpSettings)["IsParameterEstimation"];
 
   auto& task = mCurrentSolution.mIsParameterEstimation ? (*mpDM->getTaskList())["Parameter Estimation"]
                                                          : (*mpDM->getTaskList())["Optimization"];
@@ -41,7 +41,7 @@ void CProfileGenerator::getCurrentSolution()
     return;
   
   // run current solution statistics if needed
-  if (mpSettings->getValue< bool >("Run Statistics"))
+  if ((*mpSettings)["Run Statistics"])
   {
     auto method = task.getMethod()->getSubType();
     auto report = task.getReport().getTarget();
@@ -122,24 +122,33 @@ void CProfileGenerator::getCurrentSolution()
 
 void CProfileGenerator::saveBaseModel()
 {
-  if (!mpSettings || !mpDM || !mpGroup)
+  if (!mpSettings || !mpDM || !mpSettings)
     return;
 
-  int scanInterval = mpGroup->getValue< int >("Scan Interval");
-  int numIterations = mpGroup->getValue< int >("Iterations");
+  auto & generate = (*mpSettings)["Generate"];
+  int scanInterval = generate.at("Scan Interval").get<int>();
+  int numIterations = generate.at("Iterations").get<int>();
 
   // change opt method and apply method settings
   auto& task = mCurrentSolution.mIsParameterEstimation ? (*mpDM->getTaskList())["Parameter Estimation"]
                                                        : (*mpDM->getTaskList())["Optimization"];
 
-  task.setMethodType((CTaskEnum::Method) mpGroup->getValue< int >("Method"));
+  auto settingsStr = mpSettings->dump(4);
+
+  task.setMethodType((CTaskEnum::Method) generate.at("Method").get<int>());
 
   if (task.getMethod()->getParameter("Iteration Limit"))
-    task.getMethod()->getParameter("Iteration Limit")->setValue<int>(numIterations);
+    task.getMethod()->getParameter("Iteration Limit")->setValue< int >(numIterations);
+
+  // apply method specific parameters
+  if (generate.contains("Settings"))
+  {
+      CProfileSettings::fromJson(task.getMethod(), generate.at("Settings"));
+  }
 
   // make the adjustments from the settings
   // disable tasks
-  if (mpGroup->getValue< bool >("Disable Other Tasks"))
+  if (generate.at("Disable Other Tasks").get<bool>())
   {
     // disable all tasks except the one we are interested in
     auto& tasks = *mpDM->getTaskList();
@@ -150,7 +159,7 @@ void CProfileGenerator::saveBaseModel()
   }
 
   // disable existing plots
-  if (mpGroup->getValue< bool >("Disable Other Plots"))
+  if (generate.at("Disable Other Plots").get<bool>())
   {
     auto& plots = *mpDM->getPlotDefinitionList();
     for (auto& plot : plots)
@@ -226,7 +235,6 @@ CProfileGenerator::CProfileGenerator()
   , mpSettings(NULL)
   , mpOptTask(NULL)
   , mpOptProblem(NULL)
-  , mpGroup(NULL)
 {
 }
 
@@ -240,25 +248,28 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
     return;
 
   mpSettings = pSettings;
+
+  // save settings
+  mpSettings->save();
   
   // first of all create a copy of the current model
   // save the model in the target directory, including experimental data
   // for parameter estimation tasks
 
   // create target directory, if it does not exist yet
-  mDirectory = mpSettings->getValue< std::string >("Directory");
+  mDirectory = (*mpSettings)["Directory"];
   if (!CDirEntry::createDir(mDirectory))
     {
       mMessages << "Could not create target directory: " << mDirectory << std::endl;
       return;
     }
 
+  
   // save original model in target directory
-  if (mCurrentSolution.mIsParameterEstimation)
-    pDM->copyExperimentalDataTo(mDirectory);
-
   mCpsModelFile = mDirectory + "/" + mPrefix + "original.cps";
+  auto oldFileName = pDM->getFileName();
   pDM->saveModel(mCpsModelFile, NULL, true);
+  pDM->setFileName(oldFileName);
 
   // now create a new data model, and loading the file we just saved
   mpDM = CRootContainer::addDatamodel();
@@ -267,6 +278,12 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
       mMessages << "E: Could not load model from file: " << mCpsModelFile << std::endl;
       return;
     }
+
+  // save original model in target directory
+  if (mCurrentSolution.mIsParameterEstimation)
+    mpDM->copyExperimentalDataTo(mDirectory);
+
+  mpDM->saveModel(mCpsModelFile, NULL, true);
 
   // get current solution
   getCurrentSolution();
@@ -287,15 +304,7 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
     return;
   }
 
-  mpGroup = mpSettings->getGroup("Generate");
-  if (!mpGroup)
-  {
-    mMessages << "Could not find generate settings, stopping." << std::endl;
-    return;
-  }
-
-
-  mPrefix = mpGroup->getValue< std::string >("Prefix");
+  mPrefix = (*mpSettings)["Prefix"];
 
   saveBaseModel();
 
@@ -318,8 +327,8 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
   // now, for each parameter, generate a copasi file with a scan task
   // that runs a scan for the selected parameter while re-optimizing the 
   // other parameters
-  mLowerAdjustment = mpGroup->getValue< std::string >("Lower Adjustment");
-  mUpperAdjustment = mpGroup->getValue< std::string >("Upper Adjustment");
+  mLowerAdjustment = (*mpSettings)["Generate"].at("Lower Adjustment").get<std::string>();
+  mUpperAdjustment = (*mpSettings)["Generate"].at("Upper Adjustment").get<std::string>();
 
   auto& task = mCurrentSolution.mIsParameterEstimation ? (*mpDM->getTaskList())["Parameter Estimation"]
                                                          : (*mpDM->getTaskList())["Optimization"];
@@ -327,7 +336,10 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
   auto* pProblem = dynamic_cast<COptProblem*>(task.getProblem());
 
   CCopasiParameterGroup optItems = *pProblem->getGroup("OptimizationItemList");
-  
+
+  auto itemsJson = CProfileSettings::toJson(&optItems);
+  auto str = itemsJson.dump(4);
+
   for (int i = 0; i < mCurrentSolution.mParameterCNs.size(); ++i)
   {
     auto& cn = mCurrentSolution.mParameterCNs[i];
@@ -338,8 +350,8 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
     auto adjusted_lower = getValueAdjustment(value, mLowerAdjustment, value, std_dev);
     auto adjusted_upper = getValueAdjustment(value, mUpperAdjustment, value, std_dev);
 
-    auto scan_interval = mpGroup->getValue< int >("Scan Interval");
-    auto num_iterations = mpGroup->getValue< int >("Iterations");
+    auto scan_interval = (*mpSettings)["Generate"].at("Scan Interval").get<int>();
+    auto num_iterations = (*mpSettings)["Generate"].at("Iterations").get<int>();
 
     // remove the opt items for the current cn
     
@@ -406,6 +418,10 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
     // remove the report
     mpDM->getReportDefinitionList()->removeReportDefinition(report->getKey());
 
+    // remove the plot
+    if (plot)
+    mpDM->getPlotDefinitionList()->removePlotSpec(plot->getKey());
+
     // now the other direction
     direction = "low";
     pProblem->clearScanItems();
@@ -416,6 +432,11 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
     item->setValue("log", false);
 
     scan_task.updateMatrices();
+
+    plot = COutputAssistant::createDefaultOutput(251, &scan_task, mpDM);
+    if (plot)
+      plot->setObjectName(std::string("opt = ") + std::to_string(value));
+
     report = COutputAssistant::createDefaultOutput(1251, &scan_task, mpDM);
     dynamic_cast<CReportDefinition*>(report)->setPrecision(10);
     scan_task.getReport().setTarget(mDirectory + "/" + mPrefix + "profile_" + std::to_string(i) + "_" + direction + ".txt");
@@ -424,6 +445,9 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
     mpDM->saveModel(filename, NULL, true);
     // remove the report
     mpDM->getReportDefinitionList()->removeReportDefinition(report->getKey());
+    // remove the plot
+    if (plot)
+      mpDM->getPlotDefinitionList()->removePlotSpec(plot->getKey());
 
   }
 

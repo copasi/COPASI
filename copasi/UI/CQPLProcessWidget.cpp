@@ -78,9 +78,11 @@ void CQPLProcessWidget::loadSettings(const CProfileSettings * pSettings)
   if (!pSettings)
     return;
 
+  mpSettings = const_cast<CProfileSettings*>(pSettings);
+
   mpTxtDirectory->setText(FROM_UTF8(pSettings->getDirectory()));
   mpTxtCopasiSE->setText(FROM_UTF8(pSettings->getCopasiSE()));
-  mpSpnNumProcesses->setValue(pSettings->getValue< int >("Num Processes"));
+  mpSpnNumProcesses->setValue((*pSettings)["Num Processes"]);
 }
 
 void CQPLProcessWidget::saveSettings(CProfileSettings * pSettings)
@@ -88,9 +90,11 @@ void CQPLProcessWidget::saveSettings(CProfileSettings * pSettings)
   if (!pSettings)
     return;
 
-  pSettings->setValue< std::string >("Directory", TO_UTF8(mpTxtDirectory->text()));
-  pSettings->setValue< int >("Num Processes", mpSpnNumProcesses->value());
-  pSettings->setValue< std::string >("CopasiSE", TO_UTF8(mpTxtCopasiSE->text()));
+  (*pSettings)["Directory"] = TO_UTF8(mpTxtDirectory->text());
+  (*pSettings)["Num Processes"] = mpSpnNumProcesses->value();
+  (*pSettings)["CopasiSE"] = TO_UTF8(mpTxtCopasiSE->text());
+
+  pSettings->save();
 }
 
 void CQPLProcessWidget::browseCopasiSE()
@@ -123,6 +127,8 @@ QStringList CQPLProcessWidget::globFiles(const QString& directory, const QString
 
 void CQPLProcessWidget::processDirectory()
 {
+  saveSettings(mpSettings);
+
   // glob all cps files from the directory
   mFiles = globFiles(mpTxtDirectory->text(), "*profile_*.cps");
   mpTxtOutput->append(QString("Found %1 files").arg(mFiles.count()));

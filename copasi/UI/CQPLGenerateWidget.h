@@ -7,15 +7,20 @@
 class QAction;
 class QPushButton;
 class CProfileSettings;
+class COptTask;
 
 class CQPLGenerateWidget : public QWidget
-  , public Ui::CQPLGenerateWidget, public CQProfileWidget
+  , public Ui::CQPLGenerateWidget
+  , public CQProfileWidget
 {
 
   Q_OBJECT
+private:
+  COptTask * mpOptTask;
 
 public:
-  CQPLGenerateWidget(QWidget * parent = 0); 
+  CQPLGenerateWidget(QWidget * parent = 0);
+  virtual ~CQPLGenerateWidget();
 
   virtual void loadSettings(const CProfileSettings * pSettings);
   virtual void saveSettings(CProfileSettings * pSettings);
