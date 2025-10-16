@@ -154,7 +154,7 @@ void CQPLProcessWidget::processDirectory()
   {
     auto* pWorker = mAvailableWorkers.takeFirst();
     // load the file
-    mpTxtOutput->append("start file ...");
+    mpTxtOutput->append(QString("start file: %1").arg(file));
     pWorker->start(mpTxtDirectory->text() + "/" + file);
     mFiles.removeAll(file);
     mWorkers.append(pWorker);
@@ -163,10 +163,18 @@ void CQPLProcessWidget::processDirectory()
 
 void CQPLProcessWidget::cancelRun()
 {
+  // empty list of files to submit (otherwise new ones will be added)
+  mpTxtOutput->append("clearing file list ...");
+  mFiles.clear();
+
+  // cancel all workers
   for (auto* pWorker : mWorkers)
   {
     pWorker->cancel();
   }
+
+  // reset status
+  mpProcessBar->setValue(0);
 }
 
 void CQPLProcessWidget::workerFinished(CQPLProcessWorker* pWorker)
