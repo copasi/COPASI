@@ -127,11 +127,19 @@ QStringList CQPLProcessWidget::globFiles(const QString& directory, const QString
 
 void CQPLProcessWidget::processDirectory()
 {
+  mpCmdRun->setEnabled(false);
+
   saveSettings(mpSettings);
 
   // glob all cps files from the directory
   mFiles = globFiles(mpTxtDirectory->text(), "*profile_*.cps");
-  mpTxtOutput->append(QString("Found %1 files").arg(mFiles.count()));
+  mpTxtOutput->setPlainText(QString("Found %1 files").arg(mFiles.count()));
+
+  if (mFiles.isEmpty())
+  {
+    mpCmdRun->setEnabled(true);
+    return;
+  }
 
   // set up process bar 
   mpProcessBar->setRange(0, mFiles.size());
@@ -175,6 +183,9 @@ void CQPLProcessWidget::cancelRun()
 
   // reset status
   mpProcessBar->setValue(0);
+
+  // enable the run button
+  mpCmdRun->setEnabled(true);
 }
 
 void CQPLProcessWidget::workerFinished(CQPLProcessWorker* pWorker)
@@ -198,6 +209,12 @@ void CQPLProcessWidget::workerFinished(CQPLProcessWorker* pWorker)
     mpTxtOutput->append("removing worker ...");
     mWorkers.removeAll(pWorker);
     delete pWorker;  
+  }
+
+  if (mWorkers.isEmpty() && !mpCmdRun->isEnabled())
+  {
+    mpTxtOutput->append("all done");
+    mpCmdRun->setEnabled(true);
   }
 }
 
