@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QObject>
 #include <QProcess>
+#include <QByteArray>
 
 #include "copasi/UI/ui_CQPLProcessWidget.h"
 #include <copasi/UI/CQProfileWidget.h>
@@ -22,6 +23,9 @@ class CQPLProcessWorker : public QObject
   QString mLabel;
   std::chrono::time_point< std::chrono::high_resolution_clock > mStartTime;
 
+  QByteArray mOutput;
+  QByteArray mError;
+
 public:
   CQPLProcessWorker(const QString& program);
   virtual ~CQPLProcessWorker();
@@ -31,7 +35,7 @@ public:
   void kill();
 
   const QString& currentFile() const;
-  const QString & currentLabel() const;
+  const QString& currentLabel() const;
 
   double getRuntime() const;
   

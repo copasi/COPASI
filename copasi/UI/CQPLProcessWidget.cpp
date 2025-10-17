@@ -60,26 +60,49 @@ void CQPLProcessWorker::kill()
   mpProcess->kill();
 }
 
-void CQPLProcessWorker::handleProcessError(QProcess::ProcessError error)
-{
-  emit errorOccurred(this, QString("Process error: %1").arg(error));
+void CQPLProcessWorker::handleProcessError(QProcess::ProcessError)
+{ 
+  if (!mCancelled)
+  emit errorOccurred(this, QString("Process error: %1").arg(mpProcess->errorString()));
 }
 
 void CQPLProcessWorker::handleProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
   auto endTime = std::chrono::high_resolution_clock::now();
   mRuntime = std::chrono::duration< double >(endTime - mStartTime).count();
+  mOutput += mpProcess->readAllStandardOutput();
+  mError += mpProcess->readAllStandardError();
+  //if (!mOutput.isEmpty() || !mError.isEmpty())
+  //{
+  //    qDebug() << mOutput;
+  //}
   emit finished(this);
+}
+
+QString formatArray(const QString& prefix, const QByteArray& message)
+{
+  QStringList lines = QString::fromUtf8(message).split('\n');
+  QStringList formattedLines;
+  for (const QString &line : lines)
+  {
+    formattedLines << (prefix + ": " + line);
+  }
+  return formattedLines.join('\n');
+
 }
 
 void CQPLProcessWorker::handleStandardOutput()
 {
-  emit output(this, mpProcess->readAllStandardOutput());
+  auto newOutput = mpProcess->readAllStandardOutput();
+  mOutput += newOutput;
+  emit output(this, formatArray(mLabel, newOutput));
 }
 
 void CQPLProcessWorker::handleStandardError()
 {
-  emit output(this, mpProcess->readAllStandardError());
+  auto newError = mpProcess->readAllStandardError();
+  mError += newError;
+  emit output(this, formatArray(mLabel, newError));
 }
 
 
