@@ -26,6 +26,18 @@
 
 #include <copasi/utilities/json.hpp>
 
+#include <iomanip>
+#include <sstream>
+
+std::string zeroPad(int number, int width)
+{
+  std::ostringstream oss;
+  oss << std::setw(width) << std::setfill('0') << number;
+  return oss.str();
+}
+
+
+
 void CProfileGenerator::getCurrentSolution()
 {
   if (!mpDM || !mpSettings)
@@ -438,14 +450,14 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
     plot->setObjectName(std::string("opt = ") + std::to_string(value));
     
     auto* report = COutputAssistant::createDefaultOutput(1251, &scan_task, mpDM);
-    scan_task.getReport().setTarget(mDirectory + "/" + mPrefix + "profile_" + std::to_string(i) + "_" + direction + ".txt");
+    scan_task.getReport().setTarget(mDirectory + "/" + mPrefix + "profile_" + zeroPad(i,5) + "_" + direction + ".txt");
     dynamic_cast<CReportDefinition*>(report)->setPrecision(10);
     scan_task.getReport().setAppend(false);
     scan_task.getReport().setConfirmOverwrite(false);
 
 
     // save the model as file with the index and parameter name
-    std::string filename = mDirectory + "/" + mPrefix + "profile_" + std::to_string(i) + "_" + direction + ".cps";
+    std::string filename = mDirectory + "/" + mPrefix + "profile_" + zeroPad(i,5) + "_" + direction + ".cps";
     mpDM->saveModel(filename, NULL, true);
 
     // remove the report
@@ -472,9 +484,9 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
 
     report = COutputAssistant::createDefaultOutput(1251, &scan_task, mpDM);
     dynamic_cast<CReportDefinition*>(report)->setPrecision(10);
-    scan_task.getReport().setTarget(mDirectory + "/" + mPrefix + "profile_" + std::to_string(i) + "_" + direction + ".txt");
+    scan_task.getReport().setTarget(mDirectory + "/" + mPrefix + "profile_" + zeroPad(i,5) + "_" + direction + ".txt");
 
-    filename = mDirectory + "/" + mPrefix + "profile_" + std::to_string(i) + "_" + direction + ".cps";
+    filename = mDirectory + "/" + mPrefix + "profile_" + zeroPad(i,5) + "_" + direction + ".cps";
     mpDM->saveModel(filename, NULL, true);
     // remove the report
     mpDM->getReportDefinitionList()->removeReportDefinition(report->getKey());
