@@ -1,3 +1,8 @@
+// Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 #include "CQPLProcessWidget.h"
 #include "copasi/utilities/CProfileSettings.h"
 #include "qtUtilities.h"
@@ -10,10 +15,10 @@ CQPLProcessWorker::CQPLProcessWorker(const QString& program)
 {
   mpProcess = new QProcess(this);
   mCopasiSE = program;
-  connect(mpProcess, &QProcess::errorOccurred, this, &CQPLProcessWorker::handleProcessError);
-  connect(mpProcess, &QProcess::finished, this, &CQPLProcessWorker::handleProcessFinished);
-  connect(mpProcess, &QProcess::readyReadStandardOutput, this, &CQPLProcessWorker::handleStandardOutput);
-  connect(mpProcess, &QProcess::readyReadStandardError, this, &CQPLProcessWorker::handleStandardError);
+  connect(mpProcess, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(handleProcessError(QProcess::ProcessError)));
+  connect(mpProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(ProcessFinished(int, QProcess::ExitStatus)));
+  connect(mpProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(handleStandardOutput()));
+  connect(mpProcess, SIGNAL(readyReadStandardError()), this, SLOT(handleStandardError()));
   mCancelled = false;
 }
 
@@ -61,7 +66,7 @@ void CQPLProcessWorker::kill()
 }
 
 void CQPLProcessWorker::handleProcessError(QProcess::ProcessError)
-{ 
+{
   if (!mCancelled)
   emit errorOccurred(this, QString("Process error: %1").arg(mpProcess->errorString()));
 }
@@ -88,7 +93,6 @@ QString formatArray(const QString& prefix, const QByteArray& message)
     formattedLines << (prefix + ": " + line);
   }
   return formattedLines.join('\n');
-
 }
 
 void CQPLProcessWorker::handleStandardOutput()
@@ -104,8 +108,6 @@ void CQPLProcessWorker::handleStandardError()
   mError += newError;
   emit output(this, formatArray(mLabel, newError));
 }
-
-
 
 CQPLProcessWidget::CQPLProcessWidget(QWidget * parent)
 {
@@ -153,14 +155,17 @@ void CQPLProcessWidget::browseDirectory()
   mpTxtDirectory->setText(dir);
 }
 
-
-
 QStringList CQPLProcessWidget::globFiles(const QString& directory, const QString& pattern)
 {
   QDir dir(directory, pattern, QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoDotAndDotDot);
-  auto list = dir.entryList();
+  QStringList list = dir.entryList();
+  QStringList filtered;
+
   // remove tmp files
-  list.removeIf([](const QString & s) { return s.startsWith("tmp__"); });
+  for(auto & entry: list)
+    if (!entry.startsWith("tmp__"))
+      filtered.append(entry);
+
   return list;
 }
 
@@ -180,7 +185,7 @@ void CQPLProcessWidget::processDirectory()
     return;
   }
 
-  // set up process bar 
+  // set up process bar
   mpProcessBar->setRange(0, mFiles.size());
   mpProcessBar->setValue(0);
 
@@ -231,9 +236,9 @@ void CQPLProcessWidget::workerFinished(CQPLProcessWorker* pWorker)
 {
   if (!pWorker)
     return;
-  
+
   mpTxtOutput->append(QString("finished %1 in %2 seconds").arg(pWorker->currentLabel()).arg(pWorker->getRuntime()));
-  
+
   // increment the process bar
   mpProcessBar->setValue(mpProcessBar->value() + 1);
 
@@ -248,7 +253,7 @@ void CQPLProcessWidget::workerFinished(CQPLProcessWorker* pWorker)
   {
     mpTxtOutput->append("removing worker ...");
     mWorkers.removeAll(pWorker);
-    delete pWorker;  
+    delete pWorker;
   }
 
   if (mWorkers.isEmpty() && !mpCmdRun->isEnabled())
@@ -267,5 +272,5 @@ void CQPLProcessWidget::workerError(CQPLProcessWorker* pWorker, const QString& e
 void CQPLProcessWidget::workerOutput(CQPLProcessWorker* pWorker, const QString& output)
 {
   // add output to the log
-  mpTxtOutput->append(output);  
+  mpTxtOutput->append(output);
 }
