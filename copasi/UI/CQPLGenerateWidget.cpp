@@ -22,20 +22,22 @@ CQPLGenerateWidget::CQPLGenerateWidget(QWidget * parent)
 {
   setupUi(this);
 
-  CTaskEnum::Method validMethods[] = {
-    // CTaskEnum::Method::NelderMead,
-    // CTaskEnum::Method::LevenbergMarquardt,
-    // CTaskEnum::Method::HookeJeeves,
-    // CTaskEnum::Method::Statistics,
+  CTaskEnum::Method validMethods[] = {    
+    // local
+    CTaskEnum::Method::LevenbergMarquardt,
+    CTaskEnum::Method::NelderMead,
+    CTaskEnum::Method::HookeJeeves,    
+
+    // statistic 
+    CTaskEnum::Method::Statistics,
+
+    // others    
     CTaskEnum::Method::DifferentialEvolution,
     CTaskEnum::Method::SRES,
     CTaskEnum::Method::EvolutionaryProgram,
     CTaskEnum::Method::GeneticAlgorithm,
     CTaskEnum::Method::GeneticAlgorithmSR,
-    CTaskEnum::Method::HookeJeeves,
-    CTaskEnum::Method::LevenbergMarquardt,
     CTaskEnum::Method::NL2SOL,
-    CTaskEnum::Method::NelderMead,
     CTaskEnum::Method::ParticleSwarm,
     CTaskEnum::Method::Praxis,
     CTaskEnum::Method::RandomSearch,
@@ -147,25 +149,31 @@ void CQPLGenerateWidget::generateFiles()
   {
     auto dir = QDir(mpTxtTarget->text());
     QStringList filters;
-        filters << "*profile*.cps" // Files containing "profile" and ending with "cps"
-                << "*_high.txt"   // Files ending with "_high.txt"
-                << "*_low.txt";   // Files ending with "_low.txt"
+    filters << "*profile*.cps" // Files containing "profile" and ending with "cps"
+            << "*_high.txt"    // Files ending with "_high.txt"
+            << "*_low.txt";    // Files ending with "_low.txt"
 
-        // 3. Set the name filters on the QDir object
-        dir.setNameFilters(filters);
+    // 3. Set the name filters on the QDir object
+    dir.setNameFilters(filters);
 
-        // 4. Optionally, set filtering options (e.g., only files, not directories)
-        dir.setFilter(QDir::Files | QDir::NoDotAndDotDot); // To get only files, excluding "." and ".."
+    // 4. Optionally, set filtering options (e.g., only files, not directories)
+    dir.setFilter(QDir::Files | QDir::NoDotAndDotDot); // To get only files, excluding "." and ".."
 
     QStringList matchingFiles = dir.entryList(QDir::Files | QDir::NoDotAndDotDot); // Apply filter here too for clarity
+
+    if (!matchingFiles.empty())
+    mpTxtMessages->appendPlainText(QString("Found %1 existing files from previous run, deleting as requested:").arg(matchingFiles.count()));
+
     for (const QString &fileName : matchingFiles) {
       QString fullPath = dir.absoluteFilePath(fileName);
       mpTxtMessages->appendPlainText(QString("Deleting %1").arg(fileName));
       QFile::remove(fullPath);
     }
+
+    mpTxtMessages->appendPlainText("");
   }
 
   generator.generateProfiles(&settings, dmGui->getDataModel());
 
-  mpTxtMessages->setPlainText(FROM_UTF8(generator.getMessages()));
+  mpTxtMessages->appendPlainText(FROM_UTF8(generator.getMessages()));
 }
