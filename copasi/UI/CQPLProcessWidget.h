@@ -8,6 +8,8 @@
 #include "copasi/UI/ui_CQPLProcessWidget.h"
 #include <copasi/UI/CQProfileWidget.h>
 
+#include <chrono>
+
 class QAction;
 class QPushButton;
 class CProfileSettings;
@@ -16,15 +18,22 @@ class CQPLProcessWorker : public QObject
 {
   Q_OBJECT
 
+  double mRuntime;
+  QString mLabel;
+  std::chrono::time_point< std::chrono::high_resolution_clock > mStartTime;
+
 public:
   CQPLProcessWorker(const QString& program);
   virtual ~CQPLProcessWorker();
 
-  void start(const QString& copasiFile);
+  void start(const QString & copasiFile, const QString & label);
   void cancel();
   void kill();
 
   const QString& currentFile() const;
+  const QString & currentLabel() const;
+
+  double getRuntime() const;
   
 signals:
   void finished(CQPLProcessWorker* pWorker);

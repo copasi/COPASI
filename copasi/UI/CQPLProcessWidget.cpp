@@ -5,6 +5,8 @@
 #include <QFileDialog>
 
 CQPLProcessWorker::CQPLProcessWorker(const QString& program)
+  : QObject()
+  , mRuntime(0.0)
 {
   mpProcess = new QProcess(this);
   mCopasiSE = program;
@@ -20,15 +22,27 @@ CQPLProcessWorker::~CQPLProcessWorker()
   delete mpProcess;
 }
 
-void CQPLProcessWorker::start(const QString& cpsFile)
+void CQPLProcessWorker::start(const QString& cpsFile, const QString& label)
 {
   mCurrentFile = cpsFile;
+  mLabel = label;
   mpProcess->start(mCopasiSE, QStringList() << "--nologo" << cpsFile);
+  mStartTime = std::chrono::high_resolution_clock::now();
 }
 
 const QString& CQPLProcessWorker::currentFile() const
 {
   return mCurrentFile;
+}
+
+const QString & CQPLProcessWorker::currentLabel() const
+{
+  return mLabel;
+}
+
+double CQPLProcessWorker::getRuntime() const
+{
+  return mRuntime;
 }
 
 void CQPLProcessWorker::cancel()
@@ -53,6 +67,8 @@ void CQPLProcessWorker::handleProcessError(QProcess::ProcessError error)
 
 void CQPLProcessWorker::handleProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
+  auto endTime = std::chrono::high_resolution_clock::now();
+  mRuntime = std::chrono::duration< double >(endTime - mStartTime).count();
   emit finished(this);
 }
 
@@ -163,7 +179,7 @@ void CQPLProcessWidget::processDirectory()
     auto* pWorker = mAvailableWorkers.takeFirst();
     // load the file
     mpTxtOutput->append(QString("start file: %1").arg(file));
-    pWorker->start(mpTxtDirectory->text() + "/" + file);
+    pWorker->start(mpTxtDirectory->text() + "/" + file, file);
     mFiles.removeAll(file);
     mWorkers.append(pWorker);
   }
@@ -193,7 +209,7 @@ void CQPLProcessWidget::workerFinished(CQPLProcessWorker* pWorker)
   if (!pWorker)
     return;
   
-  mpTxtOutput->append(QString("finished %1").arg(pWorker->currentFile()));
+  mpTxtOutput->append(QString("finished %1 in %2 seconds").arg(pWorker->currentLabel()).arg(pWorker->getRuntime()));
   
   // increment the process bar
   mpProcessBar->setValue(mpProcessBar->value() + 1);
@@ -201,8 +217,9 @@ void CQPLProcessWidget::workerFinished(CQPLProcessWorker* pWorker)
   // if there are more files process the next one
   if (!mFiles.isEmpty())
   {
-    mpTxtOutput->append("start file ...");
-    pWorker->start(mpTxtDirectory->text() + "/" + mFiles.takeFirst());
+    QString first = mFiles.takeFirst();
+    mpTxtOutput->append("start file: " + first);
+    pWorker->start(mpTxtDirectory->text() + "/" + first, first);
   }
   else
   {
