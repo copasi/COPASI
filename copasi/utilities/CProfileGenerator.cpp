@@ -16,6 +16,7 @@
 #include <copasi/optimization/COptProblem.h>
 #include <copasi/optimization/COptItem.h>
 
+#include <copasi/parameterFitting/CFitTask.h>
 #include <copasi/parameterFitting/CFitProblem.h>
 #include <copasi/parameterFitting/CExperimentSet.h>
 
@@ -127,7 +128,6 @@ void CProfileGenerator::saveBaseModel()
 
   auto & generate = (*mpSettings)["Generate"];
   int scanInterval = generate.at("Scan Interval").get<int>();
-  int numIterations = generate.at("Iterations").get<int>();
 
   // change opt method and apply method settings
   auto& task = mCurrentSolution.mIsParameterEstimation ? (*mpDM->getTaskList())["Parameter Estimation"]
@@ -136,10 +136,6 @@ void CProfileGenerator::saveBaseModel()
   auto settingsStr = mpSettings->dump(4);
 
   task.setMethodType((CTaskEnum::Method) generate.at("Method").get<int>());
-
-  if (task.getMethod()->getParameter("Iteration Limit"))
-    task.getMethod()->getParameter("Iteration Limit")->setValue< int >(numIterations);
-
   // apply method specific parameters
   if (generate.contains("Settings"))
   {
@@ -179,11 +175,11 @@ void CProfileGenerator::saveBaseModel()
 
   pProblem->setSubtask(mCurrentSolution.mIsParameterEstimation ? CTaskEnum::Task::parameterFitting
   : CTaskEnum::Task::optimization);
-  pProblem->setContinueFromCurrentState(false);
+  pProblem->setContinueFromCurrentState(generate.at("Continue from current State").get< bool >());
   pProblem->setOutputInSubtask(false);
   pProblem->setOutputSpecification("");
   pProblem->clearScanItems();
-  pProblem->addScanItem(CScanProblem::SCAN_LINEAR, scanInterval);
+  pProblem->addScanItem(CScanProblem::SCAN_LINEAR, scanInterval);  
 
 
   // save updated base model 
@@ -330,16 +326,20 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
   mLowerAdjustment = (*mpSettings)["Generate"].at("Lower Adjustment").get<std::string>();
   mUpperAdjustment = (*mpSettings)["Generate"].at("Upper Adjustment").get<std::string>();
 
-  auto& task = mCurrentSolution.mIsParameterEstimation ? (*mpDM->getTaskList())["Parameter Estimation"]
-                                                         : (*mpDM->getTaskList())["Optimization"];
+  auto& optTask = dynamic_cast<COptTask&> ((*mpDM->getTaskList())["Optimization"]);
+  auto & fitTask = dynamic_cast< CFitTask & >((*mpDM->getTaskList())["Parameter Estimation"]);
+  auto * pFitProblem = dynamic_cast< CFitProblem * >(fitTask.getProblem());
+
+  auto& task = mCurrentSolution.mIsParameterEstimation ? fitTask
+                                                         : optTask;
 
   auto* pProblem = dynamic_cast<COptProblem*>(task.getProblem());
 
   CCopasiParameterGroup optItems = *pProblem->getGroup("OptimizationItemList");
+  mMessages << "Number of Parameters to optimize: " << optItems.size() << std::endl;
 
   auto itemsJson = CProfileSettings::toJson(&optItems);
-  auto str = itemsJson.dump(4);
-
+  
   for (int i = 0; i < mCurrentSolution.mParameterCNs.size(); ++i)
   {
     auto& cn = mCurrentSolution.mParameterCNs[i];
@@ -353,29 +353,62 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
     auto scan_interval = (*mpSettings)["Generate"].at("Scan Interval").get<int>();
     auto num_iterations = (*mpSettings)["Generate"].at("Iterations").get<int>();
 
-    // remove the opt items for the current cn
+    auto * list = pProblem->getGroup("OptimizationItemList");
     
-    auto* list = pProblem->getGroup("OptimizationItemList");
-    *list = optItems;
-    pProblem->elevateChildren();
-    
-    list = pProblem->getGroup("OptimizationItemList");
-
-    mMessages << "Number of Parameters to optimize: " << list->size() << std::endl;
+    // remove all
     for (int g = list->size() - 1; g >= 0; --g)
+      list->removeParameter(g);
+    
+    // recreate from array
+    for (const auto& current : itemsJson["FitItem"])
     {
-      auto *current = dynamic_cast<COptItem*>( list->getParameter(g));
-      if (!current)
-      {
-        // this item is invalid, get rid of it now
-        list->removeParameter(g);
+      auto currentCN = current["ObjectCN"].get< std::string >();
+
+      // skip current cn
+      if (cn == currentCN)
         continue;
-      }
-      if (current->getObjectCN() == cn)
+      
+      auto affected_cross_validation_experiments = current["Affected Cross Validation Experiments"];
+      auto affected_experiments = current["Affected Experiments"];
+      auto start_value = current["StartValue"].get< double >();
+      auto upper_bound = CRegisteredCommonName(current["UpperBound"].get< std::string >());
+      auto lower_bound = CRegisteredCommonName(current["LowerBound"].get< std::string >());
+
+      auto & newItem = pFitProblem->addFitItem(CRegisteredCommonName(currentCN));
+      newItem.setStartValue(start_value);
+      newItem.setLowerBound(lower_bound);
+      newItem.setUpperBound(upper_bound);
+      
+      if (!affected_experiments.is_null() && affected_experiments.contains("Experiment Key"))
       {
-        list->removeParameter(g);
-        break;
+          std::vector< std::string > keys;
+          try
+          {
+              keys = affected_experiments["Experiment Key"].get< std::vector< std::string > >();
+          }
+          catch (...)
+          {
+              keys.push_back(affected_experiments["Experiment Key"].get< std::string >());
+          }
+          for (const auto & entry : keys)
+            newItem.addExperiment(entry);
       }
+
+      if (!affected_cross_validation_experiments.is_null() && affected_cross_validation_experiments.contains("Experiment Key"))
+        {
+          std::vector< std::string > keys;
+          try
+            {
+              keys = affected_cross_validation_experiments["Experiment Key"].get< std::vector< std::string > >();
+            }
+          catch (...)
+            {
+              keys.push_back(affected_cross_validation_experiments["Experiment Key"].get< std::string >());
+            }
+          for (const auto & entry : keys)
+            newItem.addCrossValidation(entry);
+        }
+
     }
     
     mMessages << "Number of Parameters left to optimize: " << list->size() << std::endl;
@@ -396,7 +429,7 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
     item->setValue("Object", CRegisteredCommonName(cn));
     item->setValue("Minimum", value);
     item->setValue("Maximum", adjusted_upper);
-    item->setValue("log", false);
+    item->setValue("log", (*mpSettings)["Generate"].at("Logarithmic").get<bool>());
 
     scan_task.updateMatrices();
     

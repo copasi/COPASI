@@ -69,12 +69,13 @@ void CQPLGenerateWidget::loadSettings(const CProfileSettings * pSettings)
   mpTxtPrefix->setText(FROM_UTF8((*pSettings).at("Prefix").get<std::string>()));
 
   auto & generate = (*pSettings)["Generate"];
-  mpTxtIterations->setText(QString::number(generate.at("Iterations").get<int>()));
   mpTxtScanInterval->setText(QString::number(generate.at("Scan Interval").get<int>()));
   mpTxtLower->setText(FROM_UTF8(generate.at("Lower Adjustment").get<std::string>()));
   mpTxtUpper->setText(FROM_UTF8(generate.at("Upper Adjustment").get<std::string>()));
   mpChkDisableTasks->setChecked(generate.at("Disable Other Tasks").get<bool>());
   mpChkDisablePlots->setChecked(generate.at("Disable Other Plots").get<bool>());
+  mpChkLog->setChecked(generate.at("Logarithmic").get< bool >());
+  mpChkContinue->setChecked(generate.at("Continue from current State").get< bool >());
   mpChkRunStatistics->setChecked((*pSettings)["Run Statistics"]);
   mpChkDeleteExisting->setChecked((*pSettings)["Delete Existing"]);
   bool isPE = (*pSettings)["IsParameterEstimation"];
@@ -108,12 +109,14 @@ void CQPLGenerateWidget::saveSettings(CProfileSettings * pSettings)
 
   generate["Prefix"] = TO_UTF8(mpTxtPrefix->text());
   generate["Method"] = (int) mpMethodWidget->getActiveMethodType();
-  generate["Iterations"] = mpTxtIterations->text().toInt();
   generate["Scan Interval"] = mpTxtScanInterval->text().toInt();
   generate["Lower Adjustment"] = TO_UTF8(mpTxtLower->text());
   generate["Upper Adjustment"] = TO_UTF8(mpTxtUpper->text());
   generate["Disable Other Tasks"] = mpChkDisableTasks->isChecked();
   generate["Disable Other Plots"] = mpChkDisablePlots->isChecked();
+  generate["Logarithmic"] = mpChkLog->isChecked();
+  generate["Continue from current State"] = mpChkContinue->isChecked();
+
 
   // save method settings
   if (mpOptTask)

@@ -189,6 +189,8 @@ CProfileSettings::CProfileSettings()
   (*this)["Generate"]["Upper Adjustment"] = std::string("+50%");
   (*this)["Generate"]["Disable Other Tasks"] = true;
   (*this)["Generate"]["Disable Other Plots"] = true;
+  (*this)["Generate"]["Logarithmic"] = false;
+  (*this)["Generate"]["Continue from current State"] = false;
 
   // process settings
   (*this)["Num Processes"] = 4;
