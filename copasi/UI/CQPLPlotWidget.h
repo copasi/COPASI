@@ -5,14 +5,32 @@
 #include <QMap>
 #include <tuple>
 
+#include <copasi/config.h>
 #include "copasi/UI/ui_CQPLPlotWidget.h"
 #include <copasi/UI/CQProfileWidget.h>
 
 class QAction;
 class QPushButton;
 class CProfileSettings;
+class QCustomPlot;
 
 typedef QMap<QString, std::pair<QString, QString>> QResultMap;
+
+struct PlotArgs
+{
+  QVector< double > x;
+  QVector< double > y;
+  QString label;
+  double param_value;
+  double param_sd;
+  double obj_val;
+  std::vector< std::pair< double, QPen > > thresholds;
+  std::vector< std::pair< double, QPen > > verticals;
+  double y_min;
+  double y_max;
+  double scale_bottom;
+  double scale_top;
+};
 
 class CQPLPlotWidget : public QWidget
   , public Ui::CQPLPlotWidget, public CQProfileWidget
@@ -23,6 +41,11 @@ class CQPLPlotWidget : public QWidget
   QStringList mFiles;
   QResultMap mMap;
   CProfileSettings * mpSettings;
+  
+  private:
+#ifdef COPASI_USE_QCUSTOMPLOT
+  QCustomPlot * createPlot(const PlotArgs & args, bool allowPopout=true);
+#endif //COPASI_USE_QCUSTOMPLOT
 
 public:
   CQPLPlotWidget(QWidget * parent = 0);

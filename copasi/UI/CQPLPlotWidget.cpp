@@ -1,4 +1,4 @@
-#include "CQPLPlotWidget.h"
+﻿#include "CQPLPlotWidget.h"
 #include "copasi/utilities/CProfileSettings.h"  
 #include "qtUtilities.h"
 #include "CQMultipleSelectionDialog.h"
@@ -9,6 +9,7 @@
 
 #include <copasi/utilities/json.hpp>
 #include <copasi/utilities/stats.hpp>
+#include "copasi/resourcesUI/CQIconResource.h"
 
 #ifdef COPASI_USE_QCUSTOMPLOT
 #include <qcustomplot.h>
@@ -182,6 +183,191 @@ std::vector< std::pair<double, QPen> > computeVerticals(const QStringList& verti
   return computed;
 }
 
+
+void readProfileData(QFile & file, QVector< double > & x, QVector< double > & y, QString & label, bool readLabel)
+{
+  QTextStream stream(&file);
+  bool first = true;
+  while (!stream.atEnd())
+    {
+      auto line = stream.readLine();
+      auto parts = line.split("\t");
+      if (first)
+        {
+          if (readLabel && parts.size() > 0)
+            label = parts[0];
+          first = false;
+          continue;
+        }
+      if (parts.size() < 3)
+        continue;
+      x.append(parts[0].toDouble());
+      y.append(parts[2].toDouble());
+    }
+
+  file.close();
+};
+
+
+#ifdef COPASI_USE_QCUSTOMPLOT
+
+QCustomPlot * CQPLPlotWidget::createPlot(const PlotArgs & args, bool allowPopout)
+{
+  auto & x = args.x;
+  auto & y = args.y;
+  auto & label = args.label;
+  auto & param_value = args.param_value;
+  auto & param_sd = args.param_sd;
+  auto & obj_val = args.obj_val;
+  auto & thresholds = args.thresholds;
+  auto & verticals = args.verticals;
+  auto & y_min = args.y_min;
+  auto & y_max = args.y_max;
+  auto & scale_bottom = args.scale_bottom;
+  auto & scale_top = args.scale_top;
+
+  // add the graph to the plot
+  auto * pPlot = new QCustomPlot();
+
+  auto * pGraph = pPlot->addGraph();
+  pGraph->setPen(QPen(Qt::red, 2));
+  pGraph->setLineStyle(QCPGraph::lsLine);
+  pGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
+  pGraph->setAntialiasedFill(false);
+  pGraph->setAntialiased(true);
+  pGraph->setAntialiased(true);
+
+  pGraph->setData(x, y);
+
+  // set the axis labels
+  pPlot->xAxis->setLabel(label);
+  pPlot->yAxis->setLabel("Value");
+
+  // set the axis ranges
+  pPlot->xAxis->setRange(x.first(), x.last());
+  pPlot->yAxis->setRange(y.first(), y.last());
+
+  // set the plot title
+  pPlot->plotLayout()->insertRow(0);
+  QString title = QString("Profile for %1 (around %2 with sd %3)").arg(label).arg(param_value).arg(param_sd);
+  pPlot->plotLayout()->addElement(0, 0, new QCPTextElement(pPlot, title));
+
+  if (allowPopout)
+    {
+  auto * popOutElement = new QCPTextElement(pPlot, QString("⛶"));
+
+  // Connect the click signal to hide the plot
+  connect(popOutElement, &QCPTextElement::clicked, [=]() {
+    // when pop out is clicked
+    auto * pCopy = createPlot(args, false);
+    // create a qdialog to show the copy
+    QDialog * dialog = new QDialog();
+#ifndef Darwin
+    dialog->setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+#endif // not Darwin
+    dialog->setWindowTitle(title);
+    dialog->setModal(false);
+    dialog->setWindowFlags(Qt::Dialog | Qt::WindowStaysOnTopHint);
+    dialog->setMinimumSize(640, 480);
+
+    QGridLayout * layout = new QGridLayout(dialog);
+    layout->addWidget(pCopy, 0, 0);
+
+    dialog->exec();
+  });
+
+  pPlot->plotLayout()->addElement(0, 1, popOutElement);
+
+  auto * pHideElement = new QCPTextElement(pPlot, QString("X"));
+
+  // Connect the click signal to hide the plot
+  connect(pHideElement, &QCPTextElement::clicked, [pPlot, pHideElement]() {
+    pPlot->setVisible(false);
+  });
+
+  pPlot->plotLayout()->addElement(0, 2, pHideElement);
+    }
+
+  // add a silver dotted line with the obj value
+  auto * pLine = pPlot->addGraph();
+  pLine->setPen(QPen(QColor(192, 192, 192), 2, Qt::DotLine));
+  pLine->setLineStyle(QCPGraph::lsLine);
+  pLine->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
+  pLine->setAntialiasedFill(false);
+  pLine->setAntialiased(true);
+  pLine->setData(QVector< double >{x.first(), x.last()}, QVector< double >{obj_val, obj_val});
+
+  // add the thresholds to the plot as lines
+  for (auto & threshold : thresholds)
+    {
+      auto * pThreshold = pPlot->addGraph();
+      pThreshold->setPen(threshold.second);
+      pThreshold->setLineStyle(QCPGraph::lsLine);
+      pThreshold->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
+      pThreshold->setAntialiased(true);
+      pThreshold->setData(QVector< double >{x.first(), x.last()}, QVector< double >{threshold.first, threshold.first});
+    }
+
+  // add vertical lines
+  for (auto & vertical : verticals)
+    {
+      auto * pVertical = pPlot->addGraph();
+      pVertical->setPen(vertical.second);
+      pVertical->setLineStyle(QCPGraph::lsLine);
+      pVertical->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
+      pVertical->setAntialiased(true);
+      pVertical->setData(QVector< double >{vertical.first, vertical.first}, QVector< double >{y_min, y_max});
+    }
+
+  // scale axes automatically and replot
+  pPlot->rescaleAxes();
+
+  // if range is specified, use it
+  if (!std::isnan(scale_bottom))
+    pPlot->yAxis->setRangeLower(scale_bottom);
+  if (!std::isnan(scale_top))
+    pPlot->yAxis->setRangeUpper(scale_top);
+
+  pPlot->plotLayout()->setColumnStretchFactor(1, 0.05);
+  pPlot->plotLayout()->setColumnStretchFactor(2, 0.05);
+  pPlot->plotLayout()->setRowStretchFactor(1, 4);
+  pPlot->replot();
+
+  // allow plot to be navigated with mouse
+  pPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
+
+  // show tooltips on hover
+  connect(pPlot, &QCustomPlot::mouseMove, [=](QMouseEvent * event) {
+    // Get the pixel coordinates of the mouse
+    int x_pixel = event->pos().x();
+    int y_pixel = event->pos().y();
+
+    // Convert the pixel coordinates to plot coordinates
+    double x_coord = pPlot->xAxis->pixelToCoord(x_pixel);
+
+    // Find the closest data point on the graph
+    QCPGraph * graph = pPlot->graph(0);
+    if (graph)
+      {
+        // Use findBegin or findEnd to locate the closest data index
+        int index = graph->findBegin(x_coord);
+        double x_data = graph->dataMainKey(index);
+        double y_data = graph->dataMainValue(index);
+
+        // Display this data using a QToolTip
+        QToolTip::showText(QCursor::pos(), QString("X: %1\nY: %2").arg(x_data).arg(y_data));
+      }
+    else
+      {
+        QToolTip::hideText();
+      }
+  });
+
+  return pPlot;
+}
+
+#endif // COPASI_USE_QCUSTOMPLOT
+
 void CQPLPlotWidget::generatePlots()
 {
   saveSettings(mpSettings);
@@ -190,16 +376,21 @@ void CQPLPlotWidget::generatePlots()
 
   // clear all widgets from mpScrollContents widget
   
-  if (mpScrollContents->layout())
+  QVBoxLayout * layout = mpScrollContents->layout() != NULL ? qobject_cast< QVBoxLayout * >(mpScrollContents->layout()) : new QVBoxLayout(mpScrollContents);
+
+  if (layout)
     {
-      for (auto * pWidget : mpScrollContents->findChildren< QWidget * >())
+      QLayoutItem * item;
+      while ((item = layout->takeAt(0)) != nullptr)
         {
-          mpScrollContents->layout()->removeWidget(pWidget);
-          delete pWidget;
+          if (item->widget())
+            {
+              delete item->widget(); // Deletes the widget
+            }
+          delete item; // Deletes the layout item
         }
     }
   
-  QVBoxLayout * layout = mpScrollContents->layout() != NULL ? qobject_cast< QVBoxLayout *> (mpScrollContents->layout()) : new QVBoxLayout(mpScrollContents);
   
 
   // read the info.json file
@@ -248,45 +439,21 @@ void CQPLPlotWidget::generatePlots()
 
     // create a new qcustomplot widget for each file 
     // and add a plot to the scroll area
-    auto* pPlot = new QCustomPlot();
-
 
     // read the low file
-    QTextStream streamLow(&fileLow);
-    QTextStream streamHigh(&fileHigh);
-
     QVector<double> x, y;
-    bool first = true;
     QString label;
-    while (!streamLow.atEnd())
-    {
-      auto lineLow = streamLow.readLine();
-      auto parts = lineLow.split("\t");
-      if (first)
-        {
-          label = parts[0];
-          first = false;
-          continue;
-        }
-      if (parts.size() < 3)
-        continue;
-      x.append(parts[0].toDouble());
-      y.append(parts[2].toDouble());
-    }
     
-    first = true;
-    while (!streamHigh.atEnd())
-    {
-      auto lineHigh = streamHigh.readLine();
-      if (first) { first = false; continue;}
-      auto parts = lineHigh.split("\t");
-      if (parts.size() < 3)
-        continue;
-      x.append(parts[0].toDouble());
-      y.append(parts[2].toDouble());
-    }
+
+    readProfileData(fileLow, x, y, label, true);
+    readProfileData(fileHigh, x, y, label, false);
 
     if (x.empty() || y.empty())
+      continue;
+
+    // find the index of the parameter in the param_names vector
+    auto index_pos = std::find(param_names.begin(), param_names.end(), label.toStdString());
+    if (index_pos == param_names.end())
       continue;
 
     // compute y_min and y_max
@@ -298,112 +465,18 @@ void CQPLPlotWidget::generatePlots()
     if (!std::isnan(scale_top) && scale_top > y_max)
       y_max = scale_top;
 
-    // find the index of the parameter in the param_names vector
-    auto index_pos = std::find(param_names.begin(), param_names.end(), label.toStdString());
-    if (index_pos == param_names.end())
-      continue;
 
     int param_index = index_pos - param_names.begin();
     double param_value = param_values[param_index];
     double param_sd = param_sds[param_index];
 
-    // add the graph to the plot
-    auto* pGraph = pPlot->addGraph();
-    pGraph->setPen(QPen(Qt::red, 2));
-    pGraph->setLineStyle(QCPGraph::lsLine);
-    pGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
-    pGraph->setAntialiasedFill(false);
-    pGraph->setAntialiased(true);
-    pGraph->setAntialiased(true);
-    
-    if (x.empty())
-      continue;
-    
-    pGraph->setData(x, y);
-
-    // set the axis labels
-    pPlot->xAxis->setLabel(label);
-    pPlot->yAxis->setLabel("Value");
-
-    // set the axis ranges
-    pPlot->xAxis->setRange(x.first(), x.last());
-    pPlot->yAxis->setRange(y.first(), y.last());
-
-    // set the plot title
-    pPlot->plotLayout()->insertRow(0);
-    pPlot->plotLayout()->addElement(0, 0, new QCPTextElement(pPlot, QString("Profile for %1 (around %2 with sd %3)").arg(label).arg(param_value).arg(param_sd)));
-
-    // add a silver dotted line with the obj value 
-    auto* pLine = pPlot->addGraph();
-    pLine->setPen(QPen(QColor(192, 192, 192), 2, Qt::DotLine));
-    pLine->setLineStyle(QCPGraph::lsLine);
-    pLine->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
-    pLine->setAntialiasedFill(false);
-    pLine->setAntialiased(true);
-    pLine->setData(QVector<double>{x.first(), x.last()}, QVector<double>{obj_val, obj_val});
-
-
-    // add the thresholds to the plot as lines 
-    for (auto& threshold : thresholds)
-    {
-      auto* pThreshold = pPlot->addGraph();
-      pThreshold->setPen(threshold.second);
-      pThreshold->setLineStyle(QCPGraph::lsLine);
-      pThreshold->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
-      pThreshold->setAntialiased(true);
-      pThreshold->setData(QVector<double>{x.first(), x.last()}, QVector<double>{threshold.first, threshold.first});
-    }
-
-    // add vertical lines
     auto verticals = computeVerticals(mpTxtVertical->text().split(";"), param_value, param_sd);
 
-    for (auto & vertical : verticals)
-    {
-      auto* pVertical = pPlot->addGraph();
-      pVertical->setPen(vertical.second);
-      pVertical->setLineStyle(QCPGraph::lsLine);
-      pVertical->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
-      pVertical->setAntialiased(true);
-      pVertical->setData(QVector<double>{vertical.first, vertical.first}, QVector<double>{y_min, y_max});
-    }
+    auto plotArgs = PlotArgs{x, y, label, param_value, param_sd, obj_val, thresholds, verticals, y_min, y_max, scale_bottom, scale_top};
 
-    // scale axes automatically and replot
-    pPlot->rescaleAxes();
-
-    // if range is specified, use it
-    if (!std::isnan(scale_bottom))
-      pPlot->yAxis->setRangeLower(scale_bottom);
-    if (!std::isnan(scale_top))
-        pPlot->yAxis->setRangeUpper(scale_top);
-
-    pPlot->replot();
-
-    // allow plot to be navigated with mouse
-    pPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-
-    // show tooltips on hover
-    connect(pPlot, &QCustomPlot::mouseMove, this, [=](QMouseEvent *event) {
-        // Get the pixel coordinates of the mouse
-        int x_pixel = event->pos().x();
-        int y_pixel = event->pos().y();
-
-        // Convert the pixel coordinates to plot coordinates
-        double x_coord = pPlot->xAxis->pixelToCoord(x_pixel);
-
-        // Find the closest data point on the graph
-        QCPGraph *graph = pPlot->graph(0);
-        if (graph) {
-            // Use findBegin or findEnd to locate the closest data index
-            int index = graph->findBegin(x_coord);
-            double x_data = graph->dataMainKey(index);
-            double y_data = graph->dataMainValue(index);
-
-            // Display this data using a QToolTip
-            QToolTip::showText(QCursor::pos(), QString("X: %1\nY: %2").arg(x_data).arg(y_data));
-        } else {
-            QToolTip::hideText();
-        }
-    });
+    auto* pPlot = createPlot(plotArgs);
+    
+    
     // add the plot to the layout
     layout->addWidget(pPlot);
     
