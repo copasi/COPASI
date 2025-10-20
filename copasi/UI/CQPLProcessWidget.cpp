@@ -15,10 +15,10 @@ CQPLProcessWorker::CQPLProcessWorker(const QString& program)
 {
   mpProcess = new QProcess(this);
   mCopasiSE = program;
-  connect(mpProcess, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(handleProcessError(QProcess::ProcessError)));
-  connect(mpProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(ProcessFinished(int, QProcess::ExitStatus)));
-  connect(mpProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(handleStandardOutput()));
-  connect(mpProcess, SIGNAL(readyReadStandardError()), this, SLOT(handleStandardError()));
+  connect(mpProcess, &QProcess::errorOccurred, this, &CQPLProcessWorker::handleProcessError);
+  connect(mpProcess, &QProcess::finished, this, &CQPLProcessWorker::handleProcessFinished);
+  connect(mpProcess, &QProcess::readyReadStandardOutput, this, &CQPLProcessWorker::handleStandardOutput);
+  connect(mpProcess, &QProcess::readyReadStandardError, this, &CQPLProcessWorker::handleStandardError);
   mCancelled = false;
 }
 
@@ -68,7 +68,7 @@ void CQPLProcessWorker::kill()
 void CQPLProcessWorker::handleProcessError(QProcess::ProcessError)
 {
   if (!mCancelled)
-  emit errorOccurred(this, QString("Process error: %1").arg(mpProcess->errorString()));
+    emit errorOccurred(this, formatMessage(mLabel, QString("Process error: %1").arg(mpProcess->errorString())));
 }
 
 void CQPLProcessWorker::handleProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
@@ -77,16 +77,17 @@ void CQPLProcessWorker::handleProcessFinished(int exitCode, QProcess::ExitStatus
   mRuntime = std::chrono::duration< double >(endTime - mStartTime).count();
   mOutput += mpProcess->readAllStandardOutput();
   mError += mpProcess->readAllStandardError();
-  //if (!mOutput.isEmpty() || !mError.isEmpty())
-  //{
-  //    qDebug() << mOutput;
-  //}
   emit finished(this);
 }
 
-QString formatArray(const QString& prefix, const QByteArray& message)
+QString CQPLProcessWorker::formatMessage(const QString & prefix, const QByteArray & message)
 {
-  QStringList lines = QString::fromUtf8(message).split('\n');
+  return formatMessage(prefix, QString::fromUtf8(message));
+}
+
+QString CQPLProcessWorker::formatMessage(const QString & prefix, const QString & message)
+{
+  QStringList lines = message.split('\n'); 
   QStringList formattedLines;
   for (const QString &line : lines)
   {
@@ -99,14 +100,14 @@ void CQPLProcessWorker::handleStandardOutput()
 {
   auto newOutput = mpProcess->readAllStandardOutput();
   mOutput += newOutput;
-  emit output(this, formatArray(mLabel, newOutput));
+  emit output(this, formatMessage(mLabel, newOutput));
 }
 
 void CQPLProcessWorker::handleStandardError()
 {
   auto newError = mpProcess->readAllStandardError();
   mError += newError;
-  emit output(this, formatArray(mLabel, newError));
+  emit output(this, formatMessage(mLabel, newError));
 }
 
 CQPLProcessWidget::CQPLProcessWidget(QWidget * parent)

@@ -38,6 +38,9 @@ public:
   const QString& currentLabel() const;
 
   double getRuntime() const;
+
+  static QString formatMessage(const QString & prefix, const QByteArray & message);
+  static QString formatMessage(const QString & prefix, const QString & message);
   
 signals:
   void finished(CQPLProcessWorker* pWorker);
