@@ -24,13 +24,19 @@ CQPLProcessWorker::CQPLProcessWorker(const QString& program)
 
 CQPLProcessWorker::~CQPLProcessWorker()
 {
-  delete mpProcess;
+  mpProcess->deleteLater();
+}
+
+void CQPLProcessWorker::setCopasiSE(const QString & copasiSE)
+{
+  mCopasiSE = copasiSE;
 }
 
 void CQPLProcessWorker::start(const QString& cpsFile, const QString& label)
 {
   mCurrentFile = cpsFile;
   mLabel = label;
+  mCancelled = false;
   mpProcess->start(mCopasiSE, QStringList() << "--nologo" << cpsFile);
   mStartTime = std::chrono::high_resolution_clock::now();
 }
@@ -60,6 +66,11 @@ void CQPLProcessWorker::cancel()
   }
 }
 
+bool CQPLProcessWorker::wasCancelled() const
+{
+  return mCancelled;
+}
+
 void CQPLProcessWorker::kill()
 {
   mpProcess->kill();
@@ -67,8 +78,7 @@ void CQPLProcessWorker::kill()
 
 void CQPLProcessWorker::handleProcessError(QProcess::ProcessError)
 {
-  if (!mCancelled)
-    emit errorOccurred(this, formatMessage(mLabel, QString("Process error: %1").arg(mpProcess->errorString())));
+  emit errorOccurred(this, formatMessage(mLabel, QString("Process error: %1").arg(mpProcess->errorString())));
 }
 
 void CQPLProcessWorker::handleProcessFinished(int exitCode, QProcess::ExitStatus exitStatus)
@@ -111,8 +121,26 @@ void CQPLProcessWorker::handleStandardError()
 }
 
 CQPLProcessWidget::CQPLProcessWidget(QWidget * parent)
+  : QWidget(parent)
+  , mpSettings(nullptr)
 {
   setupUi(this);
+}
+
+CQPLProcessWidget::~CQPLProcessWidget()
+{
+  // clean up workers
+  for (auto* pWorker : mWorkers)
+  {
+    pWorker->deleteLater();
+  }
+  for (auto* pWorker : mAvailableWorkers)
+  {
+    pWorker->deleteLater();
+  }
+
+  mWorkers.clear();
+  mAvailableWorkers.clear();
 }
 
 void CQPLProcessWidget::loadSettings(const CProfileSettings * pSettings)
@@ -190,8 +218,15 @@ void CQPLProcessWidget::processDirectory()
   mpProcessBar->setRange(0, mFiles.size());
   mpProcessBar->setValue(0);
 
+  // update CopasiSE
+  for (int i = 0; i < mAvailableWorkers.count(); ++i)
+    {
+    mAvailableWorkers[i]->setCopasiSE(mpTxtCopasiSE->text());
+    }
+  
+
   // allocate as many workers as we have specified in num processes
-  for (int i = 0; i < mpSpnNumProcesses->value(); i++)
+  for (int i = mAvailableWorkers.count(); i < mpSpnNumProcesses->value(); ++i)
   {
     CQPLProcessWorker* pWorker = new CQPLProcessWorker(mpTxtCopasiSE->text());
     mAvailableWorkers.append(pWorker);
@@ -233,41 +268,49 @@ void CQPLProcessWidget::cancelRun()
   mpCmdRun->setEnabled(true);
 }
 
+void CQPLProcessWidget::startNextWorker(CQPLProcessWorker* pCurrentWorker)
+{
+  if (pCurrentWorker)
+    {
+      if (!mFiles.isEmpty())
+        {
+          QString first = mFiles.takeFirst();
+          mpTxtOutput->append("start file: " + first);
+          pCurrentWorker->start(mpTxtDirectory->text() + "/" + first, first);
+        }
+      else
+        {
+          mWorkers.removeAll(pCurrentWorker);
+          mAvailableWorkers.push_back(pCurrentWorker);
+        }
+    }
+
+  if (mFiles.isEmpty() && !mpCmdRun->isEnabled())
+    {
+      mpTxtOutput->append("all done");
+      mpCmdRun->setEnabled(true);
+    }
+}
+
 void CQPLProcessWidget::workerFinished(CQPLProcessWorker* pWorker)
 {
-  if (!pWorker)
-    return;
-
-  mpTxtOutput->append(QString("finished %1 in %2 seconds").arg(pWorker->currentLabel()).arg(pWorker->getRuntime()));
+  if (pWorker)
+    mpTxtOutput->append(QString("finished %1 in %2 seconds").arg(pWorker->currentLabel()).arg(pWorker->getRuntime()));
 
   // increment the process bar
   mpProcessBar->setValue(mpProcessBar->value() + 1);
 
   // if there are more files process the next one
-  if (!mFiles.isEmpty())
-  {
-    QString first = mFiles.takeFirst();
-    mpTxtOutput->append("start file: " + first);
-    pWorker->start(mpTxtDirectory->text() + "/" + first, first);
-  }
-  else
-  {
-    mpTxtOutput->append("removing worker ...");
-    mWorkers.removeAll(pWorker);
-    delete pWorker;
-  }
-
-  if (mWorkers.isEmpty() && !mpCmdRun->isEnabled())
-  {
-    mpTxtOutput->append("all done");
-    mpCmdRun->setEnabled(true);
-  }
+  startNextWorker(pWorker);
 }
 
 void CQPLProcessWidget::workerError(CQPLProcessWorker* pWorker, const QString& error)
 {
   // add error to the log
-  mpTxtOutput->append(error);
+  if (pWorker && !pWorker->wasCancelled())
+    mpTxtOutput->append(error);
+
+  startNextWorker(pWorker);
 }
 
 void CQPLProcessWidget::workerOutput(CQPLProcessWorker* pWorker, const QString& output)

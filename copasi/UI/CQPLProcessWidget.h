@@ -30,6 +30,8 @@ public:
   CQPLProcessWorker(const QString& program);
   virtual ~CQPLProcessWorker();
 
+  void setCopasiSE(const QString & copasiSE);
+
   void start(const QString & copasiFile, const QString & label);
   void cancel();
   void kill();
@@ -38,6 +40,8 @@ public:
   const QString& currentLabel() const;
 
   double getRuntime() const;
+
+  bool wasCancelled() const;
 
   static QString formatMessage(const QString & prefix, const QByteArray & message);
   static QString formatMessage(const QString & prefix, const QString & message);
@@ -74,6 +78,7 @@ class CQPLProcessWidget : public QWidget
 
 public:
   CQPLProcessWidget(QWidget * parent = 0);
+  virtual ~CQPLProcessWidget();
 
   virtual void loadSettings(const CProfileSettings * pSettings);
   virtual void saveSettings(CProfileSettings * pSettings);
@@ -123,6 +128,11 @@ public slots:
    * @param output 
    */
   void workerOutput(CQPLProcessWorker* pWorker, const QString& output);
+
+
+private:
+
+  void startNextWorker(CQPLProcessWorker* pCurrentWorker);
 
 };
 
