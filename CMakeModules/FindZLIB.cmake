@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2022 - 2025 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -86,7 +86,7 @@ if (NOT (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY) OR NOT ZLIB_FOUND)
     # make sure that we have a valid zip library
     file(TO_CMAKE_PATH "${ZLIB_LIBRARY}" LIBZ_CMAKE_PATH)
     include (CheckLibraryExists)
-    check_library_exists("${LIBZ_CMAKE_PATH}" "gzopen" "" LIBZ_CMAKE_PATH)
+    check_library_exists("${LIBZ_CMAKE_PATH}" "gzopen" "" LIBZ_FOUND_SYMBOL)
     if(NOT LIBZ_FOUND_SYMBOL)
         # this is odd, but on windows this check always fails! must be a
         # bug in the current cmake version so for now only issue this
@@ -96,7 +96,7 @@ if (NOT (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY) OR NOT ZLIB_FOUND)
 "The chosen zlib library does not appear to be valid because it is
 missing certain required symbols. Please check that ${LIBZ_LIBRARY} is
 the correct zlib library. For details about the error, please see
-${LIBSBML_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/CMakeError.log")
+CMakeError.log or CMakeConfigureLog.yaml in the build directory.")
         endif()
     endif()
 
