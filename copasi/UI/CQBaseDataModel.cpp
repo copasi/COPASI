@@ -136,12 +136,8 @@ QString CQBaseDataModel::createNewName(const QString name, const int nameCol)
 
 void CQBaseDataModel::setDataModel(CDataModel * pDataModel)
 {
-  beginResetModel();
-
   mpDataModel = pDataModel;
   resetCache();
-
-  endResetModel();
 }
 
 CDataModel * CQBaseDataModel::getDataModel() const
