@@ -383,7 +383,7 @@ CopasiUI3Window::CopasiUI3Window():
   FixedTitle = "COPASI ";
   FixedTitle += FROM_UTF8(CVersion::VERSION.getVersion());
   updateTitle();
-  connect(mpListView, SIGNAL(signalFolderChanged(const QModelIndex &)), this, SLOT(listViewsFolderChanged(const QModelIndex &)));
+  connect(mpListView, &ListViews::signalFolderChanged, this, &CopasiUI3Window::listViewsFolderChanged);
   mpDataModelGUI->registerListView(mpListView);
   mpListView->show();
   this->setCentralWidget(mpListView);
