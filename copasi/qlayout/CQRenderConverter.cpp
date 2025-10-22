@@ -1096,9 +1096,9 @@ bool CQRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox*
         {
           for (size_t i = 2; i < item->path().elementCount() - 1; ++i)
             {
-              if (item->path().elementAt(i) != start)
+              if (item->path().elementAt((int)i) != start)
                 {
-                  second = item->path().elementAt(i);
+                  second = item->path().elementAt((int)i);
                   break;
                 }
             }
@@ -1114,9 +1114,9 @@ bool CQRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox*
         {
           for (size_t i = item->path().elementCount() - 3; i > 0; --i)
             {
-              if (item->path().elementAt(i) != end)
+              if (item->path().elementAt((int)i) != end)
                 {
-                  secondLast = item->path().elementAt(i);
+                  secondLast = item->path().elementAt((int)i);
                   break;
                 }
             }

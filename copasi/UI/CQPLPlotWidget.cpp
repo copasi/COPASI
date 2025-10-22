@@ -278,7 +278,7 @@ QCustomPlot * CQPLPlotWidget::createPlot(const PlotArgs & args, bool allowPopout
   auto * popOutElement = new QCPTextElement(pPlot, QString("⛶"));
 
   // Connect the click signal to hide the plot
-  connect(popOutElement, &QCPTextElement::clicked, [=]() {
+  connect(popOutElement, &QCPTextElement::clicked, [this, args, title]() {
     // when pop out is clicked
     auto * pCopy = createPlot(args, false);
     // create a qdialog to show the copy
@@ -483,7 +483,7 @@ void CQPLPlotWidget::generatePlots()
     if (!std::isnan(scale_top) && scale_top > y_max)
       y_max = scale_top;
 
-    int param_index = index_pos - param_names.begin();
+    int param_index = int(index_pos - param_names.begin());
     double param_value = param_values[param_index];
     double param_sd = param_sds[param_index];
 

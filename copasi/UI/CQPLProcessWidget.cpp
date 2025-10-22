@@ -97,7 +97,7 @@ QString CQPLProcessWorker::formatMessage(const QString & prefix, const QByteArra
 
 QString CQPLProcessWorker::formatMessage(const QString & prefix, const QString & message)
 {
-  QStringList lines = message.split('\n'); 
+  QStringList lines = message.split('\n');
   QStringList formattedLines;
   for (const QString &line : lines)
   {
@@ -219,18 +219,17 @@ void CQPLProcessWidget::processDirectory()
   }
 
   // set up process bar
-  mpProcessBar->setRange(0, mFiles.size());
+  mpProcessBar->setRange(0, (int)mFiles.size());
   mpProcessBar->setValue(0);
 
   // update CopasiSE
-  for (int i = 0; i < mAvailableWorkers.count(); ++i)
+  for (int i = 0; i < (int)mAvailableWorkers.count(); ++i)
     {
     mAvailableWorkers[i]->setCopasiSE(mpTxtCopasiSE->text());
     }
-  
 
   // allocate as many workers as we have specified in num processes
-  for (int i = mAvailableWorkers.count(); i < mpSpnNumProcesses->value(); ++i)
+  for (int i = (int)mAvailableWorkers.count(); i < (int)mpSpnNumProcesses->value(); ++i)
   {
     CQPLProcessWorker* pWorker = new CQPLProcessWorker(mpTxtCopasiSE->text());
     mAvailableWorkers.append(pWorker);
