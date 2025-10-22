@@ -125,6 +125,10 @@ CQPLProcessWidget::CQPLProcessWidget(QWidget * parent)
   , mpSettings(nullptr)
 {
   setupUi(this);
+
+  // not implemented yet
+  mpScrollArea->setVisible(false);
+  mpProcessBar->setValue(0);
 }
 
 CQPLProcessWidget::~CQPLProcessWidget()
