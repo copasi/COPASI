@@ -1,5 +1,10 @@
-﻿#include "CQPLPlotWidget.h"
-#include "copasi/utilities/CProfileSettings.h"  
+// Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+#include "CQPLPlotWidget.h"
+#include "copasi/utilities/CProfileSettings.h"
 #include "qtUtilities.h"
 #include "CQMultipleSelectionDialog.h"
 
@@ -55,13 +60,13 @@ QResultMap CQPLPlotWidget::globFiles(const QString& directory, const QString& pa
 {
   QDir dir(directory, pattern, QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoDotAndDotDot);
   auto list = dir.entryList();
-  
+
   QResultMap map;
   for (QString& entry : list)
   {
     if (!entry.endsWith("_high.txt"))
       continue;
-    
+
     // get the base name
     auto base = entry.left(entry.lastIndexOf("_"));
 
@@ -70,7 +75,7 @@ QResultMap CQPLPlotWidget::globFiles(const QString& directory, const QString& pa
       continue;
 
     map[base] =  std::make_pair(
-      directory + "/" + base + "_low.txt", 
+      directory + "/" + base + "_low.txt",
       directory + "/" + base + "_high.txt");
   }
   return map;
@@ -111,55 +116,63 @@ std::vector< std::pair<double, QPen> > computeThresholds(const QStringList& thre
 {
   std::vector< std::pair<double, QPen> > computed;
   // compute thresholds using kthohr/stats
-  // threshold for COPASI chi2 alpha is 68% (sahle)
-  if (thresholds.contains("default_68") || thresholds.contains("copasi_68"))
+  for (const QString& threshold : thresholds)
   {
-    // the scipy.stats chi2.isf is the inverse of the chi2 distribution function
-    // in kthohr/stats, this is qchisq
-    int df = 1;    
-    double c0 = stats::qchisq(1 - 0.32, df);
-    double threshold = obj_val * (1 + c0 / (n - m));
-    computed.push_back(std::make_pair(threshold, QPen(Qt::blue, 2, Qt::DashLine)));
-  }
-  // threshold for COPASI chi2 alpha is 95% (sahle)
-  if (thresholds.contains("default_95") || thresholds.contains("copasi_95"))
-  {
-    int df = 1;    
-    double c0 = stats::qchisq(1 - alpha, df);
-    double threshold = obj_val * (1 + c0 / (n - m));
-    computed.push_back(std::make_pair(threshold, QPen(Qt::blue, 2, Qt::DotLine)));
-  }
-  // estimating chi-square value fitting one parameter (schaber)
-  if (thresholds.contains("schaber_chi2_1p"))
-  {
-    int df = 1;    
-    double c1 = stats::qchisq(1 - alpha, df);
-    double threshold = obj_val * std::exp(c1 / n);
-    computed.push_back(std::make_pair(threshold, QPen(Qt::green, 2, Qt::DashLine)));
-  }
-  // estimating chi-square value fitting m parameters (schaber)
-  if (thresholds.contains("schaber_chi2_p"))
-  {
-    int df = m;    
-    double c2 = stats::qchisq(1 - alpha, df);
-    double threshold = obj_val * std::exp(c2 / n);
-    computed.push_back(std::make_pair(threshold, QPen(Qt::green, 2, Qt::DotLine)));
-  }
-  // estimating fratio value fitting m parameters (schaber)
-  if (thresholds.contains("schaber_fratio_p"))
-  {
-    int df = m;    
-    double c3 = stats::qf(1 - alpha, df, n - m);
-    double threshold = obj_val * (1 + (m / (n - m)) * c3);
-    computed.push_back(std::make_pair(threshold, QPen(Qt::red, 2, Qt::DotLine)));
-  }
-  // estimating chi-square value fitting 1 parameter (donaldson)
-  if (thresholds.contains("donaldson_fratio_1p"))
-  {
-    int df = 1;    
-    double c4 = stats::qf(1 - alpha, df, n - m);
-    double threshold = obj_val * (1 + c4 / (n - m));
-    computed.push_back(std::make_pair(threshold, QPen(QColor(255, 127, 14), 2, Qt::DotLine)));
+    if (threshold == "default_68" || threshold == "copasi_68")
+    {
+      // the scipy.stats chi2.isf is the inverse of the chi2 distribution function
+      // in kthohr/stats, this is qchisq
+      int df = 1;
+      double c0 = stats::qchisq(1 - 0.32, df);
+      double threshold_val = obj_val * (1 + c0 / (n - m));
+      computed.push_back(std::make_pair(threshold_val, QPen(Qt::blue, 2, Qt::DashLine)));
+    }
+    else if (threshold == "default_95" || threshold == "copasi_95")
+    {
+      int df = 1;
+      double c0 = stats::qchisq(1 - alpha, df);
+      double threshold_val = obj_val * (1 + c0 / (n - m));
+      computed.push_back(std::make_pair(threshold_val, QPen(Qt::blue, 2, Qt::DotLine)));
+    }
+    else if (threshold == "schaber_chi2_1p")
+    {
+      int df = 1;
+      double c1 = stats::qchisq(1 - alpha, df);
+      double threshold_val = obj_val * std::exp(c1 / n);
+      computed.push_back(std::make_pair(threshold_val, QPen(Qt::green, 2, Qt::DashLine)));
+    }
+    else if (threshold == "schaber_chi2_p")
+    {
+      int df = m;
+      double c2 = stats::qchisq(1 - alpha, df);
+      double threshold_val = obj_val * std::exp(c2 / n);
+      computed.push_back(std::make_pair(threshold_val, QPen(Qt::green, 2, Qt::DotLine)));
+    }
+    else if (threshold == "schaber_fratio_p")
+    {
+      int df = m;
+      double c3 = stats::qf(1 - alpha, df, n - m);
+      double threshold_val = obj_val * (1 + (m / (n - m)) * c3);
+      computed.push_back(std::make_pair(threshold_val, QPen(Qt::red, 2, Qt::DotLine)));
+    }
+    else if (threshold == "donaldson_fratio_1p")
+    {
+      int df = 1;
+      double c4 = stats::qf(1 - alpha, df, n - m);
+      double threshold_val = obj_val * (1 + c4 / (n - m));
+      computed.push_back(std::make_pair(threshold_val, QPen(QColor(255, 127, 14), 2, Qt::DotLine)));
+    }
+    else if (threshold.endsWith("%"))
+    {
+      double percentage = threshold.left(threshold.lastIndexOf("%")).toDouble();
+      double threshold_val = obj_val * (percentage / 100);
+      computed.push_back(std::make_pair(threshold_val, QPen(QColor(255, 127, 14), 2, Qt::DotLine)));
+    }
+    else {
+      // check if value is numeric
+      if (!std::isnan(threshold.toDouble()))
+        computed.push_back(std::make_pair(threshold.toDouble(), QPen(QColor(255, 127, 14), 2, Qt::DotLine)));
+    }
   }
 
   return computed;
@@ -172,17 +185,26 @@ std::vector< std::pair<double, QPen> > computeVerticals(const QStringList& verti
   {
     if (vertical.contains("VALUE"))
       computed.push_back(std::make_pair(param_value, QPen(QColor(192, 192, 192), 2, Qt::DotLine)));
-    if (vertical.endsWith("SD"))
+    else if (vertical.endsWith("SD"))
     {
       double multiplier = vertical.left(vertical.lastIndexOf("SD")).toDouble();
       computed.push_back(std::make_pair(param_value + multiplier * param_sd, QPen(QColor(173, 216, 230), 2, Qt::DotLine)));
       computed.push_back(std::make_pair(param_value - multiplier * param_sd, QPen(QColor(173, 216, 230), 2, Qt::DotLine)));
     }
-    
+
+    else if (vertical.endsWith("%"))
+    {
+      double percentage = vertical.left(vertical.lastIndexOf("%")).toDouble();
+      computed.push_back(std::make_pair(param_value * (percentage / 100), QPen(QColor(173, 216, 230), 2, Qt::DotLine)));
+    }
+    else {
+      // check if value is numeric
+      if (!std::isnan(vertical.toDouble()))
+        computed.push_back(std::make_pair(vertical.toDouble(), QPen(QColor(173, 216, 230), 2, Qt::DotLine)));
+    }
   }
   return computed;
 }
-
 
 void readProfileData(QFile & file, QVector< double > & x, QVector< double > & y, QString & label, bool readLabel)
 {
@@ -207,7 +229,6 @@ void readProfileData(QFile & file, QVector< double > & x, QVector< double > & y,
 
   file.close();
 };
-
 
 #ifdef COPASI_USE_QCUSTOMPLOT
 
@@ -375,7 +396,7 @@ void CQPLPlotWidget::generatePlots()
   mMap = globFiles(mpTxtTarget->text(), "*.txt");
 
   // clear all widgets from mpScrollContents widget
-  
+
   QVBoxLayout * layout = mpScrollContents->layout() != NULL ? qobject_cast< QVBoxLayout * >(mpScrollContents->layout()) : new QVBoxLayout(mpScrollContents);
 
   if (layout)
@@ -390,12 +411,10 @@ void CQPLPlotWidget::generatePlots()
           delete item; // Deletes the layout item
         }
     }
-  
-  
 
   // read the info.json file
   QFile file(mpTxtTarget->text() + "/" + "_info.json");
-  double obj_val; 
+  double obj_val;
   int num_params;
   int num_data;
   std::vector<double> param_sds;
@@ -425,11 +444,11 @@ void CQPLPlotWidget::generatePlots()
   double scale_bottom = mpTxtScaleBottom->text().toDouble();
   double scale_top = mpTxtScaleTop->text().toDouble();
 
-  #ifdef COPASI_USE_QCUSTOMPLOT
+#ifdef COPASI_USE_QCUSTOMPLOT
   // create a new widget for each file
   for (auto it = mMap.constBegin(); it != mMap.constEnd(); ++it)
   {
-    // read the two tsv files 
+    // read the two tsv files
     QFile fileLow(it.value().first);
     QFile fileHigh(it.value().second);
     if (!fileLow.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -437,13 +456,12 @@ void CQPLPlotWidget::generatePlots()
     if (!fileHigh.open(QIODevice::ReadOnly | QIODevice::Text))
       continue;
 
-    // create a new qcustomplot widget for each file 
+    // create a new qcustomplot widget for each file
     // and add a plot to the scroll area
 
     // read the low file
     QVector<double> x, y;
     QString label;
-    
 
     readProfileData(fileLow, x, y, label, true);
     readProfileData(fileHigh, x, y, label, false);
@@ -465,7 +483,6 @@ void CQPLPlotWidget::generatePlots()
     if (!std::isnan(scale_top) && scale_top > y_max)
       y_max = scale_top;
 
-
     int param_index = index_pos - param_names.begin();
     double param_value = param_values[param_index];
     double param_sd = param_sds[param_index];
@@ -475,13 +492,11 @@ void CQPLPlotWidget::generatePlots()
     auto plotArgs = PlotArgs{x, y, label, param_value, param_sd, obj_val, thresholds, verticals, y_min, y_max, scale_bottom, scale_top};
 
     auto* pPlot = createPlot(plotArgs);
-    
-    
+
     // add the plot to the layout
     layout->addWidget(pPlot);
-    
   }
-  #endif
+#endif
 }
 
 void CQPLPlotWidget::savePlots()
@@ -493,10 +508,10 @@ void CQPLPlotWidget::savePlots()
 
   // Set the desired scale factor for higher resolution rendering
   int scale = 2;
-  
+
   // Calculate the actual content size in pixels
   QSize contentSize = mpScrollContents->size();
-  
+
   // Create a scaled pixmap for high-resolution rendering
   QPixmap scaledPixmap(contentSize * scale);
   scaledPixmap.fill(Qt::transparent);
@@ -505,7 +520,7 @@ void CQPLPlotWidget::savePlots()
   pixmapPainter.scale(scale, scale);
   mpScrollContents->render(&pixmapPainter);
   pixmapPainter.end();
-  
+
   // Save the scaled pixmap as PNG
   scaledPixmap.save(fileName, "PNG");
 }
