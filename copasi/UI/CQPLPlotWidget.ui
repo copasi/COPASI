@@ -16,6 +16,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <layout class="QFormLayout" name="formLayout">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="mpLblTarget">
          <property name="text">
@@ -42,8 +45,8 @@
      <item>
       <layout class="QFormLayout" name="formLayout_4">
        <property name="fieldGrowthPolicy">
-            <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
-        </property>
+        <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="mpLblScaleTop">
          <property name="text">
@@ -59,8 +62,8 @@
      <item>
       <layout class="QFormLayout" name="formLayout_3">
        <property name="fieldGrowthPolicy">
-            <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
-        </property>
+        <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="mpLblScaleBottom">
          <property name="text">
@@ -105,8 +108,8 @@
      <item>
       <layout class="QFormLayout" name="formLayout_2">
        <property name="fieldGrowthPolicy">
-            <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
-        </property>
+        <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="mpLblVertical">
          <property name="text">
@@ -130,14 +133,14 @@
        </property>
       </widget>
      </item>
-	<item>
-		<widget class="QPushButton" name="mpCmdSave">
-			<property name="text">
-				<string>Save Plots</string>
-			</property>
-		</widget>
-	</item>
-	<item>
+     <item>
+      <widget class="QPushButton" name="mpCmdSave">
+       <property name="text">
+        <string>Save Plots</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Orientation::Horizontal</enum>
@@ -162,8 +165,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>614</width>
-        <height>305</height>
+        <width>620</width>
+        <height>324</height>
        </rect>
       </property>
      </widget>
@@ -201,23 +204,23 @@
     </hint>
    </hints>
   </connection>
-	 <connection>
-		 <sender>mpCmdSave</sender>
-		 <signal>clicked()</signal>
-		 <receiver>CQPLPlotWidget</receiver>
-		 <slot>savePlots()</slot>
-		 <hints>
-			 <hint type="sourcelabel">
-				 <x>47</x>
-				 <y>113</y>
-			 </hint>
-			 <hint type="destinationlabel">
-				 <x>319</x>
-				 <y>239</y>
-			 </hint>
-		 </hints>
-	 </connection>
-	 <connection>
+  <connection>
+   <sender>mpCmdSave</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPLPlotWidget</receiver>
+   <slot>savePlots()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>113</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>mpCmdAddThreshold</sender>
    <signal>clicked()</signal>
    <receiver>CQPLPlotWidget</receiver>
