@@ -553,6 +553,12 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   CIssue issue = mpFunction->getValidity().getFirstWorstIssue();
   isValid = issue;
 
+  // if we changed the function persist change
+  if (flagChanged)
+    {
+      saveToFunction();
+    }
+
   return true;
 }
 
