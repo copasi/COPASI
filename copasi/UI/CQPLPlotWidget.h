@@ -16,6 +16,13 @@ class QCustomPlot;
 
 typedef QMap<QString, std::pair<QString, QString>> QResultMap;
 
+struct LineArgs
+{
+  double value;
+  QPen pen;
+  QString label;
+};
+
 struct PlotArgs
 {
   QVector< double > x;
@@ -24,8 +31,8 @@ struct PlotArgs
   double param_value;
   double param_sd;
   double obj_val;
-  std::vector< std::pair< double, QPen > > thresholds;
-  std::vector< std::pair< double, QPen > > verticals;
+  std::vector< LineArgs > thresholds;
+  std::vector< LineArgs > verticals;
   double y_min;
   double y_max;
   double scale_bottom;

@@ -112,9 +112,9 @@ void CQPLPlotWidget::addThreshold()
   mpTxtThresholds->setText(dlg->getSelection().join(";"));
 }
 
-std::vector< std::pair<double, QPen> > computeThresholds(const QStringList& thresholds, double obj_val, double m, double n, double alpha = 0.05)
+std::vector< LineArgs > computeThresholds(const QStringList& thresholds, double obj_val, double m, double n, double alpha = 0.05)
 {
-  std::vector< std::pair<double, QPen> > computed;
+  std::vector< LineArgs > computed;
   // compute thresholds using kthohr/stats
   for (const QString& threshold : thresholds)
   {
@@ -125,82 +125,82 @@ std::vector< std::pair<double, QPen> > computeThresholds(const QStringList& thre
       int df = 1;
       double c0 = stats::qchisq(1 - 0.32, df);
       double threshold_val = obj_val * (1 + c0 / (n - m));
-      computed.push_back(std::make_pair(threshold_val, QPen(Qt::blue, 2, Qt::DashLine)));
+      computed.push_back({threshold_val, QPen(Qt::blue, 2, Qt::DashLine), "Threshold COPASI 68"});
     }
     else if (threshold == "default_95" || threshold == "copasi_95")
     {
       int df = 1;
       double c0 = stats::qchisq(1 - alpha, df);
       double threshold_val = obj_val * (1 + c0 / (n - m));
-      computed.push_back(std::make_pair(threshold_val, QPen(Qt::blue, 2, Qt::DotLine)));
+      computed.push_back({threshold_val, QPen(Qt::blue, 2, Qt::DotLine), "Threshold COPASI 95"});
     }
     else if (threshold == "schaber_chi2_1p")
     {
       int df = 1;
       double c1 = stats::qchisq(1 - alpha, df);
       double threshold_val = obj_val * std::exp(c1 / n);
-      computed.push_back(std::make_pair(threshold_val, QPen(Qt::green, 2, Qt::DashLine)));
+      computed.push_back({threshold_val, QPen(Qt::green, 2, Qt::DashLine), "Threshold Schaber Chi2 1p"});
     }
     else if (threshold == "schaber_chi2_p")
     {
       int df = m;
       double c2 = stats::qchisq(1 - alpha, df);
       double threshold_val = obj_val * std::exp(c2 / n);
-      computed.push_back(std::make_pair(threshold_val, QPen(Qt::green, 2, Qt::DotLine)));
+      computed.push_back({threshold_val, QPen(Qt::green, 2, Qt::DotLine), "Threshold Schaber Chi2 p"});
     }
     else if (threshold == "schaber_fratio_p")
     {
       int df = m;
       double c3 = stats::qf(1 - alpha, df, n - m);
       double threshold_val = obj_val * (1 + (m / (n - m)) * c3);
-      computed.push_back(std::make_pair(threshold_val, QPen(Qt::red, 2, Qt::DotLine)));
+      computed.push_back({threshold_val, QPen(Qt::red, 2, Qt::DotLine), "Threshold Schaber Fratio p"});
     }
     else if (threshold == "donaldson_fratio_1p")
     {
       int df = 1;
       double c4 = stats::qf(1 - alpha, df, n - m);
       double threshold_val = obj_val * (1 + c4 / (n - m));
-      computed.push_back(std::make_pair(threshold_val, QPen(QColor(255, 127, 14), 2, Qt::DotLine)));
+      computed.push_back({threshold_val, QPen(QColor(255, 127, 14), 2, Qt::DotLine), "Threshold Donaldson Fratio 1p"});
     }
     else if (threshold.endsWith("%"))
     {
       double percentage = threshold.left(threshold.lastIndexOf("%")).toDouble();
       double threshold_val = obj_val * (percentage / 100);
-      computed.push_back(std::make_pair(threshold_val, QPen(QColor(255, 127, 14), 2, Qt::DotLine)));
+      computed.push_back({threshold_val, QPen(QColor(255, 127, 14), 2, Qt::DotLine), "Threshold: " + threshold  + "%"});
     }
     else {
       // check if value is numeric
       if (!std::isnan(threshold.toDouble()))
-        computed.push_back(std::make_pair(threshold.toDouble(), QPen(QColor(255, 127, 14), 2, Qt::DotLine)));
+        computed.push_back({threshold.toDouble(), QPen(QColor(255, 127, 14), 2, Qt::DotLine), "Threshold: " + threshold});
     }
   }
 
   return computed;
 }
 
-std::vector< std::pair<double, QPen> > computeVerticals(const QStringList& verticals, double param_value, double param_sd)
+std::vector< LineArgs > computeVerticals(const QStringList & verticals, double param_value, double param_sd)
 {
-  std::vector< std::pair<double, QPen> > computed;
+  std::vector< LineArgs > computed;
   for (auto& vertical : verticals)
   {
     if (vertical.contains("VALUE"))
-      computed.push_back(std::make_pair(param_value, QPen(QColor(192, 192, 192), 2, Qt::DotLine)));
+      computed.push_back({param_value, QPen(QColor(192, 192, 192), 2, Qt::DotLine), "= " + QString::number(param_value)});
     else if (vertical.endsWith("SD"))
     {
       double multiplier = vertical.left(vertical.lastIndexOf("SD")).toDouble();
-      computed.push_back(std::make_pair(param_value + multiplier * param_sd, QPen(QColor(173, 216, 230), 2, Qt::DotLine)));
-      computed.push_back(std::make_pair(param_value - multiplier * param_sd, QPen(QColor(173, 216, 230), 2, Qt::DotLine)));
+      computed.push_back({param_value + multiplier * param_sd, QPen(QColor(173, 216, 230), 2, Qt::DotLine), QString("%1 SD").arg(multiplier)});
+      computed.push_back({param_value - multiplier * param_sd, QPen(QColor(173, 216, 230), 2, Qt::DotLine), QString("%1 SD").arg(-multiplier)});
     }
 
     else if (vertical.endsWith("%"))
     {
       double percentage = vertical.left(vertical.lastIndexOf("%")).toDouble();
-      computed.push_back(std::make_pair(param_value * (percentage / 100), QPen(QColor(173, 216, 230), 2, Qt::DotLine)));
+      computed.push_back({param_value * (percentage / 100), QPen(QColor(173, 216, 230), 2, Qt::DotLine), QString("%1 %").arg(percentage)});
     }
     else {
       // check if value is numeric
       if (!std::isnan(vertical.toDouble()))
-        computed.push_back(std::make_pair(vertical.toDouble(), QPen(QColor(173, 216, 230), 2, Qt::DotLine)));
+        computed.push_back({vertical.toDouble(), QPen(QColor(173, 216, 230), 2, Qt::DotLine), QString("%1").arg(vertical)});
     }
   }
   return computed;
@@ -245,12 +245,13 @@ QCustomPlot * CQPLPlotWidget::createPlot(const PlotArgs & args, bool allowPopout
   auto & y_min = args.y_min;
   auto & y_max = args.y_max;
   auto & scale_bottom = args.scale_bottom;
-  auto & scale_top = args.scale_top;
+  auto scale_top = args.scale_top;
 
   // add the graph to the plot
   auto * pPlot = new QCustomPlot();
 
   auto * pGraph = pPlot->addGraph();
+  pGraph->setName(label);
   pGraph->setPen(QPen(Qt::red, 2));
   pGraph->setLineStyle(QCPGraph::lsLine);
   pGraph->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
@@ -272,7 +273,7 @@ QCustomPlot * CQPLPlotWidget::createPlot(const PlotArgs & args, bool allowPopout
   pPlot->plotLayout()->insertRow(0);
   QString title = QString("Profile for %1 (around %2 with sd %3)").arg(label).arg(param_value).arg(param_sd);
   pPlot->plotLayout()->addElement(0, 0, new QCPTextElement(pPlot, title));
-
+  
   if (allowPopout)
     {
   auto * popOutElement = new QCPTextElement(pPlot, QString("⛶"));
@@ -311,6 +312,7 @@ QCustomPlot * CQPLPlotWidget::createPlot(const PlotArgs & args, bool allowPopout
 
   // add a silver dotted line with the obj value
   auto * pLine = pPlot->addGraph();
+  pLine->setName("Obj = " + QString::number(obj_val));
   pLine->setPen(QPen(QColor(192, 192, 192), 2, Qt::DotLine));
   pLine->setLineStyle(QCPGraph::lsLine);
   pLine->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
@@ -322,32 +324,57 @@ QCustomPlot * CQPLPlotWidget::createPlot(const PlotArgs & args, bool allowPopout
   for (auto & threshold : thresholds)
     {
       auto * pThreshold = pPlot->addGraph();
-      pThreshold->setPen(threshold.second);
+      pThreshold->setName(threshold.label);
+      pThreshold->setPen(threshold.pen);
       pThreshold->setLineStyle(QCPGraph::lsLine);
       pThreshold->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
       pThreshold->setAntialiased(true);
-      pThreshold->setData(QVector< double >{x.first(), x.last()}, QVector< double >{threshold.first, threshold.first});
+      pThreshold->setData(QVector< double >{x.first(), x.last()}, QVector< double >{threshold.value, threshold.value});
     }
 
   // add vertical lines
   for (auto & vertical : verticals)
     {
       auto * pVertical = pPlot->addGraph();
-      pVertical->setPen(vertical.second);
+      pVertical->setPen(vertical.pen);
+      pVertical->setName(vertical.label);
       pVertical->setLineStyle(QCPGraph::lsLine);
       pVertical->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
       pVertical->setAntialiased(true);
-      pVertical->setData(QVector< double >{vertical.first, vertical.first}, QVector< double >{y_min, y_max});
+      pVertical->setData(QVector< double >{vertical.value, vertical.value}, QVector< double >{y_min, y_max});
+    }
+
+  // add parabola: obj_val + (x-param_value)^2  / param_sd
+  // if param_sd is not 0 or nan
+  if (!std::isnan(param_sd) && param_sd != 0)
+    {
+      auto * pParabola = pPlot->addGraph();
+      pParabola->setPen(QPen(Qt::green, 2, Qt::DotLine));
+      pParabola->setLineStyle(QCPGraph::lsLine);
+      pParabola->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
+      pParabola->setAntialiased(true);
+      pParabola->setVisible(false);
+      // lambda to compute the parabola
+      auto y_parabola = [obj_val, param_sd, param_value](double x) {
+        return obj_val + (x - param_value) * (x - param_value) / param_sd;
+      };
+      QVector< double > y_parabola_values;
+      for (auto & x_value : x)
+        y_parabola_values.append(y_parabola(x_value));
+      pParabola->setData(x, y_parabola_values);
+      pParabola->setName("Parabola");
     }
 
   // scale axes automatically and replot
-  pPlot->rescaleAxes();
+  pPlot->rescaleAxes(true);
 
   // if range is specified, use it
   if (!std::isnan(scale_bottom))
     pPlot->yAxis->setRangeLower(scale_bottom);
-  if (!std::isnan(scale_top))
-    pPlot->yAxis->setRangeUpper(scale_top);
+  if (std::isnan(scale_top))
+    scale_top = y_max;
+
+  pPlot->yAxis->setRangeUpper(scale_top);
 
   pPlot->plotLayout()->setColumnStretchFactor(1, 0.05);
   pPlot->plotLayout()->setColumnStretchFactor(2, 0.05);
@@ -357,6 +384,39 @@ QCustomPlot * CQPLPlotWidget::createPlot(const PlotArgs & args, bool allowPopout
   // allow plot to be navigated with mouse
   pPlot->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
 
+
+  // add a legend
+  auto * pLegend = pPlot->legend;
+  pLegend->setVisible(false);
+  pLegend->setFont(QFont("Arial", 10));
+  pLegend->setBrush(QBrush(QColor(255, 255, 255, 128)));
+  pLegend->setBorderPen(QPen(QColor(0, 0, 0), 1));
+  pLegend->setIconSize(QSize(10, 10));
+  pPlot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignBottom | Qt::AlignRight);
+  
+
+      QObject::connect(
+                        pPlot,
+                        &QCustomPlot::legendClick,
+    [pPlot, scale_bottom, scale_top](QCPLegend * legend, QCPAbstractLegendItem * item, QMouseEvent * event)
+                        {
+      auto * plItem = qobject_cast< QCPPlottableLegendItem * >(item);
+      if (!plItem)
+        return;
+
+      auto * pl = plItem->plottable();
+      pl->setVisible(!pl->visible());
+
+      pPlot->replot();
+        // scale axes automatically and replot
+      pPlot->rescaleAxes(true);
+
+      // if range is specified, use it
+      if (!std::isnan(scale_bottom))
+        pPlot->yAxis->setRangeLower(scale_bottom);
+      if (!std::isnan(scale_top))
+        pPlot->yAxis->setRangeUpper(scale_top);
+                        });
   // show tooltips on hover
   connect(pPlot, &QCustomPlot::mouseMove, [=](QMouseEvent * event) {
     // Get the pixel coordinates of the mouse
@@ -384,6 +444,32 @@ QCustomPlot * CQPLPlotWidget::createPlot(const PlotArgs & args, bool allowPopout
       }
   });
 
+  // add context menu to the plot
+
+  auto * pContextMenu = new QMenu(pPlot);
+  pContextMenu->addAction("Toggle Legend", [pPlot]() {
+    pPlot->legend->setVisible(!pPlot->legend->visible());
+    pPlot->replot();
+  });
+  pContextMenu->addAction("Toggle Grid", [pPlot]() {
+    pPlot->xAxis->grid()->setVisible(!pPlot->xAxis->grid()->visible());
+    pPlot->yAxis->grid()->setVisible(!pPlot->yAxis->grid()->visible());
+    pPlot->replot();
+  });
+  pContextMenu->addSeparator();
+  pContextMenu->addAction("Save Plot", [pPlot]() {
+    QString fileName = QFileDialog::getSaveFileName(pPlot, "Save Plot", "", "PNG Files (*.png)");
+    if (fileName.isEmpty())
+      return;
+    pPlot->savePng(fileName);
+  });
+  // open context menu with right click
+  connect(pPlot, &QCustomPlot::mouseRelease, [pContextMenu](QMouseEvent * event) {
+    if (event->button() == Qt::RightButton) {
+      pContextMenu->popup(event->globalPos());
+    }
+  });
+  
   return pPlot;
 }
 
