@@ -271,7 +271,8 @@ QCustomPlot * CQPLPlotWidget::createPlot(const PlotArgs & args, bool allowPopout
 
   // set the plot title
   pPlot->plotLayout()->insertRow(0);
-  QString title = QString("Profile for %1 (around %2 with sd %3)").arg(label).arg(param_value).arg(param_sd);
+  QString sd = (!std::isnan(param_sd) && param_sd != 0) ? QString(" with sd %1").arg(param_sd) : QString("");
+  QString title = QString("Profile for %1 (around %2%3)").arg(label).arg(param_value).arg(sd);
   pPlot->plotLayout()->addElement(0, 0, new QCPTextElement(pPlot, title));
   
   if (allowPopout)
@@ -300,7 +301,7 @@ QCustomPlot * CQPLPlotWidget::createPlot(const PlotArgs & args, bool allowPopout
 
   pPlot->plotLayout()->addElement(0, 1, popOutElement);
 
-  auto * pHideElement = new QCPTextElement(pPlot, QString("X"));
+  auto * pHideElement = new QCPTextElement(pPlot, QString("❌"));
 
   // Connect the click signal to hide the plot
   connect(pHideElement, &QCPTextElement::clicked, [pPlot, pHideElement]() {

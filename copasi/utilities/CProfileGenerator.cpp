@@ -128,7 +128,9 @@ void CProfileGenerator::getCurrentSolution()
     mCurrentSolution.mParameterNames.push_back(obj->getObjectDisplayName());
     mCurrentSolution.mParameterValues.push_back(item->getStartValue());
     if (stddeves && stddeves->size() > i)
-    mCurrentSolution.mParameterSDs.push_back(stddeves->operator[](i));
+      mCurrentSolution.mParameterSDs.push_back(stddeves->operator[](i));
+    else
+      mCurrentSolution.mParameterSDs.push_back(std::numeric_limits< double >::quiet_NaN());
   }
 
 }
@@ -178,6 +180,8 @@ void CProfileGenerator::saveBaseModel()
 
   // disable statistics on opt task
   dynamic_cast<COptProblem*>(task.getProblem())->setCalculateStatistics(false);
+  // disable random start values!
+  dynamic_cast< COptProblem * >(task.getProblem())->setRandomizeStartValues(false);
 
   // create scan task
   auto & scanTask = (*mpDM->getTaskList())["Scan"];
@@ -371,8 +375,10 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
     for (int g = list->size() - 1; g >= 0; --g)
       list->removeParameter(g);
     
+    std::string itemName = mCurrentSolution.mIsParameterEstimation ? "FitItem" : "OptimizationItem";
+
     // recreate from array
-    for (const auto& current : itemsJson["FitItem"])
+    for (const auto & current : itemsJson[itemName])
     {
       auto currentCN = current["ObjectCN"].get< std::string >();
 
@@ -380,17 +386,23 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
       if (cn == currentCN)
         continue;
       
-      auto affected_cross_validation_experiments = current["Affected Cross Validation Experiments"];
-      auto affected_experiments = current["Affected Experiments"];
       auto start_value = current["StartValue"].get< double >();
       auto upper_bound = CRegisteredCommonName(current["UpperBound"].get< std::string >());
       auto lower_bound = CRegisteredCommonName(current["LowerBound"].get< std::string >());
 
-      auto & newItem = pFitProblem->addFitItem(CRegisteredCommonName(currentCN));
+      auto & newItem = mCurrentSolution.mIsParameterEstimation ?
+        pFitProblem->addFitItem(CRegisteredCommonName(currentCN)) : 
+        pProblem->addOptItem(CRegisteredCommonName(currentCN));
       newItem.setStartValue(start_value);
       newItem.setLowerBound(lower_bound);
       newItem.setUpperBound(upper_bound);
+
+      if (!mCurrentSolution.mIsParameterEstimation)
+        continue;
       
+      auto& pFitItem = dynamic_cast< CFitItem & >(newItem);
+      auto affected_cross_validation_experiments = current["Affected Cross Validation Experiments"];
+      auto affected_experiments = current["Affected Experiments"];
       if (!affected_experiments.is_null() && affected_experiments.contains("Experiment Key"))
       {
           std::vector< std::string > keys;
@@ -403,7 +415,7 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
               keys.push_back(affected_experiments["Experiment Key"].get< std::string >());
           }
           for (const auto & entry : keys)
-            newItem.addExperiment(entry);
+            pFitItem.addExperiment(entry);
       }
 
       if (!affected_cross_validation_experiments.is_null() && affected_cross_validation_experiments.contains("Experiment Key"))
@@ -418,7 +430,7 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
               keys.push_back(affected_cross_validation_experiments["Experiment Key"].get< std::string >());
             }
           for (const auto & entry : keys)
-            newItem.addCrossValidation(entry);
+            pFitItem.addCrossValidation(entry);
         }
 
     }
@@ -445,11 +457,11 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
 
     scan_task.updateMatrices();
     
-    auto* plot = COutputAssistant::createDefaultOutput(251, &scan_task, mpDM);
+    auto * plot = COutputAssistant::createDefaultOutput(mCurrentSolution.mIsParameterEstimation ? 251 : 252, &scan_task, mpDM);
     if (plot)
     plot->setObjectName(std::string("opt = ") + std::to_string(value));
     
-    auto* report = COutputAssistant::createDefaultOutput(1251, &scan_task, mpDM);
+    auto * report = COutputAssistant::createDefaultOutput(mCurrentSolution.mIsParameterEstimation ? 1251 : 1252, &scan_task, mpDM);
     scan_task.getReport().setTarget(mDirectory + "/" + mPrefix + "profile_" + zeroPad(i,5) + "_" + direction + ".txt");
     dynamic_cast<CReportDefinition*>(report)->setPrecision(10);
     scan_task.getReport().setAppend(false);
@@ -478,11 +490,12 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
 
     scan_task.updateMatrices();
 
-    plot = COutputAssistant::createDefaultOutput(251, &scan_task, mpDM);
+
+    plot = COutputAssistant::createDefaultOutput(mCurrentSolution.mIsParameterEstimation ? 251 : 252, &scan_task, mpDM);
     if (plot)
       plot->setObjectName(std::string("opt = ") + std::to_string(value));
 
-    report = COutputAssistant::createDefaultOutput(1251, &scan_task, mpDM);
+    report = COutputAssistant::createDefaultOutput(mCurrentSolution.mIsParameterEstimation ? 1251 : 1252, &scan_task, mpDM);
     dynamic_cast<CReportDefinition*>(report)->setPrecision(10);
     scan_task.getReport().setTarget(mDirectory + "/" + mPrefix + "profile_" + zeroPad(i,5) + "_" + direction + ".txt");
 
