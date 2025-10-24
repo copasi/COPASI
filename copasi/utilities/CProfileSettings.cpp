@@ -231,6 +231,7 @@ void CProfileSettings::save() const
   nlohmann::json data; 
   data["Directory"] = (*this)["Directory"];
   data["CopasiSE"] = (*this)["CopasiSE"];
+  data["Prefix"] = (*this)["Prefix"];
   if (outFile)
   {
       outFile << data.dump(4);
@@ -261,6 +262,10 @@ void CProfileSettings::load()
       if (data.contains("CopasiSE"))
         {
           (*this)["CopasiSE"] = data["CopasiSE"];
+        }
+       if (data.contains("Prefix"))
+        {
+          (*this)["Prefix"] = data["Prefix"];
         }
     }
 }

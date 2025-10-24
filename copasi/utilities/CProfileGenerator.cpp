@@ -275,6 +275,8 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
       mMessages << "Could not create target directory: " << mDirectory << std::endl;
       return;
     }
+  
+  mPrefix = (*mpSettings)["Prefix"];
 
   
   // save original model in target directory
@@ -315,8 +317,6 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
     mMessages << "no opt items defined, stopping." << std::endl;
     return;
   }
-
-  mPrefix = (*mpSettings)["Prefix"];
 
   saveBaseModel();
 

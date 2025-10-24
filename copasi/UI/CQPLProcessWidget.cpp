@@ -155,6 +155,7 @@ void CQPLProcessWidget::loadSettings(const CProfileSettings * pSettings)
   mpSettings = const_cast<CProfileSettings*>(pSettings);
 
   mpTxtDirectory->setText(FROM_UTF8(pSettings->getDirectory()));
+  mpTxtPrefix->setText(FROM_UTF8((*pSettings)["Prefix"].get< std::string >()));
   mpTxtCopasiSE->setText(FROM_UTF8(pSettings->getCopasiSE()));
   mpSpnNumProcesses->setValue((*pSettings)["Num Processes"]);
 }
@@ -165,6 +166,7 @@ void CQPLProcessWidget::saveSettings(CProfileSettings * pSettings)
     return;
 
   (*pSettings)["Directory"] = TO_UTF8(mpTxtDirectory->text());
+  (*pSettings)["Prefix"] = TO_UTF8(mpTxtPrefix->text());
   (*pSettings)["Num Processes"] = mpSpnNumProcesses->value();
   (*pSettings)["CopasiSE"] = TO_UTF8(mpTxtCopasiSE->text());
 
@@ -209,7 +211,7 @@ void CQPLProcessWidget::processDirectory()
   saveSettings(mpSettings);
 
   // glob all cps files from the directory
-  mFiles = globFiles(mpTxtDirectory->text(), "*profile_*.cps");
+  mFiles = globFiles(mpTxtDirectory->text(), mpTxtPrefix->text() + "*profile_*.cps");
   mpTxtOutput->setPlainText(QString("Found %1 files").arg(mFiles.count()));
 
   if (mFiles.isEmpty())

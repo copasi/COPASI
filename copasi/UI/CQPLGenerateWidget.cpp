@@ -101,13 +101,13 @@ void CQPLGenerateWidget::saveSettings(CProfileSettings * pSettings)
     return;
 
   (*pSettings)["Directory"] = TO_UTF8(mpTxtTarget->text());
+  (*pSettings)["Prefix"] = TO_UTF8(mpTxtPrefix->text());
   (*pSettings)["IsParameterEstimation"] = mpChkIsParameterEstimation->isChecked();
   (*pSettings)["Run Statistics"] = mpChkRunStatistics->isChecked();
   (*pSettings)["Delete Existing"] = mpChkDeleteExisting->isChecked();
 
   auto & generate = (*pSettings)["Generate"];
 
-  generate["Prefix"] = TO_UTF8(mpTxtPrefix->text());
   generate["Method"] = (int) mpMethodWidget->getActiveMethodType();
   generate["Scan Interval"] = mpTxtScanInterval->text().toInt();
   generate["Lower Adjustment"] = TO_UTF8(mpTxtLower->text());
@@ -152,9 +152,9 @@ void CQPLGenerateWidget::generateFiles()
   {
     auto dir = QDir(mpTxtTarget->text());
     QStringList filters;
-    filters << "*profile*.cps" // Files containing "profile" and ending with "cps"
-            << "*_high.txt"    // Files ending with "_high.txt"
-            << "*_low.txt";    // Files ending with "_low.txt"
+    filters << mpTxtPrefix->text() + "*profile*.cps" // Files containing "profile" and ending with "cps"
+            << mpTxtPrefix->text() + "*_high.txt"    // Files ending with "_high.txt"
+            << mpTxtPrefix->text() + "*_low.txt";    // Files ending with "_low.txt"
 
     // 3. Set the name filters on the QDir object
     dir.setNameFilters(filters);

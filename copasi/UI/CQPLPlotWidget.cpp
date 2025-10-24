@@ -28,6 +28,7 @@ CQPLPlotWidget::CQPLPlotWidget(QWidget * parent)
 void CQPLPlotWidget::loadSettings(const CProfileSettings * pSettings)
 {
   mpTxtTarget->setText(FROM_UTF8(pSettings->getDirectory()));
+  mpTxtPrefix->setText(FROM_UTF8((*pSettings)["Prefix"].get<std::string>()));
 
   auto & plot = (*pSettings)["Plot"];
 
@@ -45,6 +46,7 @@ void CQPLPlotWidget::saveSettings(CProfileSettings * pSettings)
     return;
 
   (*pSettings)["Directory"] = TO_UTF8(mpTxtTarget->text());
+  (*pSettings)["Prefix"] = TO_UTF8(mpTxtPrefix->text());
 
   auto & plot = (*pSettings)["Plot"];
 
@@ -64,7 +66,7 @@ QResultMap CQPLPlotWidget::globFiles(const QString& directory, const QString& pa
   QResultMap map;
   for (QString& entry : list)
   {
-    if (!entry.endsWith("_high.txt"))
+    if (!entry.startsWith(mpTxtPrefix->text()) ||  !entry.endsWith("_high.txt"))
       continue;
 
     // get the base name

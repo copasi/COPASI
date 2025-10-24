@@ -83,7 +83,7 @@ public:
   virtual void loadSettings(const CProfileSettings * pSettings);
   virtual void saveSettings(CProfileSettings * pSettings);
 
-  QStringList globFiles(const QString& directory, const QString& pattern);
+  static QStringList globFiles(const QString& directory, const QString& pattern);
 
 public slots:
   /**
