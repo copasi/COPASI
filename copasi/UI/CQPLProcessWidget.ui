@@ -16,9 +16,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <layout class="QFormLayout" name="formLayout">
-        <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
-      </property>
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="mpLblDirectory">
          <property name="text">
@@ -65,17 +65,37 @@
      </item>
      <item>
       <layout class="QFormLayout" name="formLayout_2">
-        <property name="fieldGrowthPolicy">
-          <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
-      </property>
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+       </property>
        <item row="0" column="0">
+        <widget class="QLabel" name="mpLblUpper_2">
+         <property name="text">
+          <string>Prefix</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="mpTxtPrefix">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Prefix to be used for the generated files.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
         <widget class="QLabel" name="mpLblNumProcesses">
          <property name="text">
           <string># Processes</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
+       <item row="1" column="1">
         <widget class="QSpinBox" name="mpSpnNumProcesses">
          <property name="value">
           <number>4</number>
@@ -134,8 +154,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>614</width>
-        <height>146</height>
+        <width>620</width>
+        <height>132</height>
        </rect>
       </property>
      </widget>
@@ -156,9 +176,13 @@
  <tabstops>
   <tabstop>mpTxtDirectory</tabstop>
   <tabstop>mpCmdBrowse</tabstop>
+  <tabstop>mpTxtPrefix</tabstop>
+  <tabstop>mpTxtCopasiSE</tabstop>
+  <tabstop>mpCmdBrowseCopasiSE</tabstop>
   <tabstop>mpSpnNumProcesses</tabstop>
   <tabstop>mpCmdRun</tabstop>
   <tabstop>mpCmdCancel</tabstop>
+  <tabstop>mpScrollArea</tabstop>
   <tabstop>mpTxtOutput</tabstop>
  </tabstops>
  <resources/>
@@ -180,22 +204,22 @@
    </hints>
   </connection>
   <connection>
-    <sender>mpCmdBrowseCopasiSE</sender>
-    <signal>clicked()</signal>
-    <receiver>CQPLProcessWidget</receiver>
-    <slot>browseCopasiSE()</slot>
-    <hints>
-     <hint type="sourcelabel">
-      <x>507</x>
-      <y>20</y>
-     </hint>
-     <hint type="destinationlabel">
-      <x>319</x>
-      <y>239</y>
-     </hint>
-    </hints>
-   </connection>
-   <connection>
+   <sender>mpCmdBrowseCopasiSE</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPLProcessWidget</receiver>
+   <slot>browseCopasiSE()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>507</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
    <sender>mpCmdCancel</sender>
    <signal>clicked()</signal>
    <receiver>CQPLProcessWidget</receiver>

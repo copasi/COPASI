@@ -16,9 +16,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <layout class="QFormLayout" name="formLayout">
-        <property name="fieldGrowthPolicy">
-            <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
-        </property>
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+       </property>
        <item row="1" column="0">
         <widget class="QLabel" name="mpLblLower">
          <property name="text">
@@ -109,9 +109,9 @@
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
       <layout class="QFormLayout" name="formLayout_4">
-        <property name="fieldGrowthPolicy">
-            <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
-        </property>
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="mpLblTarget">
          <property name="text">
@@ -141,9 +141,9 @@
      </item>
      <item>
       <layout class="QFormLayout" name="formLayout_3">
-        <property name="fieldGrowthPolicy">
-            <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
-        </property>
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="mpLblUpper_2">
          <property name="text">
@@ -280,11 +280,17 @@
   <tabstop>mpCmdBrowse</tabstop>
   <tabstop>mpTxtPrefix</tabstop>
   <tabstop>mpTxtScanInterval</tabstop>
+  <tabstop>mpChkLog</tabstop>
+  <tabstop>mpChkContinue</tabstop>
   <tabstop>mpTxtLower</tabstop>
   <tabstop>mpTxtUpper</tabstop>
   <tabstop>mpChkDisablePlots</tabstop>
   <tabstop>mpChkDisableTasks</tabstop>
+  <tabstop>mpChkIsParameterEstimation</tabstop>
+  <tabstop>mpChkRunStatistics</tabstop>
+  <tabstop>mpChkDeleteExisting</tabstop>
   <tabstop>mpCmdGenerate</tabstop>
+  <tabstop>mpTxtMessages</tabstop>
  </tabstops>
  <resources/>
  <connections>

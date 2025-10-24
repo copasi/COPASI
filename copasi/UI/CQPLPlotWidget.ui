@@ -13,9 +13,9 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
-      <layout class="QFormLayout" name="formLayout">
+      <layout class="QFormLayout" name="formLayout_5">
        <property name="fieldGrowthPolicy">
         <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
        </property>
@@ -27,16 +27,51 @@
         </widget>
        </item>
        <item row="0" column="1">
-        <widget class="QLineEdit" name="mpTxtTarget"/>
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <item>
+          <widget class="QLineEdit" name="mpTxtTarget">
+           <property name="toolTip">
+            <string>Directory in which to place the generated files (defaults to the tmp directory)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="mpCmdBrowse">
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </item>
      <item>
-      <widget class="QToolButton" name="mpCmdBrowse">
-       <property name="text">
-        <string>...</string>
+      <layout class="QFormLayout" name="formLayout_6">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
        </property>
-      </widget>
+       <item row="0" column="0">
+        <widget class="QLabel" name="mpLblUpper_2">
+         <property name="text">
+          <string>Prefix</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="mpTxtPrefix">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Prefix to be used for the generated files.</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
@@ -166,7 +201,7 @@
         <x>0</x>
         <y>0</y>
         <width>620</width>
-        <height>324</height>
+        <height>322</height>
        </rect>
       </property>
      </widget>
@@ -177,6 +212,7 @@
  <tabstops>
   <tabstop>mpTxtTarget</tabstop>
   <tabstop>mpCmdBrowse</tabstop>
+  <tabstop>mpTxtPrefix</tabstop>
   <tabstop>mpTxtScaleTop</tabstop>
   <tabstop>mpTxtScaleBottom</tabstop>
   <tabstop>mpTxtThresholds</tabstop>
@@ -229,22 +265,6 @@
     <hint type="sourcelabel">
      <x>305</x>
      <y>81</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>319</x>
-     <y>239</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mpCmdBrowse</sender>
-   <signal>clicked()</signal>
-   <receiver>CQPLPlotWidget</receiver>
-   <slot>browseDirectory()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>617</x>
-     <y>20</y>
     </hint>
     <hint type="destinationlabel">
      <x>319</x>
