@@ -156,10 +156,10 @@ void CQPLGenerateWidget::generateFiles()
             << mpTxtPrefix->text() + "*_high.txt"    // Files ending with "_high.txt"
             << mpTxtPrefix->text() + "*_low.txt";    // Files ending with "_low.txt"
 
-    // 3. Set the name filters on the QDir object
+    // Set the name filters on the QDir object
     dir.setNameFilters(filters);
 
-    // 4. Optionally, set filtering options (e.g., only files, not directories)
+    // Optionally, set filtering options (e.g., only files, not directories)
     dir.setFilter(QDir::Files | QDir::NoDotAndDotDot); // To get only files, excluding "." and ".."
 
     QStringList matchingFiles = dir.entryList(QDir::Files | QDir::NoDotAndDotDot); // Apply filter here too for clarity

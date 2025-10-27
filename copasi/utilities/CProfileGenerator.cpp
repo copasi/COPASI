@@ -282,8 +282,28 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
   // save original model in target directory
   mCpsModelFile = mDirectory + "/" + mPrefix + "original.cps";
   auto oldFileName = pDM->getFileName();
-  pDM->saveModel(mCpsModelFile, NULL, true);
-  pDM->setFileName(oldFileName);
+
+  // if parameter estimation, store original experiment filenames
+  {
+    std::vector< std::string > originalExperimentFiles;
+    auto * task = dynamic_cast< CFitTask * >(&pDM->getTaskList()->operator[](CTaskEnum::TaskName[CTaskEnum::Task::parameterFitting]));
+    auto * problem = dynamic_cast< CFitProblem * >(task->getProblem());
+    auto & expSet = problem->getExperimentSet();
+    if (mCurrentSolution.mIsParameterEstimation)
+      {
+        originalExperimentFiles = expSet.getFileNamesOnly();
+      }
+
+    // save model
+    pDM->saveModel(mCpsModelFile, NULL, true);
+
+    // restore original filenames
+    pDM->setFileName(oldFileName);
+    if (mCurrentSolution.mIsParameterEstimation)
+      {
+        expSet.setFileNames(originalExperimentFiles);
+      }
+  }
 
   // now create a new data model, and loading the file we just saved
   mpDM = CRootContainer::addDatamodel();
@@ -295,7 +315,7 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
 
   // save original model in target directory
   if (mCurrentSolution.mIsParameterEstimation)
-    mpDM->copyExperimentalDataTo(mDirectory);
+    mpDM->copyExperimentalDataTo(mDirectory, mPrefix, true);
 
   mpDM->saveModel(mCpsModelFile, NULL, true);
 
