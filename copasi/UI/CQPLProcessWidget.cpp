@@ -290,7 +290,7 @@ void CQPLProcessWidget::startNextWorker(CQPLProcessWorker* pCurrentWorker)
         }
     }
 
-  if (mFiles.isEmpty() && !mpCmdRun->isEnabled())
+  if (mFiles.isEmpty() && !mpCmdRun->isEnabled() && mWorkers.isEmpty())
     {
       mpTxtOutput->append("all done");
       mpCmdRun->setEnabled(true);
