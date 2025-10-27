@@ -305,8 +305,10 @@ public:
    * name will be chosen.
    *
    * @param path the target directory for the experimental data.
+   * @param prefix an optional prefix to add to the copied files
+   * @param overwrite whether to overwrite existing files
    */
-  void copyExperimentalDataTo(const std::string& path);
+  void copyExperimentalDataTo(const std::string & path, const std::string & prefix = "", bool overwrite = false);
 
   /**
    * Exports the current model as COMBINE archive

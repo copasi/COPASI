@@ -788,7 +788,7 @@ bool CDataModel::saveModelParameterSets(const std::string & fileName)
   return XML.saveModelParameterSets(os, fileName);
 }
 
-void CDataModel::copyExperimentalDataTo(const std::string & path)
+void CDataModel::copyExperimentalDataTo(const std::string & path, const std::string & prefix /*= ""*/, bool overwrite /*= false*/)
 {
   CFitProblem * problem = dynamic_cast< CFitProblem * >(getTaskList()->operator[](CTaskEnum::TaskName[CTaskEnum::Task::parameterFitting]).getProblem());
 
@@ -806,15 +806,16 @@ void CDataModel::copyExperimentalDataTo(const std::string & path)
 
     for (; it != fileNames.end(); ++it)
       {
-        std::string destination = "./" + CDirEntry::fileName(*it);
+        std::string destination = "./" + prefix + CDirEntry::fileName(*it);
         CDirEntry::makePathAbsolute(destination, path);
 
         int count = 0;
 
+        if (!overwrite)
         while (CDirEntry::exist(destination))
           {
             std::stringstream str;
-            str << "./" << CDirEntry::baseName(*it) << "_" << ++count << "." << Util::getExtension(*it);
+            str << "./" << prefix << CDirEntry::baseName(*it) << "_" << ++count << "." << Util::getExtension(*it);
             destination = str.str();
             CDirEntry::makePathAbsolute(destination, path);
           }
@@ -830,7 +831,7 @@ void CDataModel::copyExperimentalDataTo(const std::string & path)
           {
             CExperiment * current = experiments.getExperiment(i);
 
-            if (current->getFileName() == renameIt->first)
+            if (current->getFileNameOnly() == renameIt->first)
               {
                 current->setFileName(renameIt->second);
               }
@@ -849,15 +850,16 @@ void CDataModel::copyExperimentalDataTo(const std::string & path)
 
     for (; it != fileNames.end(); ++it)
       {
-        std::string destination = "./" + CDirEntry::fileName(*it);
+        std::string destination = "./" + prefix + CDirEntry::fileName(*it);
         CDirEntry::makePathAbsolute(destination, path);
 
         int count = 0;
 
+        if (!overwrite)
         while (CDirEntry::exist(destination))
           {
             std::stringstream str;
-            str << "./" << CDirEntry::baseName(*it) << "_" << ++count << "." << Util::getExtension(*it);
+            str << "./" << prefix << CDirEntry::baseName(*it) << "_" << ++count << "." << Util::getExtension(*it);
             destination = str.str();
             CDirEntry::makePathAbsolute(destination, path);
           }
@@ -873,7 +875,7 @@ void CDataModel::copyExperimentalDataTo(const std::string & path)
           {
             CExperiment * current = experiments.getExperiment(i);
 
-            if (current->getFileName() == renameIt->first)
+            if (current->getFileNameOnly() == renameIt->first)
               {
                 current->setFileName(renameIt->second);
               }
