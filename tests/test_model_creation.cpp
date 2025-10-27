@@ -412,6 +412,13 @@ TEST_CASE("copy experimental data to", "[copasi][data]")
   auto filenamesAfterSave2 = expSet.getFileNamesOnly();
   REQUIRE(filenamesAfterSave2.size() == 1);
 
+  // restore filenames
+  REQUIRE(expSet.setFileNames(filenamesAfterSave) == true);
+  auto filenamesAfterSaveRestored = expSet.getFileNamesOnly();
+  REQUIRE(filenamesAfterSaveRestored.size() == 1);
+  REQUIRE(filenamesAfterSaveRestored[0] == filenamesAfterSave[0]);
+
+
   CRootContainer::removeDatamodel(dm);
 
   // load the last model, verify that the experimental data is copied to the new location

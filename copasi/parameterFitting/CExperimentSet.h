@@ -189,6 +189,13 @@ public:
    */
   std::vector< std::string > getFileNamesOnly() const;
 
+  /** 
+   * overwrites the list of filenames for experiments in this set
+   * @param const std::vector< std::string > & fileNames
+   * @return bool success
+   */
+  bool setFileNames(const std::vector< std::string > & fileNames);
+
   /**
    * Retrieve the number of data points of all experiments combined.
    * @return size_t dataPointCount
