@@ -1908,7 +1908,7 @@ bool CDataModel::exportCombineArchive(
           {
             CExperimentSet & experiments = problem->getExperimentSet();
 
-            std::vector< std::string > fileNames = experiments.getFileNames();
+            std::vector< std::string > fileNames = experiments.getFileNamesOnly();
             std::vector< std::string >::iterator it = fileNames.begin();
 
             for (; it != fileNames.end(); ++it)
@@ -1927,7 +1927,6 @@ bool CDataModel::exportCombineArchive(
                     if (current->getFileNameOnly() == renameIt->first)
                       {
                         current->setFileName("." + renameIt->second);
-                        break;
                       }
                   }
               }
@@ -1935,7 +1934,7 @@ bool CDataModel::exportCombineArchive(
           {
             CExperimentSet & experiments = problem->getCrossValidationSet();
 
-            std::vector< std::string > fileNames = experiments.getFileNames();
+            std::vector< std::string > fileNames = experiments.getFileNamesOnly();
             std::vector< std::string >::iterator it = fileNames.begin();
 
             for (; it != fileNames.end(); ++it)
@@ -1954,7 +1953,6 @@ bool CDataModel::exportCombineArchive(
                     if (current->getFileNameOnly() == renameIt->first)
                       {
                         current->setFileName("." + renameIt->second);
-                        break;
                       }
                   }
               }
@@ -1979,7 +1977,6 @@ bool CDataModel::exportCombineArchive(
                 if (current->getFileNameOnly() == "." + renameIt->second)
                   {
                     current->setFileName(renameIt->first);
-                    break;
                   }
               }
           }
@@ -1996,7 +1993,6 @@ bool CDataModel::exportCombineArchive(
                 if (current->getFileNameOnly() == "." + renameIt->second)
                   {
                     current->setFileName(renameIt->first);
-                    break;
                   }
               }
           }
