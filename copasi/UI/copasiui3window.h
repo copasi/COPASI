@@ -209,6 +209,8 @@ public slots:
 
   void slotStartNewInstance();
 
+  void listViewsFolderChanged(const QModelIndex & index);
+
 public:
   /**
    * performs the next action from the action stack
@@ -228,9 +230,6 @@ public:
    * while informing which ones were removed.
    */
   void removeReportTargets();
-
-    void listViewsFolderChanged(const QModelIndex & index);
-
 
 protected slots:
   void slotFileOpenFinished(const std::string & thread, bool success);
