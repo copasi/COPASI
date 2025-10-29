@@ -932,6 +932,8 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
               objectCNs << FROM_UTF8(objectCN);
               objectNames << FROM_UTF8(pObj->getObjectDisplayName());
               CExperiment * pExp = dynamic_cast< CExperiment * >(pObj->getDataObject()->getObjectAncestor("ParameterGroup"));
+              if (!pExp)
+                pExp = dynamic_cast< CExperiment * >(pObj->getDataObject()->getObjectAncestor("Experiment"));
 
               if (pExp && pExp->getExperimentType() == CTaskEnum::Task::steadyState)
                 {
