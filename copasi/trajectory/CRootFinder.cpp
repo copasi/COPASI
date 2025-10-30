@@ -241,7 +241,7 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(C_FLOAT64 timeLeft,
         }
 
       // Handle interval size which are near the numerical resolution indicating a discontinuity
-      if (!fabs(RightRootTime - LeftRootTime) <= (fabs(RightRootTime) + fabs(LeftRootTime)) * mRelativeTolerance * 1e-6)
+      if (fabs(RightRootTime - LeftRootTime) > (fabs(RightRootTime) + fabs(LeftRootTime)) * mRelativeTolerance * 1e-6) 
         CBrent::findRootInterval(LeftRootTime,
                                  RightRootTime,
                                  mBrentRootValueCalculator,
