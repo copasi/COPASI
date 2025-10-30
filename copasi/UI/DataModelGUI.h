@@ -156,7 +156,7 @@ public:
   void registerListView(ListViews * pListView);
   void deregisterListView(ListViews * pListView);
 
-  void refreshInitialValues();
+  void refreshInitialValues(bool updateParameterSet = true);
   void setFramework(int framework);
   void updateMIRIAMResourceContents();
   void commit();

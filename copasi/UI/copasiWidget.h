@@ -82,7 +82,15 @@ public:
    */
   virtual CQBaseDataModel* getCqDataModel();
 
+  /**
+   * Set the filter expression for the given model.
+   */
   static void setFilterExpression(CQSortFilterProxyModel * model, bool empty, QString Filter);
+
+  /**
+   * @return the object type this widget is associated with
+   */
+  ListViews::ObjectType getObjectType() const;
 
 protected:
   virtual bool enterProtected();

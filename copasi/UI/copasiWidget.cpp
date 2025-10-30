@@ -119,6 +119,11 @@ void CopasiWidget::setFilterExpression(CQSortFilterProxyModel * model, bool empt
 #endif
 }
 
+ListViews::ObjectType CopasiWidget::getObjectType() const
+{
+  return mObjectType;
+}
+
 void CopasiWidget::refresh()
 {
   leave();

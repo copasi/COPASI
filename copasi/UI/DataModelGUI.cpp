@@ -84,6 +84,7 @@
 #include <QFile>
 
 #include <copasi/UI/CQCopasiApplication.h>
+#include <copasi/UI/copasiWidget.h>
 
 #include <copasi/commandline/COptions.h>
 
@@ -788,7 +789,6 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
 //************** QApplication ***********************************************
 
 //************Model-View Architecture*****************************************
-
 bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {
   // The GUI is inactive whenever a progress bar exist. We wait with updates
@@ -802,7 +802,19 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
       !(action == ListViews::ADD && objectType == ListViews::ObjectType::MODEL) // not needed when model was loaded
      )
     {
-      refreshInitialValues();
+      bool refreshParameterSet = true;
+      // do not refresh parameter set if it is the active one that changed
+      if (!mListViews.empty())
+        {
+          auto * first = *mListViews.begin();
+          auto * currentWidget = first->getCurrentWidget();
+          auto currentWidgetType = currentWidget->getObjectType();
+
+          if (currentWidgetType == ListViews::ObjectType::MODELPARAMETERSET && currentWidget->getObject() == &mpDataModel->getModel()->getActiveModelParameterSet())
+            refreshParameterSet = false;
+        }
+
+      refreshInitialValues(refreshParameterSet);
     }
 
   emit notifyView(objectType, action, cn);
@@ -911,7 +923,7 @@ void DataModelGUI::deregisterListView(ListViews * pListView)
   mListViews.erase(pListView);
 }
 
-void DataModelGUI::refreshInitialValues()
+void DataModelGUI::refreshInitialValues(bool updateParameterSet)
 {
   std::set< ListViews * >::iterator it = mListViews.begin();
   std::set< ListViews * >::iterator end = mListViews.end();
@@ -919,7 +931,7 @@ void DataModelGUI::refreshInitialValues()
   for (; it != end; ++it)
     {
       CModel * pModel = (*it)->getDataModel()->getModel();
-      pModel->updateInitialValues(static_cast< CCore::Framework >(mFramework));
+      pModel->updateInitialValues(static_cast< CCore::Framework >(mFramework), updateParameterSet);
     }
 }
 
