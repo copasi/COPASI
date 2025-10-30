@@ -4323,7 +4323,7 @@ bool getVersionFromFile(const std::string& fileName, CVersion & latest)
   return true;
 }
 
-void CopasiUI3Window::slotCheckForUpdateFinished(bool success)
+void CopasiUI3Window::slotCheckForUpdateFinished(const std::string &, bool success)
 {
   disconnect(mpDataModelGUI, SIGNAL(finished(const std::string &, bool)), this, SLOT(slotCheckForUpdateFinished(const std::string &, bool)));
 

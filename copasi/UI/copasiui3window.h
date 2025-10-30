@@ -186,7 +186,7 @@ public slots:
   void slotHideMainToolbar(bool flag);
   void slotCopy();
   void slotCheckForUpdate();
-  void slotCheckForUpdateFinished(bool flag);
+  void slotCheckForUpdateFinished(const std::string &, bool flag);
   void slotAutoCheckForUpdates();
   void slotClearSbmlIds();
 
