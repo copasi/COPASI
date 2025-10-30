@@ -89,22 +89,31 @@ CScanItem* CScanItem::createScanItemFromParameterGroup(CCopasiParameterGroup* si
   return tmp;
 }
 
-CScanItem::CScanItem():
-  mNumSteps(0),
-  mpObject(NULL),
-  mpObjectValue(NULL),
-  mStoreValue(0.0),
-  mIndex(0),
-  mFlagFinished(false)
+CScanItem::CScanItem()
+  : mNumSteps(0)
+  , mpObject(NULL)
+  , mpTransientObject(NULL)
+  , mpObjectValue(NULL)
+  , mpTransientObjectValue(NULL)
+  , mStoreValue(0.0)
+  , mIndex(0)
+  , mFlagFinished(false)
 {}
 
-CScanItem::CScanItem(CCopasiParameterGroup* si):
-  mNumSteps(0),
-  mpObject(NULL),
-  mpObjectValue(NULL),
-  mStoreValue(0.0),
-  mIndex(0),
-  mFlagFinished(false)
+const CObjectInterface * CScanItem::getTransientObject() const
+{
+  return mpTransientObject;
+}
+
+CScanItem::CScanItem(CCopasiParameterGroup * si)
+  : mNumSteps(0)
+  , mpObject(NULL)
+  , mpTransientObject(NULL)
+  , mpObjectValue(NULL)
+  , mpTransientObjectValue(NULL)
+  , mStoreValue(0.0)
+  , mIndex(0)
+  , mFlagFinished(false)
 {
   assert(si != NULL);
   ensureParameterGroupHasAllElements(si);
@@ -113,14 +122,26 @@ CScanItem::CScanItem(CCopasiParameterGroup* si):
 
   CCopasiProblem * pProblem = dynamic_cast< CCopasiProblem * >(si->getObjectAncestor("Problem"));
 
+  auto cn = si->getValue< CRegisteredCommonName >("Object");
+
   if (pProblem != NULL)
     {
-      mpObject = pProblem->getMathContainer()->getObject(si->getValue< CRegisteredCommonName >("Object"));
+      mpObject = pProblem->getMathContainer()->getObject(cn);
     }
 
   if (mpObject != NULL)
     {
       mpObjectValue = (C_FLOAT64 *) mpObject->getValuePointer();
+    }
+
+  size_t pos = cn.find("Initial");
+
+  if (pos != std::string::npos)
+    {
+      cn.erase(pos, 7); // "Initial" is 7 characters
+      mpTransientObject = pProblem->getMathContainer()->getObject(cn);
+      if (mpTransientObject)
+        mpTransientObjectValue = (C_FLOAT64 *) mpTransientObject->getValuePointer();
     }
 }
 
@@ -279,6 +300,9 @@ void CScanItemLinear::step()
       *mpObjectValue = Value;
     }
 
+  if (mpTransientObjectValue != NULL)
+    *mpTransientObjectValue = Value;
+
   ++mIndex;
 }
 
@@ -388,6 +412,9 @@ void CScanItemRandom::step()
       *mpObjectValue = Value;
     }
 
+  if (mpTransientObjectValue != NULL && mIndex <= mNumSteps)
+    *mpTransientObjectValue = Value;
+
   ++mIndex;
 }
 
@@ -493,7 +520,16 @@ bool CScanMethod::init()
               if (mContinueFromCurrentState &&
                   static_cast< const CMathObject * >(pObject)->getEntityType() != CMath::EntityType::LocalReactionParameter)
                 {
-                  pObject += Offset;
+                  // grab the transient object directly
+                  if (pItem->getTransientObject())
+                    {
+                      pObject = pItem->getTransientObject();
+                    }
+                  else
+                  {
+                      // fallback to old behavior (this does not work)
+                      pObject += Offset;
+                  }
                 }
             }
 
@@ -503,7 +539,11 @@ bool CScanMethod::init()
 
   if (mContinueFromCurrentState)
     {
-      mpContainer->getTransientDependencies().getUpdateSequence(mInitialUpdates, CCore::SimulationContext::UpdateMoieties, ObjectSet, mpContainer->getSimulationUpToDateObjects());
+      // just the simulated values is not enough, as other values might depend on the
+      // changed parameter, so just add all dependents
+      CObjectInterface::ObjectSet set;
+      mpContainer->getTransientDependencies().appendAllDependents(ObjectSet, set);
+      mpContainer->getTransientDependencies().getUpdateSequence(mInitialUpdates, CCore::SimulationContext::UpdateMoieties, ObjectSet, set);
     }
   else
     {
@@ -632,6 +672,7 @@ bool CScanMethod::calculate()
     }
 
   // Assure that the subtask did not interfere with the scan operation.
+  if (!mContinueFromCurrentState)
   mpContainer->setInitialState(InitialState);
 
   return success;

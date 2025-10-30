@@ -50,8 +50,10 @@ protected:
   size_t mNumSteps;
 
   const CObjectInterface * mpObject;
+  const CObjectInterface * mpTransientObject;
 
   C_FLOAT64 * mpObjectValue;
+  C_FLOAT64 * mpTransientObjectValue;
 
   C_FLOAT64 mStoreValue;
 
@@ -91,6 +93,12 @@ public:
    * @return const CObjectInterface * object
    */
   const CObjectInterface * getObject() const;
+
+  /**
+   * Retrieve the transient object for the initial object
+   * @return the transient object
+   */
+  const CObjectInterface * getTransientObject() const;
 
 protected:
 
