@@ -658,7 +658,7 @@ public:
   void addNoiseInputObject(const CMathObject * pObject);
 
   /**
-   * ARetrieve the set of noise input objects
+   * Retrieve the set of noise input objects
    * @return const CObjectInterface::ObjectSet & noiseInputObjects
    */
   const CObjectInterface::ObjectSet & getNoiseInputObjects() const;
