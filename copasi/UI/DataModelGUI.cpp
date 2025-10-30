@@ -802,19 +802,29 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
       !(action == ListViews::ADD && objectType == ListViews::ObjectType::MODEL) // not needed when model was loaded
      )
     {
-      bool refreshParameterSet = true;
-      // do not refresh parameter set if it is the active one that changed
-      if (!mListViews.empty())
-        {
-          auto * first = *mListViews.begin();
-          auto * currentWidget = first->getCurrentWidget();
-          auto currentWidgetType = currentWidget->getObjectType();
+      // This cannot be determined by only looking at the first list view.
+      // It depends on whether the changed parameter set is the current object in any listview.
+      // Furthermore if a list view displays another model than the ancestor of the changed parameter set it must be fully refreshed.
+      const CModel * pParameterSetAncestor = nullptr;
 
-          if (currentWidgetType == ListViews::ObjectType::MODELPARAMETERSET && currentWidget->getObject() == &mpDataModel->getModel()->getActiveModelParameterSet())
-            refreshParameterSet = false;
+      for (ListViews * pListView: mListViews)
+        {
+          CDataModel * pDataModel = pListView->getDataModel();
+          CopasiWidget * currentWidget = pListView->getCurrentWidget();
+          ListViews::ObjectType currentWidgetType = currentWidget->getObjectType();
+          const CDataObject * pDataObject = currentWidget->getObject();
+          CModelParameterSet * pActiveParameterSet = pDataModel != nullptr ? &pDataModel->getModel()->getActiveModelParameterSet() : nullptr;
+
+          if (currentWidgetType == ListViews::ObjectType::MODELPARAMETERSET
+              && pDataObject != nullptr
+              && pDataObject == pActiveParameterSet)
+            {
+              pParameterSetAncestor = pListView->getDataModel()->getModel();
+              break;
+            }
         }
 
-      refreshInitialValues(refreshParameterSet);
+      refreshInitialValues(pParameterSetAncestor);
     }
 
   emit notifyView(objectType, action, cn);
@@ -923,7 +933,7 @@ void DataModelGUI::deregisterListView(ListViews * pListView)
   mListViews.erase(pListView);
 }
 
-void DataModelGUI::refreshInitialValues(bool updateParameterSet)
+void DataModelGUI::refreshInitialValues(const CModel * pParameterSetAncestor)
 {
   std::set< ListViews * >::iterator it = mListViews.begin();
   std::set< ListViews * >::iterator end = mListViews.end();
@@ -931,7 +941,7 @@ void DataModelGUI::refreshInitialValues(bool updateParameterSet)
   for (; it != end; ++it)
     {
       CModel * pModel = (*it)->getDataModel()->getModel();
-      pModel->updateInitialValues(static_cast< CCore::Framework >(mFramework), updateParameterSet);
+      pModel->updateInitialValues(static_cast< CCore::Framework >(mFramework), pModel != pParameterSetAncestor);
     }
 }
 

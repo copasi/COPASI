@@ -42,6 +42,7 @@ class QNetworkReply;
 class COutputDefinitionVector;
 class COutputHandlerPlot;
 class CDataModel;
+class CModel;
 
 #include "copasi/core/CCore.h"
 #include "copasi/core/CRegisteredCommonName.h"
@@ -156,7 +157,7 @@ public:
   void registerListView(ListViews * pListView);
   void deregisterListView(ListViews * pListView);
 
-  void refreshInitialValues(bool updateParameterSet = true);
+  void refreshInitialValues(const CModel * pParameterSetAncestor = nullptr);
   void setFramework(int framework);
   void updateMIRIAMResourceContents();
   void commit();
