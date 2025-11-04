@@ -502,10 +502,10 @@ void CQPLPlotWidget::generatePlots()
     }
 
   // read the info.json file
-  QFile file(mpTxtTarget->text() + "/" + "_info.json");
-  double obj_val;
-  int num_params;
-  int num_data;
+  QFile file(mpTxtTarget->text() + "/" + mpTxtPrefix->text() + "info.json");
+  double obj_val = std::numeric_limits<double>::quiet_NaN();
+  int num_params = 0;
+  int num_data = 0;
   std::vector<double> param_sds;
   std::vector< double > param_values;
   std::vector< std::string > param_names;
