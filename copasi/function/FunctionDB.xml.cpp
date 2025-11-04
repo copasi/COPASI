@@ -2,7 +2,7 @@
 
 #include "copasi/function/FunctionDB.xml.h"
 
-const char* FunctionDBxmlArray =
+static const std::string functionDBxml = {
   R"xml(<?xml version='1.0' encoding='UTF-8'?>
 <!-- generated with COPASI (http://www.copasi.org) -->
 <COPASI xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://copasi.org/static/schema/CopasiML.xsd'>
@@ -1525,14 +1525,9 @@ const char* FunctionDBxmlArray =
   </Function>
   </ListOfFunctions>
 </COPASI>
-)xml";
+)xml"};
   
   const std::string & FunctionDBxml()
   {
-    static std::string FunctionDBxml;
-
-    if (FunctionDBxml.empty())
-      FunctionDBxml = FunctionDBxmlArray;
-
-    return FunctionDBxml;
+    return functionDBxml;
   }
