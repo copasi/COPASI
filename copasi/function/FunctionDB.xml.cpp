@@ -1157,7 +1157,7 @@ static std::array< const char*, 9 > FunctionDBxmlArray = {
   </rdf:RDF>
   
   </MiriamAnnotation><Expression>
-  Vmax*A*B/((Kma*Kmb + A*Kmb + B*Kma + A*B)*Activator+ Ka*Kma*Kmb)
+  Vmax*A*B*Activator/((Kma*Kmb + A*Kmb + B*Kma + A*B)*Activator+ Ka*Kma*Kmb)
   </Expression>
   <ListOfParameterDescriptions>
   <ParameterDescription key='FunctionParameter_536' name='Vmax' order='0' role='constant'/>
