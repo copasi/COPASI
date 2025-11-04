@@ -1,9 +1,8 @@
-#include <array>
 #include <string>
 
 #include "copasi/function/FunctionDB.xml.h"
 
-static std::array< const char*, 9 > FunctionDBxmlArray = {
+const char* FunctionDBxmlArray =
   R"xml(<?xml version='1.0' encoding='UTF-8'?>
 <!-- generated with COPASI (http://www.copasi.org) -->
 <COPASI xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:noNamespaceSchemaLocation='https://copasi.org/static/schema/CopasiML.xsd'>
@@ -117,7 +116,7 @@ static std::array< const char*, 9 > FunctionDBxmlArray = {
   <ParameterDescription key='FunctionParameter_45' name='Km' order='1' role='constant'/>
   <ParameterDescription key='FunctionParameter_46' name='V' order='2' role='constant'/>
   </ListOfParameterDescriptions>
-  </Function>)xml",
+  </Function>)xml"
   R"xml(<Function key='Function_9' name='Hill Cooperativity' type='PreDefined' reversible='false'>
   <Expression>
   V*(substrate/Shalve)^h/(1+(substrate/Shalve)^h)
@@ -281,7 +280,7 @@ static std::array< const char*, 9 > FunctionDBxmlArray = {
   <ParameterDescription key='FunctionParameter_109' name='Kis' order='7' role='constant'/>
   <ParameterDescription key='FunctionParameter_110' name='Kic' order='8' role='constant'/>
   </ListOfParameterDescriptions>
-  </Function>)xml",
+  </Function>)xml"
   R"xml(<Function key='Function_19' name='Noncompetitive inhibition (irr)' type='PreDefined' reversible='false'>
   <Expression>
   V*substrate/((Km+substrate)*(1+Inhibitor/Ki))
@@ -486,7 +485,7 @@ static std::array< const char*, 9 > FunctionDBxmlArray = {
   <ParameterDescription key='FunctionParameter_223' name='Ksc' order='2' role='constant'/>
   <ParameterDescription key='FunctionParameter_224' name='Ksa' order='3' role='constant'/>
   </ListOfParameterDescriptions>
-  </Function>)xml",
+  </Function>)xml"
   R"xml("<Function key='Function_32' name='Substrate inhibition (irr)' type='PreDefined' reversible='false'>
   <Expression>
   V*substrate/(Km+substrate+Km*(substrate/Ki)^2)
@@ -686,7 +685,7 @@ static std::array< const char*, 9 > FunctionDBxmlArray = {
   <ParameterDescription key='FunctionParameter_336' name='Keq' order='6' role='constant'/>
   <ParameterDescription key='FunctionParameter_337' name='Kmp' order='7' role='constant'/>
   </ListOfParameterDescriptions>
-  </Function>)xml",
+  </Function>)xml"
   R"xml(<Function key='Function_48' name='Uni Bi convenience' type='PreDefined' reversible='true'>
   <MiriamAnnotation>
   <rdf:RDF xmlns:CopasiMT='http://www.copasi.org/RDF/MiriamTerms#' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
@@ -890,7 +889,7 @@ static std::array< const char*, 9 > FunctionDBxmlArray = {
   <ParameterDescription key='FunctionParameter_423' name='I' order='5' role='modifier'/>
   <ParameterDescription key='FunctionParameter_424' name='Ki' order='6' role='constant'/>
   </ListOfParameterDescriptions>
-  </Function>)xml",
+  </Function>)xml"
   R"xml(<Function key='Function_57' name='Bi Bi convenience, catalytic activation' type='PreDefined' reversible='true'>
   <MiriamAnnotation>
   <rdf:RDF xmlns:CopasiMT='http://www.copasi.org/RDF/MiriamTerms#' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
@@ -1010,7 +1009,7 @@ static std::array< const char*, 9 > FunctionDBxmlArray = {
   <ParameterDescription key='FunctionParameter_477' name='Activator' order='8' role='modifier'/>
   <ParameterDescription key='FunctionParameter_478' name='Ka' order='9' role='constant'/>
   </ListOfParameterDescriptions>
-  </Function>)xml",
+  </Function>)xml"
   R"xml(<Function key='Function_62' name='Uni Bi convenience (Keq), catalytic activation' type='PreDefined' reversible='true'>
   <MiriamAnnotation>
   <rdf:RDF xmlns:CopasiMT='http://www.copasi.org/RDF/MiriamTerms#' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
@@ -1240,7 +1239,7 @@ static std::array< const char*, 9 > FunctionDBxmlArray = {
   <ParameterDescription key='FunctionParameter_572' name='Activator' order='10' role='modifier'/>
   <ParameterDescription key='FunctionParameter_573' name='Keq' order='11' role='constant'/>
   </ListOfParameterDescriptions>
-  </Function>)xml",
+  </Function>)xml"
   R"xml(<Function key='Function_72' name='Uni Bi convenience, competitive inhibition' type='PreDefined' reversible='true'>
   <MiriamAnnotation>
   <rdf:RDF xmlns:CopasiMT='http://www.copasi.org/RDF/MiriamTerms#' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
@@ -1477,7 +1476,7 @@ static std::array< const char*, 9 > FunctionDBxmlArray = {
   <ParameterDescription key='FunctionParameter_677' name='Activator' order='5' role='modifier'/>
   <ParameterDescription key='FunctionParameter_678' name='Ka' order='6' role='constant'/>
   </ListOfParameterDescriptions>
-  </Function>)xml",
+  </Function>)xml"
   R"xml(<Function key='Function_82' name='Bi Uni convenience, non-essential activation' type='PreDefined' reversible='true'>
   <MiriamAnnotation>
   <rdf:RDF xmlns:CopasiMT='http://www.copasi.org/RDF/MiriamTerms#' xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
@@ -1526,15 +1525,14 @@ static std::array< const char*, 9 > FunctionDBxmlArray = {
   </Function>
   </ListOfFunctions>
 </COPASI>
-)xml"};
+)xml";
   
   const std::string & FunctionDBxml()
   {
     static std::string FunctionDBxml;
 
     if (FunctionDBxml.empty())
-      for (auto & xml : FunctionDBxmlArray)
-        FunctionDBxml += xml;
+      FunctionDBxml = FunctionDBxmlArray;
 
     return FunctionDBxml;
   }
