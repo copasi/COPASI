@@ -16,7 +16,9 @@ CQPLProcessWorker::CQPLProcessWorker(const QString& program)
   mpProcess = new QProcess(this);
   mCopasiSE = program;
   connect(mpProcess, &QProcess::errorOccurred, this, &CQPLProcessWorker::handleProcessError);
-  connect(mpProcess, &QProcess::finished, this, &CQPLProcessWorker::handleProcessFinished);
+  connect(mpProcess, &QProcess::finished, this, [this](int exitCode, QProcess::ExitStatus exitStatus) {
+    handleProcessFinished(exitCode, exitStatus);
+  });
   connect(mpProcess, &QProcess::readyReadStandardOutput, this, &CQPLProcessWorker::handleStandardOutput);
   connect(mpProcess, &QProcess::readyReadStandardError, this, &CQPLProcessWorker::handleStandardError);
   mCancelled = false;
