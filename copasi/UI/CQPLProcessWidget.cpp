@@ -16,6 +16,14 @@ CQPLProcessWorker::CQPLProcessWorker(const QString& program)
   mpProcess = new QProcess(this);
   mCopasiSE = program;
   connect(mpProcess, &QProcess::errorOccurred, this, &CQPLProcessWorker::handleProcessError);
+
+  // connect differently for qt 5 and qt 6
+  #if QT_VERSION_MAJOR == 5
+  connect(mpProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(handleProcessFinished(int, QProcess::ExitStatus))); 
+  #else
+  connect(mpProcess, &QProcess::finished, this, &CQPLProcessWorker::handleProcessFinished);
+  #endif
+
   connect(mpProcess, &QProcess::finished, this, [this](int exitCode, QProcess::ExitStatus exitStatus) {
     handleProcessFinished(exitCode, exitStatus);
   });
