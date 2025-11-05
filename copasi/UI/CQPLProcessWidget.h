@@ -53,7 +53,7 @@ signals:
 
 private slots:
   void handleProcessError(QProcess::ProcessError error);
-  void handleProcessFinished(int exitCode, QProcess::ExitStatus exitStatus);
+  void handleProcessFinished(int exitCode, QProcess::ExitStatus exitStatus = QProcess::NormalExit);
   void handleStandardOutput();
   void handleStandardError();
 
