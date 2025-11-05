@@ -360,6 +360,11 @@ CModel * CModelParameterSet::getModel() const
   return mpModel;
 }
 
+void CModelParameterSet::setModel(CModel* pModel)
+{
+  mpModel = pModel;
+}
+
 void CModelParameterSet::createFromModel()
 {
   mpTimes->clear();

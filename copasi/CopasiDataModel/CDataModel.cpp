@@ -743,6 +743,14 @@ bool CDataModel::loadModelParameterSets(const std::string & fileName,
 
   CRootContainer::removeDatamodel(numDatamodels - 1);
 
+  // modify all CN's by removing references to the old datamodel from them
+  for (CModelParameterSet& set : thisSet)
+  {
+      set.unsetDataModel();
+      set.setModel(pModel);
+      set.compile();
+  }
+
   return wasParameterSetLoaded;
 }
 

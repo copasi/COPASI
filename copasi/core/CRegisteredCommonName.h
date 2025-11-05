@@ -110,6 +110,8 @@ public:
 
   const CDataModel * getDataModel() const;
 
+  void setDataModel(const CDataModel * pDM);
+
   /**
    * Enable and disable the rename handler
    * @param const bool & enabled

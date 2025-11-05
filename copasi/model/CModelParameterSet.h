@@ -151,7 +151,7 @@ public:
    * Set the model the parameter set is storing values for
    * @param const CModel * pModel
    */
-  void setModel(const CModel * pModel);
+  void setModel(CModel * pModel);
 
   /**
    * Retrieve the model the parameter set is storing values for

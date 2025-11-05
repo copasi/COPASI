@@ -105,6 +105,11 @@ const CDataModel * CRegisteredCommonName::getDataModel() const
   return mpDataModel;
 }
 
+void CRegisteredCommonName::setDataModel(const CDataModel* pDM)
+{
+  mpDataModel = pDM;
+}
+
 // static
 void CRegisteredCommonName::handle(const std::string & oldCN,
                                    const std::string & newCN,

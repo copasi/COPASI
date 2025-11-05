@@ -159,6 +159,8 @@ public:
    */
   void compile() override;
 
+  void unsetDataModel() override;
+
   /**
    * Clear the contained parameters and delete them.
    */
