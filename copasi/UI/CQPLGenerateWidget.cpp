@@ -129,7 +129,7 @@ void CQPLGenerateWidget::saveSettings(CProfileSettings * pSettings)
 
 void CQPLGenerateWidget::browseDirectory()
 {
-  QString dir = QFileDialog::getExistingDirectory(this, "Select Directory", "", QFileDialog::ShowDirsOnly);
+  QString dir = QFileDialog::getExistingDirectory(this, "Select Directory", mpTxtTarget->text(), QFileDialog::ShowDirsOnly);
   if (dir.isEmpty())
     return;
 

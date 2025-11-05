@@ -85,7 +85,7 @@ QResultMap CQPLPlotWidget::globFiles(const QString& directory, const QString& pa
 
 void CQPLPlotWidget::browseDirectory()
 {
-  QString dir = QFileDialog::getExistingDirectory(this, "Select Directory", "", QFileDialog::ShowDirsOnly);
+  QString dir = QFileDialog::getExistingDirectory(this, "Select Directory", mpTxtTarget->text(), QFileDialog::ShowDirsOnly);
   if (dir.isEmpty())
     return;
 

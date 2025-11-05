@@ -224,6 +224,22 @@
  </tabstops>
  <resources/>
  <connections>
+   <connection>
+   <sender>mpCmdBrowse</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPLPlotWidget</receiver>
+   <slot>browseDirectory()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>507</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
   <connection>
    <sender>mpCmdPlot</sender>
    <signal>clicked()</signal>

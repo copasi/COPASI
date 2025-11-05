@@ -182,7 +182,7 @@ void CQPLProcessWidget::saveSettings(CProfileSettings * pSettings)
 
 void CQPLProcessWidget::browseCopasiSE()
 {
-  QString file = QFileDialog::getOpenFileName(this, "Select CopasiSE", "", "CopasiSE (*.exe CopasiSE);;All files (*.*)");
+  QString file = QFileDialog::getOpenFileName(this, "Select CopasiSE", mpTxtCopasiSE->text(), "CopasiSE (*.exe CopasiSE);;All files (*.*)");
   if (file.isEmpty())
     return;
   mpTxtCopasiSE->setText(file);
@@ -190,7 +190,7 @@ void CQPLProcessWidget::browseCopasiSE()
 
 void CQPLProcessWidget::browseDirectory()
 {
-  QString dir = QFileDialog::getExistingDirectory(this, "Select Directory", "", QFileDialog::ShowDirsOnly);
+  QString dir = QFileDialog::getExistingDirectory(this, "Select Directory", mpTxtDirectory->text(), QFileDialog::ShowDirsOnly);
   if (dir.isEmpty())
     return;
 
