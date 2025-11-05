@@ -24,9 +24,6 @@ CQPLProcessWorker::CQPLProcessWorker(const QString& program)
   connect(mpProcess, &QProcess::finished, this, &CQPLProcessWorker::handleProcessFinished);
   #endif
 
-  connect(mpProcess, &QProcess::finished, this, [this](int exitCode, QProcess::ExitStatus exitStatus) {
-    handleProcessFinished(exitCode, exitStatus);
-  });
   connect(mpProcess, &QProcess::readyReadStandardOutput, this, &CQPLProcessWorker::handleStandardOutput);
   connect(mpProcess, &QProcess::readyReadStandardError, this, &CQPLProcessWorker::handleStandardError);
   mCancelled = false;
