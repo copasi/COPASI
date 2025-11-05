@@ -64,6 +64,7 @@ void CProfileGenerator::getCurrentSolution()
     try {
       task.setUpdateModel(true);
       pProblem->setCalculateStatistics(true);
+      pProblem->setRandomizeStartValues(false);
       task.setMethodType(CTaskEnum::Method::Statistics);
       task.getReport().setTarget("");
       
