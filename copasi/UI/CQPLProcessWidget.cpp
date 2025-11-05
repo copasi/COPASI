@@ -15,10 +15,10 @@ CQPLProcessWorker::CQPLProcessWorker(const QString& program)
 {
   mpProcess = new QProcess(this);
   mCopasiSE = program;
-  connect(mpProcess, SIGNAL(errorOccurred(QProcess::ProcessError)), this, SLOT(handleProcessError(QProcess::ProcessError)));
-  connect(mpProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(ProcessFinished(int, QProcess::ExitStatus)));
-  connect(mpProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(handleStandardOutput()));
-  connect(mpProcess, SIGNAL(readyReadStandardError()), this, SLOT(handleStandardError()));
+  connect(mpProcess, &QProcess::errorOccurred, this, &CQPLProcessWorker::handleProcessError);
+  connect(mpProcess, &QProcess::finished, this, &CQPLProcessWorker::handleProcessFinished);
+  connect(mpProcess, &QProcess::readyReadStandardOutput, this, &CQPLProcessWorker::handleStandardOutput);
+  connect(mpProcess, &QProcess::readyReadStandardError, this, &CQPLProcessWorker::handleStandardError);
   mCancelled = false;
 }
 
@@ -37,8 +37,8 @@ void CQPLProcessWorker::start(const QString& cpsFile, const QString& label)
   mCurrentFile = cpsFile;
   mLabel = label;
   mCancelled = false;
-  mpProcess->start(mCopasiSE, QStringList() << "--nologo" << cpsFile);
   mStartTime = std::chrono::high_resolution_clock::now();
+  mpProcess->start(mCopasiSE, QStringList() << "--nologo" << cpsFile);
 }
 
 const QString& CQPLProcessWorker::currentFile() const
