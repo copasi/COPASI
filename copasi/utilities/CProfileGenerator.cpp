@@ -205,7 +205,7 @@ void CProfileGenerator::saveBaseModel()
 }
 
 double
-CProfileGenerator::getValueAdjustment(double value, std::string adjustment, double explicitValue/*=0.0*/, double std_dev/*=0.0*/)
+CProfileGenerator::getValueAdjustment(double value, std::string adjustment, double explicitValue /*=0.0*/, double std_dev /*=0.0*/)
 {
   if (adjustment.empty() || adjustment == "default")
     return explicitValue;
@@ -221,25 +221,37 @@ CProfileGenerator::getValueAdjustment(double value, std::string adjustment, doub
   if (is_declarative)
     adjustment = adjustment.substr(1);
 
+  bool is_multiplicative = adjustment[0] == '*';
+  if (is_multiplicative)
+    adjustment = adjustment.substr(1);
+
   bool has_percent = adjustment.find('%') != std::string::npos;
   double adj_value;
-  if (has_percent)
-  {
-    adj_value = std::stod(adjustment.substr(0, adjustment.find('%'))) / 100.0;
-    adj_value *= value;
-  }
-  else
-  {
-    adj_value = std::stod(adjustment);
-  }
+  try
+    {
+      if (has_percent)
+        {
+          adj_value = std::stod(adjustment.substr(0, adjustment.find('%'))) / 100.0;
+          adj_value *= value;
+        }
+      else
+        {
+          adj_value = std::stod(adjustment);
+        }
 
-  if ((adj_value < 0 || is_additive) && !is_declarative)
-    return value + adj_value;
+      if ((adj_value < 0 || is_additive) && !is_declarative)
+        return value + adj_value;
 
-  if (has_percent || is_declarative)
-    return adj_value;
+      if (has_percent || is_declarative)
+        return adj_value;
 
-  return value * adj_value;
+      return value * adj_value;
+    }
+  catch (std::invalid_argument &)
+    {
+      // leave value unadjusted.
+      return value;
+    }
 }
 
 
