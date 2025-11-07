@@ -630,7 +630,7 @@ void CRDFGraph::updateNamespaces()
   for (itNamespace = mPrefix2Namespace.begin(), itUsed = Used.begin();
        itNamespace != endNamespace;
        ++itNamespace, ++itUsed)
-    if (!*itUsed)
+    if (!*itUsed && itNamespace->first != "rdf")
       ToBeRemoved.push_back(itNamespace->first);
 
   std::vector< std::string >::iterator itRemove = ToBeRemoved.begin();
