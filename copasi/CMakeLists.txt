@@ -47,7 +47,8 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/CopasiVersion.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CopasiVersion.h.in ${CMAKE_CURRENT_SOURCE_DIR}/CopasiVersion.h)
 endif (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/CopasiVersion.h)
 
-file(GLOB COPASI_HEADERS *.h lapack/*.h GL/*.h)
+file(GLOB COPASI_HEADERS *.h lapack/*.h GL/*.h stduuid/*.h stduuid/gsl/* 
+   utilities/*.hpp utilities/gcem_incl/*.hpp utilities/stats_incl/*.hpp)
 
 include(CopasiDataModel/CMakeLists.txt)
 include(MIRIAM/CMakeLists.txt)
