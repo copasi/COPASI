@@ -14,7 +14,7 @@
 #include "copasi/core/CRootContainer.h"
 
 // static
-size_t CJitCompilerImplementation::InitalBufferSize = 8192;
+size_t CJitCompilerImplementation::InitalBufferSize = 64*1024;
 
 // static 
 C_FLOAT64 CJitCompilerImplementation::Invalid = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
