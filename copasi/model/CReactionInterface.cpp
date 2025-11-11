@@ -1277,13 +1277,17 @@ CReactionInterface::setMapping(size_t index, std::string mn)
 const std::vector<std::string> &
 CReactionInterface::getMappings(size_t index) const
 {
+  if (mIndexMap.size() <= index)
+    CCopasiMessage(CCopasiMessage::EXCEPTION, "Invalid index");
   return *mIndexMap[index];
 }
 
 const std::string &
 CReactionInterface::getMapping(size_t index) const
 {
-  return mIndexMap[index]->operator [](0);
+  if (mIndexMap.size() <= index)
+    CCopasiMessage(CCopasiMessage::EXCEPTION, "Invalid index");
+  return mIndexMap[index]->operator[](0);
 }
 
 std::vector< std::string > CReactionInterface::getUnitVector(size_t index) const
