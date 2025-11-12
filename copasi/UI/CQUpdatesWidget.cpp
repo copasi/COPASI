@@ -323,6 +323,8 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       //third column: create empty items
       mpTableState->setItem((int) i, 2, new QTableWidgetItem());
     }
+  //one more item in third column: create empty item
+  mpTableState->setItem((int) i, 2, new QTableWidgetItem());
 
   int tmpint = int(st.beginIndependent() - st.getEntities().array());
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem("beginIndependent "));
@@ -337,7 +339,7 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
   tmpint = int(st.beginFixed() - st.getEntities().array());
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "beginFixed "));
   tmpint = int(st.endFixed() - st.getEntities().array());
-  mpTableState->setItem(tmpint, 2, new QTableWidgetItem("endFixed "));
+  mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "endFixed "));
 
   QColor c(200, 250, 250);
 
