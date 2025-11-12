@@ -1618,6 +1618,12 @@ void CQCustomPlot::wheelEvent(QWheelEvent * event)
         }
 
       legend->setFillOrder(legend->fillOrder(), true);
+      
+      // force layout update
+      auto minSize = minimumSize();
+      setMinimumSize(minSize.grownBy(QMargins(1, 1, 1, 1)));
+      setMinimumSize(minSize);
+
       QCustomPlot::replot();
       return;
     }
