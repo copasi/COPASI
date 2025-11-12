@@ -296,6 +296,10 @@ CQCustomPlot::CQCustomPlot(const CPlotSpecification * plotspec, QWidget * parent
         if (reorder)
           {
             legend->setFillOrder(legend->fillOrder(), true);
+            // hack: notify layout that sice constraints changed
+            auto minSize = this->minimumSize();
+            this->setMinimumSize(minSize.grownBy(QMargins(1,1,1,1)));
+            this->setMinimumSize(minSize);
             this->replot();
           }
 
