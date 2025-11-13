@@ -60,6 +60,13 @@ const std::string CDirEntry::Separator = "\\";
 const std::string CDirEntry::Separator = "/";
 #endif
 
+#if __cplusplus >= 201703L || __cpp_lib_filesystem
+#  include <filesystem>
+namespace fs = std::filesystem;
+#define USE_FILESYSTEM
+#endif
+
+
 bool CDirEntry::isFile(const std::string & path)
 {
   STAT st;
@@ -204,10 +211,24 @@ bool CDirEntry::createDir(const std::string & dir,
   if (!parent.empty() && (!isDir(parent) || !isWritable(parent)))
     return false;
 
+  #ifdef USE_FILESYSTEM
+  try
+    {
+      fs::create_directories(Dir);
+      return true;
+    }
+  catch (const fs::filesystem_error & e)
+    {
+      return false;
+    }
+
+  #else 
+
 #ifdef WIN32
   return (mkdir(CLocaleString::fromUtf8(Dir).c_str()) == 0);
 #else
   return (mkdir(CLocaleString::fromUtf8(Dir).c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == 0);
+#endif
 #endif
 }
 
