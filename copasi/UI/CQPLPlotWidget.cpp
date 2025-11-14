@@ -486,8 +486,8 @@ void CQPLPlotWidget::generatePlots()
 
   // clear all widgets from mpScrollContents widget
 
-  QVBoxLayout * layout = mpScrollContents->layout() != NULL ? qobject_cast< QVBoxLayout * >(mpScrollContents->layout()) : new QVBoxLayout(mpScrollContents);
-
+  //QVBoxLayout * layout = mpScrollContents->layout() != NULL ? qobject_cast< QVBoxLayout * >(mpScrollContents->layout()) : new QVBoxLayout(mpScrollContents);
+  QGridLayout * layout = mpScrollContents->layout() != NULL ? qobject_cast< QGridLayout * >(mpScrollContents->layout()) : new QGridLayout(mpScrollContents);
   if (layout)
     {
       QLayoutItem * item;
@@ -501,6 +501,7 @@ void CQPLPlotWidget::generatePlots()
         }
     }
 
+  
   // read the info.json file
   QFile file(mpTxtTarget->text() + "/" + mpTxtPrefix->text() + "info.json");
   double obj_val = std::numeric_limits<double>::quiet_NaN();
@@ -532,6 +533,14 @@ void CQPLPlotWidget::generatePlots()
   auto thresholds = computeThresholds(mpTxtThresholds->text().split(";"), obj_val, num_params, num_data);
   double scale_bottom = mpTxtScaleBottom->text().toDouble();
   double scale_top = mpTxtScaleTop->text().toDouble();
+
+  int numRows = num_params / 2 + (num_params % 2 == 0 ? 0 : 1);
+  int numCols = mpSpnColumns->value();
+  int currentRow = 0;
+  int currentCol = 0;
+  // avoid spacing and margins
+  layout->setSpacing(0);
+  layout->setContentsMargins(0, 0, 0, 0);
 
 #ifdef COPASI_USE_QCUSTOMPLOT
   // create a new widget for each file
@@ -583,7 +592,14 @@ void CQPLPlotWidget::generatePlots()
     auto* pPlot = createPlot(plotArgs);
 
     // add the plot to the layout
-    layout->addWidget(pPlot);
+    layout->addWidget(pPlot, currentRow, currentCol);
+
+    if (++currentCol >= numCols)
+    {
+      currentCol = 0;
+      ++currentRow;
+    }
+
   }
 #endif
 }
