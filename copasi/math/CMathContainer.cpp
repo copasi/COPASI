@@ -1581,6 +1581,9 @@ void CMathContainer::compile()
   createValueChangeProhibited();
   createUpdateSequences();
 
+  // delayed finish from allocate until here, where everything is created
+  finishResize();
+
   CMathReaction * pReaction = mReactions.array();
   CDataVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
   CDataVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
@@ -2167,7 +2170,7 @@ void CMathContainer::allocate()
   Size.pObject = NULL;
 
   resize(Size);
-  finishResize();
+  //finishResize();
 
   mValues = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }
