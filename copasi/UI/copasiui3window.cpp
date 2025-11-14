@@ -1131,7 +1131,7 @@ void CopasiUI3Window::slotFileOpen(QString file)
   if (file == "")
     newFile =
       CopasiFileDialog::getOpenFileName(this, "Open File Dialog", QString(),
-                                        "COPASI Files (*.gps *.cps);;All Files (*)",
+                                        "All supported(*.cps *.gps *.xml *.sbml *.omex *.sbex *.sedml);;COPASI Files (*.gps *.cps);;SBML Files (*.xml *.sbml);;Combine Archives (*.omex *.sbex);;SED-ML files (*.xml *.sedml);;All Files (*)",
                                         "Choose a file");
   else
     newFile = file;
