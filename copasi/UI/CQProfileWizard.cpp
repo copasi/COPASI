@@ -1,6 +1,12 @@
+// Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 #include "CQProfileWizard.h"
 
 #include "copasi/resourcesUI/CQIconResource.h"
+#include <QMessageBox>
 
 void CQProfileWizard::loadPage(int index)
 {
@@ -63,4 +69,20 @@ void CQProfileWizard::onTabChanged(int index)
 void CQProfileWizard::open()
 {
   QDialog::open();
+}
+
+void CQProfileWizard::reject()
+{
+  QMessageBox::StandardButton result = QMessageBox::question(
+    this,
+    "Close Profile Wizard",
+    "Are you sure you want to close the Profile Wizard?\n"
+    "Any unsaved changes will be lost.",
+    QMessageBox::Yes | QMessageBox::No,
+    QMessageBox::No);
+
+  if (result == QMessageBox::Yes)
+  {
+    QDialog::reject();
+  }
 }
