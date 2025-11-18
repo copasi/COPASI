@@ -1,3 +1,8 @@
+// Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 #include "CProfileGenerator.h"
 
 #include "CProfileSettings.h"
@@ -36,8 +41,6 @@ std::string zeroPad(int number, int width)
   return oss.str();
 }
 
-
-
 void CProfileGenerator::getCurrentSolution()
 {
   if (!mpDM || !mpSettings)
@@ -49,10 +52,10 @@ void CProfileGenerator::getCurrentSolution()
                                                          : (*mpDM->getTaskList())["Optimization"];
 
   auto* pProblem = dynamic_cast<COptProblem*>(task.getProblem());
-  
+
   if (!pProblem)
     return;
-  
+
   // run current solution statistics if needed
   if ((*mpSettings)["Run Statistics"])
   {
@@ -60,14 +63,14 @@ void CProfileGenerator::getCurrentSolution()
     auto report = task.getReport().getTarget();
     auto updateModel = task.isUpdateModel();
     auto calculateStats = pProblem->getCalculateStatistics();
-    
+
     try {
       task.setUpdateModel(true);
       pProblem->setCalculateStatistics(true);
       pProblem->setRandomizeStartValues(false);
       task.setMethodType(CTaskEnum::Method::Statistics);
       task.getReport().setTarget("");
-      
+
       task.initialize(CCopasiTask::OUTPUT_UI, NULL, NULL);
       task.process(true);
       task.restore();
@@ -79,7 +82,7 @@ void CProfileGenerator::getCurrentSolution()
     catch (...) {
       mMessages << "Running the solution statistics failed";
     }
-    
+
     // restore values
     task.setUpdateModel(updateModel);
     pProblem->setCalculateStatistics(calculateStats);
@@ -133,7 +136,6 @@ void CProfileGenerator::getCurrentSolution()
     else
       mCurrentSolution.mParameterSDs.push_back(std::numeric_limits< double >::quiet_NaN());
   }
-
 }
 
 void CProfileGenerator::saveBaseModel()
@@ -196,12 +198,10 @@ void CProfileGenerator::saveBaseModel()
   pProblem->setOutputInSubtask(false);
   pProblem->setOutputSpecification("");
   pProblem->clearScanItems();
-  pProblem->addScanItem(CScanProblem::SCAN_LINEAR, scanInterval);  
+  pProblem->addScanItem(CScanProblem::SCAN_LINEAR, scanInterval);
 
-
-  // save updated base model 
+  // save updated base model
   mpDM->saveModel(mCpsModelFile, NULL, true);
-
 }
 
 double
@@ -242,10 +242,10 @@ CProfileGenerator::getValueAdjustment(double value, std::string adjustment, doub
       if ((adj_value < 0 || is_additive) && !is_declarative)
         return value + adj_value;
 
-      if (has_percent || is_declarative)
-        return adj_value;
+      if (is_multiplicative)
+        return value * adj_value;
 
-      return value * adj_value;
+      return adj_value;
     }
   catch (std::invalid_argument &)
     {
@@ -253,7 +253,6 @@ CProfileGenerator::getValueAdjustment(double value, std::string adjustment, doub
       return value;
     }
 }
-
 
 CProfileGenerator::CProfileGenerator()
   : mpDM(NULL)
@@ -276,7 +275,7 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
 
   // save settings
   mpSettings->save();
-  
+
   // first of all create a copy of the current model
   // save the model in the target directory, including experimental data
   // for parameter estimation tasks
@@ -288,10 +287,9 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
       mMessages << "Could not create target directory: " << mDirectory << std::endl;
       return;
     }
-  
+
   mPrefix = (*mpSettings)["Prefix"];
 
-  
   // save original model in target directory
   mCpsModelFile = mDirectory + "/" + mPrefix + "original.cps";
   auto oldFileName = pDM->getFileName();
@@ -336,8 +334,8 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
   getCurrentSolution();
 
   // sanity check, stop if objective value is inf, nan or max double
-  if (std::isinf(mCurrentSolution.mObjectiveValue) 
-    || std::isnan(mCurrentSolution.mObjectiveValue) 
+  if (std::isinf(mCurrentSolution.mObjectiveValue)
+    || std::isnan(mCurrentSolution.mObjectiveValue)
     || mCurrentSolution.mObjectiveValue == std::numeric_limits<double>::max())
   {
       mMessages << "objective value seems bad, generate profiles for good fits only, stopping." << std::endl;
@@ -363,14 +361,23 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
   info["param_names"] = mCurrentSolution.mParameterNames;
 
   // save as '.info.json' in the target directory
-  std::string info_file = mDirectory + "/" + mPrefix + "info.json";
-  std::ofstream info_stream(info_file);
-  info_stream << info.dump(4);
-  info_stream.close();
+  {
+    std::string info_file = mDirectory + "/" + mPrefix + "info.json";
+    std::ofstream info_stream(info_file);
+    info_stream << info.dump(4);
+    info_stream.close();
+  }
 
+  // save settings in the target directory
+  {
+    std::string settings_file = mDirectory + "/" + mPrefix + "settings.json";
+    std::ofstream settings_stream(settings_file);
+    settings_stream << mpSettings->dump(4);
+    settings_stream.close();
+  }
 
   // now, for each parameter, generate a copasi file with a scan task
-  // that runs a scan for the selected parameter while re-optimizing the 
+  // that runs a scan for the selected parameter while re-optimizing the
   // other parameters
   mLowerAdjustment = (*mpSettings)["Generate"].at("Lower Adjustment").get<std::string>();
   mUpperAdjustment = (*mpSettings)["Generate"].at("Upper Adjustment").get<std::string>();
@@ -388,7 +395,9 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
   mMessages << "Number of Parameters to optimize: " << optItems.size() << std::endl;
 
   auto itemsJson = CProfileSettings::toJson(&optItems);
-  
+
+  bool haveAffected = false;
+
   for (int i = 0; i < mCurrentSolution.mParameterCNs.size(); ++i)
   {
     auto& cn = mCurrentSolution.mParameterCNs[i];
@@ -403,11 +412,11 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
     auto num_iterations = (*mpSettings)["Generate"].at("Iterations").get<int>();
 
     auto * list = pProblem->getGroup("OptimizationItemList");
-    
+
     // remove all
-    for (int g = list->size() - 1; g >= 0; --g)
+    for (int g = (int)list->size() - 1; g >= 0; --g)
       list->removeParameter(g);
-    
+
     std::string itemName = mCurrentSolution.mIsParameterEstimation ? "FitItem" : "OptimizationItem";
 
     // recreate from array
@@ -418,13 +427,13 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
       // skip current cn
       if (cn == currentCN)
         continue;
-      
+
       auto start_value = current["StartValue"].get< double >();
       auto upper_bound = CRegisteredCommonName(current["UpperBound"].get< std::string >());
       auto lower_bound = CRegisteredCommonName(current["LowerBound"].get< std::string >());
 
       auto & newItem = mCurrentSolution.mIsParameterEstimation ?
-        pFitProblem->addFitItem(CRegisteredCommonName(currentCN)) : 
+        pFitProblem->addFitItem(CRegisteredCommonName(currentCN)) :
         pProblem->addOptItem(CRegisteredCommonName(currentCN));
       newItem.setStartValue(start_value);
       newItem.setLowerBound(lower_bound);
@@ -432,7 +441,7 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
 
       if (!mCurrentSolution.mIsParameterEstimation)
         continue;
-      
+
       auto& pFitItem = dynamic_cast< CFitItem & >(newItem);
       auto affected_cross_validation_experiments = current["Affected Cross Validation Experiments"];
       auto affected_experiments = current["Affected Experiments"];
@@ -448,7 +457,10 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
               keys.push_back(affected_experiments["Experiment Key"].get< std::string >());
           }
           for (const auto & entry : keys)
+          {
             pFitItem.addExperiment(entry);
+            haveAffected = true;
+          }
       }
 
       if (!affected_cross_validation_experiments.is_null() && affected_cross_validation_experiments.contains("Experiment Key"))
@@ -465,16 +477,21 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
           for (const auto & entry : keys)
             pFitItem.addCrossValidation(entry);
         }
-
     }
-    
+
     mMessages << "Number of Parameters left to optimize: " << list->size() << std::endl;
-    
+
     // add to message log
     mMessages << "Generating profiles for parameter " << name << " with value " << value << " and std_dev " << std_dev << std::endl;
     mMessages << "Adjusted lower: " << adjusted_lower << ", adjusted upper: " << adjusted_upper << std::endl;
 
-    
+    // add warning
+    if (adjusted_lower > value)
+      mMessages << "WARNING: lower value is greater than the current best value. The lower scan will be invalid." << std::endl;
+
+    if (adjusted_upper < value)
+      mMessages << "WARNING: upper value is smaller than the current best value. The upper scan will be invalid." << std::endl;
+
     auto& scan_task = (*mpDM->getTaskList())["Scan"];
 
     auto* pProblem = dynamic_cast<CScanProblem*>(scan_task.getProblem());
@@ -489,17 +506,16 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
     item->setValue("log", (*mpSettings)["Generate"].at("Logarithmic").get<bool>());
 
     scan_task.updateMatrices();
-    
+
     auto * plot = COutputAssistant::createDefaultOutput(mCurrentSolution.mIsParameterEstimation ? 251 : 252, &scan_task, mpDM);
     if (plot)
     plot->setObjectName(std::string("opt = ") + std::to_string(value));
-    
+
     auto * report = COutputAssistant::createDefaultOutput(mCurrentSolution.mIsParameterEstimation ? 1251 : 1252, &scan_task, mpDM);
     scan_task.getReport().setTarget(mDirectory + "/" + mPrefix + "profile_" + zeroPad(i,5) + "_" + direction + ".txt");
     dynamic_cast<CReportDefinition*>(report)->setPrecision(10);
     scan_task.getReport().setAppend(false);
     scan_task.getReport().setConfirmOverwrite(false);
-
 
     // save the model as file with the index and parameter name
     std::string filename = mDirectory + "/" + mPrefix + "profile_" + zeroPad(i,5) + "_" + direction + ".cps";
@@ -523,7 +539,6 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
 
     scan_task.updateMatrices();
 
-
     plot = COutputAssistant::createDefaultOutput(mCurrentSolution.mIsParameterEstimation ? 251 : 252, &scan_task, mpDM);
     if (plot)
       plot->setObjectName(std::string("opt = ") + std::to_string(value));
@@ -539,9 +554,10 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
     // remove the plot
     if (plot)
       mpDM->getPlotDefinitionList()->removePlotSpec(plot->getKey());
-
   }
 
+  if (haveAffected)
+    mMessages << "WARNING: the model uses parameters specific to certain experiments, this can currently not be run independent of other experiments. " << std::endl;
 }
 
 std::string CProfileGenerator::getMessages() const
