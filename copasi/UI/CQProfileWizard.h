@@ -34,6 +34,10 @@ public slots:
    virtual void open();
    virtual void onTabChanged(int index);
 
+  virtual void clearSetttings();
+  virtual void loadSettings();
+  virtual void saveSettings();
+
 protected:
    virtual void reject();
 };

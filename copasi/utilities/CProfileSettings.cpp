@@ -1,3 +1,8 @@
+// Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 #include "CProfileSettings.h"
 
 #include <limits>
@@ -14,7 +19,7 @@
  *
  *  :param group: the copasi parameter group
  *  :param basic_only: boolean indicating, whether only basic parameters should be returned (default)
- *  
+ *
  *  :return: json object with the values
  */
 nlohmann::json CProfileSettings::toJson(const CCopasiParameterGroup * group, bool basic_only /*= true*/)
@@ -58,7 +63,6 @@ nlohmann::json CProfileSettings::toJson(const CCopasiParameterGroup * group, boo
       if (!param->isBasic() && basic_only)
         continue;
 
-
       if (param_type == CCopasiParameter::Type::STRING || param_type == CCopasiParameter::Type::KEY || param_type == CCopasiParameter::Type::FILE)
         {
           auto child = param->getValue< std::string >();
@@ -78,7 +82,6 @@ nlohmann::json CProfileSettings::toJson(const CCopasiParameterGroup * group, boo
           {
           result[name] = child;
           }
-          
         }
       else if (param_type == CCopasiParameter::Type::INT)
         result[name] = param->getValue< C_INT32 >();
@@ -115,7 +118,7 @@ nlohmann::json CProfileSettings::toJson(const CCopasiParameterGroup * group, boo
   return result;
 }
 
-/*static */void 
+/*static */void
 CProfileSettings::fromJson(CCopasiParameterGroup* group, const nlohmann::json& object)
 {
   bool basic_only = false;
@@ -171,7 +174,7 @@ CProfileSettings::fromJson(CCopasiParameterGroup* group, const nlohmann::json& o
 CProfileSettings::CProfileSettings()
 	: nlohmann::json()
 {
-  std::string tmpDir; 
+  std::string tmpDir;
   COptions::getValue("Tmp", tmpDir);
   (*this)["Directory"] = tmpDir;
   (*this)["CopasiSE"] = std::string("CopasiSE");
@@ -180,7 +183,6 @@ CProfileSettings::CProfileSettings()
   (*this)["Delete Existing"] = true;
   (*this)["Prefix"] = std::string("_");
 
-  
   // settings for model generation
   (*this)["Generate"]["Method"] = (int) CTaskEnum::Method::LevenbergMarquardt;
   (*this)["Generate"]["Iterations"] = 50;
@@ -226,9 +228,9 @@ void CProfileSettings::save() const
   // Save the settings to a '.profileSettings' file in the COPASI directory
   std::string copasiDir = COptions::getConfigDir();
   std::ofstream outFile(copasiDir + "/.profileSettings");
-  
+
   // copy subset of data to be stored
-  nlohmann::json data; 
+  nlohmann::json data;
   data["Directory"] = (*this)["Directory"];
   data["CopasiSE"] = (*this)["CopasiSE"];
   data["Prefix"] = (*this)["Prefix"];
@@ -267,5 +269,35 @@ void CProfileSettings::load()
         {
           (*this)["Prefix"] = data["Prefix"];
         }
+    }
+}
+
+CProfileSettings
+CProfileSettings::fromFile(const std::string & fileName)
+{
+  auto settings = CProfileSettings();
+  settings.load();
+
+  std::ifstream inFile(fileName);
+  if (inFile)
+    {
+      nlohmann::json data;
+      inFile >> data;
+
+      // iterate through properties and set them in the settings
+      for (auto & [key, value] : data.items())
+        {
+          settings[key] = value;
+        }
+    }
+  return settings;
+}
+
+void CProfileSettings::saveToFile(const std::string & fileName) const
+{
+  std::ofstream outFile(fileName);
+  if (outFile)
+    {
+      outFile << this->dump(4);
     }
 }

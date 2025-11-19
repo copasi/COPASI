@@ -7,6 +7,9 @@
 
 #include "copasi/resourcesUI/CQIconResource.h"
 #include <QMessageBox>
+#include <QFileDialog>
+
+#include "qtUtilities.h"
 
 void CQProfileWizard::loadPage(int index)
 {
@@ -85,4 +88,36 @@ void CQProfileWizard::reject()
   {
     QDialog::reject();
   }
+}
+
+void CQProfileWizard::clearSetttings()
+{
+  mSettings = CProfileSettings();
+  mSettings.load();
+
+  loadPage(mCurrentPage);
+}
+
+void CQProfileWizard::loadSettings()
+{
+  // open file dialog and open *settings.json files
+
+  QString file = QFileDialog::getOpenFileName(this, "Select Settings File", "", "Settings Files (*.json);;All files (*)");
+  if (file.isEmpty())
+    return;
+
+  mSettings = CProfileSettings::fromFile(TO_UTF8(file));
+  loadPage(mCurrentPage);
+}
+
+void CQProfileWizard::saveSettings()
+{
+
+  // open file dialog and save to *settings.json files
+  QString file = QFileDialog::getSaveFileName(this, "Save Settings File", "", "Settings Files (*.json);;All files (*)");
+  if (file.isEmpty())
+    return;
+
+  savePage(mCurrentPage);
+  mSettings.saveToFile(TO_UTF8(file));
 }

@@ -22,16 +22,16 @@ CQPLGenerateWidget::CQPLGenerateWidget(QWidget * parent)
 {
   setupUi(this);
 
-  CTaskEnum::Method validMethods[] = {    
+  CTaskEnum::Method validMethods[] = {
     // local
     CTaskEnum::Method::LevenbergMarquardt,
     CTaskEnum::Method::NelderMead,
-    CTaskEnum::Method::HookeJeeves,    
+    CTaskEnum::Method::HookeJeeves,
 
-    // statistic 
+    // statistic
     CTaskEnum::Method::Statistics,
 
-    // others    
+    // others
     CTaskEnum::Method::DifferentialEvolution,
     CTaskEnum::Method::SRES,
     CTaskEnum::Method::EvolutionaryProgram,
@@ -91,8 +91,14 @@ void CQPLGenerateWidget::loadSettings(const CProfileSettings * pSettings)
   pdelete(mpOptTask);
   mpOptTask = isPE ? new CFitTask(*dynamic_cast< CFitTask * >(&pDataModel.getTaskList()->operator[](taskName)), NO_PARENT)
                    : new COptTask(*dynamic_cast< COptTask * >(&pDataModel.getTaskList()->operator[](taskName)), NO_PARENT);
+  mpOptTask->setMethodType((CTaskEnum::Method)(generate.at("Method").get<int>()));
+  if (generate.contains("Settings"))
+    CProfileSettings::fromJson(mpOptTask->getMethod(), generate["Settings"]);
+
   mpMethodWidget->setTask(mpOptTask);
   mpMethodWidget->setActiveMethod((CTaskEnum::Method)(generate.at("Method").get<int>()));
+
+  mpMethodWidget->loadMethod();
 }
 
 void CQPLGenerateWidget::saveSettings(CProfileSettings * pSettings)
@@ -117,14 +123,12 @@ void CQPLGenerateWidget::saveSettings(CProfileSettings * pSettings)
   generate["Logarithmic"] = mpChkLog->isChecked();
   generate["Continue from current State"] = mpChkContinue->isChecked();
 
-
   // save method settings
   if (mpOptTask)
     {
       mpMethodWidget->saveMethod();
       generate["Settings"] = CProfileSettings::toJson(mpOptTask->getMethod());
     }
-
 }
 
 void CQPLGenerateWidget::browseDirectory()

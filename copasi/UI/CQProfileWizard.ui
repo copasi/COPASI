@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+<comment> Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> University of Virginia, University of Heidelberg, and University </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
  <comment> All rights reserved. </comment>
  <class>CQProfileWizard</class>
  <widget class="QDialog" name="CQProfileWizard">
@@ -18,7 +23,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="tabPosition">
-      <enum>QTabWidget::West</enum>
+      <enum>QTabWidget::TabPosition::West</enum>
      </property>
      <property name="currentIndex">
       <number>0</number>
@@ -113,11 +118,67 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QToolButton" name="mpCmdLoad">
+       <property name="toolTip">
+        <string>Load Settings</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset theme="QIcon::ThemeIcon::DocumentOpen"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mpCmdSave">
+       <property name="toolTip">
+        <string>Save Settings</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset theme="QIcon::ThemeIcon::DocumentSave"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mpCmdClear">
+       <property name="toolTip">
+        <string>Clear Settings</string>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset theme="QIcon::ThemeIcon::EditClear"/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QDialogButtonBox" name="buttonBox">
+       <property name="standardButtons">
+        <set>QDialogButtonBox::StandardButton::Close</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -191,8 +252,59 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>mpCmdClear</sender>
+   <signal>clicked()</signal>
+   <receiver>CQProfileWizard</receiver>
+   <slot>clearSetttings()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>93</x>
+     <y>446</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpCmdLoad</sender>
+   <signal>clicked()</signal>
+   <receiver>CQProfileWizard</receiver>
+   <slot>loadSettings()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>25</x>
+     <y>446</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpCmdSave</sender>
+   <signal>clicked()</signal>
+   <receiver>CQProfileWizard</receiver>
+   <slot>saveSettings()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>59</x>
+     <y>446</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>onTabChanged(int)</slot>
+  <slot>loadSettings()</slot>
+  <slot>saveSettings()</slot>
+  <slot>clearSetttings()</slot>
  </slots>
 </ui>
