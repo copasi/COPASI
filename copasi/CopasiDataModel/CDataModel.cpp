@@ -731,7 +731,6 @@ bool CDataModel::loadModelParameterSets(const std::string & fileName,
   // modify all CN's by removing references to the old datamodel from them
   for (CModelParameterSet& set : thisSet)
   {
-      set.unsetDataModel();
       set.setModel(pModel);
       set.compile();
   }

@@ -292,12 +292,6 @@ void CModelParameter::setParent(CModelParameterGroup * pParent)
   mpParent = pParent;
 }
 
-void CModelParameter::unsetDataModel()
-{
-  // TODO: CRITICAL is this still necessary?
-  // mCN.setDataModel(NULL);
-}
-
 CModelParameterGroup * CModelParameter::getParent() const
 {
   return mpParent;
@@ -913,17 +907,6 @@ void CModelParameterCompartment::removeSpecies(CModelParameterSpecies * pSpecies
   mSpecies.erase(pSpecies);
 }
 
-void CModelParameterCompartment::unsetDataModel()
-{
-  CModelParameter::unsetDataModel();
-  std::set< CModelParameterSpecies * >::iterator it = mSpecies.begin();
-  std::set< CModelParameterSpecies * >::iterator end = mSpecies.end();
-  for (; it != end; ++it)
-    {
-      (*it)->unsetDataModel();
-    }
-}
-
 // virtual
 CData CModelParameterSpecies::toData() const
 {
@@ -1032,12 +1015,6 @@ void CModelParameterSpecies::setCN(const CRegisteredCommonName & cn)
   // "CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A]"
   std::string CN = mCN;
   mCompartmentCN = CCommonName(CN.substr(0, CN.find(",Vector=Metabolites")));
-}
-
-void CModelParameterSpecies::unsetDataModel()
-{
-  CModelParameter::unsetDataModel();
-  // mCompartmentCN.setDataModel(NULL);
 }
 
 // virtual
@@ -1188,12 +1165,6 @@ void CModelParameterReactionParameter::compile()
   ListOfContainer.push_back(pModel);
 
   mpReaction = static_cast< CReaction * >(const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ListOfContainer, mpParent->getCN()))));
-}
-
-void CModelParameterReactionParameter::unsetDataModel()
-{
-  CModelParameter::unsetDataModel();
-  // mGlobalQuantityCN.setDataModel(NULL);
 }
 
 const CReaction * CModelParameterReactionParameter::getReaction() const

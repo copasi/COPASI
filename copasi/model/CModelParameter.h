@@ -139,8 +139,6 @@ public:
    */
   void setParent(CModelParameterGroup * pParent);
 
-  virtual void unsetDataModel();
-
   /**
    * Retrieve the parent, i.e., containing group, of the parameter.
    * @return CModelParameterGroup * pParent
@@ -396,8 +394,6 @@ public:
    */
   void removeSpecies(CModelParameterSpecies * pSpecies);
 
-  void unsetDataModel() override;
-
 private:
   /**
    * The set of species parameters which are contained in the compartment
@@ -464,8 +460,6 @@ public:
    * @param const CRegisteredCommonName & cn
    */
   void setCN(const CRegisteredCommonName & cn) override;
-
-  void unsetDataModel() override;
 
   /**
    * Set the value of the parameter based on the current framework
@@ -541,8 +535,6 @@ public:
    * Compile the parameter
    */
   void compile() override;
-
-  void unsetDataModel() override;
 
   /**
    * Retrieve a pointer to the reaction the parameter belongs to.
