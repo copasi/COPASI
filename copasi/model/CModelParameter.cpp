@@ -294,7 +294,8 @@ void CModelParameter::setParent(CModelParameterGroup * pParent)
 
 void CModelParameter::unsetDataModel()
 {
-  mCN.setDataModel(NULL);
+  // TODO: CRITICAL is this still necessary?
+  // mCN.setDataModel(NULL);
 }
 
 CModelParameterGroup * CModelParameter::getParent() const
@@ -1036,7 +1037,7 @@ void CModelParameterSpecies::setCN(const CRegisteredCommonName & cn)
 void CModelParameterSpecies::unsetDataModel()
 {
   CModelParameter::unsetDataModel();
-  mCompartmentCN.setDataModel(NULL);
+  // mCompartmentCN.setDataModel(NULL);
 }
 
 // virtual
@@ -1192,7 +1193,7 @@ void CModelParameterReactionParameter::compile()
 void CModelParameterReactionParameter::unsetDataModel()
 {
   CModelParameter::unsetDataModel();
-  mGlobalQuantityCN.setDataModel(NULL);
+  // mGlobalQuantityCN.setDataModel(NULL);
 }
 
 const CReaction * CModelParameterReactionParameter::getReaction() const

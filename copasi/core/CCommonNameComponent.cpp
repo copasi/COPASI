@@ -309,7 +309,8 @@ void CCommonNameComponent::signalParentCNChanged(CCommonNameComponent::cn_ptr pP
 
 void CCommonNameComponent::appendPartialCN(cn_ptr pParentCN) const
 {
-  if (pParentCN->empty())
+  if (pParentCN->empty()
+      || mPartialCN.find("String=") == 0)
     *pParentCN = mPartialCN;
   else if (mPartialCN.size()
            && mPartialCN.front() == '[')

@@ -123,7 +123,7 @@ CScanItem::CScanItem(CCopasiParameterGroup * si)
 
   CCopasiProblem * pProblem = dynamic_cast< CCopasiProblem * >(si->getObjectAncestor("Problem"));
 
-  auto cn = si->getValue< CRegisteredCommonName >("Object");
+  std::string cn = si->getValue< CRegisteredCommonName >("Object");
 
   if (pProblem != NULL)
     {
