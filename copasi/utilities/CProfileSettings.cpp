@@ -184,7 +184,7 @@ CProfileSettings::CProfileSettings()
   (*this)["Prefix"] = std::string("_");
 
   // settings for model generation
-  (*this)["Generate"]["Method"] = (int) CTaskEnum::Method::LevenbergMarquardt;
+  (*this)["Generate"]["Method"] = CTaskEnum::MethodName[CTaskEnum::Method::LevenbergMarquardt];
   (*this)["Generate"]["Iterations"] = 50;
   (*this)["Generate"]["Scan Interval"] = 40;
   (*this)["Generate"]["Lower Adjustment"] = std::string("-50%");

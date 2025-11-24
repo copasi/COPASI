@@ -152,7 +152,11 @@ void CProfileGenerator::saveBaseModel()
 
   auto settingsStr = mpSettings->dump(4);
 
-  task.setMethodType((CTaskEnum::Method) generate.at("Method").get<int>());
+  int methodType = mpSettings->intValue("Generate", "Method", -1);
+  if (methodType == -1)
+    methodType = (int) CTaskEnum::MethodName.toEnum(mpSettings->strValue("Generate", "Method"), CTaskEnum::Method::NelderMead);
+
+  task.setMethodType((CTaskEnum::Method) methodType);
   // apply method specific parameters
   if (generate.contains("Settings"))
   {
