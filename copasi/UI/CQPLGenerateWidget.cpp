@@ -66,19 +66,18 @@ void CQPLGenerateWidget::loadSettings(const CProfileSettings * pSettings)
 
   mpTxtTarget->setText(FROM_UTF8(pSettings->getDirectory()));
 
-  mpTxtPrefix->setText(FROM_UTF8((*pSettings).at("Prefix").get<std::string>()));
+  mpTxtPrefix->setText(FROM_UTF8(pSettings->strValue("Prefix")));
 
-  auto & generate = (*pSettings)["Generate"];
-  mpTxtScanInterval->setText(QString::number(generate.at("Scan Interval").get<int>()));
-  mpTxtLower->setText(FROM_UTF8(generate.at("Lower Adjustment").get<std::string>()));
-  mpTxtUpper->setText(FROM_UTF8(generate.at("Upper Adjustment").get<std::string>()));
-  mpChkDisableTasks->setChecked(generate.at("Disable Other Tasks").get<bool>());
-  mpChkDisablePlots->setChecked(generate.at("Disable Other Plots").get<bool>());
-  mpChkLog->setChecked(generate.at("Logarithmic").get< bool >());
-  mpChkContinue->setChecked(generate.at("Continue from current State").get< bool >());
-  mpChkRunStatistics->setChecked((*pSettings)["Run Statistics"]);
-  mpChkDeleteExisting->setChecked((*pSettings)["Delete Existing"]);
-  bool isPE = (*pSettings)["IsParameterEstimation"];
+  mpTxtScanInterval->setText(QString::number(pSettings->intValue("Generate", "Scan Interval")));
+  mpTxtLower->setText(FROM_UTF8(pSettings->strValue("Generate", "Lower Adjustment")));
+  mpTxtUpper->setText(FROM_UTF8(pSettings->strValue("Generate", "Upper Adjustment")));
+  mpChkDisableTasks->setChecked(pSettings->boolValue("Generate", "Disable Other Tasks"));
+  mpChkDisablePlots->setChecked(pSettings->boolValue("Generate", "Disable Other Plots"));
+  mpChkLog->setChecked(pSettings->boolValue("Generate", "Logarithmic"));
+  mpChkContinue->setChecked(pSettings->boolValue("Generate", "Continue from current State"));
+  mpChkRunStatistics->setChecked(pSettings->boolValue("Run Statistics"));
+  mpChkDeleteExisting->setChecked(pSettings->boolValue("Delete Existing"));
+  bool isPE = pSettings->boolValue("IsParameterEstimation");
   mpChkIsParameterEstimation->setChecked(isPE);
 
   if (CRootContainer::getDatamodelList()->size() == 0)
@@ -91,12 +90,15 @@ void CQPLGenerateWidget::loadSettings(const CProfileSettings * pSettings)
   pdelete(mpOptTask);
   mpOptTask = isPE ? new CFitTask(*dynamic_cast< CFitTask * >(&pDataModel.getTaskList()->operator[](taskName)), NO_PARENT)
                    : new COptTask(*dynamic_cast< COptTask * >(&pDataModel.getTaskList()->operator[](taskName)), NO_PARENT);
-  mpOptTask->setMethodType((CTaskEnum::Method)(generate.at("Method").get<int>()));
-  if (generate.contains("Settings"))
-    CProfileSettings::fromJson(mpOptTask->getMethod(), generate["Settings"]);
+  int methodType = pSettings->intValue("Generate", "Method", -1);
+  if (methodType == -1)
+    methodType  = (int)CTaskEnum::MethodName.toEnum(pSettings->strValue("Generate", "Method"), CTaskEnum::Method::NelderMead);
+  mpOptTask->setMethodType((CTaskEnum::Method)(methodType));
+  if (pSettings->at("Generate").contains("Settings"))
+    CProfileSettings::fromJson(mpOptTask->getMethod(), pSettings->at("Generate")["Settings"]);
 
   mpMethodWidget->setTask(mpOptTask);
-  mpMethodWidget->setActiveMethod((CTaskEnum::Method)(generate.at("Method").get<int>()));
+  mpMethodWidget->setActiveMethod((CTaskEnum::Method)(methodType));
 
   mpMethodWidget->loadMethod();
 }
@@ -114,7 +116,7 @@ void CQPLGenerateWidget::saveSettings(CProfileSettings * pSettings)
 
   auto & generate = (*pSettings)["Generate"];
 
-  generate["Method"] = (int) mpMethodWidget->getActiveMethodType();
+  generate["Method"] = CTaskEnum::MethodName[mpMethodWidget->getActiveMethodType()];
   generate["Scan Interval"] = mpTxtScanInterval->text().toInt();
   generate["Lower Adjustment"] = TO_UTF8(mpTxtLower->text());
   generate["Upper Adjustment"] = TO_UTF8(mpTxtUpper->text());

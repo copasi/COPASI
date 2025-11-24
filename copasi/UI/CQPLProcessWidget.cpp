@@ -156,15 +156,15 @@ CQPLProcessWidget::~CQPLProcessWidget()
 
 void CQPLProcessWidget::loadSettings(const CProfileSettings * pSettings)
 {
+  mpSettings = const_cast< CProfileSettings * >(pSettings);
+
   if (!pSettings)
     return;
-
-  mpSettings = const_cast<CProfileSettings*>(pSettings);
-
+  
   mpTxtDirectory->setText(FROM_UTF8(pSettings->getDirectory()));
-  mpTxtPrefix->setText(FROM_UTF8((*pSettings)["Prefix"].get< std::string >()));
-  mpTxtCopasiSE->setText(FROM_UTF8(pSettings->getCopasiSE()));
-  mpSpnNumProcesses->setValue((*pSettings)["Num Processes"]);
+  mpTxtPrefix->setText(FROM_UTF8(mpSettings->strValue("Prefix")));
+  mpTxtCopasiSE->setText(FROM_UTF8(mpSettings->strValue("CopasiSE")));
+  mpSpnNumProcesses->setValue(mpSettings->intValue("Num Processes"));
 }
 
 void CQPLProcessWidget::saveSettings(CProfileSettings * pSettings)

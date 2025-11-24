@@ -24,7 +24,14 @@ public:
   void save() const;
   void load();
 
+  /**
+   * loads settings from the given file
+   */
   static CProfileSettings fromFile(const std::string & fileName);
+
+  /**
+   * saves the current settings to the given file
+   */
   void saveToFile(const std::string & fileName) const;
 
   /**
@@ -36,6 +43,26 @@ public:
    * overwrites parameters in the given parameter group from the provided JSON object
    */
   static void fromJson(CCopasiParameterGroup * group, const nlohmann::json & object);
+
+  /**
+   * @return the property value as double (or default if not present / wrong type)
+   */
+  double dblValue(const std::string & key, const std::string & property = "", double defaultValue = std::numeric_limits<double>::quiet_NaN()) const;
+
+  /**
+   * @return the property value as string (or default if not present / wrong type)
+   */
+  std::string strValue(const std::string & key, const std::string & property = "", const std::string & defaultValue = "") const;
+
+  /**
+   * @return the property value as bool (or default if not present / wrong type)
+   */
+  bool boolValue(const std::string & key, const std::string & property = "", bool defaultValue = false) const;
+
+  /**
+   * @return the property value as int (or default if not present / wrong type)
+   */
+  int intValue(const std::string & key, const std::string & property = "", int defaultValue = 0) const;
 };
 
 #endif // CPROFILE_SETTINGS_H

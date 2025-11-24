@@ -301,3 +301,59 @@ void CProfileSettings::saveToFile(const std::string & fileName) const
       outFile << this->dump(4);
     }
 }
+
+double CProfileSettings::dblValue(const std::string& key, const std::string& property /*= ""*/, double defaultValue /*= std::numeric_limits< double >::quiet_NaN()*/) const
+{
+  try
+  {
+      if (property.empty())
+        return this->at(key).get< double >();
+      return this->at(key).at(property).get< double >();
+  }
+  catch (...)
+  {
+  	return defaultValue;
+  }
+}
+
+std::string CProfileSettings::strValue(const std::string& key, const std::string& property /*= ""*/, const std::string& defaultValue /*= ""*/) const
+{
+  try
+  {
+      if (property.empty())
+        return this->at(key).get< std::string >();
+      return this->at(key).at(property).get< std::string >();
+  }
+  catch (...)
+  {
+    return defaultValue;
+  }
+}
+
+bool CProfileSettings::boolValue(const std::string& key, const std::string& property /*= ""*/, bool defaultValue /*= false*/) const
+{
+  try
+  {
+      if (property.empty())
+        return this->at(key).get< bool >();
+      return this->at(key).at(property).get< bool >();
+  }
+  catch (...)
+  {
+    return defaultValue;
+  }
+}
+
+int CProfileSettings::intValue(const std::string& key, const std::string& property /*= ""*/, int defaultValue /*= 0*/) const
+{
+  try
+  {
+      if (property.empty())
+        return this->at(key).get< int >();
+      return this->at(key).at(property).get< int >();
+  }
+  catch (...)
+  {
+    return defaultValue;
+  }
+}

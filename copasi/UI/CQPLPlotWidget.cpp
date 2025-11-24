@@ -27,17 +27,19 @@ CQPLPlotWidget::CQPLPlotWidget(QWidget * parent)
 
 void CQPLPlotWidget::loadSettings(const CProfileSettings * pSettings)
 {
-  mpTxtTarget->setText(FROM_UTF8(pSettings->getDirectory()));
-  mpTxtPrefix->setText(FROM_UTF8((*pSettings)["Prefix"].get<std::string>()));
-
-  auto & plot = (*pSettings)["Plot"];
-
-  mpTxtScaleBottom->setText(QString::number(plot.at("Scale Bottom").get<double>()));
-  mpTxtScaleTop->setText(QString::number(plot.at("Scale Top").get<double>()));
-  mpTxtThresholds->setText(FROM_UTF8(plot.at("Thresholds").get<std::string>()));
-  mpTxtVertical->setText(FROM_UTF8(plot.at("Vertical Lines").get<std::string>()));
-
   mpSettings = const_cast< CProfileSettings * >(pSettings);
+
+  if (!pSettings)
+    return;
+
+  mpTxtTarget->setText(FROM_UTF8(pSettings->getDirectory()));
+  mpTxtPrefix->setText(FROM_UTF8(pSettings->strValue ("Prefix")));
+
+  mpTxtScaleBottom->setText(QString::number(pSettings->dblValue("Plot", "Scale Bottom")));
+  mpTxtScaleTop->setText(QString::number(pSettings->dblValue("Plot", "Scale Top")));
+  mpTxtThresholds->setText(FROM_UTF8(pSettings->strValue("Plot", "Thresholds")));
+  mpTxtVertical->setText(FROM_UTF8(pSettings->strValue("Plot", "Vertical Lines")));
+
 }
 
 void CQPLPlotWidget::saveSettings(CProfileSettings * pSettings)
