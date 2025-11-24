@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -61,11 +61,18 @@ const std::string CDirEntry::Separator = "/";
 #endif
 
 #if __cplusplus >= 201703L || __cpp_lib_filesystem
+#if defined(__APPLE__) && defined(__MACH__)
+#  if __MAC_OS_X_VERSION_MIN_REQUIRED < 101500
+#    #define FILE_SYSTEM_NOT_SUPPORTED
+#  endif
+#endif
+#ifndef FILE_SYSTEM_NOT_SUPPORTED
 #  include <filesystem>
 namespace fs = std::filesystem;
 #define USE_FILESYSTEM
 #endif
 
+#endif
 
 bool CDirEntry::isFile(const std::string & path)
 {
@@ -211,7 +218,7 @@ bool CDirEntry::createDir(const std::string & dir,
   if (!parent.empty() && (!isDir(parent) || !isWritable(parent)))
     return false;
 
-  #ifdef USE_FILESYSTEM
+#ifdef USE_FILESYSTEM
   try
     {
       fs::create_directories(Dir);
@@ -222,7 +229,7 @@ bool CDirEntry::createDir(const std::string & dir,
       return false;
     }
 
-  #else 
+#else
 
 #ifdef WIN32
   return (mkdir(CLocaleString::fromUtf8(Dir).c_str()) == 0);
