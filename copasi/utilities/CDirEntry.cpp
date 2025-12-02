@@ -60,19 +60,17 @@ const std::string CDirEntry::Separator = "\\";
 const std::string CDirEntry::Separator = "/";
 #endif
 
-#if __cplusplus >= 201703L || __cpp_lib_filesystem
-#if defined(__APPLE__) && defined(__MACH__)
-#  if __MAC_OS_X_VERSION_MIN_REQUIRED < 101500
-#    #define FILE_SYSTEM_NOT_SUPPORTED
-#  endif
+#if __cplusplus >= 201703L || defined(__cpp_lib_filesystem)
+#if defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED < 101500
+#define FILE_SYSTEM_NOT_SUPPORTED
 #endif
 #ifndef FILE_SYSTEM_NOT_SUPPORTED
 #  include <filesystem>
 namespace fs = std::filesystem;
 #define USE_FILESYSTEM
-#endif
+#endif // FILE_SYSTEM_NOT_SUPPORTED
 
-#endif
+#endif // __cplusplus >= 201703L || defined(__cpp_lib_filesystem)
 
 bool CDirEntry::isFile(const std::string & path)
 {
