@@ -3761,7 +3761,7 @@ CDataModel::convertODEsToReactions()
       return false;
     }
 
-  std::string newSBML = writeSBMLToString(doc);
+  std::string newSBML = writeSBMLToStdString(doc);
   delete doc;
   return importSBMLFromString(newSBML.c_str());
 }
@@ -3786,7 +3786,7 @@ CDataModel::convertReactionsToODEs()
       return false;
     }
 
-  std::string newSBML = writeSBMLToString(doc);
+  std::string newSBML = writeSBMLToStdString(doc);
   delete doc;
   return importSBMLFromString(newSBML.c_str());
 }
@@ -3808,7 +3808,7 @@ CDataModel::convertParametersToGlobal()
       return false;
     }
 
-  std::string newSBML = writeSBMLToString(doc);
+  std::string newSBML = writeSBMLToStdString(doc);
   delete doc;
   return importSBMLFromString(newSBML.c_str());
 }
