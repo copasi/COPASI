@@ -48,9 +48,16 @@
 #include <copasi/utilities/CVersion.h>
 #include "copasi/OpenMP/CContext.h"
 
+#include <copasi/utilities/json.hpp>
+
 #ifdef QWT_VERSION
 #include <qwt_global.h>
 #endif
+
+#ifdef COPASI_USE_QCUSTOMPLOT
+#include <qcustomplot.h>
+#endif
+
 
 const char *AboutDialog::text =
   "<h2>COPASI %1</h2>"
@@ -99,10 +106,29 @@ const char *AboutDialog::text =
 
 QString AboutDialog::getDefaultVersionText()
 {
-  QString raptorVersion;
+  QString additionalVersion;
   #ifdef COPASI_USE_RAPTOR
   raptorVersion = QString("<li>raptor %1</li>").arg(COPASI_RAPTOR_VERSION);
   #endif
+
+  // add additional version info here. 
+  additionalVersion += QString("<li>json for Modern C++ version %1.%2.%3</li>")
+                     .arg(NLOHMANN_JSON_VERSION_MAJOR)
+                     .arg(NLOHMANN_JSON_VERSION_MINOR)
+                     .arg(NLOHMANN_JSON_VERSION_PATCH);
+
+  additionalVersion += QString("<li>statslib 3.4.0</li><li>GCEM 1.18.0</li>");
+
+  #ifdef COPASI_USE_QCUSTOMPLOT
+  additionalVersion += QString("<li>QCustomPlot %1</li>").arg(QCUSTOMPLOT_VERSION_STR);
+  #endif
+
+  #ifdef COPASI_USE_CROSSGUID
+  additionalVersion += QString("<li>CrossGuid</li>");
+  #else
+  additionalVersion += QString("<li>stduuid</li>");
+  #endif
+
 
   return QString(AboutDialog::text)
          .arg(FROM_UTF8(CVersion::VERSION.getVersion() + omp_info()()))            // 1
@@ -112,7 +138,7 @@ QString AboutDialog::getDefaultVersionText()
          .arg(COPASI_LIBSBML_VERSION)                               // 5
          .arg(COPASI_LIBSEDML_VERSION)                              // 6
          .arg(COPASI_LIBCOMBINE_VERSION)                            // 7
-         .arg(raptorVersion)                                        // 8
+         .arg(additionalVersion)                                    // 8
          .arg(COPASI_SBW_VERSION)                                   // 9
          .arg(CJitCompiler::JitEnabled() ? "enabled" : "disabled"); //10
 }
