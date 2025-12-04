@@ -108,7 +108,7 @@ QString AboutDialog::getDefaultVersionText()
 {
   QString additionalVersion;
   #ifdef COPASI_USE_RAPTOR
-  raptorVersion = QString("<li>raptor %1</li>").arg(COPASI_RAPTOR_VERSION);
+  additionalVersion = QString("<li>raptor %1</li>").arg(COPASI_RAPTOR_VERSION);
   #endif
 
   // add additional version info here. 
