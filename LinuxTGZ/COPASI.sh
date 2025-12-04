@@ -123,6 +123,10 @@ if [ -n "${COPASI_LINUXDEPLOYQT}" ]; then
   echo "running linuxdeployqt"
   echo ${COPASI_LINUXDEPLOYQT} ./CopasiUI  -always-overwrite -bundle-non-qt-libs -qmake=`which qmake` -extra-plugins=platforms/libqxcb.so
   ${COPASI_LINUXDEPLOYQT} ./CopasiUI  -always-overwrite -bundle-non-qt-libs -qmake=`which qmake` -extra-plugins=platforms/libqxcb.so
+  if [ -n "${EXTRA_LIBS}" ]; then
+    # copy all files from extra_libs to lib
+    cp -r ${EXTRA_LIBS}/* lib/    
+  fi;
   popd
 fi
 
