@@ -134,6 +134,13 @@
        </property>
       </spacer>
      </item>
+     <item row="3" column="3">
+      <widget class="QCheckBox" name="mpCreateParameterSets">
+       <property name="text">
+        <string>Create Parameter Sets</string>
+       </property>
+      </widget>
+     </item>
      <item row="4" column="1">
       <widget class="QCheckBox" name="mpCheckRandomize">
        <property name="text">
@@ -210,7 +217,13 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mpBtnMinimize</tabstop>
+  <tabstop>mpBtnMaximize</tabstop>
   <tabstop>mpBoxSubtask</tabstop>
+  <tabstop>mpCreateParameterSets</tabstop>
+  <tabstop>mpCheckRandomize</tabstop>
+  <tabstop>mpCheckStatistics</tabstop>
+  <tabstop>mpCheckDisplayPopulation</tabstop>
   <tabstop>mpTabWidget</tabstop>
  </tabstops>
  <includes>

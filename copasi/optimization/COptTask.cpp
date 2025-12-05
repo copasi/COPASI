@@ -154,6 +154,7 @@ bool COptTask::process(const bool & useInitialValues)
     mProcessReport.setIgnoreStop(true);
 
   pProblem->calculateStatistics();
+  pProblem->createParameterSets();
 
   if (mProcessReport)
     mProcessReport.setIgnoreStop(false);

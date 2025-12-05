@@ -108,7 +108,6 @@ CFitProblem::CFitProblem(const CTaskEnum::Task & type,
   , mCorrelation(0, 0)
   , mpCorrelationMatrixInterface(NULL)
   , mpCorrelationMatrix(NULL)
-  , mpCreateParameterSets(NULL)
   , mpUseTimeSens(NULL)
   , mpTimeSens(NULL)
   , mJacTimeSens()
@@ -169,7 +168,6 @@ CFitProblem::CFitProblem(const CFitProblem & src,
   , mCorrelation(src.mCorrelation)
   , mpCorrelationMatrixInterface(NULL)
   , mpCorrelationMatrix(NULL)
-  , mpCreateParameterSets(NULL)
   , mpUseTimeSens(NULL)
   , mpTimeSens(NULL)
   , mJacTimeSens()
@@ -288,7 +286,6 @@ void CFitProblem::initializeParameter()
 
   mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::Type::CN, CRegisteredCommonName());
   mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::Type::CN, CRegisteredCommonName());
-  mpCreateParameterSets = assertParameter("Create Parameter Sets", CCopasiParameter::Type::BOOL, false);
   mpUseTimeSens = assertParameter("Use Time Sens", CCopasiParameter::Type::BOOL, false);
   mpParmTimeSensCN = assertParameter("Time-Sens", CCopasiParameter::Type::CN, CRegisteredCommonName());;
 
@@ -302,16 +299,6 @@ void CFitProblem::initializeParameter()
 void CFitProblem::signalMathContainerChanged()
 {
   COptProblem::signalMathContainerChanged();
-}
-
-void CFitProblem::setCreateParameterSets(const bool & create)
-{
-  *mpCreateParameterSets = create;
-}
-
-const bool & CFitProblem::getCreateParameterSets() const
-{
-  return *mpCreateParameterSets;
 }
 
 void CFitProblem::setUseTimeSens(bool value)
@@ -937,27 +924,6 @@ CFitConstraint & CFitProblem::addFitConstraint(const CRegisteredCommonName & obj
   return *pItem;
 }
 
-/**
- * Utility function creating a parameter set for each experiment
- */
-void CFitProblem::createParameterSet(const std::string & Name)
-{
-  CModel * pModel = const_cast<CModel *>(&mpContainer->getModel())
-                    ;
-  std::string origname = "PE: " + UTCTimeStamp() + " Exp: " + Name;
-  std::string name = origname;
-  int count = 0;
-
-  while (pModel->getModelParameterSets().getIndex(name) != C_INVALID_INDEX)
-    {
-      std::stringstream str; str << origname << " (" << ++count << ")";
-      name = str.str();
-    }
-
-  CModelParameterSet* set = new CModelParameterSet(name);
-  pModel->getModelParameterSets().add(set, true);
-  set->createFromModel();
-}
 
 bool CFitProblem::calculate()
 {
@@ -1343,7 +1309,7 @@ void CFitProblem::createParameterSets()
   mpContainer->pushInitialState();
   CVector< C_FLOAT64 > OriginalInitialState = mpContainer->getInitialState();
 
-  createParameterSet("Original");
+  createParameterSet(" Original", "PE: ");
 
   // Apply the current solution values
   updateContainer(true);
@@ -1378,7 +1344,7 @@ void CFitProblem::createParameterSets()
       pExp->updateModelWithIndependentData(0);
 
       mpContainer->pushInitialState();
-      createParameterSet(pExp->getObjectName());
+      createParameterSet(" Exp: " + pExp->getObjectName(), "PE: ");
     }
 
   // Restore the current initial state

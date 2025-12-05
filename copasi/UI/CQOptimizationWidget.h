@@ -39,8 +39,7 @@ public:
   ~CQOptimizationWidget();
 
   bool runTask() override;
-  bool isSteadyState();
-
+  
 public slots:
   void slotParameterNumberChanged(int number);
   void slotConstraintNumberChanged(int number);
@@ -56,9 +55,12 @@ protected:
   bool mTypeChanged;
 
   std::map< std::string, size_t > mSubtaskMap;
+  size_t mnParamterSetsBeforeRun;
+
 
   bool saveTaskProtected() override;
   bool loadTaskProtected() override;
+  bool taskFinishedEvent() override;
 
 protected slots:
 

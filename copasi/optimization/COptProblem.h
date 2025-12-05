@@ -50,6 +50,7 @@ class CSteadyStateTask;
 class CTrajectoryTask;
 class COptItem;
 class CMathExpression;
+class CModelParameterSet;
 
 enum ProblemType
 {
@@ -250,6 +251,24 @@ public:
    */
   void setParameters(const CVectorCore< C_FLOAT64 > & parameters);
 
+
+  /**
+   * Sets the 'Create Parameter Sets' parameter. When set it will create new model parameter
+   * sets for each experiment after a run.
+   */
+  void setCreateParameterSets(const bool & create);
+
+  /**
+   * @return the value of the 'Create Parameter Sets' parameter that controls whether parameter
+   * sets should be created automatically.
+   */
+  const bool & getCreateParameterSets() const;
+
+  /**
+   * Create new parameter sets for each experiment in the model after optimization. 
+   */
+  virtual void createParameterSets();  
+
 // private:
   /**
    * Retrieve the update methods for the variables for calculation.
@@ -263,6 +282,13 @@ protected:
    * Signal that the math container has changed
    */
   void signalMathContainerChanged() override;
+
+  /**
+   * Create a parameter set with the given name and the current model values
+   *
+   */
+  CModelParameterSet* createParameterSet(const std::string & Name, const std::string & prefix);
+
 
 public:
   /**
@@ -713,6 +739,11 @@ protected:
   bool mFunctionalConstraintPassed;
 
   C_FLOAT64 mFunctionalConstraintError;
+  
+  /**
+   * A pointer to the value of the CCopasiParameter holding Create Parameter Sets
+   */
+  bool * mpCreateParameterSets;
 };
 
 #endif  // the end

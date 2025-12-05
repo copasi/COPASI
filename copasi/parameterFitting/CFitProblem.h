@@ -330,23 +330,11 @@ public:
    */
   void fixBuild55();
 
-  /**
-   * Sets the 'Create Parameter Sets' parameter. When set it will create new model parameter
-   * sets for each experiment after a run.
-   */
-  void setCreateParameterSets(const bool & create);
-
-  /**
-   * @return the value of the 'Create Parameter Sets' parameter that controls whether parameter
-   * sets should be created automatically.
-   */
-  const bool & getCreateParameterSets() const;
-
   void setUseTimeSens(bool value);
 
   const bool& getUseTimeSens() const;
 
-  void createParameterSets();
+  void createParameterSets() override;
 
   const CMatrix<C_FLOAT64>& getTimeSensJac() const;
   CMatrix<C_FLOAT64>& getTimeSensJac();
@@ -356,12 +344,6 @@ protected:
    * Signal that the math container has changed
    */
   void signalMathContainerChanged() override;
-
-  /**
-   * Create a parameter set with the given name and the current model values
-   *
-   */
-  void createParameterSet(const std::string & Name);
 
 private:
   /**
@@ -587,11 +569,6 @@ private:
   CMatrix< C_FLOAT64 > mCorrelation;
   CMatrixInterface< CMatrix< C_FLOAT64 > > * mpCorrelationMatrixInterface;
   CDataArray * mpCorrelationMatrix;
-
-  /**
-   * A pointer to the value of the CCopasiParameter holding Create Parameter Sets
-   */
-  bool * mpCreateParameterSets;
 
   /** A flag indicating whether or not to use time sens task */
   bool* mpUseTimeSens;

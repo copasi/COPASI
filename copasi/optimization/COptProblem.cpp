@@ -118,6 +118,7 @@ COptProblem::COptProblem(const CTaskEnum::Task & type,
   , mOptItem2Index()
   , mOptItemAlgorithm()
   , mSolutionVariablesAlgorithm()
+  , mpCreateParameterSets(NULL)
 {
   initializeParameter();
   initObjects();
@@ -161,6 +162,7 @@ COptProblem::COptProblem(const COptProblem & src,
   , mOptItem2Index()
   , mOptItemAlgorithm()
   , mSolutionVariablesAlgorithm()
+  , mpCreateParameterSets(NULL)
 {
   initializeParameter();
   initObjects();
@@ -200,6 +202,7 @@ void COptProblem::initializeParameter()
   mpParmMaximize = assertParameter("Maximize", CCopasiParameter::Type::BOOL, false);
   mpParmRandomizeStartValues = assertParameter("Randomize Start Values", CCopasiParameter::Type::BOOL, false);
   mpParmCalculateStatistics = assertParameter("Calculate Statistics", CCopasiParameter::Type::BOOL, true);
+  mpCreateParameterSets = assertParameter("Create Parameter Sets", CCopasiParameter::Type::BOOL, false);
 
   mpGrpItems = assertGroup("OptimizationItemList");
   mpGrpConstraints = assertGroup("OptimizationConstraintList");
@@ -361,6 +364,135 @@ void COptProblem::initObjects()
   addObjectReference("Failed Constraint Evaluations", mCounters.FailedConstraintCounter, CDataObject::ValueInt);
   addObjectReference("Best Value", mSolutionValue, CDataObject::ValueDbl);
   addVectorReference("Best Parameters", mSolutionVariables, CDataObject::ValueDbl);
+}
+
+
+void COptProblem::setCreateParameterSets(const bool & create)
+{
+  *mpCreateParameterSets = create;
+}
+
+const bool & COptProblem::getCreateParameterSets() const
+{
+  return *mpCreateParameterSets;
+}
+
+std::string replaceCnsWithNames(const std::string& expression, CDataModel* pDM)
+{
+  std::stringstream result;
+  std::string current;
+
+  size_t num_chars = expression.length();
+  size_t pos = 0;
+
+  while (pos < num_chars)
+  {
+     bool haveMore = pos + 4 < num_chars;
+     char cur = expression[pos];
+     if (cur == '<' && haveMore)
+     {
+         if (expression.substr(pos, 4) == "<CN=")
+         {
+          if (!current.empty())
+          {
+            result << current;
+            current.clear();
+          }
+
+          size_t end = expression.find('>', pos);
+          if (end != std::string::npos)
+          {
+            std::string cn = expression.substr(pos+1, end - pos-1);
+            // resolve cn
+            const CDataObject* obj = dynamic_cast<const CDataObject*>(pDM->getObject(CRegisteredCommonName(cn)));
+            if (obj)
+            {
+              result << obj->getObjectDisplayName();              
+            }
+
+            pos = end + 1;
+            continue;
+          }
+         }
+     }
+     else
+     {
+      current += cur;
+      pos++;
+     }
+  }
+
+  if (!current.empty())
+  result << current;
+  return result.str();
+}
+
+void COptProblem::createParameterSets()
+{
+  if (!*mpCreateParameterSets)
+    return;
+
+  // Store the current initial state
+  CVector< C_FLOAT64 > CurrentCompleteInitialState = mpContainer->getCompleteInitialState();
+
+  updateContainer(true);
+  mpContainer->applyUpdateSequence(mInitialRefreshSequence);
+  mpContainer->pushInitialState();
+
+  auto * set = createParameterSet(" Solution", "Opt: ");
+
+  std::stringstream notes;
+
+  notes << "## Parameter Set " << set->getName() << std::endl
+        << std::endl;
+  notes << "Objective: " << (*mpParmMaximize ? "maximize" : "minimize") 
+        << " " << replaceCnsWithNames(mpObjectiveExpression->getInfix(), getObjectDataModel()) << std::endl
+        << std::endl;
+  notes << "Solution Value: " << mSolutionValue << std::endl
+        << std::endl;
+
+  for (size_t i = 0; i < mSolutionVariables.size(); ++i)
+    {
+      auto * obj = getOptItem(i).getDataObject();
+      if (!obj)
+        continue;
+      notes << obj->getObjectDisplayName() << " = " << mSolutionVariables[i] << std::endl;
+
+      auto* item = const_cast<CModelParameter*>(set->getModelParameter(obj->getCN()));
+      if (item)
+      {
+        item->setValue(mSolutionVariables[i], CCore::Framework::Concentration, false);
+      }
+    }
+  
+  set->setNotes(notes.str());
+
+  // Restore the current initial state
+  mpContainer->setCompleteInitialState(CurrentCompleteInitialState);
+}
+
+
+/**
+ * Utility function creating a parameter set for each experiment
+ */
+CModelParameterSet * COptProblem::createParameterSet(const std::string & Name, const std::string & prefix)
+{
+  CModel * pModel = const_cast< CModel * >(&mpContainer->getModel());
+  std::string origname = prefix + UTCTimeStamp() +  Name;
+  std::string name = origname;
+  int count = 0;
+
+  while (pModel->getModelParameterSets().getIndex(name) != C_INVALID_INDEX)
+    {
+      std::stringstream str;
+      str << origname << " (" << ++count << ")";
+      name = str.str();
+    }
+
+  CModelParameterSet * set = new CModelParameterSet(name);
+  pModel->getModelParameterSets().add(set, true);
+  set->createFromModel();
+  return set;
 }
 
 void COptProblem::signalMathContainerChanged()
