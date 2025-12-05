@@ -575,9 +575,10 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
           mParameterIsInitialConcentration[Col] = pMo->isIntensiveProperty();
           mParameterInitialValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
           mParameterTransientValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
+          auto* pMetab = dynamic_cast<const CMetab*>(pMo->getDataObject()->getObjectParent());
           pMo2 = mpContainer->getMathObject(pMo->getDataObject()->getObjectParent()->getValueObject());
 
-          if (pMo2->getSimulationType() == CMath::SimulationType::Fixed)
+          if (pMo2->getSimulationType() == CMath::SimulationType::Fixed || ( pMo2->getSimulationType() == CMath::SimulationType::Conversion && pMetab != NULL && pMetab->getStatus()==CModelEntity::Status::FIXED ) )
             {
               mParameterTransientValuePointers[Col] = (C_FLOAT64 *) pMo2->getValuePointer();
               Changed.insert(pMo2);
