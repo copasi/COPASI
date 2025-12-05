@@ -457,12 +457,6 @@ void COptProblem::createParameterSets()
       if (!obj)
         continue;
       notes << obj->getObjectDisplayName() << " = " << mSolutionVariables[i] << std::endl;
-
-      auto* item = const_cast<CModelParameter*>(set->getModelParameter(obj->getCN()));
-      if (item)
-      {
-        item->setValue(mSolutionVariables[i], CCore::Framework::Concentration, false);
-      }
     }
   
   set->setNotes(notes.str());
