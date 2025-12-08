@@ -41,6 +41,7 @@
 #include "CScanProblem.h"
 #include "CScanMethod.h"
 #include "CScanTask.h"
+#include <copasi/optimization/COptTask.h>
 
 #include "copasi/math/CMathContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
@@ -495,6 +496,13 @@ bool CScanMethod::init()
 
   size_t i, imax = mpProblem->getNumberOfScanItems();
   mContinueFromCurrentState = mpProblem->getContinueFromCurrentState();
+
+  if (dynamic_cast<COptTask*>(mpTask->getSubTask()))
+  {
+    // for optimization / parameter estimation, update from current state
+    // means using the same parameters, for that we use the 'update' flag on the task
+    mContinueFromCurrentState = false;
+  }
 
   for (i = 0; i < imax; ++i)
     {

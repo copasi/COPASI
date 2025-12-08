@@ -128,6 +128,9 @@ bool CScanTask::process(const bool & useInitialValues)
 
   bool success = true;
 
+  // store whether updateModel was enabled on subtask
+  bool subTaskUpdateFlag = mpSubTask != NULL ? mpSubTask->isUpdateModel() : false;
+
   CCrossSectionTask* task = dynamic_cast<CCrossSectionTask*>(mpSubTask);
 
   if (task != NULL)
@@ -136,6 +139,14 @@ bool CScanTask::process(const bool & useInitialValues)
   if (useInitialValues)
     {
       mpContainer->applyInitialValues();
+    }
+
+  // if subtask is optimization or parameter estimation, and continue 
+  // from current state is enabled, enable the update model flag
+  // on the subtask
+  if (pProblem->getContinueFromCurrentState() && dynamic_cast< COptProblem * >(mpSubTask->getProblem()) != NULL)
+    {
+      mpSubTask->setUpdateModel(true);
     }
 
   //TODO: reports
@@ -169,6 +180,9 @@ bool CScanTask::process(const bool & useInitialValues)
 
   if (task != NULL)
     task->removeEvent();
+
+  if (mpSubTask)
+    mpSubTask->setUpdateModel(subTaskUpdateFlag);
 
   //finishing progress bar and output
   //if (mCallBack) mCallBack.finish();
@@ -315,6 +329,9 @@ bool CScanTask::initSubtask(const OutputFlag & /* of */,
   mOutputSubTask = pProblem->getOutputSpecification();
   mUseInitialValues = !pProblem->getContinueFromCurrentState();
 
+  if (dynamic_cast< COptTask * >(mpSubTask))
+    mUseInitialValues = true;
+
   mpSubTask->setMathContainer(mpContainer); //TODO
   mpSubTask->setCallBack(NULL);
 
@@ -348,4 +365,9 @@ void CScanTask::fixBuild81()
   pProblem->fixBuild81();
 
   return;
+}
+
+CCopasiTask * CScanTask::getSubTask()
+{
+  return mpSubTask;
 }

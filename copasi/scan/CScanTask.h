@@ -157,6 +157,11 @@ public:
    */
   void fixBuild81();
 
+  /** 
+   * @return the subtask
+   */
+  CCopasiTask * getSubTask();
+
 protected:
 
   /**
