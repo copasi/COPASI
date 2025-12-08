@@ -39,6 +39,7 @@
 
 #include "copasi/math/CMathContainer.h"
 #include "copasi/optimization/COptProblem.h"
+#include "copasi/optimization/COptItem.h"
 
 #include "copasi/trajectory/CTrajectoryTask.h"
 #include "copasi/trajectory/CTrajectoryProblem.h"
@@ -144,9 +145,15 @@ bool CScanTask::process(const bool & useInitialValues)
   // if subtask is optimization or parameter estimation, and continue 
   // from current state is enabled, enable the update model flag
   // on the subtask
-  if (pProblem->getContinueFromCurrentState() && dynamic_cast< COptProblem * >(mpSubTask->getProblem()) != NULL)
+  COptProblem * pOptProblem = dynamic_cast< COptProblem * >(mpSubTask->getProblem());
+  std::vector< double > optItemStartValues;
+  if (pProblem->getContinueFromCurrentState() && pOptProblem != NULL)
     {
       mpSubTask->setUpdateModel(true);
+      for (size_t i = 0; i < pOptProblem->getOptItemSize(); ++i)
+      {
+          optItemStartValues.push_back(pOptProblem->getOptItem(i).getStartValue());
+      }
     }
 
   //TODO: reports
@@ -181,8 +188,15 @@ bool CScanTask::process(const bool & useInitialValues)
   if (task != NULL)
     task->removeEvent();
 
-  if (mpSubTask)
-    mpSubTask->setUpdateModel(subTaskUpdateFlag);
+  if (pOptProblem && pProblem->getContinueFromCurrentState())
+    {
+      mpSubTask->setUpdateModel(subTaskUpdateFlag);
+      // restore opt items to their original value if update model is off
+      // on both scan task and opt task
+      if (!isUpdateModel() && !subTaskUpdateFlag)
+      for (size_t i = 0; i < pOptProblem->getOptItemSize() && subTaskUpdateFlag; ++i)
+        pOptProblem->getOptItem(i).setStartValue(optItemStartValues[i]);
+    }
 
   //finishing progress bar and output
   //if (mCallBack) mCallBack.finish();
