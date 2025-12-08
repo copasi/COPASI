@@ -811,8 +811,14 @@ bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action ac
         {
           CDataModel * pDataModel = pListView->getDataModel();
           CopasiWidget * currentWidget = pListView->getCurrentWidget();
+          if (currentWidget == nullptr)
+            continue;
+
           ListViews::ObjectType currentWidgetType = currentWidget->getObjectType();
           const CDataObject * pDataObject = currentWidget->getObject();
+          if (pDataObject == nullptr)
+            continue;
+
           CModelParameterSet * pActiveParameterSet = pDataModel != nullptr ? &pDataModel->getModel()->getActiveModelParameterSet() : nullptr;
 
           if (currentWidgetType == ListViews::ObjectType::MODELPARAMETERSET
