@@ -3222,7 +3222,7 @@ std::string CModel::suitableForStochasticSimulation() const
           multFloat = mStoi(j, i);
           multInt = static_cast<C_INT32>(floor(multFloat + 0.5)); // +0.5 to get a rounding out of the static_cast to int!
 
-          if ((multFloat - multInt) > 0.01)
+          if (fabs(multFloat - multInt) > 0.01)
             return "Not all stoichiometries are integer numbers. \nThat means that discrete simulation is not possible.";
         }
     }
