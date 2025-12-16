@@ -124,7 +124,7 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const CFitItem & o);
 
   /**
-   * Set the local value.
+   * Set the local value. The value reference is changed if it is out of bounds
    * @param C_FLOAT64 & value
    * @param const CheckPolicyFlag & policy
    * @return bool success

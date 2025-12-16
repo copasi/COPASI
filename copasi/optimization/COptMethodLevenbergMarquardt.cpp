@@ -184,6 +184,9 @@ bool COptMethodLevenbergMarquardt::optimise()
 
   size_t Stalled = 0;
 
+  mpParentTask->output(COutputInterface::MONITORING);
+
+  
   for (mIteration = 0; (mIteration < mIterationLimit) && (nu != 0.0) && proceed();
        mIteration++, Stalled++)
     {
@@ -283,7 +286,7 @@ bool COptMethodLevenbergMarquardt::optimise()
 
               COptItem & OptItem = *OptItemList[i];
               pointInParameterDomain &= OptItem.setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
-              pointInParameterDomain &= (Target == mCurrent[i]);
+              pointInParameterDomain &= ((Target == mCurrent[i]) || abs(mCurrent[i]-mBest[i])< 1e-10 );
 
               if (!pointInParameterDomain)
                 {
