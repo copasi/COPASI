@@ -286,7 +286,12 @@ bool COptMethodLevenbergMarquardt::optimise()
 
               COptItem & OptItem = *OptItemList[i];
               pointInParameterDomain &= OptItem.setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
-              pointInParameterDomain &= ((Target == mCurrent[i]) || abs(mCurrent[i]-mBest[i])< 1e-10 );
+              
+              //We need to detect if the step would lead out of the parameter boundaries, so that we can
+              //shorten the step accordingly. So we check if the prior call to setItemValue truncated the parameter value.
+              //However, we disregard this if the parameter was already at the boundary before the current step,
+              //allowing movement along the boundary and back inside the allowed region.
+              pointInParameterDomain &= ((Target == mCurrent[i]) || abs(mCurrent[i]-mBest[i])< 1e-6*abs(Factor*mStep[i]) );
 
               if (!pointInParameterDomain)
                 {
