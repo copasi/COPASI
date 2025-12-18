@@ -131,6 +131,7 @@ private:
   QMenu * mpMenu;
 
   std::map< QAction *, CQExternalTool * > mActionToTool;
+  std::map< CQExternalTool *, QAction * > mToolToAction;
 };
 
 #endif // CQ_EXTERNAL_TOOLS_H
