@@ -4701,51 +4701,45 @@ void CMathContainer::createDiscontinuityEvents()
 
   for (; it != end; ++it)
     {
-      createDiscontinuityEvents(*it, Variables);
+      const CEvaluationNode *startNode = (*it)->getRoot();
+      createDiscontinuityEvents(startNode);
     }
 }
 
-void CMathContainer::createDiscontinuityEvents(const CEvaluationTree * pTree,
-    const std::vector< CEvaluationNode * > & variables)
+void CMathContainer::createDiscontinuityEvents(const CEvaluationNode * Node)
 {
-  // We create an AST in which all function calls are expanded
-  CEvaluationNode * pRoot = copyBranch(pTree->getRoot(), variables, false);
+  // We don't need to expand function calls here
 
-  CNodeIterator< CEvaluationNode  > itNode(pRoot);
+  if (Node == NULL) {
+    return;
+  }
+  createDiscontinuityEvents(static_cast<const CEvaluationNode *>(Node->getChild()));
 
-  while (itNode.next() != itNode.end())
-    {
-      if (*itNode == NULL)
-        {
-          continue;
-        }
+  switch (Node->mainType() | Node->subType())
+  {
+    case (CEvaluationNode::MainType::CHOICE | CEvaluationNode::SubType::IF):
+    case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::FLOOR):
+    case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::CEIL):
+    case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::MODULUS):
+    case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::REMAINDER):
+    case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::QUOTIENT):
+    case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::IMPLIES):
+      createDiscontinuityDataEvent(Node);
+      break;
 
-      switch (itNode->mainType() | itNode->subType())
-        {
-          case (CEvaluationNode::MainType::CHOICE | CEvaluationNode::SubType::IF):
-          case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::FLOOR):
-          case (CEvaluationNode::MainType::FUNCTION | CEvaluationNode::SubType::CEIL):
-          case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::MODULUS):
-          case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::REMAINDER):
-          case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::QUOTIENT):
-          case (CEvaluationNode::MainType::OPERATOR | CEvaluationNode::SubType::IMPLIES):
-            createDiscontinuityDataEvent(*itNode);
-            break;
+    // Call nodes and variables are eliminated.
+    case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::FUNCTION):
+    case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::EXPRESSION):
+      {
+        const CEvaluationTree * pCalledTree = static_cast< const CEvaluationNodeCall * >(Node)->getCalledTree();
+        createDiscontinuityEvents(pCalledTree->getRoot());
+        break;
+      }
 
-          // Call nodes and variables are eliminated.
-          case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::FUNCTION):
-          case (CEvaluationNode::MainType::CALL | CEvaluationNode::SubType::EXPRESSION):
-          case (CEvaluationNode::MainType::VARIABLE | CEvaluationNode::SubType::DEFAULT):
-            fatalError();
-            break;
-
-          default:
-            break;
-        }
-    }
-
-  pdelete(pRoot);
-
+    default:
+      break;
+  }
+  createDiscontinuityEvents(static_cast<const CEvaluationNode *>(Node->getSibling()));
   return;
 }
 
