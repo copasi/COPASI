@@ -4697,7 +4697,6 @@ void CMathContainer::createDiscontinuityEvents()
   std::vector< const CEvaluationTree * >::const_iterator it = TreesWithDiscontinuities.begin();
   std::vector< const CEvaluationTree * >::const_iterator end = TreesWithDiscontinuities.end();
 
-  std::vector< CEvaluationNode * > Variables;
 
   for (; it != end; ++it)
     {
