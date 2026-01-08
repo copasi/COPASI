@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,8 +51,6 @@ integer idamax_(integer *n, doublereal *dx, integer *incx);
 integer isamax_(integer *n, real *sx, integer *incx);
 /* Function */
 integer izamax_(integer *n, doublecomplex *zx, integer *incx);
-/* Function */
-logical lsame_(char *ca, char *cb);
 
 /* Subroutine */
 int caxpy_(integer *n, complex *ca, complex *cx, integer *incx, complex *cy, integer *incy);
