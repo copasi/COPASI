@@ -1113,8 +1113,7 @@ private:
    * @param const CEvaluationTree * pTree
    * @param const std::vector< CEvaluationNode * > & variables
    */
-  void createDiscontinuityEvents(const CEvaluationTree * pTree,
-                                 const std::vector< CEvaluationNode * > & variables);
+  void createDiscontinuityEvents(const CEvaluationNode * pNode);
 
   /**
    * Create an event of type CEvent::Discontinuity for the given node
