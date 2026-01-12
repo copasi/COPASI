@@ -19,9 +19,6 @@
 #include "copasi/copasi.h"
 #include "copasi/utilities/CCopasiMessage.h"
 
-#undef min
-#undef max
-
 template <typename CType> class CVectorCore;
 
 template <typename CType>

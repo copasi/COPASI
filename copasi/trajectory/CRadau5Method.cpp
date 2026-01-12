@@ -15,14 +15,6 @@
 
 #include "copasi/trajectory/CRadau5Method.h"
 
-#ifdef min
-#  undef min
-#endif
-
-#ifdef max
-#  undef max
-#endif
-
 // Uncomment this line below to get numeric debug print out.
 // #define DEBUG_NUMERICS 1
 

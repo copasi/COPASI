@@ -41,9 +41,6 @@
 #include "CQMessageBox.h"
 #include "copasiui3window.h"
 
-#undef min
-#undef max
-
 // static
 CProgressBar * CProgressBar::create(QWidget* parent, const char* name, Qt::WindowModality windowModality)
 {

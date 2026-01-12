@@ -29,8 +29,6 @@
 #include "copasi/core/CDataContainer.h"
 
 #include "copasi/undo/CData.h"
-#undef min
-#undef max
 #undef ERROR
 
 class CReadConfig;

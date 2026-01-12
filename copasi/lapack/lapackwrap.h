@@ -20,14 +20,6 @@
 # include <lapackwrap.h>
 #else
 
-#ifdef min
-# undef min
-#endif // min
-
-#ifdef max
-# undef max
-#endif // max
-
 extern "C"
 {
 #define COPASI_CPLUSPLUS __cplusplus
@@ -1299,13 +1291,6 @@ using std::isnan;
 #ifdef max
 # undef max
 #endif // max
-
-#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
-#if _MSC_VER < 1600
-# define min _cpp_min
-# define max _cpp_max
-#endif // _MSC_VER
-#endif // WIN32
 
 #endif // HAVE_LAPACKWRAP_H
 #endif // COPASI_lapackwrap

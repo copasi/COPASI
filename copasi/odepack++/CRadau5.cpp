@@ -15,6 +15,7 @@
  http://www.netlib.org/f2c/libf2c.zip
  */
 #include <cmath>
+#include <algorithm>
 
 #include "copasi/copasi.h"
 
@@ -904,7 +905,7 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
         }
     }
 
-  ldmas2 = std::max(1, ldmas);
+  ldmas2 = std::max< C_INT >(1, ldmas);
 
   /* ------ HESSENBERG OPTION ONLY FOR EXPLICIT EQU. WITH FULL JACOBIAN */
   if ((implct || jband) && ijob == 7)
