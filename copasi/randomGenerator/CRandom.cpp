@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,6 +31,12 @@
 # define WIN32_LEAN_AND_MEAN
 # endif // WIN32_LEAN_AND_MEAN
 # include <windows.h>
+# ifdef min
+#  undef min
+# endif // min
+# ifdef max
+#  undef max
+# endif // max
 #else
 # include <unistd.h>
 # include <sys/syscall.h>
@@ -41,7 +47,7 @@
 #include <string.h>
 
 #include "copasi/copasi.h"
-#include "CRandom.h"
+#include "copasi/randomGenerator/CRandom.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/utilities/CopasiTime.h"
 
