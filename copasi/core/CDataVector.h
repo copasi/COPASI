@@ -30,6 +30,9 @@
 
 #include "copasi/undo/CData.h"
 #undef ERROR
+#ifdef min
+#undef min
+#endif // min
 
 class CReadConfig;
 
