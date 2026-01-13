@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -2851,8 +2851,9 @@ void CMathContainer::createApplyInitialValuesSequence()
 
       for (; pDiscontinuity != pDiscontinuityEnd; ++pDiscontinuity)
         {
-          if (static_cast< CMathObject * >(pDiscontinuity)->getValueType() == CMath::ValueType::Discontinuous &&
-              UpdatedDiscontinuities.find(pDiscontinuity) == UpdatedDiscontinuities.end())
+          if (static_cast< CMathObject * >(pDiscontinuity)->getValueType() == CMath::ValueType::Discontinuous
+              && pDiscontinuity->canCalculateValue()
+              && UpdatedDiscontinuities.find(pDiscontinuity) == UpdatedDiscontinuities.end())
             {
               OutofDateDiscontinuities.insert(pDiscontinuity);
             }
@@ -5228,6 +5229,23 @@ void CMathContainer::ignoreDiscontinuityEvent(CMathEvent * pEvent)
   createRelocation(NumRootsIgnored, 0, Relocate, Relocations);
 
   // Add the ignored root objects to the unused objects
+  for (CMathObject * pObject = Relocate.pObjectStart - NumRootsIgnored; pObject != Relocate.pObjectStart; ++pObject)
+    {
+      UnusedObjects.insert(pObject);
+    }
+
+  // Ignore the ignored event root states
+  createRelocation(NumRootsToKeep, NumRootsToKeep, Relocate, Relocations);
+  // Skip the ignored roots
+  createRelocation(0, NumRootsIgnored, Relocate, Relocations);
+  // Move the remaining roots
+  createRelocation(mSize.nEventRoots - NumRootsToKeep - NumRootsIgnored,
+                   mSize.nEventRoots - NumRootsToKeep - NumRootsIgnored,
+                   Relocate, Relocations);
+  // Align with the existing objects
+  createRelocation(NumRootsIgnored, 0, Relocate, Relocations);
+
+  // Add the ignored event root states objects to the unused objects
   for (CMathObject * pObject = Relocate.pObjectStart - NumRootsIgnored; pObject != Relocate.pObjectStart; ++pObject)
     {
       UnusedObjects.insert(pObject);
