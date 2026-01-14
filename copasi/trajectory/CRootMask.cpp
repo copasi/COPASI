@@ -173,7 +173,7 @@ bool CRootMask::adjust(RootMask & type, const CVectorCore< C_INT > & found)
   const C_FLOAT64 *pRootValue = mpContainer->getRoots().begin();
   const C_INT * pFound = found.begin();
 
-  for (; pMask != pMaskEnd; ++pMask, ++pFound, pRootValue)
+  for (; pMask != pMaskEnd; ++pMask, ++pFound, ++pRootValue)
     if ((*pMask & RootMask::CONTINUOUS) != RootMask::NONE
         && *pFound > 0
         && fabs(*pRootValue) < 1e50 * std::numeric_limits< C_FLOAT64 >::min())
