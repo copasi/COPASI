@@ -45,19 +45,20 @@ void CMathContainer::createRelocation(const size_t & newSize, const size_t & old
 {
   if (newSize != oldSize)
     {
+      size_t minSize = std::min(newSize, oldSize);
       // Size modifications are made at the end of the current section
       if (modifiedAtEnd)
         {
-          currentRelocation.pValueEnd = currentRelocation.pValueEnd + std::min(newSize, oldSize);
-          currentRelocation.pObjectEnd = currentRelocation.pObjectEnd + std::min(newSize, oldSize);
+          currentRelocation.pValueEnd = currentRelocation.pValueEnd + minSize;
+          currentRelocation.pObjectEnd = currentRelocation.pObjectEnd + minSize;
 
           if (currentRelocation.pValueStart != currentRelocation.pValueEnd)
             {
               relocations.push_back(currentRelocation);
             }
 
-          currentRelocation.pValueStart = currentRelocation.pValueEnd - std::min(newSize, oldSize) + oldSize;
-          currentRelocation.pObjectStart = currentRelocation.pObjectEnd - std::min(newSize, oldSize) + oldSize;
+          currentRelocation.pValueStart = currentRelocation.pValueEnd - minSize + oldSize;
+          currentRelocation.pObjectStart = currentRelocation.pObjectEnd - minSize + oldSize;
           currentRelocation.pValueEnd = currentRelocation.pValueStart;
           currentRelocation.pObjectEnd = currentRelocation.pObjectStart;
           currentRelocation.offset += (newSize - oldSize);
@@ -72,8 +73,8 @@ void CMathContainer::createRelocation(const size_t & newSize, const size_t & old
 
           currentRelocation.pValueEnd += oldSize;
           currentRelocation.pObjectEnd += oldSize;
-          currentRelocation.pValueStart = currentRelocation.pValueEnd - std::min(newSize, oldSize);
-          currentRelocation.pObjectStart = currentRelocation.pObjectEnd - std::min(newSize, oldSize);
+          currentRelocation.pValueStart = currentRelocation.pValueEnd - minSize;
+          currentRelocation.pObjectStart = currentRelocation.pObjectEnd - minSize;
           currentRelocation.offset += (newSize - oldSize);
         }
     }
