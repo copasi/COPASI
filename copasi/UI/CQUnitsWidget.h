@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,7 @@ public:
   CQUnitsWidget(QWidget* parent = 0, const char* name = 0);
   ~CQUnitsWidget();
 
-  virtual void setFramework(int framework);
+  void setFramework(int framework) override;
 
 private:
   CQUnitDM* mpUnitDM;
@@ -42,10 +42,10 @@ signals:
   void initFilter();
 
 protected:
-  virtual void keyPressEvent(QKeyEvent* ev);
-  virtual bool enterProtected();
-  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool leaveProtected();
+  void keyPressEvent(QKeyEvent* ev) override;
+  bool enterProtected() override;
+  bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
+  bool leaveProtected() override;
 
 protected slots:
   virtual void slotBtnNewClicked();

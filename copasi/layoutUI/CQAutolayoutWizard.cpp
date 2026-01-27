@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,6 +37,8 @@
 #include "copasi/model/CReaction.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/report/CKeyFactory.h"
+
+#include "copasi/resourcesUI/CQIconResource.h"
 
 /**
  * Constructor which in addition to the attributes of the original class
@@ -444,7 +446,7 @@ void CQSelectionWizardPage::fillTree(const CModel& model)
               pChild1->addChild(pItem2);
               // now we add all metabolites
               j = 0;
-              jMax = pMetabs->size();
+              jMax = (int)pMetabs->size();
 
               while (j < jMax)
                 {
@@ -716,7 +718,7 @@ void CQSideCompoundWizardPage::setSpeciesList(const std::set<const CMetab*>& met
       // have to add it to the species list
       itemList = this->mpSideCompoundList->findItems(displayName.c_str(), Qt::MatchExactly);
       i = 0;
-      iMax = itemList.size();
+      iMax = (int)itemList.size();
       bool found = false;
 
       while (i < iMax)
@@ -901,6 +903,13 @@ CQAutolayoutWizard::CQAutolayoutWizard(const CModel& model, QWidget * parent , Q
   , mModel(model)
   , mLastPageId(CQAutolayoutWizard::NO_PAGE)
 {
+
+#ifndef Darwin
+  setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+#endif // not Darwin
+
+  setWizardStyle(QWizard::WizardStyle::ModernStyle);
+
   this->setOptions(this->options() | QWizard::HaveFinishButtonOnEarlyPages);
   this->setOptions(this->options() & ~QWizard::NoCancelButton);
   this->setWindowTitle(tr("Autolayout Wizard"));

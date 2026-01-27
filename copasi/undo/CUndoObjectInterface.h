@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -11,7 +11,14 @@
 #ifndef COPASI_CUndoObjectInterface
 #define COPASI_CUndoObjectInterface
 
+#include <copasi/config.h>
+
+#ifdef COPASI_USE_CROSSGUID
 #include <crossguid/guid.hpp>
+#else
+#include <copasi/stduuid/gsl/span>
+#include <copasi/stduuid/uuid.h>
+#endif
 
 #include "copasi/undo/CUndoData.h"
 
@@ -94,6 +101,10 @@ public:
    */
   virtual void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject);
 
+private:
+
+#ifdef COPASI_USE_CROSSGUID
+
   /**
    * Retrieve the UUID
    * @return const xg::Guid & uuid
@@ -106,6 +117,30 @@ public:
    * @return bool success
    */
   bool setUuid(const xg::Guid & uuid);
+
+#else
+
+  /**
+   * Retrieve the UUID
+   * @return const uuids::uuid& uuid
+   */
+  const uuids::uuid& getUuid() const;
+
+  /**
+   * Set the  UUID. This method will fail once the UUID has been set for the object.
+   * @param const uuids::uuid & uuid
+   * @return bool success
+   */
+  bool setUuid(const uuids::uuid & uuid);
+
+#endif
+
+public:
+
+  /**
+      @return string representation of the uuid
+   */
+  std::string getUuidString() const;
 
   /**
    * Set the  UUID. This method will fail once the UUID has been set for the object.
@@ -122,8 +157,12 @@ public:
   bool generateUuid();
 
 private:
-  xg::Guid * mpUuid;
   bool mUuidLocked;
+#ifdef COPASI_USE_CROSSGUID
+  xg::Guid * mpUuid;
+#else
+  uuids::uuid mUuid;
+#endif
 };
 
 // std::ostream & operator << (std::ostream & os, const uuid_t & o);

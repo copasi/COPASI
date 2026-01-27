@@ -81,7 +81,7 @@ jobs:
       shell: bash
       working-directory: ${{github.workspace}}
       run: |
-        curl -L http://bqfrank.spdns.org/Files/test-suite.zip  -o test-suite.zip
+        curl -L https://copasi.org/static/test-suite.zip -o test-suite.zip
         unzip -n -qq test-suite.zip
 
     - name: Configure COPASI (mac)

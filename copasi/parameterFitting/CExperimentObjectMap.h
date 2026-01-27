@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -88,7 +88,7 @@ public:
      * derived objects. The default implementation does nothing.
      * @return bool success
      */
-    virtual bool elevateChildren();
+    bool elevateChildren() override;
 
     /**
      * Set the role of the column
@@ -193,7 +193,7 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  bool elevateChildren() override;
 
   /**
    * Assignment operator
@@ -220,7 +220,7 @@ public:
    * @param const size_t & index
    * @return std::string name
    */
-  virtual const std::string & getName(const size_t & index) const;
+  const std::string & getName(const size_t & index) const override;
 
   /**
    * Set the role of the indexed column

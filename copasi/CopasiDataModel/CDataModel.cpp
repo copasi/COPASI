@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -743,6 +743,14 @@ bool CDataModel::loadModelParameterSets(const std::string & fileName,
 
   CRootContainer::removeDatamodel(numDatamodels - 1);
 
+  // modify all CN's by removing references to the old datamodel from them
+  for (CModelParameterSet& set : thisSet)
+  {
+      set.unsetDataModel();
+      set.setModel(pModel);
+      set.compile();
+  }
+
   return wasParameterSetLoaded;
 }
 
@@ -788,7 +796,7 @@ bool CDataModel::saveModelParameterSets(const std::string & fileName)
   return XML.saveModelParameterSets(os, fileName);
 }
 
-void CDataModel::copyExperimentalDataTo(const std::string & path)
+void CDataModel::copyExperimentalDataTo(const std::string & path, const std::string & prefix /*= ""*/, bool overwrite /*= false*/)
 {
   CFitProblem * problem = dynamic_cast< CFitProblem * >(getTaskList()->operator[](CTaskEnum::TaskName[CTaskEnum::Task::parameterFitting]).getProblem());
 
@@ -806,15 +814,16 @@ void CDataModel::copyExperimentalDataTo(const std::string & path)
 
     for (; it != fileNames.end(); ++it)
       {
-        std::string destination = "./" + CDirEntry::fileName(*it);
+        std::string destination = "./" + prefix + CDirEntry::fileName(*it);
         CDirEntry::makePathAbsolute(destination, path);
 
         int count = 0;
 
+        if (!overwrite)
         while (CDirEntry::exist(destination))
           {
             std::stringstream str;
-            str << "./" << CDirEntry::baseName(*it) << "_" << ++count << "." << Util::getExtension(*it);
+            str << "./" << prefix << CDirEntry::baseName(*it) << "_" << ++count << "." << Util::getExtension(*it);
             destination = str.str();
             CDirEntry::makePathAbsolute(destination, path);
           }
@@ -830,7 +839,7 @@ void CDataModel::copyExperimentalDataTo(const std::string & path)
           {
             CExperiment * current = experiments.getExperiment(i);
 
-            if (current->getFileName() == renameIt->first)
+            if (current->getFileNameOnly() == renameIt->first)
               {
                 current->setFileName(renameIt->second);
               }
@@ -849,15 +858,16 @@ void CDataModel::copyExperimentalDataTo(const std::string & path)
 
     for (; it != fileNames.end(); ++it)
       {
-        std::string destination = "./" + CDirEntry::fileName(*it);
+        std::string destination = "./" + prefix + CDirEntry::fileName(*it);
         CDirEntry::makePathAbsolute(destination, path);
 
         int count = 0;
 
+        if (!overwrite)
         while (CDirEntry::exist(destination))
           {
             std::stringstream str;
-            str << "./" << CDirEntry::baseName(*it) << "_" << ++count << "." << Util::getExtension(*it);
+            str << "./" << prefix << CDirEntry::baseName(*it) << "_" << ++count << "." << Util::getExtension(*it);
             destination = str.str();
             CDirEntry::makePathAbsolute(destination, path);
           }
@@ -873,7 +883,7 @@ void CDataModel::copyExperimentalDataTo(const std::string & path)
           {
             CExperiment * current = experiments.getExperiment(i);
 
-            if (current->getFileName() == renameIt->first)
+            if (current->getFileNameOnly() == renameIt->first)
               {
                 current->setFileName(renameIt->second);
               }
@@ -1516,11 +1526,15 @@ CDataModel::exportMathModelToString(
   try
     {
       if (!mData.pModel->compileIfNecessary(pProcessReport))
+      {
+        pdelete(pExporter);
         return "";
+      }
     }
 
   catch (...)
     {
+      pdelete(pExporter);
       return "";
     }
 
@@ -1540,6 +1554,8 @@ CDataModel::exportMathModelToString(
     {
       return "";
     }
+
+  pdelete(pExporter);
 
   return os.str();
 }
@@ -1625,10 +1641,14 @@ bool CDataModel::exportMathModel(const std::string & fileName, CProcessReport * 
       CCopasiMessage(CCopasiMessage::ERROR,
                      MCDirEntry + 3,
                      fileName.c_str());
+      pdelete(pExporter);
       return false;
     }
 
-  return pExporter->exportToStream(this, os);
+  bool result = pExporter->exportToStream(this, os);
+  pdelete(pExporter);
+
+  return result;
 }
 
 void CDataModel::addCopasiFileToArchive(CombineArchive * archive,
@@ -1896,7 +1916,7 @@ bool CDataModel::exportCombineArchive(
           {
             CExperimentSet & experiments = problem->getExperimentSet();
 
-            std::vector< std::string > fileNames = experiments.getFileNames();
+            std::vector< std::string > fileNames = experiments.getFileNamesOnly();
             std::vector< std::string >::iterator it = fileNames.begin();
 
             for (; it != fileNames.end(); ++it)
@@ -1912,7 +1932,7 @@ bool CDataModel::exportCombineArchive(
                   {
                     CExperiment * current = experiments.getExperiment(i);
 
-                    if (current->getFileName() == renameIt->first)
+                    if (current->getFileNameOnly() == renameIt->first)
                       {
                         current->setFileName("." + renameIt->second);
                       }
@@ -1922,7 +1942,7 @@ bool CDataModel::exportCombineArchive(
           {
             CExperimentSet & experiments = problem->getCrossValidationSet();
 
-            std::vector< std::string > fileNames = experiments.getFileNames();
+            std::vector< std::string > fileNames = experiments.getFileNamesOnly();
             std::vector< std::string >::iterator it = fileNames.begin();
 
             for (; it != fileNames.end(); ++it)
@@ -1938,7 +1958,7 @@ bool CDataModel::exportCombineArchive(
                   {
                     CExperiment * current = experiments.getExperiment(i);
 
-                    if (current->getFileName() == renameIt->first)
+                    if (current->getFileNameOnly() == renameIt->first)
                       {
                         current->setFileName("." + renameIt->second);
                       }
@@ -2142,7 +2162,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
 
   bool loadedModel = false;
 
-  int numMessagesBefore = CCopasiMessage::size();
+  int numMessagesBefore = (int)CCopasiMessage::size();
   std::vector<CCopasiMessage> importCopasiMessages;
   std::vector< CCopasiMessage > importSedMLMessages;
   std::vector< CCopasiMessage > importSbmlMessages;
@@ -2227,7 +2247,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
         }
     }
 
-  numMessagesBefore = CCopasiMessage::size();
+  numMessagesBefore = (int)CCopasiMessage::size();
 
   if (loadedModel == false && sedml_content != NULL)
     {
@@ -2254,7 +2274,7 @@ bool CDataModel::openCombineArchive(const std::string & fileName,
         }
     }
 
-  numMessagesBefore = CCopasiMessage::size();
+  numMessagesBefore = (int)CCopasiMessage::size();
 
   bool loadedModelFromSedml = loadedModel;
 
@@ -3741,7 +3761,7 @@ CDataModel::convertODEsToReactions()
       return false;
     }
 
-  std::string newSBML = writeSBMLToString(doc);
+  std::string newSBML = writeSBMLToStdString(doc);
   delete doc;
   return importSBMLFromString(newSBML.c_str());
 }
@@ -3766,7 +3786,7 @@ CDataModel::convertReactionsToODEs()
       return false;
     }
 
-  std::string newSBML = writeSBMLToString(doc);
+  std::string newSBML = writeSBMLToStdString(doc);
   delete doc;
   return importSBMLFromString(newSBML.c_str());
 }
@@ -3788,7 +3808,7 @@ CDataModel::convertParametersToGlobal()
       return false;
     }
 
-  std::string newSBML = writeSBMLToString(doc);
+  std::string newSBML = writeSBMLToStdString(doc);
   delete doc;
   return importSBMLFromString(newSBML.c_str());
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,7 +25,7 @@
 /**
  *  CCopasiTask class.
  *  This class is used to describe a task in COPASI. This class is
- *  intended to be used as the parent class for all tasks whithin COPASI.
+ *  intended to be used as the parent class for all tasks within COPASI.
  *
  *  Created for Copasi by Stefan Hoops 2003
  */
@@ -120,7 +120,7 @@ public:
      * reimplement the virtual print function.
      * @param std::ostream * ostream
      */
-    virtual void print(std::ostream * ostream) const;
+    void print(std::ostream * ostream) const override;
 
     /**
      * Output stream operator
@@ -162,7 +162,7 @@ public:
      * reimplement the virtual print function.
      * @param std::ostream * ostream
      */
-    virtual void print(std::ostream * ostream) const;
+    void print(std::ostream * ostream) const override;
 
     /**
      * Output stream operator

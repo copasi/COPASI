@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -14,7 +14,7 @@
 #include "copasi/core/CRootContainer.h"
 
 // static
-size_t CJitCompilerImplementation::InitalBufferSize = 8192;
+size_t CJitCompilerImplementation::InitalBufferSize = 64*1024;
 
 // static
 C_FLOAT64 CJitCompilerImplementation::Invalid = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
@@ -136,7 +136,7 @@ CJitCompilerImplementation::Function CJitCompilerImplementation::compile(const C
   if (mpExecutionBuffer->Available() == 0)
     return ReturnFunction;
 
-  NativeJIT::FunctionBuffer ExecutionBuffer(*mpExecutionBuffer,  mpExecutionBuffer->Available());
+  NativeJIT::FunctionBuffer ExecutionBuffer(*mpExecutionBuffer,  (unsigned int)mpExecutionBuffer->Available());
   allocateFunctionBuffer(mFunctionBufferSize);
 
   while (ReturnFunction == NULL)

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -204,7 +204,7 @@ public:
                   return Intermediate;
                 }
 
-              mpContext->mpExperiment->setFirstRow(input.toULong());
+              mpContext->mpExperiment->setFirstRow(input.toUInt());
               mpContext->mpFileInfo->sync();
               mpContext->mpBtnExperimentAdd->setEnabled(mpContext->mpFileInfo->getFirstUnusedSection(First, Last));
               break;
@@ -217,7 +217,7 @@ public:
                   return Intermediate;
                 }
 
-              mpContext->mpExperiment->setLastRow(input.toULong());
+              mpContext->mpExperiment->setLastRow(input.toUInt());
               mpContext->mpFileInfo->sync();
               mpContext->mpBtnExperimentAdd->setEnabled(mpContext->mpFileInfo->getFirstUnusedSection(First, Last));
               break;
@@ -230,7 +230,7 @@ public:
                   return Intermediate;
                 }
 
-              mpContext->mpExperiment->setHeaderRow(input.toULong());
+              mpContext->mpExperiment->setHeaderRow(input.toUInt());
               break;
 
             default:
@@ -326,9 +326,15 @@ void CQExperimentData::slotHeader()
   // uncheck mpCheckHeader
 }
 
-void CQExperimentData::slotExprimentType(bool isSteadyState)
+void CQExperimentData::slotExprimentType(bool)
 {
+  bool isSteadyState = mpBtnSteadystate->isChecked();
+  bool isTimeCourse = mpBtnTimeCourse->isChecked();
+  bool isTcWithStartInSteadyState = mpBtnTimeCourseWithStartInSteadyState->isChecked();
+
   if (!mpExperiment) return;
+
+  bool wasTcWithSteadyState = mpExperiment->getTimeSeriesStartInSteadyState();
 
   if (isSteadyState)
     {
@@ -337,8 +343,13 @@ void CQExperimentData::slotExprimentType(bool isSteadyState)
     }
   else
     {
-      mpBtnTimeCourse->setFocus();
+      if (isTcWithStartInSteadyState)
+        mpBtnTimeCourseWithStartInSteadyState->setFocus();
+      else
+        mpBtnTimeCourse->setFocus();
+
       mpExperiment->setExperimentType(CTaskEnum::Task::timeCourse);
+      mpExperiment->setTimeSeriesStartInSteadyState(isTcWithStartInSteadyState);
     }
 
   saveTable(mpExperiment);
@@ -347,6 +358,7 @@ void CQExperimentData::slotExprimentType(bool isSteadyState)
   if (isSteadyState)
     {
       mpExperiment->setExperimentType(CTaskEnum::Task::timeCourse);
+      mpExperiment->setTimeSeriesStartInSteadyState(wasTcWithSteadyState);
     }
   else
     {
@@ -940,6 +952,8 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
   mpCheckTo->blockSignals(true);
   mpCheckFrom->blockSignals(true);
   mpBtnSteadystate->blockSignals(true);
+  mpBtnTimeCourse->blockSignals(true);
+  mpBtnTimeCourseWithStartInSteadyState->blockSignals(true);
   mpEditSeparator->blockSignals(true);
   mpCheckTab->blockSignals(true);
   mpCheckNormalizeWeightsPerExperiment->blockSignals(true);
@@ -994,7 +1008,12 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
         }
 
       if (pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse)
-        mpBtnTimeCourse->setChecked(true);
+      {
+        if (pExperiment->getTimeSeriesStartInSteadyState())
+          mpBtnTimeCourseWithStartInSteadyState->setChecked(true);
+        else
+          mpBtnTimeCourse->setChecked(true);
+      }
       else
         mpBtnSteadystate->setChecked(true);
 
@@ -1035,6 +1054,8 @@ bool CQExperimentData::loadExperiment(CExperiment * pExperiment)
   mpCheckTo->blockSignals(false);
   mpCheckFrom->blockSignals(false);
   mpBtnSteadystate->blockSignals(false);
+  mpBtnTimeCourse->blockSignals(false);
+  mpBtnTimeCourseWithStartInSteadyState->blockSignals(false);
   mpEditSeparator->blockSignals(false);
   mpCheckTab->blockSignals(false);
   mpCheckNormalizeWeightsPerExperiment->blockSignals(false);
@@ -1062,7 +1083,7 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
     }
 
   QString value = mpEditName->text();
-  int pos = value.length();
+  int pos = (int)value.length();
 
   if (full &&
       pExperiment->getObjectName() != TO_UTF8(value) &&
@@ -1082,35 +1103,37 @@ bool CQExperimentData::saveExperiment(CExperiment * pExperiment, const bool & fu
     pExperiment->setSeparator(TO_UTF8_UNTRIMMED(mpEditSeparator->text()));
 
   value = mpEditFirst->text();
-  pos = value.length();
+  pos = (int)value.length();
 
   if (full &&
       mpValidatorFirst->validate(value, pos) == QValidator::Acceptable)
-    pExperiment->setFirstRow(value.toULong());
+    pExperiment->setFirstRow(value.toUInt());
 
   value = mpEditLast->text();
-  pos = value.length();
+  pos = (int)value.length();
 
   if (full &&
       mpValidatorLast->validate(value, pos) == QValidator::Acceptable)
-    pExperiment->setLastRow(value.toULong());
+    pExperiment->setLastRow(value.toUInt());
 
   value = mpEditHeader->text();
-  pos = value.length();
+  pos = (int)value.length();
 
   if (mpCheckHeader->isChecked() &&
       mpValidatorHeader->validate(value, pos) == QValidator::Acceptable)
-    pExperiment->setHeaderRow(value.toULong());
+    pExperiment->setHeaderRow(value.toUInt());
   else
     {
       pExperiment->setHeaderRow(InvalidIndex);
       mpCheckHeader->setChecked(false);
     }
 
-  if (mpBtnTimeCourse->isChecked())
+  if (mpBtnTimeCourse->isChecked() || mpBtnTimeCourseWithStartInSteadyState->isChecked())
     pExperiment->setExperimentType(CTaskEnum::Task::timeCourse);
   else
     pExperiment->setExperimentType(CTaskEnum::Task::steadyState);
+
+  pExperiment->setTimeSeriesStartInSteadyState(mpBtnTimeCourseWithStartInSteadyState->isChecked());
 
   pExperiment->setWeightMethod((CExperiment::WeightMethod) mpBoxWeightMethod->currentIndex());
 
@@ -1256,7 +1279,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
           // COL_BTN
           pItem = new QTableWidgetItem();
-          mpTable->setItem(i, COL_BTN, pItem);
+          mpTable->setItem((int)i, COL_BTN, pItem);
 
           // COL_OBJECT
           pItem = new QTableWidgetItem();
@@ -1278,7 +1301,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
 
       // COL_TYPE
       if (guess && TimeRow == C_INVALID_INDEX &&
-          mpBtnTimeCourse->isChecked() &&
+          (mpBtnTimeCourse->isChecked() || mpBtnTimeCourseWithStartInSteadyState->isChecked()) &&
           mpTable->item((int) i, COL_NAME)->text().contains("time", Qt::CaseInsensitive))
         {
           ObjectMap.setRole(i, CExperiment::time);
@@ -1294,7 +1317,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
       mpTable->item((int) i, COL_TYPE_HIDDEN)->setText(QString::number(Type));
 
       // COL_BTN
-      pItem = mpTable->item(i, COL_BTN);
+      pItem = mpTable->item((int)i, COL_BTN);
 
       // Show the Button
       if (Type == CExperiment::ignore || Type == CExperiment::time)
@@ -1363,7 +1386,7 @@ void CQExperimentData::loadTable(CExperiment * pExperiment, const bool & guess)
         }
     }
 
-  setTypeItems(TimeRow);
+  setTypeItems((int)TimeRow);
 
   if (CRootContainer::getConfiguration()->resizeToContents())
     {
@@ -1678,6 +1701,8 @@ bool CQExperimentData::isLikePreviousExperiment(CExperiment * pExperiment)
 
   if (pExperiment->getExperimentType() != pPrevious->getExperimentType()) return false;
 
+  if (pExperiment->getTimeSeriesStartInSteadyState() != pPrevious->getTimeSeriesStartInSteadyState()) return false;
+
   if (mpExperiment != pExperiment)
     {
       if (pExperiment->getWeightMethod() != (CExperiment::WeightMethod) mOldWeightMethod) return false;
@@ -1739,6 +1764,7 @@ void CQExperimentData::enableEdit(const bool & enable)
     {
       mpBtnSteadystate->setEnabled(true);
       mpBtnTimeCourse->setEnabled(true);
+      mpBtnTimeCourseWithStartInSteadyState->setEnabled(true);
 
       if (mpCheckHeader->isChecked()) mpEditHeader->setEnabled(true);
 
@@ -1783,6 +1809,7 @@ void CQExperimentData::enableEdit(const bool & enable)
     {
       mpBtnSteadystate->setEnabled(false);
       mpBtnTimeCourse->setEnabled(false);
+      mpBtnTimeCourseWithStartInSteadyState->setEnabled(false);
       mpEditHeader->setEnabled(false);
       mpCheckHeader->setEnabled(false);
       mpEditSeparator->setEnabled(false);

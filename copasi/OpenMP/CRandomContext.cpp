@@ -1,4 +1,4 @@
-// Copyright (C) 2023 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2023 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,16 +18,28 @@ CRandomContext::~CRandomContext()
       Base::setMaster(nullptr);
       delete pRNG;
     }
+
+  if (Base::size() > 1)
+    for (size_t i = 0; i < Base::size(); ++i)
+      delete Base::threadData()[i];
 }
 
 void  CRandomContext::init(CRandom::Type type, unsigned C_INT32 seed)
 {
   Base::init();
 
-  if (Base::master())
+  if (Base::master() != nullptr)
     {
+      if (Base::master()->getType() == type
+          && seed == 0)
+        return;
+
       delete Base::master();
-      Base::master() = NULL;
+      Base::master() = nullptr;
+
+      if (Base::size() > 1)
+        for (size_t i = 0; i < Base::size(); ++i)
+          delete Base::threadData()[i];
     }
 
   Base::setMaster(nullptr);

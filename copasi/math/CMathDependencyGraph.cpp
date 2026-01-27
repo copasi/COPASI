@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -119,6 +119,11 @@ void CMathDependencyGraph::removeObject(const CObjectInterface * pObject)
   found->second->remove();
   delete found->second;
   mObjects2Nodes.erase(found);
+}
+
+bool CMathDependencyGraph::contains(const CObjectInterface * pObject) const
+{
+  return mObjects2Nodes.find(pObject) != mObjects2Nodes.end();
 }
 
 void CMathDependencyGraph::removePrerequisite(const CObjectInterface * pObject, const CObjectInterface * pPrerequisite)
@@ -669,6 +674,14 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
             os << "Propensity";
             break;
 
+          case CMath::ValueType::Noise:
+            os << "Noise";
+            break;
+
+          case CMath::ValueType::ParticleNoise:
+            os << "ParticleNoise";
+            break;
+
           case CMath::ValueType::TotalMass:
             os << "TotalMass";
             break;
@@ -704,6 +717,21 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
           case CMath::ValueType::EventRootState:
             os << "EventRootState";
             break;
+
+          case CMath::ValueType::DelayValue:
+            os << "DelayValue";
+            break;
+
+          case CMath::ValueType::DelayLag:
+            os << "DelayLag";
+            break;
+
+          case CMath::ValueType::TransitionTime:
+            os << "TransitionTime";
+            break;
+
+          case CMath::ValueType::__SIZE:
+            break;
         }
 
       std::map< const CObjectInterface *, size_t >::const_iterator found = mObject2Index.find(pMathObject);
@@ -738,7 +766,7 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
     }
 
   if (dynamic_cast< const COptItem * >(pDataObject))
-    return "OptItem::" + static_cast< const COptItem * >(pDataObject)->getObject()->getObjectDisplayName();
+    return "OptItem::" + static_cast< const COptItem * >(pDataObject)->getItemObject()->getObjectDisplayName();
 
   // We need to distinguish between initial and transient value if the a corresponding data abject does not exists.
   if (pMathObject == nullptr ||

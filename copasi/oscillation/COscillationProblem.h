@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,21 +53,21 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  bool elevateChildren() override;
 
   /**
    * Set the call back of the problem
    * @param CProcessReportLevel * pCallBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReportLevel callBack) override;
+  bool setCallBack(CProcessReportLevel callBack) override;
 
   /**
    * Do all necessary initialization so that calls to calculate will
    * be successful. This is called once from CCopasiTask::process()
    * @result bool success
    */
-  virtual bool initialize();
+  bool initialize() override;
 
   /**
    * This is the output method for any object. The default implementation
@@ -76,7 +76,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 
   /**
    * Output stream operator
@@ -92,7 +92,7 @@ public:
    * default behavior one needs to reimplement the virtual printResult function.
    * @param std::ostream * ostream
    */
-  virtual void printResult(std::ostream * ostream) const;
+  void printResult(std::ostream * ostream) const override;
 
 private:
   /**

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -177,7 +177,7 @@ CMetabNameInterface::isUnique(const CModel* model, const std::string & name)
   if (model == NULL)
     return true;
 
-  CDataContainer::objectMap::range Range = model->getMetabolites().getObjects().equal_range(name);
+  CDataContainer::ObjectMap::range Range = model->getMetabolites().getObjects().equal_range(name);
   CMetab * pSpecies = NULL;
   bool Found = false;
 
@@ -200,7 +200,7 @@ CMetabNameInterface::doesExist(const CModel* model,
   if (model == NULL)
     return false;
 
-  CDataContainer::objectMap::range Range = model->getMetabolites().getObjects().equal_range(metabolite);
+  CDataContainer::ObjectMap::range Range = model->getMetabolites().getObjects().equal_range(metabolite);
   CMetab * pSpecies = NULL;
 
   for (; Range.first != Range.second; ++Range.first)

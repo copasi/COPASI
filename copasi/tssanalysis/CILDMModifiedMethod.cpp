@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1136,7 +1136,7 @@ void CILDMModifiedMethod::printResult(std::ostream * ostream) const
 
   assert(getObjectDataModel() != NULL);
 
-  C_INT32 stepNumber = mVec_SlowModes.size();
+  C_INT32 stepNumber = (C_INT32)mVec_SlowModes.size();
 
   for (istep = 0; istep < stepNumber; ++istep)
     {

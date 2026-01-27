@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -178,8 +178,14 @@
 %catches(CCopasiException) CReaction::getParameterMapping;
 %catches(CCopasiException) CReaction::getParameterValue;
 %catches(CCopasiException) CReaction::setParameterValue;
+%catches(CCopasiException) CReaction::initializeParameters;
+%catches(CCopasiException) CReaction::initializeParameterMapping;
+%catches(CCopasiException) CReaction::getFunctionParameters;
 %catches(CCopasiException) CReaction::setFunction;
 %catches(CCopasiException) CReaction::isLocalParameter;
+%catches(CCopasiException) CReactionInterface::getMapping;
+%catches(CCopasiException) CReactionInterface::getMappings;
+%catches(CCopasiException) CReactionInterface::connectFromScratch;
 
 // suppress warnings on multiple inheritance
 %warnfilter(813) CReaction;

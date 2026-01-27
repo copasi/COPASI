@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -110,7 +110,7 @@ CData CModelParameter::toData() const
   if (mType != Type::Set)
     {
       Data.addProperty(CData::OBJECT_NAME, mCN);
-      Data.addProperty(CData::OBJECT_UUID, getUuid().str());
+      Data.addProperty(CData::OBJECT_UUID, getUuidString());
       Data.addProperty(CData::OBJECT_PARENT_CN, getSet() != NULL ? getSet()->getStringCN() : CCommonName());
       Data.addProperty(CData::OBJECT_TYPE, TypeNames[mType]);
       Data.addProperty(CData::OBJECT_INDEX, getIndex());
@@ -290,6 +290,11 @@ bool CModelParameter::operator<(const CModelParameter & rhs) const
 void CModelParameter::setParent(CModelParameterGroup * pParent)
 {
   mpParent = pParent;
+}
+
+void CModelParameter::unsetDataModel()
+{
+  mCN.setDataModel(NULL);
 }
 
 CModelParameterGroup * CModelParameter::getParent() const
@@ -907,6 +912,17 @@ void CModelParameterCompartment::removeSpecies(CModelParameterSpecies * pSpecies
   mSpecies.erase(pSpecies);
 }
 
+void CModelParameterCompartment::unsetDataModel()
+{
+  CModelParameter::unsetDataModel();
+  std::set< CModelParameterSpecies * >::iterator it = mSpecies.begin();
+  std::set< CModelParameterSpecies * >::iterator end = mSpecies.end();
+  for (; it != end; ++it)
+    {
+      (*it)->unsetDataModel();
+    }
+}
+
 // virtual
 CData CModelParameterSpecies::toData() const
 {
@@ -1014,6 +1030,12 @@ void CModelParameterSpecies::setCN(const CRegisteredCommonName & cn)
   // Determine the CN for the compartment.
   // "CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A]"
   mCompartmentCN = CRegisteredCommonName(mCN.substr(0, mCN.find(",Vector=Metabolites")), getSet());
+}
+
+void CModelParameterSpecies::unsetDataModel()
+{
+  CModelParameter::unsetDataModel();
+  mCompartmentCN.setDataModel(NULL);
 }
 
 // virtual
@@ -1164,6 +1186,12 @@ void CModelParameterReactionParameter::compile()
   ListOfContainer.push_back(pModel);
 
   mpReaction = static_cast< CReaction * >(const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ListOfContainer, mpParent->getCN()))));
+}
+
+void CModelParameterReactionParameter::unsetDataModel()
+{
+  CModelParameter::unsetDataModel();
+  mGlobalQuantityCN.setDataModel(NULL);
 }
 
 const CReaction * CModelParameterReactionParameter::getReaction() const

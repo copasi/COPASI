@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -94,23 +94,23 @@ void StateSubwidget::loadMetabolites()
 
         mpTblMetabolites->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[it->getStatus()])));
 
-        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem = new QTableWidgetItem(QMetaType::Double);
         pItem->setData(Qt::DisplayRole, it->getConcentration());
         mpTblMetabolites->setItem(i, 2, pItem);
 
-        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem = new QTableWidgetItem(QMetaType::Double);
         pItem->setData(Qt::DisplayRole, it->getValue());
         mpTblMetabolites->setItem(i, 3, pItem);
 
-        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem = new QTableWidgetItem(QMetaType::Double);
         pItem->setData(Qt::DisplayRole, it->getConcentrationRate());
         mpTblMetabolites->setItem(i, 4, pItem);
 
-        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem = new QTableWidgetItem(QMetaType::Double);
         pItem->setData(Qt::DisplayRole, it->getRate());
         mpTblMetabolites->setItem(i, 5, pItem);
 
-        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem = new QTableWidgetItem(QMetaType::Double);
         pItem->setData(Qt::DisplayRole, it->getTransitionTime());
         mpTblMetabolites->setItem(i, 6, pItem);
 
@@ -146,11 +146,11 @@ void StateSubwidget::loadCompartments()
         mpTblCompartments->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(it->getObjectName())));
         mpTblCompartments->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[it->getStatus()])));
 
-        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem = new QTableWidgetItem(QMetaType::Double);
         pItem->setData(Qt::DisplayRole, it->getValue());
         mpTblCompartments->setItem(i, 2, pItem);
 
-        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem = new QTableWidgetItem(QMetaType::Double);
         pItem->setData(Qt::DisplayRole, it->getRate());
         mpTblCompartments->setItem(i, 3, pItem);
 
@@ -185,11 +185,11 @@ void StateSubwidget::loadReactions()
     {
       mpTblReactions->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(it->getObjectName())));
 
-      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem = new QTableWidgetItem(QMetaType::Double);
       pItem->setData(Qt::DisplayRole, it->getFlux());
       mpTblReactions->setItem(i, 1, pItem);
 
-      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem = new QTableWidgetItem(QMetaType::Double);
 
       if (it->getScalingCompartment() != NULL)
         pItem->setData(Qt::DisplayRole, it->getFlux() / it->getScalingCompartment()->getValue());
@@ -198,7 +198,7 @@ void StateSubwidget::loadReactions()
 
       mpTblReactions->setItem(i, 2, pItem);
 
-      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem = new QTableWidgetItem(QMetaType::Double);
       pItem->setData(Qt::DisplayRole, it->getParticleFlux());
       mpTblReactions->setItem(i, 3, pItem);
 
@@ -236,11 +236,11 @@ void StateSubwidget::loadModelValues()
         mpTblModelValues->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(it->getObjectName())));
         mpTblModelValues->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(CModelEntity::StatusName[it->getStatus()])));
 
-        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem = new QTableWidgetItem(QMetaType::Double);
         pItem->setData(Qt::DisplayRole, it->getValue());
         mpTblModelValues->setItem(i, 2, pItem);
 
-        pItem = new QTableWidgetItem(QVariant::Double);
+        pItem = new QTableWidgetItem(QMetaType::Double);
         pItem->setData(Qt::DisplayRole, it->getRate());
         mpTblModelValues->setItem(i, 3, pItem);
 
@@ -282,16 +282,16 @@ void StateSubwidget::loadJacobian()
 
   for (i = 0; i < imax; ++i)
     {
-      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem = new QTableWidgetItem(QMetaType::Double);
       pItem->setData(Qt::DisplayRole, eigen_r[i]);
       tableEigenValues->setItem((int) i, 0, pItem);
 
-      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem = new QTableWidgetItem(QMetaType::Double);
       pItem->setData(Qt::DisplayRole, eigen_i[i]);
       tableEigenValues->setItem((int) i, 1, pItem);
 
       //time scales in 3rd col
-      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem = new QTableWidgetItem(QMetaType::Double);
       pItem->setData(Qt::DisplayRole, 1 / eigen_r[i]);
 
       if (eigen_r[i] > 0)
@@ -302,11 +302,11 @@ void StateSubwidget::loadJacobian()
       //frequency/period of oscillations
       if (fabs(eigen_i[i]) > 1e-12)
         {
-          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem = new QTableWidgetItem(QMetaType::Double);
           pItem->setData(Qt::DisplayRole, fabs(eigen_i[i] / (2.0 * M_PI)));
           tableEigenValues->setItem((int) i, 3, pItem);
 
-          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem = new QTableWidgetItem(QMetaType::Double);
           pItem->setData(Qt::DisplayRole, fabs(1.0 / eigen_i[i] * (2.0 * M_PI)));
           tableEigenValues->setItem((int) i, 4, pItem);
         }
@@ -346,16 +346,16 @@ void StateSubwidget::loadJacobian()
 
   for (i = 0; i < imax; ++i)
     {
-      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem = new QTableWidgetItem(QMetaType::Double);
       pItem->setData(Qt::DisplayRole, eigen_rX[i]);
       tableEigenValuesX->setItem((int) i, 0, pItem);
 
-      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem = new QTableWidgetItem(QMetaType::Double);
       pItem->setData(Qt::DisplayRole, eigen_iX[i]);
       tableEigenValuesX->setItem((int) i, 1, pItem);
 
       //time scales in 3rd col
-      pItem = new QTableWidgetItem(QVariant::Double);
+      pItem = new QTableWidgetItem(QMetaType::Double);
       pItem->setData(Qt::DisplayRole, 1 / eigen_rX[i]);
 
       if (eigen_rX[i] > 0)
@@ -366,11 +366,11 @@ void StateSubwidget::loadJacobian()
       //frequency/period of oscillations
       if (fabs(eigen_iX[i]) > 1e-12)
         {
-          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem = new QTableWidgetItem(QMetaType::Double);
           pItem->setData(Qt::DisplayRole, fabs(eigen_iX[i] / (2 * M_PI)));
           tableEigenValuesX->setItem((int) i, 3, pItem);
 
-          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem = new QTableWidgetItem(QMetaType::Double);
           pItem->setData(Qt::DisplayRole, fabs(1 / eigen_iX[i] * (2 * M_PI)));
           tableEigenValuesX->setItem((int) i, 4, pItem);
         }

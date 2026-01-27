@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -44,12 +44,12 @@ public:
   explicit SensitivitiesWidget(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = Qt::WindowFlags());
   ~SensitivitiesWidget();
 
-  virtual bool runTask();
+  bool runTask() override;
 
 protected:
-  virtual bool loadTaskProtected();
-  virtual bool saveTaskProtected();
-  virtual bool taskFinishedEvent();
+  bool loadTaskProtected() override;
+  bool saveTaskProtected() override;
+  bool taskFinishedEvent() override;
 
 private:
 

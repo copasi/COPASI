@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1686,12 +1686,38 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
   bool isCrossSection = (problem != NULL && problem->getSubtask() == CTaskEnum::Task::crosssection) ||
                         (task != NULL && task->getType() == CTaskEnum::Task::crosssection);
 
+  bool isTimeSense =
+#ifdef WITH_TIME_SENS
+    (problem != NULL && problem->getSubtask() == CTaskEnum::Task::timeSens) ||
+    (task != NULL && task->getType() == CTaskEnum::Task::timeSens);
+#else
+    false;
+#endif
+
   for (it = y.begin(); it != itEnd; ++it)
     {
       if (!(*it)) continue;
 
       name2 = (*it)->getCN();
       itemTitle = static_cast< const CDataObject *>(*it)->getObjectDisplayName();
+
+      // remove "TaskList[Time-Course Sensitivities]." from title if present
+      if (isTimeSense)
+        {
+          std::string prefix = "TaskList[Time-Course Sensitivities].";
+          size_t pos = itemTitle.find(prefix);
+          if (pos != std::string::npos)
+            {
+              itemTitle = itemTitle.substr(pos + prefix.length());
+            }
+
+          prefix = " array";
+          pos = itemTitle.find(prefix);
+          if (pos != std::string::npos)
+            {
+              itemTitle = itemTitle.substr(0, pos) + itemTitle.substr(pos + prefix.length());
+            }
+        }
 
       plItem = pPl->createItem(itemTitle, CPlotItem::curve2d);
       plItem->addChannel(name1);

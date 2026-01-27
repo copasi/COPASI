@@ -1,4 +1,4 @@
-// Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2024 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -11,12 +11,17 @@
 #include <QFile>
 #include <QFileDialog>
 
+#include <copasi/resourcesUI/CQIconResource.h>
+
 CQExternalToolDialog::CQExternalToolDialog(QWidget * parent, const char * name, bool modal, Qt::WindowFlags fl)
   : QDialog(parent, fl)
   , mTools()
   , mCurrentTool()
   , mCurrentIndex(-1)
 {
+#ifndef Darwin
+  setWindowIcon(CQIconResource::icon(CQIconResource::copasi));
+#endif // not Darwin
   setupUi(this);
 }
 
@@ -54,13 +59,17 @@ void CQExternalToolDialog::init(CQExternalTools * tools)
       lstExternalTools->addItem(tool->getName());
     }
 
-  // select the first tool
-  if (!mTools.isEmpty())
-    {
-      lstExternalTools->setCurrentRow(0);
-    }
-
   blockSignals(block);
+
+  // select the first item
+  selectItem(0);
+}
+
+void CQExternalToolDialog::selectItem(int index)
+{
+  if (signalsBlocked())
+    return;
+  lstExternalTools->setCurrentRow(index);
 }
 
 void CQExternalToolDialog::saveTools(bool deleteExisting)
@@ -74,11 +83,33 @@ void CQExternalToolDialog::saveTools(bool deleteExisting)
         }
     }
 
-    for (auto & tool : mTools)
-        {
-            tool.ensureIniFile();
-            tool.save();
-        }
+  for (auto & tool : mTools)
+    {
+      tool.ensureIniFile();
+      tool.save();
+    }
+}
+
+void CQExternalToolDialog::loadTool(CQExternalTool & tool)
+{
+  bool block = blockSignals(true);
+
+  // set the textboxes
+  txtTitle->setText(tool.getName());
+  txtCommand->setText(tool.getCommand());
+  txtArguments->setText(tool.getArguments());
+  txtInitialDirectory->setText(tool.getWorkingDirectory());
+  txtIniFile->setText(tool.getIniFile());
+  chkPromptForArguments->setChecked(tool.promptForArguments());
+
+  // enable them
+  txtTitle->setEnabled(true);
+  txtCommand->setEnabled(true);
+  txtArguments->setEnabled(true);
+  txtInitialDirectory->setEnabled(true);
+  chkPromptForArguments->setEnabled(true);
+
+  blockSignals(block);
 }
 
 void CQExternalToolDialog::slotAddTool()
@@ -88,6 +119,42 @@ void CQExternalToolDialog::slotAddTool()
   tool.setName(QString("[Tool %1]").arg(mTools.size() + 1));
   mTools.append(tool);
   lstExternalTools->addItem(tool.getName());
+
+  selectItem(mTools.size() - 1);
+}
+
+void CQExternalToolDialog::saveTool(CQExternalTool & tool)
+{
+  bool block = blockSignals(true);
+  tool.setName(txtTitle->text());
+  tool.setCommand(txtCommand->text());
+  tool.setArguments(txtArguments->text());
+  tool.setWorkingDirectory(txtInitialDirectory->text());
+  tool.setPromptForArguments(chkPromptForArguments->isChecked());
+  tool.setIniFile(txtIniFile->text());
+  blockSignals(block);
+}
+
+void CQExternalToolDialog::saveCurrent()
+{
+  saveTool(mCurrentTool);
+
+  mTools[mCurrentIndex] = mCurrentTool;
+  // update the name in the list
+  lstExternalTools->item((int) mCurrentIndex)->setText(mCurrentTool.getName());
+}
+
+void CQExternalToolDialog::loadCurrent(int index)
+{
+  if (index < 0 || index >= mTools.size())
+    {
+      clear();
+      return;
+    }
+
+  mCurrentIndex = index;
+  mCurrentTool = mTools[index];
+  loadTool(mCurrentTool);
 }
 
 void CQExternalToolDialog::slotDeleteTool()
@@ -100,18 +167,63 @@ void CQExternalToolDialog::slotDeleteTool()
   // remove it
   mTools.removeAt(index);
   delete lstExternalTools->takeItem(index);
+
+  lstExternalTools->setCurrentRow(index);
+}
+
+void CQExternalToolDialog::clear()
+{
+  bool block = blockSignals(true);
+
+  // clear the textboxes
+  txtTitle->clear();
+  txtCommand->clear();
+  txtArguments->clear();
+  txtInitialDirectory->clear();
+  txtIniFile->clear();
+  chkPromptForArguments->setChecked(false);
+
+  // disable them
+  txtTitle->setEnabled(false);
+  txtCommand->setEnabled(false);
+  txtArguments->setEnabled(false);
+  txtInitialDirectory->setEnabled(false);
+  chkPromptForArguments->setEnabled(false);
+
+  blockSignals(block);
 }
 
 void CQExternalToolDialog::slotMoveUp()
 {
     // get the selected tool
     auto index = lstExternalTools->currentRow();
-    if (index <= 1 || index >= mTools.size())
+    if (index < 1 || index >= mTools.size())
         return;
 
+    bool block = blockSignals(true);
+    // save current settings
+    saveCurrent();
+    clear();
+
+    auto & first = mTools[index];
+    auto & second = mTools[index - 1];
+
+    QString firstIni = first.getIniFile();
+    QString otherIni = second.getIniFile();
+
     // move it up
-    mTools.move(index, index - 1);
+    mTools.swapItemsAt(index, index - 1);
     lstExternalTools->insertItem(index - 1, lstExternalTools->takeItem(index));
+
+    // swap ini files to keep the correct association
+    first.setIniFile(firstIni);
+    second.setIniFile(otherIni);
+
+    loadCurrent(index-1);
+
+    lstExternalTools->setCurrentRow(index - 1);
+
+    blockSignals(block);
 }
 
 void CQExternalToolDialog::slotMoveDown()
@@ -121,9 +233,30 @@ void CQExternalToolDialog::slotMoveDown()
     if (index < 0 || index >= mTools.size() - 1)
         return;
 
-    // move it down
-    mTools.move(index, index + 1);
+    bool block = blockSignals(true);
+
+    // save current settings
+    saveCurrent();
+    clear();
+
+    auto & first = mTools[index];
+    auto & second = mTools[index + 1];
+
+    QString firstIni = first.getIniFile();
+    QString otherIni = second.getIniFile();
+
+    // move it up
+    mTools.swapItemsAt(index, index + 1);
     lstExternalTools->insertItem(index + 1, lstExternalTools->takeItem(index));
+
+    // swap ini files to keep the correct association
+    first.setIniFile(firstIni);
+    second.setIniFile(otherIni);
+
+    loadCurrent(index + 1);
+
+    lstExternalTools->setCurrentRow(index + 1);
+    blockSignals(block);
 }
 
 void CQExternalToolDialog::slotBrowseCommand()
@@ -136,7 +269,7 @@ void CQExternalToolDialog::slotBrowseCommand()
 
 void CQExternalToolDialog::slotShowArgs()
 {
-    // show a contect menu with default arguments: $cpsFile, $sbmlFile, $omexFile, $copasiExecutable
+    // show a context menu with default arguments: $cpsFile, $sbmlFile, $omexFile, $copasiExecutable
     QMenu menu(this);
     menu.addAction("$cpsFile");
     menu.addAction("$sbmlFile");
@@ -160,86 +293,36 @@ void CQExternalToolDialog::slotBrowseInitialDir()
 
 void CQExternalToolDialog::slotItemChanged()
 {
+  if (signalsBlocked())
+    return;
 
   // get the selected tool
   auto index = lstExternalTools->currentRow();
   if (index < 0 || index >= mTools.size())
     {
-      bool block = blockSignals(true);
-
-      // clear the textboxes
-      txtTitle->clear();
-      txtCommand->clear();
-      txtArguments->clear();
-      txtInitialDirectory->clear();
-      txtIniFile->clear();
-      chkPromptForArguments->setChecked(false);
-
-      // disable them
-      txtTitle->setEnabled(false);
-      txtCommand->setEnabled(false);
-      txtArguments->setEnabled(false);
-      txtInitialDirectory->setEnabled(false);
-      chkPromptForArguments->setEnabled(false);
-
-      blockSignals(block);
-
+      clear();
       return;
     }
 
   // if current index is different from the selected index, save the current tool
-  if (mCurrentIndex != index && mCurrentIndex >= 0 && mCurrentIndex < mTools.size())
+  if (mCurrentIndex != index && mCurrentIndex >= 0 && mCurrentIndex < (size_t)mTools.size())
     {
-      mCurrentTool.setName(txtTitle->text());
-      mCurrentTool.setCommand(txtCommand->text());
-      mCurrentTool.setArguments(txtArguments->text());
-      mCurrentTool.setWorkingDirectory(txtInitialDirectory->text());
-      mCurrentTool.setPromptForArguments(chkPromptForArguments->isChecked());
-      mCurrentTool.setIniFile(txtIniFile->text());
-
-      mTools[mCurrentIndex] = mCurrentTool;
-      // update the name in the list
-      lstExternalTools->item(mCurrentIndex)->setText(mCurrentTool.getName());
+      saveCurrent();
     }
 
-  mCurrentIndex = index;
-  mCurrentTool = mTools[index];
-
-  bool block = blockSignals(true);
-
-  // set the textboxes
-  txtTitle->setText(mCurrentTool.getName());
-  txtCommand->setText(mCurrentTool.getCommand());
-  txtArguments->setText(mCurrentTool.getArguments());
-  txtInitialDirectory->setText(mCurrentTool.getWorkingDirectory());
-  txtIniFile->setText(mCurrentTool.getIniFile());
-  chkPromptForArguments->setChecked(mCurrentTool.promptForArguments());
-
-  // enable them
-  txtTitle->setEnabled(true);
-  txtCommand->setEnabled(true);
-  txtArguments->setEnabled(true);
-  txtInitialDirectory->setEnabled(true);
-  chkPromptForArguments->setEnabled(true);
-
-  blockSignals(block);
+  loadCurrent(index);
 }
 
 void CQExternalToolDialog::slotUpdateSelected()
 {
-    if (mCurrentIndex < 0 || mCurrentIndex >= mTools.size())
+    if (mCurrentIndex < 0 || mCurrentIndex >= (size_t)mTools.size())
         return;
 
     if (signalsBlocked())
       return;
 
-    mCurrentTool.setName(txtTitle->text());
-    mCurrentTool.setCommand(txtCommand->text());
-    mCurrentTool.setArguments(txtArguments->text());
-    mCurrentTool.setWorkingDirectory(txtInitialDirectory->text());
-    mCurrentTool.setPromptForArguments(chkPromptForArguments->isChecked());
-    mCurrentTool.setIniFile(txtIniFile->text());
+    saveTool(mCurrentTool);
 
     mTools[mCurrentIndex] = mCurrentTool;
-    lstExternalTools->item(mCurrentIndex)->setText(mCurrentTool.getName());
+    lstExternalTools->item((int)mCurrentIndex)->setText(mCurrentTool.getName());
 }

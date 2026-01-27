@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -44,19 +44,13 @@ private:
    * Initialize arrays and pointer.
    * @return bool success
    */
-  virtual bool initialize();
+  bool initialize() override;
 
   /**
    * Cleanup arrays and pointers.
    * @return bool success
    */
-  virtual bool cleanup();
-
-  /**
-   * Evaluate the objective function for the current parameters
-   * @return const C_FLOAT64 & objectiveValue
-   */
-  bool evaluate(const CVector< C_FLOAT64 > & individual);
+  bool cleanup() override;
 
   /**
    * Initialize contained objects.
@@ -113,14 +107,16 @@ public:
    */
   COptMethodEP(const CDataContainer * pParent,
                const CTaskEnum::Method & methodType = CTaskEnum::Method::EvolutionaryProgram,
-               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
+               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization,
+               const bool & parallel = true);
 
   /**
    * Copy Constructor
    * @param const COptMethodEP & src
    */
   COptMethodEP(const COptMethodEP& src,
-               const CDataContainer * pParent);
+               const CDataContainer * pParent,
+               const bool & parallel);
 
   /**
    * Destructor
@@ -132,12 +128,15 @@ public:
    * when needed. It is noted that this procedure can give feedback
    * of its progress by the callback function set with SetCallback.
    */
-  virtual bool optimise();
+  bool optimise() override;
 
   /**
    * Returns the maximum verbosity at which the method can log.
    */
-  virtual unsigned C_INT32 getMaxLogVerbosity() const;
+  unsigned C_INT32 getMaxLogVerbosity() const override;
+
+protected:
+  void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom) override;
 
 private :
   // variables
@@ -152,16 +151,6 @@ private :
    * number of wins of each individual in the tournament
    */
   CVector< size_t > mLosses;
-
-  /**
-   * The best value found so far.
-   */
-  C_FLOAT64 mBestValue;
-
-  /**
-   * The value of the last evaluation.
-   */
-  C_FLOAT64 mEvaluationValue;
 
   /**
   * if no improvement was made after # stalled generations

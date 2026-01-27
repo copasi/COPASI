@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,7 +46,7 @@ size_t CQEventDM::size() const
 
 int CQEventDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mFetched + 1;
+  return (int)mFetched + 1;
 }
 
 int CQEventDM::columnCount(const QModelIndex&) const
@@ -263,7 +263,7 @@ bool CQEventDM::removeRows(int position, int rows, const QModelIndex & parent)
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
+  beginRemoveRows(parent, position, std::min< int >((int)mFetched, position + rows) - 1);
 
   std::vector< CCommonName > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -330,7 +330,7 @@ bool CQEventDM::removeRows(QModelIndexList rows, const QModelIndex& index)
 
       if (choice == QMessageBox::Ok)
         {
-          removeRows(mpEvents->getIndex(pEvent->getObjectName()), 1);
+          removeRows((int)mpEvents->getIndex(pEvent->getObjectName()), 1);
         }
     }
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,25 +39,25 @@ class CQFluxModeDM : public CQBaseDataModel
 
 public:
   CQFluxModeDM(QObject *parent = 0);
-  virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-  virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-  Qt::ItemFlags flags(const QModelIndex &index) const;
-  QVariant data(const QModelIndex &index, int role) const;
+  int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+  int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+  Qt::ItemFlags flags(const QModelIndex &index) const override;
+  QVariant data(const QModelIndex &index, int role) const override;
   QVariant headerData(int section, Qt::Orientation orientation,
-                      int role = Qt::DisplayRole) const;
+                      int role = Qt::DisplayRole) const override;
 
   void setTask(const CEFMTask * pTask);
 
   bool setData(const QModelIndex &index, const QVariant &value,
-               int role = Qt::EditRole);
+               int role = Qt::EditRole) override;
 
-  virtual bool isDefaultRow(const QModelIndex& i) const;
+  virtual bool isDefaultRow(const QModelIndex& i) const override;
 
 protected:
-  virtual void resetCacheProtected() override;
-  virtual bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex());
-  virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex());
-  virtual size_t size() const override;
+  void resetCacheProtected() override;
+  bool insertRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override;
+  bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) override;
+  size_t size() const override;
 
 private:
   const CEFMTask * mpTask;

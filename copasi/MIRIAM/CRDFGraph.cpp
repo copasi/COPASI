@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -630,7 +630,7 @@ void CRDFGraph::updateNamespaces()
   for (itNamespace = mPrefix2Namespace.begin(), itUsed = Used.begin();
        itNamespace != endNamespace;
        ++itNamespace, ++itUsed)
-    if (!*itUsed)
+    if (!*itUsed && itNamespace->first != "rdf")
       ToBeRemoved.push_back(itNamespace->first);
 
   std::vector< std::string >::iterator itRemove = ToBeRemoved.begin();
@@ -789,14 +789,14 @@ void addXmlNodeToGraph(CRDFGraph & graph, XMLNode & current, CRDFSubject & subje
           newSubject.setType(CRDFSubject::BLANK_NODE);
           newSubject.setBlankNodeId(object.getBlankNodeID());
 
-          for (int i = 0; i < current.getNumChildren(); ++i)
+          for (unsigned int i = 0; i < current.getNumChildren(); ++i)
             {
               addXmlNodeToGraph(graph, current.getChild(i), newSubject, rdfUri, predicate);
             }
         }
       else
         {
-          for (int i = 0; i < current.getNumChildren(); ++i)
+          for (unsigned int i = 0; i < current.getNumChildren(); ++i)
             {
               addXmlNodeToGraph(graph, current.getChild(i), subject, rdfUri, predicate);
             }
@@ -841,7 +841,7 @@ CRDFGraph * CRDFGraph::fromString(const std::string & miriam)
       XMLNode & desc = content->getChild("Description");
       std::string about = desc.getAttrValue("about", rdfUri);
 
-      for (int i = 0; i < desc.getNumChildren(); ++i)
+      for (unsigned int i = 0; i < desc.getNumChildren(); ++i)
         {
 
           CRDFSubject subject;
@@ -912,7 +912,7 @@ struct TreeNode
 
   XMLNode * createNode()
   {
-    int pos = elementName.find(':');
+    auto pos = elementName.find(':');
     if (pos == std::string::npos)
       return NULL;
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,8 +17,11 @@
 #define COPASI_COptPopulationMethod_H
 
 #include "copasi/optimization/COptMethod.h"
+#include "copasi/optimization/COptItem.h"
 #include "copasi/core/CVector.h"
 #include "copasi/OpenMP/CRandomContext.h"
+
+class CIntervalValue;
 
 class COptPopulationMethod :
   public COptMethod
@@ -47,7 +50,8 @@ public:
   * @param const CDataContainer * pParent (default: NULL)
   */
   COptPopulationMethod(const COptPopulationMethod & src,
-                       const CDataContainer * pParent);
+                       const CDataContainer * pParent,
+                       const bool & parallel);
 
   /**
   * Destructor
@@ -64,13 +68,13 @@ public:
    * initialized in the subclasses.
    * @return bool success
    */
-  virtual bool initialize();
+  bool initialize() override;
 
   /**
    * Cleanup arrays and pointers.
    * @return bool success
    */
-  virtual bool cleanup();
+  bool cleanup() override;
 
   C_INT32 getPopulationSize();
   C_INT32 getNumGenerations();
@@ -86,7 +90,7 @@ public:
   * re implement the virtual print function.
   * @param std::ostream * ostream
   */
-  virtual void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 
   /**
   * Output stream operator
@@ -97,10 +101,14 @@ public:
   friend std::ostream &operator<<(std::ostream &os, const COptPopulationMethod & o);
 
 protected:
+  bool createIndividual(const size_t & index, const COptItem::CheckPolicyFlag & policy);
+
+  virtual void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom);
+
   /**
    * size of the population / swarm size
    */
-  unsigned C_INT32 mPopulationSize;
+    unsigned C_INT32 mPopulationSize;
 
   /**
    * number of generations / iteration limit

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -69,6 +69,7 @@ CEvaluationNodeNumber::CEvaluationNodeNumber(const SubType & subType,
         mValue /= strToDouble(end, NULL);
         break;
 
+      default:
       case SubType::INVALID:
         fatalError();
         break;
@@ -266,6 +267,7 @@ ASTNode* CEvaluationNodeNumber::toAST(const CDataModel* /* pDataModel */, int, i
         break;
 
       case SubType::INVALID:
+      default:
         break;
     }
 

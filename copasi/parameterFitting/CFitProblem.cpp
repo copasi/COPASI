@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,7 +68,6 @@ CFitProblem::CFitProblem(const CTaskEnum::Task & type,
   , mExperimentConstraints(0, 0)
   , mExperimentDependentValues(0)
   , mpCrossValidationSet(NULL)
-  , mCrossValidationValues(0, 0)
   , mCrossValidationConstraints(0, 0)
   , mCrossValidationDependentValues(0)
   , mCrossValidationSolutionValue(mWorstValue)
@@ -109,7 +108,6 @@ CFitProblem::CFitProblem(const CTaskEnum::Task & type,
   , mCorrelation(0, 0)
   , mpCorrelationMatrixInterface(NULL)
   , mpCorrelationMatrix(NULL)
-  , mpCreateParameterSets(NULL)
   , mpUseTimeSens(NULL)
   , mpTimeSens(NULL)
   , mJacTimeSens()
@@ -132,7 +130,6 @@ CFitProblem::CFitProblem(const CFitProblem & src,
   , mExperimentConstraints(0, 0)
   , mExperimentDependentValues(src.mExperimentDependentValues)
   , mpCrossValidationSet(NULL)
-  , mCrossValidationValues(0, 0)
   , mCrossValidationConstraints(0, 0)
   , mCrossValidationDependentValues(src.mCrossValidationDependentValues)
   , mCrossValidationSolutionValue(mWorstValue)
@@ -171,14 +168,13 @@ CFitProblem::CFitProblem(const CFitProblem & src,
   , mCorrelation(src.mCorrelation)
   , mpCorrelationMatrixInterface(NULL)
   , mpCorrelationMatrix(NULL)
-  , mpCreateParameterSets(NULL)
   , mpUseTimeSens(NULL)
   , mpTimeSens(NULL)
   , mJacTimeSens()
   , mpParmTimeSensCN(NULL)
 {
-  initObjects();
   initializeParameter();
+  initObjects();
 }
 
 // Destructor
@@ -290,7 +286,6 @@ void CFitProblem::initializeParameter()
 
   mpParmSteadyStateCN = assertParameter("Steady-State", CCopasiParameter::Type::CN, CRegisteredCommonName());
   mpParmTimeCourseCN = assertParameter("Time-Course", CCopasiParameter::Type::CN, CRegisteredCommonName());
-  mpCreateParameterSets = assertParameter("Create Parameter Sets", CCopasiParameter::Type::BOOL, false);
   mpUseTimeSens = assertParameter("Use Time Sens", CCopasiParameter::Type::BOOL, false);
   mpParmTimeSensCN = assertParameter("Time-Sens", CCopasiParameter::Type::CN, CRegisteredCommonName());;
 
@@ -304,16 +299,6 @@ void CFitProblem::initializeParameter()
 void CFitProblem::signalMathContainerChanged()
 {
   COptProblem::signalMathContainerChanged();
-}
-
-void CFitProblem::setCreateParameterSets(const bool & create)
-{
-  *mpCreateParameterSets = create;
-}
-
-const bool & CFitProblem::getCreateParameterSets() const
-{
-  return *mpCreateParameterSets;
 }
 
 void CFitProblem::setUseTimeSens(bool value)
@@ -572,6 +557,23 @@ bool CFitProblem::initialize()
 
       if (mpTrajectory == NULL) fatalError();
 
+      // iterate through set and see if we need to start in steady state for one
+      // of the trajectory tasks
+      bool startInSteadyState = false;
+      for (size_t i = 0; i < mpExperimentSet->getExperimentCount(); ++i)
+        {
+          if (mpExperimentSet->getExperiment(i)->getTimeSeriesStartInSteadyState())
+            {
+              startInSteadyState = true;
+              break;
+            }
+        }
+
+      auto *tcProblem = static_cast<CTrajectoryProblem*>(mpTrajectory->getProblem());
+
+      mOldStartInSteadyStateFlag = tcProblem->getStartInSteadyState();
+      tcProblem->setStartInSteadyState(startInSteadyState);
+
       mpTrajectory->setMathContainer(mpContainer);
       mpTrajectory->setUpdateModel(false);
       mpTrajectory->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
@@ -635,7 +637,6 @@ bool CFitProblem::initialize()
 
       // We cannot directly change the container values as multiple parameters
       // may point to the same value.
-      mContainerVariables[j] = const_cast<C_FLOAT64 *>(&pItem->getLocalValue());
 
       imax = pItem->getExperimentCount();
 
@@ -643,11 +644,11 @@ bool CFitProblem::initialize()
         {
           for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
             {
-              const CObjectInterface * object = pItem->getObject();
+              const CObjectInterface * object = pItem->getItemObject();
 
               if (object != NULL)
                 {
-                  mExperimentValues(i, j) = (C_FLOAT64 *)object->getValuePointer();
+                  mExperimentValues(i, j) = pItem;
                   ObjectSet[i].insert(object);
                 }
             }
@@ -661,12 +662,12 @@ bool CFitProblem::initialize()
               if ((Index = mpExperimentSet->keyToIndex(pItem->getExperiment(i))) == C_INVALID_INDEX)
                 return false;
 
-              const CObjectInterface * object = pItem->getObject();
+              const CObjectInterface * object = pItem->getItemObject();
 
               if (object != NULL)
                 {
-                  mExperimentValues(Index, j) = (C_FLOAT64 *)pItem->getObject()->getValuePointer();
-                  ObjectSet[Index].insert(pItem->getObject());
+                  mExperimentValues(Index, j) = pItem;
+                  ObjectSet[Index].insert(object);
                 }
             };
         }
@@ -683,16 +684,6 @@ bool CFitProblem::initialize()
       mpCorrelationMatrix->setAnnotationString(1, j, Annotation);
     }
 
-  it = mOptItemAlgorithm.begin();
-  end = mOptItemAlgorithm.end();
-
-  for (j = 0; it != end; ++it, ++j)
-    {
-      // We cannot directly change the container values as multiple parameters
-      // may point to the same value.
-      mContainerVariablesAlgorithm[j] = const_cast<C_FLOAT64 *>(&static_cast<CFitItem *>(*it)->getLocalValue());
-    }
-
   // Create a joined sequence of update methods for parameters and independent values.
   for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
     {
@@ -700,6 +691,7 @@ bool CFitProblem::initialize()
     }
 
   // Build a matrix of experiment and constraint items;
+  mUpdateConstraints.clear();
   mExperimentConstraints.resize(mpExperimentSet->getExperimentCount(),
                                 mpConstraintItems->size());
   mExperimentConstraints = NULL;
@@ -722,8 +714,8 @@ bool CFitProblem::initialize()
           for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
             {
               mExperimentConstraints(i, j) = pConstraint;
-              if (pConstraint->getObject())
-                ObjectSet[i].insert(pConstraint->getObject());
+              if (pConstraint->getItemObject())
+                ObjectSet[i].insert(pConstraint->getItemObject());
             }
         }
       else
@@ -734,8 +726,8 @@ bool CFitProblem::initialize()
                 return false;
 
               mExperimentConstraints(Index, j) = pConstraint;
-              if (pConstraint->getObject())
-                ObjectSet[Index].insert(pConstraint->getObject());
+              if (pConstraint->getItemObject())
+                ObjectSet[Index].insert(pConstraint->getItemObject());
             };
         }
     }
@@ -743,8 +735,8 @@ bool CFitProblem::initialize()
   for (i = 0, imax = mpExperimentSet->getExperimentCount(); i < imax; i++)
     {
       mpContainer->getTransientDependencies().getUpdateSequence(mExperimentConstraintUpdates[i], CCore::SimulationContext::Default,
-          mpContainer->getStateObjects(false), ObjectSet[i],
-          mpContainer->getSimulationUpToDateObjects());
+                                                                mpContainer->getStateObjects(false), ObjectSet[i],
+                                                                mpContainer->getSimulationUpToDateObjects());
     }
 
   mExperimentDependentValues.resize(mpExperimentSet->getDataPointCount());
@@ -759,10 +751,6 @@ bool CFitProblem::initialize()
     }
 
   // Build a matrix of cross validation experiments  and local items.
-  mCrossValidationValues.resize(mpCrossValidationSet->getExperimentCount(),
-                                mpOptItems->size());
-  mCrossValidationValues = NULL;
-
   mCrossValidationInitialUpdates.resize(mpCrossValidationSet->getExperimentCount());
 
   it = mpOptItems->begin();
@@ -781,12 +769,11 @@ bool CFitProblem::initialize()
         {
           for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
             {
-              const CObjectInterface * object = pItem->getObject();
+              const CObjectInterface * object = pItem->getItemObject();
 
               if (object != NULL)
                 {
-                  mCrossValidationValues(i, j) = (C_FLOAT64 *)pItem->getObject()->getValuePointer();
-                  ObjectSet[i].insert(pItem->getObject());
+                  ObjectSet[i].insert(object);
                 }
             }
         }
@@ -797,12 +784,11 @@ bool CFitProblem::initialize()
               if ((Index = mpCrossValidationSet->keyToIndex(pItem->getCrossValidation(i))) == C_INVALID_INDEX)
                 return false;
 
-              const CObjectInterface * object = pItem->getObject();
+              const CObjectInterface * object = pItem->getItemObject();
 
               if (object != NULL)
                 {
-                  mCrossValidationValues(Index, j) = (C_FLOAT64 *)pItem->getObject()->getValuePointer();
-                  ObjectSet[Index].insert(pItem->getObject());
+                  ObjectSet[Index].insert(object);
                 }
             };
         }
@@ -836,7 +822,7 @@ bool CFitProblem::initialize()
           for (i = 0, imax = mpCrossValidationSet->getExperimentCount(); i < imax; i++)
             {
               mCrossValidationConstraints(i, j) = pConstraint;
-              ObjectSet[i].insert(pConstraint->getObject());
+              ObjectSet[i].insert(pConstraint->getItemObject());
             }
         }
       else
@@ -847,7 +833,7 @@ bool CFitProblem::initialize()
                 return false;
 
               mCrossValidationConstraints(Index, j) = pConstraint;
-              ObjectSet[Index].insert(pConstraint->getObject());
+              ObjectSet[Index].insert(pConstraint->getItemObject());
             };
         }
     }
@@ -912,46 +898,6 @@ bool CFitProblem::initialize()
   return success;
 }
 
-bool CFitProblem::checkFunctionalConstraints()
-{
-  std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
-  std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
-
-  if (!mpConstraintItems->empty())
-    mCounters.ConstraintCounter++;
-
-  for (; it != end; ++it)
-    if (static_cast<CFitConstraint *>(*it)->getConstraintViolation() > 0.0)
-      {
-        mCounters.FailedConstraintCounter++;
-        return false;
-      }
-
-  return true;
-}
-
-C_FLOAT64 CFitProblem::getFunctionalConstraintsViolation()
-{
-  C_FLOAT64 L2norm = 0.0;
-
-  std::vector< COptItem * >::const_iterator it = mpConstraintItems->begin();
-  std::vector< COptItem * >::const_iterator end = mpConstraintItems->end();
-
-  if (!mpConstraintItems->empty())
-    mCounters.ConstraintCounter++;
-
-  for (; it != end; ++it)
-    {
-      C_FLOAT64 Violation = (*it)->getConstraintViolation();
-      L2norm += Violation * Violation;
-    }
-
-  if (L2norm > 0.0)
-    mCounters.FailedConstraintCounter++;
-
-  return sqrt(L2norm);
-}
-
 CFitItem & CFitProblem::addFitItem(const CRegisteredCommonName & objectCN)
 {
   CDataModel* pDataModel = getObjectDataModel();
@@ -978,31 +924,11 @@ CFitConstraint & CFitProblem::addFitConstraint(const CRegisteredCommonName & obj
   return *pItem;
 }
 
-/**
- * Utility function creating a parameter set for each experiment
- */
-void CFitProblem::createParameterSet(const std::string & Name)
-{
-  CModel * pModel = const_cast<CModel *>(&mpContainer->getModel())
-                    ;
-  std::string origname = "PE: " + UTCTimeStamp() + " Exp: " + Name;
-  std::string name = origname;
-  int count = 0;
-
-  while (pModel->getModelParameterSets().getIndex(name) != C_INVALID_INDEX)
-    {
-      std::stringstream str; str << origname << " (" << ++count << ")";
-      name = str.str();
-    }
-
-  CModelParameterSet* set = new CModelParameterSet(name);
-  pModel->getModelParameterSets().add(set, true);
-  set->createFromModel();
-}
-
 bool CFitProblem::calculate()
 {
-  mCounters.Counter++;
+  sCounter Counters;
+
+  Counters.Counter++;
   bool Continue = true;
 
   size_t i, imax = mpExperimentSet->getExperimentCount();
@@ -1014,8 +940,6 @@ bool CFitProblem::calculate()
 
   C_FLOAT64 * Residuals = mResiduals.array();
   C_FLOAT64 * DependentValues = mExperimentDependentValues.array();
-
-  C_FLOAT64 ** pUpdate = mExperimentValues.array();
 
   std::vector<COptItem *>::iterator itItem;
   std::vector<COptItem *>::iterator endItem = mpOptItems->end();
@@ -1033,22 +957,28 @@ bool CFitProblem::calculate()
   CFitConstraint **ppConstraint = mExperimentConstraints.array();
   CFitConstraint **ppConstraintEnd;
 
+  bool success = true;
+
   try
     {
       for (i = 0; i < imax && Continue; i++) // For each experiment
         {
           pExp = mpExperimentSet->getExperiment(i);
 
+          CFitItem ** ppUpdate = mExperimentValues[i];
+          CFitItem ** ppUpdateEnd = ppUpdate + mpOptItems->size();
+
           // set the global and experiment local fit item values.
-          for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
-            if (pUpdate != NULL && *pUpdate != NULL)
+          for (; ppUpdate != ppUpdateEnd; ppUpdate++)
+            if (*ppUpdate)
               {
-                **pUpdate = static_cast<CFitItem *>(*itItem)->getLocalValue();
+                C_FLOAT64 Value = (*ppUpdate)->getItemValue();
+                (*ppUpdate)->COptItem::setItemValue(Value, COptItem::CheckPolicyFlag::None);
               }
 
           mpContainer->applyUpdateSequence(mExperimentInitialUpdates[i]);
 
-          kmax = pExp->getNumDataRows();
+          kmax = (int)pExp->getNumDataRows();
 
           const std::map< const CObjectInterface*, size_t >& map = pExp->getDependentObjectsMap();
           std::map<size_t, const CObjectInterface*> reverseObjectMap;
@@ -1090,7 +1020,7 @@ bool CFitProblem::calculate()
 
                     if (!Continue)
                       {
-                        mCounters.FailedCounterException++;
+                        Counters.FailedCounterException++;
                         mCalculateValue = mWorstValue;
                         break;
                       }
@@ -1181,7 +1111,7 @@ bool CFitProblem::calculate()
                           {
                             static_cast<CTrajectoryProblem*>(mpTrajectory->getProblem())->setStepNumber(1);
 
-                            if (!mpTrajectory->processStart(true))
+                            if (!mpTrajectory->processStart(true, !pExp->getTimeSeriesStartInSteadyState()))
                               throw CCopasiMessage(CCopasiMessage::getLastMessage());
                           }
 
@@ -1197,7 +1127,7 @@ bool CFitProblem::calculate()
                           }
                       }
 
-                    if (Advanced)
+                    if (Advanced && mExperimentConstraintUpdates.size() > 0)
                       {
                         // We check after each simulation step whether the constraints are violated.
                         // Make sure the constraint values are up to date.
@@ -1207,10 +1137,11 @@ bool CFitProblem::calculate()
                         ppConstraintEnd = ppConstraint + mExperimentConstraints.numCols();
 
                         for (; ppConstraint != ppConstraintEnd; ++ppConstraint)
-                          if (*ppConstraint)(*ppConstraint)->calculateConstraintViolation();
+                          if (*ppConstraint)
+                            (*ppConstraint)->calculateConstraintViolation();
                       }
 
-                    if (mStoreResults)
+                    if (mStoreResults && DependentValues)
                       {
                         mCalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
                       }
@@ -1271,30 +1202,30 @@ bool CFitProblem::calculate()
     {
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();
-
-      mCounters.FailedCounterException++;
-      mCalculateValue = mWorstValue;
-
-      // Restore the containers initial state. This includes all local reaction parameter
-      // Additionally this state is synchronized, i.e. nothing to compute.
-      mpContainer->setCompleteInitialState(mCompleteInitialState);
+      success = false;
     }
 
   catch (...)
     {
-      mCounters.FailedCounterException++;
+      success = false;
+    }
+
+  if (!success)
+    {
+      Counters.FailedCounterException++;
       mCalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
       // Additionally this state is synchronized, i.e. nothing to compute.
       mpContainer->setCompleteInitialState(mCompleteInitialState);
     }
-
-  if (std::isnan(mCalculateValue))
+  else if (std::isnan(mCalculateValue))
     {
-      mCounters.FailedCounterNaN++;
+      Counters.FailedCounterNaN++;
       mCalculateValue = mWorstValue;
     }
+
+  incrementCounters(Counters);
 
   if (mProcessReport)
     return mProcessReport.progressItem(mhCounter);
@@ -1317,6 +1248,10 @@ bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
   if (mpTrajectory != NULL)
     {
       success &= mpTrajectory->restore(updateModel);
+
+      // restore the old start in steady state flag
+      auto *tcProblem = static_cast<CTrajectoryProblem*>(mpTrajectory->getProblem());
+      tcProblem->setStartInSteadyState(mOldStartInSteadyStateFlag);
     }
 
   if (mpTimeSens)
@@ -1336,52 +1271,27 @@ bool CFitProblem::restore(const bool& updateModel, CExperiment* pExp)
 
       if (index != C_INVALID_INDEX)
         {
-          std::vector<COptItem*>::iterator itItem;
-          std::vector<COptItem*>::iterator endItem = mpOptItems->end();
-          C_FLOAT64** pUpdate = mExperimentValues.array() + (mpOptItems->size() * index);
+          CFitItem ** ppUpdate = mExperimentValues[index];
+          CFitItem ** ppUpdateEnd = ppUpdate + mpOptItems->size();
 
           // set the global and experiment local fit item values.
-          for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
-            if (*pUpdate)
+          for (; ppUpdate != ppUpdateEnd; ppUpdate++)
+            if (*ppUpdate)
               {
-                **pUpdate = static_cast<CFitItem*>(*itItem)->getLocalValue();
+                C_FLOAT64 Value = (*ppUpdate)->getItemValue();
+                (*ppUpdate)->COptItem::setItemValue(Value, COptItem::CheckPolicyFlag::None);
               }
 
           mpContainer->applyUpdateSequence(mExperimentInitialUpdates[index]);
         }
 
       // Update the independent data.
-      pExp->updateModelWithIndependentData(0);
+      pExp->updateModelWithIndependentData(index);
 
       mpContainer->pushInitialState();
     }
 
   return success;
-}
-
-// virtual
-void CFitProblem::updateContainer(const bool & update)
-{
-  COptProblem::updateContainer(update);
-
-  size_t i, imax = mpExperimentSet->getExperimentCount();
-  std::vector<COptItem *>::iterator itItem;
-  std::vector<COptItem *>::iterator endItem = mpOptItems->end();
-  C_FLOAT64 ** pUpdate = mExperimentValues.array();
-
-  CExperiment * pExp = NULL;
-
-  for (i = 0; i < imax; i++) // For each experiment
-    {
-      pExp = mpExperimentSet->getExperiment(i);
-
-      // set the global and experiment local fit item values.
-      for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
-        if (pUpdate != NULL && *pUpdate != NULL)
-          {
-            **pUpdate = static_cast<CFitItem *>(*itItem)->getLocalValue();
-          }
-    }
 }
 
 void CFitProblem::createParameterSets()
@@ -1398,16 +1308,15 @@ void CFitProblem::createParameterSets()
   mpContainer->pushInitialState();
   CVector< C_FLOAT64 > OriginalInitialState = mpContainer->getInitialState();
 
-  createParameterSet("Original");
+  createParameterSet(" Original", "PE: ");
 
   // Apply the current solution values
-  COptProblem::updateContainer(true);
+  updateContainer(true);
 
   // Loop through all experiments and create
   size_t i, imax = mpExperimentSet->getExperimentCount();
   std::vector<COptItem *>::iterator itItem;
   std::vector<COptItem *>::iterator endItem = mpOptItems->end();
-  C_FLOAT64 ** pUpdate = mExperimentValues.array();
 
   CExperiment * pExp = NULL;
 
@@ -1416,12 +1325,15 @@ void CFitProblem::createParameterSets()
       mpContainer->setInitialState(OriginalInitialState);
 
       pExp = mpExperimentSet->getExperiment(i);
+      CFitItem ** ppUpdate = mExperimentValues[i];
+      CFitItem ** ppUpdateEnd = ppUpdate + mpOptItems->size();
 
       // set the global and experiment local fit item values.
-      for (itItem = mpOptItems->begin(); itItem != endItem; itItem++, pUpdate++)
-        if (*pUpdate)
+      for (; ppUpdate != ppUpdateEnd; ppUpdate++)
+        if (*ppUpdate)
           {
-            **pUpdate = static_cast<CFitItem *>(*itItem)->getLocalValue();
+            C_FLOAT64 Value = (*ppUpdate)->getItemValue();
+            (*ppUpdate)->COptItem::setItemValue(Value, COptItem::CheckPolicyFlag::None);
           }
 
       // Synchronize the initial state.
@@ -1431,7 +1343,7 @@ void CFitProblem::createParameterSets()
       pExp->updateModelWithIndependentData(0);
 
       mpContainer->pushInitialState();
-      createParameterSet(pExp->getObjectName());
+      createParameterSet(" Exp: " + pExp->getObjectName(), "PE: ");
     }
 
   // Restore the current initial state
@@ -2011,7 +1923,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   // Recalculate the best solution.
   for (i = 0; i < imax; i++)
     {
-      *mContainerVariables[i] = mSolutionVariables[i];
+      mpOptItems->at(i)->setItemValue(mSolutionVariables[i], COptItem::CheckPolicyFlag::None);
     }
 
   // For Output
@@ -2140,12 +2052,14 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
           if (fabs(Current) > resolution)
             {
-              *mContainerVariables[i] = Current * (1.0 + factor);
+              C_FLOAT64 X = Current * (1.0 + factor);
+              mpOptItems->at(i)->setItemValue(X, COptItem::CheckPolicyFlag::None);
               Delta = 1.0 / (Current * factor);
             }
           else
             {
-              *mContainerVariables[i] = resolution;
+              C_FLOAT64 X = resolution;
+              mpOptItems->at(i)->setItemValue(X, COptItem::CheckPolicyFlag::None);
               Delta = 1.0 / resolution;
             }
 
@@ -2178,7 +2092,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
             }
 
           // Restore the value
-          *mContainerVariables[i] = Current;
+          mpOptItems->at(i)->setItemValue(Current, COptItem::CheckPolicyFlag::None);
         }
 
       if (!CalculateFIM)
@@ -2364,12 +2278,12 @@ bool CFitProblem::setSolution(const C_FLOAT64 & value,
 
   if (Continue && mpCrossValidationSet->getExperimentCount() > 0)
     {
-      C_FLOAT64 **ppIt = mContainerVariables.begin();
-      C_FLOAT64 **ppEnd = mContainerVariables.end();
+      std::vector< COptItem * >::const_iterator it = mpOptItems->begin();
+      std::vector< COptItem * >::const_iterator end = mpOptItems->end();
       C_FLOAT64 *pSolution = mSolutionVariables.begin();
 
-      for (; ppIt != ppEnd; ++ppIt, ++pSolution)
-        **ppIt = *pSolution;
+      for (; it != end; ++it, ++pSolution)
+        (*it)->setItemValue(*pSolution, COptItem::CheckPolicyFlag::None);
 
       Continue = calculateCrossValidation();
     }
@@ -2394,7 +2308,9 @@ const C_FLOAT64 & CFitProblem::getCrossValidationSD() const
 
 bool CFitProblem::calculateCrossValidation()
 {
-  mCounters.Counter++;
+  sCounter Counters;
+  Counters.Counter++;
+
   bool Continue = true;
 
   size_t i, imax = mpCrossValidationSet->getExperimentCount();
@@ -2406,11 +2322,6 @@ bool CFitProblem::calculateCrossValidation()
 
   C_FLOAT64 * Residuals = NULL;
   C_FLOAT64 * DependentValues = mCrossValidationDependentValues.array();
-
-  C_FLOAT64 ** pUpdate = mExperimentValues.array();
-
-  C_FLOAT64 * pSolution = mSolutionVariables.array();
-  C_FLOAT64 * pSolutionEnd = pSolution + mSolutionVariables.size();
 
   std::vector<COptItem *>::iterator itConstraint;
   std::vector<COptItem *>::iterator endConstraint = mpConstraintItems->end();
@@ -2431,14 +2342,14 @@ bool CFitProblem::calculateCrossValidation()
         {
           pExp = mpCrossValidationSet->getExperiment(i);
 
-          // set the global and CrossValidation local fit item values.
-          for (; pSolution != pSolutionEnd; pSolution++, pUpdate++)
-            {
-              if (*pUpdate)
-                {
-                  **pUpdate = *pSolution;
-                }
-            }
+          CFitItem ** ppUpdate = mExperimentValues[i];
+          CFitItem ** ppUpdateEnd = ppUpdate + mpOptItems->size();
+          C_FLOAT64 * pSolution = mSolutionVariables.array();
+
+          // set the global and experiment local fit item values.
+          for (; ppUpdate != ppUpdateEnd; ppUpdate++, pSolution++)
+            if (*ppUpdate)
+              (*ppUpdate)->COptItem::setItemValue(*pSolution, COptItem::CheckPolicyFlag::None);
 
           mpContainer->applyUpdateSequence(mCrossValidationInitialUpdates[i]);
 
@@ -2554,7 +2465,7 @@ bool CFitProblem::calculateCrossValidation()
                           {
                             static_cast<CTrajectoryProblem*>(mpTrajectory->getProblem())->setStepNumber(1);
 
-                            if (!mpTrajectory->processStart(true))
+                            if (!mpTrajectory->processStart(true, !pExp->getTimeSeriesStartInSteadyState()))
                               throw CCopasiMessage(CCopasiMessage::getLastMessage());
                           }
 
@@ -2611,7 +2522,7 @@ bool CFitProblem::calculateCrossValidation()
       // We do not want to clog the message cue.
       CCopasiMessage::getLastMessage();
 
-      mCounters.FailedCounterException++;
+      Counters.FailedCounterException++;
       CalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
@@ -2621,7 +2532,7 @@ bool CFitProblem::calculateCrossValidation()
 
   catch (...)
     {
-      mCounters.FailedCounterException++;
+      Counters.FailedCounterException++;
       CalculateValue = mWorstValue;
 
       // Restore the containers initial state. This includes all local reaction parameter
@@ -2631,7 +2542,7 @@ bool CFitProblem::calculateCrossValidation()
 
   if (std::isnan(CalculateValue))
     {
-      mCounters.FailedCounterNaN++;
+      Counters.FailedCounterNaN++;
       CalculateValue = mWorstValue;
     }
 
@@ -2655,6 +2566,7 @@ bool CFitProblem::calculateCrossValidation()
     }
 
   Continue &= (mThresholdCounter < mpCrossValidationSet->getThreshold());
+  incrementCounters(Counters);
 
   return Continue;
 }

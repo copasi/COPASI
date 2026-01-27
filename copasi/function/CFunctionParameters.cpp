@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -59,11 +59,6 @@ CFunctionParameters & CFunctionParameters::operator=(const CFunctionParameters &
 
   mParameters.deepCopy(src.mParameters);
   return *this;
-}
-
-void CFunctionParameters::add(const CFunctionParameter & parameter)
-{
-  mParameters.add(parameter);
 }
 
 bool CFunctionParameters::add(CFunctionParameter * parameter,
@@ -197,10 +192,12 @@ size_t CFunctionParameters::findParameterByName(const std::string & name,
   size_t Index = mParameters.getIndex(name);
 
   if (ppFunctionParameter != NULL)
+  {
     if (Index != C_INVALID_INDEX)
       *ppFunctionParameter = &mParameters[Index];
     else
       *ppFunctionParameter = NULL;
+  }
 
   return Index;
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> Copyright (C) 2024 - 2026 by Pedro Mendes, Rector and Visitors of the </comment>
 <comment> University of Virginia, University of Heidelberg, and University </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -21,6 +21,9 @@
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0" colspan="2">
     <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+     </property>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
@@ -443,6 +446,22 @@
     <hint type="sourcelabel">
      <x>297</x>
      <y>311</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>268</x>
+     <y>208</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkPromptForArguments</sender>
+   <signal>checkStateChanged(Qt::CheckState)</signal>
+   <receiver>CQExternalToolDialog</receiver>
+   <slot>slotUpdateSelected()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>166</x>
+     <y>367</y>
     </hint>
     <hint type="destinationlabel">
      <x>268</x>

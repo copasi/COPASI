@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -377,7 +377,7 @@ bool CMCAMethod::calculateUnscaledFluxCC(const bool & status)
   // mUnscaledFluxCC := I + mUnscaledElasticities * mUnscaledConcCC
 
   char UPLO = 'A';
-  C_INT M = mUnscaledFluxCC.numRows();
+  C_INT M = (C_INT)mUnscaledFluxCC.numRows();
   C_FLOAT64 Alpha = 0.0;
   C_FLOAT64 Beta = 1.0;
 

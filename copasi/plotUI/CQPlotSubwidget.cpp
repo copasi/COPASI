@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -44,6 +44,7 @@
 #include <QtCore/QList>
 #include <QtCore/QMap>
 #include <QMessageBox>
+#include "copasi/UI/CQMessageBox.h"
 //-----------------------------------------------------------------------------
 
 /*
@@ -296,7 +297,13 @@ CQPlotEditWidget *CQPlotSubwidget::selectControl(CPlotItem::Type type)
       }
 
       default:
-        return NULL;
+        {
+          // reset current widget
+          CQPlotEditWidget * current = dynamic_cast< CQPlotEditWidget * >(mpStack->currentWidget());
+          if (current != NULL)
+            current->LoadFromCurveSpec(NULL);
+          return NULL;
+        }
     }
 }
 
@@ -310,6 +317,9 @@ void CQPlotSubwidget::selectPlotItem(CPlotItem *item)
     {
       current = selectControl(item->getType());
     }
+
+  if (current == NULL)
+    return;
 
   if (item == NULL)
     {
@@ -794,9 +804,9 @@ void CQPlotSubwidget::removeCurve()
   if (selection.size() == 0)
     return;
 
-  if (QMessageBox::question(this, "Delete Curves", QString("Do you really want to delete the %1 selected curve(s)?").arg(selection.size()), QMessageBox::Yes, QMessageBox::No | QMessageBox::Default) == QMessageBox::Yes)
+  if (CQMessageBox::question(this, "Delete Curves", QString("Do you really want to delete the %1 selected curve(s)?").arg(selection.size()), QMessageBox::Yes | QMessageBox::No, QMessageBox::No) == QMessageBox::Yes)
     {
-      for (int index = selection.size() - 1; index >= 0; --index)
+      for (int index = (int)selection.size() - 1; index >= 0; --index)
         {
           deleteCurve(selection.at(index));
         }

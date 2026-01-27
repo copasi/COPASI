@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -328,11 +328,11 @@ void CQExpressionWidget::dropEvent(QDropEvent * e)
   int Left;
   int Right;
 
-  if (objectBoundaries(textCursor().position() - SelectedText.length(), Left, Right))
+  if (objectBoundaries(int(textCursor().position() - SelectedText.length()), Left, Right))
     {
       mCursor = textCursor();
       // Remove the inserted text.
-      mCursor.setPosition(mCursor.position() - SelectedText.length(), QTextCursor::KeepAnchor);
+      mCursor.setPosition(int(mCursor.position() - SelectedText.length()), QTextCursor::KeepAnchor);
       mCursor.removeSelectedText();
       int CurrentPosition = mCursor.position();
       // Determine the insertion point
@@ -356,9 +356,8 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 {
   int Left;
   int Right;
-  bool isAdvancedEditing = CRootContainer::getConfiguration()->useAdvancedEditing();
 
-  if (e == QKeySequence::SelectNextChar && !isAdvancedEditing)
+  if (e == QKeySequence::SelectNextChar)
     {
       mCursor = textCursor();
       mCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
@@ -373,7 +372,7 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
       return;
     }
 
-  if (e == QKeySequence::SelectPreviousChar && !isAdvancedEditing)
+  if (e == QKeySequence::SelectPreviousChar)
     {
       mCursor = textCursor();
       mCursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
@@ -386,100 +385,6 @@ void CQExpressionWidget::keyPressEvent(QKeyEvent * e)
 
       QTextEdit::keyPressEvent(e);
       return;
-    }
-
-  switch (e->key())
-    {
-      case Qt::Key_Backspace:
-        if (isAdvancedEditing)
-          break;
-
-        mCursor = textCursor();
-
-        if (mCursor.selectedText().isEmpty())
-          {
-            mCursor.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
-
-            if (objectBoundaries(mCursor.position(), Left, Right))
-              {
-                mCursor.setPosition(Left + 1, QTextCursor::KeepAnchor);
-                mCursor.deleteChar();
-                setTextCursor(mCursor);
-              }
-          }
-
-        // delete the selected object or just the character
-        QTextEdit::keyPressEvent(e);
-        return;
-        break;
-
-      case Qt::Key_Delete:
-        if (isAdvancedEditing)
-          break;
-
-        mCursor = textCursor();
-
-        if (mCursor.selectedText().isEmpty())
-          {
-            mCursor.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-
-            if (objectBoundaries(mCursor.position(), Left, Right))
-              {
-                mCursor.setPosition(Right - 1, QTextCursor::KeepAnchor);
-                mCursor.deleteChar();
-                setTextCursor(mCursor);
-              }
-          }
-
-        // delete the selected object or just the character
-        QTextEdit::keyPressEvent(e);
-        return;
-        break;
-
-      case Qt::Key_Left:
-        if (isAdvancedEditing)
-          break;
-
-        mCursor = textCursor();
-        // We check whether the new position is in an object.
-        mCursor.movePosition(QTextCursor::PreviousCharacter);
-
-        if (objectBoundaries(mCursor.position(), Left, Right))
-          {
-            mCursor.setPosition(Left + 1, QTextCursor::KeepAnchor);
-            setTextCursor(mCursor);
-          }
-
-        QTextEdit::keyPressEvent(e);
-        return;
-        break;
-
-      case Qt::Key_Right:
-        if (isAdvancedEditing)
-          break;
-
-        mCursor = textCursor();
-        // We check whether the new position is in an object.
-        mCursor.movePosition(QTextCursor::NextCharacter);
-
-        if (objectBoundaries(mCursor.position(), Left, Right))
-          {
-            mCursor.setPosition(Right - 1, QTextCursor::KeepAnchor);
-            setTextCursor(mCursor);
-          }
-
-        QTextEdit::keyPressEvent(e);
-        return;
-        break;
-
-      case Qt::Key_BraceLeft:
-      case Qt::Key_BraceRight:
-        if (isAdvancedEditing)
-          break;
-
-        e->ignore();
-        return;
-        break;
     }
 
   if (!e->text().isEmpty())
@@ -685,8 +590,7 @@ std::string CQExpressionWidget::getExpression() const
       std::string DisplayName(TO_UTF8(DisplayObjectPattern.cap(1)));
       std::map< std::string, const CDataObject * >::const_iterator itObject = mParseList.find(DisplayName);
 
-      if (itObject == mParseList.end()
-          && CRootContainer::getConfiguration()->useAdvancedEditing())
+      if (itObject == mParseList.end())
         {
           // the object pattern does not match the species name if
           // the species is in a different compartment, in that case we

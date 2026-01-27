@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -113,7 +113,7 @@ bool CMCATask::initialize(const OutputFlag & of,
 
   CCopasiTask *pSubTask = pProblem->getSubTask();
 
-  if (pSubTask != nullptr)
+  if (pSubTask != nullptr && pSubTask != this)
     success &= pSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, mReport.getStream());
 
   return success;
@@ -177,7 +177,7 @@ bool CMCATask::setCallBack(CProcessReportLevel callBack)
 
   CCopasiTask *pSubTask = mpProblem->getSubTask();
 
-  if (pSubTask != NULL)
+  if (pSubTask != NULL && pSubTask != this)
     {
       success &= pSubTask->setCallBack(mProcessReport);
     }

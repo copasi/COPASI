@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,20 +36,19 @@
 #include "copasi/lapack/blaswrap.h"
 #include "copasi/lapack/lapackwrap.h"
 
-#define dls001_1 (mdls001_._1)
-#define dls001_2 (mdls001_._2)
-#define dls001_3 (mdls001_._3)
-
-#define dlsr01_1 (mdlsr01_._1)
-#define dlsr01_2 (mdlsr01_._2)
-#define dlsr01_3 (mdlsr01_._3)
-
 double d_sign(const double & a, const double & b);
 
 static double c_b3 = 1.0;
 
 static const C_INT c__0 = 0;
 static C_INT c__1 = 1;
+
+C_INT CInternalSolver::drchek2_(const C_INT *job, evalG g, C_INT *neq, double *
+                                y, C_INT *nyh, double *rwork, C_INT *jroot, C_INT *irt)
+{
+  return drchek_(job, g, neq, y, &rwork[dls001_lsoda.lyh], nyh, &rwork[dlsr01_lsodar.lg0], &rwork[dlsr01_lsodar.lg1],
+                               &rwork[dlsr01_lsodar.lgx], jroot, irt);
+}
 
 /* DECK DRCHEK */
 /* Subroutine */

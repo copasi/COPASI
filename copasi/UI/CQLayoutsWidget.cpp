@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -160,8 +160,9 @@ void CQLayoutsWidget::deleteSelectedLayouts()
 
       if (itWindow != mLayoutWindowMap.end())
         {
+          auto * ptr = itWindow->second;
           mLayoutWindowMap.erase(itWindow);
-          delete itWindow->second;
+          delete ptr;
         }
     }
 
@@ -276,7 +277,7 @@ void CQLayoutsWidget::slotBtnNewClicked()
   // update the table
   mpLayoutsDM->insertRows(mpLayoutsDM->rowCount(), 1);
   dataChanged(QModelIndex(), QModelIndex());
-  LayoutWindow *window = createLayoutWindow(pListOfLayouts->size() - 1, pLayout);
+  LayoutWindow *window = createLayoutWindow((int)pListOfLayouts->size() - 1, pLayout);
 #ifndef DISABLE_QT_LAYOUT_RENDERING
   CQAnimationWindow *pAnim = dynamic_cast<CQAnimationWindow *>(window);
 

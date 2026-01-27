@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,13 +23,21 @@
 #  include "copasi/lapack/f2c.h"
 # endif
 
+#ifdef min
+# undef min
+#endif // min
+
+#ifdef max
+# undef max
+#endif // max
+
 //template<class T>
 //inline const T& max(const T& a, const T& b)
-//{ return a > b ? a : b; }
+//{return a > b ? a : b;}
 //
 //template<class T>
 //inline const T& min(const T& a, const T& b)
-//{ return a < b ? a : b; }
+//{return a < b ? a : b;}
 
 // Matrix Triangularization by Gaussian Elimination
 int dec_(integer n, double **A, int *ip);
@@ -74,6 +82,5 @@ void solbc_(integer n, double **AR, double **AI, int ml, int mu,
 
 // reduces a submatrix to upper Hessenberg form
 void elmhes_(integer n, int low, int igh, double **A, int *inter);
-
 
 #endif /* decsol_h */

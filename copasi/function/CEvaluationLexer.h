@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,6 +45,9 @@
 #else
 # define YYDEBUG 0
 #endif // COPASI_DEBUG
+
+#define yychar CEvaluationParserchar
+#define yynerrs CEvaluationParsernerrs
 
 /**
  * This is a base class for the CEvaluationLexer adding member
@@ -91,6 +99,8 @@ protected:
   CEvaluationNode::ValueType mValueType;
   std::vector< CEvaluationNode * > * mpNodeList;
   size_t mPosition;
+  int yychar;
+  int yynerrs;
 
 private:
   void correctErrorPosition()
@@ -110,7 +120,7 @@ private:
   }
 };
 
-class CEvaluationLexer : public FlexLexer, public yyYaccParser
+class yyFlexLexer : public FlexLexer, public yyYaccParser
 {
 public:
   // arg_yyin and arg_yyout default to the cin and cout, but we

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -568,6 +568,22 @@ CMathContainer::CMathContainer(const CMathContainer & src)
   mOldValues.initialize(mValues);
   mOldObjects.initialize(mObjects);
 
+  // mRootProcessors points to the source processors
+  initializeRootProcessors();
+
+  // If we have ignored roots we need to resize all relevant vectors
+  if (mNumTotalRootsIgnored)
+    {
+      size_t RootCount = mSize.nEventRoots - mNumTotalRootsIgnored;
+
+      mEventRoots.initialize(RootCount, mEventRoots.array());
+      mEventRootStates.initialize(RootCount, mEventRootStates.array());
+      mRootProcessors.resize(RootCount, true);
+      mRootIsDiscrete.resize(RootCount, true);
+      mRootIsTimeDependent.resize(RootCount, true);
+      mRootDerivatives.resize(RootCount, true);
+    }
+
   map();
 
 #ifdef USE_JIT
@@ -699,16 +715,24 @@ void CMathContainer::setState(const CVectorCore< C_FLOAT64 > & state)
 
 bool CMathContainer::isStateValid() const
 {
-  const C_FLOAT64 * pIt = mState.array();
-  const C_FLOAT64 * pEnd = pIt + mState.size();
+  const C_FLOAT64 * pIt = mState.begin();
+  const C_FLOAT64 * pEnd = mState.end();
 
   for (; pIt != pEnd; ++pIt)
-    {
-      if (std::isnan(*pIt))
-        {
-          return false;
-        }
-    }
+    if (std::isnan(*pIt))
+      return false;
+
+  return true;
+}
+
+bool CMathContainer::areRootsValid() const
+{
+  const C_FLOAT64 * pIt = mEventRoots.begin();
+  const C_FLOAT64 * pEnd = mEventRoots.end();
+
+  for (; pIt != pEnd; ++pIt)
+    if (std::isnan(*pIt))
+      return false;
 
   return true;
 }
@@ -1038,6 +1062,14 @@ void CMathContainer::applyInitialValues()
   std::cout << "Container Values: " << mValues << std::endl;
 #endif // DEBUG_OUTPUT
   return;
+}
+
+void CMathContainer::resetEventsFound()
+{
+  updateRootValues(false);
+  CVector< C_INT > FoundRoots(mEventRoots.size());
+  FoundRoots = 0;
+  processRoots(false, FoundRoots);
 }
 
 void CMathContainer::updateSimulatedValues(const bool & useMoieties)
@@ -1549,6 +1581,9 @@ void CMathContainer::compile()
   createValueChangeProhibited();
   createUpdateSequences();
 
+  // delayed finish from allocate until here, where everything is created
+  finishResize();
+
   CMathReaction * pReaction = mReactions.array();
   CDataVector< CReaction >::const_iterator itReaction = mpModel->getReactions().begin();
   CDataVector< CReaction >::const_iterator endReaction = mpModel->getReactions().end();
@@ -1623,6 +1658,11 @@ void CMathContainer::compile()
 const CModel & CMathContainer::getModel() const
 {
   return *mpModel;
+}
+
+const std::chrono::steady_clock::time_point & CMathContainer::getCompileTime() const
+{
+  return mCompileTime;
 }
 
 const size_t & CMathContainer::getCountFixedEventTargets() const
@@ -2130,7 +2170,7 @@ void CMathContainer::allocate()
   Size.pObject = NULL;
 
   resize(Size);
-  finishResize();
+  //finishResize();
 
   mValues = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }
@@ -2653,6 +2693,7 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
                   break;
 
                 case CMath::SimulationType::__SIZE:
+                case CMath::SimulationType::Undefined:
                   break;
               }
 
@@ -2770,6 +2811,7 @@ void CMathContainer::createApplyInitialValuesSequence()
                   break;
 
                 case CMath::SimulationType::__SIZE:
+                case CMath::SimulationType::Undefined:
                   break;
               }
 
@@ -2809,8 +2851,9 @@ void CMathContainer::createApplyInitialValuesSequence()
 
       for (; pDiscontinuity != pDiscontinuityEnd; ++pDiscontinuity)
         {
-          if (static_cast< CMathObject * >(pDiscontinuity)->getValueType() == CMath::ValueType::Discontinuous &&
-              UpdatedDiscontinuities.find(pDiscontinuity) == UpdatedDiscontinuities.end())
+          if (static_cast< CMathObject * >(pDiscontinuity)->getValueType() == CMath::ValueType::Discontinuous
+              && pDiscontinuity->canCalculateValue()
+              && UpdatedDiscontinuities.find(pDiscontinuity) == UpdatedDiscontinuities.end())
             {
               OutofDateDiscontinuities.insert(pDiscontinuity);
             }
@@ -3018,9 +3061,14 @@ void CMathContainer::analyzeRoots()
   mRootDerivativesState.resize(mState.size());
   mRootDerivativesState = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
+  initializeRootProcessors();
+}
+
+void CMathContainer::initializeRootProcessors()
+{
   CMathEvent * pEvent = mEvents.array();
   CMathEvent * pEventEnd = pEvent + mEvents.size();
-  pRoot = getMathObject(mEventRoots.array());
+  CMathObject * pRoot = getMathObject(mEventRoots.array());
   CMathEvent::CTrigger::CRootProcessor ** pRootProcessorPtr = mRootProcessors.array();
 
   for (; pEvent != pEventEnd; ++pEvent)
@@ -3387,7 +3435,9 @@ void CMathContainer::processRoots(const bool & equality,
   // Compare Before and the current mEventTriggers
   for (; pEvent != pEventEnd; ++pEvent, ++pBefore, ++pAfter)
     {
-      if (*pBefore != *pAfter)
+      if (*pBefore != *pAfter
+          && !std::isnan(*pBefore)
+          && !std::isnan(*pAfter))
         {
           // We fire on any change. It is the responsibility of the event to add or remove
           // actions to the process queue.
@@ -3445,7 +3495,9 @@ void CMathContainer::processRoots(const CVector< C_INT > & rootsFound)
   // Compare Before and the current mEventTriggers
   for (; pEvent != pEventEnd; ++pEvent, ++pBefore, ++pAfter)
     {
-      if (*pBefore != *pAfter)
+      if (*pBefore != *pAfter
+          && !std::isnan(*pBefore)
+          && !std::isnan(*pAfter))
         {
           // We fire on any change. It is the responsibility of the event to add or remove
           // actions to the process queue.
@@ -5182,6 +5234,23 @@ void CMathContainer::ignoreDiscontinuityEvent(CMathEvent * pEvent)
       UnusedObjects.insert(pObject);
     }
 
+  // Ignore the ignored event root states
+  createRelocation(NumRootsToKeep, NumRootsToKeep, Relocate, Relocations);
+  // Skip the ignored roots
+  createRelocation(0, NumRootsIgnored, Relocate, Relocations);
+  // Move the remaining roots
+  createRelocation(mSize.nEventRoots - NumRootsToKeep - NumRootsIgnored,
+                   mSize.nEventRoots - NumRootsToKeep - NumRootsIgnored,
+                   Relocate, Relocations);
+  // Align with the existing objects
+  createRelocation(NumRootsIgnored, 0, Relocate, Relocations);
+
+  // Add the ignored event root states objects to the unused objects
+  for (CMathObject * pObject = Relocate.pObjectStart - NumRootsIgnored; pObject != Relocate.pObjectStart; ++pObject)
+    {
+      UnusedObjects.insert(pObject);
+    }
+
   if (Relocate.pValueStart != Relocate.pValueEnd)
     {
       Relocations.push_back(Relocate);
@@ -5198,11 +5267,18 @@ void CMathContainer::ignoreDiscontinuityEvent(CMathEvent * pEvent)
     }
 
   mNumTotalRootsIgnored += NumRootsIgnored;
-  mEventRoots.initialize(mEventRoots.size() - mNumTotalRootsIgnored, mEventRoots.array());
-  mEventRootStates.initialize(mEventRootStates.size() - mNumTotalRootsIgnored, mEventRootStates.array());
-  mRootProcessors.resize(mRootProcessors.size() - mNumTotalRootsIgnored, true);
-  mRootIsDiscrete.resize(mRootIsDiscrete.size() - mNumTotalRootsIgnored, true);
-  mRootIsTimeDependent.resize(mRootIsTimeDependent.size() - mNumTotalRootsIgnored, true);
+
+  if (NumRootsIgnored)
+    {
+      size_t RootCount = mSize.nEventRoots - mNumTotalRootsIgnored;
+
+      mEventRoots.initialize(RootCount, mEventRoots.array());
+      mEventRootStates.initialize(RootCount, mEventRootStates.array());
+      mRootProcessors.resize(RootCount, true);
+      mRootIsDiscrete.resize(RootCount, true);
+      mRootIsTimeDependent.resize(RootCount, true);
+      mRootDerivatives.resize(RootCount, true);
+    }
 }
 
 std::vector< CMath::sRelocate > CMathContainer::resize(CMathContainer::sSize & size)

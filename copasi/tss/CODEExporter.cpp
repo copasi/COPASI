@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -231,7 +231,7 @@ CDataObject* CODEExporter::findObjectFromRefresh(const CDataObject * tmp, const 
       CDataContainer* container;
       container = (CDataContainer*)tmp;
 
-      CDataContainer::objectMap::const_iterator it = container->getObjects().begin();
+      CDataContainer::ObjectMap::const_iterator it = container->getObjects().begin();
 
       for (; it != container->getObjects().end(); ++it)
         {

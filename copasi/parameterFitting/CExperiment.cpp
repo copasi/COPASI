@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -92,6 +92,7 @@ CExperiment::CExperiment(const CDataContainer * pParent,
   mpLastRow(NULL),
   mpTaskType(NULL),
   mpNormalizeWeightsPerExperiment(NULL),
+  mpTimeSeriesStartInSteadyState(NULL),
   mpSeparator(NULL),
   mpWeightMethod(NULL),
   mpRowOriented(NULL),
@@ -143,6 +144,7 @@ CExperiment::CExperiment(const CExperiment & src,
   mpLastRow(NULL),
   mpTaskType(NULL),
   mpNormalizeWeightsPerExperiment(NULL),
+  mpTimeSeriesStartInSteadyState(NULL),
   mpSeparator(NULL),
   mpWeightMethod(NULL),
   mpRowOriented(NULL),
@@ -195,6 +197,7 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
   mpLastRow(NULL),
   mpTaskType(NULL),
   mpNormalizeWeightsPerExperiment(NULL),
+  mpTimeSeriesStartInSteadyState(NULL),
   mpSeparator(NULL),
   mpWeightMethod(NULL),
   mpRowOriented(NULL),
@@ -258,6 +261,7 @@ CExperiment & CExperiment::operator = (const CExperiment & rhs)
   mpLastRow = &getValue< unsigned C_INT32 >("Last Row");
   mpTaskType = (CTaskEnum::Task *) &getValue< unsigned C_INT32 >("Experiment Type");
   mpNormalizeWeightsPerExperiment = &getValue< bool >("Normalize Weights per Experiment");
+  mpTimeSeriesStartInSteadyState = &getValue< unsigned C_INT32 >("Time Series Start in Steady State");
   mpSeparator = &getValue< std::string >("Separator");
   mpWeightMethod = (WeightMethod *) &getValue< unsigned C_INT32 >("Weight Method");
   mpRowOriented = &getValue< bool >("Data is Row Oriented");
@@ -278,7 +282,7 @@ void CExperiment::initializeParameter()
   mpLastRow = assertParameter("Last Row", CCopasiParameter::Type::UINT, (unsigned C_INT32) InvalidIndex);
   mpTaskType = (CTaskEnum::Task *) assertParameter("Experiment Type", CCopasiParameter::Type::UINT, (unsigned C_INT32) CTaskEnum::Task::UnsetTask);
   mpNormalizeWeightsPerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::Type::BOOL, true);
-
+  mpTimeSeriesStartInSteadyState = assertParameter("Time Series Start in Steady State", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2);
   mpSeparator = assertParameter("Separator", CCopasiParameter::Type::STRING, std::string("\t"));
   mpWeightMethod = (WeightMethod *) assertParameter("Weight Method", CCopasiParameter::Type::UINT, (unsigned C_INT32) MEAN_SQUARE);
   mpRowOriented = assertParameter("Data is Row Oriented", CCopasiParameter::Type::BOOL, (bool) true);
@@ -735,7 +739,8 @@ bool CExperiment::compile(const CMathContainer * pMathContainer)
   size_t LastMappedColumn = mpObjectMap->getLastColumn();
   const CVector< const CDataObject * > & Objects = mpObjectMap->getDataObjects();
 
-  size_t i, imax = mpObjectMap->getLastNotIgnoredColumn();
+  size_t i;
+  unsigned C_INT32 imax = (unsigned C_INT32)mpObjectMap->getLastNotIgnoredColumn();
 
   if (*mpNumColumns < imax)
     *mpNumColumns = imax;
@@ -879,7 +884,7 @@ bool CExperiment::read(std::istream & in,
   size_t i, imax = mpObjectMap->size();
 
   if (*mpNumColumns < imax)
-    *mpNumColumns = imax;
+    *mpNumColumns = (unsigned int) imax;
 
   //if (*mpNumColumns < imax)
   //  {
@@ -1269,6 +1274,19 @@ bool CExperiment::getNormalizeWeightsPerExperiment() const
     return *mpNormalizeWeightsPerExperiment;
   else
     return true;
+}
+
+void CExperiment::setTimeSeriesStartInSteadyState(bool flag)
+{
+  *mpTimeSeriesStartInSteadyState = flag == true ? 1 : 0;
+}
+
+bool CExperiment::getTimeSeriesStartInSteadyState() const
+{
+  if (!mpTimeSeriesStartInSteadyState)
+    return false;
+
+  return *mpTimeSeriesStartInSteadyState == 1;
 }
 
 const CVector< C_FLOAT64 > & CExperiment::getTimeData() const

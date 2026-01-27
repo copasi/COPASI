@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2003 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 //***  In this file I have put "//+++" in all places where something has to be added
 //***  if a new scan item is introduced.
@@ -228,7 +228,6 @@ bool ScanWidget::loadTaskProtected()
   return true;
 }
 
-
 CScanProblem::Type intToType(int intType)
 {
   CScanProblem::Type type;
@@ -341,7 +340,7 @@ void ScanWidget::addScanItemParameterSet()
 {
   std::map< QString, const CModelParameterSet * > pSets;
   auto & sets = mpDataModel->getModel()->getModelParameterSets();
-  
+
   if (sets.empty())
     return;
 
@@ -480,7 +479,7 @@ bool ScanWidget::taskFinishedEvent()
 
   if (!pProblem) return false;
 
-  if (pProblem->getSubtask() != CTaskEnum::Task::parameterFitting)
+  if (pProblem->getSubtask() != CTaskEnum::Task::parameterFitting && pProblem->getSubtask() != CTaskEnum::Task::optimization)
     return false;
 
   protectedNotify(ListViews::ObjectType::MODELPARAMETERSET, ListViews::ADD);

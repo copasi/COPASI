@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,9 +36,6 @@
 #include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/output/COutputHandler.h"
-
-#undef min
-#undef max
 
 class CPlotDataChannelSpec : public CRegisteredCommonName
 {

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -300,40 +300,43 @@ bool CEvaluationNode::isKeyword(const std::string & str)
   return false;
 }
 
-CEvaluationNode::CEvaluationNode():
-  CCopasiNode<Data>(""),
-  mMainType(MainType::INVALID),
-  mSubType(SubType::INVALID),
-  mValueType(ValueType::Unknown),
-  mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-  mpValue(NULL),
-  mPrecedence(PRECEDENCE_DEFAULT)
+CEvaluationNode::CEvaluationNode()
+  : CCopasiNode< Data >("")
+  , mMainType(MainType::INVALID)
+  , mSubType(SubType::INVALID)
+  , mValueType(ValueType::Unknown)
+  , mValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mpValue(NULL)
+  , mpTree(nullptr)
+  , mPrecedence(PRECEDENCE_DEFAULT)
 {
   mpValue = & mValue;
 }
 
 CEvaluationNode::CEvaluationNode(const MainType & mainType,
                                  const SubType & subType,
-                                 const Data & data):
-  CCopasiNode<Data>(data),
-  mMainType(mainType),
-  mSubType(subType),
-  mValueType(ValueType::Unknown),
-  mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-  mpValue(NULL),
-  mPrecedence(PRECEDENCE_DEFAULT)
+                                 const Data & data)
+  : CCopasiNode< Data >(data)
+  , mMainType(mainType)
+  , mSubType(subType)
+  , mValueType(ValueType::Unknown)
+  , mValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mpValue(NULL)
+  , mpTree(nullptr)
+  , mPrecedence(PRECEDENCE_DEFAULT)
 {
   mpValue = & mValue;
 }
 
-CEvaluationNode::CEvaluationNode(const CEvaluationNode & src):
-  CCopasiNode<Data>(src),
-  mMainType(src.mMainType),
-  mSubType(src.mSubType),
-  mValueType(src.mValueType),
-  mValue(src.mValue),
-  mpValue(NULL),
-  mPrecedence(src.mPrecedence)
+CEvaluationNode::CEvaluationNode(const CEvaluationNode & src)
+  : CCopasiNode< Data >(src)
+  , mMainType(src.mMainType)
+  , mSubType(src.mSubType)
+  , mValueType(src.mValueType)
+  , mValue(src.mValue)
+  , mpValue(NULL)
+  , mpTree(nullptr)
+  , mPrecedence(src.mPrecedence)
 {
   mpValue = & mValue;
 }
@@ -882,6 +885,7 @@ bool CEvaluationNode::operator<(const CEvaluationNode& right) const
       case MainType::INVALID:
         break;
 
+      case MainType::UNIT:
       case MainType::__SIZE:
         break;
     }

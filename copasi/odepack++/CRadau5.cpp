@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -15,6 +15,7 @@
  http://www.netlib.org/f2c/libf2c.zip
  */
 #include <cmath>
+#include <algorithm>
 
 #include "copasi/copasi.h"
 
@@ -59,13 +60,12 @@ static double c_b103 = 1.;
 static double c_b113 = .8;
 static double c_b115 = .25;
 
-CRadau5::CRadau5(): CInternalSolver()
-{
-}
+CRadau5::CRadau5()
+  : Cxerrwd(true)
+{}
 
 CRadau5::~CRadau5()
-{
-}
+{}
 
 /* Subroutine */
 C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
@@ -745,8 +745,8 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
       /* Computing MAX */
       /* Computing MIN */
       d__3 = .03, d__4 = pow_dd(&tolst, &c_b54);
-      d__1 = uround * 10 / tolst, d__2 = min(d__3, d__4);
-      fnewt = max(d__1, d__2);
+      d__1 = uround * 10 / tolst, d__2 = std::min(d__3, d__4);
+      fnewt = std::max(d__1, d__2);
     }
   else
     {
@@ -905,7 +905,7 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
         }
     }
 
-  ldmas2 = max(1, ldmas);
+  ldmas2 = std::max< C_INT >(1, ldmas);
 
   /* ------ HESSENBERG OPTION ONLY FOR EXPLICIT EQU. WITH FULL JACOBIAN */
   if ((implct || jband) && ijob == 7)
@@ -1219,7 +1219,7 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
   posneg = d_sign(&c_b103, &d__1);
   /* Computing MIN */
   d__2 = abs(*hmax), d__3 = (d__1 = *xend - *x, abs(d__1));
-  hmaxn = min(d__2, d__3);
+  hmaxn = std::min(d__2, d__3);
 
   if (abs(*h__) <= *uround * 10.)
     {
@@ -1228,7 +1228,7 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
 
   /* Computing MIN */
   d__1 = abs(*h__);
-  *h__ = min(d__1, hmaxn);
+  *h__ = std::min(d__1, hmaxn);
   *h__ = d_sign(h__, &posneg);
   hold = *h__;
   reject = FALSE_;
@@ -1316,7 +1316,7 @@ L10:
         {
           /* --- JACOBIAN IS BANDED */
           mujacp = *mujac + 1;
-          md = min(linal_1.mbjac, *m2);
+          md = std::min(linal_1.mbjac, *m2);
           i__1 = *m1 / *m2 + 1;
 
           for (mm = 1; mm <= i__1; ++mm)
@@ -1330,7 +1330,7 @@ L12:
                   f1[j] = y[j];
                   /* Computing MAX */
                   d__2 = 1e-5, d__3 = (d__1 = y[j], abs(d__1));
-                  f2[j] = sqrt(*uround * max(d__2, d__3));
+                  f2[j] = sqrt(*uround * std::max(d__2, d__3));
                   y[j] += f2[j];
                   j += md;
 
@@ -1344,11 +1344,11 @@ L12:
                   j1 = k;
                   /* Computing MAX */
                   i__3 = 1, i__4 = j1 - *mujac;
-                  lbeg = max(i__3, i__4) + *m1;
+                  lbeg = std::max(i__3, i__4) + *m1;
 L14:
                   /* Computing MIN */
                   i__3 = *m2, i__4 = j1 + *mljac;
-                  lend = min(i__3, i__4) + *m1;
+                  lend = std::min(i__3, i__4) + *m1;
                   y[j] = f1[j];
                   mujacj = mujacp - j1 - *m1;
                   i__3 = lend;
@@ -1380,7 +1380,7 @@ L14:
               ysafe = y[i__];
               /* Computing MAX */
               d__1 = 1e-5, d__2 = abs(ysafe);
-              delt = sqrt(*uround * max(d__1, d__2));
+              delt = sqrt(*uround * std::max(d__1, d__2));
               y[i__] = ysafe + delt;
               (*fcn)(n, x, &y[1], &cont[1], &rpar[1], &ipar[1]);
               i__2 = *n;
@@ -1509,7 +1509,7 @@ L30:
   /*  LOOP FOR THE SIMPLIFIED NEWTON ITERATION */
   /* *** *** *** *** *** *** *** */
   newt = 0;
-  d__1 = max(faccon, *uround);
+  d__1 = std::max(faccon, *uround);
   faccon = pow_dd(&d__1, &c_b113);
   theta = abs(*thet);
 L40:
@@ -1606,8 +1606,8 @@ L40:
           if (dyth >= 1.)
             {
               /* Computing MAX */
-              d__1 = 1e-4, d__2 = min(20., dyth);
-              qnewt = max(d__1, d__2);
+              d__1 = 1e-4, d__2 = std::min(20., dyth);
+              qnewt = std::max(d__1, d__2);
               d__1 = -1. / (*nit + 4. - 1 - newt);
               hhfac = pow_dd(&qnewt, &d__1) * .8;
               *h__ = hhfac * *h__;
@@ -1628,7 +1628,7 @@ L40:
         }
     }
 
-  dynold = max(dyno, *uround);
+  dynold = std::max(dyno, *uround);
   i__1 = *n;
 
   for (i__ = 1; i__ <= i__1; ++i__)
@@ -1658,12 +1658,12 @@ L40:
   /* --- WE REQUIRE .2<=HNEW/H<=8. */
   /* Computing MIN */
   d__1 = *safe, d__2 = cfac / (newt + (*nit << 1));
-  fac = min(d__1, d__2);
+  fac = std::min(d__1, d__2);
   /* Computing MAX */
   /* Computing MIN */
   d__3 = *facl, d__4 = pow_dd(&err, &c_b115) / fac;
-  d__1 = *facr, d__2 = min(d__3, d__4);
-  quot = max(d__1, d__2);
+  d__1 = *facr, d__2 = std::min(d__3, d__4);
+  quot = std::max(d__1, d__2);
   hnew = *h__ / quot;
 
   /* *** *** *** *** *** *** *** */
@@ -1685,14 +1685,14 @@ L40:
               d__1 = d__2 * d__2 / erracc;
               facgus = hacc / *h__ * pow_dd(&d__1, &c_b115) / *safe;
               /* Computing MAX */
-              d__1 = *facr, d__2 = min(*facl, facgus);
-              facgus = max(d__1, d__2);
-              quot = max(quot, facgus);
+              d__1 = *facr, d__2 = std::min(*facl, facgus);
+              facgus = std::max(d__1, d__2);
+              quot = std::max(quot, facgus);
               hnew = *h__ / quot;
             }
 
           hacc = *h__;
-          erracc = max(.01, err);
+          erracc = std::max(.01, err);
         }
 
       xold = *x;
@@ -1768,15 +1768,15 @@ L40:
       ++(*nfcn);
       /* Computing MIN */
       d__1 = abs(hnew);
-      hnew = posneg * min(d__1, hmaxn);
+      hnew = posneg * std::min(d__1, hmaxn);
       hopt = hnew;
-      hopt = min(*h__, hnew);
+      hopt = std::min(*h__, hnew);
 
       if (reject)
         {
           /* Computing MIN */
           d__1 = abs(hnew), d__2 = abs(*h__);
-          hnew = posneg * min(d__1, d__2);
+          hnew = posneg * std::min(d__1, d__2);
         }
 
       reject = FALSE_;

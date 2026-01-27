@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,20 +37,20 @@
 #include "copasi/utilities/CSort.h"
 #include "copasi/core/CDataObjectReference.h"
 #include "copasi/utilities/CMethodFactory.h"
+#include "copasi/utilities/CProblemFactory.h"
 
 COptMethodSS::COptMethodSS(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
-                           const CTaskEnum::Task & taskType):
-  COptPopulationMethod(pParent, methodType, taskType, false),
-  mPool(0),
-  mPoolVal(0),
-  mPoolSize(0),
-  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mStopAfterStalledGenerations(0),
-  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mBestIndex(C_INVALID_INDEX),
-  mpOptProblemLocal(NULL),
-  mpLocalMinimizer(NULL)
+                           const CTaskEnum::Task & taskType,
+                           const bool & parallel)
+  : COptPopulationMethod(pParent, methodType, taskType, parallel)
+  , mPool(0)
+  , mPoolVal(0)
+  , mPoolSize(0)
+  , mStopAfterStalledGenerations(0)
+  , mBestIndex(C_INVALID_INDEX)
+  , mpLocalMinimizer(NULL)
+  , mpLocalProblem(NULL)
 {
   assertParameter("Number of Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
   assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
@@ -61,24 +61,25 @@ COptMethodSS::COptMethodSS(const CDataContainer * pParent,
 }
 
 COptMethodSS::COptMethodSS(const COptMethodSS & src,
-                           const CDataContainer * pParent):
-  COptPopulationMethod(src, pParent),
-  mPool(0),
-  mPoolVal(0),
-  mPoolSize(0),
-  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mStopAfterStalledGenerations(0),
-  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mBestIndex(C_INVALID_INDEX),
-  mpOptProblemLocal(NULL),
-  mpLocalMinimizer(NULL)
+                           const CDataContainer * pParent,
+                           const bool & parallel)
+  : COptPopulationMethod(src, pParent, parallel)
+  , mPool(0)
+  , mPoolVal(0)
+  , mPoolSize(0)
+  , mStopAfterStalledGenerations(0)
+  , mBestIndex(C_INVALID_INDEX)
+  , mpLocalMinimizer(NULL)
+  , mpLocalProblem(NULL)
 {
   // remove eventual existing parameters from the release version.
   initObjects();
 }
 
 COptMethodSS::~COptMethodSS()
-{cleanup();}
+{
+  cleanup();
+}
 
 // virtual
 bool COptMethodSS::elevateChildren()
@@ -99,8 +100,9 @@ bool COptMethodSS::initialize()
 
   if (!COptPopulationMethod::initialize())
     {
-      if (mProcessReport)
-        mProcessReport.finishItem(mhGenerations);
+      if (mProcessReport
+          && !mProcessReport.finishItem(mhGenerations))
+        signalStop();
 
       return false;
     }
@@ -125,6 +127,11 @@ bool COptMethodSS::initialize()
 
   // calculate the number of individuals in population
   mPopulationSize = (C_INT32) ceil(1.0 + sqrt(1.0 + 40.0 * mVariableSize) / 2.0);
+
+  mpLocalProblem = dynamic_cast< COptProblem * >(CProblemFactory::copy(mProblemContext.master(), getObjectParent()));
+  mpLocalProblem->setMathContainer(mpContainer);
+  mpLocalProblem->initializeSubtaskBeforeOutput();
+  mpLocalProblem->initialize();
 
   if (mPopulationSize % 2 != 0) mPopulationSize++;
 
@@ -157,35 +164,12 @@ bool COptMethodSS::initialize()
       mpLocalMinimizer->setValue("Rho", (C_FLOAT64) 0.2);
     }
 
-  // local minimization problem (starts as a copy of the current problem)
-  if (pFitProblem != NULL)
-    {
-      // this is a least squares problem (param estimation)
-      mpOptProblemLocal = new CFitProblem(*pFitProblem, getObjectParent());
-    }
-  else
-    {
-      // this is a generic optimisation problem
-      mpOptProblemLocal = new COptProblem(*mProblemContext.master(), getObjectParent());
-    }
-
-  // the local optimization method should not have a callback
-  mpOptProblemLocal->setCallBack(NULL);
-
-  // we also have to initialize the subtask
-  mpOptProblemLocal->initializeSubtaskBeforeOutput();
-  // initialize it
-  mpOptProblemLocal->initialize();
-  // no statistics to be calculated in the local problems
-  mpOptProblemLocal->setCalculateStatistics(false);
-  // do not randomize the initial values
-  mpOptProblemLocal->setRandomizeStartValues(false);
-  mpLocalMinimizer->setProblem(mpOptProblemLocal);
+  mpLocalMinimizer->setProblem(mpLocalProblem);
 
   // create matrix for the RefSet (population)
   mIndividuals.resize(mPopulationSize);
 
-  for (i = 0; i < (size_t)mPopulationSize; ++i)
+  for (i = 0; i < (size_t) mPopulationSize; ++i)
     mIndividuals[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   // create vector for function values (of RefSet members)
@@ -199,7 +183,7 @@ bool COptMethodSS::initialize()
   // create matrix for the RefSet children
   mChild.resize(mPopulationSize);
 
-  for (i = 0; i < (size_t)mPopulationSize; ++i)
+  for (i = 0; i < (size_t) mPopulationSize; ++i)
     mChild[i] = new CVector< C_FLOAT64 >(mVariableSize);
 
   // create vector for function values (of child members)
@@ -229,9 +213,6 @@ bool COptMethodSS::initialize()
   mPoolVal.resize(mPoolSize);
   mPoolVal = std::numeric_limits<C_FLOAT64>::infinity();
 
-  // best is infinity, so anything will improve it
-  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
-
   // array for frequencies
   // initialized at 1
   mFreq.resize(mVariableSize);
@@ -257,9 +238,8 @@ bool COptMethodSS::cleanup()
 {
   size_t i;
 
-  pdelete(mpOptProblemLocal);
-
   pdelete(mpLocalMinimizer);
+  pdelete(mpLocalProblem);
 
   for (i = 0; i < mChild.size(); i++)
     pdelete(mChild[i]);
@@ -279,55 +259,25 @@ bool COptMethodSS::cleanup()
 bool COptMethodSS::localmin(CVector< C_FLOAT64 > & solution, C_FLOAT64 & fval)
 {
   bool Running = true;
-  unsigned C_INT32 i;
-
-  mpOptProblemLocal->reset();
 
   // first we set up the problem
-  // (optmethod and optproblem already setup in initialization)
-  // let's get the list of parameters
-  std::vector<COptItem *> optitem = mpOptProblemLocal->getOptItemList(true);
+  mpLocalProblem->reset();
+  const std::vector< COptItem * > & OptItemList = mpLocalProblem->getOptItemList(true);
 
   // and set them to the values passed in solution
-  for (i = 0; i < mVariableSize; i++)
-    {
-      optitem[i]->setStartValue(solution[i]);
-    }
-
-  // reset the function counter of the local minimizer
-  mpOptProblemLocal->resetCounters();
+  for (size_t i = 0; i < mVariableSize; i++)
+    OptItemList[i]->setStartValue(solution[i]);
 
   // run it
   Running &= mpLocalMinimizer->optimise();
-  // add the function evaluations taken in local to the global problem
-  mProblemContext.master()->incrementCounters(mpOptProblemLocal->getCounters());
-  // pass the results on to the calling parameters
-  fval = mpOptProblemLocal->getSolutionValue();
 
-  for (i = 0; i < mVariableSize; i++)
+  mProblemContext.master()->aggregateCounters(*mpLocalProblem);
+
+  if (mpLocalProblem->getSolutionValue() < fval)
     {
-      solution[i] = mpOptProblemLocal->getSolutionVariables(true)[i];
+      fval = mpLocalProblem->getSolutionValue();
+      solution = mpLocalProblem->getSolutionVariables(true);
     }
-
-  return Running;
-}
-
-// evaluate the fitness of one individual
-bool COptMethodSS::evaluate(const CVector< C_FLOAT64 > & /* individual */)
-{
-  bool Running = true;
-
-  // We do not need to check whether the parametric constraints are fulfilled
-  // since the parameters are created within the bounds.
-
-  // evaluate the fitness
-  Running &= mProblemContext.master()->calculate();
-
-  // check whether the functional constraints are fulfilled
-  if (!mProblemContext.master()->checkFunctionalConstraints())
-    mEvaluationValue = std::numeric_limits<C_FLOAT64>::infinity();
-  else
-    mEvaluationValue = mProblemContext.master()->getCalculateValue();
 
   return Running;
 }
@@ -335,61 +285,23 @@ bool COptMethodSS::evaluate(const CVector< C_FLOAT64 > & /* individual */)
 // randomize the values of RefSet[i]
 bool COptMethodSS::randomize(C_INT32 i)
 {
-  C_FLOAT64 mn, mx, la; // for boundaries of rnd
   bool Running = true;  // flag for invalid values
 
-  for (C_INT32 j = 0; j < (C_INT32)mVariableSize; ++j)
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
+  CRandom * pRandom = mRandomContext.active();
+
+  for (size_t j = 0; j < mVariableSize; ++j)
     {
-      // get pointers to appropriate elements (easier reading of code)
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
-      C_FLOAT64 & Sol = (*mIndividuals[i])[j];
-      // calculate lower and upper bounds for this variable
-      mn = *OptItem.getLowerBoundValue();
-      mx = *OptItem.getUpperBoundValue();
+      COptItem & OptItem = *OptItemList[j];
+      C_FLOAT64 & Sol = (*mPool[i])[j];
 
-      try
-        {
-          // calculate orders of magnitude of the interval
-          la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
-
-          // determine if linear or log scale
-          if ((mn < 0.0) || (mx <= 0.0))
-            Sol = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
-          else
-            {
-              if (la < 1.8)
-                Sol = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
-              else
-                Sol = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()))
-                          + la * mRandomContext.master()->getRandomCC());
-            }
-        }
-      catch (...)
-        {
-          // if there were errors, let's just stay with the midpoint
-          Sol = (mx + mn) * 0.5;
-        }
-
-      // force it to be within the bounds
-      switch (OptItem.checkConstraint(Sol))
-        {
-          case - 1:
-            Sol = *OptItem.getLowerBoundValue();
-            break;
-
-          case 1:
-            Sol = *OptItem.getUpperBoundValue();
-            break;
-        }
-
-      // We need to set the value here so that further checks take
-      // account of the value.
-      *mProblemContext.master()->getContainerVariables(true)[j] = Sol;
+      Sol = OptItem.getRandomValue(pRandom);
+      OptItem.setItemValue(Sol, COptItem::CheckPolicyFlag::All);
     }
 
   // calculate its fitness
-  Running = evaluate(*mIndividuals[i]);
-  mValues[i] = mEvaluationValue;
+  mValues[i] = evaluate(EvaluationPolicy::Constraints);
+
   // reset the stuck flag
   mStuck[i] = 1;
   return Running;
@@ -399,116 +311,103 @@ bool COptMethodSS::randomize(C_INT32 i)
 // Diversification Generation Method
 bool COptMethodSS::creation(void)
 {
-  C_INT32 i, j, k, l;   // counters
-  C_FLOAT64 mn, mx, la; // for boundaries of rnd
-  C_FLOAT64 sum;        // to calculate a summation
-  C_FLOAT64 a;          // to hold a random number
-  bool Running = true;  // flag for invalid values
-
   // initialize all entries of the Pool.
   // first 4 candidates as a latin hypercube
-  for (i = 0; (i < 4) && Running; i++)
+  for (size_t i = 0; (i < 4) && proceed(); i++)
     {
-      for (j = 0; j < (C_INT32)mVariableSize; ++j)
+      const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
+      CRandom * pRandom = mRandomContext.master();
+
+      for (size_t j = 0; j < mVariableSize; ++j)
         {
           // get pointers to appropriate elements (easier reading of code)
-          const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
+          COptItem & OptItem = *OptItemList[j];
           C_FLOAT64 & Sol = (*mPool[i])[j];
-          // calculate lower and upper bounds for this variable
-          mn = *OptItem.getLowerBoundValue();
-          mx = *OptItem.getUpperBoundValue();
+          const CIntervalValue & Interval = OptItem.getInterval();
 
           try
             {
-              // calculate orders of magnitude of the interval
-              la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
+              if (Interval.isLogarithmic())
+                switch (Interval.getRange())
+                  {
+                  case CIntervalValue::Range::positive:
+                    Sol = pow(10.0, log10(std::max(Interval.getMinimum(), std::numeric_limits< C_FLOAT64 >::min()))
+                                      + 0.25 * Interval.getLogarithmicScale() * ((C_FLOAT64) i + pRandom->getRandomCC()));
+                    break;
 
-              // determine if linear or log scale
-              if ((mn < 0.0) || (mx <= 0.0))
-                Sol = mn + (mRandomContext.master()->getRandomCC() + (C_FLOAT64) i) * (mx - mn) * 0.25;
+                  case CIntervalValue::Range::containsZero:
+                    if (Interval.getLogarithmicScale() > 0)
+                      {
+                        C_FLOAT64 R = 2.0 / (2.0 + Interval.getLogarithmicScale());
+                        C_FLOAT64 Sample = 0.25 * (i + pRandom->getRandomCC());
+
+                        if (Sample < R)
+                          Sol = Interval.getMinimum() * (1.0 - 2.0 * Sample / R);
+                        else
+                          Sol = pow(10.0, log10(std::max(-Interval.getMinimum(), std::numeric_limits< C_FLOAT64 >::min())) + Interval.getLogarithmicScale() * (Sample - R) / (1.0 - R));
+                      }
+                    else
+                      {
+                        C_FLOAT64 R = 2.0 / (2.0 - Interval.getLogarithmicScale());
+                        C_FLOAT64 Sample = 0.25 * (i + pRandom->getRandomCC());
+
+                        if (Sample < R)
+                          Sol = Interval.getMaximum() * (1.0 - 2.0 * Sample / R);
+                        else
+                          Sol = -pow(10.0, log10(std::max(Interval.getMaximum(), std::numeric_limits< C_FLOAT64 >::min())) - Interval.getLogarithmicScale() * (Sample - R) / (1.0 - R));
+                      }
+                    break;
+
+                  case CIntervalValue::Range::negative:
+                    Sol = -pow(10.0, log10(std::max(-Interval.getMaximum(), std::numeric_limits< C_FLOAT64 >::min()))
+                                       + 0.25 * Interval.getLogarithmicScale() * ((C_FLOAT64) i + pRandom->getRandomCC()));
+                    break;
+
+                    case CIntervalValue::Range::invalid:
+                      break;
+                  }
               else
-                {
-                  if (la < 1.8)
-                    Sol = mn + (mRandomContext.master()->getRandomCC() + (C_FLOAT64) i) * (mx - mn) * 0.25;
-                  else
-                    Sol = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()))
-                              + la * 0.25 * (mRandomContext.master()->getRandomCC() + (C_FLOAT64) i));
-                }
+                Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) i + pRandom->getRandomCC());
             }
-          catch (...)
+          catch (const std::exception &)
             {
-              // TODO: this sounds a bit daft in this context, what else could be done, though?
-              Sol = (mx + mn) * 0.5;
+              Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) i + 0.5);
             }
 
-          // force it to be within the bounds
-          switch (OptItem.checkConstraint(Sol))
-            {
-              case - 1:
-                Sol = *OptItem.getLowerBoundValue();
-                break;
-
-              case 1:
-                Sol = *OptItem.getUpperBoundValue();
-                break;
-            }
-
-          // We need to set the value here so that further checks take
-          // account of the value.
-          *mProblemContext.master()->getContainerVariables(true)[j] = Sol;
+          OptItem.setItemValue(Sol, COptItem::CheckPolicyFlag::All);
         }
 
       // calculate its fitness
-      Running &= evaluate(*mPool[i]);
-      mPoolVal[i] = mEvaluationValue;
+      mPoolVal[i] = evaluate(EvaluationPolicy::Constraints);
     }
 
   // next we add the initial guess from the user
-  for (j = 0; j < (C_INT32)mVariableSize; ++j)
-    {
-      const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
-      C_FLOAT64 & Sol = (*mPool[i])[j];
-
-      // get the vector of initial value
-      Sol = OptItem.getStartValue();
-
-      // force it to be within the bounds
-      switch (OptItem.checkConstraint(Sol))
-        {
-          case - 1:
-            Sol = *OptItem.getLowerBoundValue();
-            break;
-
-          case 1:
-            Sol = *OptItem.getUpperBoundValue();
-            break;
-        }
-
-      // We need to set the value here so that further checks take
-      // account of the value.
-      *mProblemContext.master()->getContainerVariables(true)[j] = Sol;
-    }
-
-  // calculate its fitness
-  Running &= evaluate(*mPool[i]);
-  mPoolVal[i] = mEvaluationValue;
-  ++i;
+  createIndividual(C_INVALID_INDEX, COptItem::CheckPolicyFlag::All);
+  mPoolVal[4] = evaluate(EvaluationPolicy::Constraints);
+  *mPool[4] = *mIndividuals[0];
 
   // the remaining entries depend on probabilities
-  for (; (i < (C_INT32)mPoolSize) && Running; ++i)
+#pragma omp parallel for schedule(runtime)
+  for (size_t i = 5; (i < mPoolSize); ++i)
     {
-      for (j = 0; j < (C_INT32)mVariableSize; ++j)
+      if (!proceed())
+        continue;
+
+      const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
+      CRandom * pRandom = mRandomContext.active();
+
+      for (size_t j = 0; j < (C_INT32)mVariableSize; ++j)
         {
           // get pointers to appropriate elements (easier reading of code)
-          COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
+          COptItem & OptItem = *OptItemList[j];
           C_FLOAT64 & Sol = (*mPool[i])[j];
-          // calculate lower and upper bounds for this variable
-          mn = *OptItem.getLowerBoundValue();
-          mx = *OptItem.getUpperBoundValue();
+          const CIntervalValue & Interval = OptItem.getInterval();
 
-          for (k = 0; k < 4; k++)
+          for (size_t k = 0; k < 4; k++)
             {
-              for (l = 0, sum = 0.0 ; l < 4; l++)
+              C_FLOAT64 sum = 0.0;
+
+              for (size_t l = 0 ; l < 4; l++)
                 sum += 1.0 / (*mFreq[j])[l];
 
               mProb[k] = 1.0 / (*mFreq[j])[k] / sum;
@@ -517,51 +416,47 @@ bool COptMethodSS::creation(void)
               if (k > 0) mProb[k] += mProb[k - 1];
             }
 
-          a = mRandomContext.master()->getRandomCC();
+          C_FLOAT64 a = mRandomContext.master()->getRandomCC();
 
-          for (k = 0; k < 4; k++)
+          for (size_t k = 0; k < 4; k++)
             {
               // note that the original is <= but numerically < is essentially the same and faster
               if (a < mProb[k])
                 {
                   try
                     {
-                      // calculate orders of magnitude of the interval
-                      la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
+                      if (Interval.isLogarithmic())
+                        switch (Interval.getRange())
+                          {
+                          case CIntervalValue::Range::positive:
+                            Sol = pow(10.0, log10(std::max(Interval.getMinimum(), std::numeric_limits< C_FLOAT64 >::min()))
+                                              + 0.25 * Interval.getLogarithmicScale() * ((C_FLOAT64) k + pRandom->getRandomCC()));
+                            break;
 
-                      // determine if linear or log scale
-                      if ((mn < 0.0) || (mx <= 0.0))
-                        Sol = mn + (mRandomContext.master()->getRandomCC() + (C_FLOAT64) k) * (mx - mn) * 0.25;
+                          case CIntervalValue::Range::containsZero:
+                            // TODO This is sampled form a normal distribution with mean = (maximum + minimum)/2 and sigma = 3
+                            Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) k + pRandom->getRandomCC());
+                            break;
+
+                          case CIntervalValue::Range::negative:
+                            Sol = -pow(10.0, log10(std::max(-Interval.getMaximum(), std::numeric_limits< C_FLOAT64 >::min()))
+                                              + 0.25 * Interval.getLogarithmicScale() * ((C_FLOAT64) k + pRandom->getRandomCC()));
+                            break;
+
+                            case CIntervalValue::Range::invalid:
+                              break;
+                          }
                       else
-                        {
-                          if (la < 1.8)
-                            Sol = mn + (mRandomContext.master()->getRandomCC() + (C_FLOAT64) k) * (mx - mn) * 0.25;
-                          else
-                            Sol = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()))
-                                      + la * 0.25 * (mRandomContext.master()->getRandomCC() + (C_FLOAT64) k));
-                        }
+                        Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) k + pRandom->getRandomCC());
                     }
-                  catch (...)
+
+                  catch (const std::exception &)
                     {
-                      // TODO: this sounds a bit daft in this context, what else could be done, though?
-                      Sol = (mx + mn) * 0.5;
+                      Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) k + 0.5);
                     }
 
-                  // force it to be within the bounds
-                  switch (OptItem.checkConstraint(Sol))
-                    {
-                      case - 1:
-                        Sol = *OptItem.getLowerBoundValue();
-                        break;
+                  OptItem.setItemValue(Sol, COptItem::CheckPolicyFlag::All);
 
-                      case 1:
-                        Sol = *OptItem.getUpperBoundValue();
-                        break;
-                    }
-
-                  // We need to set the value here so that further checks take
-                  // account of the value.
-                  *mProblemContext.master()->getContainerVariables(true)[j] = Sol;
                   // increase the frequency
                   (*mFreq[j])[k] += 1;
                   break;
@@ -570,8 +465,7 @@ bool COptMethodSS::creation(void)
         }
 
       // calculate its fitness
-      Running &= evaluate(*mPool[i]);
-      mPoolVal[i] = mEvaluationValue;
+      mPoolVal[i] = evaluate(EvaluationPolicy::Constraints);
     }
 
   // at this point the pool is formed
@@ -583,26 +477,23 @@ bool COptMethodSS::creation(void)
   C_INT32 h = mPopulationSize / 2;
 
   // top h are the heap, we first have to sort it
-  for (i = 1; i < h; i++)
+  for (size_t i = 1; i < h; ++i)
     {
       // bubble-up
-      child = i;
+      child = (C_INT32) i;
 
       for (;;)
         {
           if (child == 0) break;
 
-          parent = (C_INT32)floor((double)(child - 1) / 2);
+          parent = (C_INT32) floor((C_FLOAT64)(child - 1) / 2);
 
           if (mPoolVal[child] < mPoolVal[parent])
             {
               // swap with parent
-              tempval = mPoolVal[child];
-              mPoolVal[child] = mPoolVal[parent];
-              mPoolVal[parent] = tempval;
-              tempvec = mPool[child];
-              mPool[child] = mPool[parent];
-              mPool[parent] = tempvec;
+              std::swap(mPoolVal[child], mPoolVal[parent]);
+              std::swap(mPool[child], mPool[parent]);
+
               // make parent the new child
               child = parent;
             }
@@ -610,7 +501,7 @@ bool COptMethodSS::creation(void)
         }
     }
 
-  for (i = h; i < (C_INT32)mPoolSize; ++i)
+  for (size_t i = h; i < (C_INT32) mPoolSize; ++i)
     {
       child = 0;
 
@@ -621,7 +512,7 @@ bool COptMethodSS::creation(void)
             {
               // keep if this leaf is worse than previous
               if (mPoolVal[child] < mPoolVal[leaf])
-                child = leaf;
+                child = (C_INT32) leaf;
             }
         }
 
@@ -630,12 +521,8 @@ bool COptMethodSS::creation(void)
       if (mPoolVal[i] < mPoolVal[child])
         {
           // swap i and h+j
-          tempval = mPoolVal[child];
-          mPoolVal[child] = mPoolVal[i];
-          mPoolVal[i] = tempval;
-          tempvec = mPool[child];
-          mPool[child] = mPool[i];
-          mPool[i] = tempvec;
+          std::swap(mPoolVal[child], mPoolVal[i]);
+          std::swap(mPool[child], mPool[i]);
 
           // now bubble-up
           for (;;)
@@ -647,12 +534,9 @@ bool COptMethodSS::creation(void)
               if (mPoolVal[child] < mPoolVal[parent])
                 {
                   // swap with parent
-                  tempval = mPoolVal[child];
-                  mPoolVal[child] = mPoolVal[parent];
-                  mPoolVal[parent] = tempval;
-                  tempvec = mPool[child];
-                  mPool[child] = mPool[parent];
-                  mPool[parent] = tempvec;
+                  std::swap(mPoolVal[child], mPoolVal[parent]);
+                  std::swap(mPool[child], mPool[parent]);
+
                   // make parent the new child
                   child = parent;
                 }
@@ -664,22 +548,19 @@ bool COptMethodSS::creation(void)
   // since some leafs are not in order in the array, we now do
   // a bubble sort (note: this is best case for bubble sort)
   // we use j because we do not want to change the value of h
-  j = h;
+  size_t j = h;
 
   do
     {
-      k = 0;
+      size_t k = 0;
 
-      for (i = 0; i <= j; i++)
+      for (size_t i = 0; i <= j; ++i)
         {
           if (mPoolVal[i] > mPoolVal[i + 1])
             {
-              tempval = mPoolVal[i];
-              mPoolVal[i] = mPoolVal[i + 1];
-              mPoolVal[i + 1] = tempval;
-              tempvec = mPool[i];
-              mPool[i] = mPool[i + 1];
-              mPool[i + 1] = tempvec;
+              std::swap(mPoolVal[i], mPoolVal[i + 1]);
+              std::swap(mPool[i], mPool[i + 1]);
+
               k = i;
             }
         }
@@ -693,7 +574,7 @@ bool COptMethodSS::creation(void)
   // 1st b/2 are the best ones in the Pool (sorted already)
   // the 2nd b/2 are random (or later can be made diverse by
   // maximising the Euclidean distances)
-  for (i = 0; i < (int)mPopulationSize; i++)
+  for (size_t i = 0; i < (int)mPopulationSize; ++i)
     {
       (*mIndividuals[i]) = (*mPool[i]); // copy the whole vector
       mValues[i] = mPoolVal[i]; // keep the value
@@ -705,7 +586,7 @@ bool COptMethodSS::creation(void)
   // so it is only bottom half that needs sorting.
   sortRefSet(h, mPopulationSize);
   // we're done
-  return Running;
+  return proceed();
 }
 
 // sort the RefSet and associated RefSetVal & Stuck
@@ -714,8 +595,6 @@ void COptMethodSS::sortRefSet(C_INT32 lower, C_INT32 upper)
 {
   C_INT32 i, j, k;
   C_INT32 parent, child;
-  CVector< C_FLOAT64 > *tempvec;
-  C_FLOAT64 tempval;
 
   // Use heap sort
   for (i = lower + 1; i < upper; i++)
@@ -727,20 +606,15 @@ void COptMethodSS::sortRefSet(C_INT32 lower, C_INT32 upper)
         {
           if (child == 0) break;
 
-          parent = (C_INT32)floor((double)(child - 1) / 2);
+          parent = (C_INT32) floor((double)(child - 1) / 2);
 
           if (mValues[child] < mValues[parent])
             {
               // swap with parent
-              tempval = mValues[child];
-              mValues[child] = mValues[parent];
-              mValues[parent] = tempval;
-              tempval = mStuck[child];
-              mStuck[child] = mStuck[parent];
-              mStuck[parent] = (C_INT32)tempval;
-              tempvec = mIndividuals[child];
-              mIndividuals[child] = mIndividuals[parent];
-              mIndividuals[parent] = tempvec;
+              std::swap(mValues[child], mValues[parent]);
+              std::swap(mStuck[child], mStuck[parent]);
+              std::swap(mIndividuals[child], mIndividuals[parent]);
+
               // make parent the new child
               child = parent;
             }
@@ -760,15 +634,10 @@ void COptMethodSS::sortRefSet(C_INT32 lower, C_INT32 upper)
         {
           if (mValues[i] > mValues[i + 1])
             {
-              tempval = mValues[i];
-              mValues[i] = mValues[i + 1];
-              mValues[i + 1] = tempval;
-              tempval = mStuck[i];
-              mStuck[i] = mStuck[i + 1];
-              mStuck[i + 1] = (C_INT32)tempval;
-              tempvec = mIndividuals[i];
-              mIndividuals[i] = mIndividuals[i + 1];
-              mIndividuals[i + 1] = tempvec;
+              std::swap(mValues[i], mValues[i + 1]);
+              std::swap(mStuck[i], mStuck[i + 1]);
+              std::swap(mIndividuals[i], mIndividuals[i + 1]);
+
               k = i;
             }
         }
@@ -783,12 +652,15 @@ void COptMethodSS::sortRefSet(C_INT32 lower, C_INT32 upper)
 bool COptMethodSS::closerChild(C_INT32 i, C_INT32 j, C_FLOAT64 dist)
 {
   C_FLOAT64 mx;
+  const CVector< C_FLOAT64 > & Child = *mChild[i];
+  const CVector< C_FLOAT64 > & Pool = *mPool[j];
 
-  for (C_INT32 k = 0; k < (C_INT32)mVariableSize; ++k)
+  for (size_t k = 0; k < mVariableSize; ++k)
     {
-      mx = (fabs((*mChild[i])[k]) + fabs((*mPool[j])[k])) / 2.0;
+      mx = (fabs(Child[k]) + fabs(Pool[k])) / 2.0;
 
-      if (fabs((*mChild[i])[k] - (*mPool[j])[k]) / mx > dist) return false;
+      if (fabs(Child[k] - Pool[k]) > dist * mx)
+        return false;
     }
 
   return true;
@@ -799,12 +671,15 @@ bool COptMethodSS::closerChild(C_INT32 i, C_INT32 j, C_FLOAT64 dist)
 bool COptMethodSS::closerRefSet(C_INT32 i, C_INT32 j, C_FLOAT64 dist)
 {
   C_FLOAT64 mx;
+  const CVector< C_FLOAT64 > & I = *mIndividuals[i];
+  const CVector< C_FLOAT64 > & J = *mIndividuals[j];
 
-  for (C_INT32 k = 0; k < (C_INT32)mVariableSize; ++k)
+  for (size_t k = 0; k < mVariableSize; ++k)
     {
-      mx = (fabs((*mIndividuals[i])[k]) + fabs((*mIndividuals[j])[k])) / 2.0;
+      mx = (fabs(I[k]) + fabs(J[k])) / 2.0;
 
-      if (fabs((*mIndividuals[i])[k] - (*mIndividuals[j])[k]) / mx > dist) return false;
+      if (fabs(I[k] - J[k]) > dist * mx)
+         return false;
     }
 
   return true;
@@ -814,64 +689,57 @@ bool COptMethodSS::closerRefSet(C_INT32 i, C_INT32 j, C_FLOAT64 dist)
 // this is a sort of (1+1)-ES strategy
 bool COptMethodSS::combination(void)
 {
-  C_INT32 i, j, k;      // counters
-  C_FLOAT64 mn, mx;     // for bounds on parameters
-  C_FLOAT64 beta;       // bias
-  C_FLOAT64 la;         // for orders of magnitude
-  C_FLOAT64 alpha;      // 1 or -1
-  C_FLOAT64 bm2;        // b-2
-  C_FLOAT64 omatb;      // (1-alpha*beta)*0.5
-  C_FLOAT64 dd;         // (x(i) - x(j) ) / 2 * (1-alpha*beta)
-  C_FLOAT64 c1, c2;     // coordinates of the edges of hyperectangle
-  CVector< C_FLOAT64 > xnew, xpr;
-  C_FLOAT64 xnewval, xprval; // to hold temp value of "parent" in go-beyond strategy
+  // calculate a constant
+  const C_FLOAT64 bm2 = C_FLOAT64(mPopulationSize) - 2.0;
+
   C_FLOAT64 lambda = 1.0; // damping factor for go-beyond strategy
   C_INT32 improvement; // count iterations with improvement in go-beyond strategy
-  bool Running = true; // flag for invalid values
 
-  // make xnew large enough
-  xnew.resize(mVariableSize);
-  xpr.resize(mVariableSize);
-  // calculate a constant
-  bm2 = C_FLOAT64(mPopulationSize) - 2.0;
   // signal no children yet
   mChildrenGenerated = false;
 
   // generate children for each member of the population
-  for (i = 0; (i < (int)mPopulationSize) && Running; i++)
+#pragma omp parallel for  reduction(| : mChildrenGenerated) schedule(runtime)
+  for (size_t i = 0; i < mPopulationSize; i++)
     {
+      C_FLOAT64 alpha;      // 1 or -1
+      C_FLOAT64 beta;
+      C_FLOAT64 omatb;
+      C_FLOAT64 dd;         // (x(i) - x(j) ) / 2 * (1-alpha*beta)
+      C_FLOAT64 c1, c2;     // coordinates of the edges of hyperectangle
+      CVector< C_FLOAT64 > xnew(mVariableSize), xpr(mVariableSize);
+      C_FLOAT64 xnewval, xprval; // to hold temp value of "parent" in go-beyond strategy
+
+      const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
+      CRandom * pRandom = mRandomContext.active();
+
       // keep the parent value in childval[i] so that we only accept better than that
       mChildVal[i] = mValues[i];
 
-      for (j = 0; j < (int)mPopulationSize; j++)
+      for (size_t j = 0; j < mPopulationSize; j++)
         {
           // no self-reproduction...
           if (i != j)
             {
-              if (i < j) alpha = 1.0; else alpha = -1.0;
+              if (i < j)
+                alpha = 1.0;
+              else
+                alpha = -1.0;
 
               beta = (fabs(C_FLOAT64(j) - C_FLOAT64(i)) - 1.0) / bm2;
               omatb = (1.0 + alpha * beta) * 0.5;
 
               // generate a child
-              for (k = 0; k < (C_INT32)mVariableSize; ++k)
+              for (size_t k = 0; k < mVariableSize; ++k)
                 {
-                  // get the bounds of this parameter
-                  COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[k];
-                  mn = *OptItem.getLowerBoundValue();
-                  mx = *OptItem.getUpperBoundValue();
+                  COptItem & OptItem = *OptItemList[k];
+                  C_FLOAT64 & Sol = (*mPool[i])[j];
+                  const CIntervalValue & Interval = OptItem.getInterval();
 
                   try
                     {
-                      // calculate orders of magnitude of the interval
-                      if (((*mIndividuals[i])[k] > 0.0) && ((*mIndividuals[j])[k] > 0.0))
-                        {
-                          la = log10((*mIndividuals[i])[k]) - log10(std::max((*mIndividuals[j])[k], std::numeric_limits< C_FLOAT64 >::min()));
-                        }
-                      else
-                        la = 1.0;
-
                       dd = ((*mIndividuals[i])[k] - (*mIndividuals[j])[k]) * omatb;
+
                       // one of the box limits
                       c1 = (*mIndividuals[i])[k] - dd;
 
@@ -879,11 +747,11 @@ bool COptMethodSS::combination(void)
                       switch (OptItem.checkConstraint(c1))
                         {
                           case -1:
-                            c1 = mn;
+                            c1 = Interval.getMinimum();
                             break;
 
                           case 1:
-                            c1 = mx;
+                            c1 = Interval.getMaximum();
                             break;
                         }
 
@@ -894,16 +762,17 @@ bool COptMethodSS::combination(void)
                       switch (OptItem.checkConstraint(c2))
                         {
                           case -1:
-                            c2 = mn;
+                            c2 = Interval.getMinimum();
                             break;
 
                           case 1:
-                            c2 = mx;
+                            c2 = Interval.getMinimum();
                             break;
                         }
 
-                      xnew[k] = c1 + (c2 - c1) * mRandomContext.master()->getRandomCC();
+                      xnew[k] = c1 + (c2 - c1) * pRandom->getRandomCC();
                     }
+
                   catch (...)
                     {
                       // if something failed leave the value intact
@@ -912,21 +781,23 @@ bool COptMethodSS::combination(void)
 
                   // We need to set the value here so that further checks take
                   // account of the value.
-                  *mProblemContext.master()->getContainerVariables(true)[k] = xnew[k];
+                  OptItem.setItemValue(xnew[k], COptItem::CheckPolicyFlag::All);
                 }
 
               // calculate the child's fitness
-              Running &= evaluate(xnew);
+              C_FLOAT64 EvaluationValue = evaluate(EvaluationPolicy::Constraints);
 
               // keep it if it is better than the previous one
-              if (mEvaluationValue < mChildVal[i])
+              if (EvaluationValue < mChildVal[i])
                 {
                   // keep a copy of this vector in mChild
                   (*mChild[i]) = xnew;
                   // and the fitness value
-                  mChildVal[i] = mEvaluationValue;
+                  mChildVal[i] = EvaluationValue;
+
                   // signal that child is better than parent
                   mStuck[i] = 0;
+
                   // signal we have generated a child (improvement)
                   mChildrenGenerated = true;
                 }
@@ -940,18 +811,22 @@ bool COptMethodSS::combination(void)
           // copy the parent
           xpr = (*mIndividuals[i]);
           xprval = mValues[i];
-          lambda = 1.0; // this is really 1/lambda so we can use mult rather than div
-          improvement = 1;
+
+#pragma omp critical (opt_method_SS_combination)
+          {
+            lambda = 1.0; // this is really 1/lambda so we can use mult rather than div
+            improvement = 1;
+          }
 
           // while newval < childval
-          for (; ;)
+          while (proceed())
             {
-              for (k = 0; k < (C_INT32)mVariableSize; ++k)
+              for (size_t k = 0; k < mVariableSize; ++k)
                 {
+                  COptItem & OptItem = *OptItemList[k];
                   dd = (xpr[k] - (*mChild[i])[k]) * lambda;
-                  xnew[k] = (*mChild[i])[k] + dd * mRandomContext.master()->getRandomCC();
+                  xnew[k] = (*mChild[i])[k] + dd * pRandom->getRandomCC();
                   // get the bounds of this parameter
-                  const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[k];
 
                   // put it on the bounds if it had exceeded them
                   switch (OptItem.checkConstraint(xnew[k]))
@@ -967,15 +842,15 @@ bool COptMethodSS::combination(void)
 
                   // We need to set the value here so that further checks take
                   // account of the value.
-                  *mProblemContext.master()->getContainerVariables(true)[k] = xnew[k];
+                  OptItem.setItemValue(xnew[k], COptItem::CheckPolicyFlag::All);
                 }
 
               // calculate the child's fitness
-              Running &= evaluate(xnew);
-              xnewval = mEvaluationValue;
+              xnewval = evaluate(EvaluationPolicy::Constraints);
 
               // if there was no improvement we finish here => exit for(;;)
-              if (mChildVal[i] <= xnewval) break;
+              if (mChildVal[i] <= xnewval)
+                break;
 
               // old child becomes parent
               xpr = (*mChild[i]);
@@ -983,35 +858,38 @@ bool COptMethodSS::combination(void)
               // new child becomes child
               (*mChild[i]) = xnew;
               mChildVal[i] = xnewval;
-              // mark improvement
-              improvement++;
 
-              if (improvement == 2)
+              // mark improvement
+#pragma omp critical (opt_method_SS_combination)
+              if (improvement = 2)
                 {
                   lambda *= 0.5;
                   improvement = 0;
                 }
+              else
+                improvement = 1;
             }
         }
     }
 
-  return Running;
+  return true;
 }
 
 bool COptMethodSS::childLocalMin(void)
 {
-  C_INT32 i, best;
+  size_t i, best;
   C_FLOAT64 bestVal;
   bool Running = true;
 
   // signal nothing found yet
-  best = -1;
+  best = C_INVALID_INDEX;
   bestVal = std::numeric_limits<C_FLOAT64>::infinity();
 
   // find the best child
-  for (i = 0; i < (int)mPopulationSize; i++)
+  for (i = 0; i < mPopulationSize; i++)
     {
-      if ((mStuck[i] == 0) && (mChildVal[i] < bestVal))
+      if ((mStuck[i] == 0)
+          && (mChildVal[i] < bestVal))
         {
           bestVal = mChildVal[i];
           best = i;
@@ -1019,13 +897,14 @@ bool COptMethodSS::childLocalMin(void)
     }
 
   // no child in this iteration? exit now
-  if (best == -1) return true;
+  if (best == C_INVALID_INDEX)
+    return true;
 
   // check if this child is not close to previous ones
-  for (i = 0; i < (C_INT32)mLocalStored; ++i)
+  for (i = 0; i < mLocalStored; ++i)
     {
       // is the other one like me?
-      if (closerChild(best, i, mCloseValue))
+      if (closerChild((C_INT32) best, (C_INT32) i, mCloseValue))
         {
           // it is too close, exit now
           return true;
@@ -1055,13 +934,13 @@ bool COptMethodSS::optimise()
 {
   bool Running = true;
   bool needsort;
-  size_t i, j;
 
   if (!initialize())
     {
       // initialisation failed, we exit
-      if (mProcessReport)
-        mProcessReport.finishItem(mhGenerations);
+      if (mProcessReport
+          && !mProcessReport.finishItem(mhGenerations))
+        signalStop();
 
       return false;
     }
@@ -1073,17 +952,17 @@ bool COptMethodSS::optimise()
 
   // best value is (always) at position zero
   // store that value
-  mBestValue = mValues[0];
-  // set it upstream
-  Running &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0], true);
+  setSolution(mValues[0], *mIndividuals[0], true);
+
   // We found a new best value let's report it.
   mpParentTask->output(COutputInterface::DURING);
 
   // test if the user wants to stop, and do so if needed
   if (!Running)
     {
-      if (mProcessReport)
-        mProcessReport.finishItem(mhGenerations);
+      if (mProcessReport
+          && !mProcessReport.finishItem(mhGenerations))
+        signalStop();
 
       cleanup();
       return true;
@@ -1111,27 +990,28 @@ bool COptMethodSS::optimise()
       // check for stagnation or similarity
       needsort = false;
 
-      for (i = 0; i < (size_t)mPopulationSize; ++i)
+#pragma omp parallel for schedule(runtime) reduction(| : needsort) reduction(& : Running)
+      for (size_t i = 0; i < mPopulationSize; ++i)
         {
           // are we stuck? (20 iterations)
           if (mStuck[i] == 19)
             {
               // substitute this one by a random guess
-              Running &= randomize(i);
+              Running &= randomize((C_INT32) i);
               needsort = true;
               mStuck[i] = 1;
             }
           else
             {
               // check if another RefSet member is similar to us (relative dist 0.1%)
-              for (j = i + 1; j < (size_t)mPopulationSize; ++j)
+              for (size_t j = i + 1; j < mPopulationSize; ++j)
                 {
                   // is the other one like me?
-                  if (closerRefSet(i, j, mCloseValue))
+                  if (closerRefSet((C_INT32) i, (C_INT32) j, mCloseValue))
                     //if (distRefSet(i, j) < 0.01)
                     {
                       // randomize the other one because it has worse value
-                      Running &= randomize(j);
+                      Running &= randomize((C_INT32) j);
                       needsort = true;
                       mStuck[j] = 1;
                     }
@@ -1140,7 +1020,8 @@ bool COptMethodSS::optimise()
         }
 
       // sort the RefSet if needed
-      if (needsort) sortRefSet(0, mPopulationSize);
+      if (needsort)
+        sortRefSet(0, mPopulationSize);
 
       // create children by combination
       Running &= combination();
@@ -1160,7 +1041,7 @@ bool COptMethodSS::optimise()
       // substitute the parents for children or increment stuck counter
       needsort = false;
 
-      for (i = 0; i < (size_t)mPopulationSize; ++i)
+      for (size_t i = 0; i < (size_t) mPopulationSize; ++i)
         {
           // check if child was better than parent
           if (mStuck[i] == 0)
@@ -1184,19 +1065,18 @@ bool COptMethodSS::optimise()
       if (needsort) sortRefSet(0, mPopulationSize);
 
       // have we made any progress?
-      if (mValues[0] < mBestValue)
+      if (mValues[0] < getBestValue())
         {
           Stalled = 0;
 
           // and store that value
-          mBestValue = mValues[0];
-          Running &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0], true);
-          // We found a new best value lets report it.
-          mpParentTask->output(COutputInterface::DURING);
+          setSolution(mValues[0], *mIndividuals[0], true);
         }
 
       if (mProcessReport)
         Running &= mProcessReport.progressItem(mhGenerations);
+
+      aggregateCounters();
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
@@ -1216,17 +1096,12 @@ bool COptMethodSS::optimise()
     }
 
   // has it improved?
-  if (mValues[0] < mBestValue)
-    {
-      // and store that value
-      mBestValue = mValues[0];
-      Running &= mProblemContext.master()->setSolution(mBestValue, *mIndividuals[0], true);
-      // We found a new best value lets report it.
-      mpParentTask->output(COutputInterface::DURING);
-    }
+  if (mValues[0] < getBestValue())
+    setSolution(mValues[0], *mIndividuals[0], true);
 
-  if (mProcessReport)
-    mProcessReport.finishItem(mhGenerations);
+  if (mProcessReport
+      && !mProcessReport.finishItem(mhGenerations))
+    signalStop();
 
   cleanup();
   return true;

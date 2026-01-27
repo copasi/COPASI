@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -258,7 +258,7 @@ const CObjectInterface * CDataArray::getObject(const CCommonName & cn) const
   const CDataObject* pObject = NULL; //this will contain the element reference
 
   //if the reference object already exists, its name will be identical to the index
-  objectMap::range range = mObjects.equal_range(ObjectName);
+  ObjectMap::range range = mObjects.equal_range(ObjectName);
 
   while (range.first != range.second && (*range.first)->getObjectType() != "ElementReference") ++range.first;
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,9 +40,6 @@
 #include "CQProgressItemBar.h"
 #include "CQMessageBox.h"
 #include "copasiui3window.h"
-
-#undef min
-#undef max
 
 // static
 CProgressBar * CProgressBar::create(QWidget* parent, const char* name, Qt::WindowModality windowModality)

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -138,6 +138,8 @@ public:
    * @param CModelParameterGroup * pParent
    */
   void setParent(CModelParameterGroup * pParent);
+
+  virtual void unsetDataModel();
 
   /**
    * Retrieve the parent, i.e., containing group, of the parameter.
@@ -382,7 +384,7 @@ public:
    * @param updateModelIfActive if this is the active parameter set,
    *        write the changes back to the model
    */
-  virtual void setValue(const C_FLOAT64 & value, const CCore::Framework & framework, bool updateModelIfActive = true);
+  void setValue(const C_FLOAT64 & value, const CCore::Framework & framework, bool updateModelIfActive = true) override;
 
   /**
    * Add a pointer to a species parameter to the compartment
@@ -393,6 +395,8 @@ public:
    * Remove a pointer to a species parameter from the compartment
    */
   void removeSpecies(CModelParameterSpecies * pSpecies);
+
+  void unsetDataModel() override;
 
 private:
   /**
@@ -412,7 +416,7 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -423,10 +427,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
+  void createUndoData(CUndoData & undoData,
                               const CUndoData::Type & type,
                               const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
   /**
    * Constructor
@@ -448,18 +452,20 @@ public:
    * Retrieve the name.
    * @return std::string name
    */
-  virtual std::string getName() const;
+  std::string getName() const override;
 
   /**
    * Compile the parameter
    */
-  virtual void compile();
+  void compile() override;
 
   /**
    * Set the CN of the object represented by the parameter
    * @param const CRegisteredCommonName & cn
    */
-  virtual void setCN(const CRegisteredCommonName & cn);
+  void setCN(const CRegisteredCommonName & cn) override;
+
+  void unsetDataModel() override;
 
   /**
    * Set the value of the parameter based on the current framework
@@ -468,19 +474,19 @@ public:
    * @param updateModelIfActive if this is the active parameter set,
    *        write the changes back to the model
    */
-  virtual void setValue(const C_FLOAT64 & value, const CCore::Framework & framework, bool updateModelIfActive = true);
+  void setValue(const C_FLOAT64 & value, const CCore::Framework & framework, bool updateModelIfActive = true) override;
 
   /**
    * Retrieve the value of the parameter based on the current framework
    * @param const Framework & framework
    * @return const double & value
    */
-  virtual const C_FLOAT64 & getValue(const CCore::Framework & framework) const;
+  const C_FLOAT64 & getValue(const CCore::Framework & framework) const override;
 
   /**
    * Update the corresponding model object with the current parameter settings
    */
-  virtual bool updateModel();
+  bool updateModel() override;
 
 private:
   /**
@@ -534,7 +540,9 @@ public:
   /**
    * Compile the parameter
    */
-  virtual void compile();
+  void compile() override;
+
+  void unsetDataModel() override;
 
   /**
    * Retrieve a pointer to the reaction the parameter belongs to.

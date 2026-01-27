@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,6 +27,7 @@
 
 #include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/math/CMathUpdateSequence.h"
+#include "copasi/randomGenerator/CIntervalValue.h"
 
 class CCommonName;
 class COptProblem;
@@ -46,6 +47,14 @@ protected:
   COptItem(const COptItem & src);
 
 public:
+  enum struct CheckPolicy {
+    Bounds,
+    Intervals,
+    __SIZE
+  };
+
+  typedef CFlags< CheckPolicy > CheckPolicyFlag;
+
   /**
    * Specific constructor
    * @param const CDataContainer * pParent
@@ -78,12 +87,12 @@ public:
   /**
    * Calculate the objects value.
    */
-  virtual void calculateValue() override;
+  void calculateValue() override;
 
   /**
    * Retrieve a pointer to the value of the object
    */
-  virtual void * getValuePointer() const override;
+  void * getValuePointer() const override;
 
   /**
    * Set the object of the optimization item.
@@ -102,7 +111,7 @@ public:
    * Retrieve the item object. This may only be called after compile
    * @return const CObjectInterface *
    */
-  const CObjectInterface * getObject() const;
+  const CObjectInterface * getItemObject() const;
 
   /**
    * Retrieve the display name of the optimization item.
@@ -168,7 +177,7 @@ public:
    * @return bool success
    */
   virtual bool compile(CObjectInterface::ContainerList listOfContainer =
-                         CDataContainer::EmptyList);
+                       CDataContainer::EmptyList);
 
   /**
    * This functions check whether the current value is within the limits
@@ -206,17 +215,19 @@ public:
    */
   bool checkUpperBound(const C_FLOAT64 & value) const;
 
+  const CIntervalValue & getInterval() const;
+
   /**
    * Checks whether we have a valid interval.
    * @return bool fulfills
    */
-  bool checkInterval() const;
+  bool isValidInterval() const;
 
   /**
    * Checks whether we have a valid initial value item.
    * @return bool fulfills
    */
-  bool checkIsInitialValue() const;
+  bool isInitialValue() const;
 
   /**
    * Update the prerequisites to point to the optimization items controlling the boundary object
@@ -225,10 +236,18 @@ public:
   void updatePrerequisites(const std::vector< COptItem * > & influencingIntervals);
 
   /**
-   * Retrieve the value of the optimization object.
-   * @return const C_FLOAT64 * objectValue
+   * Set the local value.
+   * @param C_FLOAT64 & value
+   * @param const CheckPolicyFlag & policy
+   * @return bool success
    */
-  virtual const C_FLOAT64 * getObjectValue() const;
+  virtual bool setItemValue(C_FLOAT64 & value, const CheckPolicyFlag & policy);
+
+  /**
+   * Retrieve the local value.
+   * @return const C_FLOAT64 & value
+   */
+  virtual const C_FLOAT64 & getItemValue() const;
 
   /**
    * Retrieve the value of the lower bound.
@@ -275,7 +294,7 @@ public:
    * @param CRandom & Random
    * @return C_FLOAT64 randomValue
    */
-  C_FLOAT64 getRandomValue(CRandom & Random) const;
+  C_FLOAT64 getRandomValue(CRandom * Random) const;
 
   /**
    * Output stream operator
@@ -299,6 +318,8 @@ public:
 
   const std::set< COptItem * > & getDependentItems() const;
 
+  C_FLOAT64 evalMinimizeIntervals(const C_FLOAT64 & value);
+
 private:
   /**
    * Allocates all group parameters and assures that they are
@@ -319,6 +340,8 @@ private:
    * @return bool success
    */
   bool compileUpperBound(const CObjectInterface::ContainerList & listOfContainer);
+
+  bool adjust();
 
   //Attributes:
 protected:
@@ -387,14 +410,11 @@ protected:
    */
   C_FLOAT64 mLastStartValue;
 
-  /**
-   * A value indicating whether the interval is valid
-   */
-  C_FLOAT64 mInterval;
-
   std::set< COptItem * > mDependentItems;
 
   CCore::CUpdateSequence mUpdateInterval;
+
+  CIntervalValue mInterval;
 };
 
 #endif // COPASI_COptItem

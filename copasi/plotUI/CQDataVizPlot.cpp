@@ -1,4 +1,4 @@
-// Copyright (C) 2022 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -637,6 +637,8 @@ void CQDataVizPlot::updateCurves(const size_t & activity)
 
   for (; itCurves != endCurves; ++itCurves, ++k)
     {
+      if (*itCurves == NULL) continue;
+
       auto curve_activity = (*itCurves)->property("activity").toInt();
 
       if (curve_activity != activity)
@@ -1268,7 +1270,7 @@ CQDataVizPlot::contextActionTriggered(QAction* action)
 
   if (title == "Theme")
     {
-      changeTheme(menu->actions().indexOf(action));
+      changeTheme((int)menu->actions().indexOf(action));
     }
   else if (title == "Selection Mode")
     {

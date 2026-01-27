@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -82,7 +82,15 @@ public:
    */
   virtual CQBaseDataModel* getCqDataModel();
 
+  /**
+   * Set the filter expression for the given model.
+   */
   static void setFilterExpression(CQSortFilterProxyModel * model, bool empty, QString Filter);
+
+  /**
+   * @return the object type this widget is associated with
+   */
+  ListViews::ObjectType getObjectType() const;
 
 protected:
   virtual bool enterProtected();

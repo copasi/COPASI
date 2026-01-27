@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -124,7 +124,7 @@ CCopasiTask * CMCAProblem::getSubTask() const
 
   if (isSteadyStateRequested())
     {
-      pSubTask = dynamic_cast< CCopasiTask * >(CRootContainer::getKeyFactory()->get(getValue< std::string >("Steady-State")));
+      pSubTask = dynamic_cast< CSteadyStateTask * >(CRootContainer::getKeyFactory()->get(getValue< std::string >("Steady-State")));
 
       if (pSubTask == nullptr)
         {

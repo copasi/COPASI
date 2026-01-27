@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -55,21 +55,18 @@ public:
    * of its progress by the callback function set with SetCallback.
    * @ return success;
    */
-  virtual bool optimise();
+  bool optimise() override;
 
   /**
     * Returns the maximum verbosity at which the method can log.
     */
-  virtual unsigned C_INT32 getMaxLogVerbosity() const;
+  unsigned C_INT32 getMaxLogVerbosity() const override;
 
-  virtual C_FLOAT64 getBestValue() const;
+  C_FLOAT64 getCurrentValue() const override;
 
-  virtual C_FLOAT64 getCurrentValue() const;
+  const CVector< C_FLOAT64 > * getBestParameters() const override;
 
-  virtual const CVector< C_FLOAT64 > * getBestParameters() const;
-
-  virtual const CVector< C_FLOAT64 > * getCurrentParameters() const;
-
+  const CVector< C_FLOAT64 > * getCurrentParameters() const override;
 
 private:
   /**
@@ -86,13 +83,13 @@ private:
    * Initialize arrays and pointer.
    * @return bool success
    */
-  virtual bool initialize();
+  bool initialize() override;
 
   /**
    * Cleanup arrays and pointers.
    * @return bool success
    */
-  virtual bool cleanup();
+  bool cleanup() override;
 
   /**
    * Size of double work array
@@ -156,31 +153,15 @@ private:
   CVector< C_FLOAT64 > mBest;
 
   /**
-   * The best value found so far
-   */
-  C_FLOAT64 mBestValue;
-
-  /**
    * The result of a function evaluation
    */
   C_FLOAT64 mEvaluationValue;
-
-  /**
-   * Flag indicating whether the computation shall continue
-   */
-  bool mContinue;
 
   /**
    * Evaluation function for the residuals
    */
   C_INT calcr(integer *n, integer *p, doublereal *x, integer *nf, doublereal *resid,
               integer *uiparm, doublereal *urparm, U_fp ufparm);
-
-  /**
-   * Evaluate the objective function
-   * @return bool continue
-   */
-  const C_FLOAT64 & evaluate();
 
   /**
    * Functor pointing to the calculate residuals method.

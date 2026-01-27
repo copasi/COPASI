@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -305,8 +305,10 @@ public:
    * name will be chosen.
    *
    * @param path the target directory for the experimental data.
+   * @param prefix an optional prefix to add to the copied files
+   * @param overwrite whether to overwrite existing files
    */
-  void copyExperimentalDataTo(const std::string& path);
+  void copyExperimentalDataTo(const std::string & path, const std::string & prefix = "", bool overwrite = false);
 
   /**
    * Exports the current model as COMBINE archive

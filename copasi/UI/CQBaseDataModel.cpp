@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -73,7 +73,7 @@ bool CQBaseDataModel::clear()
   mFetchDisabled = true;
 
   resetCache();
-  bool success = removeRows(0, size());
+  bool success = removeRows(0, (int)size());
 
   mFetchDisabled = false;
   return success;
@@ -136,12 +136,8 @@ QString CQBaseDataModel::createNewName(const QString name, const int nameCol)
 
 void CQBaseDataModel::setDataModel(CDataModel * pDataModel)
 {
-  beginResetModel();
-
   mpDataModel = pDataModel;
   resetCache();
-
-  endResetModel();
 }
 
 CDataModel * CQBaseDataModel::getDataModel() const
@@ -172,12 +168,12 @@ void CQBaseDataModel::fetchMore(const QModelIndex & parent)
   if (mFetchDisabled || parent.isValid())
     return;
 
-  int ToBeFetched = std::min(mFetchLimit, size() - mFetched);
+  int ToBeFetched = (int)std::min(mFetchLimit, size() - mFetched);
 
   if (ToBeFetched <= 0)
     return;
 
-  beginInsertRows(QModelIndex(), mFetched, mFetched + ToBeFetched - 1);
+  beginInsertRows(QModelIndex(), (int)mFetched, int(mFetched + ToBeFetched - 1));
 
   mFetched += ToBeFetched;
 

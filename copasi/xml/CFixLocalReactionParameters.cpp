@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -156,8 +156,6 @@ void CFixLocalReactionParameters::changeModel()
       Infix = itChanges->second->getInfix();
 
       // There may be more than one occurrence.
-      Start = 0;
-
       while ((Start = Infix.find(OldCN), Start) != std::string::npos)
         Infix.replace(Start, OldCN.length(), NewCN);
 

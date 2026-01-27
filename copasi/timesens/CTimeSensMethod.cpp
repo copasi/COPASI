@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -107,8 +107,12 @@ void CTimeSensMethod::output(const bool & useMoieties)
  *  This method is used by CTimeSens
  *  @param "CTimeSensProblem *" problem
  */
-void CTimeSensMethod::setProblem(CTimeSensProblem * problem)
-{mpProblem = problem;}
+bool CTimeSensMethod::setProblem(CCopasiProblem * pProblem)
+{
+  mpProblem = dynamic_cast< CTimeSensProblem * >(pProblem);
+
+  return mpProblem != nullptr;
+}
 
 // virtual
 void CTimeSensMethod::stateChange(const CMath::StateChange & change)
@@ -170,7 +174,7 @@ void CTimeSensMethod::initResult()
   mpContainerStateTime = mContainerState.array() + mpContainer->getCountFixedEventTargets();
 
   mSystemSize = mContainerState.size() - mpContainer->getCountFixedEventTargets() - 1;
-  mNumParameters = mpProblem->getNumParameters();
+  mNumParameters = (unsigned C_INT32) mpProblem->getNumParameters();
   mNumAssTargets = mpProblem->getNumTargets();
   //mData.dim = (C_INT)(1+mSystemSize * (1 + mNumParameters)); //including time
 
@@ -571,9 +575,10 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
           mParameterIsInitialConcentration[Col] = pMo->isIntensiveProperty();
           mParameterInitialValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
           mParameterTransientValuePointers[Col] = (C_FLOAT64 *) pMo->getValuePointer();
+          auto* pMetab = dynamic_cast<const CMetab*>(pMo->getDataObject()->getObjectParent());
           pMo2 = mpContainer->getMathObject(pMo->getDataObject()->getObjectParent()->getValueObject());
 
-          if (pMo2->getSimulationType() == CMath::SimulationType::Fixed)
+          if (pMo2->getSimulationType() == CMath::SimulationType::Fixed || (pMo2->getSimulationType() == CMath::SimulationType::Conversion && pMetab != NULL && pMetab->getStatus()==CModelEntity::Status::FIXED ))
             {
               mParameterTransientValuePointers[Col] = (C_FLOAT64 *) pMo2->getValuePointer();
               Changed.insert(pMo2);
@@ -646,7 +651,6 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
 
   //TODO: create update lists for the various other numerical derivatives calculations
 }
-
 
 //static
 void CTimeSensMethod::printObjectSet(const std::string & s, const CObjectInterface::ObjectSet & os)

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -187,11 +187,6 @@ bool CDataContainer::appendDeletedDependentData(CUndoData & undoData) const
   return dataAppended;
 }
 
-CDataContainer::CDataContainer()
-  : CDataObject()
-  , mObjects()
-{}
-
 CDataContainer::CDataContainer(const std::string & name,
                                const CDataContainer * pParent,
                                const std::string & type,
@@ -209,8 +204,8 @@ CDataContainer::CDataContainer(const CDataContainer & src,
 
 CDataContainer::~CDataContainer()
 {
-  objectMap::iterator it = mObjects.begin();
-  objectMap::iterator end = mObjects.end();
+  ObjectMap::iterator it = mObjects.begin();
+  ObjectMap::iterator end = mObjects.end();
 
   for (; it != end; ++it)
     if (*it != NULL)
@@ -261,7 +256,7 @@ const CObjectInterface * CDataContainer::getObject(const CCommonName & cn) const
     }
 
   //check if the first part of the cn matches one of the children (by name and type)
-  objectMap::range range = mObjects.equal_range(Name);
+  ObjectMap::range range = mObjects.equal_range(Name);
 
   while (range.first != range.second && (*range.first)->getObjectType() != Type) ++range.first;
 
@@ -316,10 +311,10 @@ const CObjectInterface * CDataContainer::getObject(const CCommonName & cn) const
   return (*range.first)->getObject(cn.getRemainder());
 }
 
-const CDataContainer::objectMap & CDataContainer::getObjects() const
+const CDataContainer::ObjectMap & CDataContainer::getObjects() const
 {return mObjects;}
 
-CDataContainer::objectMap & CDataContainer::getObjects()
+CDataContainer::ObjectMap & CDataContainer::getObjects()
 {return mObjects;}
 
 const CDataObject * CDataContainer::getValueObject() const
@@ -328,8 +323,8 @@ const CDataObject * CDataContainer::getValueObject() const
 
   if (ptr == NULL) return NULL;
 
-  objectMap::const_iterator it = mObjects.begin();
-  objectMap::const_iterator end = mObjects.end();
+  ObjectMap::const_iterator it = mObjects.begin();
+  ObjectMap::const_iterator end = mObjects.end();
 
   for (; it != end; ++it)
     if (ptr == (*it)->getValuePointer()) return *it;
@@ -381,8 +376,8 @@ size_t CDataContainer::getIndex(const CDataObject * pObject) const
 void CDataContainer::getDescendants(CDataObject::DataObjectSet & descendants, const bool & recursive) const
 {
   const CDataContainer * pContainer;
-  objectMap::const_iterator it = mObjects.begin();
-  objectMap::const_iterator end = mObjects.end();
+  ObjectMap::const_iterator it = mObjects.begin();
+  ObjectMap::const_iterator end = mObjects.end();
 
   for (; it != end; ++it)
     if ((*it)->getObjectParent() == this)

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -42,17 +42,16 @@ class CDataContainer: public CDataObject
 public:
   static const CObjectInterface::ContainerList EmptyList;
 
-  typedef CDataObjectMap objectMap;
+  typedef CDataObjectMap ObjectMap;
 
 protected:
-  objectMap mObjects;
+  ObjectMap mObjects;
 
 private:
   // Operations
-  CDataContainer();
+  CDataContainer() = delete;
 
-protected:
-  CDataContainer(const CDataContainer & src);
+  CDataContainer(const CDataContainer & src) = delete;
 
 public:
   template < class CType > static bool findObjectAncestor(const CDataObject * pObject, CType *& pAncestor)
@@ -86,14 +85,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const override;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -127,12 +126,12 @@ public:
 
   virtual ~CDataContainer();
 
-  virtual const CObjectInterface * getObject(const CCommonName & cn) const override;
+  const CObjectInterface * getObject(const CCommonName & cn) const override;
 
-  virtual const CDataObject * getValueObject() const override;
+  const CDataObject * getValueObject() const override;
 
-  virtual const objectMap & getObjects() const;
-  virtual objectMap & getObjects();
+  virtual const ObjectMap & getObjects() const;
+  virtual ObjectMap & getObjects();
 
   virtual bool add(CDataObject * pObject, const bool & adopt = true);
 
@@ -149,7 +148,7 @@ public:
    * Retrieve the units of the object.
    * @return std::string units
    */
-  virtual const std::string getUnits() const override;
+  const std::string getUnits() const override;
 
   /**
    * Retrieve the units of the child object.
@@ -165,7 +164,7 @@ public:
    * @param const CData & data
    * @return CUndoObjectInterface * pUndoObject
    */
-  virtual CUndoObjectInterface * insert(const CData & data) override;
+  CUndoObjectInterface * insert(const CData & data) override;
 
   /**
    * Retrieve all descendant objects (optionally recursive)

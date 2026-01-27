@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,29 +16,20 @@
 #include <cmath>
 #include <limits>
 #include <algorithm>
+#include <iostream>
 
 #include "CBrent.h"
-
-// virtual
-CBrent::Eval::~Eval()
-{}
-
-// virtual
-double CBrent::Eval::operator()(const double & /* value */)
-{
-  return std::numeric_limits< double >::quiet_NaN();
-}
 
 // static
 bool CBrent::findRoot(double a,            // Left border
                       double b,            // Right border
-                      CBrent::Eval * pF,   // Call back for function evaluation
+                      CBrent::Eval & function,   // Call back for function evaluation
                       double * pRoot,      // Location of root
                       double * pRootValue, // Value at root
                       double tol)          // Acceptable tolerance
 {
-  double fa = (*pF)(a);
-  double fb = (*pF)(b);
+  double fa = function(a);
+  double fb = function(b);
 
   double fTol = (fabs(fa) + fabs(fb)) * 0.5 * tol;
   double vTol = (fabs(a) + fabs(b)) * 0.5 * tol;
@@ -98,7 +89,7 @@ bool CBrent::findRoot(double a,            // Left border
           mflag = false;
         }
 
-      fs = (*pF)(s);
+      fs = function(s);
 
       d = c;
       c = b;
@@ -142,9 +133,172 @@ bool CBrent::findRoot(double a,            // Left border
 }
 
 // static
+bool CBrent::findRootInterval(double a,                 // Left border
+                              double b,                 // Right border
+                              CBrent::Eval & function,  // Call back for function evaluation
+                              double * pLeftRoot,       // Left root location
+                              double * pLeftRootValue,  // Left toot value
+                              double * pRightRoot,      // Right root location
+                              double * pRightRootValue, // Right root value
+                              double tol)               // Acceptable tolerance
+{
+  tol = std::max(tol, 100.0 * std::numeric_limits< double >::epsilon());
+
+  double la = a;
+  double lb = b;
+
+  double fa = function(a);
+  double fb = function(b);
+
+  double fTol = (fabs(fa) + fabs(fb)) * 0.5 * tol;
+  double vTol = (fabs(a) + fabs(b)) * 0.5 * tol;
+
+  if (fa * fb > 0)
+    return false;
+
+  if (fa == 0.0)
+    {
+      b = a;
+      fb = fa;
+    }
+
+  while (fabs(b - a) > vTol)
+    {
+      if (a > b)
+        {
+          std::swap(a, b);
+          std::swap(fa, fb);
+        }
+
+      if (fa == 0 && la <= a)
+        {
+          // Check whether f changes sign  in [a-epsilon, a+epsilon];
+          if (function(std::max(a * (1.0 - 100.0 * std::numeric_limits< double >::epsilon()), la))
+              * function(std::min(a * (1.0 + 100.0 * std::numeric_limits< double >::epsilon()), lb)) <= 0.0)
+            {
+              b = a;
+              fb = fa;
+              break;
+            }
+
+          if (fabs(la - a) < (fabs(la) + fabs(a)) * 50.0 * std::numeric_limits< double >::epsilon())
+            break;
+
+          la = a = std::max(1.5 * a - 0.5 * b, 0.5 * (la + a));
+          fa = function(a);
+        }
+      else if (fb == 0 && b <= lb)
+        {
+          // Check whether f changes sign  in [b-epsilon, b+epsilon];
+          if (function(std::max(b * (1.0 - 100.0 * std::numeric_limits< double >::epsilon()), la))
+              * function(std::min(b * (1.0 + 100.0 * std::numeric_limits< double >::epsilon()), lb)) <= 0.0)
+            {
+              a = b;
+              fa = fb;
+              break;
+            }
+
+          if (fabs(lb - b) < (fabs(lb) + fabs(b)) * 50.0 * std::numeric_limits< double >::epsilon())
+            break;
+
+          lb = b = std::min(1.5 * b - 0.5 * a , 0.5 * (b + lb));
+          fb = function(b);
+        }
+
+      if (fabs(fa) < fabs(fb))
+        {
+          std::swap(a, b);
+          std::swap(fa, fb);
+        }
+
+      double c = a;
+      double fc = fa;
+      double s;
+      double fs = fb;
+      double d;
+
+      bool mflag = true;
+
+      while ((fabs(b - a) > vTol || fabs(fb - fa) > fTol)
+             && fb != 0.0
+             && fs != 0.0
+             && fabs(b - a) > (fabs(b) + fabs(a)) * 50.0 * std::numeric_limits< double >::epsilon())
+        {
+          if (fa != fc && fb != fc)
+            {
+              // inverse quadratic interpolation
+              s = (a * fb * fc) / ((fa - fb) * (fa - fc))
+                  + (b * fa * fc) / ((fb - fa) * (fb - fc))
+                  + (c * fa * fb) / ((fc - fa) * (fc - fb));
+            }
+          else
+            {
+              // secant method
+              s = b - fb * (b - a) / (fb - fa);
+            }
+
+          if ((s < std::min((3.0 * a + b) / 4.0, b) || std::max((3.0 * a + b) / 4.0, b) < s)
+              || (mflag && fabs(s - b) >= fabs(b - c) / 2.0)
+              || (!mflag && fabs(s - b) >= fabs(c - d) / 2.0)
+              || (mflag && fabs(b - c) < tol)
+              || (!mflag && fabs(c - d) < tol))
+            {
+              // bisection method
+              s = (a + b) / 2.0;
+              mflag = true;
+            }
+          else
+            {
+              mflag = false;
+            }
+
+          fs = function(s);
+
+          d = c;
+          c = b;
+
+          if (fa * fs < 0)
+            {
+              b = s;
+              fb = fs;
+            }
+          else
+            {
+              a = s;
+              fa = fs;
+            }
+
+          if (fabs(fa) < fabs(fb))
+            {
+              std::swap(a, b);
+              std::swap(fa, fb);
+            }
+        }
+    }
+
+  // return the smaller value of fa and fb
+  if (a <= b)
+    {
+      *pLeftRoot = a;
+      *pLeftRootValue = fa;
+      *pRightRoot = b;
+      *pRightRootValue = fb;
+    }
+  else
+    {
+      *pLeftRoot = b;
+      *pLeftRootValue = fb;
+      *pRightRoot = a;
+      *pRightRootValue = fa;
+    }
+
+  return true;
+}
+
+// static
 bool CBrent::findMinimum(double a,          /* Left border      */
                          double b,          /* Right border      */
-                         CBrent::Eval * pF, /* Functor for function under investigation  */
+                         CBrent::Eval & function, /* Functor for function under investigation  */
                          double * min,      /* Location of minimum    */
                          double * fmin,     /* Value of minimum     */
                          double tol,        /* Acceptable tolerance    */
@@ -166,7 +320,7 @@ bool CBrent::findMinimum(double a,          /* Left border      */
     return false;
 
   v = a + r * (b - a);
-  fv = (*pF)(v); /* First step - always gold section*/
+  fv = function(v); /* First step - always gold section*/
   x = v;
   w = v;
   fx = fv;
@@ -233,7 +387,7 @@ bool CBrent::findMinimum(double a,          /* Left border      */
       {
         /* min & reduce the enveloping range*/
         double t = x + new_step; /* Tentative point for the min  */
-        double ft = (*pF)(t);
+        double ft = function(t);
 
         if (ft <= fx)
           {

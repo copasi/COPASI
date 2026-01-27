@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -125,8 +125,12 @@ void CTrajectoryMethod::output(const bool & useMoieties)
  *  This method is used by CTrajectory
  *  @param "CTrajectoryProblem *" problem
  */
-void CTrajectoryMethod::setProblem(CTrajectoryProblem * problem)
-{mpProblem = problem;}
+bool CTrajectoryMethod::setProblem(CCopasiProblem * pProblem)
+{
+  mpProblem = dynamic_cast< CTrajectoryProblem * >(pProblem);
+
+  return mpProblem != nullptr;
+}
 
 // virtual
 void CTrajectoryMethod::stateChange(const CMath::StateChange & change)

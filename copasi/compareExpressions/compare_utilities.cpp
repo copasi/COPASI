@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -268,9 +268,9 @@ void normalize_variable_names(CNormalBase* pBase, std::map<std::string, std::str
     }
   else if ((pLogicalChoice = dynamic_cast<CNormalChoiceLogical*>(pBase)) != NULL)
     {
-      normalize_variable_names(&pChoice->getCondition(), variableMap);
-      normalize_variable_names(&pChoice->getTrueExpression(), variableMap);
-      normalize_variable_names(&pChoice->getFalseExpression(), variableMap);
+      normalize_variable_names(&pLogicalChoice->getCondition(), variableMap);
+      normalize_variable_names(&pLogicalChoice->getTrueExpression(), variableMap);
+      normalize_variable_names(&pLogicalChoice->getFalseExpression(), variableMap);
     }
   else if ((pFraction = dynamic_cast<CNormalFraction*>(pBase)) != NULL)
     {
@@ -1076,7 +1076,7 @@ CEvaluationNode* expand_function_call(const CEvaluationNodeCall* pCall, CFunctio
       // create the mapping
       assert(pFunctionDefinition != NULL);
       const CFunctionParameters& functionParameters = pFunctionDefinition->getVariables();
-      unsigned int i, iMax = functionParameters.size();
+      unsigned int i, iMax = (unsigned int)functionParameters.size();
       // map the first function argument to the first child in the call etc.
       std::map<std::string, const CEvaluationNode*> argumentMap;
       i = 0;

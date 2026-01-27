@@ -1,4 +1,4 @@
-# Copyright (C) 2020 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2020 - 2026 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -114,6 +114,10 @@ else ()
   endif()
 
   if (NOT NATIVEJIT_LIBRARY)
+    get_target_property(NATIVEJIT_LIBRARY NativeJIT IMPORTED_LOCATION_RELWITHDEBINFO)
+  endif()
+
+  if (NOT NATIVEJIT_LIBRARY)
     get_target_property(NATIVEJIT_LIBRARY NativeJIT IMPORTED_LOCATION_NOCONFIG)
   endif()
 
@@ -127,6 +131,10 @@ else ()
   
   if (NOT CODEGEN_LIBRARY)
     get_target_property(CODEGEN_LIBRARY CodeGen IMPORTED_LOCATION_DEBUG)
+  endif()
+
+  if (NOT CODEGEN_LIBRARY)
+    get_target_property(CODEGEN_LIBRARY CodeGen IMPORTED_LOCATION_RELWITHDEBINFO)
   endif()
 
   if (NOT CODEGEN_LIBRARY)

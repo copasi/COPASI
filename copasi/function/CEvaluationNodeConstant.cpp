@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -262,6 +262,9 @@ ASTNode* CEvaluationNodeConstant::toAST(const CDataModel* /*pDataModel*/, int, i
       case SubType::INVALID:
         node->setType(AST_REAL);
         node->setValue(std::numeric_limits<C_FLOAT64>::quiet_NaN());
+        break;
+
+      default:
         break;
     }
 

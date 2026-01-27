@@ -1,9 +1,11 @@
-// Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2024 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
 
 #include "CQExternalTools.h"
+
+# include <algorithm>
 
 #include <QAction>
 #include <QMenu>
@@ -47,6 +49,7 @@ void CQExternalTools::init(QMenu * pMenu, QAction * pAction)
   removeActionsFromMenu();
 
   mActionToTool.clear();
+  mActionToTool.clear();
 
   auto files = getToolFiles();
   QString copasiDir = QString(COptions::getConfigDir().c_str());
@@ -64,6 +67,7 @@ void CQExternalTools::init(QMenu * pMenu, QAction * pAction)
       QObject::connect(action, &QAction::triggered, tool, &CQExternalTool::execute);
 
       mActionToTool[action] = tool;
+      mToolToAction[tool] = action;
     }
 
   addActionsToMenu();
@@ -87,9 +91,9 @@ void CQExternalTools::addActionsToMenu()
   if (!mpMenu || !mpAction)
     return;
 
-  for (auto & action : mActionToTool)
+  for (auto* tool : getTools())
     {
-      mpMenu->insertAction(mpAction, action.first);
+      mpMenu->insertAction(mpAction, mToolToAction[tool]);
     }
 }
 
@@ -112,31 +116,37 @@ QStringList CQExternalTools::getToolFiles()
       file = copasiDir + QString("/") + file;
     }
 
+  files.sort();
+
   return files;
 }
 
 QStringList CQExternalTools::getToolNames() const
 {
-    QStringList names;
+  QStringList names;
 
-    for (auto & action : mActionToTool)
-        {
-        names << action.second->getName();
-        }
+  for (auto & tool : getTools())
+    {
+      names << tool->getName();
+    }
 
-    return names;
+  return names;
 }
 
 QList< CQExternalTool * > CQExternalTools::getTools() const
 {
-    QList< CQExternalTool * > tools;
+  QList< CQExternalTool * > tools;
 
-    for (auto & action : mActionToTool)
-        {
-        tools << action.second;
-        }
+  for (auto & action : mActionToTool)
+    {
+      tools << action.second;
+    }
 
-    return tools;
+  std::sort(tools.begin(), tools.end(), [](CQExternalTool * a, CQExternalTool * b) {
+    return a->getIniFile() < b->getIniFile();
+  });
+
+  return tools;
 }
 
 CQExternalTool::CQExternalTool()

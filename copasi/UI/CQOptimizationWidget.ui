@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the </comment>
 <comment> University of Virginia, University of Heidelberg, and University </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -158,6 +158,13 @@
        </property>
       </spacer>
      </item>
+     <item row="3" column="3">
+      <widget class="QCheckBox" name="mpCreateParameterSets">
+       <property name="text">
+        <string>Create Parameter Sets</string>
+       </property>
+      </widget>
+     </item>
      <item row="4" column="1">
       <widget class="QCheckBox" name="mpCheckRandomize">
        <property name="text">
@@ -234,7 +241,13 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mpBtnMinimize</tabstop>
+  <tabstop>mpBtnMaximize</tabstop>
   <tabstop>mpBoxSubtask</tabstop>
+  <tabstop>mpCreateParameterSets</tabstop>
+  <tabstop>mpCheckRandomize</tabstop>
+  <tabstop>mpCheckStatistics</tabstop>
+  <tabstop>mpCheckDisplayPopulation</tabstop>
   <tabstop>mpTabWidget</tabstop>
  </tabstops>
  <includes>

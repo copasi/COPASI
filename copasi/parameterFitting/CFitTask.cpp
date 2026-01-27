@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -69,10 +69,7 @@ CFitTask::CFitTask(const CDataContainer * pParent,
   COptTask(pParent, type)
 {
   if (getType() == CTaskEnum::Task::parameterFitting)
-    {
-      mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::EvolutionaryProgram, this);
-      static_cast< COptMethod * >(mpMethod)->setProblem(static_cast< COptProblem * >(mpProblem));
-    }
+    mpMethod = CMethodFactory::create(getType(), CTaskEnum::Method::EvolutionaryProgram, this);
 }
 
 CFitTask::CFitTask(const CFitTask & src,

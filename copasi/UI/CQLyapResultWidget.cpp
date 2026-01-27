@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -109,7 +109,7 @@ bool CQLyapResultWidget::loadFromBackend()
 
       if (pItem == NULL)
         {
-          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem = new QTableWidgetItem(QMetaType::Double);
           pItem->setData(Qt::DisplayRole, mpTask->exponents()[i]);
           pItem->setFlags(Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
           mTableExponents->setItem(i, 0, pItem);

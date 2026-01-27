@@ -1,4 +1,4 @@
-# Copyright (C) 2021 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2021 - 2026 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -29,7 +29,7 @@ endif(EXTRA_INCLUDE_DIRS)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/..)
 add_executable(test_api ${TEST_FILES})
 set_target_properties(test_api PROPERTIES
-    CXX_STANDARD 11
+    CXX_STANDARD 20
     CXX_STANDARD_REQUIRED YES
     CXX_EXTENSIONS NO
 )

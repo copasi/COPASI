@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -69,21 +69,18 @@ public:
    * of its progress by the callback function set with SetCallback.
    * @ return success;
    */
-  virtual bool optimise();
+  bool optimise() override;
 
   /**
    * Returns the maximum verbosity at which the method can log.
    */
-  virtual unsigned C_INT32 getMaxLogVerbosity() const;
+  unsigned C_INT32 getMaxLogVerbosity() const override;
 
+  C_FLOAT64 getCurrentValue() const override;
 
-  virtual C_FLOAT64 getBestValue() const;
+  const CVector< C_FLOAT64 > * getBestParameters() const override;
 
-  virtual C_FLOAT64 getCurrentValue() const;
-
-  virtual const CVector< C_FLOAT64 > * getBestParameters() const;
-
-  virtual const CVector< C_FLOAT64 > * getCurrentParameters() const;
+  const CVector< C_FLOAT64 > * getCurrentParameters() const override;
 
 private:
   /**
@@ -100,19 +97,13 @@ private:
    * Initialize arrays and pointer.
    * @return bool success
    */
-  virtual bool initialize();
+  bool initialize() override;
 
   /**
    * Cleanup arrays and pointers.
    * @return bool success
    */
-  virtual bool cleanup();
-
-  /**
-   * Evaluate the objective function
-   * @return bool continue
-   */
-  const C_FLOAT64 & evaluate();
+  bool cleanup() override;
 
   // Attributes
 private:
@@ -173,19 +164,9 @@ private:
   CVector< C_FLOAT64 > mStep;
 
   /**
-   * The best value found so far
-   */
-  C_FLOAT64 mBestValue;
-
-  /**
    * The result of a function evaluation
    */
   C_FLOAT64 mEvaluationValue;
-
-  /**
-   * Flag indicating whether the computation shall continue
-   */
-  bool mContinue;
 };
 
 #endif  // COPASI_COptMethodNelderMead

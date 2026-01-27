@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -36,6 +36,16 @@
 %ignore CChemEq::getSmallestCompartment() const; // this has not been implemented
 %ignore CChemEq::reverse(); // this has not been implemented
 %catches(CCopasiException) CChemEq::getLargestCompartment() const;
+%catches(CCopasiException) CChemEq::addMetabolite;
+%catches(CCopasiException) CChemEq::getMolecularity;
+
+%catches(CCopasiException) CChemEqInterface::getMolecularity;
+%catches(CCopasiException) CChemEqInterface::getListOfMultiplicities;
+%catches(CCopasiException) CChemEqInterface::getListOfSpecies;
+%catches(CCopasiException) CChemEqInterface::getListOfCompartments;
+%catches(CCopasiException) CChemEqInterface::getListOfDisplayNames;
+
+
 
 %include "copasi/model/CChemEq.h"
 %include "copasi/model/CChemEqInterface.h"

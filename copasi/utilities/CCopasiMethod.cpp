@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,6 +35,7 @@
 #include "copasi/utilities/CCopasiMethod.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 #include "copasi/math/CMathContainer.h"
 
@@ -74,6 +75,11 @@ CCopasiMethod & CCopasiMethod::operator=(const CCopasiMethod & rhs)
 
 CCopasiMethod::~CCopasiMethod() {}
 
+CCopasiMethod * CCopasiMethod::copy() const
+{
+  return CMethodFactory::copy(this, NULL, false);
+}
+
 void CCopasiMethod::setMathContainer(CMathContainer * pContainer)
 {
   mpContainer = pContainer;
@@ -87,6 +93,11 @@ void CCopasiMethod::signalMathContainerChanged()
 CMathContainer * CCopasiMethod::getMathContainer() const
 {
   return mpContainer;
+}
+
+bool CCopasiMethod::setProblem(CCopasiProblem * /* pProblem */)
+{
+  return false;
 }
 
 bool CCopasiMethod::setCallBack(CProcessReportLevel callBack)

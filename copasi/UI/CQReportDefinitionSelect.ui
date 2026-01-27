@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the </comment>
 <comment> University of Virginia, University of Heidelberg, and University </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -15,6 +15,7 @@
 <comment> of Manchester. </comment>
 <comment> All rights reserved. </comment>
 
+ <comment> All rights reserved. </comment>
  <class>CQReportDefinitionSelect</class>
  <widget class="QDialog" name="CQReportDefinitionSelect">
   <property name="geometry">
@@ -22,7 +23,7 @@
     <x>0</x>
     <y>0</y>
     <width>367</width>
-    <height>118</height>
+    <height>131</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -32,32 +33,32 @@
    <property name="verticalSpacing">
     <number>3</number>
    </property>
-   <property name="margin">
+   <property name="margin" stdset="0">
     <number>6</number>
    </property>
    <item row="2" column="0">
     <widget class="QDialogButtonBox" name="mpBtnBox">
      <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+      <enum>Qt::Orientation::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
     <widget class="QFrame" name="mpFrame">
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Shadow::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <property name="verticalSpacing">
        <number>3</number>
       </property>
-      <property name="margin">
+      <property name="margin" stdset="0">
        <number>6</number>
       </property>
       <item row="0" column="0">
@@ -81,32 +82,32 @@
        <widget class="QLineEdit" name="mpEditTarget"/>
       </item>
       <item row="2" column="1">
-
-    <layout class="QHBoxLayout">
-     <item>
-       <widget class="QCheckBox" name="mpCheckAppend">
-        <property name="text">
-         <string>Append</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-     </item>
-     <item>
-       <widget class="QCheckBox" name="mpCheckConfirmOverwrite">
-        <property name="text">
-         <string>Confirm Overwrite</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout">
+        <item>
+         <widget class="QCheckBox" name="mpCheckAppend">
+          <property name="text">
+           <string>Append</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="mpCheckConfirmOverwrite">
+          <property name="toolTip">
+           <string>If checked, you will need to confirm everytime to overwrite an existing report. </string>
+          </property>
+          <property name="text">
+           <string>Confirm Overwrite</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-
-            </layout>
-            </item>
-
       <item row="0" column="2">
        <widget class="QToolButton" name="mpBtnEdit">
         <property name="text">
@@ -114,7 +115,6 @@
         </property>
        </widget>
       </item>
-
       <item row="1" column="2">
        <widget class="QToolButton" name="mpBtnBrowse">
         <property name="text">
@@ -202,11 +202,11 @@
    </hints>
   </connection>
  </connections>
-  <slots>
-    <slot>exec()</slot>
-    <slot>accept()</slot>
-    <slot>reject()</slot>
-    <slot>slotEdit()</slot>
-    <slot>slotBrowse()</slot>
-  </slots>
+ <slots>
+  <slot>exec()</slot>
+  <slot>accept()</slot>
+  <slot>reject()</slot>
+  <slot>slotEdit()</slot>
+  <slot>slotBrowse()</slot>
+ </slots>
 </ui>

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -185,6 +185,9 @@ bool FunctionWidget1::loadParameterTable()
             Variables[1].push_back(Time);
             Variables[2].push_back(Time);
             Variables[3].push_back(Time);
+            break;
+
+          case CFunctionParameter::Role::__SIZE:
             break;
         }
     }
@@ -550,6 +553,12 @@ bool FunctionWidget1::loadFromFunction(const CFunction* func)
   CIssue issue = mpFunction->getValidity().getFirstWorstIssue();
   isValid = issue;
 
+  // if we changed the function persist change
+  if (flagChanged)
+    {
+      saveToFunction();
+    }
+
   return true;
 }
 
@@ -589,7 +598,7 @@ bool FunctionWidget1::copyFunctionContentsToFunction(const CFunction* src, CFunc
         {
           // match not found
           //changed = true;
-          functParam.add(*pfunctParam[i]);
+          functParam.add(new CFunctionParameter(*pfunctParam[i], &functParam), true);
         }
     }
 

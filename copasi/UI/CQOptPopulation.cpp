@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -87,7 +87,6 @@ protected:
   virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem* option, QWidget * widget = nullptr)
   {
     double scaleValue = scale();
-    double m11 = painter->transform().m11();
 
     painter->save();
     painter->scale(scaleValue, scaleValue);
@@ -424,7 +423,7 @@ void CQOptPopulation::output(const Activity& activity)
         return;
 
       //now that we have access to the problem we can retrieve the range information for the parameters.
-      mNumParameters = pProblem->getOptItemList().size();
+      mNumParameters = (int)pProblem->getOptItemList().size();
       mRangeMax.resize(mNumParameters);
       mRangeMin.resize(mNumParameters);
       mIsLog.resize(mNumParameters);

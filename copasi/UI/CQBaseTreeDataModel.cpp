@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -110,12 +110,8 @@ QString CQBaseTreeDataModel::createNewName(const QString name, const int nameCol
 
 void CQBaseTreeDataModel::setDataModel(CDataModel * pDataModel)
 {
-  beginResetModel();
-
   mpDataModel = pDataModel;
   resetCache();
-
-  endResetModel();
 }
 
 CDataModel * CQBaseTreeDataModel::getDataModel() const

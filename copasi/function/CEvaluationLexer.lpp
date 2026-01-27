@@ -3,6 +3,7 @@
 %option prefix="CEvaluation"
 %option never-interactive
 %option c++
+%option noline
 
 %s sSIGNorVALUE sOPERATOR sVALUE
 
@@ -14,7 +15,7 @@
 #include "copasi/function/CEvaluationLexer.h"
 #include "copasi/function/CEvaluationParser_yacc.hpp"
 
-#ifndef YYERRCODE
+#ifndef YYERRCODE 
 #define YYERRCODE 256
 #endif
 

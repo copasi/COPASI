@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -154,7 +154,7 @@ void CQTimeSensWidget::slotIntervals()
 
   try
     {
-      mpTimeSensProblem->setStepNumber(mpEditIntervals->text().toULong());
+      mpTimeSensProblem->setStepNumber(mpEditIntervals->text().toUInt());
     }
   catch (...)
     {
@@ -203,7 +203,7 @@ bool CQTimeSensWidget::saveTaskProtected()
   else if (mpEditIntervals->hasAcceptableInput() &&
            timeSensProblem->getStepNumber() != mpEditIntervals->text().toULong())
     {
-      timeSensProblem->setStepNumber(mpEditIntervals->text().toLong());
+      timeSensProblem->setStepNumber(mpEditIntervals->text().toInt());
       mChanged = true;
     }
 
@@ -586,7 +586,7 @@ void CQTimeSensWidget::slotRemoveParameter()
 
   QModelIndexList items = mpListParameters->selectionModel()->selectedIndexes();
 
-  for (int i = items.size() - 1; i >= 0; --i)
+  for (int i = (int)items.size() - 1; i >= 0; --i)
     {
       QListWidgetItem* item = mpListParameters->takeItem(items.at(i).row());
 
@@ -627,7 +627,7 @@ void CQTimeSensWidget::slotRemoveTarget()
 
   QModelIndexList items = mpListTargets->selectionModel()->selectedIndexes();
 
-  for (int i = items.size() - 1; i >= 0; --i)
+  for (int i = (int)items.size() - 1; i >= 0; --i)
     {
       QListWidgetItem* item = mpListTargets->takeItem(items.at(i).row());
 

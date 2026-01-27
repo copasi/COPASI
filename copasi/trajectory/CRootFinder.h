@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,55 +23,13 @@
 #ifndef COPASI_CRootFinder
 #define COPASI_CRootFinder
 
-#include "copasi/core/CVector.h"
 #include "copasi/utilities/CBrent.h"
-
+#include "copasi/trajectory/CRootMask.h"
 class CRootFinder
 {
 public:
-  class Eval
-  {
-  public:
-    virtual ~Eval() {};
-
-    virtual void operator()(const double & /* value */, CVectorCore< C_FLOAT64 > & /* rootValues */) = 0;
-  };
-
-  template <class CType> class EvalTemplate : public Eval
-  {
-  private:
-    // pointer to member function
-    void(CType::*mMethod)(const double & value, CVectorCore< C_FLOAT64 > & rootValues);
-    // pointer to object
-    CType * mpType;
-
-  public:
-
-    // constructor - takes pointer to an object and pointer to a member and stores
-    // them in two private variables
-    EvalTemplate(CType * pType,
-                 void(CType::*method)(const double & value, CVectorCore< C_FLOAT64 > & rootValues))
-    {
-      mpType = pType;
-      mMethod = method;
-    };
-
-    virtual ~EvalTemplate() {};
-
-    virtual void operator()(const double & value, CVectorCore< C_FLOAT64 > & rootValues)
-    {
-      (*mpType.*mMethod)(value, rootValues);
-    }
-  };
-
-public:
-  enum RootMasking
-  {
-    NONE = 0,
-    DISCRETE = 1,
-    CONTINUOUS = 2,
-    ALL = 3
-  };
+  typedef std::function< void(const double &, CVectorCore< C_FLOAT64 > &) > Eval;
+  typedef std::function< C_FLOAT64() > PhysicalRoot;
 
   enum ReturnStatus
   {
@@ -98,13 +56,15 @@ public:
 
   /**
    * Set the function used to evaluate all root values for a given time
-   * @param CRootFinder::Eval * pRootValueCalculator
+   * @param CRootFinder::Eval & rootValueCalculator
    * @param const C_FLOAT64 & relativeTolerance
-   * @param const CVectorCore< bool > & rootMask
+   * @param const CRootMask & rootMask
    */
-  void initialize(Eval * pRootValueCalculator,
-                  const C_FLOAT64 & relativeTolerance,
-                  const CVectorCore< C_INT > & rootMask);
+  void initialize(const C_FLOAT64 & relativeTolerance,
+                  const CVectorCore< const RootMask > & rootMask,
+                  Eval rootValueCalculator = Eval());
+
+  void addPhysicalRoot(PhysicalRoot & physicalRootCalculator);
 
   /**
    * Restart the root finder in case the systems state has changed
@@ -112,14 +72,37 @@ public:
   void restart();
 
   /**
-   * Check for roots in the interval [timeLeft, timeRight]. If a root is found true is returned
+   * Check for roots in the interval [timeLeft, timeRight]. If a root is found RootFound is returned
    * and the time is returned in timeRoot, otherwise timeRoot is set to timeRight
-   * @param const C_FLOAT64 & timeLeft
-   * @param const C_FLOAT64 & timeRight
+   * @param C_FLOAT64 timeLeft
+   * @param C_FLOAT64 timeRight
+   * @param const RootMask & rootMask
+   * @return bool ReturnStatus
+   */
+  ReturnStatus checkRoots(C_FLOAT64 timeLeft, C_FLOAT64 timeRight, const RootMask & rootMasking);
+
+  ReturnStatus checkLeftRoot(C_FLOAT64 timeLeft,
+                             const CVectorCore< C_FLOAT64 > & rootsLeft,
+                             const RootMask & rootMasking);
+
+  /**
+   * Check for roots in the interval [mTimeLeft, timeRight]. If a root is found RootFound is returned
+   * and the time is returned in timeRoot, otherwise timeRoot is set to timeRight
+   * @param C_FLOAT64 timeRight
    * @param const RootMasking & rootMasking
    * @return bool ReturnStatus
    */
-  ReturnStatus checkRoots(const C_FLOAT64 & timeLeft, const C_FLOAT64 & timeRight, const RootMasking & rootMasking);
+  ReturnStatus checkRoots(C_FLOAT64 timeRight, const RootMask & rootMasking);
+
+  /**
+   * Check for whether roots have changed sign. If a root is found RootFound is returned
+   * and the time is returned in timeRoot, otherwise timeRoot is set to timeRight
+   * @param const CVector< C_FLOAT64 > & rootsLeft
+   * @param const CVector< C_FLOAT64 > & rootsRight
+   * @param const RootMask & rootMask
+   * @return bool ReturnStatus
+   */
+  ReturnStatus checkRoots(const CVector< C_FLOAT64 > & rootsLeft, const CVector< C_FLOAT64 > & rootsRight, const RootMask & rootMasking);
 
   /**
    * Callback function for the one dimensional Brent method
@@ -133,6 +116,7 @@ public:
    * @return const CVectorCore< C_INT > & toggledRoots
    */
   const CVectorCore< C_INT > & getToggledRoots() const;
+  const C_INT & getToggledPhysicalRoot() const;
 
   /**
    * Retrieve the time when the root was found
@@ -145,6 +129,7 @@ public:
    * @return const CVectorCore< C_FLOAT64 > & rootValues
    */
   const CVectorCore< C_FLOAT64 > & getRootValues() const;
+  const C_FLOAT64 & getPhysicalRootValue() const;
 
   /**
    * Retrieve the error of the last successful root calculation
@@ -154,7 +139,9 @@ public:
 private:
   void calculateCurrentRoots(const C_FLOAT64 & time);
 
-  bool findToggledRoots(C_FLOAT64 & rootTime);
+  void calculateRoots(const C_FLOAT64 & time, CVectorCore< C_FLOAT64 > & roots, C_FLOAT64 & physicalRoot);
+
+  bool areApproximatelyEqual(const double & x, const double & y) const;
 
   C_FLOAT64 mRelativeTolerance;
 
@@ -168,18 +155,26 @@ private:
 
   CVector< C_INT > mToggledRootsLeft;
   CVector< C_INT > mToggledRootsCurrent;
-  bool mToggledRootsLeftValid;
+  bool mToggledRootsCurrentValid;
 
-  CVectorCore< C_INT > mRootMask;
-  RootMasking mRootMasking;
+  const CVectorCore< const RootMask > * mpRootMask;
+  RootMask mRootMasking;
   C_FLOAT64 mRootError;
 
   /**
    * Pointer to method used for function evaluations for the Brent root finding method.
    */
-  CBrent::Eval * mpBrentRootValueCalculator;
+  CBrent::Eval mBrentRootValueCalculator;
 
-  Eval * mpRootValueCalculator;
+  Eval mRootValueCalculator;
+
+  C_FLOAT64 mPhysicalRootLeft;
+  C_FLOAT64 mPhysicalRootRight;
+  C_FLOAT64 mPhysicalRootCurrent;
+
+  C_INT mToggledPhysicalRootsCurrent;
+
+  PhysicalRoot mPhysicalRootCalculator;
 };
 
 #endif // COPASI_CRootFinder

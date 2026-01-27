@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -27,7 +27,7 @@
 #
 ###############################################################################
 
-cmake_minimum_required (VERSION 2.8.12...3.19.1)
+cmake_minimum_required(VERSION 2.8...3.19)
 
 if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
@@ -80,6 +80,12 @@ endif()
 
 add_executable(CopasiUI ${COPASI_UI_FLAGS} ${SOURCES} ${HEADERS} ${RESOURCES})
 target_link_libraries(CopasiUI libCOPASIUI)
+
+# workaround link order issues on debian systems
+if (UNIX AND ${SELECT_QT} STREQUAL "Qt6" AND MML_LIBRARY)
+target_link_libraries(CopasiUI Qt6::Xml ${MML_LIBRARY} Qt6::Xml)
+endif()
+
 
 # now modify the package location for the resource files
 if (APPLE)

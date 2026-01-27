@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -52,22 +52,15 @@ private:
   CRandomSearch();
 
   /**
-      * Initialize arrays and pointer.
-      * @return bool success
-      */
-  virtual bool initialize();
+   * Initialize arrays and pointer.
+   * @return bool success
+   */
+  bool initialize() override;
 
   /**
    * Initialize contained objects.
    */
   void initObjects();
-
-  /**
-   * Evaluate the fitness of one individual
-   * @param const CVector< C_FLOAT64 > & individual
-   * @return bool continue
-   */
-  bool evaluate(const CVector< C_FLOAT64 > & individual);
 
   /**
    * Find the best individual at this generation
@@ -105,11 +98,6 @@ private:
    */
   size_t mVariableSize;
 
-  /**
-   * The best value found so far.
-   */
-  C_FLOAT64 mBestValue;
-
 public:
   /**
    * Specific constructor
@@ -139,21 +127,18 @@ public:
    * when needed. It is noted that this procedure can give feedback
    * of its progress by the callback function set with SetCallback.
    */
-  virtual bool optimise();
+  bool optimise() override;
 
   /**
    * Returns the maximum verbosity at which the method can log.
    */
-  virtual unsigned C_INT32 getMaxLogVerbosity() const;
+  unsigned C_INT32 getMaxLogVerbosity() const override;
 
+  C_FLOAT64 getCurrentValue() const override;
 
-  virtual C_FLOAT64 getBestValue() const;
+  const CVector< C_FLOAT64 > * getBestParameters() const override;
 
-  virtual C_FLOAT64 getCurrentValue() const;
-
-  virtual const CVector< C_FLOAT64 > * getBestParameters() const;
-
-  virtual const CVector< C_FLOAT64 > * getCurrentParameters() const;
+  const CVector< C_FLOAT64 > * getCurrentParameters() const override;
 };
 
 #endif  // COPASI_CRandomSearch

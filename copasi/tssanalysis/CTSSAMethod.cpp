@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -152,8 +152,12 @@ CTSSAMethod::~CTSSAMethod()
  *  This method is used by CTSSA
  *  @param "CTSSAProblem *" problem
  */
-void CTSSAMethod::setProblem(CTSSAProblem * problem)
-{mpProblem = problem;}
+bool CTSSAMethod::setProblem(CCopasiProblem * pProblem)
+{
+  mpProblem = dynamic_cast< CTSSAProblem * >(pProblem);
+
+  return mpProblem != nullptr;
+}
 
 /**
  *  This instructs the method to calculate a a time step of deltaT
@@ -174,7 +178,7 @@ void CTSSAMethod::step(const double & /* deltaT */)
  */
 void CTSSAMethod::start()
 {
-  mDim = mpContainer->getCountIndependentSpecies();
+  mDim = (int) mpContainer->getCountIndependentSpecies();
 
   mContainerState.initialize(mpContainer->getState(true));
 

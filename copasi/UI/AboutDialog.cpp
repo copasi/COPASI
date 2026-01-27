@@ -1,26 +1,26 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc. and EML Research, gGmbH. 
-// All rights reserved. 
+// Copyright (C) 2004 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc. and EML Research, gGmbH.
+// All rights reserved.
 
 /*!
     \file AboutDialog.cpp
@@ -48,8 +48,14 @@
 #include <copasi/utilities/CVersion.h>
 #include "copasi/OpenMP/CContext.h"
 
+#include <copasi/utilities/json.hpp>
+
 #ifdef QWT_VERSION
 #include <qwt_global.h>
+#endif
+
+#ifdef COPASI_USE_QCUSTOMPLOT
+#include <qcustomplot.h>
 #endif
 
 const char *AboutDialog::text =
@@ -99,10 +105,28 @@ const char *AboutDialog::text =
 
 QString AboutDialog::getDefaultVersionText()
 {
-  QString raptorVersion;
-  #ifdef COPASI_USE_RAPTOR
-  raptorVersion = QString("<li>raptor %1</li>").arg(COPASI_RAPTOR_VERSION);
-  #endif
+  QString additionalVersion;
+#ifdef COPASI_USE_RAPTOR
+  additionalVersion = QString("<li>raptor %1</li>").arg(COPASI_RAPTOR_VERSION);
+#endif
+
+  // add additional version info here.
+  additionalVersion += QString("<li>json for Modern C++ version %1.%2.%3</li>")
+                     .arg(NLOHMANN_JSON_VERSION_MAJOR)
+                     .arg(NLOHMANN_JSON_VERSION_MINOR)
+                     .arg(NLOHMANN_JSON_VERSION_PATCH);
+
+  additionalVersion += QString("<li>statslib 3.4.0</li><li>GCEM 1.18.0</li>");
+
+#ifdef COPASI_USE_QCUSTOMPLOT
+  additionalVersion += QString("<li>QCustomPlot %1</li>").arg(QCUSTOMPLOT_VERSION_STR);
+#endif
+
+#ifdef COPASI_USE_CROSSGUID
+  additionalVersion += QString("<li>CrossGuid</li>");
+#else
+  additionalVersion += QString("<li>stduuid</li>");
+#endif
 
   return QString(AboutDialog::text)
          .arg(FROM_UTF8(CVersion::VERSION.getVersion() + omp_info()()))            // 1
@@ -112,7 +136,7 @@ QString AboutDialog::getDefaultVersionText()
          .arg(COPASI_LIBSBML_VERSION)                               // 5
          .arg(COPASI_LIBSEDML_VERSION)                              // 6
          .arg(COPASI_LIBCOMBINE_VERSION)                            // 7
-         .arg(raptorVersion)                                        // 8
+         .arg(additionalVersion)                                    // 8
          .arg(COPASI_SBW_VERSION)                                   // 9
          .arg(CJitCompiler::JitEnabled() ? "enabled" : "disabled"); //10
 }

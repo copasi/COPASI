@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -56,14 +56,6 @@ LIBSEDML_CPP_NAMESPACE_USE
 #include <limits>
 
 #include "copasi/core/CCore.h"
-
-#ifdef min
-# undef min
-#endif
-
-#ifdef max
-# undef max
-#endif
 
 #if defined(HAVE_APPLE) || __GNUC__ > 5 || (__GNUC__ == 5 && __GNUC_MINOR__ >= 3) || defined (__MINGW32__) || defined (__MINGW64__)
 # include <cmath>

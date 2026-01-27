@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -42,7 +42,7 @@
 
 #include <string>
 
-#include "copasi/OpenMP/CPointerMathContext.h"
+#include "copasi/OpenMP/CProblemContext.h"
 #include "copasi/utilities/CCopasiMethod.h"
 #include "copasi/optimization/COptLog.h"
 
@@ -51,8 +51,6 @@ class COptItem;
 class COptTask;
 template < class CType > class CVector;
 
-typedef CPointerMathContext< COptProblem > COptProblemContext;
-
 // YOHE: this is an abstract class that contains many virtual functions
 // without definitions
 //
@@ -60,7 +58,14 @@ typedef CPointerMathContext< COptProblem > COptProblemContext;
 class COptMethod : public CCopasiMethod
 {
 public:
-  //    static const std::string TypeName[];
+  enum struct EvaluationPolicy {
+    Parameter,
+    Constraints,
+    Reflect,
+    __SIZE
+  };
+
+  typedef CFlags< EvaluationPolicy > EvaluationPolicyFlag;
 
   // Attributes
 public:
@@ -85,7 +90,7 @@ protected:
   /**
    * A thread specific problem
    */
-  COptProblemContext mProblemContext;
+  CProblemContext< COptProblem > mProblemContext;
 
   /**
    * Define the current verbosity for the log
@@ -123,7 +128,8 @@ public:
    * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethod(const COptMethod & src,
-             const CDataContainer * pParent);
+             const CDataContainer * pParent,
+             const bool & parallel);
 
   /**
    * Destructor
@@ -142,7 +148,7 @@ public:
    * Set the problem to be optimized
    * @param "COptProblem *" problem
    */
-  void setProblem(COptProblem * problem);
+  bool setProblem(CCopasiProblem * pProblem) override;
 
   /**
    * Initialize arrays and pointer.
@@ -154,7 +160,7 @@ public:
    * Check if the method is suitable for this problem
    * @return bool suitability of the method
    */
-  virtual bool isValidProblem(const CCopasiProblem * pProblem);
+  bool isValidProblem(const CCopasiProblem * pProblem) override;
 
   /**
    * Returns the maximum verbosity (0 - Basic; 1 - Iterative; 2 - Detailed) at which the method can log.
@@ -169,7 +175,7 @@ public:
   /**
    * @return the objective value
    */
-  virtual C_FLOAT64 getBestValue() const;
+  virtual C_FLOAT64 getBestValue() const final;
 
   /**
    * @return the objective value
@@ -188,6 +194,22 @@ public:
 
 protected:
   /**
+   * Evaluate the fitness of one individual
+   * @return C_FLOAT64 value
+   */
+  virtual C_FLOAT64 evaluate(const EvaluationPolicyFlag & policy) final;
+
+  virtual bool setSolution(const C_FLOAT64 & value,
+                           const CVector< C_FLOAT64 > & variables,
+                           const bool & algorithmOrder) final;
+
+  void aggregateCounters();
+
+  bool proceed() const;
+
+  void signalStop();
+
+  /**
    * Calculate the objective value for the provided parameter set
    * @param COptProblem * pProblem
    * @param const CVectorCore< C_FLOAT64 > & parameters
@@ -196,23 +218,26 @@ protected:
   static std::pair< C_FLOAT64, bool > objectiveValue(COptProblem * pProblem, const CVectorCore< C_FLOAT64 > & parameters);
 
   /**
-   * Reflect the objective value if it is outside the parametric or functional domain
-   * @param COptProblem * pProblem
-   * @param const C_FLOAT64 & bestValue
-   * @param C_FLOAT64 & objectiveValue
-   */
-  static void reflect(COptProblem * pProblem, const C_FLOAT64 & bestValue, C_FLOAT64 & objectiveValue);
-
-  /**
    * Signal that the math container has changed
    */
-  virtual void signalMathContainerChanged();
+  void signalMathContainerChanged() override;
 
   /**
    * Cleanup arrays and pointers.
    * @return bool success
    */
   virtual bool cleanup();
+
+private:
+  /**
+   * The best value found so far.
+   */
+  C_FLOAT64 mBestValue;
+
+  /**
+   * Indicates whether calculation shall continue
+   */
+  bool mProceed;
 };
 
 #endif  // COPASI_COptMethod

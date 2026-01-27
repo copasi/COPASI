@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -59,6 +59,18 @@ const std::string CDirEntry::Separator = "\\";
 #else
 const std::string CDirEntry::Separator = "/";
 #endif
+
+#if __cplusplus >= 201703L || defined(__cpp_lib_filesystem)
+#if defined(__MAC_OS_X_VERSION_MIN_REQUIRED) && __MAC_OS_X_VERSION_MIN_REQUIRED < 101500
+#define FILE_SYSTEM_NOT_SUPPORTED
+#endif
+#ifndef FILE_SYSTEM_NOT_SUPPORTED
+#  include <filesystem>
+namespace fs = std::filesystem;
+#define USE_FILESYSTEM
+#endif // FILE_SYSTEM_NOT_SUPPORTED
+
+#endif // __cplusplus >= 201703L || defined(__cpp_lib_filesystem)
 
 bool CDirEntry::isFile(const std::string & path)
 {
@@ -204,10 +216,24 @@ bool CDirEntry::createDir(const std::string & dir,
   if (!parent.empty() && (!isDir(parent) || !isWritable(parent)))
     return false;
 
+#ifdef USE_FILESYSTEM
+  try
+    {
+      fs::create_directories(Dir);
+      return true;
+    }
+  catch (const fs::filesystem_error & e)
+    {
+      return false;
+    }
+
+#else
+
 #ifdef WIN32
   return (mkdir(CLocaleString::fromUtf8(Dir).c_str()) == 0);
 #else
   return (mkdir(CLocaleString::fromUtf8(Dir).c_str(), S_IRWXU | S_IRWXG | S_IRWXO) == 0);
+#endif
 #endif
 }
 

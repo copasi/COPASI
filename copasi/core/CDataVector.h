@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,9 +29,10 @@
 #include "copasi/core/CDataContainer.h"
 
 #include "copasi/undo/CData.h"
-#undef min
-#undef max
 #undef ERROR
+#ifdef min
+#undef min
+#endif // min
 
 class CReadConfig;
 
@@ -44,8 +45,8 @@ template < class CType > class CDataVector:
   protected std::vector< CType * >, public CDataContainer
 {
 public:
-  typedef CDataObjectMap::type_iterator< CType > name_iterator;
-  typedef CDataObjectMap::const_type_iterator< CType > const_name_iterator;
+  typedef ObjectMap::type_iterator< CType > name_iterator;
+  typedef ObjectMap::const_type_iterator< CType > const_name_iterator;
 
 public:
 #ifndef SWIG
@@ -214,7 +215,7 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const
+  CData toData() const override
   {
     CData Data;
     std::vector< CData > Content;
@@ -240,7 +241,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes)
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override
   {
     bool success = true;
     const std::vector< CData > & Content = data.getProperty(CData::VECTOR_CONTENT).toDataVector();
@@ -282,10 +283,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
+  void createUndoData(CUndoData & undoData,
                               const CUndoData::Type & /* type */,
                               const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const
+                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override
   {
     const std::vector< CData > & OldContent = oldData.getProperty(CData::VECTOR_CONTENT).toDataVector();
     std::vector< CData >::const_iterator itOld = OldContent.begin();
@@ -332,7 +333,7 @@ public:
    * @param const CData & data
    * @return CUndoObjectInterface * pUndoObject
    */
-  virtual CUndoObjectInterface * insert(const CData & data)
+  CUndoObjectInterface * insert(const CData & data) override
   {
     CType * pNew = NULL;
     size_t Index = 0;
@@ -386,7 +387,7 @@ public:
    * @param const size_t & index
    * @param const CUndoObjectInterface * pUndoObject
    */
-  virtual void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject)
+  void updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject) override
   {
     const CType * pObject = dynamic_cast< const CType * >(pUndoObject);
 
@@ -477,7 +478,7 @@ public:
     const_iterator end = rhs.end();
 
     for (; it != end; ++it)
-      add(*it);
+      add(new CType(*it, this), true);
 
     return *this;
   }
@@ -592,34 +593,6 @@ public:
   }
 
   /**
-   * Add a copy of the object to the end of the vector.
-   * @param const CType & src
-   * @return bool success.
-   */
-  virtual bool add(const CType & src)
-  {
-    CType * pCopy = NULL;
-
-    try
-      {
-        pCopy = new CType(src, this);
-      }
-
-    catch (...)
-      {
-        pCopy = NULL;
-      }
-
-    if (pCopy == NULL)
-      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCopasiBase + 1, sizeof(CType));
-
-    // This is not very efficient !!!
-    // It results in a lot of resizing of the vector !!!
-    std::vector< CType * >::push_back(pCopy);
-    return CDataContainer::add(pCopy, true);
-  }
-
-  /**
    * Swap two objects in the vector.
    * @param const size_t & indexFrom
    * @param const size_t & indexTo
@@ -649,7 +622,7 @@ public:
    * @param const bool & adopt (Default: false)
    * @return bool success
    */
-  virtual bool add(CDataObject * pObject, const bool & adopt = true)
+  bool add(CDataObject * pObject, const bool & adopt = true) override
   {
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
@@ -695,7 +668,7 @@ public:
    * @param CDataObject * pObject
    * @return bool success
    */
-  virtual bool remove(CDataObject * pObject)
+  bool remove(CDataObject * pObject) override
   {
     const size_t index = getIndex(pObject);
 
@@ -746,7 +719,7 @@ public:
    * @param const CCommonName &name
    * @return const CObjectInterface * object
    */
-  virtual const CObjectInterface * getObject(const CCommonName &name) const
+  const CObjectInterface * getObject(const CCommonName &name) const override
   {
     size_t Index = name.getElementIndex();
 
@@ -849,7 +822,7 @@ public:
    * @param const CDataObject * pObject
    * @return size_t index
    */
-  virtual size_t getIndex(const CDataObject * pObject) const
+  size_t getIndex(const CDataObject * pObject) const override
   {
     size_t i, imax = size();
     typename std::vector< CType * >::const_iterator itTarget = std::vector< CType * >::begin();
@@ -957,8 +930,8 @@ template < class CType > class CDataVectorN: public CDataVector < CType >
 {
   // Operations
 public:
-  typedef CDataObjectMap::type_iterator< CType > name_iterator;
-  typedef CDataObjectMap::const_type_iterator< CType > const_name_iterator;
+  typedef typename CDataVector < CType >::name_iterator name_iterator;
+  typedef typename CDataVector < CType >::const_name_iterator const_name_iterator;
 
   /**
    * Retrieve the data describing the object
@@ -1182,38 +1155,6 @@ public:
   }
 
   /**
-   * Add a copy of the object to the end of the vector.
-   * @param const CType & src
-   * @return bool success.
-   */
-  virtual bool add(const CType & src)
-  {
-    if (!isInsertAllowed(&src))
-      {
-        CCopasiMessage ex(CCopasiMessage::ERROR,
-                          MCDataVector + 2, src.getObjectName().c_str());
-        return false;
-      }
-
-    CType * Element;
-
-    try
-      {
-        Element = new CType(src, this);
-      }
-    catch (...)
-      {
-        Element = NULL;
-      }
-
-    if (Element == NULL)
-      CCopasiMessage ex(CCopasiMessage::EXCEPTION, MCopasiBase + 1, sizeof(CType));
-
-    std::vector< CType * >::push_back(Element);
-    return CDataContainer::add(Element, true);
-  }
-
-  /**
    * Add an object to the end of the vector, if adobt is true the vector.
    * becomes the parent of the object.
    * @param CType * src
@@ -1284,14 +1225,12 @@ public:
    */
   CType & operator[](const std::string & name)
   {
-    CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(name);
+    CDataContainer::ObjectMap::range Range = CDataVector< CType >::getObjects().equal_range(name);
 
     CType * pType = NULL;
 
     for (; Range.first != Range.second && pType == NULL; ++Range.first)
-      {
-        pType = dynamic_cast< CType * >(*Range.first);
-      }
+      pType = dynamic_cast< CType * >(*Range.first);
 
     if (pType == NULL)
       {
@@ -1309,7 +1248,7 @@ public:
    */
   const CType & operator[](const std::string &name) const
   {
-    CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(name);
+    CDataContainer::ObjectMap::range Range = CDataVector< CType >::getObjects().equal_range(name);
 
     CType * pType = NULL;
 
@@ -1338,7 +1277,7 @@ public:
 
     if (!ElementName.empty())
       {
-        CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(ElementName);
+        CDataContainer::ObjectMap::range Range = CDataVector< CType >::getObjects().equal_range(ElementName);
 
         for (; Range.first != Range.second; ++Range.first)
           {
@@ -1401,7 +1340,7 @@ private:
   virtual bool isInsertAllowed(const CType * src)
   {
     bool isInserAllowed = true;
-    CDataContainer::objectMap::range Range = CDataVector< CType >::getObjects().equal_range(src->getObjectName());
+    CDataContainer::ObjectMap::range Range = CDataVector< CType >::getObjects().equal_range(src->getObjectName());
 
     for (; Range.first != Range.second && isInserAllowed; ++Range.first)
       {

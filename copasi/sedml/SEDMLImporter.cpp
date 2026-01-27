@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -435,8 +435,6 @@ void SEDMLImporter::importOutputs()
   unsigned int i, numOutput = pSEDMLDocument->getNumOutputs();
 
   std::map< const CDataObject *, SBase * > & copasiMap = pModel->getObjectDataModel()->getCopasi2SBMLMap();
-
-  CReportDefinitionVector * pReports = mpDataModel->getReportDefinitionList();
 
   for (i = 0; i < numOutput; ++i)
     {
@@ -1289,6 +1287,7 @@ void SEDMLImporter::importTask(
                   {
                     Formula = pFormula;
                     free(pFormula);
+                    pFormula = nullptr;
                   }
 
                 if (Formula != sv->getRange())

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -79,12 +79,25 @@ public:
    */
 #if (defined __GNUC__ && __GNUC__ < 3 && !defined __APPLE_CC__)
   class iterator: public std::forward_iterator< _Node, ptrdiff_t >
+  {
+#else
+    // Check for C++17 or later, where std::iterator is deprecated
+#if __cplusplus >= 201703L
+      class iterator
+      {
+      public:
+        typedef _Node                 value_type;
+        typedef _Node* pointer;
+        typedef _Node&                reference;
+        typedef ptrdiff_t             difference_type;
+        typedef std::forward_iterator_tag iterator_category;
 #else
   class iterator:
     public std::iterator< std::forward_iterator_tag, _Node, ptrdiff_t >
-#endif
+    {
+#endif // __cplusplus >= 201703L
+#endif // (defined __GNUC__ && __GNUC__ < 3 && !defined __APPLE_CC__)
 
-  {
   private:
     /**
      * A pointer to the current node.

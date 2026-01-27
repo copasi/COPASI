@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -42,6 +42,7 @@ class QNetworkReply;
 class COutputDefinitionVector;
 class COutputHandlerPlot;
 class CDataModel;
+class CModel;
 
 #include "copasi/core/CCore.h"
 #include "copasi/core/CRegisteredCommonName.h"
@@ -126,7 +127,7 @@ public slots:
   void importSBMLFromStringFinished();
   void exportSBMLToStringFinished();
   void exportMathModelFinished();
-  void importCombineFinished();
+  void openCombineArchiveFinished();
   void exportCombineFinished();
   void exportShinyFinished();
   void slotSaveConfigurationFinished();
@@ -156,7 +157,7 @@ public:
   void registerListView(ListViews * pListView);
   void deregisterListView(ListViews * pListView);
 
-  void refreshInitialValues();
+  void refreshInitialValues(const CModel * pParameterSetAncestor = nullptr);
   void setFramework(int framework);
   void updateMIRIAMResourceContents();
   void commit();
@@ -178,7 +179,7 @@ signals:
   void updateCompleteView();
   void notifyView(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn);
   void signalSwitchWidget(ListViews::WidgetType widgetType, const CRegisteredCommonName & cn, int tabIndex);
-  void finished(bool success);
+  void finished(const std::string & thread, bool success);
 
 private:
   CDataModel * mpDataModel;
@@ -189,11 +190,11 @@ private:
   struct sThreadData {
     CQThread * pThread = nullptr;
     CProgressBar * pProgressBar = nullptr;
+    bool success = false;
   };
 
   std::map< std::string, sThreadData > mRunningThreads;
 
-  bool mSuccess;
   std::string mSBMLImportString;
   std::string *mpSBMLExportString;
   std::string mFileName;

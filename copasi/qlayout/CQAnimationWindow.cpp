@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -73,7 +73,7 @@ class QConservedSpeciesAnimation : public CQCopasiAnimation
 
     // initialize number of steps
     const CDataVector< CMoiety > & moieties = model.getMoieties();
-    mNumSteps = moieties.size();
+    mNumSteps = (int)moieties.size();
   }
 
   virtual void getScales(std::vector<qreal>& scales, int step)
@@ -82,7 +82,7 @@ class QConservedSpeciesAnimation : public CQCopasiAnimation
 
     const CModel& model = *mpDataModel->getModel();
     const CDataVector< CMoiety > & moieties = model.getMoieties();
-    mNumSteps = moieties.size();
+    mNumSteps = (int)moieties.size();
 
     if (moieties.size() <= (size_t)step) return;
 
@@ -134,7 +134,7 @@ public:
     if (problem == NULL) return;
 
     const std::vector< CFluxMode >& fluxModes = problem->getFluxModes();
-    mNumSteps = fluxModes.size();
+    mNumSteps = (int)fluxModes.size();
   }
   virtual void getScales(std::vector<qreal>& scales, int step)
   {
@@ -149,7 +149,7 @@ public:
     if (problem == NULL) return;
 
     const std::vector< CFluxMode >& fluxModes = problem->getFluxModes();
-    mNumSteps = fluxModes.size();
+    mNumSteps = (int)fluxModes.size();
 
     if (fluxModes.size() <= (size_t)step) return;
 
@@ -236,7 +236,7 @@ public:
 
     if (series == NULL) return;
 
-    mNumSteps = series->getRecordedSteps();
+    mNumSteps = (int)series->getRecordedSteps();
 
     if (mNumSteps < step)
       return;
@@ -276,7 +276,7 @@ public:
 
     if (series == NULL) return;
 
-    mNumSteps = series->getRecordedSteps();
+    mNumSteps = (int)series->getRecordedSteps();
   }
 protected:
   std::map<std::string, std::string> keyMap;
@@ -324,7 +324,7 @@ class QCustomTimeCourseAnimation : public CQCopasiAnimation
     for (size_t i = 0; i < mCNs.size(); ++i)
       {
         if (mCNs[i] == cn)
-          return i;
+          return (int)i;
       }
 
     return -1;
@@ -333,7 +333,7 @@ class QCustomTimeCourseAnimation : public CQCopasiAnimation
   virtual void getScales(std::vector< qreal >& scales, int step)
   {
     auto & data = mpDataHandler->getDuringData();
-    mNumSteps = data.size();
+    mNumSteps = (int)data.size();
 
     if (mNumSteps < step)
       return;
@@ -389,7 +389,7 @@ class QCustomTimeCourseAnimation : public CQCopasiAnimation
     task.process(true);
     task.restore();
 
-    mNumSteps = mpDataHandler->getDuringData().size();
+    mNumSteps = (int)mpDataHandler->getDuringData().size();
   }
 
   virtual void initialize(const CDataModel & dataModel)

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,7 +57,9 @@ bool CMoietiesMethod::process()
   return true;
 }
 
-void CMoietiesMethod::setProblem(CMoietiesProblem * pProblem)
+bool CMoietiesMethod::setProblem(CCopasiProblem * pProblem)
 {
-  mpProblem = pProblem;
+  mpProblem = dynamic_cast< CMoietiesProblem * >(pProblem);
+
+  return mpProblem != nullptr;
 }

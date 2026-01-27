@@ -1,4 +1,4 @@
-// Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2024 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -136,6 +136,7 @@ private:
   QMenu * mpMenu;
 
   std::map< QAction *, CQExternalTool * > mActionToTool;
+  std::map< CQExternalTool *, QAction * > mToolToAction;
 };
 
 #endif // CQ_EXTERNAL_TOOLS_H

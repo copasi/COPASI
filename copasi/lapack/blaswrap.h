@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -15,14 +15,6 @@
 
 #ifndef COPASI_blaswrap
 #define COPASI_blaswrap
-
-#ifdef min
-# undef min
-#endif // min
-
-#ifdef max
-# undef max
-#endif // max
 
 extern "C"
 {
@@ -118,12 +110,5 @@ extern "C"
 #ifdef max
 # undef max
 #endif // max
-
-#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
-# if _MSC_VER < 1600
-#  define min _cpp_min
-#  define max _cpp_max
-# endif
-#endif
 
 #endif // COPASI_blaswrap

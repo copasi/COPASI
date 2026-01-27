@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -59,7 +59,7 @@ size_t CQGlobalQuantityDM::size() const
 
 int CQGlobalQuantityDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mFetched + 1;
+  return (int)mFetched + 1;
 }
 
 int CQGlobalQuantityDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
@@ -328,7 +328,7 @@ bool CQGlobalQuantityDM::removeRows(int position, int rows, const QModelIndex & 
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
+  beginRemoveRows(parent, position, std::min< int >((int)mFetched, position + rows) - 1);
 
   std::vector< CCommonName > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -398,7 +398,7 @@ bool CQGlobalQuantityDM::removeRows(QModelIndexList rows, const QModelIndex& ind
 
       if (choice == QMessageBox::Ok)
         {
-          removeRows(index, 1);
+          removeRows((int)index, 1);
         }
     }
 

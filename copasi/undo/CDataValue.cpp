@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -350,6 +350,9 @@ bool CDataValue::operator == (const CDataValue & rhs) const
 
       case INVALID:
         return (raw() == rhs.raw());
+
+      case __SIZE:
+        break;
     }
 
   return false;
@@ -398,6 +401,7 @@ bool CDataValue::operator != (const CDataValue & rhs) const
         break;
 
       case INVALID:
+      case __SIZE:
         return (raw() != rhs.raw());
         break;
     }
@@ -452,6 +456,7 @@ void CDataValue::allocateData(const CDataValue::Type & type)
         break;
 
       case INVALID:
+      case __SIZE:
         mpData = NULL;
         break;
     }
@@ -499,6 +504,7 @@ void CDataValue::deleteData()
 
       case VOID_POINTER:
       case INVALID:
+      case __SIZE:
         break;
     }
 
@@ -546,6 +552,7 @@ void CDataValue::assignData(const CDataValue & rhs)
         break;
 
       case INVALID:
+      case __SIZE:
         break;
     }
 }
@@ -574,7 +581,7 @@ void CDataValue::assignData(const unsigned C_INT32 & value)
 #ifdef DATAVALUE_NEEDS_SIZE_T_MEMBERS
 void CDataValue::assignData(const size_t & value)
 {
-  unsigned C_INT32 Value = std::min(value, (size_t) std::numeric_limits< unsigned C_INT32 >::max());
+  unsigned C_INT32 Value = (unsigned C_INT32)std::min(value, (size_t) std::numeric_limits< unsigned C_INT32 >::max());
   assignData(Value);
 }
 #endif // DATAVALUE_NEEDS_SIZE_T_MEMBERS
@@ -695,6 +702,7 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
         break;
 
       case CDataValue::INVALID:
+      case CDataValue::__SIZE:
         os << "??? Invalid ???";
         break;
     }
@@ -778,6 +786,7 @@ std::istream & operator >> (std::istream & is, CDataValue & i)
       break;
 
       case CDataValue::INVALID:
+      case CDataValue::__SIZE:
       {
         // Advance past "??? Invalid ???"
         std::string dummy;

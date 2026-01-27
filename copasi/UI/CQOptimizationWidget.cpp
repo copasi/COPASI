@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -44,6 +44,7 @@
 #include "copasi/optimization/COptProblem.h"
 #include "copasi/utilities/CCopasiException.h"
 #include "copasi/core/CRootContainer.h"
+#include "copasi/model/CModel.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 
 /*
@@ -115,10 +116,16 @@ bool CQOptimizationWidget::saveTaskProtected()
       pProblem->setCalculateStatistics(mpCheckStatistics->isChecked());
     }
 
-  if (mpCheckDisplayPopulation->isChecked() != pProblem->getParameter("DisplayPoplations")->getValue< bool >())
+  if (mpCheckDisplayPopulation->isChecked() != pProblem->getParameter("DisplayPopulations")->getValue< bool >())
     {
       mChanged = true;
-      pProblem->getParameter("DisplayPoplations")->setValue(mpCheckStatistics->isChecked());
+      pProblem->getParameter("DisplayPopulations")->setValue(mpCheckDisplayPopulation->isChecked());
+    }
+
+  if (mpCreateParameterSets->isChecked() != pProblem->getCreateParameterSets())
+    {
+      mChanged = true;
+      pProblem->setCreateParameterSets(mpCreateParameterSets->isChecked());
     }
 
   mChanged |= mpParameters->save(NULL, NULL);
@@ -156,7 +163,8 @@ bool CQOptimizationWidget::loadTaskProtected()
 
   mpCheckRandomize->setChecked(pProblem->getRandomizeStartValues());
   mpCheckStatistics->setChecked(pProblem->getCalculateStatistics());
-  mpCheckDisplayPopulation->setChecked(pProblem->getParameter("DisplayPoplations")->getValue< bool >());
+  mpCheckDisplayPopulation->setChecked(pProblem->getParameter("DisplayPopulations")->getValue< bool >());
+  mpCreateParameterSets->setChecked(pProblem->getCreateParameterSets());
 
   mpBoxSubtask->setCurrentIndex(mpBoxSubtask->findText(FROM_UTF8(CTaskEnum::TaskName[pProblem->getSubtaskType()])));
 
@@ -182,9 +190,31 @@ bool CQOptimizationWidget::runTask()
 
   if (!pTask) return false;
 
+  mnParamterSetsBeforeRun = pTask->getObjectDataModel()->getModel()->getModelParameterSets().size();
+
   if (!commonBeforeRunTask()) return false;
 
   return commonRunTask();
+}
+
+bool CQOptimizationWidget::taskFinishedEvent()
+{
+  bool result = TaskWidget::taskFinishedEvent();
+
+  COptTask * pTask =
+    dynamic_cast< COptTask * >(mpObject);
+
+  if (!pTask)
+    return false;
+
+  size_t finalCount = pTask->getObjectDataModel()->getModel()->getModelParameterSets().size();
+
+  for (size_t i = mnParamterSetsBeforeRun; i < finalCount; ++i)
+    {
+      protectedNotify(ListViews::ObjectType::MODELPARAMETERSET, ListViews::ADD, pTask->getObjectDataModel()->getModel()->getModelParameterSets()[i].CDataObject::getCN());
+    }
+
+  return true;
 }
 
 void CQOptimizationWidget::slotPageIndexChange(int currentIndex)

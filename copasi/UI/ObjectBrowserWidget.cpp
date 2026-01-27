@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -484,9 +484,9 @@ void ObjectBrowserWidget::loadChild(ObjectBrowserItem *parent,
   ObjectBrowserItem *last = NULL;
   const CDataObject *current = NULL;
   ObjectList *childStack = new ObjectList();
-  const CDataContainer::objectMap *pObjectList = & copaParent->getObjects();
-  CDataContainer::objectMap::const_iterator it = pObjectList->begin();
-  CDataContainer::objectMap::const_iterator end = pObjectList->end();
+  const CDataContainer::ObjectMap *pObjectList = & copaParent->getObjects();
+  CDataContainer::ObjectMap::const_iterator it = pObjectList->begin();
+  CDataContainer::ObjectMap::const_iterator end = pObjectList->end();
 
   if (copaParent->hasFlag(CDataObject::Array))
     {
@@ -598,10 +598,10 @@ void ObjectBrowserWidget::loadField(ObjectBrowserItem *parent, CDataVector <CDat
 
   if ((copaParent->size() < 1) || (!copaParent->operator[](0).hasFlag(CDataObject::Container))) return; //empty list
 
-  const CDataContainer::objectMap *pFieldList =
+  const CDataContainer::ObjectMap *pFieldList =
     &static_cast< CDataContainer * >(&copaParent->operator[](0))->getObjects();
-  CDataContainer::objectMap::const_iterator fieldIt = pFieldList->begin();
-  CDataContainer::objectMap::const_iterator fieldEnd = pFieldList->end();
+  CDataContainer::ObjectMap::const_iterator fieldIt = pFieldList->begin();
+  CDataContainer::ObjectMap::const_iterator fieldEnd = pFieldList->end();
 
   while (fieldIt != fieldEnd)
     {
@@ -714,9 +714,9 @@ void ObjectBrowserWidget::loadUI()
 
 CDataObject *ObjectBrowserWidget::getFieldCopasiObject(CDataContainer *pCurrent, const char *name)
 {
-  const CDataContainer::objectMap *pObjectList = & pCurrent->getObjects();
-  CDataContainer::objectMap::const_iterator it = pObjectList->begin();
-  CDataContainer::objectMap::const_iterator end = pObjectList->end();
+  const CDataContainer::ObjectMap *pObjectList = & pCurrent->getObjects();
+  CDataContainer::ObjectMap::const_iterator it = pObjectList->begin();
+  CDataContainer::ObjectMap::const_iterator end = pObjectList->end();
 
   //  CDataObject* pResult;
   while (it != end)

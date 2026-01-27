@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -360,6 +360,9 @@ SEDMLUtils::resolveVariable(CModel * model, const SedVariable * variable)
             return pMV->getValueReference();
         }
 
+      if (term == SEDML_KISAO_FLUX && pReaction)
+        return pReaction->getFluxReference();
+
       CCopasiMessage(CCopasiMessage::WARNING,
                      "Encountered unsupported KISAO term '%s' while resolving Variable.", term.c_str());
     }
@@ -661,8 +664,6 @@ int SEDMLUtils::getAlphaFromRgba(const std::string & rgba)
 
   if (len < 8)
     return 255;
-
-  int offset = rgba[0] == '#' ? 1 : 0;
 
   int result = std::stoi(rgba.substr(len - 2));
   return result;

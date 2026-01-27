@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1421,7 +1421,7 @@ void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
           if (success)
             {
               oldComp->getMetabolites().remove(pX->getObjectName());
-              CRegisteredCommonName::handle(oldCN, pX->getCN());
+              CRegisteredCommonName::handle(oldCN, pX->getStringCN(), pX->getObjectDataModel());
               mpModel->setCompileFlag();
               mpModel->initializeMetabolites();
             }

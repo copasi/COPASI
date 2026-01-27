@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -61,7 +61,7 @@ public:
    * @param const size_t & handle
    * @param bool continue
    */
-  virtual bool progressItem(const size_t & handle) override;
+  bool progressItem(const size_t & handle) override;
 
   /**
    * Reset item handle. This means that the value of the item has changed
@@ -71,7 +71,7 @@ public:
    * @param const size_t & handle
    * @param bool continue
    */
-  virtual bool resetItem(const size_t & handle) override;
+  bool resetItem(const size_t & handle) override;
 
   /**
    * Indicate that all items are finished reporting. All item handles loose
@@ -79,7 +79,7 @@ public:
    * process must halt execution and return.
    * @param bool continue
    */
-  virtual bool finish() override;
+  bool finish() override;
 
   /**
    * Indicate that item handle is finished reporting. The handle of that
@@ -88,7 +88,7 @@ public:
    * @param const size_t & handle
    * @param bool continue
    */
-  virtual bool finishItem(const size_t & handle) override;
+  bool finishItem(const size_t & handle) override;
 
   /**
    * Check whether processing shall proceed. If the return value is false
@@ -97,14 +97,14 @@ public:
    * reporting items can check whether continuation is requested.
    * @param bool continue
    */
-  virtual bool proceed() override;
+  bool proceed() override;
 
   /**
    * Set the name of the process.
    * @param const std::string & name
    * @return success
    */
-  virtual bool setName(const std::string & name);
+  bool setName(const std::string & name) override;
 
   /**
    * Add a process report item to to the list of reporting items.
@@ -117,13 +117,13 @@ public:
    * @param const void * pEndValue = NULL
    * @return size_t handle
    */
-  virtual size_t addItem(const std::string & name,
+  size_t addItem(const std::string & name,
                          const CCopasiParameter::Type & type,
                          const void * pValue,
-                         const void * pEndValue = NULL);
+                         const void * pEndValue = NULL) override;
 
 protected:
-  virtual void closeEvent(QCloseEvent *e);
+  void closeEvent(QCloseEvent *e) override;
 
   bool mSlotFinished;
 
@@ -153,10 +153,10 @@ protected slots:
   void slotProgressAll();
   void slotFinishItem(const int handle);
 
-  virtual void btnStopPressed() override;
-  virtual void btnKillPressed() override;
-  virtual void btnPausePressed() override;
-  virtual void btnContinuePressed() override;
+  void btnStopPressed() override;
+  void btnKillPressed() override;
+  void btnPausePressed() override;
+  void btnContinuePressed() override;
 };
 
 #endif

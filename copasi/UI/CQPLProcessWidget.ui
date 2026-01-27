@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<comment> Copyright (C) 2026 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> University of Virginia, University of Heidelberg, and University </comment>
+<comment> of Connecticut School of Medicine. </comment>
+<comment> All rights reserved. </comment>
+
+ <comment> All rights reserved. </comment>
+ <class>CQPLProcessWidget</class>
+ <widget class="QWidget" name="CQPLProcessWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>640</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <layout class="QFormLayout" name="formLayout">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="mpLblDirectory">
+         <property name="text">
+          <string>Directory</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLineEdit" name="mpTxtDirectory"/>
+         </item>
+         <item>
+          <widget class="QToolButton" name="mpCmdBrowse">
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="mpLbCopasiSE">
+         <property name="text">
+          <string>CopasiSE</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLineEdit" name="mpTxtCopasiSE"/>
+         </item>
+         <item>
+          <widget class="QToolButton" name="mpCmdBrowseCopasiSE">
+           <property name="text">
+            <string>...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QFormLayout" name="formLayout_2">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::FieldGrowthPolicy::ExpandingFieldsGrow</enum>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="mpLblUpper_2">
+         <property name="text">
+          <string>Prefix</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="mpTxtPrefix">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Prefix to be used for the generated files.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="mpLblNumProcesses">
+         <property name="text">
+          <string># Processes</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSpinBox" name="mpSpnNumProcesses">
+         <property name="value">
+          <number>4</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="mpCmdRun">
+       <property name="text">
+        <string>&amp;Run</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mpCmdCancel">
+       <property name="text">
+        <string>C&amp;ancel</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QProgressBar" name="mpProcessBar">
+     <property name="value">
+      <number>24</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QScrollArea" name="mpScrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>620</width>
+        <height>132</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QTextBrowser" name="mpTxtOutput">
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>mpTxtDirectory</tabstop>
+  <tabstop>mpCmdBrowse</tabstop>
+  <tabstop>mpTxtPrefix</tabstop>
+  <tabstop>mpTxtCopasiSE</tabstop>
+  <tabstop>mpCmdBrowseCopasiSE</tabstop>
+  <tabstop>mpSpnNumProcesses</tabstop>
+  <tabstop>mpCmdRun</tabstop>
+  <tabstop>mpCmdCancel</tabstop>
+  <tabstop>mpScrollArea</tabstop>
+  <tabstop>mpTxtOutput</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mpCmdBrowse</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPLProcessWidget</receiver>
+   <slot>browseDirectory()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>507</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpCmdBrowseCopasiSE</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPLProcessWidget</receiver>
+   <slot>browseCopasiSE()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>507</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpCmdCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPLProcessWidget</receiver>
+   <slot>cancelRun()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>128</x>
+     <y>51</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mpCmdRun</sender>
+   <signal>clicked()</signal>
+   <receiver>CQPLProcessWidget</receiver>
+   <slot>processDirectory()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>47</x>
+     <y>51</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>319</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>browseDirectory()</slot>
+  <slot>processDirectory()</slot>
+  <slot>cancelRun()</slot>
+  <slot>browseCopasiSE()</slot>
+ </slots>
+</ui>

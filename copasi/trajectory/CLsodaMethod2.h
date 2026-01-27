@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -70,14 +75,14 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  bool elevateChildren() override;
 
   /**
    * Inform the trajectory method that the state has changed outside
    * its control
    * @param const CMath::StateChange & change
    */
-  virtual void stateChange(const CMath::StateChange & change);
+  void stateChange(const CMath::StateChange & change) override;
 
   /**
    *  This instructs the method to calculate a time step of deltaT
@@ -88,12 +93,12 @@ public:
    *  @param "const double &" deltaT
    *  @return Status status
    */
-  virtual CTrajectoryMethod::Status step(const double & deltaT);
+  CTrajectoryMethod::Status step(const double & deltaT, const bool & final = false) override;
 
   /**
    *  This instructs the method to prepare for integration
    */
-  virtual void start();
+  void start() override;
 
   /**
    *  This evaluates the derivatives
@@ -255,7 +260,7 @@ protected:
    * A functor pointing to the call back method provided to the root finder.
    * The points to void CLsoda2::evalRoot(const double & time, CVectorCore< C_FLOAT64 > & rootValues)
    */
-  CRootFinder::Eval * mpRootValueCalculator;
+  CRootFinder::Eval mRootValueCalculator;
 
   /**
    * The current root values of the root finder (may include additional internal roots)
@@ -265,12 +270,12 @@ protected:
   /**
    * A vector containing the root mask
    */
-  CVector< C_INT > mRootMask;
+  CRootMask mRootMask;
 
   /**
    * The current root masking mode
    */
-  CRootFinder::RootMasking mRootMasking;
+  RootMask mRootMasking;
 
 private:
   /**

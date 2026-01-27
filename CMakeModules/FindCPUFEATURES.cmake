@@ -1,4 +1,4 @@
-# Copyright (C) 2020 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2020 - 2026 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -16,15 +16,27 @@
 string(TOUPPER ${PROJECT_NAME} _UPPER_PROJECT_NAME)
 set(_PROJECT_DEPENDENCY_DIR ${_UPPER_PROJECT_NAME}_DEPENDENCY_DIR)
 
-find_package(CPUFEATURES CONFIG REQUIRED
+find_package(CPUFEATURES CONFIG QUIET
   CONFIGS CpuFeaturesConfig.cmake
   PATHS $ENV{CPUFEATURES_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
         ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}/cmake
         ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
         /usr/${CMAKE_INSTALL_LIBDIR}/cmake
         ${CONAN_LIB_DIRS_CPUFEATURES}/cmake
-  PATH_SUFFIXES CpuFeatures
+    PATH_SUFFIXES CpuFeatures
+    NO_DEFAULT_PATH
 )
+
+find_package(CPUFEATURES CONFIG QUIET
+  CONFIGS CpuFeaturesConfig.cmake
+  PATHS $ENV{CPUFEATURES_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}/cmake
+        ${${_PROJECT_DEPENDENCY_DIR}}/lib/cmake
+        /usr/${CMAKE_INSTALL_LIBDIR}/cmake
+        ${CONAN_LIB_DIRS_CPUFEATURES}/cmake
+    PATH_SUFFIXES CpuFeatures
+)
+
 
 if (NOT CPUFEATURES_FOUND)
   message(VERBOSE "cpu_features Fallback $ENV{CPUFEATURES_DIR}/${CMAKE_INSTALL_LIBDIR}/cmake")
@@ -49,7 +61,7 @@ if (NOT CPUFEATURES_FOUND)
   endif (NOT CPUFEATURES_INCLUDE_DIR)
 
   find_library(CPUFEATURES_LIBRARY 
-    NAMES cpu_features
+    NAMES cpu_features cpu_features.lib
     PATHS $ENV{CPUFEATURES_DIR}/lib
           $ENV{CPUFEATURES_DIR}
           ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
@@ -67,7 +79,18 @@ if (NOT CPUFEATURES_FOUND)
     
   if (NOT CPUFEATURES_LIBRARY)
     find_library(CPUFEATURES_LIBRARY 
-        NAMES cpu_features)
+        NAMES cpu_features  cpu_features.lib
+        PATHS $ENV{CPUFEATURES_DIR}/lib
+        $ENV{CPUFEATURES_DIR}
+        ${${_PROJECT_DEPENDENCY_DIR}}/${CMAKE_INSTALL_LIBDIR}
+        ${${_PROJECT_DEPENDENCY_DIR}}/lib
+        ${${_PROJECT_DEPENDENCY_DIR}})
+  endif (NOT CPUFEATURES_LIBRARY)
+
+
+  if (NOT CPUFEATURES_LIBRARY)
+    find_library(CPUFEATURES_LIBRARY 
+        NAMES cpu_features  cpu_features.lib)
   endif (NOT CPUFEATURES_LIBRARY)
   
   set(CPUFEATURES_FOUND ${CPUFEATURES_LIBRARY})
@@ -85,6 +108,10 @@ else ()
 
   if (NOT CPUFEATURES_LIBRARY)
     get_target_property(CPUFEATURES_LIBRARY CpuFeatures::cpu_features IMPORTED_LOCATION_NOCONFIG)
+  endif()
+
+  if (NOT CPUFEATURES_LIBRARY)
+    get_target_property(CPUFEATURES_LIBRARY CpuFeatures::cpu_features IMPORTED_LOCATION_RELWITHDEBINFO)
   endif()
 
   get_target_property(CPUFEATURES_INTERFACE_LINK_LIBRARIES CpuFeatures::cpu_features INTERFACE_LINK_LIBRARIES)
