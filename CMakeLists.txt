@@ -129,9 +129,10 @@ if (NOT WIN32 AND PREFER_STATIC)
 endif()
 
 if (CMAKE_MAJOR_VERSION LESS 3 OR CMAKE_MINOR_VERSION LESS 1)
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++11")
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-std=c++20")
 else()
-  set(CMAKE_CXX_STANDARD 11)
+  set(CMAKE_CXX_STANDARD 20)
+  set(CMAKE_CXX_EXTENSIONS OFF)
 endif()
 
 CHECK_FUNCTION_EXISTS(strptime HAVE_STRPTIME)
@@ -261,7 +262,7 @@ option(CLAPACK_NO_BLASWRAP "If defined the NO_BLASWRAP compile option will be ad
 set (ENABLE_JIT_DEFAULT OFF)
 
 if (APPLE)
-  if (CMAKE_OSX_ARCHITECTURES STREQUAL arm64)
+  if (CMAKE_OSX_ARCHITECTURES STREQUAL arm64 OR (NOT CMAKE_OSX_ARCHITECTURES AND CMAKE_SYSTEM_PROCESSOR MATCHES "arm64"))
     set (ENABLE_JIT_DEFAULT OFF)
   else()
     set (ENABLE_JIT_DEFAULT ON)
@@ -390,8 +391,20 @@ endif ()
 include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LAPACK_CFLAGS}")
 
+option(COPASI_USE_CROSSGUID "Use CrossGUID for UUID generation" OFF)
+if (COPASI_USE_CROSSGUID)
 find_package(CROSSGUID REQUIRED)
 include_directories(BEFORE ${CROSSGUID_INCLUDE_DIR})
+SET(UUID_MESSAGE "
+   UUID library         = CrossGUID
+   crossguid Libs       = ${CROSSGUID_LIBRARY}
+   cross include        = ${CROSSGUID_INCLUDE_DIR}
+")
+else()
+SET(UUID_MESSAGE "
+   UUID library         = stduuid
+")
+endif()
 
 if (ENABLE_JIT)
   find_package(NATIVEJIT REQUIRED)
@@ -492,10 +505,22 @@ if(BUILD_GUI)
     option(QT5_USE_WEBENGINE "Use QWebEngine instead of the deprecated QtWebKit for notes" OFF)
     option(QT5_USE_DATAVISUALIZATION "Use Qt5DataVisualization instead of the deprecated QwtPlot3D" ON)
     if (QT5_USE_DATAVISUALIZATION)
-    option(WITH_DATAVISUALIZATION_NAMESPACES "The DataVisualization modeule uses c++ namespaces" ON)
+    # compile a test program against the datavisualization
+    # to figure out whether the namespace flag is needed
+    if (NOT DEFINED WITH_DATAVISUALIZATION_NAMESPACES)
+    check_cxx_source_compiles("
+      #include <QtDataVisualization/Q3DSurface>
+      int main() {
+        QtDataVisualization::Q3DSurface surface;
+        return 0;
+      }"
+      DATAVISUALIZATION_USES_NAMESPACES)
+    
+    option(WITH_DATAVISUALIZATION_NAMESPACES "The DataVisualization modeule uses c++ namespaces" ${DATAVISUALIZATION_USES_NAMESPACES})
+    endif()
     endif()
     option(COPASI_USE_QTCHARTS "Use QtCharts instead of the Qwt" OFF)
-    option(COPASI_USE_QCUSTOMPLOT "Use QCustomPlot instead of the Qwt" OFF)
+    option(COPASI_USE_QCUSTOMPLOT "Use QCustomPlot instead of the Qwt" ON)
     if (COPASI_USE_QCUSTOMPLOT)
       find_package(QCP REQUIRED)
     endif()
@@ -509,7 +534,7 @@ if(BUILD_GUI)
     set (ADDITIONAL_QT5_MODULES ${ADDITIONAL_QT5_MODULES} Charts)
     endif()
 
-    if(${SELECT_QT} MATCHES "Qt6")
+    if(${SELECT_QT} MATCHES "Qt6" OR SELECT_QT STREQUAL "Any")
     # for xml sax parser and qregex
     set (ADDITIONAL_QT5_MODULES ${ADDITIONAL_QT5_MODULES} Core5Compat)
     endif()
@@ -947,8 +972,7 @@ message(STATUS "-----------------------------------------------------------
    LAPACK LDFLAGS       = ${CLAPACK_LINKER_FLAGS}
    LAPACK include       = ${CLAPACK_INCLUDE_DIR}
 
-   crossguid Libs       = ${CROSSGUID_LIBRARY}
-   cross include        = ${CROSSGUID_INCLUDE_DIR}
+   ${UUID_MESSAGE}
 
    Expat version        = ${EXPAT_VERSION}
    Expat Libs           = ${EXPAT_LIBRARY}

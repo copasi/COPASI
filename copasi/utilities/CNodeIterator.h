@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -191,7 +196,7 @@ private:
 
     if (Current.mNextChildIndex < Current.mChildCount)
       {
-        mStack.push(CStackElement(static_cast< Node * >(Current.mpNode->getChild(Current.mNextChildIndex++)), &Current.mContext));
+        mStack.push(CStackElement(static_cast< Node * >(Current.mpNode->getChild((unsigned int)Current.mNextChildIndex++)), &Current.mContext));
         mCurrentMode = CNodeIteratorMode::Before;
 
         return;

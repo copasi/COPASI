@@ -1,4 +1,4 @@
-# Copyright (C) 2022 - 2023 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2022 - 2025 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -43,11 +43,12 @@ if (NOT (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY) OR NOT ZLIB_FOUND)
               NO_DEFAULT_PATH)
 
     if (NOT ZLIB_INCLUDE_DIR)
-        find_path(ZLIB_INCLUDE_DIR zlib.h zlib/zlib.h)
+        find_path(ZLIB_INCLUDE_DIR zlib.h zlib/zlib.h
+        CMAKE_FIND_ROOT_PATH_BOTH )
     endif ()
 
     find_library(ZLIB_LIBRARY 
-	    NAMES zdll.lib z zlib.lib libzlib zlib libzlib.a 
+	    NAMES zdll.lib z zlib.lib libzlib zlib libzlib.a libzdll.a
 	    PATHS $ENV{ZLIB_DIR}/lib
 	          $ENV{ZLIB_DIR}/lib-dbg
 	          $ENV{ZLIB_DIR}
@@ -65,7 +66,8 @@ if (NOT (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY) OR NOT ZLIB_FOUND)
              NO_DEFAULT_PATH)
 
     if (NOT ZLIB_LIBRARY)
-        find_library(ZLIB_LIBRARY NAMES zdll.lib z zlib.lib libzlib zlib libzlib.a)
+        find_library(ZLIB_LIBRARY NAMES zdll.lib z zlib.lib libzlib zlib libzlib.a libzdll.a
+        CMAKE_FIND_ROOT_PATH_BOTH )
     endif ()
 
     if (NOT WIN32)
@@ -80,6 +82,24 @@ if (NOT (ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY) OR NOT ZLIB_FOUND)
         endif (PC_ZLIB_FOUND)
     endif (NOT WIN32)
     
+    
+    # make sure that we have a valid zip library
+    file(TO_CMAKE_PATH "${ZLIB_LIBRARY}" LIBZ_CMAKE_PATH)
+    include (CheckLibraryExists)
+    check_library_exists("${LIBZ_CMAKE_PATH}" "gzopen" "" LIBZ_FOUND_SYMBOL)
+    if(NOT LIBZ_FOUND_SYMBOL)
+        # this is odd, but on windows this check always fails! must be a
+        # bug in the current cmake version so for now only issue this
+        # warning on linux
+        if(UNIX)
+            message(WARNING
+"The chosen zlib library does not appear to be valid because it is
+missing certain required symbols. Please check that ${LIBZ_LIBRARY} is
+the correct zlib library. For details about the error, please see
+CMakeError.log or CMakeConfigureLog.yaml in the build directory.")
+        endif()
+    endif()
+
     mark_as_advanced(ZLIB_INCLUDE_DIR ZLIB_LIBRARY)
 
 endif () # Check for cached values

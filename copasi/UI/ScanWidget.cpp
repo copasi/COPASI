@@ -480,7 +480,7 @@ bool ScanWidget::taskFinishedEvent()
 
   if (!pProblem) return false;
 
-  if (pProblem->getSubtask() != CTaskEnum::Task::parameterFitting)
+  if (pProblem->getSubtask() != CTaskEnum::Task::parameterFitting && pProblem->getSubtask() != CTaskEnum::Task::optimization)
     return false;
 
   protectedNotify(ListViews::ObjectType::MODELPARAMETERSET, ListViews::ADD);

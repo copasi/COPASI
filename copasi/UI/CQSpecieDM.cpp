@@ -66,7 +66,7 @@ size_t CQSpecieDM::size() const
 
 int CQSpecieDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mFetched + 1;
+  return (int)mFetched + 1;
 }
 
 int CQSpecieDM::columnCount(const QModelIndex&) const
@@ -487,7 +487,7 @@ bool CQSpecieDM::removeRows(int position, int rows, const QModelIndex & parent)
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
+  beginRemoveRows(parent, position, std::min< int >((int)mFetched, position + rows) - 1);
 
   std::vector< CCommonName > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -608,7 +608,7 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex & parent)
 
       if (choice == QMessageBox::Ok)
         {
-          removeRows(mpMetabolites->getIndex(pSpecies), 1);
+          removeRows((int)mpMetabolites->getIndex(pSpecies), 1);
         }
     }
 

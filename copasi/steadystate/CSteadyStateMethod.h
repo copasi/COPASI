@@ -152,7 +152,7 @@ public:
    */
   ~CSteadyStateMethod();
 
-  bool elevateChildren();
+  bool elevateChildren() override;
 
   /**
    * This instructs the method to calculate a the steady state
@@ -171,7 +171,7 @@ public:
    * Check if the method is suitable for this problem
    * @return bool suitability of the method
    */
-  virtual bool isValidProblem(const CCopasiProblem * pProblem);
+  bool isValidProblem(const CCopasiProblem * pProblem) override;
 
   /**
    * Initialize the method must be called before process

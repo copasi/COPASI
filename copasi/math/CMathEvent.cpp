@@ -1011,6 +1011,9 @@ CEvaluationNode * CMathEvent::CTrigger::compileLE(const CEvaluationNode * pTrigg
         pRootNode->addChild(children[1]);
         Equality = false;
         break;
+        
+      default:
+        break;
     }
 
   pRoot->compile(pRootNode, Equality, container);
@@ -1445,7 +1448,7 @@ void CMathEvent::createUpdateSequences()
         }
     }
 
-  mpContainer->getTransientDependencies().getUpdateSequence(mTargetValuesSequence, CCore::SimulationContext::Default, StateValues, Requested, SimulationValues);
+  mpContainer->getTransientDependencies().getUpdateSequence(mTargetValuesSequence, CCore::SimulationContext::Default, Changed, Requested, SimulationValues);
 
   // We need to add the total mass of the moieties to the state values.
   CObjectInterface::ObjectSet ExtendedStateValues = StateValues;

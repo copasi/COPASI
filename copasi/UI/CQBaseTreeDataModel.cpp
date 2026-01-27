@@ -110,12 +110,8 @@ QString CQBaseTreeDataModel::createNewName(const QString name, const int nameCol
 
 void CQBaseTreeDataModel::setDataModel(CDataModel * pDataModel)
 {
-  beginResetModel();
-
   mpDataModel = pDataModel;
   resetCache();
-
-  endResetModel();
 }
 
 CDataModel * CQBaseTreeDataModel::getDataModel() const

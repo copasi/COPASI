@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -42,18 +42,18 @@ public:
   CQSpeciesDetail(QWidget* parent = 0, const char* name = 0);
   virtual ~CQSpeciesDetail();
 
-  virtual void setFramework(int framework);
+  void setFramework(int framework) override;
 
   void copy();
 
   CMetab* getCurrentMetab();
 
 protected:
-  virtual bool enterProtected();
-  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool leaveProtected();
+  bool enterProtected() override;
+  bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
+  bool leaveProtected() override;
 
-  virtual bool event(QEvent * pEvent);
+  bool event(QEvent * pEvent) override;
 
 protected slots:
 

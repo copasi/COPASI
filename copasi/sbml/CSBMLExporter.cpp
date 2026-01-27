@@ -3107,13 +3107,13 @@ void addSymbolComponentToUnitDefinition(UnitDefinition* result, CUnit::SymbolCom
       use_d_prefix = false;
     }
 
-  int unitKind = convertSymbol(possibleUnit);
+  int unitKind = (int)convertSymbol(possibleUnit);
   int scale = 0;
 
   if (unitKind != C_INVALID_INDEX && use_d_prefix)
     scale = static_cast<int>(CBaseUnit::scaleFromPrefix(possibleScale));
   else
-    unitKind = convertSymbol(symbol);
+    unitKind = (int)convertSymbol(symbol);
 
   if (unitKind == C_INVALID_INDEX)
     {
@@ -3163,7 +3163,7 @@ UnitDefinition *CSBMLExporter::createUnitDefinitionFor(const CUnit &unit)
   // look whether we created the unit before
   for (size_t i = 0; i < pModel->getNumUnitDefinitions(); ++i)
     {
-      result = pModel->getUnitDefinition(i);
+      result = pModel->getUnitDefinition((unsigned int) i);
 
       if (result->getName() == unit.getExpression())
         return result;
@@ -3300,6 +3300,32 @@ CSBMLExporter::exportLayout(unsigned int sbmlLevel, CDataModel& dataModel)
 
               if (plugin != NULL)
                 {
+                  // iterate through all layouts and find the last used
+                  // render information objects
+                  std::set<std::string> mRenderKeys;
+                  for (int i = 0; i < dataModel.getListOfLayouts()->size(); i++)
+                    {
+                      CLayout& layout = dataModel.getListOfLayouts()->operator[](i);
+                      std::string renderKey = layout.getLastUsedRenderInformation();
+                      if (!renderKey.empty())
+                        {
+                          mRenderKeys.insert(renderKey);
+                        }
+                    }
+
+                    // now go through all keys and add them to the plugin
+                    for (auto& key : mRenderKeys)
+                      {
+                        auto* defaultStyle = getDefaultStyle(key);
+                        if (defaultStyle && plugin->getRenderInformation(defaultStyle->getKey()) == NULL)
+                          {
+                            GlobalRenderInformation* info = plugin->createGlobalRenderInformation();
+                            defaultStyle->toSBML(info, this->mpSBMLDocument->getLevel(), this->mpSBMLDocument->getVersion());
+                          }
+                      }
+
+                  // if we still dont have a render information object
+                  // save the first one
                   if (plugin->getNumGlobalRenderInformationObjects() == 0)
                     {
                       GlobalRenderInformation* info = plugin->createGlobalRenderInformation();
@@ -3558,7 +3584,7 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
   this->mVariableVolumes = this->hasVolumeAssignment(dataModel);
 
   if (createProgressStepOrStop(3,
-                               dataModel.getModel()->getCompartments().size(),
+                               (unsigned int) dataModel.getModel()->getCompartments().size(),
                                "Exporting compartments..."))
     {
       finishExport();
@@ -3569,7 +3595,7 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
     return false;
 
   if (createProgressStepOrStop(4,
-                               dataModel.getModel()->getMetabolites().size(),
+                               (unsigned int) dataModel.getModel()->getMetabolites().size(),
                                "Exporting species..."))
     {
       finishExport();
@@ -3580,7 +3606,7 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
     return false;
 
   if (createProgressStepOrStop(5,
-                               dataModel.getModel()->getModelValues().size(),
+                               (unsigned int) dataModel.getModel()->getModelValues().size(),
                                "Exporting parameters..."))
     {
       finishExport();
@@ -3638,7 +3664,7 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
     }
 
   if (createProgressStepOrStop(8,
-                               dataModel.getModel()->getEvents().size(),
+                               (unsigned int) dataModel.getModel()->getEvents().size(),
                                "Exporting events..."))
     {
       finishExport();
@@ -3656,7 +3682,7 @@ bool CSBMLExporter::createSBMLDocument(CDataModel& dataModel)
   // If it did, it would have to be converted to a global parameter and that
   // has to be taken into consideration when creating the reactions
   if (createProgressStepOrStop(9,
-                               dataModel.getModel()->getReactions().size(),
+                               (unsigned int) dataModel.getModel()->getReactions().size(),
                                "Exporting reactions..."))
     {
       finishExport();
@@ -5732,7 +5758,7 @@ ASTNode* CSBMLExporter::replaceL1IncompatibleNodes(const ASTNode* pNode)
               {
                 pResult->addChild(pChild);
               }
-            else
+            else if(pResult)
               {
                 delete pResult;
                 pResult = NULL;

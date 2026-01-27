@@ -48,7 +48,7 @@ size_t CQReactionDM::size() const
 
 int CQReactionDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mFetched + 1;
+  return (int)mFetched + 1;
 }
 
 int CQReactionDM::columnCount(const QModelIndex&) const
@@ -273,7 +273,7 @@ bool CQReactionDM::removeRows(int position, int rows, const QModelIndex & parent
   if (rows <= 0)
     return true;
 
-  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
+  beginRemoveRows(parent, position, std::min< int >((int)mFetched, position + rows) - 1);
 
   std::vector< CCommonName > ToBeDeleted;
   ToBeDeleted.resize(rows);
@@ -340,7 +340,7 @@ bool CQReactionDM::removeRows(QModelIndexList rows, const QModelIndex& index)
 
       if (choice == QMessageBox::Ok)
         {
-          removeRows(mpReactions->CDataVector< CReaction >::getIndex(pReaction), 1);
+          removeRows((int)mpReactions->CDataVector< CReaction >::getIndex(pReaction), 1);
         }
     }
 

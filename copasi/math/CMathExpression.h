@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -105,7 +105,7 @@ public:
   /**
    * Compile the Jit expression if we have a compiler at hand
    */
-  virtual void compileJit() override;
+  void compileJit() override;
 #endif
 
   /**
@@ -119,12 +119,12 @@ public:
    * before this.
    * @return const CObjectInterface::ObjectSet & prerequisites
    */
-  virtual const CObjectInterface::ObjectSet & getPrerequisites() const override;
+  const CObjectInterface::ObjectSet & getPrerequisites() const override;
 
   /**
    * Compile the evaluation tree.
    */
-  virtual CIssue compile() override;
+  CIssue compile() override;
 
   /**
    * Convert to a corresponding initial expression.
@@ -140,7 +140,7 @@ private:
    * @param CEvaluationNode* root node of the tree
    * @return bool success
    */
-  virtual bool setRoot(CEvaluationNode* pRootNode) override;
+  bool setRoot(CEvaluationNode* pRootNode) override;
 
   /**
    * Create a node based on the given pointer to a data value

@@ -61,6 +61,7 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
   switch (subType)
     {
       case SubType::INVALID:
+      default:
         break;
 
       case SubType::CN:
@@ -70,13 +71,13 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
             mSubType = SubType::AVOGADRO;
           }
 
-        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), nullptr);
+        mRegisteredObjectCN.assign(mData.substr(1, mData.length() - 2), mpTree);
 
         break;
 
       case SubType::AVOGADRO:
         mData = "<Reference=Avogadro Constant>";
-        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), nullptr);
+        mRegisteredObjectCN.assign(mData.substr(1, mData.length() - 2), mpTree);
 
         break;
 
@@ -141,7 +142,7 @@ CIssue CEvaluationNodeObject::compile()
           }
 
         getData();
-        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), mpTree);
+        mRegisteredObjectCN.assign(mData.substr(1, mData.length() - 2), mpTree);
         mpObject = mpTree->getNodeObject(mRegisteredObjectCN);
 
         const CDataObject * pDataObject = CObjectInterface::DataObject(mpObject);
@@ -163,7 +164,7 @@ CIssue CEvaluationNodeObject::compile()
             if (mpObject != pObject && pObject != NULL)
               {
                 mpObject = pObject;
-                mRegisteredObjectCN = mpObject->getCN();
+                mRegisteredObjectCN.assign(mpObject->getStringCN(), mpTree);
                 getData();
               }
 
@@ -229,7 +230,7 @@ CIssue CEvaluationNodeObject::compile()
           }
 
         getData();
-        mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), mpTree);
+        mRegisteredObjectCN.assign(mData.substr(1, mData.length() - 2), mpTree);
         mpObject = mpTree->getNodeObject(mRegisteredObjectCN);
 
         if (mpObject != NULL)
@@ -269,6 +270,7 @@ CIssue CEvaluationNodeObject::compile()
         break;
 
       case SubType::INVALID:
+      default:
         break;
     }
 
@@ -340,6 +342,7 @@ const CEvaluationNode::Data & CEvaluationNodeObject::getData() const
         break;
 
       case SubType::POINTER:
+      default:
         break;
     }
 
@@ -351,7 +354,7 @@ bool CEvaluationNodeObject::setData(const Data & data)
   mData = data;
 
   if (mSubType == SubType::CN)
-    mRegisteredObjectCN = CRegisteredCommonName(mData.substr(1, mData.length() - 2), nullptr);
+    mRegisteredObjectCN.assign(mData.substr(1, mData.length() - 2), mpTree);
 
   return true;
 }
@@ -368,6 +371,9 @@ std::string CEvaluationNodeObject::getInfix(const std::vector< std::string > & /
 
       case SubType::POINTER:
         return mData;
+        break;
+
+      default:
         break;
     }
 
@@ -569,6 +575,7 @@ void CEvaluationNodeObject::setObjectValuePtr(C_FLOAT64 * pObjectValue)
   switch (mSubType)
     {
       case SubType::CN:
+      default:
         break;
 
       case SubType::POINTER:

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -41,6 +46,9 @@
 #else
 # define YYDEBUG 0
 #endif // COPASI_DEBUG
+
+#define yychar          CChemEqParserchar
+#define yynerrs         CChemEqParsernerrs
 
 /**
  * This is a base class for the CChemEqParser adding member
@@ -106,6 +114,9 @@ protected:
   std::vector< std::string > mModifierNames;
   std::vector< C_FLOAT64 > mModifierMult;
   std::vector< std::string > mModifierCompartments;
+
+  int yychar;
+  int yynerrs;
 };
 
 class CChemEqParser: public FlexLexer, public yyYaccParser

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -22,12 +22,12 @@ function runTest () {
   rm ${1}.1.txt > /dev/null 3>&1 2>&1 
   ${CopasiSE} --nologo ${1}.cps > /dev/null
   head -n 1 ${1}.1.txt.tgt > ${1}.1.csv
-  ndiff -sbml -abserr 1e-5 ${1}.1.txt ${1}.1.txt.tgt >> ${1}.1.csv || echo ${1} failed
+  ndiff -relerr 1e-5 -abserr 1e-8 ${1}.1.txt ${1}.1.txt.tgt >> ${1}.1.csv || echo ${1} failed
 }
 
 SCHEDULED="$@"
 
-if [ _${SCHEDULED} == _ ]; then
+if [ _"${SCHEDULED}" == _ ]; then
   SCHEDULED=$(ls -1 *.cps)
 fi
 

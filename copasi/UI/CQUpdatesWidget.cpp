@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -323,40 +323,42 @@ void CQUpdatesWidget::loadObjectsTable(CModel* pModel)
       //third column: create empty items
       mpTableState->setItem((int) i, 2, new QTableWidgetItem());
     }
+  //one more item in third column: create empty item
+  mpTableState->setItem((int) i, 2, new QTableWidgetItem());
 
-  int tmpint = st.beginIndependent() - st.getEntities().array();
+  int tmpint = int(st.beginIndependent() - st.getEntities().array());
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem("beginIndependent "));
-  tmpint = st.endIndependent() - st.getEntities().array();
+  tmpint = int(st.endIndependent() - st.getEntities().array());
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "endIndependent "));
 
-  tmpint = st.beginDependent() - st.getEntities().array();
+  tmpint = int(st.beginDependent() - st.getEntities().array());
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "beginDependent "));
-  tmpint = st.endDependent() - st.getEntities().array();
+  tmpint = int(st.endDependent() - st.getEntities().array());
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "endDependent "));
 
-  tmpint = st.beginFixed() - st.getEntities().array();
+  tmpint = int(st.beginFixed() - st.getEntities().array());
   mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "beginFixed "));
-  tmpint = st.endFixed() - st.getEntities().array();
-  mpTableState->setItem(tmpint, 2, new QTableWidgetItem("endFixed "));
+  tmpint = int(st.endFixed() - st.getEntities().array());
+  mpTableState->setItem(tmpint, 2, new QTableWidgetItem(mpTableState->item(tmpint, 2)->text() + "endFixed "));
 
   QColor c(200, 250, 250);
 
   for (i = st.beginIndependent() - st.getEntities().array(); i < (size_t)(st.endIndependent() - st.getEntities().array()); ++i)
-    mpTableState->item(i, 2)->setBackground(c);
+    mpTableState->item((int)i, 2)->setBackground(c);
 
   c = QColor(250, 200, 250);
 
   for (i = st.beginDependent() - st.getEntities().array(); i < (size_t)(st.endDependent() - st.getEntities().array()); ++i)
-    mpTableState->item(i, 2)->setBackground(c);
+    mpTableState->item((int)i, 2)->setBackground(c);
 
   c = QColor(200, 200, 200);
 
   for (i = st.beginFixed() - st.getEntities().array(); i < (size_t)(st.endFixed() - st.getEntities().array()); ++i)
-    mpTableState->item(i, 2)->setBackground(c);
+    mpTableState->item((int)i, 2)->setBackground(c);
 
   //add absolute Tolerances to table
   CVector< C_FLOAT64 > atolv = pModel->initializeAtolVector(1, false);
-  tmpint = st.beginIndependent() - st.getEntities().array();
+  tmpint = int(st.beginIndependent() - st.getEntities().array());
 
   for (i = 0; i < atolv.size(); ++i)
     {
@@ -387,7 +389,7 @@ void CQUpdatesWidget::loadMathContainer(const CMathContainer& MC)
 
   size_t i, imax;
   imax = MC.getValues().size();
-  mpTableMathState->setRowCount(imax);
+  mpTableMathState->setRowCount((int)imax);
 
   for (i = 0; i < imax; ++i)
     {
@@ -398,21 +400,21 @@ void CQUpdatesWidget::loadMathContainer(const CMathContainer& MC)
       if (pMO)
         {
           tmpItem = new QTableWidgetItem(FROM_UTF8(pMO->getObjectDisplayName()));
-          mpTableMathState->setItem(i, 0, tmpItem);
+          mpTableMathState->setItem((int)i, 0, tmpItem);
 
           QString s = FROM_UTF8(CMath::ValueTypeName[pMO->getValueType()]);
           tmpItem = new QTableWidgetItem(s);
           tmpItem->setBackground(pMO->isInitialValue() ? QColor(255, 255, 200) : QColor(200, 200, 250));
-          mpTableMathState->setItem(i, 1, tmpItem);
+          mpTableMathState->setItem((int)i, 1, tmpItem);
 
           s = FROM_UTF8(CMath::SimulationTypeName[pMO->getSimulationType()]);
           tmpItem = new QTableWidgetItem(s);
-          mpTableMathState->setItem(i, 2, tmpItem);
+          mpTableMathState->setItem((int)i, 2, tmpItem);
 
           s = FROM_UTF8(CMath::EntityTypeName[pMO->getEntityType()]);
           tmpItem = new QTableWidgetItem(s);
           tmpItem->setBackground(pMO->isIntensiveProperty() ? QColor(255, 220, 220) : QColor(220, 255, 220));
-          mpTableMathState->setItem(i, 3, tmpItem);
+          mpTableMathState->setItem((int)i, 3, tmpItem);
 
           const CMathExpression* pMExp = pMO->getExpressionPtr();
 
@@ -430,11 +432,11 @@ void CQUpdatesWidget::loadMathContainer(const CMathContainer& MC)
           //tmpmml->setFontName(QtMmlWidget::NormalFont, qApp->font().family());
           tmpmml->setContent(s);
           //mpTableMathState->setItem(i, 5, tmpItem);
-          mpTableMathState->setCellWidget(i, 5, tmpmml);
+          mpTableMathState->setCellWidget((int)i, 5, tmpmml);
         }
 
       tmpItem = new QTableWidgetItem(convertToQString(MC.getValues()[i]));
-      mpTableMathState->setItem(i, 4, tmpItem);
+      mpTableMathState->setItem((int)i, 4, tmpItem);
     }
 }
 

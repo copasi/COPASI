@@ -45,10 +45,11 @@ COscillationMethod::COscillationMethod(const COscillationMethod & src,
 COscillationMethod::~COscillationMethod()
 {}
 
-void COscillationMethod::setProblem(COscillationProblem * problem)
+bool COscillationMethod::setProblem(CCopasiProblem * pProblem)
 {
-  assert(problem);
-  mpOscProblem = problem;
+  mpProblem = dynamic_cast< COscillationProblem * >(pProblem);
+
+  return mpProblem != nullptr;
 }
 
 // bool COscillationMethod::run(void)

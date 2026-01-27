@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -130,6 +130,13 @@ union dlsr01
     C_INT lg0, lg1, lgx, iownr3[2], irfnd, itaskc, ngc, nge;
   }
   lsodar;
+};
+
+struct CommonData
+{
+  dls001 mdls001_;
+  dlsa01 mdlsa01_;
+  dlsr01 mdlsr01_;
 };
 
 class PJAC

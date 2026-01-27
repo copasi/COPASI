@@ -9,6 +9,9 @@ extern std::string getTestFile(const std::string & fileName);
 
 #include <copasi/CopasiTypes.h>
 
+#include <copasi/utilities/CDirEntry.h>
+#include <copasi/commandline/COptions.h>
+
 TEST_CASE("create a reaction with numerically named species", "[copasi][creation]")
 {
   auto * dm = CRootContainer::addDatamodel();
@@ -367,6 +370,91 @@ TEST_CASE("manually create miriam using libsbml", "[copasi][miriam]")
   pdelete(pGraph);
 
   CRootContainer::removeDatamodel(dm);
+}
+
+TEST_CASE("copy experimental data to", "[copasi][data]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm != nullptr);
+  REQUIRE(dm->loadFromFile(getTestFile("test-data/schaber2.cps"), NULL) == true);
+
+  std::string targetDir = getTestFile("test-data/experimental_data");
+  // create target directory if it does not exist
+  if (!CDirEntry::exist(targetDir))
+    {
+      REQUIRE(CDirEntry::createDir(targetDir) == true);
+      REQUIRE(CDirEntry::exist(targetDir) == true);
+    }
+
+  auto fileName = dm->getFileName();
+
+  // get parameter estimation task
+  auto * task = dynamic_cast< CFitTask * >(&dm->getTaskList()->operator[](CTaskEnum::TaskName[CTaskEnum::Task::parameterFitting]));
+  REQUIRE(task != nullptr);
+  auto * problem = dynamic_cast< CFitProblem * >(task->getProblem());
+  REQUIRE(problem != nullptr);
+  auto & expSet = problem->getExperimentSet();
+  bool compiled = expSet.compile(&dm->getModel()->getMathContainer());
+  REQUIRE(compiled == true);
+
+  auto originalFilenames = expSet.getFileNamesOnly();
+  REQUIRE(originalFilenames.size() == 1);
+
+  auto newFileName = targetDir + "/schaber2.cps";
+  dm->saveModel(newFileName, NULL, true);
+  auto filenamesAfterSave = expSet.getFileNamesOnly();
+  REQUIRE(filenamesAfterSave.size() == 1);
+
+  dm->copyExperimentalDataTo(targetDir, "test_", true);
+
+  newFileName = targetDir + "/schaber3.cps";
+  dm->saveModel(newFileName, NULL, true);
+  auto filenamesAfterSave2 = expSet.getFileNamesOnly();
+  REQUIRE(filenamesAfterSave2.size() == 1);
+
+  // restore filenames
+  REQUIRE(expSet.setFileNames(filenamesAfterSave) == true);
+  auto filenamesAfterSaveRestored = expSet.getFileNamesOnly();
+  REQUIRE(filenamesAfterSaveRestored.size() == 1);
+  REQUIRE(filenamesAfterSaveRestored[0] == filenamesAfterSave[0]);
+
+
+  CRootContainer::removeDatamodel(dm);
+
+  // load the last model, verify that the experimental data is copied to the new location
+  {
+    dm = CRootContainer::addDatamodel();
+    REQUIRE(dm != nullptr);
+    REQUIRE(dm->loadFromFile(newFileName, NULL) == true);
+    auto * model = dm->getModel();
+    REQUIRE(model != nullptr);
+    auto * task = dynamic_cast< CFitTask * >(&dm->getTaskList()->operator[](CTaskEnum::TaskName[CTaskEnum::Task::parameterFitting]));
+    REQUIRE(task != nullptr);
+    auto * problem = dynamic_cast< CFitProblem * >(task->getProblem());
+    REQUIRE(problem != nullptr);
+    auto & expSet = problem->getExperimentSet();
+    auto filenames = expSet.getFileNamesOnly();
+    REQUIRE(filenames.size() == 1);
+    REQUIRE(filenames[0].find("test_") != std::string::npos);
+
+    dm->copyExperimentalDataTo(targetDir, "test3_", false);
+
+    // write them again, to see that the filenames are as expected
+    REQUIRE(dm->loadFromFile(newFileName, NULL) == true);
+    dm->copyExperimentalDataTo(targetDir, "test3_", true);
+
+    // and without overwrite
+    REQUIRE(dm->loadFromFile(newFileName, NULL) == true);
+    dm->copyExperimentalDataTo(targetDir, "test3_", false);
+    CRootContainer::removeDatamodel(dm);
+  }
+
+  // remove files
+  REQUIRE(CDirEntry::removeFiles("*", targetDir) == true);
+  REQUIRE(CDirEntry::remove(targetDir) == true);
+
+  // verify that the experimental data directory is removed
+  REQUIRE(CDirEntry::exist(targetDir) == false);
 }
 
 #ifdef COPASI_USE_RAPTOR

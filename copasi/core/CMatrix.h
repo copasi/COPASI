@@ -19,9 +19,6 @@
 #include "copasi/core/CVector.h"
 #include "copasi/copasi.h"
 
-#undef min
-#undef max
-
 template<typename CType> class CMatrix;
 
 template <class CType>

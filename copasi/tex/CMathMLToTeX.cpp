@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -199,11 +199,11 @@ void CMathMLToTeX::mtableNode(QString &text)
 
   if (text.contains("<mtr>"))
     {
-      int posA = text.indexOf("<mtr>");
-      int posB = text.indexOf("</mtr>");
+      int posA = (int)text.indexOf("<mtr>");
+      int posB = (int)text.indexOf("</mtr>");
       QString mtrText = text.mid(posA, posB - posA + 6);
 
-      sumCols = mtrText.count("<mtd");
+      sumCols = (int)mtrText.count("<mtd");
     }
 
   CStructureParser xmlParser(sumCols);

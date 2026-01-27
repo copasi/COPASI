@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -41,6 +41,7 @@
 
 class CProcessReportLevel;
 class CMathContainer;
+class CCopasiProblem;
 
 class CCopasiMethod : public CCopasiParameterGroup
 {
@@ -67,7 +68,7 @@ protected:
 public:
   /**
    * Copy constructor
-   * @param const CCopasiMethodr & src
+   * @param const CCopasiMethod & src
    * @param const CDataContainer * pParent (default: NULL)
    */
   CCopasiMethod(const CCopasiMethod & src,
@@ -77,6 +78,11 @@ public:
    * Destructor
    */
   virtual ~CCopasiMethod();
+
+  /**
+   * copy
+   */
+  CCopasiMethod * copy() const;
 
   CCopasiMethod & operator=(const CCopasiMethod & rhs);
 
@@ -91,6 +97,8 @@ public:
    * @result CMathContainer * pContainer
    */
   CMathContainer * getMathContainer() const;
+
+  virtual bool setProblem(CCopasiProblem * pProblem);
 
   /**
    * Set the call back of the problem
@@ -142,7 +150,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 
   /**
    * Output stream operator

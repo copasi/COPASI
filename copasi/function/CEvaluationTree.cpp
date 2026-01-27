@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -305,7 +305,9 @@ CIssue CEvaluationTree::parse()
   std::istringstream buffer(mInfix);
   CEvaluationLexer Parser(&buffer);
 
-  if (Parser.yyparse() != 0)
+  int result = Parser.yyparse();
+
+  if (result != 0)
     {
       lastIssue = CIssue(CIssue::eSeverity::Error, CIssue::eKind::ExpressionInvalid);
       mValidity.add(lastIssue);
@@ -651,6 +653,7 @@ bool CEvaluationTree::setTree(const ASTNode& pRootNode, bool isFunction)
 
                     case CEvaluationNode::ValueType::Boolean:
                     case CEvaluationNode::ValueType::Unknown:
+                    case CEvaluationNode::ValueType::__SIZE:
                       // We do not convert to these type yet
                       break;
                   }
@@ -807,6 +810,7 @@ CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode, bool isFunc
                 break;
 
               case AST_UNKNOWN:
+              default:
                 // create an unknown element error
                 Message = CCopasiMessage(CCopasiMessage::EXCEPTION, MCMathML + 2);
 
@@ -975,7 +979,7 @@ bool CEvaluationTree::mapObjectNodes(const CDataContainer * pSrc, const CDataCon
   mCalculationSequence.resize(0);
 
   bool success = true;
-  std::string SrcCN = pSrc->getCN();
+  std::string SrcCN = pSrc->getStringCN();
 
   std::vector< CEvaluationNode * >::iterator it = mpNodeList->begin();
   std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();

@@ -1200,7 +1200,7 @@ bool CReaction::loadOneRole(CReadConfig & configbuffer,
     }
   else //no vector
     {
-      imax = mMap.getFunctionParameters().getNumberOfParametersByUsage(role);
+      imax = (int)mMap.getFunctionParameters().getNumberOfParametersByUsage(role);
 
       if (imax > n)
         {

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,6 +24,7 @@
 #include "copasi/core/CVector.h"
 #include "copasi/optimization/COptPopulationMethod.h"
 #include "copasi/optimization/COptProblem.h"
+#include "copasi/OpenMP/CMethodContext.h"
 
 class CRandom;
 
@@ -39,7 +40,8 @@ public:
    */
   COptMethodSS(const CDataContainer * pParent,
                const CTaskEnum::Method & methodType = CTaskEnum::Method::ScatterSearch,
-               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
+               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization,
+               const bool & parallel = true);
 
   /**
    * Copy Constructor
@@ -47,7 +49,8 @@ public:
    * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodSS(const COptMethodSS & src,
-               const CDataContainer * pParent);
+               const CDataContainer * pParent,
+               const bool & parallel);
 
   /**
    * Destructor
@@ -59,7 +62,7 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  bool elevateChildren() override;
 
   /**
    * Execute the optimization algorithm calling simulation routine
@@ -67,7 +70,7 @@ public:
    * of its progress by the callback function set with SetCallback.
    * @ return success;
    */
-  virtual bool optimise();
+  bool optimise() override;
 
 private:
   /**
@@ -129,20 +132,13 @@ private:
    * Initialize arrays and pointer.
    * @return bool success
    */
-  virtual bool initialize();
+  bool initialize() override;
 
   /**
    * Cleanup arrays and pointers.
    * @return bool success
    */
-  virtual bool cleanup();
-
-  /**
-   * Evaluate the fitness of one individual
-   * @param const CVector< C_FLOAT64 > & individual
-   * @return bool continue
-   */
-  bool evaluate(const CVector< C_FLOAT64 > & individual);
+  bool cleanup() override;
 
   /**
    * Find a local minimum
@@ -261,20 +257,10 @@ private:
   CVector <C_FLOAT64> mProb;
 
   /**
-    * The value of the last evaluation.
-    */
-  C_FLOAT64 mEvaluationValue;
-
-  /**
   * if no improvement was made after # stalled generations
   * stop
   */
   unsigned C_INT32 mStopAfterStalledGenerations;
-
-  /**
-   * The best value so far
-   */
-  C_FLOAT64 mBestValue;
 
   /**
    * index of the best value so far
@@ -287,14 +273,11 @@ private:
   C_FLOAT64 mCloseValue;
 
   /**
-   * a pointer to an opt problem used for local minimization
-   */
-  COptProblem * mpOptProblemLocal {NULL};
-
-  /**
    * a pointer to an opt method used for local minimization
    */
-  COptMethod * mpLocalMinimizer {NULL};
+  COptMethod * mpLocalMinimizer;
+
+  COptProblem * mpLocalProblem;
 };
 
 #endif  // COPASI_COptMethodSS

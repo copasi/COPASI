@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -38,23 +38,22 @@
 
 COptMethodGASR::COptMethodGASR(const CDataContainer * pParent,
                                const CTaskEnum::Method & methodType,
-                               const CTaskEnum::Task & taskType):
-  COptPopulationMethod(pParent, methodType, taskType, false),
-  mCrossOverFalse(0),
-  mCrossOver(0),
-  mpPermutation(NULL),
-  mWins(0),
-  mMutationVarians(0.1),
-  mStopAfterStalledGenerations(0),
-  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mBestIndex(C_INVALID_INDEX)
+                               const CTaskEnum::Task & taskType,
+                               const bool & parallel)
+  : COptPopulationMethod(pParent, methodType, taskType, parallel)
+  , mCrossOverFalse(0)
+  , mCrossOver(0)
+  , mpPermutation(NULL)
+  , mWins(0)
+  , mMutationVariance(0.1)
+  , mStopAfterStalledGenerations(0)
+  , mBestIndex(C_INVALID_INDEX)
 {
   assertParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
   assertParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 20);
   assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
   assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
-  assertParameter("Pf", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.475);  //*****ADDED for SR
+  assertParameter("Pf", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.475); //*****ADDED for SR
   assertParameter("Mutation Variance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.1, eUserInterfaceFlag::editable);
   assertParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
@@ -62,40 +61,22 @@ COptMethodGASR::COptMethodGASR(const CDataContainer * pParent,
 }
 
 COptMethodGASR::COptMethodGASR(const COptMethodGASR & src,
-                               const CDataContainer * pParent):
-  COptPopulationMethod(src, pParent),
-  mCrossOverFalse(0),
-  mCrossOver(0),
-  mpPermutation(NULL),
-  mWins(0),
-  mMutationVarians(0.1),
-  mStopAfterStalledGenerations(0),
-  mEvaluationValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mBestValue(std::numeric_limits< C_FLOAT64 >::max()),
-  mBestIndex(C_INVALID_INDEX)
-{initObjects();}
+                               const CDataContainer * pParent,
+                               const bool & parallel)
+  : COptPopulationMethod(src, pParent, parallel)
+  , mCrossOverFalse(0)
+  , mCrossOver(0)
+  , mpPermutation(NULL)
+  , mWins(0)
+  , mMutationVariance(0.1)
+  , mStopAfterStalledGenerations(0)
+  , mBestIndex(C_INVALID_INDEX)
+{
+  initObjects();
+}
 
 COptMethodGASR::~COptMethodGASR()
 {cleanup();}
-
-// evaluate the fitness of one individual
-bool COptMethodGASR::evaluate(const CVector< C_FLOAT64 > & /* individual */)
-{
-  bool Continue = true;
-
-  // We do not need to check whether the parametric constraints are fulfilled
-  // since this method allows for parameters outside the bounds
-
-  // evaluate the fitness
-  Continue = mProblemContext.master()->calculate();
-
-  // We do not need to check whether the functional constraints are fulfilled
-  // since this method allows for solutions outside the bounds.
-
-  mEvaluationValue = mProblemContext.master()->getCalculateValue();
-
-  return Continue;
-}
 
 bool COptMethodGASR::swap(size_t from, size_t to)
 {
@@ -124,19 +105,22 @@ bool COptMethodGASR::mutate(CVector< C_FLOAT64 > & individual)
 {
   size_t j;
 
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
+  CRandom * pRandom = mRandomContext.active();
+
   // mutate the parameters
   for (j = 0; j < mVariableSize; j++)
     {
       C_FLOAT64 & mut = individual[j];
 
       // calculate the mutated parameter
-      mut *= mRandomContext.master()->getRandomNormal(1, mMutationVarians);
+      mut *= pRandom->getRandomNormal(1, mMutationVariance);
 
       // for SR do not force to be within bounds
 
       // We need to set the value here so that further checks take
       // account of the value.
-      *mProblemContext.master()->getContainerVariables(true)[j] = mut;
+      OptItemList[j]->setItemValue(mut, COptItem::CheckPolicyFlag::None);
     }
 
   return true;
@@ -147,13 +131,16 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
                                CVector< C_FLOAT64 > & child1,
                                CVector< C_FLOAT64 > & child2)
 {
+  const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
+  CRandom * pRandom = mRandomContext.active();
+
   size_t i, crp;
   size_t nCross = 0;
 
   mCrossOver = mCrossOverFalse;
 
   if (mVariableSize > 1)
-    nCross = mRandomContext.master()->getRandomU((unsigned C_INT32)(mVariableSize / 2));
+    nCross = pRandom->getRandomU((unsigned C_INT32)(mVariableSize / 2));
 
   if (nCross == 0)
     {
@@ -168,7 +155,7 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
   // We do not mind if a crossover point gets drawn twice
   for (i = 0; i < nCross; i++)
     {
-      crp = mRandomContext.master()->getRandomU((unsigned C_INT32)(mVariableSize - 1));
+      crp = pRandom->getRandomU((unsigned C_INT32)(mVariableSize - 1));
       mCrossOver[crp] = true;
     }
 
@@ -197,7 +184,6 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
 bool COptMethodGASR::replicate()
 {
   size_t i;
-  bool Continue = true;
 
   // generate a random order for the parents
   mpPermutation->shuffle();
@@ -214,17 +200,17 @@ bool COptMethodGASR::replicate()
     *mIndividuals[2 * mPopulationSize - 1] = *mIndividuals[mpPermutation->next()];
 
   // mutate the offspring
-  for (i = mPopulationSize; i < 2 * mPopulationSize && Continue; i++)
+#pragma omp parallel for schedule(runtime)
+  for (i = mPopulationSize; i < 2 * mPopulationSize; i++)
     {
       mutate(*mIndividuals[i]);
-      Continue = evaluate(*mIndividuals[i]);
-      mValues[i] = mEvaluationValue;
+      mValues[i] = evaluate(EvaluationPolicyFlag::None);
 
       /* Calculate the phi value of the individual for SR*/
       mPhi[i] = phi(i);
     }
 
-  return Continue;
+  return proceed();
 }
 
 // select mPopulationSize individuals
@@ -279,8 +265,10 @@ C_FLOAT64 COptMethodGASR::phi(size_t indivNum)
   C_FLOAT64 phiVal = 0.0;
   C_FLOAT64 phiCalc;
 
-  std::vector< COptItem * >::const_iterator it = mProblemContext.master()->getOptItemList(true).begin();
-  std::vector< COptItem * >::const_iterator end = mProblemContext.master()->getOptItemList(true).end();
+  COptProblem *& pProblem = mProblemContext.active();
+
+  std::vector< COptItem * >::const_iterator it = pProblem->getOptItemList(true).begin();
+  std::vector< COptItem * >::const_iterator end = pProblem->getOptItemList(true).end();
   C_FLOAT64 * pValue = mIndividuals[indivNum]->array();
 
   for (; it != end; ++it, pValue++)
@@ -299,8 +287,8 @@ C_FLOAT64 COptMethodGASR::phi(size_t indivNum)
         }
     }
 
-  it = mProblemContext.master()->getConstraintList().begin();
-  end = mProblemContext.master()->getConstraintList().end();
+  it = pProblem->getConstraintList().begin();
+  end = pProblem->getConstraintList().end();
 
   for (; it != end; ++it)
     {
@@ -336,60 +324,20 @@ bool COptMethodGASR::creation(size_t first,
   size_t Last = std::min< size_t >(last, mPopulationSize);
 
   size_t i;
-  size_t j;
 
-  C_FLOAT64 mn;
-  C_FLOAT64 mx;
-  C_FLOAT64 la;
-
-  bool Continue = true;
-
-  for (i = first; i < Last && Continue; i++)
+#pragma omp parallel for schedule(runtime)
+  for (i = first; i < Last; i++)
     {
-      for (j = 0; j < mVariableSize; j++)
-        {
-          // calculate lower and upper bounds
-          const COptItem & OptItem = *mProblemContext.master()->getOptItemList(true)[j];
-          mn = *OptItem.getLowerBoundValue();
-          mx = *OptItem.getUpperBoundValue();
-
-          C_FLOAT64 & mut = (*mIndividuals[i])[j];
-
-          try
-            {
-              // determine if linear or log scale
-              if ((mn < 0.0) || (mx <= 0.0))
-                mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
-              else
-                {
-                  la = log10(mx) - log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min()));
-
-                  if (la < 1.8)
-                    mut = mn + mRandomContext.master()->getRandomCC() * (mx - mn);
-                  else
-                    mut = pow(10.0, log10(std::max(mn, std::numeric_limits< C_FLOAT64 >::min())) + la * mRandomContext.master()->getRandomCC());
-                }
-            }
-
-          catch (...)
-            {
-              mut = (mx + mn) * 0.5;
-            }
-
-          // We need to set the value here so that further checks take
-          // account of the value.
-          *mProblemContext.master()->getContainerVariables(true)[j] = mut;
-        }
+      createIndividual(i, COptItem::CheckPolicyFlag::None);
 
       // calculate its fitness
-      Continue = evaluate(*mIndividuals[i]);
-      mValues[i] = mEvaluationValue;
+      mValues[i] = evaluate(EvaluationPolicyFlag::None);
 
       /* Calculate the phi value of the individual for SR*/
       mPhi[i] = phi(i);
     }
 
-  return Continue;
+  return proceed();
 }
 
 void COptMethodGASR::initObjects()
@@ -429,23 +377,22 @@ bool COptMethodGASR::initialize()
 
   mValues.resize(2 * mPopulationSize);
   mValues = std::numeric_limits<double>::infinity();
-  mBestValue = std::numeric_limits<C_FLOAT64>::infinity();
 
   mpPermutation = new CPermutation(mRandomContext.master(), mPopulationSize);
 
   mWins.resize(2 * mPopulationSize);
 
   // initialize the variance for mutations
-  mMutationVarians = 0.1;
+  mMutationVariance = 0.1;
 
   if (getParameter("Mutation Variance"))
     {
-      mMutationVarians = getValue< C_FLOAT64 >("Mutation Variance");
+      mMutationVariance = getValue< C_FLOAT64 >("Mutation Variance");
 
-      if (mMutationVarians < 0.0 || 1.0 < mMutationVarians)
+      if (mMutationVariance < 0.0 || 1.0 < mMutationVariance)
         {
-          mMutationVarians = 0.1;
-          setValue("Mutation Variance", mMutationVarians);
+          mMutationVariance = 0.1;
+          setValue("Mutation Variance", mMutationVariance);
         }
     }
 
@@ -464,12 +411,11 @@ bool COptMethodGASR::cleanup()
 
 bool COptMethodGASR::optimise()
 {
-  bool Continue = true;
-
   if (!initialize())
     {
-      if (mProcessReport)
-        mProcessReport.finishItem(mhGenerations);
+      if (mProcessReport
+          && !mProcessReport.finishItem(mhGenerations))
+        signalStop();
 
       return false;
     }
@@ -487,50 +433,33 @@ bool COptMethodGASR::optimise()
   size_t Stalled, Stalled10, Stalled30, Stalled50;
   Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
 
-  size_t i;
-
   // initialize the population
   // first individual is the initial guess
-  for (i = 0; i < mVariableSize; i++)
-    (*mIndividuals[0])[i] = mProblemContext.master()->getOptItemList(true)[i]->getStartValue();
+  createIndividual(C_INVALID_INDEX, COptItem::CheckPolicyFlag::None);
 
-  // calculate the fitness
-  size_t j;
-
-  // set the parameter values
-  for (j = 0; j < mVariableSize; j++)
-    *mProblemContext.master()->getContainerVariables(true)[j] = (*mIndividuals[0])[j];
-
-  Continue = evaluate(*mIndividuals[0]);
-  mValues[0] = mEvaluationValue;
-  mProblemContext.master()->setSolution(mEvaluationValue, *mIndividuals[0], true);
+  mValues[0] = evaluate(EvaluationPolicyFlag::None);
+  setSolution(mValues[0], *mIndividuals[0], true);
 
   /* Calculate the phi value of the individual for SR*/
   mPhi[0] = phi(0);
 
   // the others are random
-  Continue = creation(1, mPopulationSize);
+  creation(1, mPopulationSize);
 
   // get the index of the fittest
   mBestIndex = fittest();
 
   if (mBestIndex != C_INVALID_INDEX)
-    {
-      // and store that value
-      mBestValue = mValues[mBestIndex];
-      Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex], true);
+    setSolution(mValues[mBestIndex], *mIndividuals[mBestIndex], true);
 
-      // We found a new best value lets report it.
-      mpParentTask->output(COutputInterface::DURING);
-    }
-
-  if (!Continue)
+  if (!proceed())
     {
       if (mLogVerbosity > 0)
         mMethodLog.enterLogEntry(COptLogEntry("Algorithm was terminated by user after initial population creation."));
 
-      if (mProcessReport)
-        mProcessReport.finishItem(mhGenerations);
+      if (mProcessReport
+          && !mProcessReport.finishItem(mhGenerations))
+        signalStop();
 
       cleanup();
       return true;
@@ -538,7 +467,7 @@ bool COptMethodGASR::optimise()
 
   // ITERATE FOR gener GENERATIONS
   for (mCurrentGeneration = 2;
-       mCurrentGeneration <= mGenerations && Continue;
+       mCurrentGeneration <= mGenerations && proceed();
        mCurrentGeneration++, Stalled++, Stalled10++, Stalled30++, Stalled50++)
     {
 
@@ -556,7 +485,7 @@ bool COptMethodGASR::optimise()
                 " generations. 50% of individuals randomized."
               ));
 
-          Continue = creation((size_t)(mPopulationSize * 0.5),
+          creation((size_t)(mPopulationSize * 0.5),
                               mPopulationSize);
           Stalled10 = Stalled30 = Stalled50 = 0;
         }
@@ -570,7 +499,7 @@ bool COptMethodGASR::optimise()
                 " generations. 30% of individuals randomized."
               ));
 
-          Continue = creation((size_t)(mPopulationSize * 0.7),
+          creation((size_t)(mPopulationSize * 0.7),
                               mPopulationSize);
           Stalled10 = Stalled30 = 0;
         }
@@ -584,34 +513,32 @@ bool COptMethodGASR::optimise()
                 " generations. 10% of individuals randomized."
               ));
 
-          Continue = creation((size_t)(mPopulationSize * 0.9),
+          creation((size_t)(mPopulationSize * 0.9),
                               mPopulationSize);
           Stalled10 = 0;
         }
       // replicate the individuals
       else
-        Continue = replicate();
+        replicate();
 
       // select the most fit
-      Continue = select();
+      select();
 
       // get the index of the fittest
       mBestIndex = fittest();
 
       if (mBestIndex != C_INVALID_INDEX &&
-          mValues[mBestIndex] < mBestValue)
+          mValues[mBestIndex] < getBestValue())
         {
           Stalled = Stalled10 = Stalled30 = Stalled50 = 0;
-          mBestValue = mValues[mBestIndex];
-
-          Continue = mProblemContext.master()->setSolution(mBestValue, *mIndividuals[mBestIndex], true);
-
-          // We found a new best value lets report it.
-          mpParentTask->output(COutputInterface::DURING);
+          setSolution(mValues[mBestIndex], *mIndividuals[mBestIndex], true);
         }
 
-      if (mProcessReport)
-        Continue = mProcessReport.progressItem(mhGenerations);
+      if (mProcessReport
+          && !mProcessReport.progressItem(mhGenerations))
+        signalStop();
+
+      aggregateCounters();
 
       //use a different output channel. It will later get a proper enum name
       mpParentTask->output(COutputInterface::MONITORING);
@@ -623,8 +550,9 @@ bool COptMethodGASR::optimise()
                    "Terminated after " + std::to_string(mCurrentGeneration - 1) + " of " +
                    std::to_string(mGenerations) + " generations."));
 
-  if (mProcessReport)
-    mProcessReport.finishItem(mhGenerations);
+  if (mProcessReport
+      && !mProcessReport.finishItem(mhGenerations))
+    signalStop();
 
   cleanup();
 

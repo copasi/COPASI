@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -30,7 +30,6 @@
 %}
 
 %ignore operator<<(std::ostream&, const COptItem&);
-%ignore COptItem::getObjectValue;
 %ignore COptItem::getLowerBoundValue;
 %ignore COptItem::getUpperBoundValue;
 %ignore COptItem::getUpdateMethod;
@@ -44,15 +43,6 @@
 
 %extend COptItem
 {
-    double getObjectValue() const
-    {
-        if (!$self->getObjectValue())
-          return std::numeric_limits<double>::quiet_NaN();
-
-        double v=*($self->getObjectValue());
-        return v;
-    }
-
     double getLowerBoundValue() const
     {
         if (!$self->getLowerBoundValue())

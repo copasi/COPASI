@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -139,9 +139,9 @@ void CQCrossSectionTaskWidget::commitInput()
   if (!mpCrossSectionProblem) return;
 
   mpCrossSectionProblem->setFlagLimitCrossings(mpCheckSimCrossings->isChecked());
-  mpCrossSectionProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
+  mpCrossSectionProblem->setCrossingsLimit(mpTxtCrossings->text().toUInt());
   mpCrossSectionProblem->setFlagLimitOutCrossings(mpCheckOutputCrossings->isChecked());
-  mpCrossSectionProblem->setOutCrossingsLimit(mpTxtOutCrossings->text().toULong());
+  mpCrossSectionProblem->setOutCrossingsLimit(mpTxtOutCrossings->text().toUInt());
   mpCrossSectionProblem->setTimeLimit(mpTxtTime->text().toDouble());
   mpCrossSectionProblem->setOutputStartTime(mpTxtOutTime->text().toDouble());
   mpCrossSectionProblem->setFlagLimitOutTime(mpCheckOutputDelay->isChecked());
@@ -185,7 +185,7 @@ bool CQCrossSectionTaskWidget::saveTaskProtected()
 
   // save the actual changes
   if (mpCheckSimConvergence->isChecked())
-    pProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
+    pProblem->setCrossingsLimit(mpTxtCrossings->text().toUInt());
 
   pProblem->setPositiveDirection(mpDirectionPositive->isChecked());
   pProblem->setThreshold(mpLineEditValue->text().toDouble());
@@ -202,9 +202,9 @@ bool CQCrossSectionTaskWidget::saveTaskProtected()
     }
 
   pProblem->setFlagLimitCrossings(mpCheckSimCrossings->isChecked());
-  pProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
+  pProblem->setCrossingsLimit(mpTxtCrossings->text().toUInt());
   pProblem->setFlagLimitOutCrossings(mpCheckOutputCrossings->isChecked());
-  pProblem->setOutCrossingsLimit(mpTxtOutCrossings->text().toULong());
+  pProblem->setOutCrossingsLimit(mpTxtOutCrossings->text().toUInt());
   pProblem->setFlagLimitConvergence(mpCheckSimConvergence->isChecked());
   pProblem->setConvergenceTolerance(mpTxtConvergence->text().toDouble());
   pProblem->setFlagLimitOutConvergence(mpCheckOutputConvergence->isChecked());
@@ -365,7 +365,7 @@ void CQCrossSectionTaskWidget::slotUpdateCrossings(bool b)
   try
     {
       mpCrossSectionProblem->setFlagLimitCrossings(b);
-      mpCrossSectionProblem->setCrossingsLimit(mpTxtCrossings->text().toULong());
+      mpCrossSectionProblem->setCrossingsLimit(mpTxtCrossings->text().toUInt());
     }
 
   catch (...)

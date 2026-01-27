@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -253,9 +253,9 @@ L3:
       i__2 = 1, i__3 = j - *mumas;
       /* Computing MIN */
       i__5 = *n, i__6 = j + *mlmas;
-      i__4 = min(i__5, i__6);
+      i__4 = std::min(i__5, i__6);
 
-      for (i__ = max(i__2, i__3); i__ <= i__4; ++i__)
+      for (i__ = std::max(i__2, i__3); i__ <= i__4; ++i__)
         {
           e1[i__ + j * e1_dim1] += *fac1 * fmas[i__ - j + linal_1.mbdiag +
                                                 j * fmas_dim1];
@@ -285,9 +285,9 @@ L13:
       i__4 = 1, i__2 = j - *mumas;
       /* Computing MIN */
       i__5 = *nm1, i__6 = j + *mlmas;
-      i__3 = min(i__5, i__6);
+      i__3 = std::min(i__5, i__6);
 
-      for (i__ = max(i__4, i__2); i__ <= i__3; ++i__)
+      for (i__ = std::max(i__4, i__2); i__ <= i__3; ++i__)
         {
           e1[i__ + j * e1_dim1] += *fac1 * fmas[i__ - j + linal_1.mbdiag +
                                                 j * fmas_dim1];
@@ -710,9 +710,9 @@ L3:
       i__2 = 1, i__3 = j - *mumas;
       /* Computing MIN */
       i__5 = *n, i__6 = j + *mlmas;
-      i__4 = min(i__5, i__6);
+      i__4 = std::min(i__5, i__6);
 
-      for (i__ = max(i__2, i__3); i__ <= i__4; ++i__)
+      for (i__ = std::max(i__2, i__3); i__ <= i__4; ++i__)
         {
           bb = fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1];
           e2r[i__ + j * e2r_dim1] += *alphn * bb;
@@ -744,9 +744,9 @@ L13:
       i__4 = 1, i__2 = j - *mumas;
       /* Computing MIN */
       i__5 = *nm1, i__6 = j + *mlmas;
-      i__3 = min(i__5, i__6);
+      i__3 = std::min(i__5, i__6);
 
-      for (i__ = max(i__4, i__2); i__ <= i__3; ++i__)
+      for (i__ = std::max(i__4, i__2); i__ <= i__3; ++i__)
         {
           ffma = fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1];
           e2r[i__ + j * e2r_dim1] += *alphn * ffma;
@@ -777,9 +777,9 @@ L4:
       i__3 = 1, i__4 = *mumas + 2 - j;
       /* Computing MIN */
       i__5 = linal_1.mbb, i__6 = *mumas + 1 - j + *n;
-      i__2 = min(i__5, i__6);
+      i__2 = std::min(i__5, i__6);
 
-      for (i__ = max(i__3, i__4); i__ <= i__2; ++i__)
+      for (i__ = std::max(i__3, i__4); i__ <= i__2; ++i__)
         {
           ib = i__ + linal_1.mdiff;
           bb = fmas[i__ + j * fmas_dim1];
@@ -1085,9 +1085,9 @@ L45:
           i__2 = 1, i__3 = j - *mujac;
           /* Computing MIN */
           i__5 = *nm1, i__6 = j + *mljac;
-          i__4 = min(i__5, i__6);
+          i__4 = std::min(i__5, i__6);
 
-          for (i__ = max(i__2, i__3); i__ <= i__4; ++i__)
+          for (i__ = std::max(i__2, i__3); i__ <= i__4; ++i__)
             {
               im1 = i__ + *m1;
               z1[im1] += fjac[i__ + *mujac + 1 - j + jkm * fjac_dim1] *
@@ -1113,9 +1113,9 @@ L3:
       i__4 = 1, i__2 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *n, i__6 = i__ + *mumas;
-      i__3 = min(i__5, i__6);
+      i__3 = std::min(i__5, i__6);
 
-      for (j = max(i__4, i__2); j <= i__3; ++j)
+      for (j = std::max(i__4, i__2); j <= i__3; ++j)
         {
           s1 -= fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * f1[j];
         }
@@ -1147,9 +1147,9 @@ L13:
       i__3 = 1, i__4 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *nm1, i__6 = i__ + *mumas;
-      i__2 = min(i__5, i__6);
+      i__2 = std::min(i__5, i__6);
 
-      for (j = max(i__3, i__4); j <= i__2; ++j)
+      for (j = std::max(i__3, i__4); j <= i__2; ++j)
         {
           s1 -= fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * f1[j + *m1]
                 ;
@@ -1178,9 +1178,9 @@ L4:
       i__2 = 1, i__3 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *n, i__6 = i__ + *mumas;
-      i__4 = min(i__5, i__6);
+      i__4 = std::min(i__5, i__6);
 
-      for (j = max(i__2, i__3); j <= i__4; ++j)
+      for (j = std::max(i__2, i__3); j <= i__4; ++j)
         {
           s1 -= fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * f1[j];
         }
@@ -1546,9 +1546,9 @@ L45:
           i__2 = 1, i__3 = j - *mujac;
           /* Computing MIN */
           i__5 = *nm1, i__6 = j + *mljac;
-          i__4 = min(i__5, i__6);
+          i__4 = std::min(i__5, i__6);
 
-          for (i__ = max(i__2, i__3); i__ <= i__4; ++i__)
+          for (i__ = std::max(i__2, i__3); i__ <= i__4; ++i__)
             {
               im1 = i__ + *m1;
               iimu = i__ + *mujac + 1 - j;
@@ -1576,9 +1576,9 @@ L3:
       i__4 = 1, i__2 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *n, i__6 = i__ + *mumas;
-      i__3 = min(i__5, i__6);
+      i__3 = std::min(i__5, i__6);
 
-      for (j = max(i__4, i__2); j <= i__3; ++j)
+      for (j = std::max(i__4, i__2); j <= i__3; ++j)
         {
           bb = fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1];
           s2 -= bb * f2[j];
@@ -1618,9 +1618,9 @@ L13:
       i__3 = 1, i__4 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *nm1, i__6 = i__ + *mumas;
-      i__2 = min(i__5, i__6);
+      i__2 = std::min(i__5, i__6);
 
-      for (j = max(i__3, i__4); j <= i__2; ++j)
+      for (j = std::max(i__3, i__4); j <= i__2; ++j)
         {
           jm1 = j + *m1;
           bb = fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1];
@@ -1653,9 +1653,9 @@ L4:
       i__2 = 1, i__3 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *n, i__6 = i__ + *mumas;
-      i__4 = min(i__5, i__6);
+      i__4 = std::min(i__5, i__6);
 
-      for (j = max(i__2, i__3); j <= i__4; ++j)
+      for (j = std::max(i__2, i__3); j <= i__4; ++j)
         {
           bb = fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1];
           s2 -= bb * f2[j];
@@ -2076,9 +2076,9 @@ L45:
           i__2 = 1, i__3 = j - *mujac;
           /* Computing MIN */
           i__5 = *nm1, i__6 = j + *mljac;
-          i__4 = min(i__5, i__6);
+          i__4 = std::min(i__5, i__6);
 
-          for (i__ = max(i__2, i__3); i__ <= i__4; ++i__)
+          for (i__ = std::max(i__2, i__3); i__ <= i__4; ++i__)
             {
               im1 = i__ + *m1;
               ffja = fjac[i__ + *mujac + 1 - j + jkm * fjac_dim1];
@@ -2110,9 +2110,9 @@ L3:
       i__4 = 1, i__2 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *n, i__6 = i__ + *mumas;
-      i__3 = min(i__5, i__6);
+      i__3 = std::min(i__5, i__6);
 
-      for (j = max(i__4, i__2); j <= i__3; ++j)
+      for (j = std::max(i__4, i__2); j <= i__3; ++j)
         {
           bb = fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1];
           s1 -= bb * f1[j];
@@ -2155,10 +2155,10 @@ L13:
       s3 = 0.;
       /* Computing MAX */
       i__3 = 1, i__4 = i__ - *mlmas;
-      j1b = max(i__3, i__4);
+      j1b = std::max(i__3, i__4);
       /* Computing MIN */
       i__3 = *nm1, i__4 = i__ + *mumas;
-      j2b = min(i__3, i__4);
+      j2b = std::min(i__3, i__4);
       i__3 = j2b;
 
       for (j = j1b; j <= i__3; ++j)
@@ -2197,9 +2197,9 @@ L4:
       i__3 = 1, i__4 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *n, i__6 = i__ + *mumas;
-      i__2 = min(i__5, i__6);
+      i__2 = std::min(i__5, i__6);
 
-      for (j = max(i__3, i__4); j <= i__2; ++j)
+      for (j = std::max(i__3, i__4); j <= i__2; ++j)
         {
           bb = fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1];
           s1 -= bb * f1[j];
@@ -2575,9 +2575,9 @@ L45:
           i__2 = 1, i__3 = j - *mujac;
           /* Computing MIN */
           i__5 = *nm1, i__6 = j + *mljac;
-          i__4 = min(i__5, i__6);
+          i__4 = std::min(i__5, i__6);
 
-          for (i__ = max(i__2, i__3); i__ <= i__4; ++i__)
+          for (i__ = std::max(i__2, i__3); i__ <= i__4; ++i__)
             {
               im1 = i__ + *m1;
               cont[im1] += fjac[i__ + *mujac + 1 - j + (j + k * *m2) *
@@ -2614,9 +2614,9 @@ L3:
       i__4 = 1, i__2 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *n, i__6 = i__ + *mumas;
-      i__3 = min(i__5, i__6);
+      i__3 = std::min(i__5, i__6);
 
-      for (j = max(i__4, i__2); j <= i__3; ++j)
+      for (j = std::max(i__4, i__2); j <= i__3; ++j)
         {
           sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * f1[j];
         }
@@ -2654,9 +2654,9 @@ L13:
       i__3 = 1, i__4 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *nm1, i__6 = i__ + *mumas;
-      i__2 = min(i__5, i__6);
+      i__2 = std::min(i__5, i__6);
 
-      for (j = max(i__3, i__4); j <= i__2; ++j)
+      for (j = std::max(i__3, i__4); j <= i__2; ++j)
         {
           sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * f1[j + *
                  m1];
@@ -2687,9 +2687,9 @@ L4:
       i__2 = 1, i__3 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *n, i__6 = i__ + *mumas;
-      i__4 = min(i__5, i__6);
+      i__4 = std::min(i__5, i__6);
 
-      for (j = max(i__2, i__3); j <= i__4; ++j)
+      for (j = std::max(i__2, i__3); j <= i__4; ++j)
         {
           sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * f1[j];
         }
@@ -2728,9 +2728,9 @@ L14:
       i__4 = 1, i__2 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *nm1, i__6 = i__ + *mumas;
-      i__3 = min(i__5, i__6);
+      i__3 = std::min(i__5, i__6);
 
-      for (j = max(i__4, i__2); j <= i__3; ++j)
+      for (j = std::max(i__4, i__2); j <= i__3; ++j)
         {
           sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * f1[j + *
                  m1];
@@ -2886,7 +2886,7 @@ L77:
 
   /* Computing MAX */
   d__1 = sqrt(*err / *n);
-  *err = max(d__1, 1e-10);
+  *err = std::max(d__1, 1e-10);
 
   if (*err < 1.)
     {
@@ -2997,9 +2997,9 @@ L42:
               i__3 = 1, i__4 = j - *mujac;
               /* Computing MIN */
               i__5 = *nm1, i__6 = j + *mljac;
-              i__2 = min(i__5, i__6);
+              i__2 = std::min(i__5, i__6);
 
-              for (i__ = max(i__3, i__4); i__ <= i__2; ++i__)
+              for (i__ = std::max(i__3, i__4); i__ <= i__2; ++i__)
                 {
                   im1 = i__ + *m1;
                   cont[im1] += fjac[i__ + *mujac + 1 - j + (j + k * *m2) *
@@ -3083,7 +3083,7 @@ L88:
 
       /* Computing MAX */
       d__1 = sqrt(*err / *n);
-      *err = max(d__1, 1e-10);
+      *err = std::max(d__1, 1e-10);
     }
 
   return 0;
@@ -3301,9 +3301,9 @@ L45:
           i__2 = 1, i__3 = j - *mujac;
           /* Computing MIN */
           i__5 = *nm1, i__6 = j + *mljac;
-          i__4 = min(i__5, i__6);
+          i__4 = std::min(i__5, i__6);
 
-          for (i__ = max(i__2, i__3); i__ <= i__4; ++i__)
+          for (i__ = std::max(i__2, i__3); i__ <= i__4; ++i__)
             {
               im1 = i__ + *m1;
               cont[im1] += fjac[i__ + *mujac + 1 - j + (j + k * *m2) *
@@ -3348,9 +3348,9 @@ L3:
       i__4 = 1, i__2 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *n, i__6 = i__ + *mumas;
-      i__3 = min(i__5, i__6);
+      i__3 = std::min(i__5, i__6);
 
-      for (j = max(i__4, i__2); j <= i__3; ++j)
+      for (j = std::max(i__4, i__2); j <= i__3; ++j)
         {
           sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * ff[j];
         }
@@ -3404,9 +3404,9 @@ L13:
       i__3 = 1, i__4 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *nm1, i__6 = i__ + *mumas;
-      i__2 = min(i__5, i__6);
+      i__2 = std::min(i__5, i__6);
 
-      for (j = max(i__3, i__4); j <= i__2; ++j)
+      for (j = std::max(i__3, i__4); j <= i__2; ++j)
         {
           sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * ff[j + *
                  m1];
@@ -3445,9 +3445,9 @@ L4:
       i__2 = 1, i__3 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *n, i__6 = i__ + *mumas;
-      i__4 = min(i__5, i__6);
+      i__4 = std::min(i__5, i__6);
 
-      for (j = max(i__2, i__3); j <= i__4; ++j)
+      for (j = std::max(i__2, i__3); j <= i__4; ++j)
         {
           sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * ff[j];
         }
@@ -3502,9 +3502,9 @@ L14:
       i__4 = 1, i__2 = i__ - *mlmas;
       /* Computing MIN */
       i__5 = *nm1, i__6 = i__ + *mumas;
-      i__3 = min(i__5, i__6);
+      i__3 = std::min(i__5, i__6);
 
-      for (j = max(i__4, i__2); j <= i__3; ++j)
+      for (j = std::max(i__4, i__2); j <= i__3; ++j)
         {
           sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * ff[j + *
                  m1];
@@ -3692,7 +3692,7 @@ L77:
 
   /* Computing MAX */
   d__1 = sqrt(*err / *n);
-  *err = max(d__1, 1e-10);
+  *err = std::max(d__1, 1e-10);
 
   if (*err < 1.)
     {
@@ -3803,9 +3803,9 @@ L42:
               i__3 = 1, i__4 = j - *mujac;
               /* Computing MIN */
               i__5 = *nm1, i__6 = j + *mljac;
-              i__2 = min(i__5, i__6);
+              i__2 = std::min(i__5, i__6);
 
-              for (i__ = max(i__3, i__4); i__ <= i__2; ++i__)
+              for (i__ = std::max(i__3, i__4); i__ <= i__2; ++i__)
                 {
                   im1 = i__ + *m1;
                   cont[im1] += fjac[i__ + *mujac + 1 - j + (j + k * *m2) *
@@ -3889,7 +3889,7 @@ L88:
 
       /* Computing MAX */
       d__1 = sqrt(*err / *n);
-      *err = max(d__1, 1e-10);
+      *err = std::max(d__1, 1e-10);
     }
 
   return 0;
@@ -4105,9 +4105,9 @@ L45:
           i__2 = 1, i__3 = j - *mujac;
           /* Computing MIN */
           i__5 = *nm1, i__6 = j + *mljac;
-          i__4 = min(i__5, i__6);
+          i__4 = std::min(i__5, i__6);
 
-          for (i__ = max(i__2, i__3); i__ <= i__4; ++i__)
+          for (i__ = std::max(i__2, i__3); i__ <= i__4; ++i__)
             {
               im1 = i__ + *m1;
               ak[im1] += fjac[i__ + *mujac + 1 - j + jkm * fjac_dim1] * sum;
@@ -4141,9 +4141,9 @@ L3:
           i__4 = 1, i__2 = i__ - *mlmas;
           /* Computing MIN */
           i__5 = *n, i__6 = i__ + *mumas;
-          i__3 = min(i__5, i__6);
+          i__3 = std::min(i__5, i__6);
 
-          for (j = max(i__4, i__2); j <= i__3; ++j)
+          for (j = std::max(i__4, i__2); j <= i__3; ++j)
             {
               sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * ynew[
                        j];
@@ -4179,9 +4179,9 @@ L13:
           i__3 = 1, i__4 = i__ - *mlmas;
           /* Computing MIN */
           i__5 = *nm1, i__6 = i__ + *mumas;
-          i__2 = min(i__5, i__6);
+          i__2 = std::min(i__5, i__6);
 
-          for (j = max(i__3, i__4); j <= i__2; ++j)
+          for (j = std::max(i__3, i__4); j <= i__2; ++j)
             {
               sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * ynew[
                        j + *m1];
@@ -4215,9 +4215,9 @@ L4:
           i__2 = 1, i__3 = i__ - *mlmas;
           /* Computing MIN */
           i__5 = *n, i__6 = i__ + *mumas;
-          i__4 = min(i__5, i__6);
+          i__4 = std::min(i__5, i__6);
 
-          for (j = max(i__2, i__3); j <= i__4; ++j)
+          for (j = std::max(i__2, i__3); j <= i__4; ++j)
             {
               sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * ynew[
                        j];
@@ -4465,9 +4465,9 @@ L12:
           i__2 = 1, i__3 = j - *mujac;
           /* Computing MIN */
           i__5 = *nm1, i__6 = j + *mljac;
-          i__4 = min(i__5, i__6);
+          i__4 = std::min(i__5, i__6);
 
-          for (i__ = max(i__2, i__3); i__ <= i__4; ++i__)
+          for (i__ = std::max(i__2, i__3); i__ <= i__4; ++i__)
             {
               im1 = i__ + *m1;
               del[im1] += fjac[i__ + *mujac + 1 - j + jkm * fjac_dim1] *

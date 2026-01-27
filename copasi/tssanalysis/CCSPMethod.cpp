@@ -919,7 +919,7 @@ void CCSPMethod::start()
 
   if (!mReducedModel)
     {
-      mDim += mpContainer->getCountDependentSpecies();
+      mDim += (long)mpContainer->getCountDependentSpecies();
     }
 
   emptyVectors();

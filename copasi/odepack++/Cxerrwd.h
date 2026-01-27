@@ -39,9 +39,9 @@ class Cxerrwd
 
     ~Cxerrwd();
 
-    void operator() (const char * msg, const C_INT *nmes, const C_INT *nerr, const C_INT
-                     *level, const C_INT *ni, const C_INT *i1, const C_INT *i2, const C_INT *nr,
-                     const double *r1, const double *r2, C_INT msg_len);
+    void mxerrwd(const char * msg, const C_INT *nmes, const C_INT *nerr, const C_INT
+                 *level, const C_INT *ni, const C_INT *i1, const C_INT *i2, const C_INT *nr,
+                 const double *r1, const double *r2, C_INT msg_len);
 
     void setOstream(std::ostream & os);
     void enablePrint(const bool & print = true);

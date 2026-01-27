@@ -65,7 +65,7 @@ public:
   /**
    * Initialize the method parameter
    */
-  virtual void initializeParameter();
+  void initializeParameter() override;
 
   /**
    *  This instructs the method to calculate a time step of deltaT
@@ -75,13 +75,13 @@ public:
    *  The return value is the actual timestep taken.
    *  @param "const double &" deltaT
    */
-  virtual void step(const double & deltaT);
+  void step(const double & deltaT) override;
 
   /**
    *  This instructs the method to prepare for integration
    *  starting with the initialState given.
    */
-  virtual void start();
+  void start() override;
 
   /**
   * return CArrayAnnotation for visualization in ILDM-tab
@@ -107,26 +107,26 @@ public:
    * create the CArraAnnotations for every ILDM-tab in the CQTSSAResultSubWidget
    * input for each CArraAnnotations is a seperate CMatrix
    **/
-  virtual void createAnnotationsM();
+  void createAnnotationsM() override;
 
   /**
    * initialize output for the result elements, this method
    * initializes the output elements so that an output handler
    * can be used afterwards
    **/
-  virtual void initializeOutput();
+  void initializeOutput() override;
 
   /**
    * set the every CArrayAnnotation for the requested step
    * set the desription of CArayAnnotation for both dimensions
    **/
-  virtual bool setAnnotationM(size_t step);
+  bool setAnnotationM(size_t step) override;
 
   /**
    *  print of the standart report sequence for ILDM Method
    *  @param std::ostream * ostream
    **/
-  virtual void printResult(std::ostream * ostream) const;
+  void printResult(std::ostream * ostream) const override;
 
 protected:
 

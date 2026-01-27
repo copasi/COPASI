@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,7 +46,8 @@ public:
    */
   COptMethodSRES(const CDataContainer * pParent,
                  const CTaskEnum::Method & methodType = CTaskEnum::Method::SRES,
-                 const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
+                 const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization,
+                 const bool & parallel = true);
 
   /**
    * Copy Constructor
@@ -54,7 +55,8 @@ public:
    * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodSRES(const COptMethodSRES & src,
-                 const CDataContainer * pParent);
+                 const CDataContainer * pParent,
+                 const bool & parallel);
 
   /**
    * Destructor
@@ -67,12 +69,12 @@ public:
    * of its progress by the callback function set with SetCallback.
    * @ return success;
    */
-  virtual bool optimise();
+  bool optimise() override;
 
   /**
    * Returns the maximum verbosity at which the method can log.
    */
-  virtual unsigned C_INT32 getMaxLogVerbosity() const;
+  unsigned C_INT32 getMaxLogVerbosity() const override;
 
 private:
   /**
@@ -89,20 +91,13 @@ private:
    * Initialize arrays and pointer.
    * @return bool success
    */
-  virtual bool initialize();
+  bool initialize() override;
 
   /**
    * Cleanup arrays and pointers.
    * @return bool success
    */
-  virtual bool cleanup();
-
-  /**
-   * Evaluate the fitness of one individual
-   * @param const CVector< C_FLOAT64 > & individual
-   * @return bool continue
-   */
-  bool evaluate(const CVector< C_FLOAT64 > & individual);
+  bool cleanup() override;
 
   /**
    * Swap individuals from and to
@@ -148,6 +143,9 @@ private:
    */
   C_FLOAT64 phi(size_t indvNum);
 
+protected:
+  void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom) override;
+
   // Attributes
 private:
 
@@ -176,13 +174,6 @@ private:
   * stop
   */
   unsigned C_INT32 mStopAfterStalledGenerations;
-
-  /**
-   * The value of the last evaluation.
-   */
-  C_FLOAT64 mEvaluationValue;
-
-  C_FLOAT64 mBestValue;
 
   double mTau;    // parameter for updating variances
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -13,12 +13,11 @@
 // of Manchester.
 // All rights reserved.
 
-/* A Bison parser, made by GNU Bison 3.5.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2019 Free Software Foundation,
-   Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -46,14 +45,11 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-/* Undocumented macros, especially those whose name start with YY_,
-   are private implementation details.  Do not rely on them.  */
-
 #ifndef YY_CUNITPARSER_CUNITPARSER_TAB_HPP_INCLUDED
-# define YY_CUNITPARSER_CUNITPARSER_TAB_HPP_INCLUDED
+#define YY_CUNITPARSER_CUNITPARSER_TAB_HPP_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 1
+#  define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int CUnitParserdebug;
@@ -61,7 +57,7 @@ extern int CUnitParserdebug;
 
 /* Token type.  */
 #ifndef YYTOKENTYPE
-# define YYTOKENTYPE
+#  define YYTOKENTYPE
 enum yytokentype
 {
   SCALE = 258,
@@ -81,10 +77,10 @@ enum yytokentype
 #endif
 
 /* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+#if !defined YYSTYPE && !defined YYSTYPE_IS_DECLARED
 typedef int YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
+#  define YYSTYPE_IS_TRIVIAL  1
+#  define YYSTYPE_IS_DECLARED 1
 #endif
 
 extern YYSTYPE CUnitParserlval;

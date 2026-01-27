@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -47,7 +47,8 @@ if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/CopasiVersion.h)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CopasiVersion.h.in ${CMAKE_CURRENT_SOURCE_DIR}/CopasiVersion.h)
 endif (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/CopasiVersion.h)
 
-file(GLOB COPASI_HEADERS *.h lapack/*.h GL/*.h)
+file(GLOB COPASI_HEADERS *.h lapack/*.h GL/*.h stduuid/*.h stduuid/gsl/* 
+   utilities/*.hpp utilities/gcem_incl/*.hpp utilities/stats_incl/*.hpp)
 
 include(CopasiDataModel/CMakeLists.txt)
 include(MIRIAM/CMakeLists.txt)
@@ -273,7 +274,6 @@ else()
   endif()
 
   target_link_libraries(libCOPASISE-core
-    ${CROSSGUID_LIBRARY} 
     ${LIBSBML_LIBRARY_NAME} 
     ${LIBSEDML_LIBRARY_NAME}
     ${LIBCOMBINE_LIBRARY_NAME}
@@ -283,6 +283,10 @@ else()
     ${CPUFEATURES_LIBRARY}
   )
   
+  if (COPASI_USE_CROSSGUID)
+    target_link_libraries(libCOPASISE-core ${CROSSGUID_LIBRARY})
+  endif()
+
   if (COPASI_USE_RAPTOR)
     target_link_libraries(libCOPASISE-core RAPTOR::RAPTOR)
   endif()
@@ -292,6 +296,11 @@ else()
   if (ENABLE_OMP)
     target_compile_options(libCOPASISE-core PRIVATE ${OpenMP_CXX_FLAGS})
   endif (ENABLE_OMP)
+
+  if (COPASI_USE_ASAN)
+    target_compile_options(libCOPASISE-core PRIVATE "-fsanitize=address")
+  endif (COPASI_USE_ASAN)
+
 endif()
 
 set_target_properties (libCOPASISE-static PROPERTIES 
@@ -332,6 +341,10 @@ target_link_libraries(libCOPASISE-static
 if (ENABLE_OMP)
   target_link_libraries(libCOPASISE-static OpenMP::OpenMP_CXX)
 endif (ENABLE_OMP)
+
+if (COPASI_USE_ASAN)
+  target_compile_options(libCOPASISE-static PUBLIC "-fsanitize=address")
+endif (COPASI_USE_ASAN)
 
 #need to link against iconv
 if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
@@ -415,6 +428,9 @@ if(ENABLE_LIBCOPASISE_SHARED)
     target_link_libraries(libCOPASISE-shared OpenMP::OpenMP_CXX)
   endif (ENABLE_OMP)
 
+  if (COPASI_USE_ASAN)
+    target_compile_options(libCOPASISE-shared PUBLIC "-fsanitize=address")
+  endif (COPASI_USE_ASAN)
 
   #need to link against iconv
   if (NOT (WIN32 AND NOT CYGWIN) AND NOT APPLE)
@@ -510,6 +526,7 @@ if(BUILD_GUI)
            PATHS ${Qt6Widgets_DIR}/../../../bin/
                  ${Qt6Widgets_DIR}/../../../share/qt/libexec/
                  ${Qt6Widgets_DIR}/../../../libexec/qt6/
+                 ${Qt6Widgets_DIR}/../../../libexec/
            )
 
     if (NOT EXISTS "${Qt6Widgets_UIC_EXECUTABLE}")
@@ -517,8 +534,20 @@ if(BUILD_GUI)
           ${Qt6Widgets_DIR}/../../../bin
           ${Qt6Widgets_DIR}/../../../share/qt/libexec
           ${Qt6Widgets_DIR}/../../../libexec/qt6/
+          ${Qt6Widgets_DIR}/../../../libexec/
+         
+          Please specify Qt6Widgets_UIC_EXECUTABLE manually
           ")
     endif()
+  endif()
+
+  # ensure we have absolute path to the uic executable
+  if (EXISTS "${Qt6Widgets_UIC_EXECUTABLE}")
+    # convert to absolute path
+    get_filename_component(Qt6Widgets_UIC_EXECUTABLE ${Qt6Widgets_UIC_EXECUTABLE} ABSOLUTE)
+    # set the variable as path property in the cache
+    set(Qt6Widgets_UIC_EXECUTABLE ${Qt6Widgets_UIC_EXECUTABLE} CACHE PATH "Path to the uic executable")
+    message(STATUS "Using UIC executable: ${Qt6Widgets_UIC_EXECUTABLE}")
   endif()
 
   MACRO(COPASI_QT6_WRAP_UI outfiles)

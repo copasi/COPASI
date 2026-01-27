@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -69,20 +69,18 @@ public:
    * of its progress by the callback function set with SetCallback.
    * @ return success;
    */
-  virtual bool optimise();
+  bool optimise() override;
 
   /**
    * Returns the maximum verbosity at which the method can log.
    */
-  virtual unsigned C_INT32 getMaxLogVerbosity() const;
+  unsigned C_INT32 getMaxLogVerbosity() const override;
 
-  virtual C_FLOAT64 getBestValue() const;
+  C_FLOAT64 getCurrentValue() const override;
 
-  virtual C_FLOAT64 getCurrentValue() const;
+  const CVector< C_FLOAT64 > * getBestParameters() const override;
 
-  virtual const CVector< C_FLOAT64 > * getBestParameters() const;
-
-  virtual const CVector< C_FLOAT64 > * getCurrentParameters() const;
+  const CVector< C_FLOAT64 > * getCurrentParameters() const override;
 
 private:
   /**
@@ -99,19 +97,13 @@ private:
    * Initialize arrays and pointer.
    * @return bool success
    */
-  virtual bool initialize();
+  bool initialize() override;
 
   /**
    * Cleanup arrays and pointers.
    * @return bool success
    */
-  virtual bool cleanup();
-
-  /**
-   * Evaluate the objective function
-   * @return bool continue
-   */
-  const C_FLOAT64 & evaluate();
+  bool cleanup() override;
 
   /**
    * Calculate the gradient of the objective at the current parameters
@@ -197,11 +189,6 @@ private:
   CVector< C_FLOAT64 > mTemp;
 
   /**
-   * The best value found so far
-   */
-  C_FLOAT64 mBestValue;
-
-  /**
    * The result of a function evaluation
    */
   C_FLOAT64 mEvaluationValue;
@@ -211,12 +198,6 @@ private:
   * stop
   */
   unsigned C_INT32 mStopAfterStalledIterations;
-
-
-  /**
-   * Flag indicating whether the computation shall continue
-   */
-  bool mContinue;
 
   /**
    * Indicate whether we have access to the residuals, i.e., it is a
@@ -232,7 +213,6 @@ private:
   C_FLOAT64 mInitialLamda;
   C_FLOAT64 mLambdaUp;
   C_FLOAT64 mLambdaDown;
-
 };
 
 #endif  // COPASI_COptMethodLevenbergMarquardt

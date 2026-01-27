@@ -99,7 +99,7 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  bool elevateChildren() override;
 
   const CMatrix<C_FLOAT64> & getBMatrixReduced() const
   {return mBMatrixReduced;}
@@ -186,7 +186,7 @@ public:
   * Check if the method is suitable for this problem
   * @return bool suitability of the method
   */
-  virtual bool isValidProblem(const CCopasiProblem * pProblem);
+  bool isValidProblem(const CCopasiProblem * pProblem) override;
 
 private:
   /**

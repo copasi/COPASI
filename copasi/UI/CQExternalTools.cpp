@@ -1,5 +1,7 @@
 #include "CQExternalTools.h"
 
+# include <algorithm>
+
 #include <QAction>
 #include <QMenu>
 #include <QString>
@@ -45,6 +47,7 @@ void CQExternalTools::init(QMenu * pMenu, QAction * pAction)
   removeActionsFromMenu();
 
   mActionToTool.clear();
+  mActionToTool.clear();
 
   auto files = getToolFiles();
   QString copasiDir = QString(COptions::getConfigDir().c_str());
@@ -63,6 +66,7 @@ void CQExternalTools::init(QMenu * pMenu, QAction * pAction)
 
       
       mActionToTool[action] = tool;
+      mToolToAction[tool] = action;
     }
 
   addActionsToMenu();
@@ -86,9 +90,9 @@ void CQExternalTools::addActionsToMenu()
   if (!mpMenu || !mpAction)
     return;
 
-  for (auto & action : mActionToTool)
+  for (auto* tool : getTools())
     {
-      mpMenu->insertAction(mpAction, action.first);
+      mpMenu->insertAction(mpAction, mToolToAction[tool]);
     }
 }
 
@@ -111,33 +115,38 @@ QStringList CQExternalTools::getToolFiles()
       file = copasiDir + QString("/") + file;
     }
 
+  files.sort();
+
   return files;
 }
 
 
 QStringList CQExternalTools::getToolNames() const
 {
-    QStringList names;
-    
-    for (auto & action : mActionToTool)
-        {
-        names << action.second->getName();
-        }
-    
-    return names;
+  QStringList names;
+
+  for (auto & tool : getTools())
+    {
+      names << tool->getName();
+    }
+
+  return names;
 }
 
 QList< CQExternalTool * > CQExternalTools::getTools() const
 {
-    QList< CQExternalTool * > tools;
-    
-    for (auto & action : mActionToTool)
-        {
-        tools << action.second;
-        }
-    
-    return tools;
-  
+  QList< CQExternalTool * > tools;
+
+  for (auto & action : mActionToTool)
+    {
+      tools << action.second;
+    }
+
+  std::sort(tools.begin(), tools.end(), [](CQExternalTool * a, CQExternalTool * b) {
+    return a->getIniFile() < b->getIniFile();
+  });
+
+  return tools;
 }
 
 CQExternalTool::CQExternalTool()

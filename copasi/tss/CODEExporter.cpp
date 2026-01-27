@@ -231,7 +231,7 @@ CDataObject* CODEExporter::findObjectFromRefresh(const CDataObject * tmp, const 
       CDataContainer* container;
       container = (CDataContainer*)tmp;
 
-      CDataContainer::objectMap::const_iterator it = container->getObjects().begin();
+      CDataContainer::ObjectMap::const_iterator it = container->getObjects().begin();
 
       for (; it != container->getObjects().end(); ++it)
         {

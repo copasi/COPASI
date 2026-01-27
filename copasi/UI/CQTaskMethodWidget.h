@@ -53,6 +53,10 @@ public:
 
   void showMethodCheckbox(bool show);
 
+  void setActiveMethod(const CTaskEnum::Method & Type);
+
+  CTaskEnum::Method getActiveMethodType() const;
+
 public slots:
   void slotChangeMethod(int);
   void showMethodParameters(bool show);
@@ -61,7 +65,6 @@ protected:
   void addToHistory(CCopasiMethod * pMethod);
   void removeFromHistory(CCopasiMethod * pMethod);
   CCopasiMethod * getFromHistory(const CTaskEnum::Method & Type) const;
-  void setActiveMethod(const CTaskEnum::Method & Type);
 
 protected:
   CCopasiTask * mpTask;

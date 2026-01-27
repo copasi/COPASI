@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -73,7 +73,7 @@ public:
         }
   }
 
-  int rowCount(const QModelIndex &) const {return mData.count();}
+  int rowCount(const QModelIndex &) const {return (int)mData.count();}
 
   int columnCount(const QModelIndex &) const {return (int)mHeaders.size();}
 
@@ -123,7 +123,7 @@ public:
 
   void append(std::vector<CheckPoint *> &checkPoints)
   {
-    beginInsertRows(QModelIndex(), mData.count(), mData.count() + checkPoints.size() - 1);
+    beginInsertRows(QModelIndex(), (int)mData.count(), int(mData.count() + checkPoints.size() - 1));
 
     for (std::vector<CheckPoint *>::iterator it1 = checkPoints.begin();
          it1 != checkPoints.end(); ++it1)
@@ -136,7 +136,7 @@ public:
 
   void append(CheckPoint *checkPoint)
   {
-    beginInsertRows(QModelIndex(), mData.count(), mData.count());
+    beginInsertRows(QModelIndex(), (int)mData.count(), (int)mData.count());
     mData.append(checkPoint);
     endInsertRows();
   }

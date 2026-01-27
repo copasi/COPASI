@@ -73,21 +73,21 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren() override;
+  bool elevateChildren() override;
 
   /**
    * Set the call back of the problem
    * @param CProcessReport * pCallBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReportLevel callBack) override;
+  bool setCallBack(CProcessReportLevel callBack) override;
 
   /**
    * Do all necessary initialization so that calls to calculate will
    * be successful. This is called once from CCopasiTask::process()
    * @result bool success
    */
-  virtual bool initialize() override;
+  bool initialize() override;
 
   /**
    * Return the flux modes after a successful analysis.
@@ -119,7 +119,7 @@ public:
    * default behavior one needs to reimplement the virtual printResult function.
    * @param std::ostream * ostream
    */
-  virtual void printResult(std::ostream * ostream) const override;
+  void printResult(std::ostream * ostream) const override;
 
 private:
   /**

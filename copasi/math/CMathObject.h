@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -75,21 +75,21 @@ public:
    * @param bool richtext (default: false)
    * @return std::string objectDisplayName
    */
-  virtual std::string getObjectDisplayName() const override;
+  std::string getObjectDisplayName() const override;
 
   /**
    * Retrieve a descendant object by its CN.
    * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  virtual const CObjectInterface * getObject(const CCommonName & cn) const override;
+  const CObjectInterface * getObject(const CCommonName & cn) const override;
 
   /**
    * Retrieve the prerequisites, i.e., the objects which need to be evaluated
    * before this.
    * @return const CObjectInterface::ObjectSet & prerequisites
    */
-  virtual const CObjectInterface::ObjectSet & getPrerequisites() const override;
+  const CObjectInterface::ObjectSet & getPrerequisites() const override;
 
   /**
    * Check whether a given object is a prerequisite for a context.
@@ -109,12 +109,12 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const override;
+  void print(std::ostream * ostream) const override;
 
   /**
    * Retrieve a pointer to the value of the object
    */
-  virtual void * getValuePointer() const override;
+  void * getValuePointer() const override;
 
   /**
    * Set the pointer to the data object
@@ -126,13 +126,13 @@ public:
    * Retrieve a pointer to the data object
    * @return const CDataObject * dataObject
    */
-  virtual const CDataObject * getDataObject() const override;
+  const CDataObject * getDataObject() const override;
 
   /**
    * Get the aggregation of any issues associated with this object
    * @return const CValidity & validity
    */
-  virtual const CValidity & getValidity() const override;
+  const CValidity & getValidity() const override;
 
   /**
    * This method is called whenever the validity object changes.
@@ -143,7 +143,7 @@ public:
   /**
    * Calculate the objects value
    */
-  virtual void calculateValue() override;
+  void calculateValue() override;
 
   /**
    * Retrieve the value of the object;
@@ -296,7 +296,7 @@ protected:
    * Retrieve the CN of the object
    * @return CCommonName
    */
-  virtual CCommonName getCNProtected() const override;
+  CCommonName getCNProtected() const override;
 
 private:
   void calculateExpression();

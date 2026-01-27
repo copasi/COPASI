@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -304,9 +304,7 @@ void copasi::COptionParser::finalize(void)
           case option_Verbose:
             throw option_error("missing value for 'verbose' option");
         }
-
     }
-
 }
 //#########################################################################
 void copasi::COptionParser::parse_element(const char *element, int position, opsource source)
@@ -322,7 +320,7 @@ void copasi::COptionParser::parse_element(const char *element, int position, ops
       case state_option:
         if (length >= 2 && element[0] == '-' && element[1] == '-')
           {
-            if (length == 2) { state_ = state_consume; return; }
+            if (length == 2) {state_ = state_consume; return;}
 
             element += 2;
             const char *value = element;
@@ -986,7 +984,7 @@ void copasi::COptionParser::parse_value(const char *value)
 
       case option_MaxTime:
       {
-        char *endptr; int tmp = std::strtol(value, &endptr, 0);
+        char *endptr; int tmp = (int)std::strtol(value, &endptr, 0);
 
         while (*endptr != 0 && std::isspace(*endptr)) ++endptr;
 
@@ -1203,7 +1201,6 @@ const char* expand_long_name(const std::string &name)
 
   if (name_size <= 4 && name.compare(0, name_size, "help", name_size) == 0)
     matches.push_back("help");
-
 
   if (matches.empty())
     {

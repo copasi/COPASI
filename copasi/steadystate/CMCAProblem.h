@@ -81,7 +81,7 @@ public:
    * Retrieve the subtask
    * return CCopasiTask * pSubTask;
    */
-  virtual CCopasiTask * getSubTask() const override;
+  CCopasiTask * getSubTask() const override;
 
   /**
    * Load a trajectory problem
@@ -97,7 +97,7 @@ public:
    * default behaviour one needs to reimplement the virtual printResult function.
    * @param std::ostream * ostream
    */
-  virtual void printResult(std::ostream * ostream) const override;
+  void printResult(std::ostream * ostream) const override;
 
   /**
    * Output stream operator. Prints description of the problem incl. the subtask
@@ -111,7 +111,7 @@ public:
    * This is the output method for any object. It calls the insert operator<<
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const override;
+  void print(std::ostream * ostream) const override;
 
 private:
 };

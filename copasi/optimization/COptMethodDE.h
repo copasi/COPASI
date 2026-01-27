@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,7 +39,8 @@ public:
    */
   COptMethodDE(const CDataContainer * pParent,
                const CTaskEnum::Method & methodType = CTaskEnum::Method::DifferentialEvolution,
-               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
+               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization,
+               const bool & parallel = true);
 
   /**
    * Copy Constructor
@@ -47,7 +48,8 @@ public:
    * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodDE(const COptMethodDE & src,
-               const CDataContainer * pParent);
+               const CDataContainer * pParent,
+               const bool & parallel);
 
   /**
    * Destructor
@@ -60,12 +62,12 @@ public:
    * of its progress by the callback function set with SetCallback.
    * @ return success;
    */
-  virtual bool optimise();
+  bool optimise() override;
 
   /**
    * Returns the maximum verbosity at which the method can log.
    */
-  virtual unsigned C_INT32 getMaxLogVerbosity() const;
+  unsigned C_INT32 getMaxLogVerbosity() const override;
 
 private:
   /**
@@ -82,20 +84,13 @@ private:
    * Initialize arrays and pointer.
    * @return bool success
    */
-  virtual bool initialize();
+  bool initialize() override;
 
   /**
    * Cleanup arrays and pointers.
    * @return bool success
    */
-  virtual bool cleanup();
-
-  /**
-   * Evaluate the fitness of one individual
-   * @param const CVector< C_FLOAT64 > & individual
-   * @return bool continue
-   */
-  bool evaluate(const CVector< C_FLOAT64 > & individual);
+  bool cleanup() override;
 
   /**
    * Replicate the individuals with crossover
@@ -126,14 +121,9 @@ private:
   CPermutation * mpPermutation;
 
   /**
-    * The value of the last evaluation.
-    */
-  C_FLOAT64 mEvaluationValue;
-
-  /**
    * variance for mutations
    */
-  C_FLOAT64 mMutationVarians;
+  C_FLOAT64 mMutationVariance;
 
   /**
   * if no improvement was made after # stalled generations
@@ -141,7 +131,6 @@ private:
   */
   unsigned C_INT32 mStopAfterStalledGenerations;
 
-  C_FLOAT64 mBestValue;
   size_t mBestIndex;
 };
 

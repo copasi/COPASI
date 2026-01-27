@@ -124,6 +124,7 @@ CUndoObjectInterface * CModelParameterSet::insert(const CData & data)
       case CModelParameter::Type::Group:
       case CModelParameter::Type::Set:
       case CModelParameter::Type::unknown:
+      case CModelParameter::Type::__SIZE:
         break;
     }
 
@@ -359,6 +360,11 @@ CModel * CModelParameterSet::getModel() const
   return mpModel;
 }
 
+void CModelParameterSet::setModel(CModel* pModel)
+{
+  mpModel = pModel;
+}
+
 void CModelParameterSet::createFromModel()
 {
   mpTimes->clear();
@@ -579,7 +585,7 @@ bool CModelParameterSet::saveToStream(std::ostream & os,
         {
           if (*itNode != NULL)
             {
-              unsigned int level = itNode.level();
+              unsigned int level = (unsigned int)itNode.level();
               const CDataObject* current = itNode->getObject();
               const CReaction* pReaction = dynamic_cast<const CReaction*>(current);
               C_FLOAT64 value = itNode->getValue(framework);

@@ -191,6 +191,7 @@ CIssue CFunctionParameterMap::setCallParameter(const std::string paramName, cons
 
       case CFunctionParameter::Role::VARIABLE:
       case CFunctionParameter::Role::TEMPORARY:
+      case CFunctionParameter::Role::__SIZE:
         break;
     }
 
@@ -237,6 +238,7 @@ CIssue CFunctionParameterMap::addCallParameter(const std::string paramName, cons
 
       case CFunctionParameter::Role::VARIABLE:
       case CFunctionParameter::Role::TEMPORARY:
+      case CFunctionParameter::Role::__SIZE:
         break;
     }
 

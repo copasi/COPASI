@@ -586,6 +586,7 @@ ASTNode * CEvaluationNodeOperator::toAST(const CDataModel * pDataModel, int sbml
         break;
 
       case SubType::INVALID:
+      default:
         break;
     }
 
@@ -1746,6 +1747,9 @@ std::string CEvaluationNodeOperator::getMMLString(const std::vector< std::string
         if (flag) out << "</mfenced>" << "\n";
 
         out << "</mrow>" << "\n";
+        break;
+
+      default:
         break;
     }
 

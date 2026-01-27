@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,6 +31,12 @@
 # define WIN32_LEAN_AND_MEAN
 # endif // WIN32_LEAN_AND_MEAN
 # include <windows.h>
+# ifdef min
+#  undef min
+# endif // min
+# ifdef max
+#  undef max
+# endif // max
 #else
 # include <unistd.h>
 # include <sys/syscall.h>
@@ -41,7 +47,7 @@
 #include <string.h>
 
 #include "copasi/copasi.h"
-#include "CRandom.h"
+#include "copasi/randomGenerator/CRandom.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/utilities/CopasiTime.h"
 
@@ -340,13 +346,13 @@ C_FLOAT64 CRandom::getRandomPoisson(const C_FLOAT64 & mu)
   varp.muprev = mu;
   varp.s = sqrt(mu);
   varp.d = 6.0 * mu * mu;
-  varp.ll = (long)(mu - 1.1484);
+  varp.ll = (int)(mu - 1.1484);
 S10:
   varp.g = mu + varp.s * getRandomNormal01();
 
   if (varp.g < 0.0) goto S20;
 
-  varp.ignpoi = (long)(varp.g);
+  varp.ignpoi = (int)(varp.g);
 
   if (varp.ignpoi >= varp.ll) return varp.ignpoi;
 
@@ -387,7 +393,7 @@ S50:
 
   if (varp.t <= -0.6744) goto S50;
 
-  varp.ignpoi = (long)(mu + varp.s * varp.t);
+  varp.ignpoi = (int)(mu + varp.s * varp.t);
   varp.fk = (float)varp.ignpoi;
   varp.difmuk = mu - varp.fk;
   varp.kflag = 1;
@@ -439,7 +445,7 @@ S120:
 
 S125:
   varp.muold = mu;
-  varp.m = std::max(1L, (long)(mu));
+  varp.m = (int)std::max(1L, (long)(mu));
   varp.l = 0;
   varp.p = exp(-mu);
   varp.q = varp.p0 = varp.p;

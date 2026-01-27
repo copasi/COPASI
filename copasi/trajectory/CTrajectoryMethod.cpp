@@ -125,8 +125,12 @@ void CTrajectoryMethod::output(const bool & useMoieties)
  *  This method is used by CTrajectory
  *  @param "CTrajectoryProblem *" problem
  */
-void CTrajectoryMethod::setProblem(CTrajectoryProblem * problem)
-{mpProblem = problem;}
+bool CTrajectoryMethod::setProblem(CCopasiProblem * pProblem)
+{
+  mpProblem = dynamic_cast< CTrajectoryProblem * >(pProblem);
+
+  return mpProblem != nullptr;
+}
 
 // virtual
 void CTrajectoryMethod::stateChange(const CMath::StateChange & change)

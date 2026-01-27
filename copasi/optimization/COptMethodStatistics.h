@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -52,17 +52,10 @@ private:
   COptMethodStatistics();
 
   /**
-      * Initialize arrays and pointer.
-      * @return bool success
-      */
-  virtual bool initialize();
-
-  /**
-   * Evaluate the fitness of one individual
-   * @param const CVector< C_FLOAT64 > & individual
-   * @return bool continue
+   * Initialize arrays and pointer.
+   * @return bool success
    */
-  bool evaluate(const CVector< C_FLOAT64 > & individual);
+  bool initialize() override;
 
   /**
    * a vector of the number of individuals.
@@ -78,11 +71,6 @@ private:
    * *** Perhaps this is actually not needed ****number of parameters
    */
   size_t mVariableSize;
-
-  /**
-   * The best value found so far.
-   */
-  C_FLOAT64 mBestValue;
 
 public:
   /**
@@ -113,16 +101,13 @@ public:
    * when needed. It is noted that this procedure can give feedback
    * of its progress by the callback function set with SetCallback.
    */
-  virtual bool optimise();
+  bool optimise() override;
 
+  C_FLOAT64 getCurrentValue() const override;
 
-  virtual C_FLOAT64 getBestValue() const;
+  const CVector< C_FLOAT64 > * getBestParameters() const override;
 
-  virtual C_FLOAT64 getCurrentValue() const;
-
-  virtual const CVector< C_FLOAT64 > * getBestParameters() const;
-
-  virtual const CVector< C_FLOAT64 > * getCurrentParameters() const;
+  const CVector< C_FLOAT64 > * getCurrentParameters() const override;
 };
 
 #endif  // COPASI_COptMethodStatistics

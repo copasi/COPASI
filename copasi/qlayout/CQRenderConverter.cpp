@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -7,8 +12,6 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
-
-
 
 #include <QGraphicsItem>
 #include <QtCore/QSharedPointer>
@@ -464,6 +467,9 @@ void addToPath(QPainterPath &path, const CLRenderCubicBezier* cubic, const CLBou
 
 void addToPath(QPainterPath &path, const CLRenderPoint* current, const CLBoundingBox *pBB)
 {
+  if (!current || !pBB)
+    return;
+
   path.lineTo(
     pBB->getPosition().getX() + current->getXOffset().getAbsoluteValue() + current->getXOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
     pBB->getPosition().getY() + current->getYOffset().getAbsoluteValue() + current->getYOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight()
@@ -471,6 +477,9 @@ void addToPath(QPainterPath &path, const CLRenderPoint* current, const CLBoundin
 }
 void moveToPoint(QPainterPath &path, const CLRenderPoint* current, const CLBoundingBox *pBB)
 {
+  if (!current || !pBB)
+    return;
+
   path.moveTo(
     pBB->getPosition().getX() + current->getXOffset().getAbsoluteValue() + current->getXOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getWidth(),
     pBB->getPosition().getY() + current->getYOffset().getAbsoluteValue() + current->getYOffset().getRelativeValue() / 100.0 * pBB->getDimensions().getHeight()
@@ -1079,15 +1088,39 @@ bool CQRenderConverter::applyStyle(QGraphicsPathItem* item, const CLBoundingBox*
   QPointF end = item->path().elementAt(item->path().elementCount() - 1);
   QPointF secondLast = item->path().elementAt(item->path().elementCount() - 2);
 
-  if (group -> isSetStartHead())
+  if (group->isSetStartHead())
     {
       const CLLineEnding *line = resolver->getLineEnding(group->getStartHead());
+      // find first point that is not the start point
+      if (start == second)
+        {
+          for (size_t i = 2; i < item->path().elementCount() - 1; ++i)
+            {
+              if (item->path().elementAt((int)i) != start)
+                {
+                  second = item->path().elementAt((int)i);
+                  break;
+                }
+            }
+        }
       addLineEndingToItem(item, line, group, resolver, start, second, itemGroup);
     }
 
   if (group->isSetEndHead())
     {
       const CLLineEnding *line = resolver->getLineEnding(group->getEndHead());
+      // find last point that is not the end point
+      if (end == secondLast)
+        {
+          for (size_t i = item->path().elementCount() - 3; i > 0; --i)
+            {
+              if (item->path().elementAt((int)i) != end)
+                {
+                  secondLast = item->path().elementAt((int)i);
+                  break;
+                }
+            }
+        }
       addLineEndingToItem(item, line, group, resolver, end, secondLast, itemGroup);
     }
 

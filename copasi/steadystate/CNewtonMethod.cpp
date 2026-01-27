@@ -689,6 +689,9 @@ std::string CNewtonMethod::targetValueToString() const
       case eTargetCriterion::Rate:
         os << "Rate: " << mTargetRate;
         break;
+
+      case eTargetCriterion::__SIZE:
+        break;
     }
 
   return os.str();

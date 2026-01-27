@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -64,46 +64,36 @@ std::ostream & operator<<(std::ostream &os, const CFunctionAnalyzer::CValue & v)
   return os;
 }
 
-
 CFunctionAnalyzer::CValue::CValue() : mStatus(Status(novalue)), mDouble(0.0)
 {
-
 }
-
 
 CFunctionAnalyzer::CValue::CValue(Status status) : mStatus(status), mDouble(0.0)
 {
-
 }
-
 
 CFunctionAnalyzer::CValue::CValue(const double& d) : mStatus(known), mDouble(d)
 {
-
 }
 
 CFunctionAnalyzer::CValue::~CValue()
 {
 }
 
-
 const double& CFunctionAnalyzer::CValue::getValue() const
 {
   return mDouble;
 }
-
 
 void CFunctionAnalyzer::CValue::setValue(const double& value)
 {
   mDouble = value; mStatus = known;
 }
 
-
 const CFunctionAnalyzer::CFunctionAnalyzer::CValue::Status& CFunctionAnalyzer::CValue::getStatus() const
 {
   return mStatus;
 }
-
 
 void CFunctionAnalyzer::CValue::setStatus(const Status& status)
 {
@@ -377,7 +367,6 @@ void CFunctionAnalyzer::CValue::Or(const CValue & v) //  {mStatus = Status(mStat
   if (v.mStatus & known) this->mDouble = v.mDouble;
 }
 
-
 void CFunctionAnalyzer::CValue::Or(int s)
 {
   mStatus = Status(mStatus | s);
@@ -500,7 +489,6 @@ bool CFunctionAnalyzer::Result::writeResult(std::ostream & os, bool rt, bool ver
 
       os << "\n";
     }
-
 
   if (mIrreversibleKineticsWithProducts)
     {
@@ -1209,6 +1197,9 @@ void CFunctionAnalyzer::constructCallParameters(const CFunctionParameters & fp, 
           case CFunctionParameter::Role::TEMPORARY:
             callParameters[i] = posi ? CValue::positive : CValue::unknown;
             break;
+
+          case CFunctionParameter::Role::__SIZE:
+            break;
         }
     }
 }
@@ -1257,6 +1248,9 @@ void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> 
           case CFunctionParameter::Role::VARIABLE:
           case CFunctionParameter::Role::TEMPORARY:
             callParameters[i] = CValue::unknown;
+            break;
+
+          case CFunctionParameter::Role::__SIZE:
             break;
         }
     }
@@ -1553,7 +1547,6 @@ void CFunctionAnalyzer::checkKineticFunction(const CFunction * f, const CReactio
       pdelete(tmp.second);
     }
 }
-
 
 CFunctionAnalyzer::CFunctionAnalyzer(const CFunction* f, const CReaction* reaction /*= NULL*/)
 {

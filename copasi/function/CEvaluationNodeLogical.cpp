@@ -91,6 +91,10 @@ CEvaluationNodeLogical::CEvaluationNodeLogical(const SubType & subType,
       case SubType::LE:
         mPrecedence = PRECEDENCE_LOGIG_LE;
         break;
+
+      default:
+        fatalError();
+        break;
     }
 }
 
@@ -150,6 +154,9 @@ CIssue CEvaluationNodeLogical::compile()
       case SubType::LE:
         Result &= mpLeftNode->setValueType(ValueType::Number);
         Result &= mpRightNode->setValueType(ValueType::Number);
+        break;
+
+      default:
         break;
     }
 
@@ -449,6 +456,9 @@ CValidatedUnit CEvaluationNodeLogical::getUnit(const CMathContainer & /* contain
         Unit.setConflict(Arguments.conflict());
       }
       break;
+
+      default:
+        break;
     }
 
   return Unit;
@@ -486,6 +496,8 @@ CValidatedUnit CEvaluationNodeLogical::setUnit(const CMathContainer & container,
         targetUnits[mpRightNode] = Arguments;
       }
       break;
+      default:
+        break;
     }
 
   return Result;
@@ -608,6 +620,7 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
         pNode->addChild(children[1]);
         break;
 
+      default:
       case SubType::INVALID:
         // do nothing
         break;

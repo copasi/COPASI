@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -148,7 +148,7 @@ CNormalSum::~CNormalSum()
  */
 int CNormalSum::getSize() const
 {
-  return mProducts.size() + mFractions.size();
+  return int(mProducts.size() + mFractions.size());
 }
 
 /**
@@ -912,5 +912,4 @@ void CNormalSum::printProducts(const CNormalSum* pSum)
   std::cout << std::endl;
   std::cout << std::endl;
   std::cout << std::endl;
-
 }

@@ -38,9 +38,8 @@ public:
   CQOptimizationWidget(QWidget* parent = 0, const char* name = 0);
   ~CQOptimizationWidget();
 
-  virtual bool runTask();
-  bool isSteadyState();
-
+  bool runTask() override;
+  
 public slots:
   void slotParameterNumberChanged(int number);
   void slotConstraintNumberChanged(int number);
@@ -56,9 +55,12 @@ protected:
   bool mTypeChanged;
 
   std::map< std::string, size_t > mSubtaskMap;
+  size_t mnParamterSetsBeforeRun;
 
-  virtual bool saveTaskProtected();
-  virtual bool loadTaskProtected();
+
+  bool saveTaskProtected() override;
+  bool loadTaskProtected() override;
+  bool taskFinishedEvent() override;
 
 protected slots:
 

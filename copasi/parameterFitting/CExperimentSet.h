@@ -74,7 +74,7 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  bool elevateChildren() override;
 
   /**
    * Compile the experiment set. This function must be called
@@ -178,10 +178,23 @@ public:
   void sort();
 
   /**
-   * Retrieve the list of file names
+   * Retrieve the list of file names (this will modify the filenames of all experiments to the current position)
    * @return std::vector< std::string > fileNames
    */
   std::vector< std::string > getFileNames() const;
+
+  /**
+   * Retrieve the list of file names (this will retrieve the filenames without modification)
+   * @return std::vector< std::string > fileNames
+   */
+  std::vector< std::string > getFileNamesOnly() const;
+
+  /** 
+   * overwrites the list of filenames for experiments in this set
+   * @param const std::vector< std::string > & fileNames
+   * @return bool success
+   */
+  bool setFileNames(const std::vector< std::string > & fileNames);
 
   /**
    * Retrieve the number of data points of all experiments combined.

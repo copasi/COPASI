@@ -165,7 +165,12 @@ void CQPreferenceDialog::initTabsFromSettings(QSettings& settings)
         edit->setToolTip(tooltip);
         layout->addRow(edit);
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         connect(edit, &QCheckBox::stateChanged, this, &CQPreferenceDialog::slotPropertyChanged);
+#else
+        connect(edit, &QCheckBox::checkStateChanged, this, &CQPreferenceDialog::slotPropertyChanged);
+#endif
+
         mWidgetToParameter[edit] = pNode;
       }
       else if (type == "int")

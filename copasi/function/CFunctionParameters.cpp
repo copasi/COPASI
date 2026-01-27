@@ -61,11 +61,6 @@ CFunctionParameters & CFunctionParameters::operator=(const CFunctionParameters &
   return *this;
 }
 
-void CFunctionParameters::add(const CFunctionParameter & parameter)
-{
-  mParameters.add(parameter);
-}
-
 bool CFunctionParameters::add(CFunctionParameter * parameter,
                               const bool & adopt)
 {
@@ -197,10 +192,12 @@ size_t CFunctionParameters::findParameterByName(const std::string & name,
   size_t Index = mParameters.getIndex(name);
 
   if (ppFunctionParameter != NULL)
+  {
     if (Index != C_INVALID_INDEX)
       *ppFunctionParameter = &mParameters[Index];
     else
       *ppFunctionParameter = NULL;
+  }
 
   return Index;
 }

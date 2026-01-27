@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,12 +49,13 @@ CLsodaMethod2::CLsodaMethod2(const CDataContainer * pParent,
   mIWork(),
   mJType(),
   mRootMask(),
-  mRootMasking(CRootFinder::RootMasking::NONE),
+  mRootMasking(RootMask::NONE),
   mTargetTime(),
   mPeekAheadMode(false)
 {
   mData.pMethod = this;
-  mpRootValueCalculator = new CRootFinder::EvalTemplate< CLsodaMethod2 >(this, & CLsodaMethod2::evalRoot);
+  mRootValueCalculator = std::bind(&CLsodaMethod2::evalRoot, this, std::placeholders::_1, std::placeholders::_2);
+
   initializeParameter();
 }
 
@@ -86,7 +87,7 @@ CLsodaMethod2::CLsodaMethod2(const CLsodaMethod2 & src,
   mPeekAheadMode(src.mPeekAheadMode)
 {
   mData.pMethod = this;
-  mpRootValueCalculator = new CRootFinder::EvalTemplate< CLsodaMethod2 >(this, & CLsodaMethod2::evalRoot);
+  mRootValueCalculator = std::bind(&CLsodaMethod2::evalRoot, this, std::placeholders::_1, std::placeholders::_2);
 
   initializeParameter();
 }
@@ -137,7 +138,7 @@ void CLsodaMethod2::stateChange(const CMath::StateChange & change)
     }
 }
 
-CTrajectoryMethod::Status CLsodaMethod2::step(const double & deltaT)
+CTrajectoryMethod::Status CLsodaMethod2::step(const double & deltaT, const bool & /*final*/)
 {
   if (mData.dim == 1 && mNumRoots == 0) //just do nothing if there are no variables except time
     {
@@ -249,19 +250,14 @@ void CLsodaMethod2::start()
   mTargetTime = mTime;
   mPeekAheadMode = false;
 
-  mNumRoots = mpContainer->getRoots().size();
-  mRootMask.resize(mNumRoots);
-  mRootMask = CRootFinder::NONE;
+  mNumRoots = (int) mpContainer->getRoots().size();
 
-  C_INT *pMask = mRootMask.begin() + 1;
-  C_INT *pMaskEnd = mRootMask.end();
-  const bool * pDiscrete = mpContainer->getRootIsDiscrete().begin();
+  mRootMask.setMathContainer(mpContainer);
+  mRootMask.setTolerance(*mpAbsoluteTolerance);
+  mRootMask.create(RootMask::DISCRETE);
+  mRootMasking = RootMask::DISCRETE;
 
-  // We ignore all discrete roots since they cannot be triggered during continuous integration.
-  for (; pMask != pMaskEnd; ++pMask, ++pDiscrete)
-    *pMask = *pDiscrete ? CRootFinder::DISCRETE : CRootFinder::NONE;
-
-  mRootFinder.initialize(mpRootValueCalculator, *mpRelativeTolerance, mRootMask);
+  mRootFinder.initialize(*mpRelativeTolerance, mRootMask, mRootValueCalculator);
   mRoots.initialize(mRootFinder.getRootValues());
   mRootsFound.initialize(mRootFinder.getToggledRoots());
 
@@ -370,32 +366,8 @@ void CLsodaMethod2::evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
 
 void CLsodaMethod2::createRootMask()
 {
-  CVector< C_FLOAT64 > RootDerivatives;
-  RootDerivatives.resize(mNumRoots);
-
-  mpContainer->updateSimulatedValues(false);
-  mpContainer->calculateRootDerivatives(RootDerivatives);
-
-  C_INT *pMask = mRootMask.begin() + 1;
-  C_INT *pMaskEnd = mRootMask.end();
-  const C_FLOAT64 * pRootValue = mContainerRoots.begin();
-  const C_FLOAT64 * pRootDerivative = RootDerivatives.array();
-  const bool * pDiscrete = mpContainer->getRootIsDiscrete().begin();
-
-  for (; pMask != pMaskEnd; ++pMask, ++pRootValue, ++pRootDerivative, ++pDiscrete)
-    if (*pDiscrete)
-      {
-        *pMask = CRootFinder::DISCRETE;
-      }
-    else if (fabs(*pRootDerivative) < *mpAbsoluteTolerance &&
-             fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::min())
-      {
-        *pMask = CRootFinder::CONTINUOUS;
-      }
-
-  mRootMasking = CRootFinder::ALL;
-
-  // std::cout << "mRootMask:     " << mRootMask << std::endl;
+  mRootMask.setType(RootMask::ALL);
+  mRootMasking = RootMask::ALL;
 }
 
 void CLsodaMethod2::destroyRootMask()
@@ -403,21 +375,21 @@ void CLsodaMethod2::destroyRootMask()
   mpContainer->updateSimulatedValues(false);
 
   C_FLOAT64 RootLimit = (1.0 + std::numeric_limits< C_FLOAT64 >::epsilon()) * fabs(mRootFinder.getRootError()) + 100.0 * std::numeric_limits< C_FLOAT64 >::min();
-  mRootMasking = CRootFinder::NONE;
+  mRootMasking = RootMask::NONE;
 
-  C_INT *pMask = mRootMask.begin() + 1;
-  C_INT *pMaskEnd = mRootMask.end();
+  RootMask *pMask = mRootMask.begin() + 1;
+  RootMask *pMaskEnd = mRootMask.end();
   const C_FLOAT64 * pRootValue = mContainerRoots.begin();
 
   for (; pMask != pMaskEnd; ++pMask, ++pRootValue)
-    if (*pMask != CRootFinder::DISCRETE ||
+    if (*pMask != RootMask::DISCRETE ||
         fabs(*pRootValue) >= RootLimit)
       {
-        *pMask = CRootFinder::NONE;
+        *pMask = RootMask::NONE;
       }
     else
       {
-        mRootMasking = CRootFinder::DISCRETE;
+        mRootMasking = RootMask::DISCRETE;
       }
 }
 
@@ -447,7 +419,7 @@ CTrajectoryMethod::Status CLsodaMethod2::peekAhead()
         {
           case NORMAL:
 
-            if (mRootMasking != CRootFinder::RootMasking::ALL)
+            if (mRootMasking != RootMask::ALL)
               {
                 // If we are here we are certain that the state has sufficiently changed.
                 mPeekAheadMode = false;
@@ -487,15 +459,15 @@ CTrajectoryMethod::Status CLsodaMethod2::peekAhead()
                 // to continue with the previous state.
 
                 // Remove masked roots from the result set
-                const C_INT *pMask = mRootMask.array();
-                const C_INT *pMaskEnd = pMask + mRootMask.size();
+                const RootMask *pMask = mRootMask.begin();
+                const RootMask *pMaskEnd = mRootMask.end();
                 C_INT * pCombinedRoot = CombinedRootsFound.array();
 
                 PeekAheadStatus = NORMAL;
 
                 for (; pMask != pMaskEnd; ++pMask, ++pCombinedRoot)
                   {
-                    if (*pMask)
+                    if (*pMask != RootMask::NONE)
                       {
                         *pCombinedRoot = 0;
                       }

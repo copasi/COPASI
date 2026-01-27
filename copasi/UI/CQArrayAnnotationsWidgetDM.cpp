@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -134,7 +134,7 @@ int CQArrayAnnotationsWidgetDM::rowCount(const QModelIndex & /* parent */) const
 
   if (mRow == C_INVALID_INDEX) return 1;
 
-  return mpArray->size()[mRow];
+  return (int)mpArray->size()[mRow];
 }
 
 // virtual
@@ -144,7 +144,7 @@ int CQArrayAnnotationsWidgetDM::columnCount(const QModelIndex & /* parent */) co
 
   if (mColumn == C_INVALID_INDEX) return 1;
 
-  return mpArray->size()[mColumn];
+  return (int)mpArray->size()[mColumn];
 }
 
 void CQArrayAnnotationsWidgetDM::setContext(const CColorScale * pColorScale,

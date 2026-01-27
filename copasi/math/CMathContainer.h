@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -250,6 +250,11 @@ public:
   bool isStateValid() const;
 
   /**
+   * Check whether the current roots are valid.
+   */
+  bool areRootsValid() const;
+
+  /**
    * Check whether the model is autonomous
    * @return const bool &isAutonomous
    */
@@ -384,6 +389,8 @@ public:
    * method to assure that all values are up to date.
    */
   void applyInitialValues();
+
+  void resetEventsFound();
 
   /**
    * Calculate all values required for simulation based on the current state
@@ -532,7 +539,7 @@ public:
    * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  virtual const CObjectInterface * getObject(const CCommonName & cn) const;
+  const CObjectInterface * getObject(const CCommonName & cn) const override;
 
   /**
    * Retrieve a object by its full CN.
@@ -600,6 +607,8 @@ public:
    */
   const CModel & getModel() const;
 
+  const std::chrono::steady_clock::time_point & getCompileTime() const;
+
   /**
    * Retrieve the count of fixed values which are changed through events
    * @return const size_t & countFixedEventTargets
@@ -649,7 +658,7 @@ public:
   void addNoiseInputObject(const CMathObject * pObject);
 
   /**
-   * ARetrieve the set of noise input objects
+   * Retrieve the set of noise input objects
    * @return const CObjectInterface::ObjectSet & noiseInputObjects
    */
   const CObjectInterface::ObjectSet & getNoiseInputObjects() const;
@@ -885,7 +894,7 @@ protected:
    * For the CN mechanism to work properly it has to pretend to be the model.
    * @return CCommonName
    */
-  virtual CCommonName getCNProtected() const override;
+  CCommonName getCNProtected() const override;
 
 private:
   /**
@@ -975,6 +984,8 @@ private:
    * Compile the events
    */
   bool compileEvents();
+
+  void initializeRootProcessors();
 
   /**
    * Convert nodes which generate discrete changes into events

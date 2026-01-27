@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1423,7 +1423,7 @@ const C_FLOAT64 & CModel::getTime() const
  */
 CMetab * CModel::findMetabByName(const std::string & name) const
 {
-  objectMap::range Range = mMetabolites.getObjects().equal_range(unQuote(name));
+  ObjectMap::range Range = mMetabolites.getObjects().equal_range(unQuote(name));
   CMetab * pSpecies = NULL;
 
   for (; Range.first != Range.second; ++Range.first)
@@ -2688,7 +2688,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       // skip initial time
       if (current == 0) continue;
 
-      CEvent* pEvent = createEvent(getNextId("pe_event_", i));
+      CEvent* pEvent = createEvent(getNextId("pe_event_", (int) i));
 
       if (pEvent == NULL)
         {
@@ -2709,7 +2709,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
       for (size_t j = 0; j < data.numCols(); ++j)
         {
 
-          const CObjectInterface * currentObject = getDependentOrNull(dependentMap, j);  //objects[j + 1];
+          const CObjectInterface * currentObject = getDependentOrNull(dependentMap, (int)j);  //objects[j + 1];
 
           if (currentObject == NULL ||
               currentObject->getDataObject() ==  NULL ||
@@ -3222,7 +3222,7 @@ std::string CModel::suitableForStochasticSimulation() const
           multFloat = mStoi(j, i);
           multInt = static_cast<C_INT32>(floor(multFloat + 0.5)); // +0.5 to get a rounding out of the static_cast to int!
 
-          if ((multFloat - multInt) > 0.01)
+          if (fabs(multFloat - multInt) > 0.01)
             return "Not all stoichiometries are integer numbers. \nThat means that discrete simulation is not possible.";
         }
     }

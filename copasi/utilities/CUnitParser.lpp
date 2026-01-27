@@ -4,6 +4,7 @@
 %option prefix="CUnitParser"
 %option never-interactive
 %option c++
+%option noline
 
 %s sNUMBER sANY
 

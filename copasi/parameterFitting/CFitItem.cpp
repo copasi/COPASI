@@ -173,17 +173,19 @@ std::ostream &operator<<(std::ostream &os, const CFitItem & o)
   return os;
 }
 
-void CFitItem::setLocalValue(const C_FLOAT64 & value)
+bool CFitItem::setItemValue(C_FLOAT64 & value, const CheckPolicyFlag & policy)
 {
-  mLocalValue = value;
-  return;
+  bool success = COptItem::setItemValue(value, policy);
+
+  mLocalValue = COptItem::getItemValue();
+
+  return success;
 }
 
-const C_FLOAT64 & CFitItem::getLocalValue() const
-{return mLocalValue;}
-
-const C_FLOAT64 * CFitItem::getObjectValue() const
-{return & mLocalValue;}
+const C_FLOAT64 & CFitItem::getItemValue() const
+{
+  return mLocalValue;
+}
 
 bool CFitItem::addExperiment(const std::string & key)
 {
@@ -289,10 +291,10 @@ bool CFitItem::updateBounds(const std::vector<COptItem * > & items)
   for (; it != end && *it != this; ++it)
     {
       if (mpLowerObject && (getLowerBound() == (*it)->getObjectCN()))
-        mpLowerBound = &static_cast<CFitItem *>(*it)->getLocalValue();
+        mpLowerBound = &static_cast<CFitItem *>(*it)->getItemValue();
 
       if (mpUpperObject && (getUpperBound() == (*it)->getObjectCN()))
-        mpUpperBound = &static_cast<CFitItem *>(*it)->getLocalValue();
+        mpUpperBound = &static_cast<CFitItem *>(*it)->getItemValue();
     }
 
   return true;
@@ -329,22 +331,15 @@ void CFitConstraint::resetConstraintViolation()
 
 void CFitConstraint::calculateConstraintViolation()
 {
-  if (*mpLowerBound > *mpObjectValue) mCheckConstraint = -1;
-  else if (*mpObjectValue > *mpUpperBound) mCheckConstraint = 1;
-  else mCheckConstraint = 0;
-
-  switch (mCheckConstraint)
+  if (*mpLowerBound > *mpObjectValue)
     {
-      case - 1:
-        mConstraintViolation += *mpLowerBound - *mpObjectValue;
-        break;
-
-      case 1:
-        mConstraintViolation += *mpObjectValue - *mpUpperBound;
-        break;
-
-      default:
-        break;
+      mConstraintViolation += *mpLowerBound - *mpObjectValue;
+      ++mCheckConstraint;
+    }
+  else if (*mpObjectValue > *mpUpperBound)
+    {
+      mConstraintViolation += *mpObjectValue - *mpUpperBound;
+      ++mCheckConstraint;
     }
 }
 

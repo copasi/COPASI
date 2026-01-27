@@ -37,9 +37,6 @@
 #include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/output/COutputHandler.h"
 
-#undef min
-#undef max
-
 class CPlotDataChannelSpec : public CRegisteredCommonName
 {
 public:

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -181,7 +181,7 @@ void CQMoietiesTaskResult::load()
     {
       CDataVector< CMoiety >::const_iterator it = pModel->getMoieties().begin();
       CDataVector< CMoiety >::const_iterator end = pModel->getMoieties().end();
-      mpMoieties->setRowCount(pModel->getMoieties().size());
+      mpMoieties->setRowCount((int)pModel->getMoieties().size());
       mpMoieties->setSortingEnabled(false);
 
       QTableWidgetItem * pItem;
@@ -192,13 +192,13 @@ void CQMoietiesTaskResult::load()
           pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
           mpMoieties->setItem(i, COL_SPECIES, pItem);;
 
-          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem = new QTableWidgetItem(QMetaType::Double);
           pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
           pItem->setData(Qt::DisplayRole, it->getNumber());
           mpMoieties->setItem(i, COL_NUMBER, pItem);
 
           it.constCast()->refreshAmount();
-          pItem = new QTableWidgetItem(QVariant::Double);
+          pItem = new QTableWidgetItem(QMetaType::Double);
           pItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
           pItem->setData(Qt::DisplayRole, it->getAmount());
           mpMoieties->setItem(i, COL_AMOUNT, pItem);

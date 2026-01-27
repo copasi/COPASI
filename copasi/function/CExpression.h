@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -86,7 +86,7 @@ public:
    * @param const std::string & infix
    * @return CIssue issue
    */
-  virtual CIssue setInfix(const std::string & infix) override;
+  CIssue setInfix(const std::string & infix) override;
 
   /**
    * Compile the evaluation tree.
@@ -120,7 +120,7 @@ public:
    * @param const CCommonName & CN
    * @return const CObjectInterface * value
    */
-  virtual const CObjectInterface * getNodeObject(const CCommonName & CN) const override;
+  const CObjectInterface * getNodeObject(const CCommonName & CN) const override;
 
 public:
   /**

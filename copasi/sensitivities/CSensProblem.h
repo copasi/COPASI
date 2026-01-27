@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -122,7 +122,7 @@ public:
    *
    * @return CCopasiTask* * pSubTask
    */
-  virtual CCopasiTask * getSubTask() const override;
+  CCopasiTask * getSubTask() const override;
 
   /**
    *   set the problem's SubTaskType:
@@ -172,7 +172,7 @@ public:
    * default behaviour one needs to reimplement the virtual printResult function.
    * @param std::ostream * ostream
    */
-  virtual void printResult(std::ostream * ostream) const override;
+  void printResult(std::ostream * ostream) const override;
 
   /**
    * Output stream operator. Prints description of the problem
@@ -186,7 +186,7 @@ public:
    * This is the output method for any object. It calls the insert operator<<
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const override;
+  void print(std::ostream * ostream) const override;
 
 private:
   /**

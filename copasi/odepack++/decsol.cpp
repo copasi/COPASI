@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 /* decsol.f -- translated by f2c (version 20160102).
    You must link the resulting object file with libf2c:
 	on Microsoft Windows system, link with libf2c.lib;
@@ -8,7 +13,7 @@
 	Source for libf2c is in /netlib/f2c/libf2c.zip, e.g.,
 
 		http://www.netlib.org/f2c/libf2c.zip
-*/
+ */
 #include "decsol.h"
 
 /* Subroutine */ int dec_(integer *n, integer *ndim, doublereal *a, integer *
@@ -67,7 +72,7 @@
 	    if ((d__1 = a[i__ + k * a_dim1], fabs(d__1)) > (d__2 = a[m + k *
 		    a_dim1], fabs(d__2))) {
 		m = i__;
-	    }
+	}
 /* L10: */
 	}
 	ip[k] = m;
@@ -95,15 +100,15 @@ L20:
 	    a[k + j * a_dim1] = t;
 	    if (t == 0.) {
 		goto L45;
-	    }
+	}
 	    i__3 = *n;
 	    for (i__ = kp1; i__ <= i__3; ++i__) {
 /* L40: */
 		a[i__ + j * a_dim1] += a[i__ + k * a_dim1] * t;
-	    }
+	}
 L45:
 /* L50: */
-	    ;
+	;
 	}
 /* L60: */
     }
@@ -119,8 +124,6 @@ L80:
     return 0;
 /* ----------------------- END OF SUBROUTINE DEC ------------------------- */
 } /* dec_ */
-
-
 
 /* Subroutine */ int sol_(integer *n, integer *ndim, doublereal *a,
 	doublereal *b, integer *ip)
@@ -191,8 +194,6 @@ L50:
 /* ----------------------- END OF SUBROUTINE SOL ------------------------- */
 } /* sol_ */
 
-
-
 /* Subroutine */ int dech_(integer *n, integer *ndim, doublereal *a, integer *
 	lb, integer *ip, integer *ier)
 {
@@ -249,13 +250,13 @@ L50:
 	m = k;
 /* Computing MIN */
 	i__2 = *n, i__3 = *lb + k;
-	na = min(i__2,i__3);
+	na = std::min(i__2,i__3);
 	i__2 = na;
 	for (i__ = kp1; i__ <= i__2; ++i__) {
 	    if ((d__1 = a[i__ + k * a_dim1], fabs(d__1)) > (d__2 = a[m + k *
 		    a_dim1], fabs(d__2))) {
 		m = i__;
-	    }
+	}
 /* L10: */
 	}
 	ip[k] = m;
@@ -283,15 +284,15 @@ L20:
 	    a[k + j * a_dim1] = t;
 	    if (t == 0.) {
 		goto L45;
-	    }
+	}
 	    i__3 = na;
 	    for (i__ = kp1; i__ <= i__3; ++i__) {
 /* L40: */
 		a[i__ + j * a_dim1] += a[i__ + k * a_dim1] * t;
-	    }
+	}
 L45:
 /* L50: */
-	    ;
+	;
 	}
 /* L60: */
     }
@@ -307,8 +308,6 @@ L80:
     return 0;
 /* ----------------------- END OF SUBROUTINE DECH ------------------------ */
 } /* dech_ */
-
-
 
 /* Subroutine */ int solh_(integer *n, integer *ndim, doublereal *a, integer *
 	lb, doublereal *b, integer *ip)
@@ -356,7 +355,7 @@ L80:
 	b[k] = t;
 /* Computing MIN */
 	i__2 = *n, i__3 = *lb + k;
-	na = min(i__2,i__3);
+	na = std::min(i__2,i__3);
 	i__2 = na;
 	for (i__ = kp1; i__ <= i__2; ++i__) {
 /* L10: */
@@ -383,8 +382,7 @@ L50:
 /* ----------------------- END OF SUBROUTINE SOLH ------------------------ */
 } /* solh_ */
 
-
-/* Subroutine */ int decc_(integer *n, integer *ndim, doublereal *ar, 
+/* Subroutine */ int decc_(integer *n, integer *ndim, doublereal *ar,
 	doublereal *ai, integer *ip, integer *ier)
 {
     /* System generated locals */
@@ -449,7 +447,7 @@ L50:
 		    k * ai_dim1], fabs(d__2)) > (d__3 = ar[m + k * ar_dim1],
 		    fabs(d__3)) + (d__4 = ai[m + k * ai_dim1], fabs(d__4))) {
 		m = i__;
-	    }
+	}
 /* L10: */
 	}
 	ip[k] = m;
@@ -488,7 +486,7 @@ L20:
 	    ai[k + j * ai_dim1] = ti;
 	    if (fabs(tr) + fabs(ti) == 0.) {
 		goto L48;
-	    }
+	}
 	    if (ti == 0.) {
 		i__3 = *n;
 		for (i__ = kp1; i__ <= i__3; ++i__) {
@@ -499,7 +497,7 @@ L20:
 /* L40: */
 		}
 		goto L48;
-	    }
+	}
 	    if (tr == 0.) {
 		i__3 = *n;
 		for (i__ = kp1; i__ <= i__3; ++i__) {
@@ -510,20 +508,20 @@ L20:
 /* L45: */
 		}
 		goto L48;
-	    }
+	}
 	    i__3 = *n;
 	    for (i__ = kp1; i__ <= i__3; ++i__) {
-		prodr = ar[i__ + k * ar_dim1] * tr - ai[i__ + k * ai_dim1] * 
+		prodr = ar[i__ + k * ar_dim1] * tr - ai[i__ + k * ai_dim1] *
 			ti;
-		prodi = ai[i__ + k * ai_dim1] * tr + ar[i__ + k * ar_dim1] * 
+		prodi = ai[i__ + k * ai_dim1] * tr + ar[i__ + k * ar_dim1] *
 			ti;
 		ar[i__ + j * ar_dim1] += prodr;
 		ai[i__ + j * ai_dim1] += prodi;
 /* L47: */
-	    }
+	}
 L48:
 /* L50: */
-	    ;
+	;
 	}
 /* L60: */
     }
@@ -541,9 +539,7 @@ L80:
 /* ----------------------- END OF SUBROUTINE DECC ------------------------ */
 } /* decc_ */
 
-
-
-/* Subroutine */ int solc_(integer *n, integer *ndim, doublereal *ar, 
+/* Subroutine */ int solc_(integer *n, integer *ndim, doublereal *ar,
 	doublereal *ai, doublereal *br, doublereal *bi, integer *ip)
 {
     /* System generated locals */
@@ -608,7 +604,7 @@ L80:
     for (kb = 1; kb <= i__1; ++kb) {
 	km1 = *n - kb;
 	k = km1 + 1;
-	den = ar[k + k * ar_dim1] * ar[k + k * ar_dim1] + ai[k + k * ai_dim1] 
+	den = ar[k + k * ar_dim1] * ar[k + k * ar_dim1] + ai[k + k * ai_dim1]
 		* ai[k + k * ai_dim1];
 	prodr = br[k] * ar[k + k * ar_dim1] + bi[k] * ai[k + k * ai_dim1];
 	prodi = bi[k] * ar[k + k * ar_dim1] - br[k] * ai[k + k * ai_dim1];
@@ -627,7 +623,7 @@ L80:
 /* L40: */
     }
 L50:
-    den = ar[ar_dim1 + 1] * ar[ar_dim1 + 1] + ai[ai_dim1 + 1] * ai[ai_dim1 + 
+    den = ar[ar_dim1 + 1] * ar[ar_dim1 + 1] + ai[ai_dim1 + 1] * ai[ai_dim1 +
 	    1];
     prodr = br[1] * ar[ar_dim1 + 1] + bi[1] * ai[ai_dim1 + 1];
     prodi = bi[1] * ar[ar_dim1 + 1] - br[1] * ai[ai_dim1 + 1];
@@ -637,9 +633,7 @@ L50:
 /* ----------------------- END OF SUBROUTINE SOLC ------------------------ */
 } /* solc_ */
 
-
-
-/* Subroutine */ int dechc_(integer *n, integer *ndim, doublereal *ar, 
+/* Subroutine */ int dechc_(integer *n, integer *ndim, doublereal *ar,
 	doublereal *ai, integer *lb, integer *ip, integer *ier)
 {
     /* System generated locals */
@@ -704,14 +698,14 @@ L50:
 	m = k;
 /* Computing MIN */
 	i__2 = *n, i__3 = *lb + k;
-	na = min(i__2,i__3);
+	na = std::min(i__2,i__3);
 	i__2 = na;
 	for (i__ = kp1; i__ <= i__2; ++i__) {
 	    if ((d__1 = ar[i__ + k * ar_dim1], fabs(d__1)) + (d__2 = ai[i__ +
 		    k * ai_dim1], fabs(d__2)) > (d__3 = ar[m + k * ar_dim1],
 		    fabs(d__3)) + (d__4 = ai[m + k * ai_dim1], fabs(d__4))) {
 		m = i__;
-	    }
+	}
 /* L10: */
 	}
 	ip[k] = m;
@@ -750,7 +744,7 @@ L20:
 	    ai[k + j * ai_dim1] = ti;
 	    if (fabs(tr) + fabs(ti) == 0.) {
 		goto L48;
-	    }
+	}
 	    if (ti == 0.) {
 		i__3 = na;
 		for (i__ = kp1; i__ <= i__3; ++i__) {
@@ -761,7 +755,7 @@ L20:
 /* L40: */
 		}
 		goto L48;
-	    }
+	}
 	    if (tr == 0.) {
 		i__3 = na;
 		for (i__ = kp1; i__ <= i__3; ++i__) {
@@ -772,20 +766,20 @@ L20:
 /* L45: */
 		}
 		goto L48;
-	    }
+	}
 	    i__3 = na;
 	    for (i__ = kp1; i__ <= i__3; ++i__) {
-		prodr = ar[i__ + k * ar_dim1] * tr - ai[i__ + k * ai_dim1] * 
+		prodr = ar[i__ + k * ar_dim1] * tr - ai[i__ + k * ai_dim1] *
 			ti;
-		prodi = ai[i__ + k * ai_dim1] * tr + ar[i__ + k * ar_dim1] * 
+		prodi = ai[i__ + k * ai_dim1] * tr + ar[i__ + k * ar_dim1] *
 			ti;
 		ar[i__ + j * ar_dim1] += prodr;
 		ai[i__ + j * ai_dim1] += prodi;
 /* L47: */
-	    }
+	}
 L48:
 /* L50: */
-	    ;
+	;
 	}
 /* L60: */
     }
@@ -803,9 +797,7 @@ L80:
 /* ----------------------- END OF SUBROUTINE DECHC ----------------------- */
 } /* dechc_ */
 
-
-
-/* Subroutine */ int solhc_(integer *n, integer *ndim, doublereal *ar, 
+/* Subroutine */ int solhc_(integer *n, integer *ndim, doublereal *ar,
 	doublereal *ai, integer *lb, doublereal *br, doublereal *bi, integer *
 	ip)
 {
@@ -863,7 +855,7 @@ L80:
 	bi[k] = ti;
 /* Computing MIN */
 	i__3 = *n, i__4 = *lb + k;
-	i__2 = min(i__3,i__4);
+	i__2 = std::min(i__3,i__4);
 	for (i__ = kp1; i__ <= i__2; ++i__) {
 	    prodr = ar[i__ + k * ar_dim1] * tr - ai[i__ + k * ai_dim1] * ti;
 	    prodi = ai[i__ + k * ai_dim1] * tr + ar[i__ + k * ar_dim1] * ti;
@@ -878,7 +870,7 @@ L25:
     for (kb = 1; kb <= i__1; ++kb) {
 	km1 = *n - kb;
 	k = km1 + 1;
-	den = ar[k + k * ar_dim1] * ar[k + k * ar_dim1] + ai[k + k * ai_dim1] 
+	den = ar[k + k * ar_dim1] * ar[k + k * ar_dim1] + ai[k + k * ai_dim1]
 		* ai[k + k * ai_dim1];
 	prodr = br[k] * ar[k + k * ar_dim1] + bi[k] * ai[k + k * ai_dim1];
 	prodi = bi[k] * ar[k + k * ar_dim1] - br[k] * ai[k + k * ai_dim1];
@@ -897,7 +889,7 @@ L25:
 /* L40: */
     }
 L50:
-    den = ar[ar_dim1 + 1] * ar[ar_dim1 + 1] + ai[ai_dim1 + 1] * ai[ai_dim1 + 
+    den = ar[ar_dim1 + 1] * ar[ar_dim1 + 1] + ai[ai_dim1 + 1] * ai[ai_dim1 +
 	    1];
     prodr = br[1] * ar[ar_dim1 + 1] + bi[1] * ai[ai_dim1 + 1];
     prodi = bi[1] * ar[ar_dim1 + 1] - br[1] * ai[ai_dim1 + 1];
@@ -906,7 +898,6 @@ L50:
     return 0;
 /* ----------------------- END OF SUBROUTINE SOLHC ----------------------- */
 } /* solhc_ */
-
 
 /* Subroutine */ int decb_(integer *n, integer *ndim, doublereal *a, integer *
 	ml, integer *mu, integer *ip, integer *ier)
@@ -985,13 +976,13 @@ L7:
 	m = md;
 /* Computing MIN */
 	i__1 = *ml, i__3 = *n - k;
-	mdl = min(i__1,i__3) + md;
+	mdl = std::min(i__1,i__3) + md;
 	i__1 = mdl;
 	for (i__ = md1; i__ <= i__1; ++i__) {
 	    if ((d__1 = a[i__ + k * a_dim1], fabs(d__1)) > (d__2 = a[m + k *
 		    a_dim1], fabs(d__2))) {
 		m = i__;
-	    }
+	}
 /* L10: */
 	}
 	ip[k] = m + k - md;
@@ -1015,8 +1006,8 @@ L20:
 /* Computing MIN */
 /* Computing MAX */
 	i__3 = ju, i__4 = *mu + ip[k];
-	i__1 = max(i__3,i__4);
-	ju = min(i__1,*n);
+	i__1 = std::max(i__3,i__4);
+	ju = std::min(i__1,*n);
 	mm = md;
 	if (ju < kp1) {
 	    goto L55;
@@ -1028,23 +1019,23 @@ L20:
 	    t = a[m + j * a_dim1];
 	    if (m == mm) {
 		goto L35;
-	    }
+	}
 	    a[m + j * a_dim1] = a[mm + j * a_dim1];
 	    a[mm + j * a_dim1] = t;
 L35:
 	    if (t == 0.) {
 		goto L45;
-	    }
+	}
 	    jk = j - k;
 	    i__3 = mdl;
 	    for (i__ = md1; i__ <= i__3; ++i__) {
 		ijk = i__ - jk;
 /* L40: */
 		a[ijk + j * a_dim1] += a[i__ + k * a_dim1] * t;
-	    }
+	}
 L45:
 /* L50: */
-	    ;
+	;
 	}
 L55:
 /* L60: */
@@ -1062,8 +1053,6 @@ L80:
     return 0;
 /* ----------------------- END OF SUBROUTINE DECB ------------------------ */
 } /* decb_ */
-
-
 
 /* Subroutine */ int solb_(integer *n, integer *ndim, doublereal *a, integer *
 	ml, integer *mu, doublereal *b, integer *ip)
@@ -1116,7 +1105,7 @@ L80:
 	b[k] = t;
 /* Computing MIN */
 	i__2 = *ml, i__3 = *n - k;
-	mdl = min(i__2,i__3) + md;
+	mdl = std::min(i__2,i__3) + md;
 	i__2 = mdl;
 	for (i__ = md1; i__ <= i__2; ++i__) {
 	    imd = i__ + k - md;
@@ -1134,7 +1123,7 @@ L25:
 	kmd = md - k;
 /* Computing MAX */
 	i__2 = 1, i__3 = kmd + 1;
-	lm = max(i__2,i__3);
+	lm = std::max(i__2,i__3);
 	i__2 = mdm;
 	for (i__ = lm; i__ <= i__2; ++i__) {
 	    imd = i__ - kmd;
@@ -1149,8 +1138,7 @@ L50:
 /* ----------------------- END OF SUBROUTINE SOLB ------------------------ */
 } /* solb_ */
 
-
-/* Subroutine */ int decbc_(integer *n, integer *ndim, doublereal *ar, 
+/* Subroutine */ int decbc_(integer *n, integer *ndim, doublereal *ar,
 	doublereal *ai, integer *ml, integer *mu, integer *ip, integer *ier)
 {
     /* System generated locals */
@@ -1237,14 +1225,14 @@ L7:
 	m = md;
 /* Computing MIN */
 	i__1 = *ml, i__3 = *n - k;
-	mdl = min(i__1,i__3) + md;
+	mdl = std::min(i__1,i__3) + md;
 	i__1 = mdl;
 	for (i__ = md1; i__ <= i__1; ++i__) {
 	    if ((d__1 = ar[i__ + k * ar_dim1], fabs(d__1)) + (d__2 = ai[i__ +
 		    k * ai_dim1], fabs(d__2)) > (d__3 = ar[m + k * ar_dim1],
 		    fabs(d__3)) + (d__4 = ai[m + k * ai_dim1], fabs(d__4))) {
 		m = i__;
-	    }
+	}
 /* L10: */
 	}
 	ip[k] = m + k - md;
@@ -1276,8 +1264,8 @@ L20:
 /* Computing MIN */
 /* Computing MAX */
 	i__3 = ju, i__4 = *mu + ip[k];
-	i__1 = max(i__3,i__4);
-	ju = min(i__1,*n);
+	i__1 = std::max(i__3,i__4);
+	ju = std::min(i__1,*n);
 	mm = md;
 	if (ju < kp1) {
 	    goto L55;
@@ -1290,7 +1278,7 @@ L20:
 	    ti = ai[m + j * ai_dim1];
 	    if (m == mm) {
 		goto L35;
-	    }
+	}
 	    ar[m + j * ar_dim1] = ar[mm + j * ar_dim1];
 	    ai[m + j * ai_dim1] = ai[mm + j * ai_dim1];
 	    ar[mm + j * ar_dim1] = tr;
@@ -1298,7 +1286,7 @@ L20:
 L35:
 	    if (fabs(tr) + fabs(ti) == 0.) {
 		goto L48;
-	    }
+	}
 	    jk = j - k;
 	    if (ti == 0.) {
 		i__3 = mdl;
@@ -1311,7 +1299,7 @@ L35:
 /* L40: */
 		}
 		goto L48;
-	    }
+	}
 	    if (tr == 0.) {
 		i__3 = mdl;
 		for (i__ = md1; i__ <= i__3; ++i__) {
@@ -1323,21 +1311,21 @@ L35:
 /* L45: */
 		}
 		goto L48;
-	    }
+	}
 	    i__3 = mdl;
 	    for (i__ = md1; i__ <= i__3; ++i__) {
 		ijk = i__ - jk;
-		prodr = ar[i__ + k * ar_dim1] * tr - ai[i__ + k * ai_dim1] * 
+		prodr = ar[i__ + k * ar_dim1] * tr - ai[i__ + k * ai_dim1] *
 			ti;
-		prodi = ai[i__ + k * ai_dim1] * tr + ar[i__ + k * ar_dim1] * 
+		prodi = ai[i__ + k * ai_dim1] * tr + ar[i__ + k * ar_dim1] *
 			ti;
 		ar[ijk + j * ar_dim1] += prodr;
 		ai[ijk + j * ai_dim1] += prodi;
 /* L47: */
-	    }
+	}
 L48:
 /* L50: */
-	    ;
+	;
 	}
 L55:
 /* L60: */
@@ -1357,9 +1345,7 @@ L80:
 /* ----------------------- END OF SUBROUTINE DECBC ------------------------ */
 } /* decbc_ */
 
-
-
-/* Subroutine */ int solbc_(integer *n, integer *ndim, doublereal *ar, 
+/* Subroutine */ int solbc_(integer *n, integer *ndim, doublereal *ar,
 	doublereal *ai, integer *ml, integer *mu, doublereal *br, doublereal *
 	bi, integer *ip)
 {
@@ -1422,7 +1408,7 @@ L80:
 	bi[k] = ti;
 /* Computing MIN */
 	i__2 = *ml, i__3 = *n - k;
-	mdl = min(i__2,i__3) + md;
+	mdl = std::min(i__2,i__3) + md;
 	i__2 = mdl;
 	for (i__ = md1; i__ <= i__2; ++i__) {
 	    imd = i__ + k - md;
@@ -1438,7 +1424,7 @@ L25:
     i__1 = nm1;
     for (kb = 1; kb <= i__1; ++kb) {
 	k = *n + 1 - kb;
-	den = ar[md + k * ar_dim1] * ar[md + k * ar_dim1] + ai[md + k * 
+	den = ar[md + k * ar_dim1] * ar[md + k * ar_dim1] + ai[md + k *
 		ai_dim1] * ai[md + k * ai_dim1];
 	prodr = br[k] * ar[md + k * ar_dim1] + bi[k] * ai[md + k * ai_dim1];
 	prodi = bi[k] * ar[md + k * ar_dim1] - br[k] * ai[md + k * ai_dim1];
@@ -1449,7 +1435,7 @@ L25:
 	kmd = md - k;
 /* Computing MAX */
 	i__2 = 1, i__3 = kmd + 1;
-	lm = max(i__2,i__3);
+	lm = std::max(i__2,i__3);
 	i__2 = mdm;
 	for (i__ = lm; i__ <= i__2; ++i__) {
 	    imd = i__ - kmd;
@@ -1461,7 +1447,7 @@ L25:
 	}
 /* L40: */
     }
-    den = ar[md + ar_dim1] * ar[md + ar_dim1] + ai[md + ai_dim1] * ai[md + 
+    den = ar[md + ar_dim1] * ar[md + ar_dim1] + ai[md + ai_dim1] * ai[md +
 	    ai_dim1];
     prodr = br[1] * ar[md + ar_dim1] + bi[1] * ai[md + ai_dim1];
     prodi = bi[1] * ar[md + ar_dim1] - br[1] * ai[md + ai_dim1];
@@ -1471,8 +1457,6 @@ L50:
     return 0;
 /* ----------------------- END OF SUBROUTINE SOLBC ------------------------ */
 } /* solbc_ */
-
-
 
 /* Subroutine */ int elmhes_(integer *nm, integer *n, integer *low, integer *
 	igh, doublereal *a, integer *int__)
@@ -1485,8 +1469,6 @@ L50:
     static integer i__, j, m;
     static doublereal x, y;
     static integer la, mm1, kp1, mp1;
-
-
 
 /*     this subroutine is a translation of the algol procedure elmhes, */
 /*     num. math. 12, 349-368(1968) by martin and wilkinson. */
@@ -1549,11 +1531,11 @@ L50:
 	for (j = m; j <= i__2; ++j) {
 	    if ((d__1 = a[j + mm1 * a_dim1], fabs(d__1)) <= fabs(x)) {
 		goto L100;
-	    }
+	}
 	    x = a[j + mm1 * a_dim1];
 	    i__ = j;
 L100:
-	    ;
+	;
 	}
 
 	int__[m] = i__;
@@ -1588,7 +1570,7 @@ L130:
 	    y = a[i__ + mm1 * a_dim1];
 	    if (y == 0.) {
 		goto L160;
-	    }
+	}
 	    y /= x;
 	    a[i__ + mm1 * a_dim1] = y;
 
@@ -1596,16 +1578,16 @@ L130:
 	    for (j = m; j <= i__3; ++j) {
 /* L140: */
 		a[i__ + j * a_dim1] -= y * a[m + j * a_dim1];
-	    }
+	}
 
 	    i__3 = *igh;
 	    for (j = 1; j <= i__3; ++j) {
 /* L150: */
 		a[j + m * a_dim1] += y * a[j + i__ * a_dim1];
-	    }
+	}
 
 L160:
-	    ;
+	;
 	}
 
 L180:
@@ -1616,4 +1598,3 @@ L200:
     return 0;
 /*    :::::::::: last card of elmhes :::::::::: */
 } /* elmhes_ */
-

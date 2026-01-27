@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -428,8 +428,8 @@ int main()
   COptItem* pOptItem2 = pFitProblem->getOptItemList()[1];
   // the actual results are stored in the fit problem
   assert(pFitProblem->getSolutionVariables().size() == 2);
-  std::cout << "value for " << pOptItem1->getObject()->getCN() << ": " << pFitProblem->getSolutionVariables()[0] << std::endl;
-  std::cout << "value for " << pOptItem2->getObject()->getCN() << ": " << pFitProblem->getSolutionVariables()[1] << std::endl;
+  std::cout << "value for " << pOptItem1->getItemObject()->getCN() << ": " << pFitProblem->getSolutionVariables()[0] << std::endl;
+  std::cout << "value for " << pOptItem2->getItemObject()->getCN() << ": " << pFitProblem->getSolutionVariables()[1] << std::endl;
   // depending on the noise, the fit can be quite bad, so we are a litle
   // relaxed here (we should be within 3% of the original values)
   assert((fabs(pFitProblem->getSolutionVariables()[0] - 0.03) / 0.03) < 3e-2);

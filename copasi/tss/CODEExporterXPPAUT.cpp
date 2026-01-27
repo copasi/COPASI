@@ -501,6 +501,9 @@ bool CODEExporterXPPAUT::exportSingleModVal(const CModelValue* modval, std::stri
 
 bool CODEExporterXPPAUT::exportSingleModelEntity(const CModelEntity* tmp, std::string & expression, std::string & comments)
 {
+  if (!tmp)
+    return true;
+
   std::string name;
 
   const CMetab* metab;

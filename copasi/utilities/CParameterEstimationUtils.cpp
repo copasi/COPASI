@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -468,18 +468,21 @@ bool ResultParser::skipTo(std::istream &reader, const std::string &lineStart, bo
 
 FittingItem *ResultParser::parseItem(const std::string &line)
 {
-  FittingItem* item = new FittingItem();
-
   std::string::size_type lastEq = line.rfind("=");
 
   if (lastEq == std::string::npos)
     return NULL;
 
+  FittingItem* item = new FittingItem();
+
   item->mStartValue = saveToDouble(line.substr(lastEq + 1));
   std::string::size_type firstLeq = line.find("<=");
 
   if (firstLeq == -1)
+  {
+    pdelete(item);
     return NULL;
+  }
 
   item->mLowerBound = saveToDouble(line.substr(0, firstLeq));
   std::string::size_type lastLeq = line.find("<=", firstLeq + 2);

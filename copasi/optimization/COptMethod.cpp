@@ -52,19 +52,24 @@ COptMethod::COptMethod(const CDataContainer * pParent,
   , mProblemContext(parallel, this)
   , mLogVerbosity(0)
   , mMethodLog()
+  , mBestValue()
+  , mProceed()
 {
   assertParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 }
 
 COptMethod::COptMethod(const COptMethod & src,
-                       const CDataContainer * pParent)
+                       const CDataContainer * pParent,
+                       const bool & parallel)
   : CCopasiMethod(src, pParent)
   , mpParentTask(src.mpParentTask)
-  , mParallel(src.mParallel)
+  , mParallel(parallel)
   , mMathContext(src.mParallel)
   , mProblemContext(src.mParallel, this)
   , mLogVerbosity(src.mLogVerbosity)
   , mMethodLog(src.mMethodLog)
+  , mBestValue()
+  , mProceed()
 {
   mMathContext.setMaster(src.mMathContext.master());
   mProblemContext.setMaster(src.mProblemContext.master());
@@ -88,18 +93,24 @@ std::pair< C_FLOAT64, bool > COptMethod::objectiveValue(COptProblem * pProblem, 
 }
 
 // static
+/*
 void COptMethod::reflect(COptProblem * pProblem, const C_FLOAT64 & bestValue, C_FLOAT64 & objectiveValue)
 {
+  C_FLOAT64 BestValue = std::min(bestValue, 0.5 * std::numeric_limits< C_FLOAT64 >::max());
+
   if (objectiveValue < bestValue
       && (!pProblem->checkParametricConstraints()
           || !pProblem->checkFunctionalConstraints()))
-    objectiveValue = bestValue + bestValue - objectiveValue;
+    objectiveValue = BestValue + (BestValue - objectiveValue);
 }
+ */
 
-void COptMethod::setProblem(COptProblem * pProblem)
+bool COptMethod::setProblem(CCopasiProblem * pProblem)
 {
-  mProblemContext.setMaster(pProblem);
+  mProblemContext.setMaster(dynamic_cast< COptProblem * >(pProblem));
   mProblemContext.setMathContext(mMathContext);
+
+  return mProblemContext.master() != nullptr;
 }
 
 //virtual C_INT32 COptMethod::Optimise(C_FLOAT64 (*func) (void))
@@ -110,12 +121,15 @@ bool COptMethod::optimise(void)
 
 bool COptMethod::initialize()
 {
+  mBestValue = std::numeric_limits< C_FLOAT64 >::infinity();
+  mProceed = true;
+
   if (mMathContext.master() == NULL
       || mProblemContext.master() == NULL)
     return false;
 
-  mMathContext.sync();
-  mProblemContext.setMathContext(mMathContext);
+  if (mMathContext.sync())
+    mProblemContext.setMathContext(mMathContext);
 
   if (mProblemContext.size() > 1)
 #pragma omp parallel for
@@ -125,7 +139,7 @@ bool COptMethod::initialize()
         mProblemContext.threadData()[i]->initialize();
       }
 
-  mpParentTask = dynamic_cast<COptTask *>(getObjectParent());
+  mpParentTask = dynamic_cast< COptTask * >(getObjectParent());
 
   if (!mpParentTask) return false;
 
@@ -171,10 +185,14 @@ const COptLog &COptMethod::getMethodLog() const
 {
   return mMethodLog;
 }
-
 C_FLOAT64 COptMethod::getBestValue() const
 {
-  return std::numeric_limits< C_FLOAT64 >::infinity();
+  C_FLOAT64 BestValue;
+
+#pragma omp atomic read
+  BestValue = mBestValue;
+
+  return BestValue;
 }
 
 C_FLOAT64 COptMethod::getCurrentValue() const
@@ -190,4 +208,126 @@ const CVector< C_FLOAT64 > * COptMethod::getBestParameters() const
 const CVector< C_FLOAT64 > * COptMethod::getCurrentParameters() const
 {
   return NULL;
+}
+
+// virtual evaluate the fitness of one individual
+C_FLOAT64 COptMethod::evaluate(const EvaluationPolicyFlag & policy)
+{
+  if (!mProceed)
+    return std::numeric_limits< C_FLOAT64 >::infinity();
+
+  // We do not need to check whether the parametric constraints are fulfilled
+  // since the parameters are created within the bounds.
+  COptProblem *& pOptProblem = mProblemContext.active();
+
+  // evaluate the fitness
+  if (!pOptProblem->calculate())
+    signalStop();
+
+  C_FLOAT64 EvaluationValue = pOptProblem->getCalculateValue();
+
+  if (!std::isnan(EvaluationValue)
+      && EvaluationValue != std::numeric_limits< C_FLOAT64 >::infinity())
+    {
+      bool ParametricConstraintsViolated = ((policy & EvaluationPolicy::Parameter)
+                                            && !pOptProblem->checkParametricConstraints());
+      bool FunctionalConstraintsViolated = ((policy & EvaluationPolicy::Constraints)
+                                            && !pOptProblem->checkFunctionalConstraints());
+
+      if (ParametricConstraintsViolated
+          || FunctionalConstraintsViolated)
+        {
+          if (policy & EvaluationPolicy::Reflect)
+            {
+              C_FLOAT64 Factor = 0.0;
+
+              if (ParametricConstraintsViolated)
+                Factor += pOptProblem->getParametricConstraintsViolation();
+
+              if (FunctionalConstraintsViolated)
+                Factor += pOptProblem->getFunctionalConstraintsViolation();
+
+              if (EvaluationValue < 0.0)
+                EvaluationValue *= 1.0 - Factor;
+              else
+                EvaluationValue *= 1.0 + Factor;
+
+              C_FLOAT64 BestValue;
+
+#pragma omp atomic read
+              BestValue = mBestValue;
+
+              if (EvaluationValue < BestValue)
+                EvaluationValue = BestValue + exp(EvaluationValue - BestValue);
+              else
+                EvaluationValue += exp(BestValue - EvaluationValue);
+            }
+          else
+            EvaluationValue = std::numeric_limits< C_FLOAT64 >::infinity();
+        }
+    }
+
+  if (mProcessReport
+      && !mProcessReport.proceed())
+    signalStop();
+
+  return EvaluationValue;
+}
+
+bool COptMethod::setSolution(const C_FLOAT64 & value,
+                             const CVector< C_FLOAT64 > & variables,
+                             const bool & algorithmOrder)
+{
+  bool solutionUpdated = false;
+
+  // We have a possible race condition therefore we check again
+
+#pragma omp critical (opt_method_set_solution)
+  if (value < mBestValue)
+    {
+      // and store that value
+#pragma omp atomic write
+      mBestValue = value;
+      solutionUpdated = true;
+    }
+
+  if (solutionUpdated
+      && mBestValue < 1.e-6 * std::numeric_limits< C_FLOAT64 >::max())
+    {
+      aggregateCounters();
+
+      // If the best value is sufficiently large we are not reporting
+      if (!mProblemContext.master()->setSolution(value, variables, algorithmOrder))
+        signalStop();
+
+      // We found a new best value lets report it.
+      mpParentTask->output(COutputInterface::DURING);
+    }
+
+  return solutionUpdated;
+}
+
+void  COptMethod::aggregateCounters()
+{
+  if (mProblemContext.multiThreaded())
+    {
+      COptProblem * pMaster = mProblemContext.master();
+      COptProblem ** ppProblem = mProblemContext.threadData();
+      COptProblem ** ppProblemEnd = ppProblem + mProblemContext.size();
+
+      for (; ppProblem != ppProblemEnd; ++ppProblem)
+        pMaster->aggregateCounters(**ppProblem);
+    }
+}
+
+bool COptMethod::proceed() const
+{
+  return mProceed;
+}
+
+void COptMethod::signalStop()
+{
+  if (mProceed)
+#pragma omp atomic write
+    mProceed = false;
 }

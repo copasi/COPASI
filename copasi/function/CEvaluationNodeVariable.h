@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,13 +68,13 @@ public:
    * @param const CEvaluationTree * pTree
    * @return CIssue issue;
    */
-  virtual CIssue compile() override;
+  CIssue compile() override;
 
   /**
    * Calculate the numerical result of the node. It is assumed that
    * all child nodes are up to date.
    */
-  virtual void calculate() override;
+  void calculate() override;
 
   /**
    * Figure out the appropriate CUnit to use, based on the child nodes.
@@ -91,7 +91,7 @@ public:
    * @param const ValueType & valueType
    * @return CIssue issue;
    */
-  virtual CIssue setValueType(const ValueType & valueType) override;
+  CIssue setValueType(const ValueType & valueType) override;
 
   /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children
@@ -105,7 +105,7 @@ public:
    * Converts this node to an AST Node of type AST_NAME
    * @return ASTNode* the resulting ASTNode.
    */
-  virtual ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const override;
+  ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const override;
 
   /**
    * Build the MathML string

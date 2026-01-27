@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,25 +32,16 @@
 #include "copasi/odepack++/common.h"
 #include "copasi/odepack++/Cxerrwd.h"
 
-class CInternalSolver
+class CInternalSolver : public Cxerrwd
 {
 public:
-  struct State
-  {
-    dls001 mdls001;
-    dlsa01 mdlsa01;
-    dlsr01 mdlsr01;
-  };
+  typedef CommonData State;
 
-protected:
-  CInternalSolver();
+  CInternalSolver() = delete;
 
-public:
+  CInternalSolver(State & state);
+
   ~CInternalSolver();
-
-  void setOstream(std::ostream & os);
-
-  void enablePrint(const bool & print = true);
 
   void saveState(State & state) const;
   void resetState(const State & state);
@@ -62,6 +53,9 @@ protected:
   C_INT dprja_(C_INT *neq, double *y, double *yh,
                C_INT *nyh, double *ewt, double *ftem, double *savf,
                double *wm, C_INT *iwm, evalF f, evalJ jac);
+
+  C_INT drchek2_(const C_INT *job, evalG g, C_INT *neq, double *
+                 y, C_INT *nyh, double *rwork, C_INT *jroot, C_INT *irt);
 
   C_INT drchek_(const C_INT * job, evalG g, C_INT *neq, double *
                 y, double *yh, C_INT *nyh, double *g0, double *g1,
@@ -79,11 +73,23 @@ protected:
                 double *acor, double *wm, C_INT *iwm, evalF f, evalJ jac,
                 PJAC * pjac, SLVS * slvs);
 
+#define dls001_1 (mState.mdls001_._1)
+#define dls001_2 (mState.mdls001_._2)
+#define dls001_3 (mState.mdls001_._3)
+#define dls001_lsoda (mState.mdls001_.lsoda)
+
+#define dlsa01_1 (mState.mdlsa01_._1)
+#define dlsa01_2 (mState.mdlsa01_._2)
+#define dlsa01_3 (mState.mdlsa01_._3)
+#define dlsa01_lsoda (mState.mdlsa01_.lsoda)
+
+#define dlsr01_1 (mState.mdlsr01_._1)
+#define dlsr01_2 (mState.mdlsr01_._2)
+#define dlsr01_3 (mState.mdlsr01_._3)
+#define dlsr01_lsodar (mState.mdlsr01_.lsodar)
+
 protected:
-  Cxerrwd mxerrwd;
-  dls001 mdls001_;
-  dlsa01 mdlsa01_;
-  dlsr01 mdlsr01_;
+  State & mState;
 };
 
 #endif // ODEPACK_CInternalSolver

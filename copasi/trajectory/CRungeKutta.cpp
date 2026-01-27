@@ -88,9 +88,6 @@ CRungeKutta::CRungeKutta()
 
   // Default root finder related
   mRootNum = 0;
-  mRootValueRight = NULL;
-  mRootValuesLeft = NULL;
-  mRootValueTmp = NULL;
 
   // Default statistic variables
   mStepNum = 0;
@@ -104,7 +101,7 @@ CRungeKutta::CRungeKutta()
   mZ2 = NULL;
   mZ3 = NULL;
 
-  mpRootValueCalculator = new CBrent::EvalTemplate< CRungeKutta >(this, &CRungeKutta::rootValue);
+  mRootValueCalculator = std::bind(&CRungeKutta::evalRoot, this, std::placeholders::_1, std::placeholders::_2);
 
   return;
 }
@@ -131,9 +128,6 @@ CRungeKutta::~CRungeKutta()
         pdeletev(mK);
     }
 
-  pdeletev(mRootValuesLeft);
-  pdeletev(mRootValueRight);
-  pdeletev(mRootValueTmp);
   pdeletev(mZ1);
   pdeletev(mZ2);
   pdeletev(mZ3);
@@ -153,14 +147,17 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
     C_FLOAT64 * pTime,
     C_FLOAT64 * pEndTime,
     const size_t rootCount,
-    C_INT * pRoots,
+    CVectorCore< C_INT > & rootsFound,
+    const CVectorCore< const RootMask > & rootMask,
     const CRungeKutta::RKMethodStatus & status,
     const bool & oneStep,
     C_FLOAT64 * rtol,
     C_FLOAT64 * atol,
     unsigned C_INT32 * pMaxSteps,
     EvalDeriv pEvalDerivatives,
-    EvalRoot pEvalRoots)
+    EvalRoot pEvalRoots,
+    CRootFinder::PhysicalRoot physicalRoot,
+    bool * pPhysicalRootFound)
 {
   //====================//
   // 1 check mODEstate  //
@@ -175,7 +172,7 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
 
   if (status == INITIALIZE)
     {
-      initialize(pDim, pY, pTime, pEndTime, rootCount, pRoots, status, rtol, atol, pMaxSteps, pEvalDerivatives, pEvalRoots);
+      initialize(pDim, pY, pTime, pEndTime, rootCount, rootsFound, rootMask, status, rtol, atol, pMaxSteps, pEvalDerivatives, pEvalRoots, physicalRoot);
 
       if (mMethodStatus == ERROR) return mMethodStatus;
     }
@@ -189,17 +186,12 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
       setInitialStepSize();
 
       mpDerivFunc(mpDim, &mTLeft, mYLeft, mK[0]); //record derivative to
-
-      // Calculate root at initial time
-      if (mRootNum > 0)
-        {
-          (*mpEventFunc)(mpDim, &mTLeft, mYLeft, &mRootNum, mRootValuesLeft);
-        }
+      mRootFinder.restart();
 
 #ifdef DEBUG_OUTPUT
       std::cout << "old Y:    " << CVectorCore< C_FLOAT64 >(*mpDim, mYLeft) << std::endl;
-      std::cout << "old Root: " << CVectorCore< C_FLOAT64 >(mRootNum, mRootValuesLeft) << std::endl;
 #endif // DEBUG_OUTPUT
+      mMethodStatus = CONTINUE;
     }
   else if (mMethodStatus != CONTINUE) // has event
     {
@@ -208,6 +200,8 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
     }
 
   mTEnd = *pEndTime;
+  mpPhysicalRootFound = pPhysicalRootFound;
+  rootsFound.initialize(mRootFinder.getToggledRoots());
 
   assert(mContinueFromInterpolation || mTLeft == *pTime);
 
@@ -218,8 +212,16 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
       // Complete the interrupted step.
       checkRoots();
 
-      if (mMethodStatus == ROOTFOUND) //has events
+      switch (mMethodStatus)
         {
+        case CONTINUE:
+          //~~~~~~~~~~~~~~~~~~~~~~//
+          // (5) Advance New Step //
+          //~~~~~~~~~~~~~~~~~~~~~~//
+          advanceStep();
+          break;
+
+        case ROOTFOUND:
           *pTime = *mpY;
 
           // We need to check whether pTime is actually mTEnd in which case we need to advance
@@ -231,12 +233,17 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
             }
 
           return mMethodStatus;
-        }
+          break;
 
-      //~~~~~~~~~~~~~~~~~~~~~~//
-      // (5) Advance New Step //
-      //~~~~~~~~~~~~~~~~~~~~~~//
-      advanceStep();
+        case NOTADVANCED:
+          return mMethodStatus;
+          break;
+
+        default:
+          mMethodStatus = ERROR;
+          return mMethodStatus;
+          break;
+        }
     }
 
   unsigned C_INT32 StepCounter = 0;
@@ -320,15 +327,19 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
       //~~~~~~~~~~~~~~~~~~//
       // (4) Check Events //
       //~~~~~~~~~~~~~~~~~~//
-      if (mRootNum > 0)
+      if (mRootNum > 0 || mpPhysicalRootFound != nullptr)
         {
           checkRoots();
 
-          if (mMethodStatus == ROOTFOUND) //has events
+          switch (mMethodStatus)
             {
+            case CONTINUE:
+              break;
+
+            case ROOTFOUND:
+              // We need to check whether pTime is actually mTEnd in which case we need to advance
               *pTime = *mpY;
 
-              // We need to check whether pTime is actually mTEnd in which case we need to advance
               if (fabs(*pTime - mTEnd) < Tolerance)
                 {
                   advanceStep();
@@ -337,6 +348,16 @@ CRungeKutta::RKMethodStatus CRungeKutta::operator()(const size_t * pDim,
                 }
 
               return mMethodStatus;
+              break;
+
+            case NOTADVANCED:
+              return mMethodStatus;
+              break;
+
+            default:
+              mMethodStatus = ERROR;
+              return mMethodStatus;
+              break;
             }
         }
 
@@ -514,19 +535,21 @@ void CRungeKutta::initialize(const size_t * pDim,
                              C_FLOAT64 * pTime,
                              C_FLOAT64 * pEndTime,
                              const size_t rootCount,
-                             C_INT * pRoots,
+                             CVectorCore< C_INT > & rootsFound,
+                             const CVectorCore< const RootMask > & rootMask,
                              const RKMethodStatus & status,
                              C_FLOAT64 * rtol,
                              C_FLOAT64 * atol,
                              unsigned C_INT32 * pMaxSteps,
                              EvalDeriv pEvalDerivatives,
-                             EvalRoot pEvalRoots)
+                             EvalRoot pEvalRoots,
+                             CRootFinder::PhysicalRoot physicalRoot)
 {
   assert(status == INITIALIZE);
 
   mMethodStatus = INITIALIZE;
 
-  if (!checkParameter(pDim, pY, pTime, pEndTime, rootCount, pRoots, status, rtol, atol, pMaxSteps, pEvalDerivatives, pEvalRoots))
+  if (!checkParameter(pDim, pY, pTime, pEndTime, rootCount, rootMask, status, rtol, atol, pMaxSteps, pEvalDerivatives, pEvalRoots))
     {
       mMethodStatus = ERROR;
     }
@@ -537,8 +560,13 @@ void CRungeKutta::initialize(const size_t * pDim,
   mpY = pY;
   mTLeft = * pTime;
   mTEnd = *pEndTime;
-  mRootNum = rootCount,
-  mRootFound.initialize(mRootNum, pRoots);
+  mRootNum = rootCount;
+
+  mRootFinder.initialize(*rtol, rootMask, std::bind(&CRungeKutta::evalRoot, this, std::placeholders::_1, std::placeholders::_2));
+
+  if (physicalRoot)
+    mRootFinder.addPhysicalRoot(physicalRoot);
+
   mMethodStatus = RESTART;
   mContinueFromInterpolation = false;
 
@@ -600,18 +628,6 @@ void CRungeKutta::allocateSpace()
 
   pdeletev(mZ3);
   mZ3 = new C_FLOAT64[size];
-
-  if (mRootNum > 0)
-    {
-      pdeletev(mRootValuesLeft);
-      mRootValuesLeft = new C_FLOAT64[mRootNum];
-
-      pdeletev(mRootValueRight);
-      mRootValueRight    = new C_FLOAT64[mRootNum];
-
-      pdeletev(mRootValueTmp);
-      mRootValueTmp    = new C_FLOAT64[mRootNum];
-    }
 
   return;
 }
@@ -799,14 +815,11 @@ void CRungeKutta::checkRoots()
   C_FLOAT64 LastTime = mContinueFromInterpolation ? *mpY : mTLeft;
 
   C_FLOAT64 LeftTime = mTLeft;
-  C_FLOAT64 * pLeftRoots = mRootValuesLeft;
-
   C_FLOAT64 RightTime = mTLeft;
-  C_FLOAT64 * pRightRoots = mRootValueRight;
 
   C_FLOAT64 step = (mTRight - mTLeft) / 4;
 
-  for (size_t s = 1; s < 5; ++s)
+  for (size_t s = 1; s < 5 && mMethodStatus == CONTINUE; ++s)
     {
       // Boundaries of the current interval
       LeftTime = RightTime;
@@ -821,136 +834,44 @@ void CRungeKutta::checkRoots()
           LeftTime = LastTime;
         }
 
-      interpolation(RightTime, mZ1);
-      (*mpEventFunc)(mpDim, &RightTime, mZ1, &mRootNum, mRootValueRight);
-      mrEvalNum++;
-
-      for (size_t r = 0; r < mRootNum; ++r)
+      switch (mRootFinder.checkRoots(LeftTime, RightTime, mRootMasking))
         {
-          if (*(mRootValuesLeft + r) **(mRootValueRight + r) < 0 ||
-              *(mRootValueRight + r) == 0)
-            {
-              // We have found at least one root in the current interval.
-              C_FLOAT64 RootTime;
-              C_FLOAT64 RootValue;
-
-              // Find the "exact" location of the left most root.
-
-#ifdef DEBUG_OUTPUT
-              std::cout << "old Y: " << CVectorCore< C_FLOAT64 >(*mpDim, mYLeft) << std::endl;
-              std::cout << "new Y: " << CVectorCore< C_FLOAT64 >(*mpDim, mYRight) << std::endl;
-#endif // DEBUG_OUTPUT
-
-              if (!CBrent::findRoot(LeftTime, RightTime, mpRootValueCalculator, &RootTime, &RootValue, mRelTol))
-                {
-                  fatalError();
-                }
-
-              // We must not use mTRight as that is controlled by the Runge Kutta algorithm
-              interpolation(RootTime, mZ1);
-              (*mpEventFunc)(mpDim, &RootTime, mZ1, &mRootNum, mRootValueTmp);
-              mrEvalNum++;
-
-              mRootFound = 0;
-
-              C_FLOAT64 * pRoot = mRootValueTmp;
-              C_FLOAT64 * pRootEnd = pRoot + mRootNum;
-
-              const C_FLOAT64 * pRootOld = mRootValuesLeft;
-              const C_FLOAT64 * pRootNew = mRootValueRight;
-
-              C_INT * pRootFound = mRootFound.array();
-
-              for (; pRoot != pRootEnd; ++pRoot, ++pRootOld, ++pRootNew, ++pRootFound)
-                {
-                  // We are only looking for roots which change sign in [pOld, pNew]
-                  if (*pRootOld **pRootNew < 0 || *pRootNew == 0)
-                    {
-                      if (*pRootOld **pRoot < 0)
-                        {
-                          *pRootFound = 1; // CMath::ToggleBoth
-                          mMethodStatus = ROOTFOUND;
-                        }
-                      else if (fabs(*pRoot) <= (1.0 + std::numeric_limits< C_FLOAT64 >::epsilon()) * fabs(RootValue))
-                        {
-                          *pRoot *= -1;
-                          *pRootFound = 1; // CMath::ToggleBoth
-                          mMethodStatus = ROOTFOUND;
-                        }
-                      else
-                        {
-                          *pRootFound = 0;
-                        }
-                    }
-                }
-
-#ifdef DEBUG_OUTPUT
-              std::cout << "root value: " << CVectorCore< C_FLOAT64 >(mRootNum, mRootValueTmp) << std::endl;
-              std::cout << "root found: " << mRootFound << std::endl;
-#endif // DEBUG_OUTPUT
-
-              break;
-            }
-        }
-
-      // Assure that the root values are recorded for the next integration step.
-      if (mMethodStatus == ROOTFOUND)
-        {
-          mContinueFromInterpolation = true;
-          memcpy(mpY, mZ1, *mpDim * sizeof(C_FLOAT64));
-          memcpy(mRootValuesLeft, mRootValueTmp, mRootNum * sizeof(C_FLOAT64));
-
+        case CRootFinder::NotFound:
+          mMethodStatus = CONTINUE;
           break;
-        }
-      else
-        {
-          memcpy(mRootValuesLeft, mRootValueRight, mRootNum * sizeof(C_FLOAT64));
+
+        case CRootFinder::RootFound:
+          mMethodStatus = ROOTFOUND;
+
+          if (mpPhysicalRootFound != nullptr)
+            *mpPhysicalRootFound = mRootFinder.getToggledPhysicalRoot() != 0;
+
+          interpolation(mRootFinder.getRootTime(), mZ1);
+          memcpy(mpY, mZ1, *mpDim * sizeof(C_FLOAT64));
+          mContinueFromInterpolation = true;
+          break;
+
+        case CRootFinder::NotAdvanced:
+          mMethodStatus = NOTADVANCED;
+          interpolation(LeftTime, mZ1);
+          memcpy(mpY, mZ1, *mpDim * sizeof(C_FLOAT64));
+          mContinueFromInterpolation = false;
+          break;
+
+        case CRootFinder::InvalidInterval:
+          fatalError();
+          break;
         }
     }
 
   return;
 }
 
-C_FLOAT64 CRungeKutta::rootValue(const C_FLOAT64 & time)
+void CRungeKutta::evalRoot(const C_FLOAT64 & time, CVectorCore< C_FLOAT64 > & rootValues)
 {
   interpolation(time, mZ1);
-  (*mpEventFunc)(mpDim, &time, mZ1, &mRootNum, mRootValueTmp);
+  (*mpEventFunc)(mpDim, &time, mZ1, &mRootNum, rootValues.array());
   mrEvalNum++;
-
-  const C_FLOAT64 * pRoot = mRootValueTmp;
-  const C_FLOAT64 * pRootEnd = pRoot + mRootNum;
-
-  const C_FLOAT64 * pRootOld = mRootValuesLeft;
-  const C_FLOAT64 * pRootNew = mRootValueRight;
-
-  C_FLOAT64 MaxRootValue = - std::numeric_limits< C_FLOAT64 >::infinity();
-  C_FLOAT64 RootValue;
-
-  for (; pRoot != pRootEnd; ++pRoot, ++pRootOld, ++pRootNew)
-    {
-      // We are only looking for roots which change sign in [pOld, pNew]
-      if (*pRootOld **pRootNew < 0 || *pRootNew == 0)
-        {
-          // Assure that the RootValue is increasing between old and new for each
-          // candidate root.
-          RootValue = (*pRootNew >= *pRootOld) ? *pRoot : -*pRoot;
-
-          if (RootValue > MaxRootValue)
-            {
-              MaxRootValue = RootValue;
-            }
-        }
-    }
-
-#ifdef DEBUG_OUTPUT
-  std::cout << "old Value: " << CVectorCore< C_FLOAT64 >(mRootNum, mRootValuesLeft) << std::endl;
-  std::cout << "tmp Value: " << CVectorCore< C_FLOAT64 >(mRootNum, mRootValueTmp) << std::endl;
-  std::cout << "new Value: " << CVectorCore< C_FLOAT64 >(mRootNum, mRootValueRight) << std::endl;
-
-  std::cout << "rootValue: " << CVectorCore< C_FLOAT64 >(*mpDim, mZ1) << ", " << MaxRootValue << std::endl;
-#endif // DEBUG_OUTPUT
-
-  return MaxRootValue;
 }
 
 /**
@@ -968,7 +889,7 @@ bool CRungeKutta::checkParameter(const size_t * pDim,
                                  C_FLOAT64 * pTime,
                                  C_FLOAT64 * pEndTime,
                                  const size_t rootCount,
-                                 C_INT * pRoots,
+                                 const CVectorCore< const RootMask > & rootMask,
                                  const RKMethodStatus & status,
                                  C_FLOAT64 * rtol,
                                  C_FLOAT64 * atol,
@@ -1038,9 +959,9 @@ bool CRungeKutta::checkParameter(const size_t * pDim,
 
   if (rootCount > 0)
     {
-      if (pRoots == NULL)
+      if (rootMask.size() != rootCount)
         {
-          mErrorMessage << "pRoots must not be NULL" << std::endl;
+          mErrorMessage << "A valid root mask must be provided." << std::endl;
           return false;
         }
 

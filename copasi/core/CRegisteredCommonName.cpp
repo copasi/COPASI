@@ -93,13 +93,27 @@ CRegisteredCommonName::~CRegisteredCommonName()
   mSet.erase(this);
 }
 
+void CRegisteredCommonName::assign(const std::string & CN, const CObjectInterface * pObject)
+{
+  CCommonName::assign(CN);
+  mpDataModel = CObjectInterface::DataObject(pObject) != nullptr
+                ? CObjectInterface::DataObject(pObject)->getObjectDataModel() : nullptr;
+}
+
 const CDataModel * CRegisteredCommonName::getDataModel() const
 {
   return mpDataModel;
 }
 
+void CRegisteredCommonName::setDataModel(const CDataModel* pDM)
+{
+  mpDataModel = pDM;
+}
+
 // static
-void CRegisteredCommonName::handle(const std::string & oldCN, const CRegisteredCommonName & newCN)
+void CRegisteredCommonName::handle(const std::string & oldCN,
+                                   const std::string & newCN,
+                                   CDataModel * pDataModel)
 {
   if (mEnabled)
     {
@@ -120,8 +134,8 @@ void CRegisteredCommonName::handle(const std::string & oldCN, const CRegisteredC
           // We need to make sure that we not change partial names
           if ((currentSize == oldSize ||
                (currentSize > oldSize && (**it)[oldSize] == ','))
-              && (newCN.mpDataModel == nullptr
-                  || newCN.mpDataModel == (*it)->mpDataModel)
+              && (pDataModel == nullptr
+                  || pDataModel == (*it)->mpDataModel)
               && oldCN.compare(0, oldSize, **it, 0, oldSize) == 0)
             {
               Renamed.insert(std::make_pair(**it, *it));

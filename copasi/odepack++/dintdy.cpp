@@ -36,14 +36,6 @@
 #include "CInternalSolver.h"
 #include "Cxerrwd.h"
 
-#define dls001_1 (mdls001_._1)
-#define dls001_2 (mdls001_._2)
-#define dls001_3 (mdls001_._3)
-
-#define dlsa01_1 (mdlsa01_._1)
-#define dlsa01_2 (mdlsa01_._2)
-#define dlsa01_3 (mdlsa01_._3)
-
 double d_sign(const double & a, const double & b);
 
 static double c_b34 = 0.0;

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -130,4 +130,15 @@ bool CMathUpdateSequence::empty() const
 void CMathUpdateSequence::clear()
 {
   resize(0);
+}
+
+bool CMathUpdateSequence::apply() const
+{
+  if (mpContainer != nullptr)
+    {
+      mpContainer->applyUpdateSequence(*this);
+      return true;
+    }
+
+  return false;
 }

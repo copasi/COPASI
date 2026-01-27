@@ -18,7 +18,33 @@ public:
 
   void init(CQExternalTools * tools);
 
+  /**
+   * serializes the tools to the ini files
+   * 
+   * @param deleteExisting if true, deletes existing ini files before saving
+   */
   void saveTools(bool deleteExisting);
+
+  /**
+   * loads the given tool to gui
+   */
+  void loadTool(CQExternalTool & tool);
+
+  /**
+   * saves gui settings to the given tool
+   */
+  void saveTool(CQExternalTool & tool);
+
+  void saveCurrent();
+
+  void loadCurrent(int index);
+
+  void selectItem(int index);
+
+  /**
+   * clears the dialog
+   */
+  void clear();
 
 public slots:
   void slotAddTool();

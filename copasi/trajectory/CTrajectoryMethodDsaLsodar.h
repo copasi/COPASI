@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -182,14 +187,14 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  bool elevateChildren() override;
 
   /**
    * Inform the trajectory method that the state has changed outside
    * its control
    * @param const CMath::StateChange & change
    */
-  virtual void stateChange(const CMath::StateChange & change);
+  void stateChange(const CMath::StateChange & change) override;
 
   /**
    *  This instructs the method to calculate a time step of deltaT
@@ -201,29 +206,29 @@ public:
    *  @param const bool & final (default: false)
    *  @return Status status
    */
-  virtual Status step(const double & deltaT, const bool & final = false);
+  Status step(const double & deltaT, const bool & final = false) override;
 
   /**
    *  This instructs the method to prepare for integration
    *  starting with the initialState given.
    */
-  virtual void start();
+  void start() override;
 
   /**
    *  This evaluates the derivatives
    */
-  virtual void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot);
+  void evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot) override;
 
   /**
    *  This evaluates the roots
    */
-  virtual void evalR(const C_FLOAT64 * t, const C_FLOAT64 * y, const C_INT * nr, C_FLOAT64 * r);
+  void evalR(const C_FLOAT64 * t, const C_FLOAT64 * y, const C_INT * nr, C_FLOAT64 * r) override;
 
   /**
   * Check if the method is suitable for this problem
   * @return bool suitability of the method
   */
-  virtual bool isValidProblem(const CCopasiProblem * pProblem);
+  bool isValidProblem(const CCopasiProblem * pProblem) override;
 
   /* PROTECTED METHODS *******************************************************/
 

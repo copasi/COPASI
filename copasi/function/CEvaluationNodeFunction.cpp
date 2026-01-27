@@ -1171,7 +1171,7 @@ CEvaluationNode * CEvaluationNodeFunction::fromAST(const ASTNode * pASTNode, con
   if (!children.empty())
     {
       int maxChildren =
-        allowN ? children.size() : allowTwo ? 2
+        allowN ? (int)children.size() : allowTwo ? 2
                                             : 1;
 
       for (int i = 0; i < maxChildren; ++i)
@@ -1442,6 +1442,7 @@ ASTNode * CEvaluationNodeFunction::toAST(const CDataModel * pDataModel, int sbml
           }
       }
       break;
+    default:
       // :TODO: Bug 894: Implement me.
       //fatalError();
       break;
@@ -1789,6 +1790,9 @@ std::string CEvaluationNodeFunction::getMMLString(const std::vector< std::string
 
       case SubType::NOT:
         data = "!";
+        break;
+
+      default:
         break;
     }
 

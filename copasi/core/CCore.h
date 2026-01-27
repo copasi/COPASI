@@ -15,6 +15,10 @@
 
 #include <copasi/config.h>
 
+#ifdef max
+#    undef max
+#endif
+
 #define C_INVALID_INDEX (std::numeric_limits< size_t >::max())
 
 #if (defined SunOS || defined __CYGWIN__ || defined Darwin || defined __MINGW32__ || defined __MINGW64__)

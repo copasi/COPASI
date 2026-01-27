@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -26,6 +26,7 @@
 
 YACC="$1"
 PATH=$PATH:/bin:/usr/bin:/usr/local/bin
+SED=${COPASI_SED:-sed}
 
 for arg in $@; do
   SOURCE_FILE=$arg
@@ -48,14 +49,14 @@ ${YACC} -dt -b $FILE_PREFIX -p $FILE_PREFIX $SOURCE_FILE
 [ -e $FILE_PREFIX.tab.cpp ] && mv $FILE_PREFIX.tab.cpp ${TARGET_FILE_C}
 [ -e $FILE_PREFIX.tab.hpp ] && mv $FILE_PREFIX.tab.hpp ${TARGET_FILE_H}
 
-sed -e 's/'$FILE_PREFIX'parse/yyparse/g' \
-    -e '/#define yylex/d' \
-    -e '/int yyparse (.*);/d' \
-    -e 's/'$FILE_PREFIX'.tab.cpp/'$TARGET_FILE_C'/g' \
-    -e 's/'$FILE_PREFIX'.tab.hpp/'$TARGET_FILE_H'/g' \
-    -e 's/int yydebug;/int yydebug = YYDEBUG;/' \
-    -e '/getenv()/d' \
-    ${TARGET_FILE_C} > $$.tmp && \
+${SED} -e 's/'$FILE_PREFIX'parse/yyparse/g' \
+       -e '/#define yylex/d' \
+       -e '/int yyparse (.*);/d' \
+       -e 's/'$FILE_PREFIX'.tab.cpp/'$TARGET_FILE_C'/g' \
+       -e 's/'$FILE_PREFIX'.tab.hpp/'$TARGET_FILE_H'/g' \
+       -e 's/int yydebug;/int yydebug = YYDEBUG;/' \
+       -e '/getenv()/d' \
+       ${TARGET_FILE_C} > $$.tmp && \
 mv $$.tmp ${TARGET_FILE_C}
 
 if [ x`uname -a | grep -ic cygwin` = x"1" ]; then

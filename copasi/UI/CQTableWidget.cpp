@@ -1,4 +1,4 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,7 +17,11 @@ void CQTableWidget::dropEvent(QDropEvent* pEvent)
   if (pEvent->source() != this)
     return;
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   int newRow = this->indexAt(pEvent->pos()).row();
+#else
+  int newRow = this->indexAt(pEvent->position().toPoint()).row();
+#endif
 
   QTableWidgetItem* selectedItem;
   QList<QTableWidgetItem*> selectedItems = this->selectedItems();
@@ -50,9 +54,8 @@ void CQTableWidget::dropEvent(QDropEvent* pEvent)
     this->setItem(currentNewRow, column, selectedItem);
   }
 
-  for (i = deleteRows.count() - 1; i >= 0; --i)
+  for (i = (int)deleteRows.count() - 1; i >= 0; --i)
     {
       this->removeRow(deleteRows.at(i));
     }
-
 }

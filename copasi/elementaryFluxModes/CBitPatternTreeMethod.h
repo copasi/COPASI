@@ -112,13 +112,13 @@ public:
    * of its progress by the callback function set with SetCallback.
    * @ return success;
    */
-  virtual bool calculate();
+  bool calculate() override;
 
   /**
    * Initialize arrays and pointer.
    * @return bool success
    */
-  virtual bool initialize();
+  bool initialize() override;
 
 private:
   /**

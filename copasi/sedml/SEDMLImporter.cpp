@@ -436,8 +436,6 @@ void SEDMLImporter::importOutputs()
 
   std::map< const CDataObject *, SBase * > & copasiMap = pModel->getObjectDataModel()->getCopasi2SBMLMap();
 
-  CReportDefinitionVector * pReports = mpDataModel->getReportDefinitionList();
-
   for (i = 0; i < numOutput; ++i)
     {
       SedOutput * current = pSEDMLDocument->getOutput(i);
@@ -1289,6 +1287,7 @@ void SEDMLImporter::importTask(
                   {
                     Formula = pFormula;
                     free(pFormula);
+                    pFormula = nullptr;
                   }
 
                 if (Formula != sv->getRange())

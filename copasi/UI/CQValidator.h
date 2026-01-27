@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -54,7 +54,7 @@ public:
     mSavedColor.getHsv(&h, &s, &v);
 
     if (s < 20) s = 20;
-      
+
     if (isDarkMode())
     {
         s = 128;
@@ -80,7 +80,7 @@ public:
   virtual State revalidate()
   {
     QString Input = (*mpContainer.*mRetrieve)();
-    int Pos = Input.length();
+    int Pos = (int)Input.length();
 
     return validate(Input, Pos);
   }

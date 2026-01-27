@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -65,8 +65,8 @@ CLsodaMethod::CLsodaMethod(const CDataContainer * pParent,
   mIWork(),
   mJType(),
   mRootMask(),
-  mDiscreteRoots(),
-  mRootMasking(CLsodaMethod::NONE),
+  mUseExternalRootFinder(false),
+  mRootMasking(RootMask::DISCRETE),
   mTargetTime(),
   mRootCounter(0),
   mPeekAheadMode(false)
@@ -102,7 +102,7 @@ CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
   mIWork(src.mIWork),
   mJType(src.mJType),
   mRootMask(src.mRootMask),
-  mDiscreteRoots(),
+  mUseExternalRootFinder(src.mUseExternalRootFinder),
   mRootMasking(src.mRootMasking),
   mTargetTime(src.mTargetTime),
   mRootCounter(src.mRootCounter),
@@ -115,12 +115,7 @@ CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
 }
 
 CLsodaMethod::~CLsodaMethod()
-{
-  if (mRootsFound.array() != NULL)
-    {
-      delete [] mRootsFound.array();
-    }
-}
+{}
 
 void CLsodaMethod::initializeParameter()
 {
@@ -245,7 +240,8 @@ void CLsodaMethod::stateChange(const CMath::StateChange & change)
         }
 
       mpContainer->updateSimulatedValues(*mpReducedModel);
-      setRootMaskType(NONE);
+      mRootMasking = RootMask::DISCRETE;
+      mRootMask.setType(mRootMasking);
     }
 }
 
@@ -296,7 +292,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
 
   mLastSuccessState = mContainerState;
 
-  if (mRootsFound.size() > 0)
+  if (mNumRoots > 0)
     {
       if (mSavedState.Status != FAILURE)
         {
@@ -305,6 +301,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
           if (StartTime < SavedTime && SavedTime <= mTargetTime)
             {
               resetState(mSavedState);
+              mpContainer->updateSimulatedValues(*mpReducedModel);
+              mpContainer->updateRootValues(*mpReducedModel);
 
               if (mTask == 5)
                 {
@@ -317,7 +315,8 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
             }
         }
 
-      if (mLsodaStatus != 3)
+      if (mLsodaStatus != 3
+          && mTime != mTargetTime)
         {
           mLSODAR(&EvalF, //  1. evaluate F
                   &mData.dim, //  2. number of variables
@@ -352,13 +351,19 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
           // std::cout << "mIWork = " << mIWork << std::endl;
 #endif // DEBUG_FLOW
 
-          if (mLsodaStatus == 3)
+          if (mLsodaStatus == 3
+              && mLastRootState.Status == ROOT)
             {
-              if (mLastRootState.Status == ROOT &&
-                  mLastRootState.RootsFound == mRootsFound &&
-                  (fabs(mTime - StartTime) < 50.0 * (fabs(mTime) + fabs(StartTime)) * std::numeric_limits< C_FLOAT64 >::epsilon() ||
-                   (fabs(mTime - mLastRootState.ContainerState[mpContainer->getCountFixedEventTargets()]) < 50.0 * (fabs(mTime) + fabs(mLastRootState.ContainerState[mpContainer->getCountFixedEventTargets()])) * std::numeric_limits< C_FLOAT64 >::epsilon() &&
-                    !hasStateChanged(mLastRootState.ContainerState))))
+#ifdef DEBUG_FLOW
+              std::cout << "LastRootsFound = " << mLastRootState.RootsFound << std::endl;
+              std::cout << fabs(mTime - StartTime) << ", " << 100.0 * (fabs(mTime) + fabs(StartTime)) * std::numeric_limits< C_FLOAT64 >::epsilon() << std::endl;
+              std::cout << fabs(mTime - mLastRootState.ContainerState[mpContainer->getCountFixedEventTargets()]) << ", " << 100.0 * (fabs(mTime) + fabs(mLastRootState.ContainerState[mpContainer->getCountFixedEventTargets()])) * std::numeric_limits< C_FLOAT64 >::epsilon() << std::endl;
+#endif // DEBUG_FLOW
+
+              if (fabs(mTime - StartTime) < 100.0 * (fabs(mTime) + fabs(StartTime)) * std::numeric_limits< C_FLOAT64 >::epsilon()
+                  && (fabs(mTime - mLastRootState.ContainerState[mpContainer->getCountFixedEventTargets()]) < 100.0 * (fabs(mTime) + fabs(mLastRootState.ContainerState[mpContainer->getCountFixedEventTargets()])) * std::numeric_limits< C_FLOAT64 >::epsilon()
+                  && !hasStateChanged(mLastRootState)
+                  && !haveRootsChanged(mLastRootState)))
                 {
                   mLsodaStatus = -33;
                   mRootCounter = 0;
@@ -437,7 +442,10 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
 #ifdef DEBUG_FLOW
       else
         {
-          std::cout << "Continuing with root found by peek ahead." << std::endl;
+          std::cout << "Continuing with state found by peek ahead." << std::endl;
+          std::cout << "mTime = " << mTime << ", EndTime = " << EndTime << ", mTask = " << mTask << ", mLsodaStatus = " << mLsodaStatus << ", mRootCounter = " << mRootCounter << std::endl;
+          std::cout << "mRootsFound = " << mRootsFound << std::endl;
+          std::cout << "Roots = " << mpContainer->getRoots() << std::endl;
         }
 
 #endif // DEBUG_FLOW
@@ -465,17 +473,14 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
 #endif // DEBUG_FLOW
 
             {
-              CVector< C_INT > CurrentMask = mRootMask;
-              setRootMaskType(ALL);
+              CRootMask CurrentMask = mRootMask;
+              mRootMasking = RootMask::ALL;
+              mRootMask.create(mRootMasking, mRootsFound);
 
               if (CurrentMask == mRootMask)
-                {
-                  Status = FAILURE;
-                }
+                Status = FAILURE;
               else
-                {
-                  return step(deltaT);
-                }
+                return step(deltaT);
             }
 
             break;
@@ -489,9 +494,10 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
                 saveState(mLastRootState, ROOT);
               }
 
-            if (mRootMasking != NONE)
+            if (mRootMasking != RootMask::DISCRETE)
               {
-                setRootMaskType(NONE);
+                mRootMasking = RootMask::DISCRETE;
+                mRootMask.setType(mRootMasking);
               }
 
             // To detect simultaneous roots we have to peek ahead, i.e., continue
@@ -521,21 +527,27 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
             break;
 
           default:
-
             // We made a successful step and therefore invalidate the last root state
-            mLastRootState.Status = FAILURE;
-
-            switch (mRootMasking)
+            // Not so fast we may have continuous roots which remain 0
+            if (mLastRootState.Status == ROOT
+                && mRootMasking == RootMask::ALL)
               {
-                case NONE:
-                  break;
+                mRootMasking = RootMask::DISCRETE;
 
-                case DISCRETE:
-                case ALL:
-                  setRootMaskType(NONE);
-                  break;
+                if (mRootMask.adjust(mRootMasking, mLastRootState.RootsFound))
+                  {
+                    mLastRootState.Status = FAILURE;
+
+                    if (!mUseExternalRootFinder)
+                      {
+                        // removing the masking may result in a change of sign for the roots leading to LSODAR finding a root a the start
+                        // we must update LSODA's internal root values.
+                        CVector< C_FLOAT64 > Roots = mpContainer->getRoots();
+                        mRootMask.apply(Roots);
+                        mLSODAR.updateMaskedRootValues(Roots, mDWork.array());
+                      }
+                  }
               }
-
             break;
         }
     }
@@ -623,15 +635,9 @@ void CLsodaMethod::start()
 
   mNumRoots = (C_INT) mpContainer->getRoots().size();
 
-  if (mRootsFound.array() != NULL)
-    {
-      delete [] mRootsFound.array();
-    }
-
-  mRootsFound.initialize(mNumRoots, new C_INT[mNumRoots]);
+  mRootsFoundInternal.resize(mNumRoots);
+  mRootsFound.initialize(mRootsFoundInternal);
   mRootsFound = 0;
-
-  destroyRootMask();
 
   mAtol = mpContainer->initializeAtolVector(*mpAbsoluteTolerance, *mpReducedModel);
 
@@ -656,8 +662,16 @@ void CLsodaMethod::start()
 
   if (mNumRoots > 0)
     {
+      mRootMask.setMathContainer(mpContainer);
+      mRootMask.setTolerance(*mpRelativeTolerance);
+      mRootMasking = RootMask::DISCRETE;
+      mRootMask.create(mRootMasking);
+
       mLSODAR.setOstream(mErrorMsg);
-      mDiscreteRoots.initialize(mpContainer->getRootIsDiscrete());
+
+      if (mUseExternalRootFinder)
+        mLSODAR.initializeExternalRootFinder(*mpRelativeTolerance, mRootMask);
+
       mLastRootState.ContainerState.resize(mContainerState.size());
       mLastRootState.ContainerState = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
       mLastRootState.Status = FAILURE;
@@ -710,9 +724,9 @@ void CLsodaMethod::evalR(const C_FLOAT64 * t, const C_FLOAT64 *  /* y */,
   std::cout << "Roots: " << RootValues << std::endl;
 #endif // DEBUG_OUTPUT
 
-  if (mRootMasking != NONE)
+  if (!mUseExternalRootFinder)
     {
-      maskRoots(RootValues);
+      mRootMask.apply(RootValues);
     }
 
 #ifdef DEBUG_NUMERICS
@@ -730,118 +744,6 @@ void CLsodaMethod::evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
                          const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
 {
   // TODO Implement me.
-}
-
-void CLsodaMethod::maskRoots(CVectorCore< C_FLOAT64 > & rootValues)
-{
-  const C_INT *pMask = mRootMask.array();
-  const C_INT *pMaskEnd = pMask + mRootMask.size();
-  C_FLOAT64 * pRoot = rootValues.array();
-
-  for (; pMask != pMaskEnd; ++pMask, ++pRoot)
-    switch (*pMask)
-      {
-        case -1:
-          *pRoot = -1.0;
-          break;
-
-        case 1:
-          *pRoot = 1.0;
-          break;
-
-        default:
-          break;
-      }
-}
-
-void CLsodaMethod::setRootMaskType(const CLsodaMethod::eRootMasking & maskType)
-{
-  if (maskType == ALL)
-    {
-      createRootMask();
-      return;
-    }
-
-  if (mRootMasking == NONE) return;
-
-  mRootMask.resize(mNumRoots);
-
-  // We assume that the simulated values are up to date
-  mpContainer->updateRootValues(*mpReducedModel);
-
-  const bool * pDiscrete = mDiscreteRoots.array();
-  C_INT * pMask = mRootMask.begin();
-  C_INT * pMaskEnd = mRootMask.end();
-  const C_FLOAT64 * pRootValue = mpContainer->getRoots().begin();
-  mRootMasking = NONE;
-
-  for (; pMask != pMaskEnd; ++pMask, ++pDiscrete, ++pRootValue)
-    {
-      if (*pMask)
-        {
-          if (fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::min())
-            {
-              if (mRootMasking != ALL)
-                {
-                  mRootMasking = *pDiscrete ? DISCRETE : ALL;
-                }
-            }
-          else
-            {
-              *pMask = 0;
-            }
-        }
-    }
-
-#ifdef DEBUG_NUMERICS
-  std::cout << "Root Values:          " << mpContainer->getRoots() << std::endl;
-  std::cout << "Root Discrete:        " << mpContainer->getRootIsDiscrete() << std::endl;
-  std::cout << "Root Mask:            " << mRootMask << std::endl;
-#endif // DEBUG_NUMERICS
-}
-
-void CLsodaMethod::createRootMask()
-{
-  size_t NumRoots = mRootsFound.size();
-  mRootMask.resize(NumRoots);
-  CVector< C_FLOAT64 > RootValues;
-  RootValues.resize(NumRoots);
-  CVector< C_FLOAT64 > RootDerivatives;
-  RootDerivatives.resize(NumRoots);
-
-  mpContainer->updateRootValues(*mpReducedModel);
-  RootValues = mpContainer->getRoots();
-  mpContainer->calculateRootDerivatives(RootDerivatives);
-
-  C_INT * pMask = mRootMask.begin();
-  C_INT * pMaskEnd = mRootMask.end();
-  C_INT * pRootFound = mRootsFound.begin();
-  C_FLOAT64 * pRootValue = RootValues.begin();
-  C_FLOAT64 * pRootDerivative = RootDerivatives.begin();
-  const bool * pIsDiscrete = mpContainer->getRootIsDiscrete().begin();
-
-  for (; pMask != pMaskEnd; ++pMask, ++pRootValue, ++pRootDerivative, ++pRootFound, ++pIsDiscrete)
-    {
-      *pMask = (fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::min() ||
-//                (fabs(*pRootDerivative) < *mpAbsoluteTolerance && !*pIsDiscrete) ||
-                (*pRootFound > 0 && *pRootDerivative * *pRootValue < 0 && fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::epsilon())) ? (*pRootValue < 0 ? -1 : 1) : 0;
-    }
-
-#ifdef DEBUG_NUMERICS
-  std::cout << "Roots Found:          " << mRootsFound << std::endl;
-  std::cout << "Root Values:          " << RootValues << std::endl;
-  std::cout << "Root Derivatives:     " << RootDerivatives << std::endl;
-  std::cout << "Root Discrete:        " << mpContainer->getRootIsDiscrete() << std::endl;
-  std::cout << "Root Mask:            " << mRootMask << std::endl;
-#endif // DEBUG_NUMERICS
-
-  mRootMasking = ALL;
-}
-
-void CLsodaMethod::destroyRootMask()
-{
-  mRootMask = false;
-  mRootMasking = NONE;
 }
 
 CTrajectoryMethod::Status CLsodaMethod::peekAhead()
@@ -872,7 +774,7 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
         {
           case NORMAL:
 
-            if (hasStateChanged(StartState.ContainerState))
+            if (hasStateChanged(StartState))
               {
                 // If we are here we are certain that the state has sufficiently changed.
                 mPeekAheadMode = false;
@@ -911,15 +813,15 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
                 // to continue with the previous state.
 
                 // Remove masked roots from the result set
-                const C_INT * pMask = mRootMask.array();
-                const C_INT * pMaskEnd = pMask + mRootMask.size();
+                const RootMask * pMask = mRootMask.begin();
+                const RootMask * pMaskEnd = mRootMask.end();
                 C_INT * pCombinedRoot = CombinedRootsFound.array();
 
                 PeekAheadStatus = NORMAL;
 
                 for (; pMask != pMaskEnd; ++pMask, ++pCombinedRoot)
                   {
-                    if (*pMask)
+                    if (*pMask != RootMask::NONE)
                       {
                         *pCombinedRoot = 0;
                       }
@@ -938,7 +840,7 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
           case ROOT:
           {
             // Check whether the new state is within the tolerances
-            if (hasStateChanged(StartState.ContainerState))
+            if (hasStateChanged(StartState))
               {
                 // If we are here we are certain that the state has sufficiently changed.
                 mPeekAheadMode = false;
@@ -971,7 +873,8 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
 
                 if (!FoundNewRoot)
                   {
-                    setRootMaskType(ALL);
+                    mRootMasking = RootMask::DISCRETE;
+                    mRootMask.setType(mRootMasking);
                   }
 
                 mRootsFound = CombinedRootsFound;
@@ -1005,17 +908,17 @@ CTrajectoryMethod::Status CLsodaMethod::peekAhead()
   return PeekAheadStatus;
 }
 
-bool CLsodaMethod::hasStateChanged(const CVectorCore< C_FLOAT64 > & startState) const
+bool CLsodaMethod::hasStateChanged(const CLsodaMethod::State & startState) const
 {
   // Check whether we are at the start of the integrations, i.e., the start state time is NaN.
-  if (std::isnan(startState[mpContainer->getCountFixedEventTargets()]))
+  if (std::isnan(startState.ContainerState[mpContainer->getCountFixedEventTargets()]))
     {
       return true;
     }
 
   // Check whether the new state is within the tolerances
-  const C_FLOAT64 * pOld = startState.array();
-  const C_FLOAT64 * pOldEnd = pOld + startState.size();
+  const C_FLOAT64 * pOld = startState.ContainerState.begin();
+  const C_FLOAT64 * pOldEnd = startState.ContainerState.end();
   const C_FLOAT64 * pNew = mContainerState.array();
   const C_FLOAT64 * pAtol = mAtol.array();
 
@@ -1031,6 +934,21 @@ bool CLsodaMethod::hasStateChanged(const CVectorCore< C_FLOAT64 > & startState) 
 
   return false;
 }
+
+bool CLsodaMethod::haveRootsChanged(const CLsodaMethod::State & startState) const
+{
+  // Check whether new roots where found
+  const C_INT * pOldRoot = startState.RootsFound.begin();
+  const C_INT * pOldRootEnd = startState.RootsFound.end();
+  const C_INT * pFound = mRootsFound.begin();
+
+  for (; pOldRoot != pOldRootEnd; ++pOldRoot, ++pFound)
+    if (*pFound > *pOldRoot)
+      return true;
+
+  return false;
+}
+
 void CLsodaMethod::saveState(CLsodaMethod::State & state, const CTrajectoryMethod::Status & status) const
 {
   *mpContainerStateTime = mTime;
@@ -1039,7 +957,7 @@ void CLsodaMethod::saveState(CLsodaMethod::State & state, const CTrajectoryMetho
   state.DWork = mDWork;
   state.IWork = mIWork;
   state.RootsFound = mRootsFound;
-  state.RootMask = mRootMask;
+  state.RootMask_ = mRootMask;
   state.RootMasking = mRootMasking;
   state.Status = status;
 
@@ -1055,7 +973,7 @@ void CLsodaMethod::resetState(CLsodaMethod::State & state)
   mDWork = state.DWork;
   mIWork = state.IWork;
   mRootsFound = state.RootsFound;
-  mRootMask = state.RootMask;
+  mRootMask = state.RootMask_;
   mRootMasking = state.RootMasking;
 
   mLSODAR.resetState(state.LsodaState);

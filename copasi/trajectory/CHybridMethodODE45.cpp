@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -114,10 +114,9 @@ CHybridMethodODE45::CHybridMethodODE45(const CDataContainer * pParent,
   mFireReaction(false),
   mRootMask(),
   mDiscreteRoots(),
-  mRootMasking(NONE),
+  mRootMasking(RootMask::NONE),
   mRootValuesLeft(),
   mRootValuesRight(),
-  mRootsNonZero(),
   mpRandomGenerator(NULL),
   mOutputFile(),
   mOutputFileName(),
@@ -171,10 +170,9 @@ CHybridMethodODE45::CHybridMethodODE45(const CHybridMethodODE45 & src,
   mFireReaction(false),
   mRootMask(),
   mDiscreteRoots(),
-  mRootMasking(NONE),
+  mRootMasking(RootMask::NONE),
   mRootValuesLeft(),
   mRootValuesRight(),
-  mRootsNonZero(),
   mpRandomGenerator(NULL),
   mOutputFile(),
   mOutputFileName(),
@@ -196,12 +194,7 @@ CHybridMethodODE45::CHybridMethodODE45(const CHybridMethodODE45 & src,
  * Destructor.
  */
 CHybridMethodODE45::~CHybridMethodODE45()
-{
-  if (mRootsFound.array() != NULL)
-    {
-      delete [] mRootsFound.array();
-    }
-}
+{}
 
 //================Function for System================
 
@@ -293,6 +286,7 @@ void CHybridMethodODE45::start()
   if (mIntegrationType == HYBRID)
     {
       mData.dim += mSlowReactions.size();
+      mNextReactionRootCalculator = std::bind(&CHybridMethodODE45::calculateNextReactionRoot, this);
     }
 
   mY.resize(mData.dim);
@@ -326,34 +320,15 @@ void CHybridMethodODE45::start()
   //(7)----set attributes for Event Roots
   mRootValuesLeft.resize(mpContainer->getRoots().size());
   mRootValuesRight.initialize(mpContainer->getRoots());
-  mRootsNonZero.resize(mpContainer->getRoots().size());
-  mRootsNonZero = 0.0;
-
-  if (mRootsFound.array() != NULL)
-    {
-      delete [] mRootsFound.array();
-    }
-
-  size_t NumRoots = mpContainer->getRoots().size();
-
-  mRootsFound.initialize(NumRoots, new C_INT[NumRoots]);
-
-  if (mIntegrationType == HYBRID)
-    {
-      mMethodRootsFound.resize(mpContainer->getRoots().size() + 1);
-      mpHybridRoot = mMethodRootsFound.array() + mpContainer->getRoots().size();
-    }
-  else
-    {
-      mMethodRootsFound.resize(mpContainer->getRoots().size());
-      mpHybridRoot = NULL;
-    }
-
-  mRootsFound = 0;
-  mMethodRootsFound = 0;
 
   mDiscreteRoots.initialize(mpContainer->getRootIsDiscrete());
-  mRootMasking    = NONE;
+
+  mRootMask.setMathContainer(mpContainer);
+  mRootMasking = RootMask::DISCRETE;
+  mRootMask.create(mRootMasking);
+
+  mRootFinder.initialize(*mpRelativeTolerance, mRootMask);
+
   mRKMethodStatus = CRungeKutta::INITIALIZE;
 
   return;
@@ -482,14 +457,7 @@ void CHybridMethodODE45::partitionSystem()
  */
 void CHybridMethodODE45::determineIntegrationType()
 {
-  if (mHasStoiReaction)
-    {
-      mIntegrationType = HYBRID;
-    }
-  else
-    {
-      mIntegrationType = DETERMINISTIC;
-    }
+  mIntegrationType = mHasStoiReaction ? HYBRID : DETERMINISTIC;
 
   return;
 }
@@ -632,59 +600,13 @@ void CHybridMethodODE45::fireReaction()
   mpContainer->updateRootValues(false);
 
   destroyRootMask();
-  mEventProcessing = checkRoots();
+
+  mEventProcessing = mRootFinder.checkRoots(mRootValuesLeft, mRootValuesRight, mRootMasking) == CRootFinder::ReturnStatus::RootFound;
+  mRootsFound.initialize(mRootFinder.getToggledRoots());
+
   mRKMethodStatus = CRungeKutta::RESTART;
 
   return;
-}
-
-/**
- * Check whether a root has been found
- */
-bool CHybridMethodODE45::checkRoots()
-{
-  bool hasRoots = false;
-
-  C_FLOAT64 *pRootValueOld = mRootValuesLeft.array();
-  C_FLOAT64 *pRootValueNew = mRootValuesRight.array();
-  C_FLOAT64 *pRootNonZero = mRootsNonZero.array();
-
-  C_INT *pRootFound    = mRootsFound.array();
-  C_INT *pRootFoundEnd    = pRootFound + mRootsFound.size();
-
-  const bool * pIsDiscrete = mpContainer->getRootIsDiscrete().array();
-  const bool * pIsTimeDependent = mpContainer->getRootIsTimeDependent().array();
-
-  for (; pRootFound != pRootFoundEnd; pRootValueOld++, pRootValueNew++, pRootFound++, pRootNonZero++, pIsDiscrete++, pIsTimeDependent++)
-    {
-      if (*pRootValueOld **pRootValueNew < 0.0 ||
-          (*pRootValueNew == 0.0 && *pIsTimeDependent && !*pIsDiscrete))
-        {
-          // These root changes are not caused by the time alone as those are handled in do single step.
-          hasRoots = true;
-          *pRootFound = static_cast< C_INT >(CMath::RootToggleType::ToggleBoth);
-        }
-      else if (*pRootValueNew == 0.0 &&
-               *pRootValueOld != 0.0)
-        {
-          hasRoots = true;
-          *pRootFound = static_cast< C_INT >(CMath::RootToggleType::ToggleEquality); // toggle only equality
-          *pRootNonZero = *pRootValueOld;
-        }
-      else if (*pRootValueNew != 0.0 &&
-               *pRootValueOld == 0.0 &&
-               *pRootValueNew **pRootNonZero < 0.0)
-        {
-          hasRoots = true;
-          *pRootFound = static_cast< C_INT >(CMath::RootToggleType::ToggleInequality); // toggle only inequality
-        }
-      else
-        {
-          *pRootFound = static_cast< C_INT >(CMath::RootToggleType::NoToggle);
-        }
-    }
-
-  return hasRoots;
 }
 
 //========Function for ODE45========
@@ -741,9 +663,21 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
     }
 
   //5----do integration
-  mRKMethodStatus = mODE45(&mData.dim, mY.array(), mpContainerStateTime, &endTime,
-                           mMethodRootsFound.size(), mMethodRootsFound.array(), mRKMethodStatus, mpProblem->getAutomaticStepSize(),
-                           mpRelativeTolerance, mpAbsoluteTolerance, mpMaxInternalSteps, EvalF, EvalR);
+  mRKMethodStatus = mODE45(&mData.dim, mY.array(),
+                           mpContainerStateTime,
+                           &endTime,
+                           mRootMask.size(),
+                           mRootsFound,
+                           mRootMask,
+                           mRKMethodStatus,
+                           mpProblem->getAutomaticStepSize(),
+                           mpRelativeTolerance,
+                           mpAbsoluteTolerance,
+                           mpMaxInternalSteps,
+                           EvalF,
+                           EvalR,
+                           mNextReactionRootCalculator,
+                           &mFireReaction);
 
   //6----check status
   if (mRKMethodStatus == CRungeKutta::ERROR)
@@ -757,8 +691,8 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
         {
           switch (mRootMasking)
             {
-              case NONE:
-              case DISCRETE:
+              case RootMask::NONE:
+              case RootMask::DISCRETE:
                 mRKMethodStatus = CRungeKutta::RESTART;
 
                 mLastSuccessState = mContainerState;
@@ -768,22 +702,19 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
 
                 break;
 
-              case ALL:
+              case RootMask::ALL:
                 break;
             }
         }
 
       // We need to determine whether we have a slow reaction event or
       // another event or both.
-      mFireReaction = (mpHybridRoot != NULL && *mpHybridRoot != 0);
-
       mEventProcessing = false;
-      memcpy(mRootsFound.array(), mMethodRootsFound.array(), mRootsFound.size() * sizeof(C_INT));
 
       C_INT * pRootFound = mRootsFound.array();
       C_INT * pRootFoundEnd = pRootFound + mRootsFound.size();
 
-      for (; pRootFound != pRootFoundEnd; ++pRootFound)
+      for (; pRootFound != pRootFoundEnd && !mEventProcessing; ++pRootFound)
         if (*pRootFound != 0)
           {
             mEventProcessing = true;
@@ -794,33 +725,33 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
     {
       switch (mRootMasking)
         {
-          case NONE:
-          case DISCRETE:
+          case RootMask::NONE:
+          case RootMask::DISCRETE:
             break;
 
-          case ALL:
+          case RootMask::ALL:
           {
             const bool *pDiscrete = mDiscreteRoots.array();
-            bool *pMask = mRootMask.array();
-            bool const * const pMaskEnd = pMask + mRootMask.size();
+            RootMask * pMask = mRootMask.begin();
+            RootMask * pMaskEnd = mRootMask.end();
 
             bool destroy = true;
 
             for (; pMask != pMaskEnd; ++pMask, ++pDiscrete)
               {
-                if (*pMask)
+                if (*pMask != RootMask::NONE)
                   {
                     if (*pDiscrete)
                       destroy = false;
                     else
-                      *pMask = false;
+                      *pMask = RootMask::NONE;
                   }
               }
 
             if (destroy)
               destroyRootMask();
             else
-              mRootMasking = DISCRETE;
+              mRootMasking = RootMask::DISCRETE;
 
             if (mRKMethodStatus != CRungeKutta::ERROR) //&& (mRKMethodStatus != SYS_EVENT))
               mRKMethodStatus = CRungeKutta::RESTART;
@@ -921,45 +852,27 @@ void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
 
   mpContainer->updateRootValues(false);
 
-  CVectorCore< C_FLOAT64 > RootValues;
-
-  if (mIntegrationType == HYBRID)
-    {
-      RootValues.initialize(*nr - 1, r);
-
-      C_FLOAT64 * pHybridRoot = r + (*nr - 1);
-
-      const C_FLOAT64 * pAmu = y + mCountContainerVariables;
-      const C_FLOAT64 * pAmuEnd = pAmu + mAmuPointers.size();
-
-      *pHybridRoot = mA0;
-
-      for (; pAmu != pAmuEnd; ++pAmu)
-        {
-          *pHybridRoot -= *pAmu;
-        }
-    }
-  else
-    {
-      RootValues.initialize(*nr, r);
-    }
-
+  CVectorCore< C_FLOAT64 > RootValues(*nr, r);
   RootValues = mpContainer->getRoots();
 
-#ifdef DEBUG_OUTPUT
-  std::cout << "evalR Roots: " << CVectorCore< const C_FLOAT64 >(*nr, r) << std::endl;
-#endif // DEBUG_OUTPUT
+  mNextReactionRoot = mA0;
 
-  if (mRootMasking != NONE)
-    {
-      maskRoots(RootValues);
-    }
+  const C_FLOAT64 * pAmu = y + mCountContainerVariables;
+  const C_FLOAT64 * pAmuEnd = pAmu + mAmuPointers.size();
+
+  for (; pAmu != pAmuEnd; ++pAmu)
+    mNextReactionRoot -= *pAmu;
 
 #ifdef DEBUG_OUTPUT
-  std::cout << "evalR Roots: " << CVectorCore< const C_FLOAT64 >(*nr, r) << std::endl;
+  std::cout << "evalR Roots: " << mNextReactionRoot << "\t" << RootValues << std::endl;
 #endif // DEBUG_OUTPUT
 
   return;
+}
+
+C_FLOAT64 CHybridMethodODE45::calculateNextReactionRoot() const
+{
+  return mNextReactionRoot;
 }
 
 /**
@@ -968,15 +881,14 @@ void CHybridMethodODE45::evalR(const C_FLOAT64 *t, const C_FLOAT64 *y,
 CMathReaction * CHybridMethodODE45::getReactionToFire()
 {
   // calculate the sum of the integrated propensities
-  C_FLOAT64 * pAmu = mAmuVariables.array();
-  C_FLOAT64 * pAmuEnd = pAmu + mAmuVariables.size();
+  C_FLOAT64 * pAmu = mAmuVariables.begin();
+  C_FLOAT64 * pAmuEnd = mAmuVariables.end();
 
   //get the threshold
   C_FLOAT64 A0 = mA0 * mpRandomGenerator->getRandomOO();
 
   //get the reaction index
   CMathReaction ** ppSlowReaction = mSlowReactions.array();
-  pAmu = mAmuVariables.array();
 
   for (; pAmu != pAmuEnd; ++pAmu, ++ppSlowReaction)
     {
@@ -996,56 +908,18 @@ CMathReaction * CHybridMethodODE45::getReactionToFire()
   return *(--ppSlowReaction);
 }
 
-//========Root Masking========
-void CHybridMethodODE45::maskRoots(CVectorCore<C_FLOAT64 > & rootValues)
-{
-  const bool *pMask    = mRootMask.array();
-  const bool *pMaskEnd = pMask + mRootMask.size();
-
-  C_FLOAT64 *pRoot = rootValues.array();
-
-  for (; pMask != pMaskEnd; ++pMask, ++pRoot)
-    {
-      if (*pMask)
-        *pRoot = 1.0;
-    }
-
-  return;
-}
-
 void CHybridMethodODE45::createRootMask()
 {
   double absoluteTolerance = 1.e-12;
-
-  size_t NumRoots = mRootsFound.size();
-  mRootMask.resize(NumRoots);
-  CVector< C_FLOAT64 > RootValues;
-  RootValues.resize(NumRoots);
-  CVector< C_FLOAT64 > RootDerivatives;
-  RootDerivatives.resize(NumRoots);
-
-  mpContainer->updateRootValues(false);
-  RootValues = mpContainer->getRoots();
-  mpContainer->calculateRootDerivatives(RootDerivatives);
-
-  bool *pMask = mRootMask.array();
-  bool *pMaskEnd = pMask + mRootMask.size();
-  C_FLOAT64 * pRootValue = RootValues.array();
-  C_FLOAT64 * pRootDerivative = RootDerivatives.array();
-
-  for (; pMask != pMaskEnd; ++pMask, ++pRootValue, ++pRootDerivative)
-    {
-      *pMask = (fabs(*pRootDerivative) < absoluteTolerance ||
-                fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::min()) ? true : false;
-    }
-
-  mRootMasking = ALL;
+  mRootMask.setTolerance(absoluteTolerance);
+  mRootMask.create(RootMask::ALL);
+  mRootMasking = RootMask::ALL;
 }
 
 void CHybridMethodODE45::destroyRootMask()
 {
-  mRootMask.resize(0);
-  mRootMasking = NONE;
+  mRootMask.setType(RootMask::NONE);
+  mRootMasking = RootMask::NONE;
 }
 
 //========Help Function========

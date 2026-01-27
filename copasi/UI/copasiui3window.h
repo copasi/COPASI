@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -143,9 +143,9 @@ public:
 
 // COMBINE Archive will take care of file management
   /*
-  #ifdef COPASI_Provenance
+#ifdef COPASI_Provenance
     QString getProvenanceParentOfCurrentVersion();
-  #endif
+#endif
   */
 
   CQOptPopulation* getPopulationDisplay();
@@ -164,9 +164,10 @@ public:
   const QMap< QPointer<QMainWindow>, QPointer<QAction> > & getWindows() const;
 
 signals:
-  void signalDefferedLoadFile(QString newFile);
+  void signalDeferredLoadFile(QString newFile);
   void signalQuit();
   void signalPreferenceUpdated();
+  void exportSBMLToStringFinished(bool);
 
 protected:
   virtual void closeEvent(QCloseEvent* e);
@@ -178,14 +179,14 @@ protected:
   void dropEvent(QDropEvent *event);
 
 public slots:
-  void slotDefferedLoadFile(QString str);
+  void slotDeferredLoadFile(QString str);
   void slotShowSliders(bool flag);
   void slotShowDependencies(bool flag);
   void slotUpdateHideMainToolbarAction();
   void slotHideMainToolbar(bool flag);
   void slotCopy();
   void slotCheckForUpdate();
-  void slotCheckForUpdateFinished(bool flag);
+  void slotCheckForUpdateFinished(const std::string &, bool flag);
   void slotAutoCheckForUpdates();
   void slotClearSbmlIds();
 
@@ -208,6 +209,8 @@ public slots:
 
   void slotStartNewInstance();
 
+  void listViewsFolderChanged(const QModelIndex & index);
+
 public:
   /**
    * performs the next action from the action stack
@@ -229,13 +232,13 @@ public:
   void removeReportTargets();
 
 protected slots:
-  void slotFileOpenFinished(bool success);
-  void slotFileOpenFromUrlFinished(bool success);
+  void slotFileOpenFinished(const std::string & thread, bool success);
+  void slotFileOpenFromUrlFinished(const std::string & thread, bool success);
   void slotFileExamplesCopasiFiles(QString file = QString());
   void slotFileExamplesSBMLFiles(QString file = QString());
   void slotFileSave();
   void slotFileSaveAs(QString str = QString());
-  void slotFileSaveFinished(bool success);
+  void slotFileSaveFinished(const std::string & thread, bool success);
   void slotFunctionDBSave(QString str = QString());
   void slotFunctionDBLoad(QString str = QString());
   void slotParameterSetsSave(QString str = QString());
@@ -243,19 +246,19 @@ protected slots:
   void slotNewDoc(QString str = QString());
   void slotFilePrint();
   void slotImportSBML(QString file = QString());
-  void slotImportSBMLFinished(bool success);
-  void slotImportSBMLFromStringFinished(bool success);
+  void slotImportSBMLFinished(const std::string & thread, bool success);
+  void slotImportSBMLFromStringFinished(const std::string & thread, bool success);
   void slotExportSBML();
-  void slotExportSBMLFinished(bool success);
-  void slotExportSBMLToStringFinished(bool success);
+  void slotExportSBMLFinished(const std::string & thread, bool success);
+  void slotExportSBMLToStringFinished(const std::string & thread, bool success);
   void slotExportMathModel();
-  void slotExportMathModelFinished(bool success);
+  void slotExportMathModelFinished(const std::string & thread, bool success);
   void slotTutorialWizard();
   void about();
   void license();
   void aboutQt();
   void slotQuit();
-  void slotQuitFinished(bool success);
+  void slotQuitFinished(const std::string &, bool success);
   void slotPreferences();
   void slotPreferencesAccepted();
   void slotConvertToIrreversible();
@@ -264,7 +267,6 @@ protected slots:
   void slotPromoteLocalParameters();
   void slotCreateEventsForTimeseries();
 
-  void listViewsFolderChanged(const QModelIndex & index);
   void slotOpenRecentFile(QAction * pAction);
   void slotOpenRecentSBMLFile(QAction * pAction);
   void slotCheckModel();
@@ -273,7 +275,7 @@ protected slots:
   void slotFrameworkChanged(int index);
   void slotCapture();
   void slotUpdateMIRIAM();
-  void slotUpdateMIRIAMFinished(bool);
+  void slotUpdateMIRIAMFinished(const std::string & thread, bool);
   void slotExpandModel();
   void slotFontSelection();
 
@@ -281,7 +283,7 @@ protected slots:
   void slotActivateWindowTriggered(QAction* action);
 
   void slotAddFileOpen(QString file = QString());
-  void slotAddFileOpenFinished(bool success);
+  void slotAddFileOpenFinished(const std::string & thread, bool success);
   void slotMergeModels();
 
   // SBW: handle the custom events
@@ -297,18 +299,18 @@ protected slots:
   void slotFileExamplesSEDMLFiles(QString file = QString());
   void slotImportSEDML(QString file = QString());
 
-  void slotImportSEDMLFinished(bool success);
-  void slotImportSEDMLFromStringFinished(bool success);
+  void slotImportSEDMLFinished(const std::string & thread, bool success);
   void slotExportSEDML();
-  void slotExportSEDMLFinished(bool success);
-  void slotExportSEDMLToStringFinished(bool success);
+  void slotExportSEDMLFinished(const std::string & thread, bool success);
+  void slotExportSEDMLToStringFinished(const std::string & thread, bool success);
   void slotOpenRecentSEDMLFile(QAction * pAction);
 
   void slotImportCombine(QString file = QString());
-  void slotImportCombineFinished(bool success);
+  void slotImportCombineFinished(const std::string & thread, bool success);
   void slotExportCombine(QString str = QString());
-  void slotExportCombineFinished(bool success);
+  void slotExportCombineFinished(const std::string & thread, bool success);
   void slotExportShiny(QString str = QString());
+  void slotExportShinyFinished(const std::string & thread, bool success);
 
   void slotUndo();
   void slotRedo();
@@ -325,6 +327,7 @@ protected slots:
 #endif
 
   void slotLoadParameterEstimationProtocol();
+  void slotProfileLikelihood();
 
   void slotShowDebugInfo();
 
@@ -374,7 +377,6 @@ private:
    */
   SedmlImportOptions getSedMLImportOptionsForArchive(const QString & fileName, bool & shouldCancelImport);
 
-
   DataModelGUI* mpDataModelGUI; // to keep track of the data model..
   CDataModel* mpDataModel;
 
@@ -413,6 +415,7 @@ private:
   QAction* mpaExpandModel;
   QAction* mpaFontSelectionDialog;
   QAction* mpaParameterEstimationResult;
+  QAction * mpaProfileWizard;
 
   QAction* mpaCopy;
   QAction* mpaCloseAllWindows;
@@ -502,7 +505,6 @@ private:
   std::deque< std::pair < CopasiUIActions, std::string > > mActionStack;
 
   QAction * mpaShowExternalToolDialog;
-
 
   CQExternalTools * mpExternaltools;
 

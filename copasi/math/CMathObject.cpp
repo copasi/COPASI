@@ -714,12 +714,12 @@ bool CMathObject::compile(CMathContainer & container)
       case CMath::ValueType::EventTrigger:
       case CMath::ValueType::EventRoot:
       case CMath::ValueType::EventRootState:
+      case CMath::ValueType::DelayValue:
+      case CMath::ValueType::DelayLag:
+      case CMath::ValueType::__SIZE:
         // These objects are compiled through the event compile,
         // which is executed after the object compile. It is therefore
         // correct to leave the object in its default state.
-        break;
-
-      case CMath::ValueType::__SIZE:
         break;
     }
 

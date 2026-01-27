@@ -41,7 +41,7 @@ size_t CQUnitDM::size() const
 
 int CQUnitDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mFetched + 1;
+  return (int)mFetched + 1;
 }
 
 int CQUnitDM::columnCount(const QModelIndex& C_UNUSED(parent)) const
@@ -264,7 +264,7 @@ bool CQUnitDM::removeRows(int position, int rows, const QModelIndex & parent)
       *itDeletedCN = itRow->getStringCN();
     }
 
-  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
+  beginRemoveRows(parent, position, std::min< int >((int)mFetched, position + rows) - 1);
 
   for (itDeletedKey = DeletedKeys.begin(), row = 0, itDeletedCN = DeletedCNs.begin(); itDeletedKey != endDeletedKey; ++itDeletedKey, ++itDeletedCN, ++row)
     {

@@ -36,7 +36,7 @@ public:
   CQPlotsWidget(QWidget* parent = 0, const char* name = 0);
   ~CQPlotsWidget();
 
-  virtual void setFramework(int framework);
+  void setFramework(int framework) override;
 
 private:
   CQPlotDM* mpPlotDM;
@@ -47,10 +47,10 @@ signals:
   void initFilter();
 
 protected:
-  virtual void keyPressEvent(QKeyEvent* ev);
-  virtual bool enterProtected();
-  virtual bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
-  virtual bool leaveProtected();
+  void keyPressEvent(QKeyEvent* ev) override;
+  bool enterProtected() override;
+  bool updateProtected(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn) override;
+  bool leaveProtected() override;
 
 protected slots:
   virtual void slotBtnNewClicked();

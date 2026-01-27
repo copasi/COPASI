@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -50,7 +50,7 @@ void CQAnimationControls::setNumSteps(size_t numSteps)
   if (mNumSteps == numSteps) return;
 
   mNumSteps = numSteps;
-  sldPosition->setMaximum(numSteps - 1);
+  sldPosition->setMaximum((int)numSteps - 1);
   lblCurrent->setText(QString::number(sldPosition->minimum() + 1));
   lblDuration->setText(QString::number(numSteps));
 }
@@ -92,7 +92,7 @@ void CQAnimationControls::slotBack()
 void CQAnimationControls::slotForward()
 {
   emit forward();
-  sldPosition->setValue(mNumSteps - 1);
+  sldPosition->setValue((int)mNumSteps - 1);
 }
 
 void CQAnimationControls::slotTogglePlayPause()
@@ -116,7 +116,7 @@ void CQAnimationControls::slotTogglePlayPause()
 void CQAnimationControls::slotStepBack()
 {
   emit step_backward();
-  sldPosition->setValue(mCurrentStep < 2 ? 0 : --mCurrentStep);
+  sldPosition->setValue(mCurrentStep < 2 ? 0 : (int)--mCurrentStep);
 }
 
 void CQAnimationControls::slotStepForward()
@@ -139,7 +139,7 @@ void CQAnimationControls::slotStepForward()
     }
   else
     {
-      next = ++mCurrentStep;
+      next = (int)++mCurrentStep;
     }
 
   sldPosition->setValue(next);

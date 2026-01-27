@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -93,6 +93,9 @@ TaskWidget::TaskWidget(QWidget * parent, const char * name, Qt::WindowFlags fl)
   mpHeaderWidget = new CQTaskHeaderWidget(this);
   mpMethodWidget = new CQTaskMethodWidget(this);
   mpBtnWidget = new CQTaskBtnWidget(this);
+
+  // set shortcut for run button
+  mpBtnWidget->mpBtnRun->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
 
   connect(mpBtnWidget->mpBtnRun, SIGNAL(clicked()), this, SLOT(runBtnClicked()));
   connect(mpBtnWidget->mpBtnRevert, SIGNAL(clicked()), this, SLOT(revertBtnClicked()));
@@ -283,7 +286,7 @@ bool TaskWidget::commonBeforeRunTask()
   CCopasiMessage::clearDeque();
 
   // create population display if needed
-  if (mpTask->getProblem()->getParameter("DisplayPoplations") && mpTask->getProblem()->getParameter("DisplayPoplations")->getValue< bool >())
+  if (mpTask->getProblem()->getParameter("DisplayPopulations") && mpTask->getProblem()->getParameter("DisplayPopulations")->getValue< bool >())
     {
 
       if (dynamic_cast<COptTask*>(mpTask) != NULL || dynamic_cast<CFitTask*>(mpTask) != NULL)
@@ -309,7 +312,7 @@ bool TaskWidget::commonAfterRunTask()
 {
   if (!mpTask) return false;
 
-  if (mpTask->getProblem()->getParameter("DisplayPoplations") && mpTask->getProblem()->getParameter("DisplayPoplations")->getValue<bool>())
+  if (mpTask->getProblem()->getParameter("DisplayPopulations") && mpTask->getProblem()->getParameter("DisplayPopulations")->getValue<bool>())
     {
 
       if (dynamic_cast<COptTask*>(mpTask) != NULL || dynamic_cast<CFitTask*>(mpTask) != NULL)

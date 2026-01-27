@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1170,7 +1170,11 @@ bool SliderDialog::eventFilter(QObject*, QEvent* event)
 
   if (pQME && pQME->type() == QEvent::MouseButtonPress && pQME->button() == Qt::LeftButton)
     {
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
       CopasiSlider* pSlider = findCopasiSliderAtPosition(mapFromGlobal(pQME->globalPos()));
+#else
+      CopasiSlider* pSlider = findCopasiSliderAtPosition(mapFromGlobal(pQME->globalPosition().toPoint()));
+#endif
       assert(pSlider);
       setCurrentSlider(pSlider);
     }

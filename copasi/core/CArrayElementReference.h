@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -60,14 +60,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const override;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * create an element reference with a given index. The index
@@ -85,25 +85,25 @@ public:
    * returns a pointer to the numerical values of the array element
    * this will be a *C_FLOAT64 for this class.
    */
-  virtual void * getValuePointer() const override;
+  void * getValuePointer() const override;
 
-  virtual const CDataObject * getValueObject() const override {return this;}
+  const CDataObject * getValueObject() const override {return this;}
 
   /**
    *
    */
-  virtual void print(std::ostream * ostream) const override;
+  void print(std::ostream * ostream) const override;
 
   /**
    * generate a display name.
    */
-  virtual std::string getObjectDisplayName() const override;
+  std::string getObjectDisplayName() const override;
 
 protected:
   /**
    *
    */
-  virtual CCommonName getCNProtected() const override;
+  CCommonName getCNProtected() const override;
 };
 
 #endif

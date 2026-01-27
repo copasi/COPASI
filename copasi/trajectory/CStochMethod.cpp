@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -308,7 +308,7 @@ void CStochMethod::setupDependencyGraph()
   const CMathObject * pPropensityEnd = pPropensity + mPropensityObjects.size();
 
   int idx = 0, idxMid = 0;
-  int idxEnd = mPropensityObjects.size();
+  int idxEnd = (int)mPropensityObjects.size();
 
   for (size_t i = 0; pUpdateSequence < pUpdateSequenceEnd; ++pUpdateSequence, ++i)
     {
@@ -320,7 +320,7 @@ void CStochMethod::setupDependencyGraph()
           if (*it >= pPropensity && *it <= pPropensityEnd)
             {
               idx = 0;
-              idxEnd = mPropensityObjects.size();
+              idxEnd = (int)mPropensityObjects.size();
 
               while (idx <= idxEnd)
                 {

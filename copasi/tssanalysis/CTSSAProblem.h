@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -100,7 +100,7 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  bool elevateChildren() override;
 
   /**
    * Set the number of time steps the method should integrate.
@@ -177,7 +177,7 @@ private:
 
   void initObjects();
 
-  void printResult(std::ostream * ostream) const;
+  void printResult(std::ostream * ostream) const override;
 };
 
 #endif // COPASI_CTSSAProblem

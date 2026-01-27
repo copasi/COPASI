@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -462,6 +462,9 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
             Species.setInitialValue(100.0);
             Species.setInitialConcentration(100.0 * mpModel->getNumber2QuantityFactor()); // value is ignored
             break;
+
+          case CCore::Framework::__SIZE:
+            break;
         }
 
       CUndoData SpeciesData(CUndoData::Type::INSERT, &Species);
@@ -831,13 +834,8 @@ CReactionInterface::connectFromScratch(CFunctionParameter::Role role)
 
   if (!imax) return;
 
-  // get the list of chem eq elements
-  std::vector<std::string> el;
-
-  if (dynamic_cast< const CMassAction * >(mpFunction) != NULL)
-    el = getExpandedMetabList(role);
-  else
-    el = mChemEqI.getListOfDisplayNames(role);
+  // get the list of chem eq elements multiplied by their stoichometry
+  std::vector<std::string> el = getExpandedMetabList(role);
 
   // get the first parameter with the respective role
   CFunctionParameter::DataType Type;
@@ -1279,13 +1277,17 @@ CReactionInterface::setMapping(size_t index, std::string mn)
 const std::vector<std::string> &
 CReactionInterface::getMappings(size_t index) const
 {
+  if (mIndexMap.size() <= index)
+    CCopasiMessage(CCopasiMessage::EXCEPTION, "Invalid index");
   return *mIndexMap[index];
 }
 
 const std::string &
 CReactionInterface::getMapping(size_t index) const
 {
-  return mIndexMap[index]->operator [](0);
+  if (mIndexMap.size() <= index)
+    CCopasiMessage(CCopasiMessage::EXCEPTION, "Invalid index");
+  return mIndexMap[index]->operator[](0);
 }
 
 std::vector< std::string > CReactionInterface::getUnitVector(size_t index) const
@@ -1334,6 +1336,7 @@ std::vector< std::string > CReactionInterface::getUnitVector(size_t index) const
       case CFunctionParameter::Role::TEMPORARY:
       case CFunctionParameter::Role::VOLUME:
       case CFunctionParameter::Role::TIME:
+      case CFunctionParameter::Role::__SIZE:
         break;
     }
 
@@ -1414,6 +1417,9 @@ std::string CReactionInterface::getUnit(size_t index) const
 
       case CFunctionParameter::Role::TIME:
         return mpModel->getUnits();
+        break;
+
+      case CFunctionParameter::Role::__SIZE:
         break;
     }
 
@@ -1688,6 +1694,10 @@ std::string CReactionInterface::getEffectiveKineticLawUnit() const
 
       case CReaction::KineticLawUnit::ConcentrationPerTime:
         return getConcentrationRateUnit();
+        break;
+
+      case CReaction::KineticLawUnit::Default:
+      case CReaction::KineticLawUnit::__SIZE:
         break;
     }
 

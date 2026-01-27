@@ -377,7 +377,7 @@ bool CMCAMethod::calculateUnscaledFluxCC(const bool & status)
   // mUnscaledFluxCC := I + mUnscaledElasticities * mUnscaledConcCC
 
   char UPLO = 'A';
-  C_INT M = mUnscaledFluxCC.numRows();
+  C_INT M = (C_INT)mUnscaledFluxCC.numRows();
   C_FLOAT64 Alpha = 0.0;
   C_FLOAT64 Beta = 1.0;
 
@@ -607,7 +607,6 @@ bool CMCAMethod::checkSummationTheorems(const C_FLOAT64 & resolution)
 
   return success;
 }
-
 
 /**
  * the steady state MCA entry point

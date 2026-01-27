@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -95,8 +95,12 @@ CLyapMethod::~CLyapMethod()
  *  This method is used by CLyap
  *  @param "CLyapProblem *" problem
  */
-void CLyapMethod::setProblem(CLyapProblem * problem)
-{mpProblem = problem;}
+bool CLyapMethod::setProblem(CCopasiProblem * pProblem)
+{
+  mpProblem = dynamic_cast< CLyapProblem * >(pProblem);
+
+  return mpProblem != nullptr;
+}
 
 /**
  *  This instructs the method to calculate a a time step of deltaT
@@ -118,7 +122,7 @@ double CLyapMethod::step(const double & C_UNUSED(deltaT))
  *  @param "const CState *" initialState
  *  @return "const double &" actualDeltaT
  */
-void CLyapMethod::start(CVectorCore< C_FLOAT64 > & /* initialState */)
+void CLyapMethod::start(/*CVectorCore< C_FLOAT64 > &  initialState */)
 {return;}
 
 //virtual

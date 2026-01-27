@@ -129,6 +129,11 @@ void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CDataObject*, SBa
 
   for (i = 0; i < imax; ++i)
     {
+
+      // skip if current is already in the global render information list
+      if (rlolPlugin->getRenderInformation(mvGlobalRenderInformationObjects[i].getKey()) != NULL)
+        continue;
+
       //colorKeyToIdMap.clear();
       //gradientKeyToIdMap.clear();
       //lineEndingKeyToIdMap.clear();

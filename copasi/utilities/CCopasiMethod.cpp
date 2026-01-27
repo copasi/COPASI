@@ -35,6 +35,7 @@
 #include "copasi/utilities/CCopasiMethod.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/utilities/CCopasiProblem.h"
+#include "copasi/utilities/CMethodFactory.h"
 
 #include "copasi/math/CMathContainer.h"
 
@@ -74,6 +75,11 @@ CCopasiMethod & CCopasiMethod::operator=(const CCopasiMethod & rhs)
 
 CCopasiMethod::~CCopasiMethod() {}
 
+CCopasiMethod * CCopasiMethod::copy() const
+{
+  return CMethodFactory::copy(this, NULL, false);
+}
+
 void CCopasiMethod::setMathContainer(CMathContainer * pContainer)
 {
   mpContainer = pContainer;
@@ -87,6 +93,11 @@ void CCopasiMethod::signalMathContainerChanged()
 CMathContainer * CCopasiMethod::getMathContainer() const
 {
   return mpContainer;
+}
+
+bool CCopasiMethod::setProblem(CCopasiProblem * /* pProblem */)
+{
+  return false;
 }
 
 bool CCopasiMethod::setCallBack(CProcessReportLevel callBack)

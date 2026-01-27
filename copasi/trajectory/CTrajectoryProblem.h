@@ -78,7 +78,7 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren();
+  bool elevateChildren() override;
 
   /**
    * Set the number of time steps the trajectory method should integrate.
@@ -180,9 +180,9 @@ public:
   void load(CReadConfig & configBuffer,
             CReadConfig::Mode mode = CReadConfig::NEXT);
 
-  virtual void printResult(std::ostream* ostream) const;
+  void printResult(std::ostream* ostream) const override;
 
-  virtual void signalChanged(const CCopasiParameter * pParameter) override;
+  void signalChanged(const CCopasiParameter * pParameter) override;
 
 private:
   /**

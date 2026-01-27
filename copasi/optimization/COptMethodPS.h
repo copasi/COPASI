@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -48,7 +48,8 @@ public:
    */
   COptMethodPS(const CDataContainer * pParent,
                const CTaskEnum::Method & methodType = CTaskEnum::Method::ParticleSwarm,
-               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization);
+               const CTaskEnum::Task & taskType = CTaskEnum::Task::optimization,
+               const bool & parallel = true);
 
   /**
    * Copy Constructor
@@ -56,7 +57,8 @@ public:
    * @param const CDataContainer * pParent (default: NULL)
    */
   COptMethodPS(const COptMethodPS & src,
-               const CDataContainer * pParent);
+               const CDataContainer * pParent,
+               const bool & parallel);
 
   /**
    * Destructor
@@ -69,12 +71,15 @@ public:
    * of its progress by the callback function set with SetCallback.
    * @ return success;
    */
-  virtual bool optimise();
+  bool optimise() override;
 
   /**
    * Returns the maximum verbosity at which the method can log.
    */
-  virtual unsigned C_INT32 getMaxLogVerbosity() const;
+  unsigned C_INT32 getMaxLogVerbosity() const override;
+
+protected:
+  void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom) override;
 
 private:
   /**
@@ -92,19 +97,13 @@ private:
    * Initialize arrays and pointer.
    * @return bool success
    */
-  virtual bool initialize();
+  bool initialize() override;
 
   /**
    * Cleanup arrays and pointers.
    * @return bool success
    */
-  virtual bool cleanup();
-
-  /**
-   * Evaluate the fitness of one individual
-   * @return C_FLOAT64 value
-   */
-  C_FLOAT64 evaluate();
+  bool cleanup() override;
 
   /**
    * Move the indexed individual in the swarm
@@ -164,11 +163,6 @@ private:
   CMatrix< C_FLOAT64 > mVelocities;
 
   /**
-   * The best value
-   */
-  C_FLOAT64 mBestValue;
-
-  /**
    * Vector of individual best values.
    */
   CVector< C_FLOAT64 > mBestValues;
@@ -213,11 +207,6 @@ private:
   * stop
   */
   unsigned C_INT32 mStopAfterStalledIterations;
-
-  /**
-   * Indicates whether calculation shall continue
-   */
-  bool mContinue;
 };
 
 #endif  // COPASI_COptMethodPS

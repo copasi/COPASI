@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -50,6 +50,7 @@ class CSteadyStateTask;
 class CTrajectoryTask;
 class COptItem;
 class CMathExpression;
+class CModelParameterSet;
 
 enum ProblemType
 {
@@ -120,33 +121,33 @@ public:
   /**
    * Calculate the objects value.
    */
-  virtual void calculateValue() override;
+  void calculateValue() override;
 
   /**
    * Retrieve a pointer to the value of the object
    */
-  virtual void * getValuePointer() const override;
+  void * getValuePointer() const override;
 
   /**
    * This methods must be called to elevate subgroups to
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren() override;
+  bool elevateChildren() override;
 
   /**
   * Set the call back of the problem
   * @param CProcessReport * pCallBack
   * @result bool success
   */
-  virtual bool setCallBack(CProcessReportLevel callBack) override;
+  bool setCallBack(CProcessReportLevel callBack) override;
 
   /**
    * Do all necessary initialization so that calls to calculate will
    * be successful. This is called once from CCopasiTask::process()
    * @result bool success
    */
-  virtual bool initialize() override;
+  bool initialize() override;
 
   /**
    * perform at least the initializations of the subtask that
@@ -167,7 +168,7 @@ public:
    * @param const bool & updateModel
    * @result bool success
    */
-  virtual bool restore(const bool & updateModel) override;
+  bool restore(const bool & updateModel) override;
 
   /**
    * Reset counters and objective value.
@@ -179,7 +180,7 @@ public:
    *
    * @return CCopasiTask* * pSubTask
    */
-  virtual CCopasiTask * getSubTask() const override;
+  CCopasiTask * getSubTask() const override;
 
   /**
    * Check whether all parameters are within their boundaries.
@@ -197,13 +198,13 @@ public:
    * Check whether all functional constraints are fulfilled.
    * @result bool fulfilled
    */
-  virtual bool checkFunctionalConstraints();
+  bool checkFunctionalConstraints();
 
   /**
    * Retrieve the L2 norm of functional constraint violation.
    * @result C_FLOAT64 violation
    */
-  virtual C_FLOAT64 getFunctionalConstraintsViolation();
+  C_FLOAT64 getFunctionalConstraintsViolation() const;
 
   /**
    * Check whether all item intervals are valid.
@@ -216,29 +217,6 @@ public:
    * @return bool adjusted
    */
   bool adjustStartValuesForIntervals();
-
-  /**
-   * Adjust the start values so that we have valid intervals (>= 0) for all items
-   * @param COptItem & optItem
-   * @return bool adjusted
-   */
-  bool adjustStartValue(COptItem & optItem);
-
-  /**
-   * Adjust the value so that all intervals are >= 0
-   * @param C_FLOAT64 * pValue
-   * @param  const C_FLOAT64 & min
-   * @param  const C_FLOAT64 & max
-   * @return C_FLOAT64 adjusted (NaN if not adjustable)
-   */
-  C_FLOAT64 adjustForIntervals(C_FLOAT64 * pValue, const C_FLOAT64 & min, const C_FLOAT64 & max);
-
-  /**
-   * Calculate the RMS of the interval size for items which have invalid intervals
-   * @param const C_FLOAT64 &  value
-   * @return C_FLOAT64 minInterval
-   */
-  C_FLOAT64 evalMinimizeIntervals(const C_FLOAT64 & value);
 
   /**
    * Calculate the statistics for the problem
@@ -273,19 +251,44 @@ public:
    */
   void setParameters(const CVectorCore< C_FLOAT64 > & parameters);
 
+
+  /**
+   * Sets the 'Create Parameter Sets' parameter. When set it will create new model parameter
+   * sets for each experiment after a run.
+   */
+  void setCreateParameterSets(const bool & create);
+
+  /**
+   * @return the value of the 'Create Parameter Sets' parameter that controls whether parameter
+   * sets should be created automatically.
+   */
+  const bool & getCreateParameterSets() const;
+
+  /**
+   * Create new parameter sets for each experiment in the model after optimization. 
+   */
+  virtual void createParameterSets();  
+
 // private:
   /**
    * Retrieve the update methods for the variables for calculation.
    * @param const bool & algorithmOrder (default: false)
    * @return const std::vector< UpdateMethod * > & updateMethods
    */
-  CVectorCore< C_FLOAT64 * > & getContainerVariables(const bool & algorithmOrder = false) const;
+  // CVectorCore< C_FLOAT64 * > & getContainerVariables(const bool & algorithmOrder = false) const;
 
 protected:
   /**
    * Signal that the math container has changed
    */
-  virtual void signalMathContainerChanged() override;
+  void signalMathContainerChanged() override;
+
+  /**
+   * Create a parameter set with the given name and the current model values
+   *
+   */
+  CModelParameterSet* createParameterSet(const std::string & Name, const std::string & prefix);
+
 
 public:
   /**
@@ -476,9 +479,9 @@ public:
 
   /**
    * Retrieve the internal counter
-   * @return const sCounter & counter
+   * @param COptProblem & OptProblem
    */
-  const sCounter & getCounters() const;
+  void aggregateCounters(COptProblem & OptProblem);
 
   /**
    * Resets the internal counter
@@ -516,7 +519,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const override;
+  void print(std::ostream * ostream) const override;
 
   /**
    * Output stream operator
@@ -532,7 +535,7 @@ public:
    * default behavior one needs to reimplement the virtual printResult function.
    * @param std::ostream * ostream
    */
-  virtual void printResult(std::ostream * ostream) const override;
+  void printResult(std::ostream * ostream) const override;
 
 protected:
   /**
@@ -540,7 +543,7 @@ protected:
    * is in the same state as before or the new state if update is true.
    * @param const bool & update
    */
-  virtual void updateContainer(const bool & update);
+  void updateContainer(const bool & update);
 
 private:
   /**
@@ -669,7 +672,7 @@ protected:
   /**
    * A vector of pointer to the container variables
    */
-  mutable CVector< C_FLOAT64 * > mContainerVariables;
+  // mutable CVector< C_FLOAT64 * > mContainerVariables;
 
   sCounter mCounters;
 
@@ -716,14 +719,9 @@ protected:
   C_FLOAT64 mMinInterval;
 
   /**
-   * A pointer to the value to be adjusted to create valid intervals
-   */
-  C_FLOAT64 * mpAdjust;
-
-  /**
    * The set of COptItems which intervals are adjusted
    */
-  std::set< COptItem * > mAdjustedItems;
+  COptItem * mpItemToAdjust;
 
   /**
    * Number of items influencing intervals
@@ -734,9 +732,18 @@ protected:
 
   std::vector< COptItem * > mOptItemAlgorithm;
 
-  mutable CVector < C_FLOAT64 * > mContainerVariablesAlgorithm;
+  // mutable CVector < C_FLOAT64 * > mContainerVariablesAlgorithm;
 
   CVector < C_FLOAT64 > mSolutionVariablesAlgorithm;
+
+  bool mFunctionalConstraintPassed;
+
+  C_FLOAT64 mFunctionalConstraintError;
+  
+  /**
+   * A pointer to the value of the CCopasiParameter holding Create Parameter Sets
+   */
+  bool * mpCreateParameterSets;
 };
 
 #endif  // the end

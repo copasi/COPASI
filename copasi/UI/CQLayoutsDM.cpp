@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -42,7 +42,7 @@ size_t CQLayoutsDM::size() const
 
 int CQLayoutsDM::rowCount(const QModelIndex& C_UNUSED(parent)) const
 {
-  return mFetched;
+  return (int)mFetched;
 }
 
 // virtual
@@ -202,7 +202,7 @@ bool CQLayoutsDM::removeRows(int position, int rows, const QModelIndex & parent)
 
   if (mpListOfLayouts == NULL) return false;
 
-  beginRemoveRows(parent, position, std::min< int >(mFetched, position + rows) - 1);
+  beginRemoveRows(parent, position, std::min< int >((int)mFetched, position + rows) - 1);
   std::vector< CLayout * > DeletedLayouts;
   DeletedLayouts.resize(rows);
   std::vector< CLayout * >::iterator itDeletedLayout;

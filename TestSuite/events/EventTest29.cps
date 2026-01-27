@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- generated with COPASI 4.23.172+ (Debug) (http://www.copasi.org) at 2018-02-14 21:56:20 UTC -->
+<!-- generated with COPASI 4.45 (Build 298) (http://www.copasi.org) at 2025-08-18T17:55:14Z -->
 <?oxygen RNGSchema="http://www.copasi.org/static/schema/CopasiML.rng" type="xml"?>
-<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="23" versionDevel="172" copasiSourcesModified="1">
+<COPASI xmlns="http://www.copasi.org/static/schema" versionMajor="4" versionMinor="45" versionDevel="298" copasiSourcesModified="0">
   <ListOfFunctions>
     <Function key="Function_13" name="Mass action (irreversible)" type="MassAction" reversible="false">
       <MiriamAnnotation>
@@ -53,10 +53,10 @@ Reaction scheme where the products are created from the reactants and the change
         <ParameterDescription key="FunctionParameter_79" name="product" order="3" role="product"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_40" name="vGLYS" type="UserDefined" reversible="unspecified">
+    <Function key="Function_81" name="vGLYS" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_40">
+  <rdf:Description rdf:about="#Function_81">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-05-21T17:00:33Z</dcterms:W3CDTF>
@@ -69,16 +69,16 @@ Reaction scheme where the products are created from the reactants and the change
         v_max * (G6P/(G6P+K_m_G6P))*(1-(1/(1+exp(-20*(GLY-4.2)))))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_264" name="v_max" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_263" name="G6P" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_262" name="K_m_G6P" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_261" name="GLY" order="3" role="product"/>
+        <ParameterDescription key="FunctionParameter_677" name="v_max" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_676" name="G6P" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_675" name="K_m_G6P" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_674" name="GLY" order="3" role="product"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_41" name="vdHb_in" type="UserDefined" reversible="unspecified">
+    <Function key="Function_82" name="vdHb_in" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_41">
+  <rdf:Description rdf:about="#Function_82">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-06-24T11:34:53Z</dcterms:W3CDTF>
@@ -91,15 +91,15 @@ Reaction scheme where the products are created from the reactants and the change
         F_in * (O2_a - (2 * O2_c - O2_a))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_267" name="F_in" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_266" name="O2_a" order="1" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_265" name="O2_c" order="2" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_670" name="F_in" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_671" name="O2_a" order="1" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_672" name="O2_c" order="2" role="modifier"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_42" name="vdHb_out" type="UserDefined" reversible="unspecified">
+    <Function key="Function_83" name="vdHb_out" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_42">
+  <rdf:Description rdf:about="#Function_83">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-06-24T11:41:20Z</dcterms:W3CDTF>
@@ -112,15 +112,15 @@ Reaction scheme where the products are created from the reactants and the change
         F_out * dHb/V_v
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_269" name="F_out" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_268" name="dHb" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_250" name="V_v" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_668" name="F_out" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_669" name="dHb" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_673" name="V_v" order="2" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_43" name="vATPase" type="UserDefined" reversible="false">
+    <Function key="Function_84" name="vATPase" type="UserDefined" reversible="false">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_43">
+  <rdf:Description rdf:about="#Function_84">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-10-22T11:03:14Z</dcterms:W3CDTF>
@@ -133,15 +133,15 @@ Reaction scheme where the products are created from the reactants and the change
         VmaxATPase * (ATP/(ATP+Km_ATP))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_272" name="VmaxATPase" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_271" name="ATP" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_270" name="Km_ATP" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_680" name="VmaxATPase" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_679" name="ATP" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_678" name="Km_ATP" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_44" name="vPK" type="UserDefined" reversible="false">
+    <Function key="Function_85" name="vPK" type="UserDefined" reversible="false">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_44">
+  <rdf:Description rdf:about="#Function_85">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-08-13T11:07:33Z</dcterms:W3CDTF>
@@ -154,15 +154,15 @@ Reaction scheme where the products are created from the reactants and the change
         k_PK*PEP*ADP
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_275" name="k_PK" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_274" name="PEP" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_273" name="ADP" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_683" name="k_PK" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_682" name="PEP" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_681" name="ADP" order="2" role="substrate"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_45" name="vPGK" type="UserDefined" reversible="false">
+    <Function key="Function_86" name="vPGK" type="UserDefined" reversible="false">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_45">
+  <rdf:Description rdf:about="#Function_86">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-08-12T10:10:25Z</dcterms:W3CDTF>
@@ -175,17 +175,17 @@ Reaction scheme where the products are created from the reactants and the change
         k_PGK*GAP*ADP*(NAD/NADH)
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_278" name="k_PGK" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_277" name="GAP" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_276" name="ADP" order="2" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_279" name="NAD" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_280" name="NADH" order="4" role="product"/>
+        <ParameterDescription key="FunctionParameter_686" name="k_PGK" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_685" name="GAP" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_684" name="ADP" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_687" name="NAD" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_688" name="NADH" order="4" role="product"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_46" name="vPFK" type="UserDefined" reversible="false">
+    <Function key="Function_87" name="vPFK" type="UserDefined" reversible="false">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_46">
+  <rdf:Description rdf:about="#Function_87">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-08-30T14:36:24Z</dcterms:W3CDTF>
@@ -198,18 +198,18 @@ Reaction scheme where the products are created from the reactants and the change
         k_PFK*ATP*(1+(ATP/K_I_ATP)^nH)^(-1)*(F6P/(F6P+K_m_F6P))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_285" name="k_PFK" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_284" name="ATP" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_283" name="K_I_ATP" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_282" name="nH" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_281" name="F6P" order="4" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_286" name="K_m_F6P" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_693" name="k_PFK" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_692" name="ATP" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_691" name="K_I_ATP" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_690" name="nH" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_689" name="F6P" order="4" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_694" name="K_m_F6P" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_47" name="vMITO (inkl. Volumes)" type="UserDefined" reversible="unspecified">
+    <Function key="Function_88" name="vMITO (inkl. Volumes)" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_47">
+  <rdf:Description rdf:about="#Function_88">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-08-30T14:32:03Z</dcterms:W3CDTF>
@@ -222,21 +222,21 @@ Reaction scheme where the products are created from the reactants and the change
         v_max_mito*(PYR/(PYR+K_m_PYR))*(ADP/(ADP+K_m_ADP))*(O2/(O2+K_m_O2))*(1-1/(1+exp(-5*(ATP/ADP-20)))) * Volume
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_292" name="v_max_mito" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_291" name="PYR" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_290" name="K_m_PYR" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_289" name="ADP" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_288" name="K_m_ADP" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_287" name="O2" order="5" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_293" name="K_m_O2" order="6" role="constant"/>
-        <ParameterDescription key="FunctionParameter_294" name="ATP" order="7" role="product"/>
-        <ParameterDescription key="FunctionParameter_295" name="Volume" order="8" role="volume"/>
+        <ParameterDescription key="FunctionParameter_700" name="v_max_mito" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_699" name="PYR" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_698" name="K_m_PYR" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_697" name="ADP" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_696" name="K_m_ADP" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_695" name="O2" order="5" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_701" name="K_m_O2" order="6" role="constant"/>
+        <ParameterDescription key="FunctionParameter_702" name="ATP" order="7" role="product"/>
+        <ParameterDescription key="FunctionParameter_703" name="Volume" order="8" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_48" name="vGLU_eg (inkl. Volumes)" type="UserDefined" reversible="unspecified">
+    <Function key="Function_89" name="vGLU_eg (inkl. Volumes)" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_48">
+  <rdf:Description rdf:about="#Function_89">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-05-27T09:04:20Z</dcterms:W3CDTF>
@@ -249,16 +249,16 @@ Reaction scheme where the products are created from the reactants and the change
         Vmax_GLU * (GLU_e/(GLU_e + K_m_GLU)) * Volume
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_304" name="Vmax_GLU" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_303" name="GLU_e" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_302" name="K_m_GLU" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_301" name="Volume" order="3" role="volume"/>
+        <ParameterDescription key="FunctionParameter_712" name="Vmax_GLU" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_711" name="GLU_e" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_710" name="K_m_GLU" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_709" name="Volume" order="3" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_49" name="vGLU_gn (inkl. Volume)" type="UserDefined" reversible="unspecified">
+    <Function key="Function_90" name="vGLU_gn (inkl. Volume)" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_49">
+  <rdf:Description rdf:about="#Function_90">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-05-27T09:12:26Z</dcterms:W3CDTF>
@@ -271,18 +271,18 @@ Reaction scheme where the products are created from the reactants and the change
         Vmax_GLU * (GLU_g/(GLU_g+K_m_GLU))*(ATP_g/(ATP_g+K_m_ATP)) * Volume
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_297" name="Vmax_GLU" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_298" name="GLU_g" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_299" name="K_m_GLU" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_300" name="ATP_g" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_296" name="K_m_ATP" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_305" name="Volume" order="5" role="volume"/>
+        <ParameterDescription key="FunctionParameter_705" name="Vmax_GLU" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_706" name="GLU_g" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_707" name="K_m_GLU" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_708" name="ATP_g" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_704" name="K_m_ATP" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_713" name="Volume" order="5" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_50" name="vGLU_ne (inkl. Volume)" type="UserDefined" reversible="unspecified">
+    <Function key="Function_91" name="vGLU_ne (inkl. Volume)" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_50">
+  <rdf:Description rdf:about="#Function_91">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-05-27T08:57:29Z</dcterms:W3CDTF>
@@ -295,17 +295,17 @@ Reaction scheme where the products are created from the reactants and the change
         vSTIM * ratio_Na_GLU * (GLU_n/(GLU_n + Km_GLU)) * Volume
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_311" name="vSTIM" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_310" name="ratio_Na_GLU" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_309" name="GLU_n" order="2" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_308" name="Km_GLU" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_307" name="Volume" order="4" role="volume"/>
+        <ParameterDescription key="FunctionParameter_719" name="vSTIM" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_718" name="ratio_Na_GLU" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_717" name="GLU_n" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_716" name="Km_GLU" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_715" name="Volume" order="4" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_51" name="vStim (with volume)" type="UserDefined" reversible="unspecified">
+    <Function key="Function_92" name="vStim (with volume)" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_51">
+  <rdf:Description rdf:about="#Function_92">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2015-01-26T11:59:07Z</dcterms:W3CDTF>
@@ -318,44 +318,56 @@ Reaction scheme where the products are created from the reactants and the change
         vstim * Volume
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_315" name="vstim" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_314" name="Volume" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_723" name="vstim" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_722" name="Volume" order="1" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_52" name="modular rate law for two substrates, two products" type="UserDefined" reversible="unspecified">
+    <Function key="Function_93" name="modular rate law for two substrates, two products" type="UserDefined" reversible="unspecified">
+      <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Function_93">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         Vmax * (1/(K_S1 * K_S2)) * ((S1 * S2 - (P1 * P2)/Keq)/((1+S1/K_S1)*(1+S2/K_S2)+(1+P1/K_P1)*(1+P2/K_P2) -1 ))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_312" name="Vmax" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_313" name="K_S1" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_306" name="K_S2" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_316" name="S1" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_317" name="S2" order="4" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_318" name="P1" order="5" role="product"/>
-        <ParameterDescription key="FunctionParameter_319" name="P2" order="6" role="product"/>
-        <ParameterDescription key="FunctionParameter_320" name="Keq" order="7" role="constant"/>
-        <ParameterDescription key="FunctionParameter_321" name="K_P1" order="8" role="constant"/>
-        <ParameterDescription key="FunctionParameter_322" name="K_P2" order="9" role="constant"/>
+        <ParameterDescription key="FunctionParameter_720" name="Vmax" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_721" name="K_S1" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_714" name="K_S2" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_724" name="S1" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_725" name="S2" order="4" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_726" name="P1" order="5" role="product"/>
+        <ParameterDescription key="FunctionParameter_727" name="P2" order="6" role="product"/>
+        <ParameterDescription key="FunctionParameter_728" name="Keq" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter_729" name="K_P1" order="8" role="constant"/>
+        <ParameterDescription key="FunctionParameter_730" name="K_P2" order="9" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_53" name="modular rate law for one substrate, one product" type="UserDefined" reversible="unspecified">
+    <Function key="Function_94" name="modular rate law for one substrate, one product" type="UserDefined" reversible="unspecified">
+      <MiriamAnnotation>
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Function_94">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         Vmax * (1/(K_S1)) *( (S1 - P1/Keq)/((1+S1/K_S1)+(1+P1/K_P1)-1))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_332" name="Vmax" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_331" name="K_S1" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_330" name="S1" order="2" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_329" name="P1" order="3" role="product"/>
-        <ParameterDescription key="FunctionParameter_328" name="Keq" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_327" name="K_P1" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_740" name="Vmax" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_739" name="K_S1" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_738" name="S1" order="2" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_737" name="P1" order="3" role="product"/>
+        <ParameterDescription key="FunctionParameter_736" name="Keq" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_735" name="K_P1" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_54" name="Blood flow contribution inkl. volume" type="UserDefined" reversible="unspecified">
+    <Function key="Function_95" name="Blood flow contribution inkl. volume" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_54">
+  <rdf:Description rdf:about="#Function_95">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-05-20T11:24:07Z</dcterms:W3CDTF>
@@ -368,17 +380,17 @@ Reaction scheme where the products are created from the reactants and the change
         ((2*F_in)/V_c)*(Substrate - Product) * Volume
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_334" name="F_in" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_333" name="V_c" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_323" name="Volume" order="2" role="volume"/>
-        <ParameterDescription key="FunctionParameter_324" name="Substrate" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_325" name="Product" order="4" role="product"/>
+        <ParameterDescription key="FunctionParameter_742" name="F_in" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_741" name="V_c" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_731" name="Volume" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_732" name="Substrate" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_733" name="Product" order="4" role="product"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_55" name="O2 transport function inkl. volume" type="UserDefined" reversible="unspecified">
+    <Function key="Function_96" name="O2 transport function inkl. volume" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_55">
+  <rdf:Description rdf:about="#Function_96">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-05-19T11:43:34Z</dcterms:W3CDTF>
@@ -391,20 +403,20 @@ Reaction scheme where the products are created from the reactants and the change
         (PScap/Volume) *((KO2*(HbOP/O2_source -1)^(-1/nh))-O2_destination) * Volume1
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_338" name="PScap" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_337" name="Volume" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_336" name="KO2" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_335" name="HbOP" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_326" name="O2_source" order="4" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_339" name="nh" order="5" role="constant"/>
-        <ParameterDescription key="FunctionParameter_340" name="O2_destination" order="6" role="product"/>
-        <ParameterDescription key="FunctionParameter_341" name="Volume1" order="7" role="volume"/>
+        <ParameterDescription key="FunctionParameter_746" name="PScap" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_745" name="Volume" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_744" name="KO2" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_743" name="HbOP" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_734" name="O2_source" order="4" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_747" name="nh" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_748" name="O2_destination" order="6" role="product"/>
+        <ParameterDescription key="FunctionParameter_749" name="Volume1" order="7" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_56" name="vLEAK_Na inkl. Volume" type="UserDefined" reversible="unspecified">
+    <Function key="Function_97" name="vLEAK_Na inkl. Volume" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_56">
+  <rdf:Description rdf:about="#Function_97">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-05-26T10:13:15Z</dcterms:W3CDTF>
@@ -417,21 +429,21 @@ Reaction scheme where the products are created from the reactants and the change
         (Sm* gNA )/(Volume * F)*((RT/F)*log(Na_e/Na) - Vm) * Volume1
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_349" name="Sm" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_348" name="gNA" order="1" role="constant"/>
-        <ParameterDescription key="FunctionParameter_347" name="Volume" order="2" role="volume"/>
-        <ParameterDescription key="FunctionParameter_346" name="F" order="3" role="constant"/>
-        <ParameterDescription key="FunctionParameter_345" name="RT" order="4" role="constant"/>
-        <ParameterDescription key="FunctionParameter_344" name="Na_e" order="5" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_343" name="Na" order="6" role="product"/>
-        <ParameterDescription key="FunctionParameter_342" name="Vm" order="7" role="constant"/>
-        <ParameterDescription key="FunctionParameter_350" name="Volume1" order="8" role="volume"/>
+        <ParameterDescription key="FunctionParameter_757" name="Sm" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_756" name="gNA" order="1" role="constant"/>
+        <ParameterDescription key="FunctionParameter_755" name="Volume" order="2" role="volume"/>
+        <ParameterDescription key="FunctionParameter_754" name="F" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_753" name="RT" order="4" role="constant"/>
+        <ParameterDescription key="FunctionParameter_752" name="Na_e" order="5" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_751" name="Na" order="6" role="product"/>
+        <ParameterDescription key="FunctionParameter_750" name="Vm" order="7" role="constant"/>
+        <ParameterDescription key="FunctionParameter_758" name="Volume1" order="8" role="volume"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_57" name="vPUMP volume dependent" type="UserDefined" reversible="unspecified">
+    <Function key="Function_98" name="vPUMP volume dependent" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_57">
+  <rdf:Description rdf:about="#Function_98">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-05-21T16:37:24Z</dcterms:W3CDTF>
@@ -444,18 +456,18 @@ Reaction scheme where the products are created from the reactants and the change
         Sm/Volume * k_pump * ATP * Na * (1+ATP/Km_pump)^-1
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_359" name="Sm" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_358" name="Volume" order="1" role="volume"/>
-        <ParameterDescription key="FunctionParameter_357" name="k_pump" order="2" role="constant"/>
-        <ParameterDescription key="FunctionParameter_356" name="ATP" order="3" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_355" name="Na" order="4" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_354" name="Km_pump" order="5" role="constant"/>
+        <ParameterDescription key="FunctionParameter_767" name="Sm" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_766" name="Volume" order="1" role="volume"/>
+        <ParameterDescription key="FunctionParameter_765" name="k_pump" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_764" name="ATP" order="3" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_763" name="Na" order="4" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_762" name="Km_pump" order="5" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_58" name="vGlyp_SS" type="UserDefined" reversible="unspecified">
+    <Function key="Function_99" name="vGlyp_SS" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_58">
+  <rdf:Description rdf:about="#Function_99">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2014-05-21T17:19:18Z</dcterms:W3CDTF>
@@ -468,15 +480,15 @@ Reaction scheme where the products are created from the reactants and the change
         v_max*(GLY/(GLY+Km_GLY))
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_362" name="v_max" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_361" name="GLY" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_360" name="Km_GLY" order="2" role="constant"/>
+        <ParameterDescription key="FunctionParameter_770" name="v_max" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_769" name="GLY" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_768" name="Km_GLY" order="2" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
-    <Function key="Function_59" name="vHK (HS)" type="UserDefined" reversible="unspecified">
+    <Function key="Function_100" name="vHK (HS)" type="UserDefined" reversible="unspecified">
       <MiriamAnnotation>
 <rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <rdf:Description rdf:about="#Function_59">
+  <rdf:Description rdf:about="#Function_100">
     <dcterms:created>
       <rdf:Description>
         <dcterms:W3CDTF>2013-08-30T14:02:38Z</dcterms:W3CDTF>
@@ -489,10 +501,10 @@ Reaction scheme where the products are created from the reactants and the change
         k_HK*ATP * (1+G6P/K_I_G6P)^-1
       </Expression>
       <ListOfParameterDescriptions>
-        <ParameterDescription key="FunctionParameter_353" name="k_HK" order="0" role="constant"/>
-        <ParameterDescription key="FunctionParameter_352" name="ATP" order="1" role="substrate"/>
-        <ParameterDescription key="FunctionParameter_351" name="G6P" order="2" role="modifier"/>
-        <ParameterDescription key="FunctionParameter_363" name="K_I_G6P" order="3" role="constant"/>
+        <ParameterDescription key="FunctionParameter_761" name="k_HK" order="0" role="constant"/>
+        <ParameterDescription key="FunctionParameter_760" name="ATP" order="1" role="substrate"/>
+        <ParameterDescription key="FunctionParameter_759" name="G6P" order="2" role="modifier"/>
+        <ParameterDescription key="FunctionParameter_771" name="K_I_G6P" order="3" role="constant"/>
       </ListOfParameterDescriptions>
     </Function>
   </ListOfFunctions>
@@ -2910,9 +2922,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
       </ModelValue>
       <ModelValue key="ModelValue_98" name="Vmax_eg_GLC (wrt astrocytes) (Aubert)" simulationType="assignment" addNoise="false">
         <MiriamAnnotation>
-<rdf:RDF
-   xmlns:dcterms="http://purl.org/dc/terms/"
-   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:RDF xmlns:dcterms="http://purl.org/dc/terms/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Description rdf:about="#ModelValue_98">
     <dcterms:created>
       <rdf:Description>
@@ -2921,7 +2931,6 @@ The reactions for the PPP have all their reaction rates set to zero so that they
     </dcterms:created>
   </rdf:Description>
 </rdf:RDF>
-
         </MiriamAnnotation>
         <Comment>
           1020 from model Aubert 2005
@@ -3348,23 +3357,23 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Modifier metabolite="Metabolite_31" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5144" name="k_HK" value="0.0154276"/>
-          <Constant key="Parameter_5146" name="ATP" value="3.18137e+20"/>
-          <Constant key="Parameter_5147" name="K_I_G6P" value="0.02"/>
+          <Constant key="Parameter_0" name="k_HK" value="0.0154276"/>
+          <Constant key="Parameter_1" name="ATP" value="3.18137e+20"/>
+          <Constant key="Parameter_2" name="K_I_G6P" value="0.02"/>
         </ListOfConstants>
-        <KineticLaw function="Function_59" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_100" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_353">
-              <SourceParameter reference="Parameter_5144"/>
+            <CallParameter functionParameter="FunctionParameter_761">
+              <SourceParameter reference="Parameter_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_352">
+            <CallParameter functionParameter="FunctionParameter_760">
               <SourceParameter reference="Metabolite_30"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_351">
+            <CallParameter functionParameter="FunctionParameter_759">
               <SourceParameter reference="Metabolite_31"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_363">
-              <SourceParameter reference="Parameter_5147"/>
+            <CallParameter functionParameter="FunctionParameter_771">
+              <SourceParameter reference="Parameter_2"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -3390,30 +3399,30 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_16" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5141" name="k_PFK" value="0.383639"/>
-          <Constant key="Parameter_5143" name="ATP" value="6.12398e+20"/>
-          <Constant key="Parameter_5142" name="K_I_ATP" value="1"/>
-          <Constant key="Parameter_5145" name="nH" value="4"/>
-          <Constant key="Parameter_5148" name="K_m_F6P" value="0.18"/>
+          <Constant key="Parameter_3" name="k_PFK" value="0.383639"/>
+          <Constant key="Parameter_4" name="ATP" value="6.12398e+20"/>
+          <Constant key="Parameter_5" name="K_I_ATP" value="1"/>
+          <Constant key="Parameter_6" name="nH" value="4"/>
+          <Constant key="Parameter_7" name="K_m_F6P" value="0.18"/>
         </ListOfConstants>
-        <KineticLaw function="Function_46" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
+        <KineticLaw function="Function_87" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_285">
-              <SourceParameter reference="Parameter_5141"/>
+            <CallParameter functionParameter="FunctionParameter_693">
+              <SourceParameter reference="Parameter_3"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_284">
+            <CallParameter functionParameter="FunctionParameter_692">
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_283">
+            <CallParameter functionParameter="FunctionParameter_691">
               <SourceParameter reference="ModelValue_4"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_282">
+            <CallParameter functionParameter="FunctionParameter_690">
               <SourceParameter reference="ModelValue_5"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_281">
+            <CallParameter functionParameter="FunctionParameter_689">
               <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_286">
+            <CallParameter functionParameter="FunctionParameter_694">
               <SourceParameter reference="ModelValue_3"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3440,30 +3449,30 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_43" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5139" name="k_PFK" value="0.280786"/>
-          <Constant key="Parameter_5137" name="ATP" value="3.18137e+20"/>
-          <Constant key="Parameter_5136" name="K_I_ATP" value="1"/>
-          <Constant key="Parameter_5140" name="nH" value="4"/>
-          <Constant key="Parameter_5138" name="K_m_F6P" value="0.18"/>
+          <Constant key="Parameter_8" name="k_PFK" value="0.280786"/>
+          <Constant key="Parameter_9" name="ATP" value="3.18137e+20"/>
+          <Constant key="Parameter_10" name="K_I_ATP" value="1"/>
+          <Constant key="Parameter_11" name="nH" value="4"/>
+          <Constant key="Parameter_12" name="K_m_F6P" value="0.18"/>
         </ListOfConstants>
-        <KineticLaw function="Function_46" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_87" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_285">
-              <SourceParameter reference="Parameter_5139"/>
+            <CallParameter functionParameter="FunctionParameter_693">
+              <SourceParameter reference="Parameter_8"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_284">
+            <CallParameter functionParameter="FunctionParameter_692">
               <SourceParameter reference="Metabolite_30"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_283">
+            <CallParameter functionParameter="FunctionParameter_691">
               <SourceParameter reference="ModelValue_4"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_282">
+            <CallParameter functionParameter="FunctionParameter_690">
               <SourceParameter reference="ModelValue_5"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_281">
+            <CallParameter functionParameter="FunctionParameter_689">
               <SourceParameter reference="Metabolite_32"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_286">
+            <CallParameter functionParameter="FunctionParameter_694">
               <SourceParameter reference="ModelValue_3"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3492,25 +3501,25 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_5" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5113" name="k_PGK" value="6.13613"/>
-          <Constant key="Parameter_5111" name="ADP" value="3.06364e+19"/>
-          <Constant key="Parameter_5110" name="NAD" value="4.51608e+19"/>
+          <Constant key="Parameter_13" name="k_PGK" value="6.13613"/>
+          <Constant key="Parameter_14" name="ADP" value="3.06364e+19"/>
+          <Constant key="Parameter_15" name="NAD" value="4.51608e+19"/>
         </ListOfConstants>
-        <KineticLaw function="Function_45" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
+        <KineticLaw function="Function_86" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_278">
-              <SourceParameter reference="Parameter_5113"/>
+            <CallParameter functionParameter="FunctionParameter_686">
+              <SourceParameter reference="Parameter_13"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_277">
+            <CallParameter functionParameter="FunctionParameter_685">
               <SourceParameter reference="Metabolite_7"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_276">
+            <CallParameter functionParameter="FunctionParameter_684">
               <SourceParameter reference="Metabolite_16"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_279">
+            <CallParameter functionParameter="FunctionParameter_687">
               <SourceParameter reference="Metabolite_19"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_280">
+            <CallParameter functionParameter="FunctionParameter_688">
               <SourceParameter reference="Metabolite_8"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3539,25 +3548,25 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_30" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5114" name="k_PGK" value="4.3855"/>
-          <Constant key="Parameter_5112" name="ADP" value="3.56799e+19"/>
-          <Constant key="Parameter_5116" name="NAD" value="2.13499e+19"/>
+          <Constant key="Parameter_16" name="k_PGK" value="4.3855"/>
+          <Constant key="Parameter_17" name="ADP" value="3.56799e+19"/>
+          <Constant key="Parameter_18" name="NAD" value="2.13499e+19"/>
         </ListOfConstants>
-        <KineticLaw function="Function_45" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_86" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_278">
-              <SourceParameter reference="Parameter_5114"/>
+            <CallParameter functionParameter="FunctionParameter_686">
+              <SourceParameter reference="Parameter_16"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_277">
+            <CallParameter functionParameter="FunctionParameter_685">
               <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_276">
+            <CallParameter functionParameter="FunctionParameter_684">
               <SourceParameter reference="Metabolite_43"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_279">
+            <CallParameter functionParameter="FunctionParameter_687">
               <SourceParameter reference="Metabolite_46"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_280">
+            <CallParameter functionParameter="FunctionParameter_688">
               <SourceParameter reference="Metabolite_34"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3584,18 +3593,18 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_10" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5131" name="k_PK" value="28.6"/>
-          <Constant key="Parameter_5119" name="ADP" value="3.06364e+19"/>
+          <Constant key="Parameter_19" name="k_PK" value="28.6"/>
+          <Constant key="Parameter_20" name="ADP" value="3.06364e+19"/>
         </ListOfConstants>
-        <KineticLaw function="Function_44" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
+        <KineticLaw function="Function_85" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_275">
+            <CallParameter functionParameter="FunctionParameter_683">
               <SourceParameter reference="ModelValue_77"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_274">
+            <CallParameter functionParameter="FunctionParameter_682">
               <SourceParameter reference="Metabolite_9"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_273">
+            <CallParameter functionParameter="FunctionParameter_681">
               <SourceParameter reference="Metabolite_16"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3622,18 +3631,18 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_36" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5133" name="k_PK" value="2.73"/>
-          <Constant key="Parameter_5134" name="ADP" value="3.56799e+19"/>
+          <Constant key="Parameter_21" name="k_PK" value="2.73"/>
+          <Constant key="Parameter_22" name="ADP" value="3.56799e+19"/>
         </ListOfConstants>
-        <KineticLaw function="Function_44" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_85" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_275">
+            <CallParameter functionParameter="FunctionParameter_683">
               <SourceParameter reference="ModelValue_78"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_274">
+            <CallParameter functionParameter="FunctionParameter_682">
               <SourceParameter reference="Metabolite_35"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_273">
+            <CallParameter functionParameter="FunctionParameter_681">
               <SourceParameter reference="Metabolite_43"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3663,40 +3672,40 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5128" name="v_max_mito" value="0.0556"/>
-          <Constant key="Parameter_5115" name="K_m_PYR" value="0.0632"/>
-          <Constant key="Parameter_5123" name="ADP" value="3.06364e+19"/>
-          <Constant key="Parameter_5130" name="K_m_ADP" value="0.00107"/>
-          <Constant key="Parameter_5117" name="K_m_O2" value="0.0029658"/>
-          <Constant key="Parameter_5129" name="ATP" value="6.12398e+20"/>
+          <Constant key="Parameter_23" name="v_max_mito" value="0.0556"/>
+          <Constant key="Parameter_24" name="K_m_PYR" value="0.0632"/>
+          <Constant key="Parameter_25" name="ADP" value="3.06364e+19"/>
+          <Constant key="Parameter_26" name="K_m_ADP" value="0.00107"/>
+          <Constant key="Parameter_27" name="K_m_O2" value="0.0029658"/>
+          <Constant key="Parameter_28" name="ATP" value="6.12398e+20"/>
         </ListOfConstants>
-        <KineticLaw function="Function_47" unitType="Default">
+        <KineticLaw function="Function_88" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_292">
-              <SourceParameter reference="Parameter_5128"/>
+            <CallParameter functionParameter="FunctionParameter_700">
+              <SourceParameter reference="Parameter_23"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_291">
+            <CallParameter functionParameter="FunctionParameter_699">
               <SourceParameter reference="Metabolite_10"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_290">
+            <CallParameter functionParameter="FunctionParameter_698">
               <SourceParameter reference="ModelValue_15"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_289">
+            <CallParameter functionParameter="FunctionParameter_697">
               <SourceParameter reference="Metabolite_16"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_288">
+            <CallParameter functionParameter="FunctionParameter_696">
               <SourceParameter reference="ModelValue_13"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_287">
+            <CallParameter functionParameter="FunctionParameter_695">
               <SourceParameter reference="Metabolite_12"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_293">
+            <CallParameter functionParameter="FunctionParameter_701">
               <SourceParameter reference="ModelValue_14"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_294">
+            <CallParameter functionParameter="FunctionParameter_702">
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_295">
+            <CallParameter functionParameter="FunctionParameter_703">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3726,40 +3735,40 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_46" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5122" name="v_max_mito" value="0.008454"/>
-          <Constant key="Parameter_5126" name="K_m_PYR" value="0.0632"/>
-          <Constant key="Parameter_5121" name="ADP" value="3.56799e+19"/>
-          <Constant key="Parameter_5125" name="K_m_ADP" value="0.00107"/>
-          <Constant key="Parameter_5124" name="K_m_O2" value="0.0029658"/>
-          <Constant key="Parameter_5127" name="ATP" value="3.18137e+20"/>
+          <Constant key="Parameter_29" name="v_max_mito" value="0.008454"/>
+          <Constant key="Parameter_30" name="K_m_PYR" value="0.0632"/>
+          <Constant key="Parameter_31" name="ADP" value="3.56799e+19"/>
+          <Constant key="Parameter_32" name="K_m_ADP" value="0.00107"/>
+          <Constant key="Parameter_33" name="K_m_O2" value="0.0029658"/>
+          <Constant key="Parameter_34" name="ATP" value="3.18137e+20"/>
         </ListOfConstants>
-        <KineticLaw function="Function_47" unitType="Default">
+        <KineticLaw function="Function_88" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_292">
-              <SourceParameter reference="Parameter_5122"/>
+            <CallParameter functionParameter="FunctionParameter_700">
+              <SourceParameter reference="Parameter_29"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_291">
+            <CallParameter functionParameter="FunctionParameter_699">
               <SourceParameter reference="Metabolite_36"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_290">
+            <CallParameter functionParameter="FunctionParameter_698">
               <SourceParameter reference="ModelValue_15"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_289">
+            <CallParameter functionParameter="FunctionParameter_697">
               <SourceParameter reference="Metabolite_43"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_288">
+            <CallParameter functionParameter="FunctionParameter_696">
               <SourceParameter reference="ModelValue_13"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_287">
+            <CallParameter functionParameter="FunctionParameter_695">
               <SourceParameter reference="Metabolite_38"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_293">
+            <CallParameter functionParameter="FunctionParameter_701">
               <SourceParameter reference="ModelValue_14"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_294">
+            <CallParameter functionParameter="FunctionParameter_702">
               <SourceParameter reference="Metabolite_30"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_295">
+            <CallParameter functionParameter="FunctionParameter_703">
               <SourceParameter reference="Compartment_2"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3787,36 +3796,36 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_12" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5132" name="PScap" value="63.6955"/>
-          <Constant key="Parameter_5118" name="Volume" value="0.45"/>
-          <Constant key="Parameter_5120" name="KO2" value="0.0361"/>
-          <Constant key="Parameter_5135" name="HbOP" value="8.6"/>
-          <Constant key="Parameter_5149" name="nh" value="2.73"/>
+          <Constant key="Parameter_35" name="PScap" value="63.6955"/>
+          <Constant key="Parameter_36" name="Volume" value="0.45"/>
+          <Constant key="Parameter_37" name="KO2" value="0.0361"/>
+          <Constant key="Parameter_38" name="HbOP" value="8.6"/>
+          <Constant key="Parameter_39" name="nh" value="2.73"/>
         </ListOfConstants>
-        <KineticLaw function="Function_55" unitType="Default">
+        <KineticLaw function="Function_96" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_338">
+            <CallParameter functionParameter="FunctionParameter_746">
               <SourceParameter reference="ModelValue_113"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_337">
+            <CallParameter functionParameter="FunctionParameter_745">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_336">
+            <CallParameter functionParameter="FunctionParameter_744">
               <SourceParameter reference="ModelValue_114"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_335">
+            <CallParameter functionParameter="FunctionParameter_743">
               <SourceParameter reference="ModelValue_45"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_326">
+            <CallParameter functionParameter="FunctionParameter_734">
               <SourceParameter reference="Metabolite_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_339">
+            <CallParameter functionParameter="FunctionParameter_747">
               <SourceParameter reference="ModelValue_115"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_340">
+            <CallParameter functionParameter="FunctionParameter_748">
               <SourceParameter reference="Metabolite_12"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_341">
+            <CallParameter functionParameter="FunctionParameter_749">
               <SourceParameter reference="Compartment_0"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3841,36 +3850,36 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_38" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5150" name="PScap" value="4.70455"/>
-          <Constant key="Parameter_5156" name="Volume" value="0.25"/>
-          <Constant key="Parameter_5155" name="KO2" value="0.0361"/>
-          <Constant key="Parameter_5157" name="HbOP" value="8.6"/>
-          <Constant key="Parameter_5154" name="nh" value="2.73"/>
+          <Constant key="Parameter_40" name="PScap" value="4.70455"/>
+          <Constant key="Parameter_41" name="Volume" value="0.25"/>
+          <Constant key="Parameter_42" name="KO2" value="0.0361"/>
+          <Constant key="Parameter_43" name="HbOP" value="8.6"/>
+          <Constant key="Parameter_44" name="nh" value="2.73"/>
         </ListOfConstants>
-        <KineticLaw function="Function_55" unitType="Default">
+        <KineticLaw function="Function_96" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_338">
+            <CallParameter functionParameter="FunctionParameter_746">
               <SourceParameter reference="ModelValue_112"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_337">
+            <CallParameter functionParameter="FunctionParameter_745">
               <SourceParameter reference="Compartment_2"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_336">
+            <CallParameter functionParameter="FunctionParameter_744">
               <SourceParameter reference="ModelValue_114"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_335">
+            <CallParameter functionParameter="FunctionParameter_743">
               <SourceParameter reference="ModelValue_45"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_326">
+            <CallParameter functionParameter="FunctionParameter_734">
               <SourceParameter reference="Metabolite_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_339">
+            <CallParameter functionParameter="FunctionParameter_747">
               <SourceParameter reference="ModelValue_115"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_340">
+            <CallParameter functionParameter="FunctionParameter_748">
               <SourceParameter reference="Metabolite_38"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_341">
+            <CallParameter functionParameter="FunctionParameter_749">
               <SourceParameter reference="Compartment_0"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3895,24 +3904,24 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_0" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5153" name="F_in" value="0.012"/>
-          <Constant key="Parameter_5152" name="V_c" value="0.0055"/>
+          <Constant key="Parameter_45" name="F_in" value="0.012"/>
+          <Constant key="Parameter_46" name="V_c" value="0.0055"/>
         </ListOfConstants>
-        <KineticLaw function="Function_54" unitType="Default">
+        <KineticLaw function="Function_95" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_334">
+            <CallParameter functionParameter="FunctionParameter_742">
               <SourceParameter reference="ModelValue_41"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_333">
+            <CallParameter functionParameter="FunctionParameter_741">
               <SourceParameter reference="Compartment_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_323">
+            <CallParameter functionParameter="FunctionParameter_731">
               <SourceParameter reference="Compartment_5"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_324">
+            <CallParameter functionParameter="FunctionParameter_732">
               <SourceParameter reference="Metabolite_58"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_325">
+            <CallParameter functionParameter="FunctionParameter_733">
               <SourceParameter reference="Metabolite_0"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3937,24 +3946,24 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_59" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5151" name="F_in" value="0.012"/>
-          <Constant key="Parameter_5158" name="V_c" value="0.0055"/>
+          <Constant key="Parameter_47" name="F_in" value="0.012"/>
+          <Constant key="Parameter_48" name="V_c" value="0.0055"/>
         </ListOfConstants>
-        <KineticLaw function="Function_54" unitType="Default">
+        <KineticLaw function="Function_95" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_334">
+            <CallParameter functionParameter="FunctionParameter_742">
               <SourceParameter reference="ModelValue_41"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_333">
+            <CallParameter functionParameter="FunctionParameter_741">
               <SourceParameter reference="Compartment_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_323">
+            <CallParameter functionParameter="FunctionParameter_731">
               <SourceParameter reference="Compartment_0"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_324">
+            <CallParameter functionParameter="FunctionParameter_732">
               <SourceParameter reference="Metabolite_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_325">
+            <CallParameter functionParameter="FunctionParameter_733">
               <SourceParameter reference="Metabolite_59"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -3980,29 +3989,29 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_16" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5162" name="Sm" value="40500"/>
-          <Constant key="Parameter_5160" name="k_pump" value="3.17e-07"/>
-          <Constant key="Parameter_5159" name="Km_pump" value="0.4243"/>
-          <Constant key="Parameter_5163" name="Volume" value="0.45"/>
+          <Constant key="Parameter_49" name="Sm" value="40500"/>
+          <Constant key="Parameter_50" name="k_pump" value="3.17e-07"/>
+          <Constant key="Parameter_51" name="Km_pump" value="0.4243"/>
+          <Constant key="Parameter_52" name="Volume" value="0.45"/>
         </ListOfConstants>
-        <KineticLaw function="Function_57" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
+        <KineticLaw function="Function_98" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_359">
+            <CallParameter functionParameter="FunctionParameter_767">
               <SourceParameter reference="ModelValue_48"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_358">
+            <CallParameter functionParameter="FunctionParameter_766">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_357">
+            <CallParameter functionParameter="FunctionParameter_765">
               <SourceParameter reference="ModelValue_49"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_356">
+            <CallParameter functionParameter="FunctionParameter_764">
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_355">
+            <CallParameter functionParameter="FunctionParameter_763">
               <SourceParameter reference="Metabolite_14"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_354">
+            <CallParameter functionParameter="FunctionParameter_762">
               <SourceParameter reference="ModelValue_50"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -4028,29 +4037,29 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_43" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5161" name="Sm" value="10500"/>
-          <Constant key="Parameter_5165" name="k_pump" value="3.17e-07"/>
-          <Constant key="Parameter_5167" name="Km_pump" value="0.4243"/>
-          <Constant key="Parameter_5168" name="Volume" value="0.25"/>
+          <Constant key="Parameter_53" name="Sm" value="10500"/>
+          <Constant key="Parameter_54" name="k_pump" value="3.17e-07"/>
+          <Constant key="Parameter_55" name="Km_pump" value="0.4243"/>
+          <Constant key="Parameter_56" name="Volume" value="0.25"/>
         </ListOfConstants>
-        <KineticLaw function="Function_57" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_98" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_359">
+            <CallParameter functionParameter="FunctionParameter_767">
               <SourceParameter reference="ModelValue_47"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_358">
+            <CallParameter functionParameter="FunctionParameter_766">
               <SourceParameter reference="Compartment_2"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_357">
+            <CallParameter functionParameter="FunctionParameter_765">
               <SourceParameter reference="ModelValue_49"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_356">
+            <CallParameter functionParameter="FunctionParameter_764">
               <SourceParameter reference="Metabolite_30"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_355">
+            <CallParameter functionParameter="FunctionParameter_763">
               <SourceParameter reference="Metabolite_40"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_354">
+            <CallParameter functionParameter="FunctionParameter_762">
               <SourceParameter reference="ModelValue_50"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -4075,21 +4084,21 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_41" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5164" name="v_max" value="0.0001528"/>
-          <Constant key="Parameter_5166" name="K_m_G6P" value="0.5"/>
+          <Constant key="Parameter_57" name="v_max" value="0.0001528"/>
+          <Constant key="Parameter_58" name="K_m_G6P" value="0.5"/>
         </ListOfConstants>
-        <KineticLaw function="Function_40" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_81" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_264">
+            <CallParameter functionParameter="FunctionParameter_677">
               <SourceParameter reference="ModelValue_51"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_263">
+            <CallParameter functionParameter="FunctionParameter_676">
               <SourceParameter reference="Metabolite_31"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_262">
+            <CallParameter functionParameter="FunctionParameter_675">
               <SourceParameter reference="ModelValue_52"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_261">
+            <CallParameter functionParameter="FunctionParameter_674">
               <SourceParameter reference="Metabolite_41"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -4114,18 +4123,18 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_31" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5171" name="v_max" value="4.922e-05"/>
-          <Constant key="Parameter_5172" name="Km_GLY" value="1"/>
+          <Constant key="Parameter_59" name="v_max" value="4.922e-05"/>
+          <Constant key="Parameter_60" name="Km_GLY" value="1"/>
         </ListOfConstants>
-        <KineticLaw function="Function_58" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_99" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_362">
+            <CallParameter functionParameter="FunctionParameter_770">
               <SourceParameter reference="ModelValue_56"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_361">
+            <CallParameter functionParameter="FunctionParameter_769">
               <SourceParameter reference="Metabolite_41"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_360">
+            <CallParameter functionParameter="FunctionParameter_768">
               <SourceParameter reference="ModelValue_57"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -4150,40 +4159,40 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_14" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5173" name="Sm" value="40500"/>
-          <Constant key="Parameter_5169" name="gNA" value="0.0039"/>
-          <Constant key="Parameter_5170" name="F" value="96500"/>
-          <Constant key="Parameter_5174" name="RT" value="2.57734e+06"/>
-          <Constant key="Parameter_5176" name="Vm" value="-70"/>
-          <Constant key="Parameter_5175" name="Volume" value="0.45"/>
+          <Constant key="Parameter_61" name="Sm" value="40500"/>
+          <Constant key="Parameter_62" name="gNA" value="0.0039"/>
+          <Constant key="Parameter_63" name="F" value="96500"/>
+          <Constant key="Parameter_64" name="RT" value="2.57734e+06"/>
+          <Constant key="Parameter_65" name="Vm" value="-70"/>
+          <Constant key="Parameter_66" name="Volume" value="0.45"/>
         </ListOfConstants>
-        <KineticLaw function="Function_56" unitType="Default">
+        <KineticLaw function="Function_97" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_349">
+            <CallParameter functionParameter="FunctionParameter_757">
               <SourceParameter reference="ModelValue_48"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_348">
+            <CallParameter functionParameter="FunctionParameter_756">
               <SourceParameter reference="ModelValue_58"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_347">
+            <CallParameter functionParameter="FunctionParameter_755">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_346">
+            <CallParameter functionParameter="FunctionParameter_754">
               <SourceParameter reference="ModelValue_62"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_345">
+            <CallParameter functionParameter="FunctionParameter_753">
               <SourceParameter reference="ModelValue_61"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_344">
+            <CallParameter functionParameter="FunctionParameter_752">
               <SourceParameter reference="Metabolite_57"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_343">
+            <CallParameter functionParameter="FunctionParameter_751">
               <SourceParameter reference="Metabolite_14"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_342">
+            <CallParameter functionParameter="FunctionParameter_750">
               <SourceParameter reference="ModelValue_60"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_350">
+            <CallParameter functionParameter="FunctionParameter_758">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -4208,40 +4217,40 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_40" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5177" name="Sm" value="10500"/>
-          <Constant key="Parameter_5178" name="gNA" value="0.00325"/>
-          <Constant key="Parameter_5179" name="F" value="96500"/>
-          <Constant key="Parameter_5180" name="RT" value="2.57734e+06"/>
-          <Constant key="Parameter_5185" name="Vm" value="-70"/>
-          <Constant key="Parameter_5188" name="Volume" value="0.25"/>
+          <Constant key="Parameter_67" name="Sm" value="10500"/>
+          <Constant key="Parameter_68" name="gNA" value="0.00325"/>
+          <Constant key="Parameter_69" name="F" value="96500"/>
+          <Constant key="Parameter_70" name="RT" value="2.57734e+06"/>
+          <Constant key="Parameter_71" name="Vm" value="-70"/>
+          <Constant key="Parameter_72" name="Volume" value="0.25"/>
         </ListOfConstants>
-        <KineticLaw function="Function_56" unitType="Default">
+        <KineticLaw function="Function_97" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_349">
+            <CallParameter functionParameter="FunctionParameter_757">
               <SourceParameter reference="ModelValue_47"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_348">
+            <CallParameter functionParameter="FunctionParameter_756">
               <SourceParameter reference="ModelValue_59"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_347">
+            <CallParameter functionParameter="FunctionParameter_755">
               <SourceParameter reference="Compartment_2"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_346">
+            <CallParameter functionParameter="FunctionParameter_754">
               <SourceParameter reference="ModelValue_62"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_345">
+            <CallParameter functionParameter="FunctionParameter_753">
               <SourceParameter reference="ModelValue_61"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_344">
+            <CallParameter functionParameter="FunctionParameter_752">
               <SourceParameter reference="Metabolite_57"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_343">
+            <CallParameter functionParameter="FunctionParameter_751">
               <SourceParameter reference="Metabolite_40"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_342">
+            <CallParameter functionParameter="FunctionParameter_750">
               <SourceParameter reference="ModelValue_60"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_350">
+            <CallParameter functionParameter="FunctionParameter_758">
               <SourceParameter reference="Compartment_2"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -4266,14 +4275,14 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_14" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5187" name="vstim" value="-0"/>
+          <Constant key="Parameter_73" name="vstim" value="-0"/>
         </ListOfConstants>
-        <KineticLaw function="Function_51" unitType="Default">
+        <KineticLaw function="Function_92" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_315">
+            <CallParameter functionParameter="FunctionParameter_723">
               <SourceParameter reference="ModelValue_68"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_314">
+            <CallParameter functionParameter="FunctionParameter_722">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -4301,25 +4310,25 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_56" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5186" name="vSTIM" value="-0"/>
-          <Constant key="Parameter_5181" name="ratio_Na_GLU" value="0.075"/>
-          <Constant key="Parameter_5183" name="Km_GLU" value="0.05"/>
+          <Constant key="Parameter_74" name="vSTIM" value="-0"/>
+          <Constant key="Parameter_75" name="ratio_Na_GLU" value="0.075"/>
+          <Constant key="Parameter_76" name="Km_GLU" value="0.05"/>
         </ListOfConstants>
-        <KineticLaw function="Function_50" unitType="Default">
+        <KineticLaw function="Function_91" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_311">
+            <CallParameter functionParameter="FunctionParameter_719">
               <SourceParameter reference="ModelValue_68"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_310">
+            <CallParameter functionParameter="FunctionParameter_718">
               <SourceParameter reference="ModelValue_69"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_309">
+            <CallParameter functionParameter="FunctionParameter_717">
               <SourceParameter reference="Metabolite_15"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_308">
+            <CallParameter functionParameter="FunctionParameter_716">
               <SourceParameter reference="ModelValue_71"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_307">
+            <CallParameter functionParameter="FunctionParameter_715">
               <SourceParameter reference="Compartment_1"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -4345,21 +4354,21 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_40" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5182" name="Vmax_GLU" value="0.026"/>
-          <Constant key="Parameter_5193" name="K_m_GLU" value="0.05"/>
+          <Constant key="Parameter_77" name="Vmax_GLU" value="0.026"/>
+          <Constant key="Parameter_78" name="K_m_GLU" value="0.05"/>
         </ListOfConstants>
-        <KineticLaw function="Function_48" unitType="Default">
+        <KineticLaw function="Function_89" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_304">
+            <CallParameter functionParameter="FunctionParameter_712">
               <SourceParameter reference="ModelValue_95"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_303">
+            <CallParameter functionParameter="FunctionParameter_711">
               <SourceParameter reference="Metabolite_56"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_302">
+            <CallParameter functionParameter="FunctionParameter_710">
               <SourceParameter reference="ModelValue_71"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_301">
+            <CallParameter functionParameter="FunctionParameter_709">
               <SourceParameter reference="Compartment_3"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -4386,28 +4395,28 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_43" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5190" name="Vmax_GLU" value="0.3"/>
-          <Constant key="Parameter_5191" name="K_m_GLU" value="0.05"/>
-          <Constant key="Parameter_5192" name="K_m_ATP" value="0.01532"/>
+          <Constant key="Parameter_79" name="Vmax_GLU" value="0.3"/>
+          <Constant key="Parameter_80" name="K_m_GLU" value="0.05"/>
+          <Constant key="Parameter_81" name="K_m_ATP" value="0.01532"/>
         </ListOfConstants>
-        <KineticLaw function="Function_49" unitType="Default">
+        <KineticLaw function="Function_90" unitType="Default">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_297">
+            <CallParameter functionParameter="FunctionParameter_705">
               <SourceParameter reference="ModelValue_72"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_298">
+            <CallParameter functionParameter="FunctionParameter_706">
               <SourceParameter reference="Metabolite_42"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_299">
+            <CallParameter functionParameter="FunctionParameter_707">
               <SourceParameter reference="ModelValue_71"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_300">
+            <CallParameter functionParameter="FunctionParameter_708">
               <SourceParameter reference="Metabolite_30"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_296">
+            <CallParameter functionParameter="FunctionParameter_704">
               <SourceParameter reference="ModelValue_12"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_305">
+            <CallParameter functionParameter="FunctionParameter_713">
               <SourceParameter reference="Compartment_2"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -4433,17 +4442,17 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Modifier metabolite="Metabolite_0" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_5184" name="F_in" value="0.012"/>
+          <Constant key="Parameter_82" name="F_in" value="0.012"/>
         </ListOfConstants>
-        <KineticLaw function="Function_41" unitType="ConcentrationPerTime" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary]">
+        <KineticLaw function="Function_82" unitType="ConcentrationPerTime" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_267">
+            <CallParameter functionParameter="FunctionParameter_670">
               <SourceParameter reference="ModelValue_41"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_266">
+            <CallParameter functionParameter="FunctionParameter_671">
               <SourceParameter reference="Metabolite_58"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_265">
+            <CallParameter functionParameter="FunctionParameter_672">
               <SourceParameter reference="Metabolite_0"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -4465,17 +4474,17 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Substrate metabolite="Metabolite_2" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_5189" name="F_out" value="0.012"/>
+          <Constant key="Parameter_83" name="F_out" value="0.012"/>
         </ListOfConstants>
-        <KineticLaw function="Function_42" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary]">
+        <KineticLaw function="Function_83" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_269">
+            <CallParameter functionParameter="FunctionParameter_668">
               <SourceParameter reference="ModelValue_42"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_268">
+            <CallParameter functionParameter="FunctionParameter_669">
               <SourceParameter reference="Metabolite_2"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_250">
+            <CallParameter functionParameter="FunctionParameter_673">
               <SourceParameter reference="Compartment_4"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -4500,18 +4509,18 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_16" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5195" name="VmaxATPase" value="0.0490284"/>
-          <Constant key="Parameter_5222" name="Km_ATP" value="0.001"/>
+          <Constant key="Parameter_84" name="VmaxATPase" value="0.0490284"/>
+          <Constant key="Parameter_85" name="Km_ATP" value="0.001"/>
         </ListOfConstants>
-        <KineticLaw function="Function_43" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
+        <KineticLaw function="Function_84" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_272">
-              <SourceParameter reference="Parameter_5195"/>
+            <CallParameter functionParameter="FunctionParameter_680">
+              <SourceParameter reference="Parameter_84"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_271">
+            <CallParameter functionParameter="FunctionParameter_679">
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_270">
+            <CallParameter functionParameter="FunctionParameter_678">
               <SourceParameter reference="ModelValue_76"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -4536,18 +4545,18 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_43" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5265" name="VmaxATPase" value="0.0357804"/>
-          <Constant key="Parameter_5194" name="Km_ATP" value="0.001"/>
+          <Constant key="Parameter_86" name="VmaxATPase" value="0.0357804"/>
+          <Constant key="Parameter_87" name="Km_ATP" value="0.001"/>
         </ListOfConstants>
-        <KineticLaw function="Function_43" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_84" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_272">
-              <SourceParameter reference="Parameter_5265"/>
+            <CallParameter functionParameter="FunctionParameter_680">
+              <SourceParameter reference="Parameter_86"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_271">
+            <CallParameter functionParameter="FunctionParameter_679">
               <SourceParameter reference="Metabolite_30"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_270">
+            <CallParameter functionParameter="FunctionParameter_678">
               <SourceParameter reference="ModelValue_76"/>
             </CallParameter>
           </ListOfCallParameters>
@@ -4573,20 +4582,20 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_17" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5196" name="k1" value="1000"/>
-          <Constant key="Parameter_5260" name="k2" value="920"/>
+          <Constant key="Parameter_88" name="k1" value="1000"/>
+          <Constant key="Parameter_89" name="k2" value="920"/>
         </ListOfConstants>
         <KineticLaw function="Function_14" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_69">
-              <SourceParameter reference="Parameter_5196"/>
+              <SourceParameter reference="Parameter_88"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_68">
               <SourceParameter reference="Metabolite_16"/>
               <SourceParameter reference="Metabolite_16"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_78">
-              <SourceParameter reference="Parameter_5260"/>
+              <SourceParameter reference="Parameter_89"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_5"/>
@@ -4615,20 +4624,20 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_44" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5261" name="k1" value="1000"/>
-          <Constant key="Parameter_5259" name="k2" value="920"/>
+          <Constant key="Parameter_90" name="k1" value="1000"/>
+          <Constant key="Parameter_91" name="k2" value="920"/>
         </ListOfConstants>
         <KineticLaw function="Function_14" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_69">
-              <SourceParameter reference="Parameter_5261"/>
+              <SourceParameter reference="Parameter_90"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_68">
               <SourceParameter reference="Metabolite_43"/>
               <SourceParameter reference="Metabolite_43"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_78">
-              <SourceParameter reference="Parameter_5259"/>
+              <SourceParameter reference="Parameter_91"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_30"/>
@@ -4658,8 +4667,8 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_45" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5262" name="k1" value="0.0243"/>
-          <Constant key="Parameter_5199" name="k2" value="0.02073"/>
+          <Constant key="Parameter_92" name="k1" value="0.0243"/>
+          <Constant key="Parameter_93" name="k2" value="0.02073"/>
         </ListOfConstants>
         <KineticLaw function="Function_14" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
@@ -4701,8 +4710,8 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_18" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5198" name="k1" value="0.0524681"/>
-          <Constant key="Parameter_5197" name="k2" value="0.015"/>
+          <Constant key="Parameter_94" name="k1" value="0.0524681"/>
+          <Constant key="Parameter_95" name="k2" value="0.015"/>
         </ListOfConstants>
         <KineticLaw function="Function_14" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
@@ -4744,8 +4753,8 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_46" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5203" name="k1" value="6.26"/>
-          <Constant key="Parameter_5201" name="k2" value="0.547"/>
+          <Constant key="Parameter_96" name="k1" value="6.26"/>
+          <Constant key="Parameter_97" name="k2" value="0.547"/>
         </ListOfConstants>
         <KineticLaw function="Function_14" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
@@ -4787,8 +4796,8 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_19" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5200" name="k1" value="5.3"/>
-          <Constant key="Parameter_5204" name="k2" value="0.1046"/>
+          <Constant key="Parameter_98" name="k1" value="5.3"/>
+          <Constant key="Parameter_99" name="k2" value="0.1046"/>
         </ListOfConstants>
         <KineticLaw function="Function_14" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
@@ -4830,44 +4839,44 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_55" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5202" name="Vmax" value="0.29057"/>
-          <Constant key="Parameter_5208" name="K_S1" value="6.91392e-05"/>
-          <Constant key="Parameter_5210" name="K_S2" value="1.31616e-05"/>
-          <Constant key="Parameter_5211" name="Keq" value="22906.4"/>
-          <Constant key="Parameter_5205" name="K_P1" value="0.0180932"/>
-          <Constant key="Parameter_5207" name="K_P2" value="0.00050314"/>
+          <Constant key="Parameter_100" name="Vmax" value="0.29057"/>
+          <Constant key="Parameter_101" name="K_S1" value="6.91392e-05"/>
+          <Constant key="Parameter_102" name="K_S2" value="1.31616e-05"/>
+          <Constant key="Parameter_103" name="Keq" value="22906.4"/>
+          <Constant key="Parameter_104" name="K_P1" value="0.0180932"/>
+          <Constant key="Parameter_105" name="K_P2" value="0.00050314"/>
         </ListOfConstants>
-        <KineticLaw function="Function_52" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_93" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_312">
-              <SourceParameter reference="Parameter_5202"/>
+            <CallParameter functionParameter="FunctionParameter_720">
+              <SourceParameter reference="Parameter_100"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_313">
-              <SourceParameter reference="Parameter_5208"/>
+            <CallParameter functionParameter="FunctionParameter_721">
+              <SourceParameter reference="Parameter_101"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_306">
-              <SourceParameter reference="Parameter_5210"/>
+            <CallParameter functionParameter="FunctionParameter_714">
+              <SourceParameter reference="Parameter_102"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_316">
+            <CallParameter functionParameter="FunctionParameter_724">
               <SourceParameter reference="Metabolite_31"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_317">
+            <CallParameter functionParameter="FunctionParameter_725">
               <SourceParameter reference="Metabolite_54"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_318">
+            <CallParameter functionParameter="FunctionParameter_726">
               <SourceParameter reference="Metabolite_47"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_319">
+            <CallParameter functionParameter="FunctionParameter_727">
               <SourceParameter reference="Metabolite_55"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_320">
-              <SourceParameter reference="Parameter_5211"/>
+            <CallParameter functionParameter="FunctionParameter_728">
+              <SourceParameter reference="Parameter_103"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_321">
-              <SourceParameter reference="Parameter_5205"/>
+            <CallParameter functionParameter="FunctionParameter_729">
+              <SourceParameter reference="Parameter_104"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_322">
-              <SourceParameter reference="Parameter_5207"/>
+            <CallParameter functionParameter="FunctionParameter_730">
+              <SourceParameter reference="Parameter_105"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -4893,44 +4902,44 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_27" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5206" name="Vmax" value="0.586458"/>
-          <Constant key="Parameter_5209" name="K_S1" value="6.91392e-05"/>
-          <Constant key="Parameter_5212" name="K_S2" value="1.31616e-05"/>
-          <Constant key="Parameter_5221" name="Keq" value="22906.4"/>
-          <Constant key="Parameter_5218" name="K_P1" value="0.0180932"/>
-          <Constant key="Parameter_5217" name="K_P2" value="0.00050314"/>
+          <Constant key="Parameter_106" name="Vmax" value="0.586458"/>
+          <Constant key="Parameter_107" name="K_S1" value="6.91392e-05"/>
+          <Constant key="Parameter_108" name="K_S2" value="1.31616e-05"/>
+          <Constant key="Parameter_109" name="Keq" value="22906.4"/>
+          <Constant key="Parameter_110" name="K_P1" value="0.0180932"/>
+          <Constant key="Parameter_111" name="K_P2" value="0.00050314"/>
         </ListOfConstants>
-        <KineticLaw function="Function_52" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
+        <KineticLaw function="Function_93" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_312">
-              <SourceParameter reference="Parameter_5206"/>
+            <CallParameter functionParameter="FunctionParameter_720">
+              <SourceParameter reference="Parameter_106"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_313">
-              <SourceParameter reference="Parameter_5209"/>
+            <CallParameter functionParameter="FunctionParameter_721">
+              <SourceParameter reference="Parameter_107"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_306">
-              <SourceParameter reference="Parameter_5212"/>
+            <CallParameter functionParameter="FunctionParameter_714">
+              <SourceParameter reference="Parameter_108"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_316">
+            <CallParameter functionParameter="FunctionParameter_724">
               <SourceParameter reference="Metabolite_4"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_317">
+            <CallParameter functionParameter="FunctionParameter_725">
               <SourceParameter reference="Metabolite_28"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_318">
+            <CallParameter functionParameter="FunctionParameter_726">
               <SourceParameter reference="Metabolite_20"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_319">
+            <CallParameter functionParameter="FunctionParameter_727">
               <SourceParameter reference="Metabolite_27"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_320">
-              <SourceParameter reference="Parameter_5221"/>
+            <CallParameter functionParameter="FunctionParameter_728">
+              <SourceParameter reference="Parameter_109"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_321">
-              <SourceParameter reference="Parameter_5218"/>
+            <CallParameter functionParameter="FunctionParameter_729">
+              <SourceParameter reference="Parameter_110"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_322">
-              <SourceParameter reference="Parameter_5217"/>
+            <CallParameter functionParameter="FunctionParameter_730">
+              <SourceParameter reference="Parameter_111"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -4954,30 +4963,30 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_21" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5219" name="Vmax" value="0.372782"/>
-          <Constant key="Parameter_5214" name="K_S1" value="0.0180932"/>
-          <Constant key="Parameter_5213" name="Keq" value="531174"/>
-          <Constant key="Parameter_5215" name="K_P1" value="2.28618"/>
+          <Constant key="Parameter_112" name="Vmax" value="0.372782"/>
+          <Constant key="Parameter_113" name="K_S1" value="0.0180932"/>
+          <Constant key="Parameter_114" name="Keq" value="531174"/>
+          <Constant key="Parameter_115" name="K_P1" value="2.28618"/>
         </ListOfConstants>
-        <KineticLaw function="Function_53" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
+        <KineticLaw function="Function_94" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_332">
-              <SourceParameter reference="Parameter_5219"/>
+            <CallParameter functionParameter="FunctionParameter_740">
+              <SourceParameter reference="Parameter_112"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_331">
-              <SourceParameter reference="Parameter_5214"/>
+            <CallParameter functionParameter="FunctionParameter_739">
+              <SourceParameter reference="Parameter_113"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_330">
+            <CallParameter functionParameter="FunctionParameter_738">
               <SourceParameter reference="Metabolite_20"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_329">
+            <CallParameter functionParameter="FunctionParameter_737">
               <SourceParameter reference="Metabolite_21"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_328">
-              <SourceParameter reference="Parameter_5213"/>
+            <CallParameter functionParameter="FunctionParameter_736">
+              <SourceParameter reference="Parameter_114"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_327">
-              <SourceParameter reference="Parameter_5215"/>
+            <CallParameter functionParameter="FunctionParameter_735">
+              <SourceParameter reference="Parameter_115"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -5001,30 +5010,30 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_48" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5220" name="Vmax" value="0.184701"/>
-          <Constant key="Parameter_5216" name="K_S1" value="0.0180932"/>
-          <Constant key="Parameter_5104" name="Keq" value="531174"/>
-          <Constant key="Parameter_5100" name="K_P1" value="2.28618"/>
+          <Constant key="Parameter_116" name="Vmax" value="0.184701"/>
+          <Constant key="Parameter_117" name="K_S1" value="0.0180932"/>
+          <Constant key="Parameter_118" name="Keq" value="531174"/>
+          <Constant key="Parameter_119" name="K_P1" value="2.28618"/>
         </ListOfConstants>
-        <KineticLaw function="Function_53" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_94" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_332">
-              <SourceParameter reference="Parameter_5220"/>
+            <CallParameter functionParameter="FunctionParameter_740">
+              <SourceParameter reference="Parameter_116"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_331">
-              <SourceParameter reference="Parameter_5216"/>
+            <CallParameter functionParameter="FunctionParameter_739">
+              <SourceParameter reference="Parameter_117"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_330">
+            <CallParameter functionParameter="FunctionParameter_738">
               <SourceParameter reference="Metabolite_47"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_329">
+            <CallParameter functionParameter="FunctionParameter_737">
               <SourceParameter reference="Metabolite_48"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_328">
-              <SourceParameter reference="Parameter_5104"/>
+            <CallParameter functionParameter="FunctionParameter_736">
+              <SourceParameter reference="Parameter_118"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_327">
-              <SourceParameter reference="Parameter_5100"/>
+            <CallParameter functionParameter="FunctionParameter_735">
+              <SourceParameter reference="Parameter_119"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -5050,44 +5059,44 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_27" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5099" name="Vmax" value="2.65764"/>
-          <Constant key="Parameter_5107" name="K_S1" value="3.23421e-05"/>
-          <Constant key="Parameter_5106" name="K_S2" value="3.11043e-06"/>
-          <Constant key="Parameter_5102" name="Keq" value="4.0852e+07"/>
-          <Constant key="Parameter_5108" name="K_P1" value="0.0537179"/>
-          <Constant key="Parameter_5105" name="K_P2" value="0.00050314"/>
+          <Constant key="Parameter_120" name="Vmax" value="2.65764"/>
+          <Constant key="Parameter_121" name="K_S1" value="3.23421e-05"/>
+          <Constant key="Parameter_122" name="K_S2" value="3.11043e-06"/>
+          <Constant key="Parameter_123" name="Keq" value="4.0852e+07"/>
+          <Constant key="Parameter_124" name="K_P1" value="0.0537179"/>
+          <Constant key="Parameter_125" name="K_P2" value="0.00050314"/>
         </ListOfConstants>
-        <KineticLaw function="Function_52" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
+        <KineticLaw function="Function_93" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_312">
-              <SourceParameter reference="Parameter_5099"/>
+            <CallParameter functionParameter="FunctionParameter_720">
+              <SourceParameter reference="Parameter_120"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_313">
-              <SourceParameter reference="Parameter_5107"/>
+            <CallParameter functionParameter="FunctionParameter_721">
+              <SourceParameter reference="Parameter_121"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_306">
-              <SourceParameter reference="Parameter_5106"/>
+            <CallParameter functionParameter="FunctionParameter_714">
+              <SourceParameter reference="Parameter_122"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_316">
+            <CallParameter functionParameter="FunctionParameter_724">
               <SourceParameter reference="Metabolite_21"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_317">
+            <CallParameter functionParameter="FunctionParameter_725">
               <SourceParameter reference="Metabolite_28"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_318">
+            <CallParameter functionParameter="FunctionParameter_726">
               <SourceParameter reference="Metabolite_22"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_319">
+            <CallParameter functionParameter="FunctionParameter_727">
               <SourceParameter reference="Metabolite_27"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_320">
-              <SourceParameter reference="Parameter_5102"/>
+            <CallParameter functionParameter="FunctionParameter_728">
+              <SourceParameter reference="Parameter_123"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_321">
-              <SourceParameter reference="Parameter_5108"/>
+            <CallParameter functionParameter="FunctionParameter_729">
+              <SourceParameter reference="Parameter_124"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_322">
-              <SourceParameter reference="Parameter_5105"/>
+            <CallParameter functionParameter="FunctionParameter_730">
+              <SourceParameter reference="Parameter_125"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -5113,44 +5122,44 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_55" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5097" name="Vmax" value="1.31677"/>
-          <Constant key="Parameter_5098" name="K_S1" value="3.23421e-05"/>
-          <Constant key="Parameter_5096" name="K_S2" value="3.11043e-06"/>
-          <Constant key="Parameter_5101" name="Keq" value="4.0852e+07"/>
-          <Constant key="Parameter_5103" name="K_P1" value="0.00050314"/>
-          <Constant key="Parameter_5257" name="K_P2" value="0.0537179"/>
+          <Constant key="Parameter_126" name="Vmax" value="1.31677"/>
+          <Constant key="Parameter_127" name="K_S1" value="3.23421e-05"/>
+          <Constant key="Parameter_128" name="K_S2" value="3.11043e-06"/>
+          <Constant key="Parameter_129" name="Keq" value="4.0852e+07"/>
+          <Constant key="Parameter_130" name="K_P1" value="0.00050314"/>
+          <Constant key="Parameter_131" name="K_P2" value="0.0537179"/>
         </ListOfConstants>
-        <KineticLaw function="Function_52" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_93" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_312">
-              <SourceParameter reference="Parameter_5097"/>
+            <CallParameter functionParameter="FunctionParameter_720">
+              <SourceParameter reference="Parameter_126"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_313">
-              <SourceParameter reference="Parameter_5098"/>
+            <CallParameter functionParameter="FunctionParameter_721">
+              <SourceParameter reference="Parameter_127"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_306">
-              <SourceParameter reference="Parameter_5096"/>
+            <CallParameter functionParameter="FunctionParameter_714">
+              <SourceParameter reference="Parameter_128"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_316">
+            <CallParameter functionParameter="FunctionParameter_724">
               <SourceParameter reference="Metabolite_48"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_317">
+            <CallParameter functionParameter="FunctionParameter_725">
               <SourceParameter reference="Metabolite_54"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_318">
+            <CallParameter functionParameter="FunctionParameter_726">
               <SourceParameter reference="Metabolite_49"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_319">
+            <CallParameter functionParameter="FunctionParameter_727">
               <SourceParameter reference="Metabolite_55"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_320">
-              <SourceParameter reference="Parameter_5101"/>
+            <CallParameter functionParameter="FunctionParameter_728">
+              <SourceParameter reference="Parameter_129"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_321">
-              <SourceParameter reference="Parameter_5103"/>
+            <CallParameter functionParameter="FunctionParameter_729">
+              <SourceParameter reference="Parameter_130"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_322">
-              <SourceParameter reference="Parameter_5257"/>
+            <CallParameter functionParameter="FunctionParameter_730">
+              <SourceParameter reference="Parameter_131"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -5174,30 +5183,30 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_23" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_5258" name="Vmax" value="0.0156605"/>
-          <Constant key="Parameter_4961" name="K_S1" value="0.0537179"/>
-          <Constant key="Parameter_4960" name="Keq" value="39.2574"/>
-          <Constant key="Parameter_4959" name="K_P1" value="0.603002"/>
+          <Constant key="Parameter_132" name="Vmax" value="0.0156605"/>
+          <Constant key="Parameter_133" name="K_S1" value="0.0537179"/>
+          <Constant key="Parameter_134" name="Keq" value="39.2574"/>
+          <Constant key="Parameter_135" name="K_P1" value="0.603002"/>
         </ListOfConstants>
-        <KineticLaw function="Function_53" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
+        <KineticLaw function="Function_94" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_332">
-              <SourceParameter reference="Parameter_5258"/>
+            <CallParameter functionParameter="FunctionParameter_740">
+              <SourceParameter reference="Parameter_132"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_331">
-              <SourceParameter reference="Parameter_4961"/>
+            <CallParameter functionParameter="FunctionParameter_739">
+              <SourceParameter reference="Parameter_133"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_330">
+            <CallParameter functionParameter="FunctionParameter_738">
               <SourceParameter reference="Metabolite_22"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_329">
+            <CallParameter functionParameter="FunctionParameter_737">
               <SourceParameter reference="Metabolite_23"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_328">
-              <SourceParameter reference="Parameter_4960"/>
+            <CallParameter functionParameter="FunctionParameter_736">
+              <SourceParameter reference="Parameter_134"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_327">
-              <SourceParameter reference="Parameter_4959"/>
+            <CallParameter functionParameter="FunctionParameter_735">
+              <SourceParameter reference="Parameter_135"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -5221,30 +5230,30 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_50" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4958" name="Vmax" value="0.00775925"/>
-          <Constant key="Parameter_4957" name="K_S1" value="0.0537179"/>
-          <Constant key="Parameter_4956" name="Keq" value="39.2574"/>
-          <Constant key="Parameter_4955" name="K_P1" value="0.603002"/>
+          <Constant key="Parameter_136" name="Vmax" value="0.00775925"/>
+          <Constant key="Parameter_137" name="K_S1" value="0.0537179"/>
+          <Constant key="Parameter_138" name="Keq" value="39.2574"/>
+          <Constant key="Parameter_139" name="K_P1" value="0.603002"/>
         </ListOfConstants>
-        <KineticLaw function="Function_53" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_94" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_332">
-              <SourceParameter reference="Parameter_4958"/>
+            <CallParameter functionParameter="FunctionParameter_740">
+              <SourceParameter reference="Parameter_136"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_331">
-              <SourceParameter reference="Parameter_4957"/>
+            <CallParameter functionParameter="FunctionParameter_739">
+              <SourceParameter reference="Parameter_137"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_330">
+            <CallParameter functionParameter="FunctionParameter_738">
               <SourceParameter reference="Metabolite_49"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_329">
+            <CallParameter functionParameter="FunctionParameter_737">
               <SourceParameter reference="Metabolite_50"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_328">
-              <SourceParameter reference="Parameter_4956"/>
+            <CallParameter functionParameter="FunctionParameter_736">
+              <SourceParameter reference="Parameter_138"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_327">
-              <SourceParameter reference="Parameter_4955"/>
+            <CallParameter functionParameter="FunctionParameter_735">
+              <SourceParameter reference="Parameter_139"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -5268,30 +5277,30 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_51" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4954" name="Vmax" value="0.000821984"/>
-          <Constant key="Parameter_4953" name="K_S1" value="0.0537179"/>
-          <Constant key="Parameter_4952" name="Keq" value="35.4534"/>
-          <Constant key="Parameter_4951" name="K_P1" value="0.778461"/>
+          <Constant key="Parameter_140" name="Vmax" value="0.000821984"/>
+          <Constant key="Parameter_141" name="K_S1" value="0.0537179"/>
+          <Constant key="Parameter_142" name="Keq" value="35.4534"/>
+          <Constant key="Parameter_143" name="K_P1" value="0.778461"/>
         </ListOfConstants>
-        <KineticLaw function="Function_53" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_94" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_332">
-              <SourceParameter reference="Parameter_4954"/>
+            <CallParameter functionParameter="FunctionParameter_740">
+              <SourceParameter reference="Parameter_140"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_331">
-              <SourceParameter reference="Parameter_4953"/>
+            <CallParameter functionParameter="FunctionParameter_739">
+              <SourceParameter reference="Parameter_141"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_330">
+            <CallParameter functionParameter="FunctionParameter_738">
               <SourceParameter reference="Metabolite_49"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_329">
+            <CallParameter functionParameter="FunctionParameter_737">
               <SourceParameter reference="Metabolite_51"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_328">
-              <SourceParameter reference="Parameter_4952"/>
+            <CallParameter functionParameter="FunctionParameter_736">
+              <SourceParameter reference="Parameter_142"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_327">
-              <SourceParameter reference="Parameter_4951"/>
+            <CallParameter functionParameter="FunctionParameter_735">
+              <SourceParameter reference="Parameter_143"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -5315,30 +5324,30 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_24" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4950" name="Vmax" value="0.00165901"/>
-          <Constant key="Parameter_4949" name="K_S1" value="0.0537179"/>
-          <Constant key="Parameter_4948" name="Keq" value="35.4534"/>
-          <Constant key="Parameter_4947" name="K_P1" value="0.778461"/>
+          <Constant key="Parameter_144" name="Vmax" value="0.00165901"/>
+          <Constant key="Parameter_145" name="K_S1" value="0.0537179"/>
+          <Constant key="Parameter_146" name="Keq" value="35.4534"/>
+          <Constant key="Parameter_147" name="K_P1" value="0.778461"/>
         </ListOfConstants>
-        <KineticLaw function="Function_53" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
+        <KineticLaw function="Function_94" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_332">
-              <SourceParameter reference="Parameter_4950"/>
+            <CallParameter functionParameter="FunctionParameter_740">
+              <SourceParameter reference="Parameter_144"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_331">
-              <SourceParameter reference="Parameter_4949"/>
+            <CallParameter functionParameter="FunctionParameter_739">
+              <SourceParameter reference="Parameter_145"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_330">
+            <CallParameter functionParameter="FunctionParameter_738">
               <SourceParameter reference="Metabolite_22"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_329">
+            <CallParameter functionParameter="FunctionParameter_737">
               <SourceParameter reference="Metabolite_24"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_328">
-              <SourceParameter reference="Parameter_4948"/>
+            <CallParameter functionParameter="FunctionParameter_736">
+              <SourceParameter reference="Parameter_146"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_327">
-              <SourceParameter reference="Parameter_4947"/>
+            <CallParameter functionParameter="FunctionParameter_735">
+              <SourceParameter reference="Parameter_147"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -5364,44 +5373,44 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_52" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4946" name="Vmax" value="0.000244278"/>
-          <Constant key="Parameter_4945" name="K_S1" value="0.000173625"/>
-          <Constant key="Parameter_4944" name="K_S2" value="0.000585387"/>
-          <Constant key="Parameter_4943" name="Keq" value="1.65287e+06"/>
-          <Constant key="Parameter_4942" name="K_P1" value="0.168333"/>
-          <Constant key="Parameter_4941" name="K_P2" value="0.192807"/>
+          <Constant key="Parameter_148" name="Vmax" value="0.000244278"/>
+          <Constant key="Parameter_149" name="K_S1" value="0.000173625"/>
+          <Constant key="Parameter_150" name="K_S2" value="0.000585387"/>
+          <Constant key="Parameter_151" name="Keq" value="1.65287e+06"/>
+          <Constant key="Parameter_152" name="K_P1" value="0.168333"/>
+          <Constant key="Parameter_153" name="K_P2" value="0.192807"/>
         </ListOfConstants>
-        <KineticLaw function="Function_52" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_93" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_312">
-              <SourceParameter reference="Parameter_4946"/>
+            <CallParameter functionParameter="FunctionParameter_720">
+              <SourceParameter reference="Parameter_148"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_313">
-              <SourceParameter reference="Parameter_4945"/>
+            <CallParameter functionParameter="FunctionParameter_721">
+              <SourceParameter reference="Parameter_149"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_306">
-              <SourceParameter reference="Parameter_4944"/>
+            <CallParameter functionParameter="FunctionParameter_714">
+              <SourceParameter reference="Parameter_150"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_316">
+            <CallParameter functionParameter="FunctionParameter_724">
               <SourceParameter reference="Metabolite_50"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_317">
+            <CallParameter functionParameter="FunctionParameter_725">
               <SourceParameter reference="Metabolite_51"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_318">
+            <CallParameter functionParameter="FunctionParameter_726">
               <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_319">
+            <CallParameter functionParameter="FunctionParameter_727">
               <SourceParameter reference="Metabolite_52"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_320">
-              <SourceParameter reference="Parameter_4943"/>
+            <CallParameter functionParameter="FunctionParameter_728">
+              <SourceParameter reference="Parameter_151"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_321">
-              <SourceParameter reference="Parameter_4942"/>
+            <CallParameter functionParameter="FunctionParameter_729">
+              <SourceParameter reference="Parameter_152"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_322">
-              <SourceParameter reference="Parameter_4941"/>
+            <CallParameter functionParameter="FunctionParameter_730">
+              <SourceParameter reference="Parameter_153"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -5427,44 +5436,44 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_25" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4940" name="Vmax" value="0.000493027"/>
-          <Constant key="Parameter_4939" name="K_S1" value="0.000173625"/>
-          <Constant key="Parameter_4938" name="K_S2" value="0.000585387"/>
-          <Constant key="Parameter_4937" name="Keq" value="1.65287e+06"/>
-          <Constant key="Parameter_4936" name="K_P1" value="0.168333"/>
-          <Constant key="Parameter_4935" name="K_P2" value="0.192807"/>
+          <Constant key="Parameter_154" name="Vmax" value="0.000493027"/>
+          <Constant key="Parameter_155" name="K_S1" value="0.000173625"/>
+          <Constant key="Parameter_156" name="K_S2" value="0.000585387"/>
+          <Constant key="Parameter_157" name="Keq" value="1.65287e+06"/>
+          <Constant key="Parameter_158" name="K_P1" value="0.168333"/>
+          <Constant key="Parameter_159" name="K_P2" value="0.192807"/>
         </ListOfConstants>
-        <KineticLaw function="Function_52" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
+        <KineticLaw function="Function_93" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_312">
-              <SourceParameter reference="Parameter_4940"/>
+            <CallParameter functionParameter="FunctionParameter_720">
+              <SourceParameter reference="Parameter_154"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_313">
-              <SourceParameter reference="Parameter_4939"/>
+            <CallParameter functionParameter="FunctionParameter_721">
+              <SourceParameter reference="Parameter_155"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_306">
-              <SourceParameter reference="Parameter_4938"/>
+            <CallParameter functionParameter="FunctionParameter_714">
+              <SourceParameter reference="Parameter_156"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_316">
+            <CallParameter functionParameter="FunctionParameter_724">
               <SourceParameter reference="Metabolite_23"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_317">
+            <CallParameter functionParameter="FunctionParameter_725">
               <SourceParameter reference="Metabolite_24"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_318">
+            <CallParameter functionParameter="FunctionParameter_726">
               <SourceParameter reference="Metabolite_7"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_319">
+            <CallParameter functionParameter="FunctionParameter_727">
               <SourceParameter reference="Metabolite_25"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_320">
-              <SourceParameter reference="Parameter_4937"/>
+            <CallParameter functionParameter="FunctionParameter_728">
+              <SourceParameter reference="Parameter_157"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_321">
-              <SourceParameter reference="Parameter_4936"/>
+            <CallParameter functionParameter="FunctionParameter_729">
+              <SourceParameter reference="Parameter_158"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_322">
-              <SourceParameter reference="Parameter_4935"/>
+            <CallParameter functionParameter="FunctionParameter_730">
+              <SourceParameter reference="Parameter_159"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -5490,44 +5499,44 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_53" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4934" name="Vmax" value="0.0080394"/>
-          <Constant key="Parameter_4933" name="K_S1" value="0.168333"/>
-          <Constant key="Parameter_4932" name="K_S2" value="0.192807"/>
-          <Constant key="Parameter_4931" name="Keq" value="0.323922"/>
-          <Constant key="Parameter_4930" name="K_P1" value="0.0799745"/>
-          <Constant key="Parameter_4929" name="K_P2" value="0.109681"/>
+          <Constant key="Parameter_160" name="Vmax" value="0.0080394"/>
+          <Constant key="Parameter_161" name="K_S1" value="0.168333"/>
+          <Constant key="Parameter_162" name="K_S2" value="0.192807"/>
+          <Constant key="Parameter_163" name="Keq" value="0.323922"/>
+          <Constant key="Parameter_164" name="K_P1" value="0.0799745"/>
+          <Constant key="Parameter_165" name="K_P2" value="0.109681"/>
         </ListOfConstants>
-        <KineticLaw function="Function_52" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_93" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_312">
-              <SourceParameter reference="Parameter_4934"/>
+            <CallParameter functionParameter="FunctionParameter_720">
+              <SourceParameter reference="Parameter_160"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_313">
-              <SourceParameter reference="Parameter_4933"/>
+            <CallParameter functionParameter="FunctionParameter_721">
+              <SourceParameter reference="Parameter_161"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_306">
-              <SourceParameter reference="Parameter_4932"/>
+            <CallParameter functionParameter="FunctionParameter_714">
+              <SourceParameter reference="Parameter_162"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_316">
+            <CallParameter functionParameter="FunctionParameter_724">
               <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_317">
+            <CallParameter functionParameter="FunctionParameter_725">
               <SourceParameter reference="Metabolite_52"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_318">
+            <CallParameter functionParameter="FunctionParameter_726">
               <SourceParameter reference="Metabolite_32"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_319">
+            <CallParameter functionParameter="FunctionParameter_727">
               <SourceParameter reference="Metabolite_53"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_320">
-              <SourceParameter reference="Parameter_4931"/>
+            <CallParameter functionParameter="FunctionParameter_728">
+              <SourceParameter reference="Parameter_163"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_321">
-              <SourceParameter reference="Parameter_4930"/>
+            <CallParameter functionParameter="FunctionParameter_729">
+              <SourceParameter reference="Parameter_164"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_322">
-              <SourceParameter reference="Parameter_4929"/>
+            <CallParameter functionParameter="FunctionParameter_730">
+              <SourceParameter reference="Parameter_165"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -5553,44 +5562,44 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_26" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4928" name="Vmax" value="0.0162259"/>
-          <Constant key="Parameter_4927" name="K_S1" value="0.168333"/>
-          <Constant key="Parameter_4926" name="Keq" value="0.323922"/>
-          <Constant key="Parameter_4925" name="K_P1" value="0.0799745"/>
-          <Constant key="Parameter_4924" name="K_S2" value="0.192807"/>
-          <Constant key="Parameter_4923" name="K_P2" value="0.109681"/>
+          <Constant key="Parameter_166" name="Vmax" value="0.0162259"/>
+          <Constant key="Parameter_167" name="K_S1" value="0.168333"/>
+          <Constant key="Parameter_168" name="Keq" value="0.323922"/>
+          <Constant key="Parameter_169" name="K_P1" value="0.0799745"/>
+          <Constant key="Parameter_170" name="K_S2" value="0.192807"/>
+          <Constant key="Parameter_171" name="K_P2" value="0.109681"/>
         </ListOfConstants>
-        <KineticLaw function="Function_52" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
+        <KineticLaw function="Function_93" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_312">
-              <SourceParameter reference="Parameter_4928"/>
+            <CallParameter functionParameter="FunctionParameter_720">
+              <SourceParameter reference="Parameter_166"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_313">
-              <SourceParameter reference="Parameter_4927"/>
+            <CallParameter functionParameter="FunctionParameter_721">
+              <SourceParameter reference="Parameter_167"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_306">
-              <SourceParameter reference="Parameter_4924"/>
+            <CallParameter functionParameter="FunctionParameter_714">
+              <SourceParameter reference="Parameter_170"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_316">
+            <CallParameter functionParameter="FunctionParameter_724">
               <SourceParameter reference="Metabolite_7"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_317">
+            <CallParameter functionParameter="FunctionParameter_725">
               <SourceParameter reference="Metabolite_25"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_318">
+            <CallParameter functionParameter="FunctionParameter_726">
               <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_319">
+            <CallParameter functionParameter="FunctionParameter_727">
               <SourceParameter reference="Metabolite_26"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_320">
-              <SourceParameter reference="Parameter_4926"/>
+            <CallParameter functionParameter="FunctionParameter_728">
+              <SourceParameter reference="Parameter_168"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_321">
-              <SourceParameter reference="Parameter_4925"/>
+            <CallParameter functionParameter="FunctionParameter_729">
+              <SourceParameter reference="Parameter_169"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_322">
-              <SourceParameter reference="Parameter_4923"/>
+            <CallParameter functionParameter="FunctionParameter_730">
+              <SourceParameter reference="Parameter_171"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -5616,44 +5625,44 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_53" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4922" name="Vmax" value="0.000137124"/>
-          <Constant key="Parameter_4921" name="K_S1" value="0.0799745"/>
-          <Constant key="Parameter_4920" name="K_S2" value="0.168333"/>
-          <Constant key="Parameter_4919" name="Keq" value="0.0777764"/>
-          <Constant key="Parameter_4918" name="K_P1" value="0.603002"/>
-          <Constant key="Parameter_4917" name="K_P2" value="0.109681"/>
+          <Constant key="Parameter_172" name="Vmax" value="0.000137124"/>
+          <Constant key="Parameter_173" name="K_S1" value="0.0799745"/>
+          <Constant key="Parameter_174" name="K_S2" value="0.168333"/>
+          <Constant key="Parameter_175" name="Keq" value="0.0777764"/>
+          <Constant key="Parameter_176" name="K_P1" value="0.603002"/>
+          <Constant key="Parameter_177" name="K_P2" value="0.109681"/>
         </ListOfConstants>
-        <KineticLaw function="Function_52" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
+        <KineticLaw function="Function_93" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_312">
-              <SourceParameter reference="Parameter_4922"/>
+            <CallParameter functionParameter="FunctionParameter_720">
+              <SourceParameter reference="Parameter_172"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_313">
-              <SourceParameter reference="Parameter_4921"/>
+            <CallParameter functionParameter="FunctionParameter_721">
+              <SourceParameter reference="Parameter_173"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_306">
-              <SourceParameter reference="Parameter_4920"/>
+            <CallParameter functionParameter="FunctionParameter_714">
+              <SourceParameter reference="Parameter_174"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_316">
+            <CallParameter functionParameter="FunctionParameter_724">
               <SourceParameter reference="Metabolite_32"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_317">
+            <CallParameter functionParameter="FunctionParameter_725">
               <SourceParameter reference="Metabolite_33"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_318">
+            <CallParameter functionParameter="FunctionParameter_726">
               <SourceParameter reference="Metabolite_50"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_319">
+            <CallParameter functionParameter="FunctionParameter_727">
               <SourceParameter reference="Metabolite_53"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_320">
-              <SourceParameter reference="Parameter_4919"/>
+            <CallParameter functionParameter="FunctionParameter_728">
+              <SourceParameter reference="Parameter_175"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_321">
-              <SourceParameter reference="Parameter_4918"/>
+            <CallParameter functionParameter="FunctionParameter_729">
+              <SourceParameter reference="Parameter_176"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_322">
-              <SourceParameter reference="Parameter_4917"/>
+            <CallParameter functionParameter="FunctionParameter_730">
+              <SourceParameter reference="Parameter_177"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -5679,44 +5688,44 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_26" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4916" name="Vmax" value="0.000276758"/>
-          <Constant key="Parameter_4915" name="K_S1" value="0.0799745"/>
-          <Constant key="Parameter_4914" name="K_S2" value="0.168333"/>
-          <Constant key="Parameter_4913" name="Keq" value="0.0777764"/>
-          <Constant key="Parameter_4912" name="K_P1" value="0.603002"/>
-          <Constant key="Parameter_4911" name="K_P2" value="0.109681"/>
+          <Constant key="Parameter_178" name="Vmax" value="0.000276758"/>
+          <Constant key="Parameter_179" name="K_S1" value="0.0799745"/>
+          <Constant key="Parameter_180" name="K_S2" value="0.168333"/>
+          <Constant key="Parameter_181" name="Keq" value="0.0777764"/>
+          <Constant key="Parameter_182" name="K_P1" value="0.603002"/>
+          <Constant key="Parameter_183" name="K_P2" value="0.109681"/>
         </ListOfConstants>
-        <KineticLaw function="Function_52" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
+        <KineticLaw function="Function_93" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_312">
-              <SourceParameter reference="Parameter_4916"/>
+            <CallParameter functionParameter="FunctionParameter_720">
+              <SourceParameter reference="Parameter_178"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_313">
-              <SourceParameter reference="Parameter_4915"/>
+            <CallParameter functionParameter="FunctionParameter_721">
+              <SourceParameter reference="Parameter_179"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_306">
-              <SourceParameter reference="Parameter_4914"/>
+            <CallParameter functionParameter="FunctionParameter_714">
+              <SourceParameter reference="Parameter_180"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_316">
+            <CallParameter functionParameter="FunctionParameter_724">
               <SourceParameter reference="Metabolite_6"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_317">
+            <CallParameter functionParameter="FunctionParameter_725">
               <SourceParameter reference="Metabolite_7"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_318">
+            <CallParameter functionParameter="FunctionParameter_726">
               <SourceParameter reference="Metabolite_23"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_319">
+            <CallParameter functionParameter="FunctionParameter_727">
               <SourceParameter reference="Metabolite_26"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_320">
-              <SourceParameter reference="Parameter_4913"/>
+            <CallParameter functionParameter="FunctionParameter_728">
+              <SourceParameter reference="Parameter_181"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_321">
-              <SourceParameter reference="Parameter_4912"/>
+            <CallParameter functionParameter="FunctionParameter_729">
+              <SourceParameter reference="Parameter_182"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_322">
-              <SourceParameter reference="Parameter_4911"/>
+            <CallParameter functionParameter="FunctionParameter_730">
+              <SourceParameter reference="Parameter_183"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -5740,12 +5749,12 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_28" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4910" name="k1" value="0.000423283"/>
+          <Constant key="Parameter_184" name="k1" value="0.000423283"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="Parameter_4910"/>
+              <SourceParameter reference="Parameter_184"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
               <SourceParameter reference="Metabolite_27"/>
@@ -5772,12 +5781,12 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_54" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4909" name="k1" value="0.000209722"/>
+          <Constant key="Parameter_185" name="k1" value="0.000209722"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="Parameter_4909"/>
+              <SourceParameter reference="Parameter_185"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
               <SourceParameter reference="Metabolite_55"/>
@@ -5801,7 +5810,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Substrate metabolite="Metabolite_51" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4908" name="k1" value="0"/>
+          <Constant key="Parameter_186" name="k1" value="0"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
@@ -5830,12 +5839,12 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Substrate metabolite="Metabolite_24" stoichiometry="1"/>
         </ListOfSubstrates>
         <ListOfConstants>
-          <Constant key="Parameter_4907" name="k1" value="0"/>
+          <Constant key="Parameter_187" name="k1" value="0"/>
         </ListOfConstants>
         <KineticLaw function="Function_13" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_80">
-              <SourceParameter reference="Parameter_4907"/>
+              <SourceParameter reference="Parameter_187"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_81">
               <SourceParameter reference="Metabolite_24"/>
@@ -5862,19 +5871,19 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_32" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4906" name="k1" value="931.69"/>
-          <Constant key="Parameter_4905" name="k2" value="2273.32"/>
+          <Constant key="Parameter_188" name="k1" value="931.69"/>
+          <Constant key="Parameter_189" name="k2" value="2273.32"/>
         </ListOfConstants>
         <KineticLaw function="Function_14" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_69">
-              <SourceParameter reference="Parameter_4906"/>
+              <SourceParameter reference="Parameter_188"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_68">
               <SourceParameter reference="Metabolite_31"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_78">
-              <SourceParameter reference="Parameter_4905"/>
+              <SourceParameter reference="Parameter_189"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_32"/>
@@ -5906,22 +5915,22 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Modifier metabolite="Metabolite_4" stoichiometry="1"/>
         </ListOfModifiers>
         <ListOfConstants>
-          <Constant key="Parameter_4904" name="k_HK" value="0.016132"/>
-          <Constant key="Parameter_4903" name="K_I_G6P" value="0.02"/>
+          <Constant key="Parameter_190" name="k_HK" value="0.016132"/>
+          <Constant key="Parameter_191" name="K_I_G6P" value="0.02"/>
         </ListOfConstants>
-        <KineticLaw function="Function_59" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
+        <KineticLaw function="Function_100" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
-            <CallParameter functionParameter="FunctionParameter_353">
-              <SourceParameter reference="Parameter_4904"/>
+            <CallParameter functionParameter="FunctionParameter_761">
+              <SourceParameter reference="Parameter_190"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_352">
+            <CallParameter functionParameter="FunctionParameter_760">
               <SourceParameter reference="Metabolite_5"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_351">
+            <CallParameter functionParameter="FunctionParameter_759">
               <SourceParameter reference="Metabolite_4"/>
             </CallParameter>
-            <CallParameter functionParameter="FunctionParameter_363">
-              <SourceParameter reference="Parameter_4903"/>
+            <CallParameter functionParameter="FunctionParameter_771">
+              <SourceParameter reference="Parameter_191"/>
             </CallParameter>
           </ListOfCallParameters>
         </KineticLaw>
@@ -5945,19 +5954,19 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <Product metabolite="Metabolite_6" stoichiometry="1"/>
         </ListOfProducts>
         <ListOfConstants>
-          <Constant key="Parameter_4902" name="k1" value="931.69"/>
-          <Constant key="Parameter_4901" name="k2" value="2273.32"/>
+          <Constant key="Parameter_192" name="k1" value="931.69"/>
+          <Constant key="Parameter_193" name="k2" value="2273.32"/>
         </ListOfConstants>
         <KineticLaw function="Function_14" unitType="Default" scalingCompartment="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons]">
           <ListOfCallParameters>
             <CallParameter functionParameter="FunctionParameter_69">
-              <SourceParameter reference="Parameter_4902"/>
+              <SourceParameter reference="Parameter_192"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_68">
               <SourceParameter reference="Metabolite_4"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_78">
-              <SourceParameter reference="Parameter_4901"/>
+              <SourceParameter reference="Parameter_193"/>
             </CallParameter>
             <CallParameter functionParameter="FunctionParameter_79">
               <SourceParameter reference="Metabolite_6"/>
@@ -5968,6 +5977,14 @@ The reactions for the PPP have all their reaction rates set to zero so that they
     </ListOfReactions>
     <ListOfModelParameterSets activeSet="ModelParameterSet_0">
       <ModelParameterSet key="ModelParameterSet_0" name="Initial State">
+        <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#ModelParameterSet_0">
+</rdf:Description>
+</rdf:RDF>
+        </MiriamAnnotation>
         <ModelParameterGroup cn="String=Initial Time" type="Group">
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP" value="0" type="Model" simulationType="time"/>
         </ModelParameterGroup>
@@ -5980,23 +5997,23 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[artery]" value="0.0054999999999999997" type="Compartment" simulationType="fixed"/>
         </ModelParameterGroup>
         <ModelParameterGroup cn="String=Initial Species Values" type="Group">
-          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary],Vector=Metabolites[O2]" value="2.4593489666072855e+19" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary],Vector=Metabolites[CO2]" value="7.0046883060573071e+18" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary],Vector=Metabolites[O2]" value="2.459348966607285e+19" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary],Vector=Metabolites[CO2]" value="7.0046883060573051e+18" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary],Vector=Metabolites[dHb]" value="1.4362554194875469e+17" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[GLC]" value="3.2519951898424148e+20" type="Species" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[G6P]" value="2.7085763639200514e+19" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[ATP]" value="6.1239808749382192e+20" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[F6P]" value="1.110002005499752e+19" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[GAP]" value="1.5229654907008059e+18" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[NADH]" value="1.4458431701165263e+19" type="Species" simulationType="fixed"/>
-          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[PEP]" value="1.0206074901425231e+18" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[PYR]" value="1.6310385846277562e+19" type="Species" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[GAP]" value="1.5229654907008074e+18" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[NADH]" value="1.4458431701165269e+19" type="Species" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[PEP]" value="1.0206074901425235e+18" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[PYR]" value="1.6310385846277566e+19" type="Species" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[LAC]" value="2.7735201300299111e+20" type="Species" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[O2]" value="1.311293410424304e+19" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[PCr]" value="1.1531880621694239e+21" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[Na+]" value="4.2092649037732774e+21" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[Na+]" value="4.2092649037732779e+21" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[GLU]" value="8.1298914165000516e+20" type="Species" simulationType="reactions"/>
-          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[ADP]" value="3.0636384767729893e+19" type="Species" simulationType="reactions"/>
+          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[ADP]" value="3.0636384767729897e+19" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[AMP]" value="1.6659170668981862e+18" type="Species" simulationType="reactions">
             <InitialExpression>
               &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[ANP],Reference=InitialValue>-&lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[ADP],Reference=InitialConcentration>-&lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[ATP],Reference=InitialConcentration>
@@ -6012,15 +6029,15 @@ The reactions for the PPP have all their reaction rates set to zero so that they
               &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[NADH_total_neurons],Reference=InitialValue>-&lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[NADH],Reference=InitialConcentration>
             </InitialExpression>
           </ModelParameter>
-          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[G6L]" value="818496508518207.12" type="Species" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[G6L]" value="818496508518207.25" type="Species" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[P6G]" value="2.4041756873336448e+18" type="Species" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[Ru5P]" value="4.320386223277241e+17" type="Species" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[X5P]" value="1.5276567365779483e+19" type="Species" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[R5P]" value="6950085347313792" type="Species" simulationType="fixed"/>
-          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[S7P]" value="2.4878687495292514e+19" type="Species" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[S7P]" value="2.4878687495292522e+19" type="Species" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[E4P]" value="2.95373673802447e+18" type="Species" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[NADPH]" value="7.892119239539037e+19" type="Species" simulationType="fixed"/>
-          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[NADP]" value="409271566336.00006" type="Species" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[NADP]" value="409271566336.00012" type="Species" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[GLC]" value="1.8066723209904121e+20" type="Species" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[ATP]" value="3.1813743487212028e+20" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[G6P]" value="1.5117457284749619e+19" type="Species" simulationType="reactions"/>
@@ -6063,7 +6080,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[extracellular_space],Vector=Metabolites[GLU]" value="0" type="Species" simulationType="reactions"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[extracellular_space],Vector=Metabolites[Na+]" value="1.806642537e+22" type="Species" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[artery],Vector=Metabolites[O2]" value="2.7623564390730047e+19" type="Species" simulationType="fixed"/>
-          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[artery],Vector=Metabolites[CO2]" value="3.9746135814000246e+18" type="Species" simulationType="fixed"/>
+          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[artery],Vector=Metabolites[CO2]" value="3.9746135814000251e+18" type="Species" simulationType="fixed"/>
         </ModelParameterGroup>
         <ModelParameterGroup cn="String=Initial Global Quantities" type="Group">
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[K_m_GLC]" value="0.105" type="ModelValue" simulationType="fixed"/>
@@ -6074,7 +6091,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[nH]" value="4" type="ModelValue" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[NADH_total_neurons]" value="0.22" type="ModelValue" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[NADH_total_astrocytes]" value="0.22" type="ModelValue" simulationType="fixed"/>
-          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[NAD_neurons]" value="0.16664714092556812" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[NAD_neurons]" value="0.16664714092556809" type="ModelValue" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[NAD_astrocytes]" value="0.1418091981032768" type="ModelValue" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[ANP]" value="2.379" type="ModelValue" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[q_AK]" value="0.92000000000000004" type="ModelValue" simulationType="fixed"/>
@@ -6141,7 +6158,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[V_gn_max_GLU]" value="0.29999999999999999" type="ModelValue" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[delta_HK]" value="0.59999999999999998" type="ModelValue" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[BOLD signal]" value="0" type="ModelValue" simulationType="assignment"/>
-          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[E0]" value="0.21938332662630811" type="ModelValue" simulationType="assignment"/>
+          <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[E0]" value="0.21938332662630844" type="ModelValue" simulationType="assignment"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[K_m_ATP(ATPase)]" value="0.001" type="ModelValue" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[k_PK_neurons]" value="28.600000000000001" type="ModelValue" simulationType="fixed"/>
           <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[k_PK_astrocytes]" value="2.73" type="ModelValue" simulationType="fixed"/>
@@ -6196,20 +6213,10 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <ModelParameterGroup cn="String=Kinetic Parameters" type="Group">
           <ModelParameterGroup cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[HK_astrocytes (R01786)  (HeinrichSchuster)]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[HK_astrocytes (R01786)  (HeinrichSchuster)],ParameterGroup=Parameters,Parameter=k_HK" value="0.0154276" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[HK_astrocytes (R01786)  (HeinrichSchuster)],ParameterGroup=Parameters,Parameter=ATP" value="3.1813743487212028e+20" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[ATP],Reference=InitialParticleNumber>
-              </InitialExpression>
-            </ModelParameter>
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[HK_astrocytes (R01786)  (HeinrichSchuster)],ParameterGroup=Parameters,Parameter=K_I_G6P" value="0.02" type="ReactionParameter" simulationType="fixed"/>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PFK_neurons (R04779\, R01070\, R01015)]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PFK_neurons (R04779\, R01070\, R01015)],ParameterGroup=Parameters,Parameter=k_PFK" value="0.38363900000000001" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PFK_neurons (R04779\, R01070\, R01015)],ParameterGroup=Parameters,Parameter=ATP" value="6.1239808749382192e+20" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[ATP],Reference=InitialParticleNumber>
-              </InitialExpression>
-            </ModelParameter>
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PFK_neurons (R04779\, R01070\, R01015)],ParameterGroup=Parameters,Parameter=K_I_ATP" value="1" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[K_I_ATP],Reference=InitialValue>
@@ -6228,11 +6235,6 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PFK_astrocytes (R04779\, R01070\, R01015)]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PFK_astrocytes (R04779\, R01070\, R01015)],ParameterGroup=Parameters,Parameter=k_PFK" value="0.28078599999999998" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PFK_astrocytes (R04779\, R01070\, R01015)],ParameterGroup=Parameters,Parameter=ATP" value="3.1813743487212028e+20" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[ATP],Reference=InitialParticleNumber>
-              </InitialExpression>
-            </ModelParameter>
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PFK_astrocytes (R04779\, R01070\, R01015)],ParameterGroup=Parameters,Parameter=K_I_ATP" value="1" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[K_I_ATP],Reference=InitialValue>
@@ -6251,39 +6253,14 @@ The reactions for the PPP have all their reaction rates set to zero so that they
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PGK_neurons (R01061\, R01512\, R01518\, R00658)]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PGK_neurons (R01061\, R01512\, R01518\, R00658)],ParameterGroup=Parameters,Parameter=k_PGK" value="6.1361299999999996" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PGK_neurons (R01061\, R01512\, R01518\, R00658)],ParameterGroup=Parameters,Parameter=ADP" value="3.0636384767729893e+19" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[ADP],Reference=InitialParticleNumber>
-              </InitialExpression>
-            </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PGK_neurons (R01061\, R01512\, R01518\, R00658)],ParameterGroup=Parameters,Parameter=NAD" value="4.5160772019834741e+19" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[NAD],Reference=InitialParticleNumber>
-              </InitialExpression>
-            </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PGK_astrocytes (R01061\, R01512\, R01518\, R00658)]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PGK_astrocytes (R01061\, R01512\, R01518\, R00658)],ParameterGroup=Parameters,Parameter=k_PGK" value="4.3855000000000004" type="ReactionParameter" simulationType="fixed"/>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PGK_astrocytes (R01061\, R01512\, R01518\, R00658)],ParameterGroup=Parameters,Parameter=ADP" value="3.5679895829847679e+19" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[ADP],Reference=InitialParticleNumber>
-              </InitialExpression>
-            </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PGK_astrocytes (R01061\, R01512\, R01518\, R00658)],ParameterGroup=Parameters,Parameter=NAD" value="2.1349877452603302e+19" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[NAD],Reference=InitialParticleNumber>
-              </InitialExpression>
-            </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PK_neurons (R00200)]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PK_neurons (R00200)],ParameterGroup=Parameters,Parameter=k_PK" value="28.600000000000001" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[k_PK_neurons],Reference=InitialValue>
-              </InitialExpression>
-            </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PK_neurons (R00200)],ParameterGroup=Parameters,Parameter=ADP" value="3.0636384767729893e+19" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[ADP],Reference=InitialParticleNumber>
               </InitialExpression>
             </ModelParameter>
           </ModelParameterGroup>
@@ -6293,22 +6270,12 @@ The reactions for the PPP have all their reaction rates set to zero so that they
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[k_PK_astrocytes],Reference=InitialValue>
               </InitialExpression>
             </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[PK_astrocytes (R00200)],ParameterGroup=Parameters,Parameter=ADP" value="3.5679895829847679e+19" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[ADP],Reference=InitialParticleNumber>
-              </InitialExpression>
-            </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[mitochondrial_respiration_neurons (n.a.)]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[mitochondrial_respiration_neurons (n.a.)],ParameterGroup=Parameters,Parameter=v_max_mito" value="0.055599999999999997" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[mitochondrial_respiration_neurons (n.a.)],ParameterGroup=Parameters,Parameter=K_m_PYR" value="0.063200000000000006" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[K_m_PYR],Reference=InitialValue>
-              </InitialExpression>
-            </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[mitochondrial_respiration_neurons (n.a.)],ParameterGroup=Parameters,Parameter=ADP" value="3.0636384767729893e+19" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[ADP],Reference=InitialParticleNumber>
               </InitialExpression>
             </ModelParameter>
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[mitochondrial_respiration_neurons (n.a.)],ParameterGroup=Parameters,Parameter=K_m_ADP" value="0.00107" type="ReactionParameter" simulationType="assignment">
@@ -6321,22 +6288,12 @@ The reactions for the PPP have all their reaction rates set to zero so that they
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[K_m_O2],Reference=InitialValue>
               </InitialExpression>
             </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[mitochondrial_respiration_neurons (n.a.)],ParameterGroup=Parameters,Parameter=ATP" value="6.1239808749382192e+20" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[ATP],Reference=InitialParticleNumber>
-              </InitialExpression>
-            </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[mitochondrial_respiration_astrocytes (n.a.)]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[mitochondrial_respiration_astrocytes (n.a.)],ParameterGroup=Parameters,Parameter=v_max_mito" value="0.0084539999999999997" type="ReactionParameter" simulationType="fixed"/>
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[mitochondrial_respiration_astrocytes (n.a.)],ParameterGroup=Parameters,Parameter=K_m_PYR" value="0.063200000000000006" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[K_m_PYR],Reference=InitialValue>
-              </InitialExpression>
-            </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[mitochondrial_respiration_astrocytes (n.a.)],ParameterGroup=Parameters,Parameter=ADP" value="3.5679895829847679e+19" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[ADP],Reference=InitialParticleNumber>
               </InitialExpression>
             </ModelParameter>
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[mitochondrial_respiration_astrocytes (n.a.)],ParameterGroup=Parameters,Parameter=K_m_ADP" value="0.00107" type="ReactionParameter" simulationType="assignment">
@@ -6349,21 +6306,11 @@ The reactions for the PPP have all their reaction rates set to zero so that they
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[K_m_O2],Reference=InitialValue>
               </InitialExpression>
             </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[mitochondrial_respiration_astrocytes (n.a.)],ParameterGroup=Parameters,Parameter=ATP" value="3.1813743487212028e+20" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[ATP],Reference=InitialParticleNumber>
-              </InitialExpression>
-            </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[O2_exchange_capillary_neurons]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[O2_exchange_capillary_neurons],ParameterGroup=Parameters,Parameter=PScap" value="63.695454545454552" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[PS_cap_neuron (wrt capillaries) (Aubert)],Reference=InitialValue>
-              </InitialExpression>
-            </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[O2_exchange_capillary_neurons],ParameterGroup=Parameters,Parameter=Volume" value="0.45000000000000001" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Reference=InitialVolume>
               </InitialExpression>
             </ModelParameter>
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[O2_exchange_capillary_neurons],ParameterGroup=Parameters,Parameter=KO2" value="0.0361" type="ReactionParameter" simulationType="assignment">
@@ -6388,11 +6335,6 @@ The reactions for the PPP have all their reaction rates set to zero so that they
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[PS_cap_astrocytes (wrt capillaries) (Aubert)],Reference=InitialValue>
               </InitialExpression>
             </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[O2_exchange_capillary_astrocytes],ParameterGroup=Parameters,Parameter=Volume" value="0.25" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Reference=InitialVolume>
-              </InitialExpression>
-            </ModelParameter>
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[O2_exchange_capillary_astrocytes],ParameterGroup=Parameters,Parameter=KO2" value="0.0361" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[K_O2 (Aubert)],Reference=InitialValue>
@@ -6415,21 +6357,11 @@ The reactions for the PPP have all their reaction rates set to zero so that they
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[F_in],Reference=InitialValue>
               </InitialExpression>
             </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[O2_exchange_artery_capillary],ParameterGroup=Parameters,Parameter=V_c" value="0.0054999999999999997" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary],Reference=InitialVolume>
-              </InitialExpression>
-            </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[CO2_exchange_capillary_artery]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[CO2_exchange_capillary_artery],ParameterGroup=Parameters,Parameter=F_in" value="0.012" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[F_in],Reference=InitialValue>
-              </InitialExpression>
-            </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[CO2_exchange_capillary_artery],ParameterGroup=Parameters,Parameter=V_c" value="0.0054999999999999997" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary],Reference=InitialVolume>
               </InitialExpression>
             </ModelParameter>
           </ModelParameterGroup>
@@ -6449,11 +6381,6 @@ The reactions for the PPP have all their reaction rates set to zero so that they
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[K_m\,Na-pump],Reference=InitialValue>
               </InitialExpression>
             </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[Na+_exchange_neurons_extracellular_space (n.a.)],ParameterGroup=Parameters,Parameter=Volume" value="0.45000000000000001" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Reference=InitialVolume>
-              </InitialExpression>
-            </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[Na+_exchange_astrocytes_extracellular_space (n.a.)]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[Na+_exchange_astrocytes_extracellular_space (n.a.)],ParameterGroup=Parameters,Parameter=Sm" value="10500" type="ReactionParameter" simulationType="assignment">
@@ -6469,11 +6396,6 @@ The reactions for the PPP have all their reaction rates set to zero so that they
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[Na+_exchange_astrocytes_extracellular_space (n.a.)],ParameterGroup=Parameters,Parameter=Km_pump" value="0.42430000000000001" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[K_m\,Na-pump],Reference=InitialValue>
-              </InitialExpression>
-            </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[Na+_exchange_astrocytes_extracellular_space (n.a.)],ParameterGroup=Parameters,Parameter=Volume" value="0.25" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Reference=InitialVolume>
               </InitialExpression>
             </ModelParameter>
           </ModelParameterGroup>
@@ -6527,11 +6449,6 @@ The reactions for the PPP have all their reaction rates set to zero so that they
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[Vm],Reference=InitialValue>
               </InitialExpression>
             </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[LEAK_Na_neurons (n.a.)],ParameterGroup=Parameters,Parameter=Volume" value="0.45000000000000001" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Reference=InitialVolume>
-              </InitialExpression>
-            </ModelParameter>
           </ModelParameterGroup>
           <ModelParameterGroup cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[LEAK_Na_astrocytes (n.a)]" type="Reaction">
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[LEAK_Na_astrocytes (n.a)],ParameterGroup=Parameters,Parameter=Sm" value="10500" type="ReactionParameter" simulationType="assignment">
@@ -6557,11 +6474,6 @@ The reactions for the PPP have all their reaction rates set to zero so that they
             <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[LEAK_Na_astrocytes (n.a)],ParameterGroup=Parameters,Parameter=Vm" value="-70" type="ReactionParameter" simulationType="assignment">
               <InitialExpression>
                 &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[Vm],Reference=InitialValue>
-              </InitialExpression>
-            </ModelParameter>
-            <ModelParameter cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[LEAK_Na_astrocytes (n.a)],ParameterGroup=Parameters,Parameter=Volume" value="0.25" type="ReactionParameter" simulationType="assignment">
-              <InitialExpression>
-                &lt;CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Reference=InitialVolume>
               </InitialExpression>
             </ModelParameter>
           </ModelParameterGroup>
@@ -6877,13 +6789,13 @@ The reactions for the PPP have all their reaction rates set to zero so that they
       <StateTemplateVariable objectReference="Metabolite_39"/>
       <StateTemplateVariable objectReference="Metabolite_18"/>
       <StateTemplateVariable objectReference="Metabolite_38"/>
-      <StateTemplateVariable objectReference="Metabolite_5"/>
+      <StateTemplateVariable objectReference="Metabolite_17"/>
       <StateTemplateVariable objectReference="Metabolite_30"/>
       <StateTemplateVariable objectReference="Metabolite_12"/>
       <StateTemplateVariable objectReference="Metabolite_44"/>
-      <StateTemplateVariable objectReference="Metabolite_17"/>
-      <StateTemplateVariable objectReference="Metabolite_13"/>
       <StateTemplateVariable objectReference="Metabolite_56"/>
+      <StateTemplateVariable objectReference="Metabolite_5"/>
+      <StateTemplateVariable objectReference="Metabolite_13"/>
       <StateTemplateVariable objectReference="Metabolite_45"/>
       <StateTemplateVariable objectReference="ModelValue_8"/>
       <StateTemplateVariable objectReference="ModelValue_9"/>
@@ -7047,12 +6959,12 @@ The reactions for the PPP have all their reaction rates set to zero so that they
       <StateTemplateVariable objectReference="ModelValue_123"/>
     </StateTemplate>
     <InitialState type="initialState">
-      0 0.023699999999999999 3.5679895829847679e+19 3.0636384767729893e+19 2.027604186273903e+21 4.2092649037732774e+21 8.6407414172139123e+17 1.5229654907008059e+18 1.5117457284749619e+19 1.110002005499752e+19 6.1953316022025411e+18 2.4593489666072855e+19 2.7085763639200514e+19 1.4362554194875469e+17 8.1298914165000516e+20 2.1349877452603302e+19 4.5160772019834741e+19 7.0046883060573071e+18 1.0206074901425231e+18 2.517423088583274e+18 0 1.6256618994333159e+20 6.6530258577245064e+20 2.0179384058057625e+20 4.2654900441065672e+18 6.1239808749382192e+20 3.1813743487212028e+20 1.311293410424304e+19 4.3495522582820413e+18 1.6659170668981862e+18 1.1531880621694239e+21 0 8.7465137977549406e+19 0.16664714092556812 0.1418091981032768 0.74463666330534029 0.58095701514559916 0.012 0.012 140 0 0 0 0.21938332662630811 3.2523966726908893 9040.0407685196769 11767.5 0.096127950054900241 4.704545454545455 63.695454545454552 1 -3.8708886842152355e+45 3.2519951898424148e+20 1.4458431701165263e+19 1.6310385846277562e+19 2.7735201300299111e+20 818496508518207.12 2.4041756873336448e+18 4.320386223277241e+17 1.5276567365779483e+19 6950085347313792 2.4878687495292514e+19 2.95373673802447e+18 7.892119239539037e+19 409271566336.00006 1.8066723209904121e+20 1.17719023923967e+19 3.2138618099791852e+19 1.9321060850376462e+20 454285251450454.81 1.1995116698785229e+18 2.4027153821971299e+17 8.4966819080110049e+18 3868134360429810 1.2498175832677249e+19 2.6335200997563192e+18 227030480008.80591 4.3845106874728227e+19 1.806642537e+22 2.7623564390730047e+19 3.9746135814000246e+18 0.0054999999999999997 0.45000000000000001 0.25 0.20000000000000001 0.0054999999999999997 0.105 0.5 0.059999999999999998 0.17999999999999999 1 4 0.22 0.22 2.379 0.92000000000000004 0.01532 0.00107 0.0029658000000000002 0.063200000000000006 5 0.048890000000000003 0.035657000000000001 1.1343825000000001 0.047611250000000001 8.4567999999999994 9.9199999999999999 5.3200000000000003 3.52 0.1978 0.086124000000000006 0.00021855999999999999 0.032500000000000001 0.764818 0.12862000000000001 0.093140000000000001 0.22162999999999999 0.012 0.41999999999999998 1 200 40 2 35 0.089732999999999993 8.5999999999999996 2.7000000000000002 10500 40500 3.1699999999999999e-07 0.42430000000000001 0.0001528 0.5 62 83 4.922e-05 1 0.0038999999999999998 0.0032499999999999999 -70 2577340 96500 0.041000000000000002 1.4399999999999999 2 0 0.074999999999999997 0.020799999999999999 0.050000000000000003 0.29999999999999999 0.59999999999999998 0.001 28.600000000000001 2.73 0.052468099999999997 0.014999999999999999 0.024299999999999999 0.020729999999999998 0.5 0.45000000000000001 6.2599999999999998 0.54700000000000004 5.2999999999999998 0.1046 0 0.44724540000000002 1.778181 0.44505 11.161818179999999 18.016363630000001 0.025999999999999999 9 9 9 9 0.0078300000000000002 0.0058000000000000013 0.075999999999999998 0.28999999999999998 0.5 0.5 0.5 0.5 0.0361 2.73 0.40300000000000002 0.55783000000000005 0.5 0.45000000000000001 0.089440908498999452 0.002114814901207805 7232.032614815741 5230 
+      0 0.023699999999999999 3.5679895829847679e+19 3.0636384767729897e+19 2.027604186273903e+21 4.2092649037732779e+21 8.6407414172139123e+17 1.5229654907008074e+18 1.5117457284749619e+19 1.110002005499752e+19 6.1953316022025411e+18 2.459348966607285e+19 2.7085763639200514e+19 1.4362554194875469e+17 8.1298914165000516e+20 2.1349877452603302e+19 4.5160772019834741e+19 7.0046883060573051e+18 1.0206074901425235e+18 2.517423088583274e+18 0 1.6256618994333159e+20 6.6530258577245064e+20 2.0179384058057625e+20 4.2654900441065672e+18 1.6659170668981862e+18 3.1813743487212028e+20 1.311293410424304e+19 4.3495522582820413e+18 0 6.1239808749382192e+20 1.1531880621694239e+21 8.7465137977549406e+19 0.16664714092556809 0.1418091981032768 0.74463666330534029 0.58095701514559916 0.012 0.012 140 0 0 0 0.21938332662630844 3.2523966726908893 9040.0407685196769 11767.5 0.096127950054900241 4.704545454545455 63.695454545454552 1 -3.8708886842152355e+45 3.2519951898424148e+20 1.4458431701165269e+19 1.6310385846277566e+19 2.7735201300299111e+20 818496508518207.25 2.4041756873336448e+18 4.320386223277241e+17 1.5276567365779483e+19 6950085347313792 2.4878687495292522e+19 2.95373673802447e+18 7.892119239539037e+19 409271566336.00012 1.8066723209904121e+20 1.17719023923967e+19 3.2138618099791852e+19 1.9321060850376462e+20 454285251450454.81 1.1995116698785229e+18 2.4027153821971299e+17 8.4966819080110049e+18 3868134360429810 1.2498175832677249e+19 2.6335200997563192e+18 227030480008.80591 4.3845106874728227e+19 1.806642537e+22 2.7623564390730047e+19 3.9746135814000251e+18 0.0054999999999999997 0.45000000000000001 0.25 0.20000000000000001 0.0054999999999999997 0.105 0.5 0.059999999999999998 0.17999999999999999 1 4 0.22 0.22 2.379 0.92000000000000004 0.01532 0.00107 0.0029658000000000002 0.063200000000000006 5 0.048890000000000003 0.035657000000000001 1.1343825000000001 0.047611250000000001 8.4567999999999994 9.9199999999999999 5.3200000000000003 3.52 0.1978 0.086124000000000006 0.00021855999999999999 0.032500000000000001 0.764818 0.12862000000000001 0.093140000000000001 0.22162999999999999 0.012 0.41999999999999998 1 200 40 2 35 0.089732999999999993 8.5999999999999996 2.7000000000000002 10500 40500 3.1699999999999999e-07 0.42430000000000001 0.0001528 0.5 62 83 4.922e-05 1 0.0038999999999999998 0.0032499999999999999 -70 2577340 96500 0.041000000000000002 1.4399999999999999 2 0 0.074999999999999997 0.020799999999999999 0.050000000000000003 0.29999999999999999 0.59999999999999998 0.001 28.600000000000001 2.73 0.052468099999999997 0.014999999999999999 0.024299999999999999 0.020729999999999998 0.5 0.45000000000000001 6.2599999999999998 0.54700000000000004 5.2999999999999998 0.1046 0 0.44724540000000002 1.778181 0.44505 11.161818179999999 18.016363630000001 0.025999999999999999 9 9 9 9 0.0078300000000000002 0.0058000000000000013 0.075999999999999998 0.28999999999999998 0.5 0.5 0.5 0.5 0.0361 2.73 0.40300000000000002 0.55783000000000005 0.5 0.45000000000000001 0.089440908498999452 0.002114814901207805 7232.032614815741 5230 
     </InitialState>
   </Model>
   <ListOfTasks>
-    <Task key="Task_12" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
-      <Report reference="Report_8" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_13" name="Steady-State" type="steadyState" scheduled="false" updateModel="false">
+      <Report reference="Report_10" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="JacobianRequested" type="bool" value="1"/>
         <Parameter name="StabilityAnalysisRequested" type="bool" value="1"/>
@@ -7067,10 +6979,11 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Parameter name="Iteration Limit" type="unsignedInteger" value="50"/>
         <Parameter name="Maximum duration for forward integration" type="unsignedFloat" value="1000000000"/>
         <Parameter name="Maximum duration for backward integration" type="unsignedFloat" value="1000000"/>
+        <Parameter name="Target Criterion" type="string" value="Distance and Rate"/>
       </Method>
     </Task>
-    <Task key="Task_11" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
-      <Report reference="Report_18" target="EventTest29.1.txt" append="0" confirmOverwrite="0"/>
+    <Task key="Task_12" name="Time-Course" type="timeCourse" scheduled="true" updateModel="false">
+      <Report reference="Report_1" target="EventTest29.1.txt" append="0" confirmOverwrite="0"/>
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="300"/>
@@ -7078,19 +6991,21 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Parameter name="Duration" type="float" value="300"/>
         <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
         <Parameter name="OutputStartTime" type="float" value="195"/>
-        <Parameter name="Output Event" type="bool" value="1"/>
+        <Parameter name="Output Event" type="bool" value="0"/>
         <Parameter name="Start in Steady State" type="bool" value="0"/>
+        <Parameter name="Use Values" type="bool" value="0"/>
+        <Parameter name="Values" type="string" value=""/>
         <Parameter name="Continue on Simultaneous Events" type="bool" value="0"/>
       </Problem>
       <Method name="Deterministic (LSODA)" type="Deterministic(LSODA)">
         <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
-        <Parameter name="Relative Tolerance" type="unsignedFloat" value="9.9999999999999995e-07"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="1.0000000000000001e-09"/>
         <Parameter name="Absolute Tolerance" type="unsignedFloat" value="9.9999999999999998e-13"/>
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
         <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_10" name="Scan" type="scan" scheduled="false" updateModel="false">
+    <Task key="Task_11" name="Scan" type="scan" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="Subtask" type="unsignedInteger" value="0"/>
         <ParameterGroup name="ScanItems">
@@ -7101,23 +7016,26 @@ The reactions for the PPP have all their reaction rates set to zero so that they
             <Parameter name="Object" type="cn" value="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Reactions[HK_astrocytes (R01786)  (HeinrichSchuster)],ParameterGroup=Parameters,Parameter=k_HK,Reference=Value"/>
             <Parameter name="Type" type="unsignedInteger" value="1"/>
             <Parameter name="log" type="bool" value="0"/>
+            <Parameter name="Use Values" type="bool" value="0"/>
+            <Parameter name="Values" type="string" value=""/>
           </ParameterGroup>
         </ParameterGroup>
-        <Parameter name="Output in subtask" type="bool" value="0"/>
+        <Parameter name="Subtask Output" type="string" value="none"/>
         <Parameter name="Adjust initial conditions" type="bool" value="0"/>
+        <Parameter name="Continue on Error" type="bool" value="0"/>
       </Problem>
       <Method name="Scan Framework" type="ScanFramework">
       </Method>
     </Task>
-    <Task key="Task_9" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
-      <Report reference="Report_7" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_10" name="Elementary Flux Modes" type="fluxMode" scheduled="false" updateModel="false">
+      <Report reference="Report_9" target="" append="1" confirmOverwrite="1"/>
       <Problem>
       </Problem>
       <Method name="EFM Algorithm" type="EFMAlgorithm">
       </Method>
     </Task>
-    <Task key="Task_8" name="Optimization" type="optimization" scheduled="false" updateModel="false">
-      <Report reference="Report_6" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_9" name="Optimization" type="optimization" scheduled="false" updateModel="false">
+      <Report reference="Report_8" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Subtask" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
         <ParameterText name="ObjectiveExpression" type="expression">
@@ -7142,18 +7060,21 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         </ParameterGroup>
         <ParameterGroup name="OptimizationConstraintList">
         </ParameterGroup>
+        <Parameter name="DisplayPoplations" type="bool" value="0"/>
       </Problem>
       <Method name="Particle Swarm" type="ParticleSwarm">
+        <Parameter name="Log Verbosity" type="unsignedInteger" value="0"/>
         <Parameter name="Iteration Limit" type="unsignedInteger" value="2000"/>
         <Parameter name="Swarm Size" type="unsignedInteger" value="50"/>
         <Parameter name="Std. Deviation" type="unsignedFloat" value="9.9999999999999995e-07"/>
         <Parameter name="Random Number Generator" type="unsignedInteger" value="1"/>
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
+        <Parameter name="Stop after # Stalled Iterations" type="unsignedInteger" value="0"/>
         <Parameter name="#LogVerbosity" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_7" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
-      <Report reference="Report_5" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_8" name="Parameter Estimation" type="parameterFitting" scheduled="false" updateModel="false">
+      <Report reference="Report_7" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="Maximize" type="bool" value="0"/>
         <Parameter name="Randomize Start Values" type="bool" value="0"/>
@@ -7162,9 +7083,12 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         </ParameterGroup>
         <ParameterGroup name="OptimizationConstraintList">
         </ParameterGroup>
+        <Parameter name="DisplayPoplations" type="bool" value="0"/>
         <Parameter name="Steady-State" type="cn" value="CN=Root,Vector=TaskList[Steady-State]"/>
         <Parameter name="Time-Course" type="cn" value="CN=Root,Vector=TaskList[Time-Course]"/>
         <Parameter name="Create Parameter Sets" type="bool" value="0"/>
+        <Parameter name="Use Time Sens" type="bool" value="0"/>
+        <Parameter name="Time-Sens" type="cn" value=""/>
         <ParameterGroup name="Experiment Set">
         </ParameterGroup>
         <ParameterGroup name="Validation Set">
@@ -7173,17 +7097,19 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         </ParameterGroup>
       </Problem>
       <Method name="Evolutionary Programming" type="EvolutionaryProgram">
+        <Parameter name="Log Verbosity" type="unsignedInteger" value="0"/>
         <Parameter name="Number of Generations" type="unsignedInteger" value="200"/>
         <Parameter name="Population Size" type="unsignedInteger" value="20"/>
         <Parameter name="Random Number Generator" type="unsignedInteger" value="1"/>
         <Parameter name="Seed" type="unsignedInteger" value="0"/>
+        <Parameter name="Stop after # Stalled Generations" type="unsignedInteger" value="0"/>
         <Parameter name="#LogVerbosity" type="unsignedInteger" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_6" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_4" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_7" name="Metabolic Control Analysis" type="metabolicControlAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_6" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_12"/>
+        <Parameter name="Steady-State" type="key" value="Task_13"/>
       </Problem>
       <Method name="MCA Method (Reder)" type="MCAMethod(Reder)">
         <Parameter name="Modulation Factor" type="unsignedFloat" value="1.0000000000000001e-09"/>
@@ -7191,8 +7117,8 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Parameter name="Use Smallbone" type="bool" value="1"/>
       </Method>
     </Task>
-    <Task key="Task_5" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
-      <Report reference="Report_3" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_6" name="Lyapunov Exponents" type="lyapunovExponents" scheduled="false" updateModel="false">
+      <Report reference="Report_5" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="ExponentNumber" type="unsignedInteger" value="3"/>
         <Parameter name="DivergenceRequested" type="bool" value="1"/>
@@ -7206,8 +7132,8 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
       </Method>
     </Task>
-    <Task key="Task_4" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
-      <Report reference="Report_2" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_5" name="Time Scale Separation Analysis" type="timeScaleSeparationAnalysis" scheduled="false" updateModel="false">
+      <Report reference="Report_4" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
         <Parameter name="StepSize" type="float" value="0.01"/>
@@ -7219,8 +7145,8 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Parameter name="Deuflhard Tolerance" type="unsignedFloat" value="9.9999999999999995e-07"/>
       </Method>
     </Task>
-    <Task key="Task_3" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
-      <Report reference="Report_1" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_16" name="Sensitivities" type="sensitivities" scheduled="false" updateModel="false">
+      <Report reference="Report_3" target="" append="1" confirmOverwrite="1"/>
       <Problem>
         <Parameter name="SubtaskType" type="unsignedInteger" value="1"/>
         <ParameterGroup name="TargetFunctions">
@@ -7243,13 +7169,14 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Parameter name="Delta minimum" type="unsignedFloat" value="9.9999999999999998e-13"/>
       </Method>
     </Task>
-    <Task key="Task_2" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+    <Task key="Task_15" name="Moieties" type="moieties" scheduled="false" updateModel="false">
+      <Report reference="Report_22" target="" append="1" confirmOverwrite="1"/>
       <Problem>
       </Problem>
       <Method name="Householder Reduction" type="Householder">
       </Method>
     </Task>
-    <Task key="Task_1" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
+    <Task key="Task_4" name="Cross Section" type="crosssection" scheduled="false" updateModel="false">
       <Problem>
         <Parameter name="AutomaticStepSize" type="bool" value="0"/>
         <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
@@ -7259,6 +7186,8 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Parameter name="OutputStartTime" type="float" value="0"/>
         <Parameter name="Output Event" type="bool" value="0"/>
         <Parameter name="Start in Steady State" type="bool" value="0"/>
+        <Parameter name="Use Values" type="bool" value="0"/>
+        <Parameter name="Values" type="string" value=""/>
         <Parameter name="LimitCrossings" type="bool" value="0"/>
         <Parameter name="NumCrossingsLimit" type="unsignedInteger" value="0"/>
         <Parameter name="LimitOutTime" type="bool" value="0"/>
@@ -7284,17 +7213,42 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
       </Method>
     </Task>
-    <Task key="Task_13" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
-      <Report reference="Report_0" target="" append="1" confirmOverwrite="1"/>
+    <Task key="Task_3" name="Linear Noise Approximation" type="linearNoiseApproximation" scheduled="false" updateModel="false">
+      <Report reference="Report_2" target="" append="1" confirmOverwrite="1"/>
       <Problem>
-        <Parameter name="Steady-State" type="key" value="Task_12"/>
+        <Parameter name="Steady-State" type="key" value="Task_13"/>
       </Problem>
       <Method name="Linear Noise Approximation" type="LinearNoiseApproximation">
       </Method>
     </Task>
+    <Task key="Task_2" name="Time-Course Sensitivities" type="timeSensitivities" scheduled="false" updateModel="false">
+      <Problem>
+        <Parameter name="AutomaticStepSize" type="bool" value="0"/>
+        <Parameter name="StepNumber" type="unsignedInteger" value="100"/>
+        <Parameter name="StepSize" type="float" value="0.01"/>
+        <Parameter name="Duration" type="float" value="1"/>
+        <Parameter name="TimeSeriesRequested" type="bool" value="1"/>
+        <Parameter name="OutputStartTime" type="float" value="0"/>
+        <Parameter name="Output Event" type="bool" value="0"/>
+        <Parameter name="Start in Steady State" type="bool" value="0"/>
+        <Parameter name="Use Values" type="bool" value="0"/>
+        <Parameter name="Values" type="string" value=""/>
+        <ParameterGroup name="ListOfParameters">
+        </ParameterGroup>
+        <ParameterGroup name="ListOfTargets">
+        </ParameterGroup>
+      </Problem>
+      <Method name="LSODA Sensitivities" type="Sensitivities(LSODA)">
+        <Parameter name="Integrate Reduced Model" type="bool" value="0"/>
+        <Parameter name="Relative Tolerance" type="unsignedFloat" value="9.9999999999999995e-07"/>
+        <Parameter name="Absolute Tolerance" type="unsignedFloat" value="9.9999999999999998e-13"/>
+        <Parameter name="Max Internal Steps" type="unsignedInteger" value="10000"/>
+        <Parameter name="Max Internal Step Size" type="unsignedFloat" value="0"/>
+      </Method>
+    </Task>
   </ListOfTasks>
   <ListOfReports>
-    <Report key="Report_8" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
+    <Report key="Report_10" name="Steady-State" taskType="steadyState" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -7302,7 +7256,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Object cn="CN=Root,Vector=TaskList[Steady-State]"/>
       </Footer>
     </Report>
-    <Report key="Report_7" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
+    <Report key="Report_9" name="Elementary Flux Modes" taskType="fluxMode" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -7310,7 +7264,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Object cn="CN=Root,Vector=TaskList[Elementary Flux Modes],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_6" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
+    <Report key="Report_8" name="Optimization" taskType="optimization" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -7334,7 +7288,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Object cn="CN=Root,Vector=TaskList[Optimization],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_5" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
+    <Report key="Report_7" name="Parameter Estimation" taskType="parameterFitting" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -7358,7 +7312,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Object cn="CN=Root,Vector=TaskList[Parameter Estimation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_4" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_6" name="Metabolic Control Analysis" taskType="metabolicControlAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -7370,7 +7324,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Object cn="CN=Root,Vector=TaskList[Metabolic Control Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_3" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
+    <Report key="Report_5" name="Lyapunov Exponents" taskType="lyapunovExponents" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -7382,7 +7336,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Object cn="CN=Root,Vector=TaskList[Lyapunov Exponents],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_2" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
+    <Report key="Report_4" name="Time Scale Separation Analysis" taskType="timeScaleSeparationAnalysis" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -7394,7 +7348,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Object cn="CN=Root,Vector=TaskList[Time Scale Separation Analysis],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_1" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
+    <Report key="Report_3" name="Sensitivities" taskType="sensitivities" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -7406,7 +7360,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Object cn="CN=Root,Vector=TaskList[Sensitivities],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_0" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
+    <Report key="Report_2" name="Linear Noise Approximation" taskType="linearNoiseApproximation" separator="&#x09;" precision="6">
       <Comment>
         Automatically generated report.
       </Comment>
@@ -7418,7 +7372,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Object cn="CN=Root,Vector=TaskList[Linear Noise Approximation],Object=Result"/>
       </Footer>
     </Report>
-    <Report key="Report_18" name="Time, Concentrations, Volumes, and Global Quantity Values" taskType="timeCourse" separator="&#x09;" precision="6">
+    <Report key="Report_1" name="Time, Concentrations, Volumes, and Global Quantity Values" taskType="timeCourse" separator="&#x09;" precision="6">
       <Comment>
         A table of time, variable species concentrations, variable compartment volumes, and variable global quantity values.
       </Comment>
@@ -7477,16 +7431,415 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <Object cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[stimulus],Reference=Value"/>
       </Table>
     </Report>
+    <Report key="Report_0" name="Time-Course" taskType="timeCourse" separator="&#x09;" precision="6">
+      <Comment>
+        Automatically generated report.
+      </Comment>
+      <Header>
+        <Object cn="CN=Root,Vector=TaskList[Time-Course],Object=Description"/>
+      </Header>
+      <Footer>
+        <Object cn="CN=Root,Vector=TaskList[Time-Course],Object=Result"/>
+      </Footer>
+    </Report>
+    <Report key="Report_22" name="Moieties" taskType="moieties" separator="&#x09;" precision="6">
+      <Comment>
+        Automatically generated report.
+      </Comment>
+      <Header>
+        <Object cn="CN=Root,Vector=TaskList[Moieties],Object=Description"/>
+      </Header>
+      <Footer>
+        <Object cn="String=&#x0a;"/>
+        <Object cn="CN=Root,Vector=TaskList[Moieties],Object=Result"/>
+      </Footer>
+    </Report>
   </ListOfReports>
   <ListOfPlots>
     <PlotSpecification name="Concentrations, Volumes, and Global Quantity Values" type="Plot2D" active="1" taskTypes="">
       <Parameter name="log X" type="bool" value="0"/>
       <Parameter name="log Y" type="bool" value="0"/>
+      <Parameter name="plot engine" type="string" value="QWT"/>
+      <Parameter name="x axis" type="string" value=""/>
+      <Parameter name="y axis" type="string" value=""/>
+      <Parameter name="z axis" type="string" value=""/>
       <ListOfPlotItems>
+        <PlotItem name="[O2{capillary}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary],Vector=Metabolites[O2],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[CO2{capillary}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary],Vector=Metabolites[CO2],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[dHb]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary],Vector=Metabolites[dHb],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[G6P{neurons}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[G6P],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[ATP{neurons}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[ATP],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[F6P{neurons}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[F6P],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[GAP{neurons}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[GAP],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[PEP{neurons}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[PEP],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[O2{neurons}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[O2],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[PCr{neurons}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[PCr],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[Na+{neurons}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[Na+],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[GLU{neurons}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[GLU],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[ADP{neurons}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[ADP],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[AMP{neurons}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[AMP],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[Cr{neurons}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[Cr],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[NAD{neurons}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[NAD],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[ATP{astrocytes}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[ATP],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[G6P{astrocytes}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[G6P],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[F6P{astrocytes}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[F6P],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[GAP{astrocytes}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[GAP],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[PEP{astrocytes}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[PEP],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[O2{astrocytes}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[O2],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[PCr{astrocytes}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[PCr],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[Na+{astrocytes}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[Na+],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[GLY]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[GLY],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[GLU{astrocytes}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[GLU],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[ADP{astrocytes}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[ADP],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[AMP{astrocytes}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[AMP],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[Cr{astrocytes}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[Cr],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[NAD{astrocytes}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[NAD],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="[GLU{extracellular_space}]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[extracellular_space],Vector=Metabolites[GLU],Reference=Concentration"/>
+          </ListOfChannels>
+        </PlotItem>
         <PlotItem name="Compartments[venous balloon].Volume" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
           <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
@@ -7495,34 +7848,34 @@ The reactions for the PPP have all their reaction rates set to zero so that they
             <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[venous balloon],Reference=Volume"/>
           </ListOfChannels>
         </PlotItem>
-        <PlotItem name="Values[BOLD signal]" type="Curve2D">
+        <PlotItem name="Values[NAD_neurons]" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
           <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[BOLD signal],Reference=Value"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[NAD_neurons],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
-        <PlotItem name="Values[Cr_astrocytes]" type="Curve2D">
+        <PlotItem name="Values[NAD_astrocytes]" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
           <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[Cr_astrocytes],Reference=Value"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[NAD_astrocytes],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[Cr_neurons]" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
           <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
@@ -7531,22 +7884,22 @@ The reactions for the PPP have all their reaction rates set to zero so that they
             <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[Cr_neurons],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
-        <PlotItem name="Values[E0]" type="Curve2D">
+        <PlotItem name="Values[Cr_astrocytes]" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
           <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[E0],Reference=Value"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[Cr_astrocytes],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[F_in]" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
           <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
@@ -7558,7 +7911,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <PlotItem name="Values[F_out]" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
           <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
@@ -7567,34 +7920,118 @@ The reactions for the PPP have all their reaction rates set to zero so that they
             <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[F_out],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
-        <PlotItem name="Values[NAD_astrocytes]" type="Curve2D">
+        <PlotItem name="Values[t_end_GLY]" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
           <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[NAD_astrocytes],Reference=Value"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[t_end_GLY],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
-        <PlotItem name="Values[NAD_neurons]" type="Curve2D">
+        <PlotItem name="Values[is_stimulated]" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
           <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[NAD_neurons],Reference=Value"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[is_stimulated],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[v_stim]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[v_stim],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[BOLD signal]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[BOLD signal],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[E0]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[E0],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[Vmax_ce_GLC (wrt capillaries) (Aubert)]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[Vmax_ce_GLC (wrt capillaries) (Aubert)],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[Vmax_eg_GLC (wrt astrocytes) (Aubert)]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[Vmax_eg_GLC (wrt astrocytes) (Aubert)],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[Vmax_en_GLC (wrt neurons) (Aubert)]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[Vmax_en_GLC (wrt neurons) (Aubert)],Reference=Value"/>
+          </ListOfChannels>
+        </PlotItem>
+        <PlotItem name="Values[Vmax_cg_GLC (wrt capillaries) (Aubert)]" type="Curve2D">
+          <Parameter name="Line type" type="unsignedInteger" value="0"/>
+          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
+          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
+          <Parameter name="Color" type="string" value="auto"/>
+          <Parameter name="Recording Activity" type="string" value="during"/>
+          <ListOfChannels>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
+            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[Vmax_cg_GLC (wrt capillaries) (Aubert)],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
         <PlotItem name="Values[PS_cap_astrocytes (wrt capillaries) (Aubert)]" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
           <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
@@ -7606,7 +8043,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
         <PlotItem name="Values[PS_cap_neuron (wrt capillaries) (Aubert)]" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
           <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
@@ -7615,58 +8052,10 @@ The reactions for the PPP have all their reaction rates set to zero so that they
             <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[PS_cap_neuron (wrt capillaries) (Aubert)],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
-        <PlotItem name="Values[Vmax_ce_GLC (wrt capillaries) (Aubert)]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[Vmax_ce_GLC (wrt capillaries) (Aubert)],Reference=Value"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="Values[Vmax_cg_GLC (wrt capillaries) (Aubert)]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[Vmax_cg_GLC (wrt capillaries) (Aubert)],Reference=Value"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="Values[Vmax_eg_GLC (wrt astrocytes) (Aubert) ]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[Vmax_eg_GLC (wrt astrocytes) (Aubert) ],Reference=Value"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="Values[Vmax_en_GLC (wrt neurons) (Aubert)]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[Vmax_en_GLC (wrt neurons) (Aubert)],Reference=Value"/>
-          </ListOfChannels>
-        </PlotItem>
         <PlotItem name="Values[f_CBF_dyn]" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
           <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
@@ -7675,424 +8064,16 @@ The reactions for the PPP have all their reaction rates set to zero so that they
             <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[f_CBF_dyn],Reference=Value"/>
           </ListOfChannels>
         </PlotItem>
-        <PlotItem name="Values[is_stimulated]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[is_stimulated],Reference=Value"/>
-          </ListOfChannels>
-        </PlotItem>
         <PlotItem name="Values[stimulus]" type="Curve2D">
           <Parameter name="Line type" type="unsignedInteger" value="0"/>
           <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
+          <Parameter name="Line width" type="unsignedFloat" value="1.2"/>
           <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
           <Parameter name="Color" type="string" value="auto"/>
           <Parameter name="Recording Activity" type="string" value="during"/>
           <ListOfChannels>
             <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
             <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[stimulus],Reference=Value"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="Values[t_end_GLY]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[t_end_GLY],Reference=Value"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="Values[v_stim]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Values[v_stim],Reference=Value"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[ADP{astrocytes}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[ADP],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[ADP{neurons}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[ADP],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[AMP{astrocytes}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[AMP],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[AMP{neurons}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[AMP],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[ATP{astrocytes}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[ATP],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[ATP{neurons}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[ATP],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[CO2{capillary}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary],Vector=Metabolites[CO2],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[Cr{astrocytes}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[Cr],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[Cr{neurons}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[Cr],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[F6P{astrocytes}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[F6P],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[F6P{neurons}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[F6P],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[G6P{astrocytes}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[G6P],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[G6P{neurons}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[G6P],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[GAP{astrocytes}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[GAP],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[GAP{neurons}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[GAP],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[GLU{astrocytes}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[GLU],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[GLU{extracellular_space}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[extracellular_space],Vector=Metabolites[GLU],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[GLU{neurons}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[GLU],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[GLY]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[GLY],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[NAD{astrocytes}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[NAD],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[NAD{neurons}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[NAD],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[Na+{astrocytes}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[Na+],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[Na+{neurons}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[Na+],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[O2{astrocytes}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[O2],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[O2{capillary}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary],Vector=Metabolites[O2],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[O2{neurons}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[O2],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[PCr{astrocytes}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[PCr],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[PCr{neurons}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[PCr],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[PEP{astrocytes}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[astrocytes],Vector=Metabolites[PEP],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[PEP{neurons}]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[neurons],Vector=Metabolites[PEP],Reference=Concentration"/>
-          </ListOfChannels>
-        </PlotItem>
-        <PlotItem name="[dHb]" type="Curve2D">
-          <Parameter name="Line type" type="unsignedInteger" value="0"/>
-          <Parameter name="Line subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Line width" type="unsignedFloat" value="1"/>
-          <Parameter name="Symbol subtype" type="unsignedInteger" value="0"/>
-          <Parameter name="Color" type="string" value="auto"/>
-          <Parameter name="Recording Activity" type="string" value="during"/>
-          <ListOfChannels>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Reference=Time"/>
-            <ChannelSpec cn="CN=Root,Model=Brain Energy Metabolism with PPP,Vector=Compartments[capillary],Vector=Metabolites[dHb],Reference=Concentration"/>
           </ListOfChannels>
         </PlotItem>
       </ListOfPlotItems>
@@ -8110,7 +8091,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
     <SBMLMap SBMLid="ATPase_astrocytes" COPASIkey="Reaction_26"/>
     <SBMLMap SBMLid="ATPase_neurons" COPASIkey="Reaction_25"/>
     <SBMLMap SBMLid="BOLD_signal" COPASIkey="ModelValue_74"/>
-    <SBMLMap SBMLid="Blood_flow_contribution_inkl__volume" COPASIkey="Function_54"/>
+    <SBMLMap SBMLid="Blood_flow_contribution_inkl__volume" COPASIkey="Function_95"/>
     <SBMLMap SBMLid="Blood_flow_contribution_to_capillary_O2" COPASIkey="Reaction_11"/>
     <SBMLMap SBMLid="CK_astrocytes_forward__R01881" COPASIkey="Reaction_29"/>
     <SBMLMap SBMLid="CK_neurons_forward__R01881" COPASIkey="Reaction_30"/>
@@ -8167,7 +8148,7 @@ The reactions for the PPP have all their reaction rates set to zero so that they
     <SBMLMap SBMLid="O2_artery" COPASIkey="Metabolite_58"/>
     <SBMLMap SBMLid="O2_exchange_capillary_astrocytes" COPASIkey="Reaction_10"/>
     <SBMLMap SBMLid="O2_exchange_capillary_neurons" COPASIkey="Reaction_9"/>
-    <SBMLMap SBMLid="O2_transport_function_inkl__volume" COPASIkey="Function_55"/>
+    <SBMLMap SBMLid="O2_transport_function_inkl__volume" COPASIkey="Function_96"/>
     <SBMLMap SBMLid="P6G_astrocytes" COPASIkey="Metabolite_48"/>
     <SBMLMap SBMLid="P6G_neurons" COPASIkey="Metabolite_21"/>
     <SBMLMap SBMLid="PGI_astrocytes__R02740___HS" COPASIkey="Reaction_53"/>
@@ -8254,8 +8235,8 @@ The reactions for the PPP have all their reaction rates set to zero so that they
     <SBMLMap SBMLid="k_PK_astrocytes" COPASIkey="ModelValue_78"/>
     <SBMLMap SBMLid="k_PK_neurons" COPASIkey="ModelValue_77"/>
     <SBMLMap SBMLid="k_pump" COPASIkey="ModelValue_49"/>
-    <SBMLMap SBMLid="modular_rate_law_for_one_substrate__one_product" COPASIkey="Function_53"/>
-    <SBMLMap SBMLid="modular_rate_law_for_two_substrates__two_products" COPASIkey="Function_52"/>
+    <SBMLMap SBMLid="modular_rate_law_for_one_substrate__one_product" COPASIkey="Function_94"/>
+    <SBMLMap SBMLid="modular_rate_law_for_two_substrates__two_products" COPASIkey="Function_93"/>
     <SBMLMap SBMLid="nh_O2" COPASIkey="ModelValue_46"/>
     <SBMLMap SBMLid="nh_O2__Aubert" COPASIkey="ModelValue_115"/>
     <SBMLMap SBMLid="outflow_of_dHb" COPASIkey="Reaction_24"/>
@@ -8336,67 +8317,115 @@ The reactions for the PPP have all their reaction rates set to zero so that they
     <SBMLMap SBMLid="t_end_GLY" COPASIkey="ModelValue_55"/>
     <SBMLMap SBMLid="t_stim_tp" COPASIkey="ModelValue_65"/>
     <SBMLMap SBMLid="tau_v" COPASIkey="ModelValue_43"/>
-    <SBMLMap SBMLid="vATPase" COPASIkey="Function_43"/>
+    <SBMLMap SBMLid="vATPase" COPASIkey="Function_84"/>
     <SBMLMap SBMLid="vGLU_eg" COPASIkey="Reaction_21"/>
-    <SBMLMap SBMLid="vGLU_eg__inkl__Volumes" COPASIkey="Function_48"/>
+    <SBMLMap SBMLid="vGLU_eg__inkl__Volumes" COPASIkey="Function_89"/>
     <SBMLMap SBMLid="vGLU_gn" COPASIkey="Reaction_22"/>
-    <SBMLMap SBMLid="vGLU_gn__inkl__Volume" COPASIkey="Function_49"/>
+    <SBMLMap SBMLid="vGLU_gn__inkl__Volume" COPASIkey="Function_90"/>
     <SBMLMap SBMLid="vGLU_ne" COPASIkey="Reaction_20"/>
-    <SBMLMap SBMLid="vGLU_ne__inkl__Volume" COPASIkey="Function_50"/>
+    <SBMLMap SBMLid="vGLU_ne__inkl__Volume" COPASIkey="Function_91"/>
     <SBMLMap SBMLid="vGLYP" COPASIkey="Reaction_16"/>
     <SBMLMap SBMLid="vGLYS" COPASIkey="Reaction_15"/>
-    <SBMLMap SBMLid="vGLYS_0" COPASIkey="Function_40"/>
-    <SBMLMap SBMLid="vGlyp_SS" COPASIkey="Function_58"/>
-    <SBMLMap SBMLid="vHK__HS" COPASIkey="Function_59"/>
+    <SBMLMap SBMLid="vGLYS_0" COPASIkey="Function_81"/>
+    <SBMLMap SBMLid="vGlyp_SS" COPASIkey="Function_99"/>
+    <SBMLMap SBMLid="vHK__HS" COPASIkey="Function_100"/>
     <SBMLMap SBMLid="vLEAK_Na_astrocytes" COPASIkey="Reaction_18"/>
-    <SBMLMap SBMLid="vLEAK_Na_inkl__Volume" COPASIkey="Function_56"/>
+    <SBMLMap SBMLid="vLEAK_Na_inkl__Volume" COPASIkey="Function_97"/>
     <SBMLMap SBMLid="vLEAK_Na_neurons" COPASIkey="Reaction_17"/>
-    <SBMLMap SBMLid="vMITO__inkl__Volumes" COPASIkey="Function_47"/>
-    <SBMLMap SBMLid="vPFK" COPASIkey="Function_46"/>
-    <SBMLMap SBMLid="vPGK" COPASIkey="Function_45"/>
-    <SBMLMap SBMLid="vPK" COPASIkey="Function_44"/>
+    <SBMLMap SBMLid="vMITO__inkl__Volumes" COPASIkey="Function_88"/>
+    <SBMLMap SBMLid="vPFK" COPASIkey="Function_87"/>
+    <SBMLMap SBMLid="vPGK" COPASIkey="Function_86"/>
+    <SBMLMap SBMLid="vPK" COPASIkey="Function_85"/>
     <SBMLMap SBMLid="vPUMP_astrocytes" COPASIkey="Reaction_14"/>
     <SBMLMap SBMLid="vPUMP_neurons" COPASIkey="Reaction_13"/>
-    <SBMLMap SBMLid="vPUMP_volume_dependent" COPASIkey="Function_57"/>
+    <SBMLMap SBMLid="vPUMP_volume_dependent" COPASIkey="Function_98"/>
     <SBMLMap SBMLid="vSTIM" COPASIkey="Reaction_19"/>
-    <SBMLMap SBMLid="vStim__with_volume" COPASIkey="Function_51"/>
+    <SBMLMap SBMLid="vStim__with_volume" COPASIkey="Function_92"/>
     <SBMLMap SBMLid="v_max_f_PGI" COPASIkey="ModelValue_83"/>
     <SBMLMap SBMLid="v_max_r_PGI" COPASIkey="ModelValue_84"/>
     <SBMLMap SBMLid="v_stim" COPASIkey="ModelValue_68"/>
-    <SBMLMap SBMLid="vdHb_in" COPASIkey="Function_41"/>
-    <SBMLMap SBMLid="vdHb_out" COPASIkey="Function_42"/>
+    <SBMLMap SBMLid="vdHb_in" COPASIkey="Function_82"/>
+    <SBMLMap SBMLid="vdHb_out" COPASIkey="Function_83"/>
     <SBMLMap SBMLid="venous_balloon" COPASIkey="Compartment_4"/>
     <SBMLMap SBMLid="vmax_GLYP" COPASIkey="ModelValue_56"/>
     <SBMLMap SBMLid="vn_1_tp" COPASIkey="ModelValue_63"/>
     <SBMLMap SBMLid="vn_2_tp" COPASIkey="ModelValue_64"/>
   </SBMLReference>
   <ListOfUnitDefinitions>
-    <UnitDefinition key="Unit_0" name="meter" symbol="m">
+    <UnitDefinition key="Unit_1" name="meter" symbol="m">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_0">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         m
       </Expression>
     </UnitDefinition>
-    <UnitDefinition key="Unit_2" name="second" symbol="s">
+    <UnitDefinition key="Unit_5" name="second" symbol="s">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_4">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         s
       </Expression>
     </UnitDefinition>
-    <UnitDefinition key="Unit_6" name="Avogadro" symbol="Avogadro">
+    <UnitDefinition key="Unit_13" name="Avogadro" symbol="Avogadro">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_12">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         Avogadro
       </Expression>
     </UnitDefinition>
-    <UnitDefinition key="Unit_8" name="item" symbol="#">
+    <UnitDefinition key="Unit_17" name="item" symbol="#">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_16">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         #
       </Expression>
     </UnitDefinition>
-    <UnitDefinition key="Unit_17" name="liter" symbol="l">
+    <UnitDefinition key="Unit_35" name="liter" symbol="l">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_34">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         0.001*m^3
       </Expression>
     </UnitDefinition>
-    <UnitDefinition key="Unit_20" name="mole" symbol="mol">
+    <UnitDefinition key="Unit_41" name="mole" symbol="mol">
+      <MiriamAnnotation>
+<rdf:RDF
+xmlns:dcterms="http://purl.org/dc/terms/"
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="#Unit_40">
+</rdf:Description>
+</rdf:RDF>
+      </MiriamAnnotation>
       <Expression>
         Avogadro*#
       </Expression>

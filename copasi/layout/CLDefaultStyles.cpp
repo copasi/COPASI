@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,8 +12,6 @@
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
-
-
 
 #include "CLDefaultStyles.h"
 
@@ -334,7 +332,6 @@ const char* DEFAULT_STYLES_STRING = \
                                     "  </listOfStyles>\n"
                                     "</renderInformation>\n"
 
-
                                     "  <renderInformation id=\"default\" name=\"Blue Gradient Species\"  backgroundColor=\"#FFFFFFFF\">\n"
                                     "    <listOfColorDefinitions>\n"
                                     "      <colorDefinition id=\"speciesColor\" value=\"#D2D2E6\"/>\n"
@@ -457,7 +454,6 @@ const char* DEFAULT_STYLES_STRING = \
                                     "    </listOfStyles>\n"
                                     "  </renderInformation>\n"
 
-
                                     "  <renderInformation id=\"lightBlue\" name=\"blue Species; colored modifiers\"  backgroundColor=\"#FFFFFFFF\">\n"
                                     "    <listOfColorDefinitions>\n"
                                     "      <colorDefinition id=\"lightBlue\" value=\"#ADD8E6\"/>\n"
@@ -568,7 +564,6 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      </style>\n"
                                     "    </listOfStyles>\n"
                                     "  </renderInformation>\n"
-
 
                                     "  <renderInformation id=\"gray_green\" name=\"Gray-Green Style\" backgroundColor=\"#FFFFFFFF\">\n"
                                     "    <listOfColorDefinitions>\n"
@@ -694,8 +689,6 @@ const char* DEFAULT_STYLES_STRING = \
                                     "    </listOfStyles>\n"
                                     "  </renderInformation>\n"
 
-
-
                                     "  <renderInformation id=\"grayStyle\" name=\"Gray Scale\" backgroundColor=\"#FFFFFFFF\">\n"
                                     "    <listOfColorDefinitions>\n"
                                     "      <colorDefinition id=\"lightGray\" value=\"#CECECE\"/>\n"
@@ -749,7 +742,6 @@ const char* DEFAULT_STYLES_STRING = \
                                     "      </style>\n"
                                     "    </listOfStyles>\n"
                                     "  </renderInformation>\n"
-
 
                                     "  <renderInformation id=\"invertGrayStyle\" name=\"Dark Gray Scale\" backgroundColor=\"#404040FF\">\n"
                                     "    <listOfColorDefinitions>\n"
@@ -868,6 +860,30 @@ CLGlobalRenderInformation* getDefaultStyle(size_t index)
   return pResult;
 }
 
+CLGlobalRenderInformation * getDefaultStyle(const std::string & key)
+{
+  if (!DEFAULT_STYLES)
+    {
+      DEFAULT_STYLES = loadDefaultStyles();
+    }
+
+  if (!DEFAULT_STYLES)
+    {
+      return NULL;
+    }
+
+  for (int index = 0; index < DEFAULT_STYLES->size(); ++index)
+    {
+      CLGlobalRenderInformation* current = static_cast<CLGlobalRenderInformation*>(&DEFAULT_STYLES->operator[](index));
+      if (current && current->getKey() == key)
+        {
+          return current;
+        }
+    }
+
+  return NULL;
+}
+
 CDataVector<CLGlobalRenderInformation>* loadDefaultStyles()
 {
   // try to initialize the default styles
@@ -887,7 +903,6 @@ CDataVector<CLGlobalRenderInformation>* loadDefaultStyles()
     {
       stream = new XMLInputStream(DEFAULT_STYLES_STRING, false);
     }
-
 
   ListOfGlobalRenderInformation * pRI = new ListOfGlobalRenderInformation();
   pRI->parseXML(XMLNode(*stream));

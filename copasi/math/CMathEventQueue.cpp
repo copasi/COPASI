@@ -110,6 +110,9 @@ CMathEventQueue::CAction::CAction(CMathEvent * pEvent,
       case CEvent::Callback:
         mType = Callback;
         break;
+
+      case CEvent::Stop:
+        break;
     }
 }
 
@@ -376,9 +379,14 @@ CMath::StateChange CMathEventQueue::process(const bool & priorToOutput)
 
       // First we handle equalities.
       mEquality = true;
-
-      // Retrieve the pending calculations.
       itAction = getAction();
+
+      if (itAction == mActions.end())
+        {
+          // Now handle inequalities.
+          mEquality = false;
+          itAction = getAction();
+        }
 
       while (itAction == mActions.end() &&
              mCascadingLevel > 0)
@@ -458,7 +466,7 @@ CMathEventQueue::iterator CMathEventQueue::getAction()
 
       // Pick one randomly
       default:
-        return PriorityActions[mpContainer->getRandomGenerator().getRandomU(PriorityActions.size() - 1)];
+        return PriorityActions[mpContainer->getRandomGenerator().getRandomU((int)PriorityActions.size() - 1)];
         break;
     }
 
@@ -485,85 +493,92 @@ bool CMathEventQueue::rootsFound()
   bool rootsFound = false;
 
   // Calculate the current root values
-  *mpRootValuesAfter = mpContainer->getRoots();
-
-  // Compare the root values before and after;
-  C_INT * pRootFound = mRootsFound.array();
-  C_INT * pRootEnd = pRootFound + mRootsFound.size();
-  C_FLOAT64 * pValueBefore = mpRootValuesBefore->array();
-  C_FLOAT64 * pValueAfter = mpRootValuesAfter->array();
-  CMathEvent::CTrigger::CRootProcessor ** ppRootProcessor = mpContainer->getRootProcessors().array();
-
-  for (; pRootFound != pRootEnd; ++pRootFound, ++pValueBefore, ++pValueAfter, ++ppRootProcessor)
+  if (mpContainer->areRootsValid())
     {
-      // Root values which did not change are not found
-      if (2.0 * fabs(*pValueAfter - *pValueBefore) <= (fabs(*pValueAfter) + fabs(*pValueBefore)) * std::numeric_limits< C_FLOAT64 >::epsilon())
-        {
-          *pRootFound = 0;
-          continue;
-        }
+      *mpRootValuesAfter = mpContainer->getRoots();
 
-      // Detect whether we have an exact zero (within 10 * epsilon)
-      bool zero = (fabs(*pValueAfter) < 10.0 * fabs(*pValueBefore) * std::numeric_limits< C_FLOAT64 >::epsilon());
+      // Compare the root values before and after;
+      C_INT * pRootFound = mRootsFound.array();
+      C_INT * pRootEnd = pRootFound + mRootsFound.size();
+      C_FLOAT64 * pValueBefore = mpRootValuesBefore->array();
+      C_FLOAT64 * pValueAfter = mpRootValuesAfter->array();
+      CMathEvent::CTrigger::CRootProcessor ** ppRootProcessor = mpContainer->getRootProcessors().array();
 
-      // Handle equality
-      if ((*ppRootProcessor)->isEquality())
+      for (; pRootFound != pRootEnd; ++pRootFound, ++pValueBefore, ++pValueAfter, ++ppRootProcessor)
         {
-          if ((*ppRootProcessor)->isTrue())
+          // Root values which did not change are not found
+          if (2.0 * fabs(*pValueAfter - *pValueBefore) <= (fabs(*pValueAfter) + fabs(*pValueBefore)) * std::numeric_limits< C_FLOAT64 >::epsilon())
             {
-              if (zero || *pValueAfter >= 0.0 || *pValueAfter > *pValueBefore)
+              *pRootFound = 0;
+              continue;
+            }
+
+          // Detect whether we have an exact zero (within 10 * epsilon)
+          bool zero = (fabs(*pValueAfter) < 10.0 * fabs(*pValueBefore) * std::numeric_limits< C_FLOAT64 >::epsilon());
+
+          // Handle equality
+          if ((*ppRootProcessor)->isEquality())
+            {
+              if ((*ppRootProcessor)->isTrue())
                 {
-                  *pRootFound = 0;
+                  if (zero || *pValueAfter >= 0.0 || *pValueAfter > *pValueBefore)
+                    {
+                      *pRootFound = 0;
+                    }
+                  else
+                    {
+                      *pRootFound = 1;
+                      rootsFound = true;
+                    }
                 }
               else
                 {
-                  *pRootFound = 1;
-                  rootsFound = true;
+                  if (*pValueAfter < 0.0 || *pValueAfter < *pValueBefore)
+                    {
+                      *pRootFound = 0;
+                    }
+                  else
+                    {
+                      *pRootFound = 1;
+                      rootsFound = true;
+                    }
                 }
             }
           else
             {
-              if (*pValueAfter < 0.0 || *pValueAfter < *pValueBefore)
+              if ((*ppRootProcessor)->isTrue())
                 {
-                  *pRootFound = 0;
+                  if (*pValueAfter > 0.0 || *pValueAfter > *pValueBefore)
+                    {
+                      *pRootFound = 0;
+                    }
+                  else
+                    {
+                      *pRootFound = 1;
+                      rootsFound = true;
+                    }
                 }
               else
                 {
-                  *pRootFound = 1;
-                  rootsFound = true;
-                }
-            }
-        }
-      else
-        {
-          if ((*ppRootProcessor)->isTrue())
-            {
-              if (*pValueAfter > 0.0 || *pValueAfter > *pValueBefore)
-                {
-                  *pRootFound = 0;
-                }
-              else
-                {
-                  *pRootFound = 1;
-                  rootsFound = true;
-                }
-            }
-          else
-            {
-              if (zero || *pValueAfter <= 0.0 || *pValueAfter < *pValueBefore)
-                {
-                  *pRootFound = 0;
-                }
-              else
-                {
-                  *pRootFound = 1;
-                  rootsFound = true;
+                  if (zero || *pValueAfter <= 0.0 || *pValueAfter < *pValueBefore)
+                    {
+                      *pRootFound = 0;
+                    }
+                  else
+                    {
+                      *pRootFound = 1;
+                      rootsFound = true;
+                    }
                 }
             }
         }
     }
+  else
+    {
+      mRootsFound = 0;
+    }
 
-  // Swap before and after.
+    // Swap before and after.
   CVector< C_FLOAT64 > * pTmp = mpRootValuesBefore;
   mpRootValuesBefore = mpRootValuesAfter;
   mpRootValuesAfter = pTmp;

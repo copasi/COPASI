@@ -71,34 +71,34 @@ public:
    * derived objects. The default implementation does nothing.
    * @return bool success
    */
-  virtual bool elevateChildren() override;
+  bool elevateChildren() override;
 
   /**
    * Set the call back of the problem
    * @param CProcessReport * pCallBack
    * @result bool success
    */
-  virtual bool setCallBack(CProcessReportLevel callBack) override;
+  bool setCallBack(CProcessReportLevel callBack) override;
 
   /**
    * perform at least the initializations of the subtask that
    * must be done before the output is initialized.
    */
-  virtual bool initializeSubtaskBeforeOutput();
+  bool initializeSubtaskBeforeOutput() override;
 
   /**
    * Do all necessary initialization so that calls to calculate will
    * be successful. This is called once from CCopasiTask::process()
    * @result bool success
    */
-  virtual bool initialize() override;
+  bool initialize() override;
 
   /**
    * Do the calculation based on CalculateVariables and fill
    * CalculateResults with the results.
    * @result bool continue
    */
-  virtual bool calculate() override;
+  bool calculate() override;
 
   /**
    * Do all necessary restore procedures so that the
@@ -106,21 +106,9 @@ public:
    * @param const bool & updateModel
    * @result bool success
    */
-  virtual bool restore(const bool & updateModel) override;
+  bool restore(const bool & updateModel) override;
 
   bool restore(const bool& updateModel, CExperiment* pExp);
-
-  /**
-   * Check whether all functional constraints are fulfilled.
-   * @result bool fulfilled
-   */
-  virtual bool checkFunctionalConstraints() override;
-
-  /**
-   * Retrieve the L2 norm of functional constraint violation.
-   * @result C_FLOAT64 violation
-   */
-  virtual C_FLOAT64 getFunctionalConstraintsViolation() override;
 
   /**
    * This is the output method for any object. The default implementation
@@ -129,7 +117,7 @@ public:
    * reimplement the virtual print function.
    * @param std::ostream * ostream
    */
-  virtual void print(std::ostream * ostream) const override;
+  void print(std::ostream * ostream) const override;
 
   /**
    * Output stream operator
@@ -145,7 +133,7 @@ public:
    * default behavior one needs to reimplement the virtual printResult function.
    * @param std::ostream * ostream
    */
-  virtual void printResult(std::ostream * ostream) const override;
+  void printResult(std::ostream * ostream) const override;
 
   /**
    * Fetch a new initial state from the model.
@@ -342,23 +330,11 @@ public:
    */
   void fixBuild55();
 
-  /**
-   * Sets the 'Create Parameter Sets' parameter. When set it will create new model parameter
-   * sets for each experiment after a run.
-   */
-  void setCreateParameterSets(const bool & create);
-
-  /**
-   * @return the value of the 'Create Parameter Sets' parameter that controls whether parameter
-   * sets should be created automatically.
-   */
-  const bool & getCreateParameterSets() const;
-
   void setUseTimeSens(bool value);
 
   const bool& getUseTimeSens() const;
 
-  void createParameterSets();
+  void createParameterSets() override;
 
   const CMatrix<C_FLOAT64>& getTimeSensJac() const;
   CMatrix<C_FLOAT64>& getTimeSensJac();
@@ -367,20 +343,7 @@ protected:
   /**
    * Signal that the math container has changed
    */
-  virtual void signalMathContainerChanged() override;
-
-  /**
-   * Do all necessary restore procedures for the container
-   * is in the same state as before or the new state if update is true.
-   * @param const bool & update
-   */
-  virtual void updateContainer(const bool & update) override;
-
-  /**
-   * Create a parameter set with the given name and the current model values
-   *
-   */
-  void createParameterSet(const std::string & Name);
+  void signalMathContainerChanged() override;
 
 private:
   /**
@@ -433,9 +396,9 @@ private:
   CTrajectoryTask * mpTrajectory;
 
   /**
-   * Pointer to the values which need to be updated for each experiment.
+   * Pointer to the items which need to be updated for each experiment.
    */
-  CMatrix< C_FLOAT64 * > mExperimentValues;
+  CMatrix< CFitItem * > mExperimentValues;
 
   /**
    * A vector of refresh methods which contains the sequence of refresh methods
@@ -467,7 +430,7 @@ private:
   /**
    * Matrix of update methods for items for each cross validation.
    */
-  CMatrix< C_FLOAT64 * > mCrossValidationValues;
+  // CMatrix< C_FLOAT64 * > mCrossValidationValues;
 
   /**
    * A vector of refresh methods which contains the sequence of refresh methods
@@ -607,11 +570,6 @@ private:
   CMatrixInterface< CMatrix< C_FLOAT64 > > * mpCorrelationMatrixInterface;
   CDataArray * mpCorrelationMatrix;
 
-  /**
-   * A pointer to the value of the CCopasiParameter holding Create Parameter Sets
-   */
-  bool * mpCreateParameterSets;
-
   /** A flag indicating whether or not to use time sens task */
   bool* mpUseTimeSens;
 
@@ -620,6 +578,8 @@ private:
   CMatrix< C_FLOAT64 > mJacTimeSens;
 
   CRegisteredCommonName * mpParmTimeSensCN;
+
+  bool mOldStartInSteadyStateFlag;
 };
 
 #endif  // COPASI_CFitProblem

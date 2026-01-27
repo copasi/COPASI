@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,16 +20,11 @@
 # include <lapackwrap.h>
 #else
 
-#ifdef min
-# undef min
-#endif // min
-
-#ifdef max
-# undef max
-#endif // max
-
 extern "C"
 {
+#define COPASI_CPLUSPLUS __cplusplus
+#define HAVE_LAPACK_CONFIG_H
+
 #if (defined HAVE_MKL || (defined WIN32 && defined HAVE_LAPACK_H))
 # define cbdsqr_ CBDSQR
 # define cgbbrd_ CGBBRD
@@ -1261,6 +1256,9 @@ extern "C"
 
 # if defined (HAVE_LAPACK_H) && !defined(HAVE_APPLE)
 #  include <lapack.h>
+#  if defined LAPACK_FORTRAN_STRLEN_END
+#   include "copasi/lapack/name_mangling.h"
+#  endif // LAPACK_FORTRAN_STRLEN_END
 # else
 #  undef small
 #  if defined (HAVE_CLAPACK_H) && !defined(HAVE_APPLE) && !defined(COPASI_OVERWRITE_USE_LAPACK)
@@ -1293,13 +1291,6 @@ using std::isnan;
 #ifdef max
 # undef max
 #endif // max
-
-#if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
-#if _MSC_VER < 1600
-# define min _cpp_min
-# define max _cpp_max
-#endif // _MSC_VER
-#endif // WIN32
 
 #endif // HAVE_LAPACKWRAP_H
 #endif // COPASI_lapackwrap

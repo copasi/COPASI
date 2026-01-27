@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,6 +57,8 @@ protected:
   CDataVector<CLTextGlyph> mvLabels;
   CDataVector<CLGeneralGlyph> mvGraphicalObjects;
   CDataVector<CLLocalRenderInformation> mvLocalRenderInformationObjects;
+
+  std::string mLastUsedRenderInformation;
 
   CLayout(const CLayout & src);
 
@@ -237,6 +239,9 @@ public:
                     std::map<std::string, const SBase*>& sbmlIDs
                     , const std::map<std::string, std::string>& globalKeyToIdMap
                    ) const;
+
+  const std::string & getLastUsedRenderInformation() const;
+  void setLastUsedRenderInformation(const std::string & renderInformation);
 
 protected:
   void writeDotNode(std::ostream & os, const std::string & id,

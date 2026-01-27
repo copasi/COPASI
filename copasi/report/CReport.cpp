@@ -146,6 +146,9 @@ void CReport::output(const Activity & activity)
       case COutputInterface::AFTER:
         printFooter();
         break;
+
+      case COutputInterface::MONITORING:
+        break;
     }
 }
 

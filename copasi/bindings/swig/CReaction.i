@@ -178,8 +178,14 @@
 %catches(CCopasiException) CReaction::getParameterMapping;
 %catches(CCopasiException) CReaction::getParameterValue;
 %catches(CCopasiException) CReaction::setParameterValue;
+%catches(CCopasiException) CReaction::initializeParameters;
+%catches(CCopasiException) CReaction::initializeParameterMapping;
+%catches(CCopasiException) CReaction::getFunctionParameters;
 %catches(CCopasiException) CReaction::setFunction;
 %catches(CCopasiException) CReaction::isLocalParameter;
+%catches(CCopasiException) CReactionInterface::getMapping;
+%catches(CCopasiException) CReactionInterface::getMappings;
+%catches(CCopasiException) CReactionInterface::connectFromScratch;
 
 // suppress warnings on multiple inheritance
 %warnfilter(813) CReaction;

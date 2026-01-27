@@ -23,6 +23,15 @@
 #  include "copasi/lapack/f2c.h"
 # endif
 
+
+#ifdef min
+# undef min
+#endif // min
+
+#ifdef max
+# undef max
+#endif // max
+
 //template<class T>
 //inline const T& max(const T& a, const T& b)
 //{ return a > b ? a : b; }

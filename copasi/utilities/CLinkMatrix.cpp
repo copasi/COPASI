@@ -392,7 +392,7 @@ void CLinkMatrix::completePivotInformation()
       size_t * pFromColumn = pCurrentColumn;
 
       // Swap
-      *pJPVT =  *pToIndex + 1;
+      *pJPVT =  (int)*pToIndex + 1;
 
       size_t tmp = *pFromIndex;
       *pFromIndex = *pToIndex;
@@ -590,10 +590,10 @@ bool CLinkMatrix::applyColumnPivot(CMatrix< C_FLOAT64 > & matrix,
       return false;
     }
 
-  C_INT N = matrix.numRows();
-  C_INT LDA = matrix.numCols();
+  C_INT N = (C_INT) matrix.numRows();
+  C_INT LDA = (C_INT) matrix.numCols();
   C_INT K1 = 1;
-  C_INT K2 = mRowPivots.size();
+  C_INT K2 = (C_INT) mRowPivots.size();
 
   dlaswp_(&N, matrix.array(), &LDA, &K1, &K2,
           const_cast< C_INT * >(mSwapVector.array()),

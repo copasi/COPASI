@@ -1,7 +1,7 @@
-// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2022 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
 #ifndef COPASI_CQCUSTOMPLOT_H
 #define COPASI_CQCUSTOMPLOT_H
@@ -71,18 +71,18 @@ public:
    * Initialize the the plot from the specification
    * @param const CPlotSpecification* plotspec
    */
-  virtual bool initFromSpec(const CPlotSpecification* plotspec) override;
+  bool initFromSpec(const CPlotSpecification* plotspec) override;
 
   void setSymbol(QCPAbstractPlottable * pCurve, QCPScatterStyle::ScatterShape symbol, QColor color, int symbolSize, float penWidth);
 
-  virtual QString titleText() const override;
+  QString titleText() const override;
 
   virtual void update();
 
   /**
    * @return the current plot specification
    */
-  virtual const CPlotSpecification* getPlotSpecification() const override;
+  const CPlotSpecification* getPlotSpecification() const override;
 
   /**
    * compile the object list from name vector
@@ -90,59 +90,59 @@ public:
    * @param  const CDataModel* pDataModel
    * @return bool success
    */
-  virtual bool compile(CObjectInterface::ContainerList listOfContainer) override;
+  bool compile(CObjectInterface::ContainerList listOfContainer) override;
 
   /**
    * Perform an output event for the current activity
    * @param const Activity & activity
    */
-  virtual void output(const Activity & activity) override;
+  void output(const Activity & activity) override;
 
   /**
    * Introduce an additional separator into the output
    * @param const Activity & activity
    */
-  virtual void separate(const Activity & activity) override;
+  void separate(const Activity & activity) override;
 
   /**
    * Finish the output
    */
-  virtual void finish() override;
+  void finish() override;
 
   /**
    * Save tab delimited data to file
    * @param const std::string & filename
    * @return bool success
    */
-  virtual bool saveData(const std::string & filename) override;
+  bool saveData(const std::string & filename) override;
 
   /**
    * Shows or hide all curves depending on whether visibility is false or true
    * @param const bool & visibility
    */
-  virtual void setCurvesVisibility(const bool & visibility) override;
+  void setCurvesVisibility(const bool & visibility) override;
 
-  virtual void saveToFile(const QString & fileName, QRect & rect) override;
+  void saveToFile(const QString & fileName, QRect & rect) override;
 
   /**
    * @return a string with supported file filters to save files
    */
-  virtual QString getSaveFilters() override;
+  QString getSaveFilters() override;
 
   /**
    * Add scrollbar to status bar
-   * @param bar 
+   * @param bar
    */
-  virtual void setupStatusbar(QStatusBar * bar) override;
+  void setupStatusbar(QStatusBar * bar) override;
 
 public slots:
-  virtual void replot() override;
+  void replot() override;
   virtual void replot(bool resetZoom);
 
-  virtual void toggleLogX(bool logX) override;
-  virtual void toggleLogY(bool logY) override;
-  virtual void render(QPainter *, QRect) override;
-  virtual void resetZoom() override;
+  void toggleLogX(bool logX) override;
+  void toggleLogY(bool logY) override;
+  void render(QPainter *, QRect) override;
+  void resetZoom() override;
 
   void setupLegend();
 
@@ -196,7 +196,6 @@ private:
                    const CObjectInterface * pObject,
                    bool setUnit = true,
                    QCPAxis * pAxis = NULL);
-
 
   void updateSteadyStateInfo(int type);
 

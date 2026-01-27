@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -136,9 +136,9 @@ void CQExpandModelData::slotOK()
 
           for (i = 0; i < (size_t)it->first->childCount(); ++i)
             {
-              if (it->first->child(i)->checkState(1) == Qt::Checked)
+              if (it->first->child((int)i)->checkState(1) == Qt::Checked)
                 {
-                  std::map<QTreeWidgetItem*, const CMetab*>::const_iterator itMetab = mItemMetabMap.find(it->first->child(i));
+                  std::map<QTreeWidgetItem*, const CMetab*>::const_iterator itMetab = mItemMetabMap.find(it->first->child((int)i));
                   //const CMetab* pMetab = NULL;
 
                   if (itMetab != mItemMetabMap.end())
