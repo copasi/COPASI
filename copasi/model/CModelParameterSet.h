@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -115,11 +115,11 @@ public:
 
   CModelParameterGroup * toGroup();
 
-  const CModelParameterGroup * toGroup() const;
+  // const CModelParameterGroup * toGroup() const;
 
   CModelParameterSet * toSet() override;
 
-  const CModelParameterSet * toSet() const override;
+  // const CModelParameterSet * toSet() const override;
 
   /**
    * Add the given parameter to the group.
