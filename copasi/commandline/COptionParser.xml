@@ -427,11 +427,11 @@
      </comment>
    </option>
    <option id="ExportTaskSpec"
-           type="flag"
+           type="string"
            mandatory="no"
            strict="yes"
            location="commandline"
-           default="false"
+           argname="file"
            hidden="no">
      <name>export-task</name>
      <comment>
@@ -439,11 +439,11 @@
      </comment>
    </option>
    <option id="ImportTaskSpec"
-           type="flag"
+           type="string"
            mandatory="no"
            strict="yes"
            location="commandline"
-           default="false"
+           argname="file"
            hidden="no">
      <name>import-task</name>
      <comment>

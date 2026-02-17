@@ -57,7 +57,7 @@ namespace {
 "                                default is copasi in the ConfigDir.\n"
 "  --convert-to-irreversible     Converts reversible reactions to irreversibl-\n"
 "                                e ones before running Task.\n"
-"  --export-task                 Exports the scheduled task settings as JSON\n"
+"  --export-task file            Exports the scheduled task settings as JSON\n"
 "                                file (use --scheduled-task to override)\n"
 "  --exportBerkeleyMadonna file  The Berkeley Madonna file to export.\n"
 "  --exportC file                The C code file to export.\n"
@@ -68,7 +68,7 @@ namespace {
 "  --exportSEDML file            The SEDML file to export.\n"
 "  --exportXPPAUT file           The XPPAUT file to export.\n"
 "  --home dir                    Your home directory.\n"
-"  --import-task                 Imports the scheduled task settings as JSON\n"
+"  --import-task file            Imports the scheduled task settings as JSON\n"
 "                                file (use --scheduled-task to override)\n"
 "  --importCA file               A COMBINE archive file to import.\n"
 "  --importSEDML file            A SEDML file to import.\n"
@@ -458,7 +458,7 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
 		}
 		openum_ = option_ExportTaskSpec;
 		locations_.ExportTaskSpec = position;
-		options_.ExportTaskSpec = !options_.ExportTaskSpec;
+		state_ = state_value;
 		return;
 	    } else if (strcmp(option, "exportBerkeleyMadonna") == 0) {
 		if (source != source_cl) throw option_error("the 'exportBerkeleyMadonna' option is only allowed on the command line");
@@ -539,7 +539,7 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
 		}
 		openum_ = option_ImportTaskSpec;
 		locations_.ImportTaskSpec = position;
-		options_.ImportTaskSpec = !options_.ImportTaskSpec;
+		state_ = state_value;
 		return;
 	    } else if (strcmp(option, "importCA") == 0) {
 		if (source != source_cl) throw option_error("the 'importCA' option is only allowed on the command line");
@@ -734,6 +734,9 @@ void copasi::COptionParser::parse_value (const char *value) {
     	    }
     	    break;
     	case option_ExportTaskSpec:
+    	    {
+    		options_.ExportTaskSpec = value;
+    	    }
     	    break;
     	case option_ExportXPPAUT:
     	    {
@@ -761,6 +764,9 @@ void copasi::COptionParser::parse_value (const char *value) {
     	    }
     	    break;
     	case option_ImportTaskSpec:
+    	    {
+    		options_.ImportTaskSpec = value;
+    	    }
     	    break;
     	case option_License:
     	    break;

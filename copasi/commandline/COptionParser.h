@@ -80,8 +80,6 @@ struct options
 {
   options(void) :
 	    ConvertToIrreversible(false),
-	    ExportTaskSpec(false),
-	    ImportTaskSpec(false),
 	    License(false),
 	    MaxTime(0),
 	    NoLogo(false),
@@ -100,13 +98,13 @@ struct options
       	        	std::string     ExportIni;
       	        	std::string     ExportSBML;
       	        	std::string     ExportSEDML;
-      	        	bool     ExportTaskSpec;
+      	        	std::string     ExportTaskSpec;
       	        	std::string     ExportXPPAUT;
       	        	std::string     Home;
       	        	std::string     ImportCombineArchive;
       	        	std::string     ImportSBML;
       	        	std::string     ImportSEDML;
-      	        	bool     ImportTaskSpec;
+      	        	std::string     ImportTaskSpec;
       	        	bool     License;
       	        	int     MaxTime;
       	        	bool     NoLogo;
