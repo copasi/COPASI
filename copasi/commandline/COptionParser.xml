@@ -1,7 +1,7 @@
 <!--
     This file demostrates how to specify options to clo++
 -->
-<!-- Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the -->
+<!-- Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the -->
 <!-- University of Virginia, University of Heidelberg, and University -->
 <!-- of Connecticut School of Medicine. -->
 <!-- All rights reserved. -->
@@ -414,7 +414,7 @@
       tasks use --printSedMLTasks
     </comment>
    </option>
-      <option id="PrintSedMLTasks"
+   <option id="PrintSedMLTasks"
            type="flag"
            mandatory="no"
            strict="yes"
@@ -424,6 +424,30 @@
      <name>printSedMLTasks</name>
      <comment>
       Only print the SED-ML tasks when importing SED-ML or COMBINE archives.
+     </comment>
+   </option>
+   <option id="ExportTaskSpec"
+           type="flag"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           default="false"
+           hidden="no">
+     <name>export-task</name>
+     <comment>
+      Exports the scheduled task settings as JSON file (use --scheduled-task to override)
+     </comment>
+   </option>
+   <option id="ImportTaskSpec"
+           type="flag"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           default="false"
+           hidden="no">
+     <name>import-task</name>
+     <comment>
+      Imports the scheduled task settings as JSON file (use --scheduled-task to override)
      </comment>
    </option>
  </options>
