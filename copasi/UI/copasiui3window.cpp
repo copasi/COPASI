@@ -143,6 +143,12 @@
 
 #include "copasi/math/CJitCompiler.h"
 
+#include <copasi/parameterFitting/CFitTask.h>
+#include <copasi/parameterFitting/CFitProblem.h>
+#include <copasi/parameterFitting/CExperimentSet.h>
+#include <copasi/parameterFitting/CExperiment.h>
+#include <copasi/UI/CQExperimentSelection.h>
+
 // static
 CopasiUI3Window *CopasiUI3Window::pMainWindow = NULL;
 
@@ -2000,6 +2006,7 @@ void CopasiUI3Window::slotExportMathModelFinished(const std::string & thread, bo
       CCopasiMessage::clearDeque();
     }
 }
+
 void CopasiUI3Window::slotCreateEventsForTimeseries()
 {
   if (mpDataModel == NULL) return;
@@ -2012,7 +2019,61 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
   mpListView->switchToOtherWidget(ListViews::WidgetType::Events, CRegisteredCommonName());
   CCopasiMessage::clearDeque();
 
-  if (!pModel->createEventsForTimeseries())
+  // determine which experiments are time series if there is more than one, prompt for selection
+  const CFitTask * task = dynamic_cast< const CFitTask * >(&mpDataModel->getTaskList()->operator[]("Parameter Estimation"));
+
+  if (task == NULL)
+    {
+      return;
+    }
+
+  const CFitProblem * problem = static_cast< const CFitProblem * >(task->getProblem());
+
+  const CExperimentSet & set = problem->getExperimentSet();
+
+  CExperiment * pSelected = NULL;
+  size_t numExperiments = set.size();
+  std::string firstTimeCourseExperiment = "";
+  for (size_t i = 0; i < numExperiments; ++i)
+    {
+      if (set.getExperiment(i)->getExperimentType() == CTaskEnum::Task::timeCourse)
+        {
+          firstTimeCourseExperiment = set.getExperiment(i)->getObjectName();
+          break;
+        }
+    }
+
+  if (firstTimeCourseExperiment.empty())
+  {
+    CQMessageBox::information(this, "No Time Course Experiments",
+                              "There are no time course experiments in the experiment set.",
+                              QMessageBox::Ok,
+                              QMessageBox::Ok);
+    return;
+  }
+
+  if (numExperiments > 1)
+    {
+      CQExperimentSelection * pDialog = new CQExperimentSelection(this);
+      pDialog->setMode(CQExperimentSelection::ExperimentSelectionMode::TimeCourse);
+      pDialog->setSingleSelection(true);
+      QComboBox * pBox = new QComboBox(NULL);
+      pBox->setVisible(false);
+      pBox->addItem(FROM_UTF8(firstTimeCourseExperiment));
+
+      pDialog->load(pBox, &set);
+
+      if (pDialog->exec() == QDialog::Accepted)
+        {
+          pSelected = const_cast<CExperiment *>(set.getExperiment(TO_UTF8(pBox->itemText(0))));
+        }
+      else
+        {
+          return;
+        }
+    }
+
+  if (!pModel->createEventsForTimeseries(pSelected))
     {
       // Display error messages.
       CQMessageBox::information(this, "Event Creation Failed",
@@ -2022,7 +2083,7 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
       CCopasiMessage::clearDeque();
     }
 
-  // show any warning messages that occured
+  // show any warning messages that occurred
   if (CCopasiMessage::size() != 0)
     {
       // Display warnings messages.

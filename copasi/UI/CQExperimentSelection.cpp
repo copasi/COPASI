@@ -114,7 +114,12 @@ void CQExperimentSelection::load(QComboBox * pBox, const CExperimentSet * pExper
 
   for (i = 0; i < imax; i++)
     {
-      Items.append(FROM_UTF8(pExperimentSet->getExperiment(i)->getObjectName()));
+      auto * pExperiment = pExperimentSet->getExperiment(i);
+      if (mMode == TimeCourse && pExperiment->getExperimentType() == CTaskEnum::Task::steadyState)
+        continue;
+      if (mMode == SteadyState && pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse)
+        continue;
+      Items.append(FROM_UTF8(pExperiment->getObjectName()));
     }
 
   mpList->addItems(Items);
@@ -147,6 +152,11 @@ void CQExperimentSelection::setSingleSelection(bool isSingleSelection)
 
   mpBtnNone->setVisible(!isSingleSelection);
   mpBtnAll->setVisible(!isSingleSelection);
+}
+
+void CQExperimentSelection::setMode(ExperimentSelectionMode mode)
+{
+  mMode = mode;
 }
 
 void CQExperimentSelection::init()
