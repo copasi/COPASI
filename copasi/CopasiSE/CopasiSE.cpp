@@ -60,6 +60,9 @@
 
 #include "copasi/OpenMP/CContext.h"
 
+#include <copasi/utilities/CCopasiMethod.h>
+#include <copasi/utilities/CProfileSettings.h>
+
 #define OPERATION_SUCCEDED 0
 #define OPERATION_FAILED 1
 #define NO_EXPORT_REQUESTED 2
@@ -81,6 +84,8 @@ bool Verbose;
 std::string ReportFileName;
 std::string ScheduledTask;
 std::string SedmlTask;
+std::string ExportTaskSpec;
+std::string ImportTaskSpec;
 bool PrintSedMLTasks;
 
 SedmlImportOptions getSedmlImportOptions(SedmlInfo& info, int& retcode)
@@ -224,6 +229,9 @@ int main(int argc, char *argv[])
   COptions::getValue("SedmlTask", SedmlTask);
   COptions::getValue("PrintSedMLTasks", PrintSedMLTasks);
   COptions::getValue("Verbose", Verbose);
+  COptions::getValue("ExportTaskSpec", ExportTaskSpec);
+  COptions::getValue("ImportTaskSpec", ImportTaskSpec);
+
 
   if (License)
     {
@@ -523,6 +531,86 @@ int printUsage(const std::string& name)
   return 1;
 }
 
+void readTaskSpec(CCopasiTask& task, const std::string& jsonFile)
+{ 
+  // read the json file
+  std::ifstream fs(CLocaleString::fromUtf8(jsonFile).c_str());
+  if (!fs.good())
+    {
+      std::cerr << "Could not read file: " << jsonFile << std::endl;
+      return;
+    }
+
+  nlohmann::json j;
+  try
+   {
+     fs >> j;
+   }
+ catch (const nlohmann::json::parse_error& e)
+   {
+     std::cerr << "Failed to parse JSON file: " << jsonFile << std::endl;
+     std::cerr << "Parse error at byte " << e.byte << ": " << e.what() << std::endl;
+     return;
+   }
+  fs.close();
+
+  if (!j.contains("method_name") || !j.contains("method"))
+    {
+      std::cerr << "Invalid task specification file: " << jsonFile << std::endl;
+      return;
+    }
+
+  auto methodType = CTaskEnum::MethodName.toEnum(j["method_name"].get<std::string>(), CTaskEnum::Method::UnsetMethod);
+  if (methodType == CTaskEnum::Method::UnsetMethod)
+    {
+      std::cerr << "Invalid / unsupported method name in task specification file: " << j["method_name"] << std::endl;
+      return;
+    }
+  task.setMethodType(methodType);
+  CProfileSettings::fromJson(task.getMethod(), j["method"]);
+
+  // problem is optional, only restore if present
+  if (j.contains("problem"))
+    {
+      CProfileSettings::fromJson(task.getProblem(), j["problem"]);
+    }
+}
+
+void writeTaskSpec(const CCopasiTask& task, const std::string& jsonFile)
+{
+  nlohmann::json j;
+  std::string neededProblemElements[] = {
+    "Calculate Statistics",
+    "Create Parameter Sets",
+    "Randomize Start Values",
+  };
+
+  // only include the needed problem elements to avoid writing too much information
+  nlohmann::json problem = CProfileSettings::toJson(task.getProblem());
+  for (const std::string& element : neededProblemElements)
+    {
+      if (problem.contains(element))
+        j["problem"][element] = problem[element];
+    }
+
+  // include all method information
+  j["method_name"] = task.getMethod()->getObjectName();
+  j["method"] = CProfileSettings::toJson(task.getMethod()); 
+
+  std::ofstream fs(CLocaleString::fromUtf8(jsonFile).c_str());
+  if (!fs.good())
+    {
+      std::cerr << "Could not write to file: " << jsonFile << std::endl;
+      return;
+    }
+
+  
+  fs << j.dump(2);
+
+  fs.close();
+
+}
+
 int runScheduledTasks(CProcessReport * pProcessReport)
 {
   int retcode = 0;
@@ -558,6 +646,20 @@ int runScheduledTasks(CProcessReport * pProcessReport)
   for (CCopasiTask & task : TaskList)
     if (task.isScheduled())
       {
+
+        if (!ImportTaskSpec.empty())
+          {
+            readTaskSpec(task, ImportTaskSpec);
+          }
+
+        if (!ExportTaskSpec.empty())
+          {
+            writeTaskSpec(task, ExportTaskSpec);
+            // skip running the task as we are just exporting
+            return 0;
+          }
+
+
         task.setCallBack(pProcessReport);
 
         bool success = true;
