@@ -508,6 +508,8 @@ bool CCopasiTask::initialize(const OutputFlag & of,
   if (!isTaskValid())
     return false;
 
+  mMethodName = mpMethod ? mpMethod->getObjectName() : std::string();
+  
   bool success = true;
 
   if (mpContainer != NULL)
@@ -722,6 +724,7 @@ void CCopasiTask::separate(const COutputInterface::Activity & activity)
 void CCopasiTask::initObjects()
 {
   addObjectReference("Output counter", mOutputCounter, CDataObject::ValueInt);
+  addObjectReference("Method Name", mMethodName, CDataObject::ValueString);
   new CCopasiTimer(CCopasiTimer::Type::WALL, this);
   new CCopasiTimer(CCopasiTimer::Type::PROCESS, this);
 

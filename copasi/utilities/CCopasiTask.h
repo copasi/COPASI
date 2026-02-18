@@ -536,6 +536,8 @@ protected:
   OutputFlag mDoOutput;
   COutputHandler * mpOutputHandler;
   unsigned C_INT32 mOutputCounter;
+  
+  std::string mMethodName;
 
 #ifndef SWIG
   // used by language bindings to hold last process warnings / errors
