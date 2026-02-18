@@ -422,10 +422,18 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
       list->removeParameter(g);
 
     std::string itemName = mCurrentSolution.mIsParameterEstimation ? "FitItem" : "OptimizationItem";
+    auto allItems = itemsJson[itemName];
+    if (!allItems.is_array())
+      {
+        allItems = nlohmann::json::array({allItems});
+      }
 
     // recreate from array
-    for (const auto & current : itemsJson[itemName])
+    for (const auto & current : allItems)
     {
+      if (current.is_null())
+        continue;      
+
       auto currentCN = current["ObjectCN"].get< std::string >();
 
       // skip current cn
