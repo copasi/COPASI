@@ -49,12 +49,8 @@ CLinearColorMap::CLinearColorMap(const CLinearColorMap &other)
     mpUpper = new CLinearColorMap(*other.mpUpper);
 
   QVector<double> stops = other.colorStops();
-  QVectorIterator<double> iter(stops);
-
-  while (iter.hasNext())
+  for (double value : stops)
     {
-      double value = iter.next();
-
       if (value == 0.0 || value == 1.0)
         continue;
 
@@ -89,17 +85,14 @@ CLinearColorMap &CLinearColorMap::operator=(const CLinearColorMap &rhs)
     mpUpper = new CLinearColorMap(*rhs.mpUpper);
 
   QVector<double> stops = rhs.colorStops();
-  QVectorIterator<double> iter(stops);
-
-  while (iter.hasNext())
+  for (double value : stops)
     {
-      double value = iter.next();
-
       if (value == 0.0 || value == 1.0)
         continue;
 
       addColorStop(value, rhs.color(QwtDoubleInterval(0, 1), value));
     }
+
 
   return *this;
 }
