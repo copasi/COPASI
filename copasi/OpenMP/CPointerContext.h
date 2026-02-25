@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -53,9 +53,6 @@ template < class Data >
 void CPointerContext< Data >::setMaster(Data * pMaster)
 {
   if (Base::size() == 0)
-    return;
-
-  if (Base::master() == pMaster)
     return;
 
   if (Base::master() != NULL)
