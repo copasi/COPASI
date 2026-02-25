@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1188,11 +1188,13 @@ void CMathEvent::initialize(CMath::sPointers & pointers)
 void CMathEvent::copy(const CMathEvent & src, CMathContainer & container)
 {
   assert(&src != this);
-  *this = src;
 
+  mpContainer = &container;
+  mpTime = src.mpTime;
+  mType = src.mType;
   mTrigger.copy(src.mTrigger, container);
-
   mAssignments.resize(src.mAssignments.size());
+
   CAssignment * pAssignment = mAssignments.array();
   CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
   const CAssignment * pAssignmentSrc = src.mAssignments.array();
@@ -1201,6 +1203,24 @@ void CMathEvent::copy(const CMathEvent & src, CMathContainer & container)
     {
       pAssignment->copy(*pAssignmentSrc, container);
     }
+
+  mpDelay = src.mpDelay;
+  mpPriority = src.mpPriority;
+  mpCallback = src.mpCallback;
+  mTargetValues.initialize(src.mTargetValues);
+  mTargetPointers = src.mTargetPointers;
+  mEffectsSimulation = src.mEffectsSimulation;
+  mDelaySequence = src.mDelaySequence;
+  mDelaySequence.setMathContainer(&container);
+  mTargetValuesSequence = src.mTargetValuesSequence;
+  mTargetValuesSequence.setMathContainer(&container);
+  mPostAssignmentSequence = src.mPostAssignmentSequence;
+  mPostAssignmentSequence.setMathContainer(&container);
+  mFireAtInitialTime = src.mFireAtInitialTime;
+  mTriggerIsPersistent = src.mTriggerIsPersistent;
+  mDelayExecution = src.mDelayExecution;
+  mpPendingAction = NULL;
+  mDisabled = src.mDisabled;
 }
 
 void CMathEvent::relocate(const CMathContainer * pContainer,
