@@ -1,4 +1,4 @@
-// Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2025 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,7 +47,10 @@ CCommonNameComponent::CCommonNameComponent(const CDataObject * pObject)
                ? pObject->getObjectParent()->getCNComponent()
                : nullptr)
   , mpObject(pObject)
+  , mpCN()
   , mChildren()
+  , mDependents()
+  , mPrerequisites()
 {
   updatePartialCN();
 
@@ -64,7 +67,10 @@ CCommonNameComponent::CCommonNameComponent(const std::string & partialCN,
   , mName(name)
   , mpParent(parent)
   , mpObject(nullptr)
+  , mpCN()
   , mChildren()
+  , mDependents()
+  , mPrerequisites()
 {
   updatePartialCN();
 
@@ -144,19 +150,17 @@ void CCommonNameComponent::signalChanged()
 {
   // We must not use getCN() which would return the stored value if it exists
   // It is assumed that an existing CN is correct. This is the time to update.
+  std::string NewCN = getParentCN();
+  appendPartialCN(NewCN);
+
   cn_ptr pCN = mpCN.lock();
 
-  if (!pCN)
-    pCN = std::make_shared< std::string >();
-
-  *pCN = getParentCN();
-  appendPartialCN(pCN);
-
-  mpCN = pCN;
+  if (pCN)
+    *pCN = NewCN;
 
 #pragma omp critical (common_name_component_children)
   for (auto & pChild : mChildren)
-    pChild->signalParentCNChanged(pCN);
+    pChild->signalParentCNChanged(NewCN);
 
 #pragma omp critical (common_name_component_dependent)
   for (auto & pDependent : mDependents)
@@ -196,18 +200,17 @@ void CCommonNameComponent::signalObjectParentChanged()
 
 CCommonNameComponent::cn_ptr CCommonNameComponent::getCN() const
 {
-  cn_ptr pCN = mpCN.lock();
+  cn_ptr pCN;
 
-  if (pCN)
-    return pCN;
-
-  pCN = std::make_shared< std::string >();
-  mpCN = pCN;
-
-  *pCN = getParentCN();
-  appendPartialCN(pCN);
-
-  // Just retrieving the CN does not change children's CN
+  if (! (pCN = mpCN.lock()))
+#pragma omp critical (common_name_component_cn)
+    if (! (pCN = mpCN.lock()))
+      {
+        pCN = std::make_shared< std::string >();
+        *pCN = getParentCN();
+        appendPartialCN(*pCN);
+        mpCN = pCN;
+      }
 
   return pCN;
 }
@@ -289,34 +292,44 @@ std::string CCommonNameComponent::getParentCN() const
          && mPartialCN != "CN=Root"
          && mType != "String"
          && mType != "Separator"
-           ? *mpParent->getCN()
+           ? mpParent->getCNUnregistered()
            : "";
 }
 
-void CCommonNameComponent::signalParentCNChanged(CCommonNameComponent::cn_ptr pParentCN) const
+std::string CCommonNameComponent::getCNUnregistered() const
 {
+  std::vector< CCommonNameComponent::shared_ptr > Components = getComponentList();
+  std::string CN;
+
+  for (auto it = Components.rbegin(); it != Components.rend(); ++it)
+    (*it)->appendPartialCN(CN);
+
+  return CN;
+}
+void CCommonNameComponent::signalParentCNChanged(const std::string & parentCN) const
+{
+  std:: string NewCN = parentCN;
+  appendPartialCN(NewCN);
+
   cn_ptr pCN = mpCN.lock();
 
-  if (!pCN)
-    pCN = std::make_shared< std::string >();
-
-  *pCN = *pParentCN;
-  appendPartialCN(pCN);
+  if (pCN)
+    *pCN = NewCN;
 
   for (auto & pChild : mChildren)
-    pChild->signalParentCNChanged(pCN);
+    pChild->signalParentCNChanged(NewCN);
 }
 
-void CCommonNameComponent::appendPartialCN(cn_ptr pParentCN) const
+void CCommonNameComponent::appendPartialCN(std::string & parentCN) const
 {
-  if (pParentCN->empty()
+  if (parentCN.empty()
       || mPartialCN.find("String=") == 0)
-    *pParentCN = mPartialCN;
+    parentCN = mPartialCN;
   else if (mPartialCN.size()
            && mPartialCN.front() == '[')
-    *pParentCN += mPartialCN;
+    parentCN += mPartialCN;
   else
-    *pParentCN += "," + mPartialCN;
+    parentCN += "," + mPartialCN;
 }
 
 bool CCommonNameComponent::updatePartialCN() {

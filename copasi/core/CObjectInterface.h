@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,6 +36,9 @@ public:
   static const CDataObject * DataObject(const CObjectInterface * pInterface);
 
   static CObjectInterface * GetObjectFromCN(const ContainerList & listOfContainer,
+      const CCommonName & objName);
+
+  static CObjectInterface * __GetObjectFromCN(const ContainerList & listOfContainer,
       const CCommonName & objName);
 
 protected:

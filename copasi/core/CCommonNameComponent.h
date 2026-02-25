@@ -1,4 +1,4 @@
-// Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2025 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -93,12 +93,13 @@ protected:
   bool updatePartialCN();
   std::string getObjectTypeFromParent() const;
   void signalChanged();
-  void signalParentCNChanged(cn_ptr pParentCN) const;
+  void signalParentCNChanged(const std::string & parentCN) const;
   std::string getParentCN() const;
-  void appendPartialCN(cn_ptr pParentCN) const;
+  void appendPartialCN(std::string & parentCN) const;
   void addDependent(const CCommonNameComponent * pDependent);
   void removeDependent(const CCommonNameComponent * pDependent);
   void signalPrerequisiteChanged(shared_ptr prerequisite) const;
+  std::string getCNUnregistered() const;
 
   std::string mPartialCN;
   const std::string mType;
@@ -109,5 +110,4 @@ protected:
   std::set< const CCommonNameComponent * > mChildren;
   std::set< const CCommonNameComponent * > mDependents;
   std::vector< shared_ptr > mPrerequisites;
-  bool mChanged;
 };

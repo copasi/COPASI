@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,8 +36,12 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
     const CCommonName & objName)
 {
   return CRegisteredCommonName::GetObjectFromCN(listOfContainer, objName);
+}
 
-#ifdef XXXX
+// static
+CObjectInterface * CObjectInterface::__GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
+    const CCommonName & objName)
+{
   CCommonName Primary = objName.getPrimary();
   std::string Type = Primary.getObjectType();
 
@@ -87,13 +91,13 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
           ContainerName = ContainerName.getRemainder();
         }
 
-      if ((pos = objName.find(ContainerName)) == std::string::npos)
+      if ((pos = std::string(objName).find(ContainerName)) == std::string::npos)
         continue;
 
-      if (pos + ContainerName.length() == objName.length())
+      if (pos + std::string(ContainerName).length() == std::string(objName).length())
         pObject = *it;
       else
-        pObject = (*it)->getObject(CCommonName(objName.substr(pos)).getRemainder());
+        pObject = (*it)->getObject(CCommonName(std::string(objName).substr(pos)).getRemainder());
     }
 
   // if not found check the data model if we have one and have not yet done so
@@ -111,7 +115,6 @@ CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::Con
     }
 
   return const_cast< CObjectInterface * >(pObject);
-#endif // XXXX
 }
 
 CObjectInterface::CObjectInterface()

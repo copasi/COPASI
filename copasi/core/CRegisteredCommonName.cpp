@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,6 +19,9 @@
 #include "copasi/core/CRootContainer.h"
 
 using std::string;
+
+// uncomment the following line to enable debug output for CN resolution
+// #define DEBUG_CN 1
 
 //********** CRegisteredCommonName ***************
 
@@ -42,10 +45,12 @@ void CRegisteredCommonName::ResolveAll(const CDataContainer * pContainer)
           ++it;
       }
 
+#ifdef DEBUG_CN
     for (auto it = UnresolvedCNs.begin(); it != UnresolvedCNs.end(); ++it)
       std::cout << *it << ": " << **it << std::endl;
 
     std::cout << UnresolvedCNs.size() << std::endl;
+#endif // DEBUG_CN
   }
 }
 

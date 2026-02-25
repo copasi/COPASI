@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,6 +29,9 @@
 #include "copasi/model/CModel.h"
 
 using std::string;
+
+// uncomment the following line to enable debug output for CN resolution
+// #define DEBUG_CN 1
 
 // static
 std::string CCommonName::nameFromCN(const CCommonName & cn)
@@ -336,9 +339,20 @@ const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
         }
     }
 
+#ifdef DEBUG_CN
   if (pObject == nullptr
       && mpComponent->isValid())
-    std::cout << *mpCN << std::endl;
+    {
+      // try the old way
+      pObject = CObjectInterface::__GetObjectFromCN({pContainer}, *mpCN);
+
+      if (pObject != nullptr)
+        {
+          std::cout << *mpCN << std::endl;
+          pObject = nullptr;
+        }
+    }
+#endif // DEBUG_CN
 
   return pObject;
 }
