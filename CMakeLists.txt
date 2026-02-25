@@ -388,6 +388,8 @@ if ( NOT CLAPACK_FOUND )
   find_package(CLAPACK REQUIRED)
 endif ()
 
+add_definitions(${CLAPACK_DEFINES})
+
 include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LAPACK_CFLAGS}")
 
@@ -968,6 +970,7 @@ message(STATUS "-----------------------------------------------------------
  Dependencies:
    Vendor               = ${BLA_VENDOR}
    LAPACK Libs          = ${CLAPACK_LIBRARIES}
+   LAPACK DEFINES       = ${CLAPACK_DEFINES}
    LAPACK LDFLAGS       = ${CLAPACK_LINKER_FLAGS}
    LAPACK include       = ${CLAPACK_INCLUDE_DIR}
 
