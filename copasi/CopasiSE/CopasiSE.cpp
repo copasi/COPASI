@@ -218,6 +218,23 @@ int main(int argc, char *argv[])
   bool License;
   COptions::getValue("License", License);
 
+  if (License)
+    {
+      std::cout << CRootContainer::getLicenseTxt() << std::endl;
+
+      retcode = 0;
+      goto finish;
+    }
+
+  bool VersionOnly;
+  COptions::getValue("Version", VersionOnly);
+
+  if (VersionOnly)
+    {
+      retcode = 0;
+      goto finish;
+    }
+
   COptions::getValue("ReportFile", ReportFileName);
 
   // should a report filename be given, ensure that
@@ -233,13 +250,6 @@ int main(int argc, char *argv[])
   COptions::getValue("ImportTaskSpec", ImportTaskSpec);
 
 
-  if (License)
-    {
-      std::cout << CRootContainer::getLicenseTxt() << std::endl;
-
-      retcode = 0;
-      goto finish;
-    }
 
   COptions::getValue("MaxTime", MaxTime);
 
