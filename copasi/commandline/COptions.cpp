@@ -277,6 +277,7 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("ExportIni", Options.ExportIni);
   setValue("SedmlTask", Options.SedmlTask);
   setValue("PrintSedMLTasks", Options.PrintSedMLTasks);
+  setValue("Version", Options.PrintSedMLTasks);
   setValue("ExportTaskSpec", Options.ExportTaskSpec);
   setValue("ImportTaskSpec", Options.ImportTaskSpec);
 

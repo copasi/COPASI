@@ -426,6 +426,18 @@
       Only print the SED-ML tasks when importing SED-ML or COMBINE archives.
      </comment>
    </option>
+   <option id="Version"
+           type="flag"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           default="false"
+           hidden="no">
+     <name>version</name>
+     <comment>
+      Only print COPASI version.
+     </comment>
+   </option>
    <option id="ExportTaskSpec"
            type="string"
            mandatory="no"

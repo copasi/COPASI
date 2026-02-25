@@ -90,6 +90,7 @@ namespace {
 "                                calculations.\n"
 "  --verbose                     Enable output of messages during runtime to\n"
 "                                std::error.\n"
+"  --version                     Only print COPASI version.\n"
 "  -c, --copasidir dir           The COPASI installation directory.\n"
 "  -e, --exportSBML file         The SBML file to export.\n"
 "  -i, --importSBML file         A SBML file to import.\n"
@@ -273,6 +274,8 @@ void copasi::COptionParser::finalize (void) {
 		throw option_error("missing value for 'validate' option");
 	    case option_Verbose:
 		throw option_error("missing value for 'verbose' option");
+	    case option_Version:
+		throw option_error("missing value for 'version' option");
 	}
 
     }
@@ -676,6 +679,15 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
 		locations_.Verbose = position;
 		options_.Verbose = !options_.Verbose;
 		return;
+	    } else if (strcmp(option, "version") == 0) {
+		if (source != source_cl) throw option_error("the 'version' option is only allowed on the command line");
+		if (locations_.Version) {
+		    throw option_error("the 'version' option is only allowed once");
+		}
+		openum_ = option_Version;
+		locations_.Version = position;
+		options_.Version = !options_.Version;
+		return;
 	    } else if (source == source_cl && strcmp(option, "help") == 0) {
 		throw autoexcept(autothrow_help, const_usage);
 	    }
@@ -855,6 +867,8 @@ void copasi::COptionParser::parse_value (const char *value) {
     	    break;
     	case option_Verbose:
     	    break;
+    	case option_Version:
+    	    break;
     }
 }
 //#########################################################################
@@ -956,6 +970,9 @@ namespace {
 
         if (name_size <= 7 && name.compare(0, name_size, "verbose", name_size) == 0)
         	matches.push_back("verbose");
+
+        if (name_size <= 7 && name.compare(0, name_size, "version", name_size) == 0)
+        	matches.push_back("version");
 
         if (name_size <= 4 && name.compare(0, name_size, "help", name_size) == 0)
         	matches.push_back("help");

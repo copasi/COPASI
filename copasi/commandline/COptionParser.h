@@ -86,7 +86,8 @@ struct options
 	    PrintSedMLTasks(false),
 	    SBMLSchema(SBMLSchema_L2V4),
 	    Validate(false),
-	    Verbose(false)
+	    Verbose(false),
+	    Version(false)
 	{}
       	        	std::string     ConfigDir;
       	        	std::string     ConfigFile;
@@ -118,6 +119,7 @@ struct options
       	        	std::string     Tmp;
       	        	bool     Validate;
       	        	bool     Verbose;
+      	        	bool     Version;
 }; // end options struct
 
 /**
@@ -157,6 +159,7 @@ size_type SedmlTask;
 size_type Tmp;
 size_type Validate;
 size_type Verbose;
+size_type Version;
 }; // end option location struct
 
     /**
@@ -259,6 +262,7 @@ size_type Verbose;
 		option_ExportIni,
 		option_SedmlTask,
 		option_PrintSedMLTasks,
+		option_Version,
 		option_ExportTaskSpec,
 		option_ImportTaskSpec
 	} openum_;
