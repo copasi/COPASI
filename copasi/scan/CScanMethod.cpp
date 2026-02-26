@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -440,6 +440,9 @@ CScanMethod::CScanMethod(const CDataContainer * pParent,
   , mLastNestingItem(C_INVALID_INDEX)
   , mContinueFromCurrentState(false)
   , mFailCounter(0)
+  , mScanItems()
+  , mInitialUpdates(nullptr)
+  , mInitialStateChanged(false)
 {
   mpRandomGenerator = CRandom::createGenerator();
 }
@@ -454,6 +457,9 @@ CScanMethod::CScanMethod(const CScanMethod & src,
   , mLastNestingItem(C_INVALID_INDEX)
   , mContinueFromCurrentState(false)
   , mFailCounter(0)
+  , mScanItems()
+  , mInitialUpdates(nullptr)
+  , mInitialStateChanged(false)
 {
   mpRandomGenerator = CRandom::createGenerator();
 }

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -361,7 +361,7 @@ void ResultData::applyToModelStateFromOptTask(int row, COptTask *task, const std
       ChangedObjects.insert(pObjectInterface);
     }
 
-  CCore::CUpdateSequence UpdateSequence;
+  CCore::CUpdateSequence UpdateSequence(pContainer);
   pContainer->getInitialDependencies().getUpdateSequence(UpdateSequence, CCore::SimulationContext::UpdateMoieties, ChangedObjects, pContainer->getInitialStateObjects());
   pContainer->applyUpdateSequence(UpdateSequence);
   pContainer->pushInitialState();

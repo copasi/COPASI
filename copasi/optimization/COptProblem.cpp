@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -98,10 +98,10 @@ COptProblem::COptProblem(const CTaskEnum::Task & type,
   , mpSubTask(NULL)
   , mpObjectiveExpression(NULL)
   , mpMathObjectiveExpression(NULL)
-  , mInitialRefreshSequence()
-  , mUpdateObjectiveFunction()
-  , mUpdateConstraints()
-  , mUpdateIntervals()
+  , mInitialRefreshSequence(nullptr)
+  , mUpdateObjectiveFunction(nullptr)
+  , mUpdateConstraints(nullptr)
+  , mUpdateIntervals(nullptr)
   , mCalculateValue(0)
   , mSolutionVariables()
   , mOriginalVariables()
@@ -142,10 +142,10 @@ COptProblem::COptProblem(const COptProblem & src,
   , mpSubTask(NULL)
   , mpObjectiveExpression(NULL)
   , mpMathObjectiveExpression(NULL)
-  , mInitialRefreshSequence()
-  , mUpdateObjectiveFunction()
-  , mUpdateConstraints()
-  , mUpdateIntervals()
+  , mInitialRefreshSequence(nullptr)
+  , mUpdateObjectiveFunction(nullptr)
+  , mUpdateConstraints(nullptr)
+  , mUpdateIntervals(nullptr)
   , mCalculateValue(src.mCalculateValue)
   , mSolutionVariables(src.mSolutionVariables)
   , mOriginalVariables(src.mOriginalVariables)
@@ -363,7 +363,6 @@ void COptProblem::initObjects()
   addVectorReference("Best Parameters", mSolutionVariables, CDataObject::ValueDbl);
 }
 
-
 void COptProblem::setCreateParameterSets(const bool & create)
 {
   *mpCreateParameterSets = create;
@@ -404,7 +403,7 @@ std::string replaceCnsWithNames(const std::string& expression, CDataModel* pDM)
             const CDataObject* obj = dynamic_cast<const CDataObject*>(pDM->getObject(CRegisteredCommonName(cn)));
             if (obj)
             {
-              result << obj->getObjectDisplayName();              
+              result << obj->getObjectDisplayName();
             }
 
             pos = end + 1;
@@ -442,7 +441,7 @@ void COptProblem::createParameterSets()
 
   notes << "## Parameter Set " << set->getName() << std::endl
         << std::endl;
-  notes << "Objective: " << (*mpParmMaximize ? "maximize" : "minimize") 
+  notes << "Objective: " << (*mpParmMaximize ? "maximize" : "minimize")
         << " " << replaceCnsWithNames(mpObjectiveExpression->getInfix(), getObjectDataModel()) << std::endl
         << std::endl;
   notes << "Solution Value: " << mSolutionValue << std::endl
@@ -455,13 +454,12 @@ void COptProblem::createParameterSets()
         continue;
       notes << obj->getObjectDisplayName() << " = " << mSolutionVariables[i] << std::endl;
     }
-  
+
   set->setNotes(notes.str());
 
   // Restore the current initial state
   mpContainer->setCompleteInitialState(CurrentCompleteInitialState);
 }
-
 
 /**
  * Utility function creating a parameter set for each experiment
@@ -623,13 +621,12 @@ bool COptProblem::initialize()
 
   for (COptItem * pOptItem : ItemsInfluencingIntervals)
     {
-      CCore::CUpdateSequence UpdateIntervals;
+      CCore::CUpdateSequence UpdateIntervals(nullptr);
       CObjectInterface::ObjectSet ChangedObject;
       ChangedObject.insert(pOptItem->getItemObject());
       ChangedObjects.insert(pOptItem->getItemObject());
 
-      IntervalDependencies.getUpdateSequence(UpdateIntervals, CCore::SimulationContext::UpdateMoieties, ChangedObject, ItemObjectsWithVaryingInterval);
-      pOptItem->setIntervalUpdateSequence(UpdateIntervals);
+      IntervalDependencies.getUpdateSequence(pOptItem->getIntervalUpdateSequence(), CCore::SimulationContext::UpdateMoieties, ChangedObject, ItemObjectsWithVaryingInterval);
 
       for (const CObjectInterface * pObject : UpdateIntervals)
         {

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -61,7 +61,7 @@ COptItem::COptItem(const CDataContainer * pParent,
   , mUpperBound(0.0)
   , mLastStartValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
   , mDependentItems()
-  , mUpdateInterval()
+  , mUpdateInterval(nullptr)
   , mInterval(mpLowerBound, mpUpperBound)
 {
   initializeParameter();
@@ -84,7 +84,7 @@ COptItem::COptItem(const COptItem & src,
   , mUpperBound(0.0)
   , mLastStartValue(src.mLastStartValue)
   , mDependentItems(src.mDependentItems)
-  , mUpdateInterval(src.mUpdateInterval)
+  , mUpdateInterval(src.mUpdateInterval, nullptr)
   , mInterval(mpLowerBound, mpUpperBound)
 {
   initializeParameter();
@@ -107,7 +107,7 @@ COptItem::COptItem(const CCopasiParameterGroup & group,
   , mUpperBound(0.0)
   , mLastStartValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
   , mDependentItems()
-  , mUpdateInterval()
+  , mUpdateInterval(nullptr)
   , mInterval(mpLowerBound, mpUpperBound)
 {
   initializeParameter();
@@ -646,12 +646,12 @@ bool COptItem::influencesIntervals() const
   return mDependentItems.size() > 0;
 }
 
-void COptItem::setIntervalUpdateSequence(const CCore::CUpdateSequence & updateSequence)
+const CCore::CUpdateSequence & COptItem::getIntervalUpdateSequence() const
 {
-  mUpdateInterval = updateSequence;
+  return mUpdateInterval;
 }
 
-const CCore::CUpdateSequence & COptItem::getIntervalUpdateSequence() const
+CCore::CUpdateSequence & COptItem::getIntervalUpdateSequence()
 {
   return mUpdateInterval;
 }

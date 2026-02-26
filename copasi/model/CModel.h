@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1015,10 +1015,10 @@ public:
    * on the changed objects. For metabolites the initial particle number is
    * updated by default unless itself is in the list of changed objects. In
    * that case the initial concentration is updated.
+   * @param CCore::CUpdateSequence & updateSequence
    * @param std::set< const CDataObject * > & changedObjects
-   * @return CCore::CUpdateSequence initialRefreshSequence
    */
-  CCore::CUpdateSequence buildInitialRefreshSequence(std::set< const CDataObject * > & changedObjects);
+  void buildInitialRefreshSequence(CCore::CUpdateSequence & updateSequence, std::set< const CDataObject * > & changedObjects);
 
   /**
    * Builds and executes the the update sequence used to calculate all initial

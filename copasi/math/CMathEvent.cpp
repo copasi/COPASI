@@ -1087,36 +1087,14 @@ CMathEvent::CMathEvent():
   mTargetValues(),
   mTargetPointers(),
   mEffectsSimulation(CMath::StateChange::None),
-  mDelaySequence(),
-  mTargetValuesSequence(),
-  mPostAssignmentSequence(),
+  mDelaySequence(nullptr),
+  mTargetValuesSequence(nullptr),
+  mPostAssignmentSequence(nullptr),
   mFireAtInitialTime(false),
   mTriggerIsPersistent(false),
   mDelayExecution(true),
   mpPendingAction(NULL),
   mDisabled(false)
-{}
-
-CMathEvent::CMathEvent(const CMathEvent & src):
-  mpContainer(src.mpContainer),
-  mpTime(src.mpTime),
-  mType(src.mType),
-  mTrigger(src.mTrigger),
-  mAssignments(src.mAssignments),
-  mpDelay(src.mpDelay),
-  mpPriority(src.mpPriority),
-  mpCallback(src.mpCallback),
-  mTargetValues(src.mTargetValues.size(), const_cast< double * >(src.mTargetValues.array())),
-  mTargetPointers(src.mTargetPointers),
-  mEffectsSimulation(src.mEffectsSimulation),
-  mDelaySequence(src.mDelaySequence),
-  mTargetValuesSequence(src.mTargetValuesSequence),
-  mPostAssignmentSequence(src.mPostAssignmentSequence),
-  mFireAtInitialTime(src.mFireAtInitialTime),
-  mTriggerIsPersistent(src.mTriggerIsPersistent),
-  mDelayExecution(src.mDelayExecution),
-  mpPendingAction(NULL),
-  mDisabled(src.mDisabled)
 {}
 
 /**
@@ -1127,6 +1105,7 @@ CMathEvent::~CMathEvent()
   pdelete(mpPendingAction);
 }
 
+/*
 CMathEvent & CMathEvent::operator = (const CMathEvent & rhs)
 {
   if (this == &rhs) return * this;
@@ -1153,6 +1132,7 @@ CMathEvent & CMathEvent::operator = (const CMathEvent & rhs)
 
   return *this;
 }
+ */
 
 const CMathEvent::CTrigger & CMathEvent::getTrigger() const
 {
@@ -1185,6 +1165,16 @@ void CMathEvent::initialize(CMath::sPointers & pointers)
                           false, false, NULL);
 }
 
+CMathEvent & CMathEvent::operator = (const CMathEvent & rhs)
+{
+  if (&rhs == this)
+    return * this;
+
+  copy(rhs, *rhs.mpContainer);
+
+  return *this;
+}
+
 void CMathEvent::copy(const CMathEvent & src, CMathContainer & container)
 {
   assert(&src != this);
@@ -1210,12 +1200,9 @@ void CMathEvent::copy(const CMathEvent & src, CMathContainer & container)
   mTargetValues.initialize(src.mTargetValues);
   mTargetPointers = src.mTargetPointers;
   mEffectsSimulation = src.mEffectsSimulation;
-  mDelaySequence = src.mDelaySequence;
-  mDelaySequence.setMathContainer(&container);
-  mTargetValuesSequence = src.mTargetValuesSequence;
-  mTargetValuesSequence.setMathContainer(&container);
-  mPostAssignmentSequence = src.mPostAssignmentSequence;
-  mPostAssignmentSequence.setMathContainer(&container);
+  mDelaySequence.copy(src.mDelaySequence, &container);
+  mTargetValuesSequence.copy(src.mTargetValuesSequence, &container);
+  mPostAssignmentSequence.copy(src.mPostAssignmentSequence, &container);
   mFireAtInitialTime = src.mFireAtInitialTime;
   mTriggerIsPersistent = src.mTriggerIsPersistent;
   mDelayExecution = src.mDelayExecution;
@@ -1459,7 +1446,7 @@ void CMathEvent::createUpdateSequences()
 
   mpContainer->getTransientDependencies().getUpdateSequence(mPostAssignmentSequence, CCore::SimulationContext::UpdateMoieties, EventTargets, ExtendedStateValues);
 
-  CCore::CUpdateSequence StateEffects;
+  CCore::CUpdateSequence StateEffects(mpContainer);
   mpContainer->getTransientDependencies().getUpdateSequence(StateEffects, CCore::SimulationContext::Default, EventTargets, ExtendedStateValues);
 
   if (!StateEffects.empty())
@@ -1467,7 +1454,7 @@ void CMathEvent::createUpdateSequences()
       mEffectsSimulation |= CMath::eStateChange::State;
     }
 
-  CCore::CUpdateSequence ContiousSimulationEffects;
+  CCore::CUpdateSequence ContiousSimulationEffects(mpContainer);
   mpContainer->getTransientDependencies().getUpdateSequence(ContiousSimulationEffects, CCore::SimulationContext::Default, EventTargets, SimulationValues);
 
   if (!ContiousSimulationEffects.empty())
@@ -1485,7 +1472,7 @@ void CMathEvent::createUpdateSequences()
       DiscreteSimulationValues.insert(pRoot);
     }
 
-  CCore::CUpdateSequence DiscreteSimulationEffects;
+  CCore::CUpdateSequence DiscreteSimulationEffects(mpContainer);
   mpContainer->getTransientDependencies().getUpdateSequence(DiscreteSimulationEffects, CCore::SimulationContext::Default, EventTargets, DiscreteSimulationValues);
 
   if (!DiscreteSimulationEffects.empty())

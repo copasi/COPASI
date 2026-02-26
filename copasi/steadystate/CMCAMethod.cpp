@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -759,7 +759,7 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
       Requested.insert(mpContainer->getMathObject(it->getValueReference()));
     }
 
-  CCore::CUpdateSequence UpdateSequence;
+  CCore::CUpdateSequence UpdateSequence(mpContainer);
 
   mpContainer->getTransientDependencies().getUpdateSequence(UpdateSequence, CCore::SimulationContext::Default, mpContainer->getStateObjects(false), Requested);
 

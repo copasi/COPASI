@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -374,7 +374,7 @@ void CStochasticRungeKuttaRI5::start()
           pUpdateSequence->insert(pUpdateSequence->end(), *itNoiseInputObject);
         }
 
-      CCore::CUpdateSequence Sequence;
+      CCore::CUpdateSequence Sequence(nullptr);
       mpContainer->getTransientDependencies().getUpdateSequence(Sequence, CCore::SimulationContext::Default, Objects, NoiseObjects);
       pUpdateSequence->insert(pUpdateSequence->end(), Sequence.begin(), Sequence.end());
     }

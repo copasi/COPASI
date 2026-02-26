@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,15 +36,28 @@ const bool CTimeSensMethod::ReducedModel(false);
  */
 CTimeSensMethod::CTimeSensMethod(const CDataContainer * pParent,
                                  const CTaskEnum::Method & methodType,
-                                 const CTaskEnum::Task & taskType):
-  CCopasiMethod(pParent, methodType, taskType),
-  mContainerState(),
-  mpContainerStateTime(NULL),
-  mpTask(NULL),
-  mpProblem(NULL),
-  mRootsFound(0),
-  mpReducedModel(&ReducedModel),
-  mSystemSize(0)
+                                 const CTaskEnum::Task & taskType)
+  : CCopasiMethod(pParent, methodType, taskType)
+  , mContainerState()
+  , mpContainerStateTime(NULL)
+  , mpTask(NULL)
+  , mpProblem(NULL)
+  , mRootsFound(0)
+  , mpReducedModel(&ReducedModel)
+  , mSystemSize(0)
+  , mNumParameters(0)
+  , mNumAssTargets(0)
+  , mJacobian()
+  , mdRate_dPar()
+  , mAssignmentJacobian()
+  , mdAssignment_dPar()
+  , mParameterInitialValuePointers()
+  , mParameterTransientValuePointers()
+  , mParameterIsInitialConcentration()
+  , mAssTargetValuePointers()
+  , mSeq1(nullptr)
+  , mSeq2(nullptr)
+  , mSeq3(nullptr)
 {
   mpTask = const_cast< CTimeSensTask * >(dynamic_cast< const CTimeSensTask * >(getObjectParent()));
 }
@@ -54,15 +67,28 @@ CTimeSensMethod::CTimeSensMethod(const CDataContainer * pParent,
  *  @param "const CTimeSensMethod &" src
  */
 CTimeSensMethod::CTimeSensMethod(const CTimeSensMethod & src,
-                                 const CDataContainer * pParent):
-  CCopasiMethod(src, pParent),
-  mContainerState(),
-  mpContainerStateTime(NULL),
-  mpTask(NULL),
-  mpProblem(NULL),
-  mRootsFound(0),
-  mpReducedModel(&ReducedModel),
-  mSystemSize(0)
+                                 const CDataContainer * pParent)
+  : CCopasiMethod(src, pParent)
+  , mContainerState()
+  , mpContainerStateTime(NULL)
+  , mpTask(NULL)
+  , mpProblem(NULL)
+  , mRootsFound(0)
+  , mpReducedModel(&ReducedModel)
+  , mSystemSize(0)
+  , mNumParameters(0)
+  , mNumAssTargets(0)
+  , mJacobian()
+  , mdRate_dPar()
+  , mAssignmentJacobian()
+  , mdAssignment_dPar()
+  , mParameterInitialValuePointers()
+  , mParameterTransientValuePointers()
+  , mParameterIsInitialConcentration()
+  , mAssTargetValuePointers()
+  , mSeq1(nullptr)
+  , mSeq2(nullptr)
+  , mSeq3(nullptr)
 {
   mpTask = const_cast< CTimeSensTask * >(dynamic_cast< const CTimeSensTask * >(getObjectParent()));
 }
@@ -578,7 +604,7 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
           auto* pMetab = dynamic_cast<const CMetab*>(pMo->getDataObject()->getObjectParent());
           pMo2 = mpContainer->getMathObject(pMo->getDataObject()->getObjectParent()->getValueObject());
 
-          if (pMo2->getSimulationType() == CMath::SimulationType::Fixed || ( pMo2->getSimulationType() == CMath::SimulationType::Conversion && pMetab != NULL && pMetab->getStatus()==CModelEntity::Status::FIXED ) )
+          if (pMo2->getSimulationType() == CMath::SimulationType::Fixed || (pMo2->getSimulationType() == CMath::SimulationType::Conversion && pMetab != NULL && pMetab->getStatus()==CModelEntity::Status::FIXED ))
             {
               mParameterTransientValuePointers[Col] = (C_FLOAT64 *) pMo2->getValuePointer();
               Changed.insert(pMo2);

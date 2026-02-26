@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -3404,7 +3404,8 @@ void CModel::updateInitialValues(std::set< const CDataObject * > & changedObject
 {
   compileIfNecessary(NULL);
 
-  CCore::CUpdateSequence UpdateSequence = buildInitialRefreshSequence(changedObjects);
+  CCore::CUpdateSequence UpdateSequence(mpMathContainer);
+  buildInitialRefreshSequence(UpdateSequence, changedObjects);
 
   mpMathContainer->fetchInitialState();
   mpMathContainer->applyUpdateSequence(UpdateSequence);
@@ -3421,8 +3422,8 @@ void CModel::updateInitialValues(const CDataObject* changedObject, bool refreshP
   updateInitialValues(changedObjects, refreshParameterSet);
 }
 
-CCore::CUpdateSequence
-CModel::buildInitialRefreshSequence(std::set< const CDataObject * > & changedObjects)
+void CModel::buildInitialRefreshSequence(CCore::CUpdateSequence & updateSequence,
+                                         std::set< const CDataObject * > & changedObjects)
 {
   // Map the changed objects to their math equivalents;
   std::set< const CDataObject * >::const_iterator it = changedObjects.begin();
@@ -3446,13 +3447,12 @@ CModel::buildInitialRefreshSequence(std::set< const CDataObject * > & changedObj
         }
     }
 
-  CCore::CUpdateSequence UpdateSequence;
-  mpMathContainer->getInitialDependencies().getUpdateSequence(UpdateSequence,
+  mpMathContainer->getInitialDependencies().getUpdateSequence(updateSequence,
       CCore::SimulationContext::UpdateMoieties,
       ChangedObjects,
       mpMathContainer->getInitialStateObjects());
 
-  return UpdateSequence;
+  return;
 }
 
 CVector< C_FLOAT64 > CModel::initializeAtolVector(const C_FLOAT64 & atol, const bool & reducedModel) const

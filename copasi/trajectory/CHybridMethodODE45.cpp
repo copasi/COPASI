@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -102,14 +102,14 @@ CHybridMethodODE45::CHybridMethodODE45(const CDataContainer * pParent,
   , mY()
   , mpYdot(NULL)
   , mCountContainerVariables(0)
-  , mSpeciesRateUpdateSequence()
+  , mSpeciesRateUpdateSequence(nullptr)
   , mAmuVariables()
   , mAmuPointers()
   , mA0(0.0)
   , mContainerFluxes()
   , mSavedFluxes()
   , mFluxPointers()
-  , mPropensitiesUpdateSequence()
+  , mPropensitiesUpdateSequence(nullptr)
   , mEventProcessing(false)
   , mFireReaction(false)
   , mRootMask()
@@ -158,14 +158,14 @@ CHybridMethodODE45::CHybridMethodODE45(const CHybridMethodODE45 & src,
   , mY()
   , mpYdot(NULL)
   , mCountContainerVariables(0)
-  , mSpeciesRateUpdateSequence()
+  , mSpeciesRateUpdateSequence(nullptr)
   , mAmuVariables()
   , mAmuPointers()
   , mA0(0.0)
   , mContainerFluxes()
   , mSavedFluxes()
   , mFluxPointers()
-  , mPropensitiesUpdateSequence()
+  , mPropensitiesUpdateSequence(nullptr)
   , mEventProcessing(false)
   , mFireReaction(false)
   , mRootMask()

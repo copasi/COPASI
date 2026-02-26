@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -83,7 +83,7 @@ CSlider::CSlider(const std::string & name,
   mSync(true),
   mScaling(CSlider::logarithmic),
   mCN(),
-  mInitialRefreshes()
+  mInitialRefreshes(nullptr)
 {}
 
 CSlider::CSlider(const CSlider & src,
@@ -102,7 +102,7 @@ CSlider::CSlider(const CSlider & src,
   mSync(src.mSync),
   mScaling(src.mScaling),
   mCN(src.mCN),
-  mInitialRefreshes(src.mInitialRefreshes)
+  mInitialRefreshes(src.mInitialRefreshes, nullptr)
 {}
 
 CSlider::~CSlider()
@@ -160,7 +160,7 @@ bool CSlider::setSliderObject(const CDataObject * pObject)
 
   CDataModel* pDataModel = getObjectDataModel();
   assert(pDataModel != NULL);
-  mInitialRefreshes = pDataModel->getModel()->buildInitialRefreshSequence(ChangedObjects);
+  pDataModel->getModel()->buildInitialRefreshSequence(mInitialRefreshes, ChangedObjects);
 
   if (mpSliderObject->hasFlag(CDataObject::ValueInt))
     {
