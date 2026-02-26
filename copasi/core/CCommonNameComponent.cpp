@@ -292,17 +292,22 @@ std::string CCommonNameComponent::getParentCN() const
          && mPartialCN != "CN=Root"
          && mType != "String"
          && mType != "Separator"
-           ? mpParent->getCNUnregistered()
+           ? mpParent->getCNasString()
            : "";
 }
 
-std::string CCommonNameComponent::getCNUnregistered() const
+std::string CCommonNameComponent::getCNasString() const
 {
   std::vector< CCommonNameComponent::shared_ptr > Components = getComponentList();
   std::string CN;
 
   for (auto it = Components.rbegin(); it != Components.rend(); ++it)
-    (*it)->appendPartialCN(CN);
+    {
+      if ((*it)->mPartialCN == "CN=Root")
+        CN.clear();
+
+      (*it)->appendPartialCN(CN);
+    }
 
   return CN;
 }

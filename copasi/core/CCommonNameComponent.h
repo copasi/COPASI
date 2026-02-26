@@ -99,7 +99,7 @@ protected:
   void addDependent(const CCommonNameComponent * pDependent);
   void removeDependent(const CCommonNameComponent * pDependent);
   void signalPrerequisiteChanged(shared_ptr prerequisite) const;
-  std::string getCNUnregistered() const;
+  std::string getCNasString() const;
 
   std::string mPartialCN;
   const std::string mType;
