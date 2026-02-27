@@ -63,6 +63,9 @@
 #include <copasi/utilities/CCopasiMethod.h>
 #include <copasi/utilities/CProfileSettings.h>
 
+#include <copasi/report/CReportDefinition.h>
+#include <copasi/report/CReportDefinitionVector.h>
+
 #define OPERATION_SUCCEDED 0
 #define OPERATION_FAILED 1
 #define NO_EXPORT_REQUESTED 2
@@ -78,6 +81,12 @@ int runScheduledTasks(CProcessReport * pProcessReport);
 int saveCurrentModel();
 int exportParametersToIniFile();
 
+void printTasks();
+void printReports();
+
+int importReportDefinition();
+int exportReportDefinition();
+	
 CDataModel* pDataModel = NULL;
 bool Validate = false;
 bool Verbose;
@@ -87,6 +96,235 @@ std::string SedmlTask;
 std::string ExportTaskSpec;
 std::string ImportTaskSpec;
 bool PrintSedMLTasks;
+bool PrintTasks;
+bool PrintReports;
+std::string AssignReportDefinition;
+std::string ExportReportDefinition;
+std::string ImportReportDefinition;
+
+
+void printTasks()
+{
+  if (!pDataModel)
+    return;
+
+  for (auto& task : *pDataModel->getTaskList())
+    std::cout << task.getObjectName() << std::endl;
+}
+
+void printReports()
+{
+  if (!pDataModel)
+    return;
+ 
+  for (auto& report : *pDataModel->getReportDefinitionList())
+    std::cout << report.getObjectName() << std::endl;
+}
+
+int getReportIndex(const std::string& reportName)
+{
+  if (!pDataModel)
+    return C_INVALID_INDEX;
+  
+  for (int i = 0; i < pDataModel->getReportDefinitionList()->size(); ++i)
+    {
+      if ((*pDataModel->getReportDefinitionList())[i].getObjectName() == reportName)
+        return i;
+      if ((*pDataModel->getReportDefinitionList())[i].getKey() == reportName)
+        return i;
+    }
+  
+  return C_INVALID_INDEX;
+}
+
+void addReportItemsToList(const std::vector<std::string>& items, std::function< std::vector< CRegisteredCommonName >* () > getCnListFunction)
+{
+  for (const auto& item : items)
+    {
+      const auto* obj = pDataModel->findObjectByDisplayName(item);
+      if (!obj)
+        obj = dynamic_cast<const CDataObject*>(pDataModel->getObject(item));
+      if (!obj)
+        {
+          std::cerr << "report item cannot be resolved: " << item << std::endl;
+          continue;
+        }
+      getCnListFunction()->push_back(obj->getCN());
+    }
+}
+
+int importReportDefinition()
+{
+  if (!pDataModel)
+    return OPERATION_SUCCEDED;
+
+    // read the json file
+  std::ifstream fs(CLocaleString::fromUtf8(ImportReportDefinition).c_str());
+  if (!fs.good())
+    {
+      std::cerr << "Could not read file: " << ImportReportDefinition << std::endl;
+      return OPERATION_FAILED;
+    }
+
+  nlohmann::json j;
+  try
+    {
+      fs >> j;
+    }
+  catch (const nlohmann::json::parse_error & e)
+    {
+      std::cerr << "Failed to parse JSON file: " << ImportReportDefinition << std::endl;
+      std::cerr << "Parse error at byte " << e.byte << ": " << e.what() << std::endl;
+      return OPERATION_FAILED;
+    }
+  fs.close();
+  
+  if (!j.contains("name") || !j.contains("is_table"))
+    {
+      std::cerr << "Invalid task specification file: " << ImportReportDefinition << std::endl;
+      return OPERATION_FAILED;
+    }
+
+  auto index = getReportIndex(j["name"].get<std::string>());
+  if (index != C_INVALID_INDEX)
+    {
+      std::cout << "Report definition with name or key '" << j["name"].get<std::string>() << "' already exists. Replacing it." << std::endl;
+      pDataModel->getReportDefinitionList()->remove(j["name"].get<std::string>());
+    }
+
+  auto report = pDataModel->getReportDefinitionList()->createReportDefinition(j["name"].get< std::string >(), "");
+
+  if (j.contains("comment"))
+    report->setComment(j["comment"].get< std::string >());
+
+  if (j.contains("separator"))
+    report->setSeparator(j["separator"].get< std::string >());
+
+  if (j.contains("precision"))
+    report->setPrecision(j["precision"].get< unsigned C_INT32 >());
+
+  if (j.contains("task"))
+    {
+      auto taskType = CTaskEnum::TaskName.toEnum(j["task"].get<std::string>());
+      report->setTaskType(taskType);
+    }
+
+  if (j.contains("is_table"))
+    report->setIsTable(j["is_table"].get< bool >());
+
+  if (j["is_table"].get<bool>())
+    {
+      if (!j.contains("table"))
+        {
+          std::cerr << "Invalid table report definition: missing 'table' field." << std::endl;
+          return OPERATION_FAILED;
+        }
+      
+      auto tableItems = j["table"].get< std::vector< std::string > >();
+
+      addReportItemsToList(tableItems, [&]() { return report->getTableAddr(); });
+    }
+  else
+    {
+      if (j.contains("header"))
+        {
+          auto headerItems = j["header"].get< std::vector< std::string > >();
+          addReportItemsToList(headerItems, [&]() { return report->getHeaderAddr(); });
+        }
+
+      if (j.contains("body"))
+        {
+          auto bodyItems = j["body"].get< std::vector< std::string > >();
+          addReportItemsToList(bodyItems, [&]() { return report->getBodyAddr(); });
+        }
+
+      if (j.contains("footer"))
+        {
+          auto footerItems = j["footer"].get< std::vector< std::string > >();
+          addReportItemsToList(footerItems, [&]() { return report->getFooterAddr(); });
+        }
+    }
+
+  return OPERATION_SUCCEDED;
+}
+
+std::vector< std::string > reportListToString(std::function< std::vector< CRegisteredCommonName >*() > getCnListFunction)
+{
+  std::vector< std::string > result;
+  if (!pDataModel)
+    return result;
+
+  const auto & cnList = *getCnListFunction();
+  for (auto& cn : cnList)
+    {
+      auto * obj = pDataModel->getObject(cn);
+      if (!obj)
+        obj = pDataModel->getObjectFromCN(cn);
+      if (!obj)
+        {
+          std::cerr << "report item cannot be resolved: " << cn << std::endl;
+          continue;
+        }
+      auto * reverse = pDataModel->findObjectByDisplayName(obj->getObjectDisplayName());
+      if (!reverse)
+        //item that cannot be resolved by name so use cn
+        result.push_back(cn);
+      else
+        result.push_back(obj->getObjectDisplayName());
+    }
+  return result;
+}
+
+int exportReportDefinition()
+{
+  if (!pDataModel)
+    return OPERATION_FAILED;
+
+  auto reportIndex = getReportIndex(AssignReportDefinition);
+  if (reportIndex == C_INVALID_INDEX)
+    {
+      std::cerr << "Invalid report definition specified for export: " << AssignReportDefinition << std::endl;
+      return OPERATION_FAILED;
+    }
+
+  auto & report = (*pDataModel->getReportDefinitionList())[reportIndex];
+  
+  nlohmann::json j;
+
+  j["name"] = report.getObjectName();
+  j["separator"] = report.getSeparator().getStaticString();
+  j["precision"] = report.getPrecision();
+  j["task"] = CTaskEnum::TaskName[report.getTaskType()];
+  j["comment"] = report.getComment();
+  j["is_table"] = report.isTable();
+
+  if (report.isTable())
+    {
+      j["print_headers"] = report.getTitle();
+      j["table"] = reportListToString([&]() { return report.getTableAddr(); });
+
+    }
+  else
+    {
+      j["header"] = reportListToString([&]() { return report.getHeaderAddr(); });
+      j["body"] = reportListToString([&]() { return report.getBodyAddr(); });
+      j["footer"] = reportListToString([&]() { return report.getFooterAddr(); });
+    }
+
+  // write to file
+  std::ofstream fs(CLocaleString::fromUtf8(ExportReportDefinition).c_str());
+  if (!fs.good())
+    {
+      std::cerr << "Could not write to file: " << ExportReportDefinition << std::endl;
+      return OPERATION_FAILED;
+    }
+
+  fs << j.dump(2);
+
+  fs.close();
+
+  return OPERATION_SUCCEDED;
+}
 
 SedmlImportOptions getSedmlImportOptions(SedmlInfo& info, int& retcode)
 {
@@ -249,7 +487,11 @@ int main(int argc, char *argv[])
   COptions::getValue("ExportTaskSpec", ExportTaskSpec);
   COptions::getValue("ImportTaskSpec", ImportTaskSpec);
 
-
+  COptions::getValue("PrintTasks", PrintTasks);
+  COptions::getValue("PrintReports", PrintReports);
+  COptions::getValue("AssignReportDefinition", AssignReportDefinition);
+  COptions::getValue("ExportReportDefinition", ExportReportDefinition);
+  COptions::getValue("ImportReportDefinition", ImportReportDefinition);
 
   COptions::getValue("MaxTime", MaxTime);
 
@@ -309,7 +551,7 @@ int main(int argc, char *argv[])
       bool importSBML = COptions::isSet("ImportSBML") && !COptions::compareValue("ImportSBML", std::string(""));
       bool importSEDML = COptions::isSet("ImportSEDML") && !COptions::compareValue("ImportSEDML", std::string(""));
       bool importCA = COptions::isSet("ImportCombineArchive") && !COptions::compareValue("ImportCombineArchive", std::string(""));
-      bool needImport = importSBML | importSEDML | importCA;
+      bool needImport = importSBML || importSEDML || importCA;
 
       std::string iniFileName;
 
@@ -398,6 +640,20 @@ int main(int argc, char *argv[])
               goto finish;
             }
 
+          if (PrintTasks)
+          {
+              printTasks();
+              retcode = OPERATION_SUCCEDED;
+              goto finish;
+          }
+
+          if (PrintReports)
+          {
+              printReports();
+              retcode = OPERATION_SUCCEDED;
+              goto finish;
+          }
+
           if (ConvertToIrreversible)
             {
               pDataModel->getModel()->convert2NonReversible();
@@ -416,6 +672,17 @@ int main(int argc, char *argv[])
               exportParametersToIniFile();
               goto finish;
             }
+
+          if (!ImportReportDefinition.empty())
+          {
+              retcode = importReportDefinition();           
+          }
+
+          if (!ExportReportDefinition.empty())
+          {
+              retcode = exportReportDefinition();
+              goto finish;              
+          }
 
           // combine archives or SED-ML will have defined tasks
           retcode = runScheduledTasks(pProcessReport);
@@ -459,6 +726,20 @@ int main(int argc, char *argv[])
                   continue;
                 }
 
+               if (PrintTasks)
+                {
+                  printTasks();
+                  retcode |= OPERATION_SUCCEDED;
+                  continue;
+                }
+
+              if (PrintReports)
+                {
+                  printReports();
+                  retcode |= OPERATION_SUCCEDED;
+                  continue;
+                }
+
               if (ConvertToIrreversible)
                 {
                   pDataModel->getModel()->convert2NonReversible();
@@ -475,6 +756,17 @@ int main(int argc, char *argv[])
                   // Since only one export file name can be specified
                   // for export we stop execution.
                   exportParametersToIniFile();
+                  break;
+                }
+
+              if (!ImportReportDefinition.empty())
+                {
+                  retcode = importReportDefinition();
+                }
+              
+              if (!ExportReportDefinition.empty())
+                {
+                  retcode = exportReportDefinition();
                   break;
                 }
 
@@ -678,6 +970,19 @@ int runScheduledTasks(CProcessReport * pProcessReport)
           {
             task.getReport().setTarget(ReportFileName);
           }
+
+        if (!AssignReportDefinition.empty())
+        {
+          auto reportIndex = getReportIndex(AssignReportDefinition);
+          if (reportIndex == C_INVALID_INDEX)
+            {
+              std::cerr << "No report definition '" << AssignReportDefinition << "' found to be assigned to task '"
+                        << task.getObjectName() << "'" << std::endl;
+              return 1;
+            }
+          CReportDefinition & reportDefinition = (*pDataModel->getReportDefinitionList())[reportIndex];
+          task.getReport().setReportDefinition(&reportDefinition);
+        }
 
         try
           {
