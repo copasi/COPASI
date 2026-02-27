@@ -139,16 +139,48 @@ int getReportIndex(const std::string& reportName)
 
 void addReportItemsToList(const std::vector<std::string>& items, std::function< std::vector< CRegisteredCommonName >* () > getCnListFunction)
 {
+  if (!pDataModel || !getCnListFunction())
+    return;
+
   for (const auto& item : items)
     {
+      bool fromDisplayName = true;
       const auto* obj = pDataModel->findObjectByDisplayName(item);
       if (!obj)
-        obj = dynamic_cast<const CDataObject*>(pDataModel->getObject(item));
+        {
+          obj = dynamic_cast< const CDataObject * >(pDataModel->getObject(item));
+          fromDisplayName = false;
+        }
       if (!obj)
         {
           std::cerr << "report item cannot be resolved: " << item << std::endl;
           continue;
         }
+
+      // if the item is not a reference after resolving from 
+      // display name, choose specific reference for model entities
+      if (fromDisplayName && obj->getObjectType() != "Reference")
+        {
+          const CMetab * metab = dynamic_cast< const CMetab * >(obj);
+          if (metab)
+            {
+              obj = metab->getConcentrationReference();
+            }
+
+          const CReaction * reaction = dynamic_cast< const CReaction * >(obj);
+          if (reaction)
+            {
+              obj = reaction->getFluxReference();
+            }
+
+          const CModelEntity * modelEntity = dynamic_cast< const CModelEntity * >(obj);
+          if (modelEntity)
+            {
+              obj = modelEntity->getValueReference();
+            }
+        }
+
+
       getCnListFunction()->push_back(obj->getCN());
     }
 }
