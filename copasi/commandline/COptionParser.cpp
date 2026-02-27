@@ -57,8 +57,11 @@ namespace {
 "                                default is copasi in the ConfigDir.\n"
 "  --convert-to-irreversible     Converts reversible reactions to irreversibl-\n"
 "                                e ones before running Task.\n"
+"  --export-report file          Exports the report definition as JSON file\n"
+"                                (use --report-name to select the report to\n"
+"                                export)\n"
 "  --export-task file            Exports the scheduled task settings as JSON\n"
-"                                file (use --scheduled-task to override)\n"
+"                                file (use --scheduled-task to override).\n"
 "  --exportBerkeleyMadonna file  The Berkeley Madonna file to export.\n"
 "  --exportC file                The C code file to export.\n"
 "  --exportCA file               The COMBINE archive file to export.\n"
@@ -68,18 +71,28 @@ namespace {
 "  --exportSEDML file            The SEDML file to export.\n"
 "  --exportXPPAUT file           The XPPAUT file to export.\n"
 "  --home dir                    Your home directory.\n"
+"  --import-report file          Imports the report definition from the\n"
+"                                specified JSON file.\n"
 "  --import-task file            Imports the scheduled task settings as JSON\n"
-"                                file (use --scheduled-task to override)\n"
+"                                file (use --scheduled-task to override).\n"
 "  --importCA file               A COMBINE archive file to import.\n"
 "  --importSEDML file            A SEDML file to import.\n"
 "  --license                     Display the license.\n"
 "  --maxTime seconds             The maximal time CopasiSE may run in\n"
 "                                seconds.\n"
 "  --nologo                      Surpresses the startup message.\n"
+"  --print-reports               Only print the report definitions available\n"
+"                                in the COPASI file.\n"
+"  --print-tasks                 Only print the tasks available in the\n"
+"                                COPASI file.\n"
 "  --printSedMLTasks             Only print the SED-ML tasks when importing\n"
 "                                SED-ML or COMBINE archives.\n"
 "  --report-file file            Override report file name to be used except\n"
 "                                for the one defined in the scheduled task.\n"
+"  --report-name string          Specifies the report definition to use.\n"
+"                                This can be used to change the report\n"
+"                                definition of a task, or to specify the\n"
+"                                report definition to export or import.\n"
 "  --scheduled-task taskName     Override the task marked as executable.\n"
 "  --sedmlTask string            for specifying the task id to import (and\n"
 "                                execute) when importing SED-ML or importing\n"
@@ -214,6 +227,8 @@ void copasi::COptionParser::parse(const char * fileName)
 void copasi::COptionParser::finalize (void) {
     if (state_ == state_value) {
 	switch (openum_) {
+	    case option_AssignReportDefinition:
+		throw option_error("missing value for 'report-name' option");
 	    case option_ConfigDir:
 		throw option_error("missing value for 'configdir' option");
 	    case option_ConfigFile:
@@ -230,6 +245,8 @@ void copasi::COptionParser::finalize (void) {
 		throw option_error("missing value for 'exportCA' option");
 	    case option_ExportIni:
 		throw option_error("missing value for 'exportIni' option");
+	    case option_ExportReportDefinition:
+		throw option_error("missing value for 'export-report' option");
 	    case option_ExportSBML:
 		throw option_error("missing value for 'exportSBML' option");
 	    case option_ExportSEDML:
@@ -242,6 +259,8 @@ void copasi::COptionParser::finalize (void) {
 		throw option_error("missing value for 'home' option");
 	    case option_ImportCombineArchive:
 		throw option_error("missing value for 'importCA' option");
+	    case option_ImportReportDefinition:
+		throw option_error("missing value for 'import-report' option");
 	    case option_ImportSBML:
 		throw option_error("missing value for 'importSBML' option");
 	    case option_ImportSEDML:
@@ -254,8 +273,12 @@ void copasi::COptionParser::finalize (void) {
 		throw option_error("missing value for 'maxTime' option");
 	    case option_NoLogo:
 		throw option_error("missing value for 'nologo' option");
+	    case option_PrintReports:
+		throw option_error("missing value for 'print-reports' option");
 	    case option_PrintSedMLTasks:
 		throw option_error("missing value for 'printSedMLTasks' option");
+	    case option_PrintTasks:
+		throw option_error("missing value for 'print-tasks' option");
 	    case option_ReparameterizeModel:
 		throw option_error("missing value for 'reparameterize' option");
 	    case option_ReportFile:
@@ -454,6 +477,15 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
 		locations_.CopasiDir = position;
 		state_ = state_value;
 		return;
+	    } else if (strcmp(option, "export-report") == 0) {
+		if (source != source_cl) throw option_error("the 'export-report' option is only allowed on the command line");
+		if (locations_.ExportReportDefinition) {
+		    throw option_error("the 'export-report' option is only allowed once");
+		}
+		openum_ = option_ExportReportDefinition;
+		locations_.ExportReportDefinition = position;
+		state_ = state_value;
+		return;
 	    } else if (strcmp(option, "export-task") == 0) {
 		if (source != source_cl) throw option_error("the 'export-task' option is only allowed on the command line");
 		if (locations_.ExportTaskSpec) {
@@ -535,6 +567,15 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
 		locations_.Home = position;
 		state_ = state_value;
 		return;
+	    } else if (strcmp(option, "import-report") == 0) {
+		if (source != source_cl) throw option_error("the 'import-report' option is only allowed on the command line");
+		if (locations_.ImportReportDefinition) {
+		    throw option_error("the 'import-report' option is only allowed once");
+		}
+		openum_ = option_ImportReportDefinition;
+		locations_.ImportReportDefinition = position;
+		state_ = state_value;
+		return;
 	    } else if (strcmp(option, "import-task") == 0) {
 		if (source != source_cl) throw option_error("the 'import-task' option is only allowed on the command line");
 		if (locations_.ImportTaskSpec) {
@@ -598,6 +639,24 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
 		locations_.NoLogo = position;
 		options_.NoLogo = !options_.NoLogo;
 		return;
+	    } else if (strcmp(option, "print-reports") == 0) {
+		if (source != source_cl) throw option_error("the 'print-reports' option is only allowed on the command line");
+		if (locations_.PrintReports) {
+		    throw option_error("the 'print-reports' option is only allowed once");
+		}
+		openum_ = option_PrintReports;
+		locations_.PrintReports = position;
+		options_.PrintReports = !options_.PrintReports;
+		return;
+	    } else if (strcmp(option, "print-tasks") == 0) {
+		if (source != source_cl) throw option_error("the 'print-tasks' option is only allowed on the command line");
+		if (locations_.PrintTasks) {
+		    throw option_error("the 'print-tasks' option is only allowed once");
+		}
+		openum_ = option_PrintTasks;
+		locations_.PrintTasks = position;
+		options_.PrintTasks = !options_.PrintTasks;
+		return;
 	    } else if (strcmp(option, "printSedMLTasks") == 0) {
 		if (source != source_cl) throw option_error("the 'printSedMLTasks' option is only allowed on the command line");
 		if (locations_.PrintSedMLTasks) {
@@ -623,6 +682,15 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
 		}
 		openum_ = option_ReportFile;
 		locations_.ReportFile = position;
+		state_ = state_value;
+		return;
+	    } else if (strcmp(option, "report-name") == 0) {
+		if (source != source_cl) throw option_error("the 'report-name' option is only allowed on the command line");
+		if (locations_.AssignReportDefinition) {
+		    throw option_error("the 'report-name' option is only allowed once");
+		}
+		openum_ = option_AssignReportDefinition;
+		locations_.AssignReportDefinition = position;
 		state_ = state_value;
 		return;
 	    } else if (strcmp(option, "save") == 0) {
@@ -698,6 +766,11 @@ void copasi::COptionParser::parse_long_option (const char *option, int position,
 //#########################################################################
 void copasi::COptionParser::parse_value (const char *value) {
     switch (openum_) {
+    	case option_AssignReportDefinition:
+    	    {
+    		options_.AssignReportDefinition = value;
+    	    }
+    	    break;
     	case option_ConfigDir:
     	    {
     		options_.ConfigDir = value;
@@ -735,6 +808,11 @@ void copasi::COptionParser::parse_value (const char *value) {
     		options_.ExportIni = value;
     	    }
     	    break;
+    	case option_ExportReportDefinition:
+    	    {
+    		options_.ExportReportDefinition = value;
+    	    }
+    	    break;
     	case option_ExportSBML:
     	    {
     		options_.ExportSBML = value;
@@ -763,6 +841,11 @@ void copasi::COptionParser::parse_value (const char *value) {
     	case option_ImportCombineArchive:
     	    {
     		options_.ImportCombineArchive = value;
+    	    }
+    	    break;
+    	case option_ImportReportDefinition:
+    	    {
+    		options_.ImportReportDefinition = value;
     	    }
     	    break;
     	case option_ImportSBML:
@@ -801,7 +884,11 @@ void copasi::COptionParser::parse_value (const char *value) {
     	    break;
     	case option_NoLogo:
     	    break;
+    	case option_PrintReports:
+    	    break;
     	case option_PrintSedMLTasks:
+    	    break;
+    	case option_PrintTasks:
     	    break;
     	case option_ReparameterizeModel:
     	    {
@@ -896,6 +983,9 @@ namespace {
         if (name_size <= 9 && name.compare(0, name_size, "copasidir", name_size) == 0)
         	matches.push_back("copasidir");
 
+        if (name_size <= 13 && name.compare(0, name_size, "export-report", name_size) == 0)
+        	matches.push_back("export-report");
+
         if (name_size <= 11 && name.compare(0, name_size, "export-task", name_size) == 0)
         	matches.push_back("export-task");
 
@@ -923,6 +1013,9 @@ namespace {
         if (name_size <= 4 && name.compare(0, name_size, "home", name_size) == 0)
         	matches.push_back("home");
 
+        if (name_size <= 13 && name.compare(0, name_size, "import-report", name_size) == 0)
+        	matches.push_back("import-report");
+
         if (name_size <= 11 && name.compare(0, name_size, "import-task", name_size) == 0)
         	matches.push_back("import-task");
 
@@ -944,6 +1037,12 @@ namespace {
         if (name_size <= 6 && name.compare(0, name_size, "nologo", name_size) == 0)
         	matches.push_back("nologo");
 
+        if (name_size <= 13 && name.compare(0, name_size, "print-reports", name_size) == 0)
+        	matches.push_back("print-reports");
+
+        if (name_size <= 11 && name.compare(0, name_size, "print-tasks", name_size) == 0)
+        	matches.push_back("print-tasks");
+
         if (name_size <= 15 && name.compare(0, name_size, "printSedMLTasks", name_size) == 0)
         	matches.push_back("printSedMLTasks");
 
@@ -952,6 +1051,9 @@ namespace {
 
         if (name_size <= 11 && name.compare(0, name_size, "report-file", name_size) == 0)
         	matches.push_back("report-file");
+
+        if (name_size <= 11 && name.compare(0, name_size, "report-name", name_size) == 0)
+        	matches.push_back("report-name");
 
         if (name_size <= 4 && name.compare(0, name_size, "save", name_size) == 0)
         	matches.push_back("save");

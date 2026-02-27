@@ -277,9 +277,14 @@ void COptions::init(C_INT argc, char *argv[])
   setValue("ExportIni", Options.ExportIni);
   setValue("SedmlTask", Options.SedmlTask);
   setValue("PrintSedMLTasks", Options.PrintSedMLTasks);
+  setValue("PrintTasks", Options.PrintTasks);
+  setValue("PrintReports", Options.PrintReports);
   setValue("Version", Options.Version);
   setValue("ExportTaskSpec", Options.ExportTaskSpec);
   setValue("ImportTaskSpec", Options.ImportTaskSpec);
+  setValue("AssignReportDefinition", Options.AssignReportDefinition);
+  setValue("ExportReportDefinition", Options.ExportReportDefinition);
+  setValue("ImportReportDefinition", Options.ImportReportDefinition);
 
   delete pPreParser;
 

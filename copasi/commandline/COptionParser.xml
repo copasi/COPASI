@@ -438,6 +438,30 @@
       Only print COPASI version.
      </comment>
    </option>
+   <option id="PrintTasks"
+           type="flag"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           default="false"
+           hidden="no">
+     <name>print-tasks</name>
+     <comment>
+      Only print the tasks available in the COPASI file.
+     </comment>
+   </option>
+   <option id="PrintReports"
+           type="flag"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           default="false"
+           hidden="no">
+     <name>print-reports</name>
+     <comment>
+      Only print the report definitions available in the COPASI file.
+     </comment>
+   </option>
    <option id="ExportTaskSpec"
            type="string"
            mandatory="no"
@@ -447,7 +471,7 @@
            hidden="no">
      <name>export-task</name>
      <comment>
-      Exports the scheduled task settings as JSON file (use --scheduled-task to override)
+      Exports the scheduled task settings as JSON file (use --scheduled-task to override).
      </comment>
    </option>
    <option id="ImportTaskSpec"
@@ -459,7 +483,44 @@
            hidden="no">
      <name>import-task</name>
      <comment>
-      Imports the scheduled task settings as JSON file (use --scheduled-task to override)
+      Imports the scheduled task settings as JSON file (use --scheduled-task to override).
+     </comment>
+   </option>
+   <option id="AssignReportDefinition"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           argname="string"
+           hidden="no">
+     <name>report-name</name>
+     <comment>
+      Specifies the report definition to use. This can be used to change the report definition
+      of a task, or to specify the report definition to export or import. 
+     </comment>
+   </option>
+   <option id="ExportReportDefinition"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           argname="file"
+           hidden="no">
+     <name>export-report</name>
+     <comment>
+      Exports the report definition as JSON file (use --report-name to select the report to export)
+     </comment>
+   </option>
+   <option id="ImportReportDefinition"
+           type="string"
+           mandatory="no"
+           strict="yes"
+           location="commandline"
+           argname="file"
+           hidden="no">
+     <name>import-report</name>
+     <comment>
+      Imports the report definition from the specified JSON file.
      </comment>
    </option>
  </options>

@@ -83,12 +83,15 @@ struct options
 	    License(false),
 	    MaxTime(0),
 	    NoLogo(false),
+	    PrintReports(false),
 	    PrintSedMLTasks(false),
+	    PrintTasks(false),
 	    SBMLSchema(SBMLSchema_L2V4),
 	    Validate(false),
 	    Verbose(false),
 	    Version(false)
 	{}
+      	        	std::string     AssignReportDefinition;
       	        	std::string     ConfigDir;
       	        	std::string     ConfigFile;
       	        	bool     ConvertToIrreversible;
@@ -97,19 +100,23 @@ struct options
       	        	std::string     ExportC;
       	        	std::string     ExportCombineArchive;
       	        	std::string     ExportIni;
+      	        	std::string     ExportReportDefinition;
       	        	std::string     ExportSBML;
       	        	std::string     ExportSEDML;
       	        	std::string     ExportTaskSpec;
       	        	std::string     ExportXPPAUT;
       	        	std::string     Home;
       	        	std::string     ImportCombineArchive;
+      	        	std::string     ImportReportDefinition;
       	        	std::string     ImportSBML;
       	        	std::string     ImportSEDML;
       	        	std::string     ImportTaskSpec;
       	        	bool     License;
       	        	int     MaxTime;
       	        	bool     NoLogo;
+      	        	bool     PrintReports;
       	        	bool     PrintSedMLTasks;
+      	        	bool     PrintTasks;
       	        	std::string     ReparameterizeModel;
       	        	std::string     ReportFile;
       	        	SBMLSchema_enum     SBMLSchema;
@@ -129,6 +136,7 @@ struct options
 struct option_locations
  {
 typedef int size_type;
+size_type AssignReportDefinition;
 size_type ConfigDir;
 size_type ConfigFile;
 size_type ConvertToIrreversible;
@@ -137,19 +145,23 @@ size_type ExportBerkeleyMadonna;
 size_type ExportC;
 size_type ExportCombineArchive;
 size_type ExportIni;
+size_type ExportReportDefinition;
 size_type ExportSBML;
 size_type ExportSEDML;
 size_type ExportTaskSpec;
 size_type ExportXPPAUT;
 size_type Home;
 size_type ImportCombineArchive;
+size_type ImportReportDefinition;
 size_type ImportSBML;
 size_type ImportSEDML;
 size_type ImportTaskSpec;
 size_type License;
 size_type MaxTime;
 size_type NoLogo;
+size_type PrintReports;
 size_type PrintSedMLTasks;
+size_type PrintTasks;
 size_type ReparameterizeModel;
 size_type ReportFile;
 size_type SBMLSchema;
@@ -263,8 +275,13 @@ size_type Version;
 		option_SedmlTask,
 		option_PrintSedMLTasks,
 		option_Version,
+		option_PrintTasks,
+		option_PrintReports,
 		option_ExportTaskSpec,
-		option_ImportTaskSpec
+		option_ImportTaskSpec,
+		option_AssignReportDefinition,
+		option_ExportReportDefinition,
+		option_ImportReportDefinition
 	} openum_;
 
 	enum parser_state { state_option, state_value, state_consume } state_;
