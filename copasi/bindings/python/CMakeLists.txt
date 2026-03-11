@@ -119,7 +119,12 @@ if (MSVC OR USING_INTEL)
 endif(MSVC OR USING_INTEL)
 endif(WIN32)
 
-add_library(binding_python_lib SHARED copasi_wrapper.cpp)
+if (NOT EMSCRIPTEN)
+  add_library(binding_python_lib SHARED copasi_wrapper.cpp)
+else()
+  add_library(binding_python_lib MODULE copasi_wrapper.cpp)
+endif()
+
 add_dependencies( binding_python_lib binding_python_swig) 
 
 set_target_properties (binding_python_lib PROPERTIES OUTPUT_NAME "_COPASI")
