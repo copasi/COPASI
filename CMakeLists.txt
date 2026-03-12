@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -830,8 +830,7 @@ if(MSVC OR USING_INTEL)
 endif(MSVC OR USING_INTEL)
 
 if (EMSCRIPTEN)
-add_compile_options(-fexceptions)
-add_link_options(-fexceptions -sINITIAL_MEMORY=65536000 -sALLOW_MEMORY_GROWTH=1)
+add_link_options(-sINITIAL_MEMORY=65536000 -sALLOW_MEMORY_GROWTH=1)
 endif(EMSCRIPTEN)
 
 set(APPS "" CACHE INTERNAL "")
