@@ -861,13 +861,13 @@ bool COptMethodSS::combination(void)
 
               // mark improvement
 #pragma omp critical (opt_method_SS_combination)
-              if (improvement = 2)
+              if (improvement == 2)
                 {
                   lambda *= 0.5;
                   improvement = 0;
                 }
               else
-                improvement = 1;
+                improvement += 1;
             }
         }
     }
