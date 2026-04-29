@@ -46,14 +46,7 @@ static integer c__1 = 1;
 
   /* Local variables */
   static integer i__, j, k, j1, ib, mm, jm1;
-  extern /* Subroutine */ int dec_(integer *, integer *, doublereal *,
-                                   integer *, integer *);
   static doublereal sum;
-  extern /* Subroutine */ int decb_(integer *, integer *, doublereal *,
-                                    integer *, integer *, integer *, integer *), dech_(integer *,
-                                        integer *, doublereal *, integer *, integer *, integer *),
-                                                elmhes_(integer *, integer *, integer *, integer *, doublereal *,
-                                                    integer *);
 
   /* Parameter adjustments */
   --iphes;
@@ -461,15 +454,9 @@ L55:
   static doublereal bb;
   static integer ib, mm, jm1;
   static doublereal bet, alp;
-  extern /* Subroutine */ int decc_(integer *, integer *, doublereal *,
-                                    doublereal *, integer *, integer *);
   static doublereal ffma, abno;
   static integer imle;
   static doublereal sumi, sumr, sums;
-  extern /* Subroutine */ int decbc_(integer *, integer *, doublereal *,
-                                     doublereal *, integer *, integer *, integer *, integer *), dechc_(
-                                       integer *, integer *, doublereal *, doublereal *, integer *,
-                                       integer *, integer *);
 
   /* Parameter adjustments */
   fjac_dim1 = *ldjac;
@@ -929,12 +916,7 @@ L55:
   static integer i__, j, k;
   static doublereal s1;
   static integer mm, mp, im1, mp1, jkm;
-  extern /* Subroutine */ int sol_(integer *, integer *, doublereal *,
-                                   doublereal *, integer *);
   static doublereal sum1;
-  extern /* Subroutine */ int solb_(integer *, integer *, doublereal *,
-                                    integer *, integer *, doublereal *, integer *), solh_(integer *,
-                                        integer *, doublereal *, integer *, doublereal *, integer *);
   static doublereal zsafe;
 
   /* Parameter adjustments */
@@ -1345,16 +1327,9 @@ L55:
   static doublereal z2i, z3i;
   static integer jkm, mpi;
   static doublereal sum2, sum3, abno;
-  extern /* Subroutine */ int solc_(integer *, integer *, doublereal *,
-                                    doublereal *, doublereal *, doublereal *, integer *);
   static integer iimu;
   static doublereal sumh, e1imp;
-  extern /* Subroutine */ int solbc_(integer *, integer *, doublereal *,
-                                     doublereal *, integer *, integer *, doublereal *, doublereal *,
-                                     integer *);
   static doublereal zsafe;
-  extern /* Subroutine */ int solhc_(integer *, integer *, doublereal *,
-                                     doublereal *, integer *, doublereal *, doublereal *, integer *);
 
   /* Parameter adjustments */
   --iphes;
@@ -1850,21 +1825,9 @@ L55:
   static integer mm, mp, j1b, j2b, im1, jm1, mp1;
   static doublereal z2i, z3i;
   static integer jkm, mpi;
-  extern /* Subroutine */ int sol_(integer *, integer *, doublereal *,
-                                   doublereal *, integer *);
   static doublereal sum1, sum2, sum3, ffja, abno;
-  extern /* Subroutine */ int solb_(integer *, integer *, doublereal *,
-                                    integer *, integer *, doublereal *, integer *), solc_(integer *,
-                                        integer *, doublereal *, doublereal *, doublereal *, doublereal *,
-                                        integer *), solh_(integer *, integer *, doublereal *, integer *,
-                                            doublereal *, integer *);
   static doublereal sumh, e1imp;
-  extern /* Subroutine */ int solbc_(integer *, integer *, doublereal *,
-                                     doublereal *, integer *, integer *, doublereal *, doublereal *,
-                                     integer *);
   static doublereal zsafe;
-  extern /* Subroutine */ int solhc_(integer *, integer *, doublereal *,
-                                     doublereal *, integer *, doublereal *, doublereal *, integer *);
 
   /* Parameter adjustments */
   --iphes;
@@ -2413,12 +2376,7 @@ L55:
 
   /* Local variables */
   static integer i__, j, k, mm, mp, im1;
-  extern /* Subroutine */ int sol_(integer *, integer *, doublereal *,
-                                   doublereal *, integer *);
   static doublereal sum, hee1, hee2, hee3, sum1;
-  extern /* Subroutine */ int solb_(integer *, integer *, doublereal *,
-                                    integer *, integer *, doublereal *, integer *), solh_(integer *,
-                                        integer *, doublereal *, integer *, doublereal *, integer *);
   static doublereal zsafe;
 
   /* Parameter adjustments */
@@ -3113,12 +3071,7 @@ L55:
 
   /* Local variables */
   static integer i__, j, k, mm, mp, im1;
-  extern /* Subroutine */ int sol_(integer *, integer *, doublereal *,
-                                   doublereal *, integer *);
   static doublereal sum, sum1;
-  extern /* Subroutine */ int solb_(integer *, integer *, doublereal *,
-                                    integer *, integer *, doublereal *, integer *), solh_(integer *,
-                                        integer *, doublereal *, integer *, doublereal *, integer *);
   static doublereal zsafe;
 
   /* Parameter adjustments */
@@ -3916,12 +3869,8 @@ L55:
           i__1, i__2, i__3, i__4, i__5, i__6;
 
   /* Local variables */
-  static integer i__, j, k, mm, im1, jkm;
-  extern /* Subroutine */ int sol_(integer *, integer *, doublereal *,
-                                   doublereal *, integer *);
-  static doublereal sum;
-  extern /* Subroutine */ int solb_(integer *, integer *, doublereal *,
-                                    integer *, integer *, doublereal *, integer *);
+  integer i__, j, k, mm, im1, jkm;
+  doublereal sum;
 
   /* Parameter adjustments */
   --ynew;
@@ -4342,12 +4291,7 @@ L55:
 
   /* Local variables */
   static integer i__, j, k, mm, mp, im1, mp1, jkm, mmm;
-  extern /* Subroutine */ int sol_(integer *, integer *, doublereal *,
-                                   doublereal *, integer *);
   static doublereal sum;
-  extern /* Subroutine */ int solb_(integer *, integer *, doublereal *,
-                                    integer *, integer *, doublereal *, integer *), solh_(integer *,
-                                        integer *, doublereal *, integer *, doublereal *, integer *);
   static doublereal zsafe;
 
   /* Parameter adjustments */
@@ -4476,8 +4420,7 @@ L12:
         }
     }
 
-  solb_(nm1, lde, &e[e_offset], &linal_1.mle, &linal_1.mue, &del[*m1 + 1], &
-        ip[1]);
+  solb_(nm1, lde, &e[e_offset], &linal_1.mle, &linal_1.mue, &del[*m1 + 1], &ip[1]);
 
   for (i__ = *m1; i__ >= 1; --i__)
     {
