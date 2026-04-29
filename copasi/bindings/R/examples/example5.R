@@ -33,15 +33,15 @@ stopifnot(!is.null(variableModelValue))
 invisible(variableModelValue$setStatus("ASSIGNMENT"))
 # we create a very simple assignment that is easy on the optimization
 # a parabole with the minimum at x=6 should do just fine
-s <- fixedModelValue$getObject(CCommonName("Reference=Value"))
+s <- fixedModelValue$getChildObject(CCommonName("Reference=Value"))
 s <- paste("(<", s$getCN()$getString(), "> - 6.0)^2", sep = "")
 invisible(variableModelValue$setExpression(s))
 # now we compile the model and tell COPASI which values have changed so
 # that COPASI can update the values that depend on those
 invisible(model$compileIfNecessary())
 changedObjects <- ObjectStdVector()
-invisible(changedObjects$push_back(fixedModelValue$getObject(CCommonName("Reference=InitialValue"))))
-invisible(changedObjects$push_back(variableModelValue$getObject(CCommonName("Reference=InitialValue"))))
+invisible(changedObjects$push_back(fixedModelValue$getChildObject(CCommonName("Reference=InitialValue"))))
+invisible(changedObjects$push_back(variableModelValue$getChildObject(CCommonName("Reference=InitialValue"))))
 invisible(model$updateInitialValues(changedObjects))
 
 # now we set up the optimization
@@ -85,7 +85,7 @@ invisible(optProblem$setSubtaskType("timeCourse"))
 # we want to minimize the value of the variable model value at the end of
 # the simulation
 # the objective function is normally minimized
-objectiveFunction <- variableModelValue$getObject(CCommonName("Reference=Value"))
+objectiveFunction <- variableModelValue$getChildObject(CCommonName("Reference=Value"))
 # we need to put the angled brackets around the common name of the object
 objectiveFunction <- paste("<", objectiveFunction$getCN()$getString() ,">", sep = "")
 # now we set the objective function in the problem
@@ -94,7 +94,7 @@ invisible(optProblem$setObjectiveFunction(objectiveFunction))
 # now we create the optimization items
 # i.e. the model elements that have to be changed during the optimization
 # in order to get to the optimal solution
-optItem <- optProblem$addOptItem(fixedModelValue$getObject(CCommonName("Reference=InitialValue"))$getCN())
+optItem <- optProblem$addOptItem(fixedModelValue$getChildObject(CCommonName("Reference=InitialValue"))$getCN())
 # we want to change the fixed model value from -100 to +100 with a start
 # value of 50
 invisible(optItem$setStartValue(50.0))
@@ -146,11 +146,11 @@ s <- CDataString("initial value of F")$getCN()$getString()
 invisible(header$push_back(CRegisteredCommonName(s)))
 # in the report body we write the best value of the objective function and
 # the initial value of the fixed parameter separated by a komma
-o <- optProblem$getObject(CCommonName("Reference=Best Value"))
+o <- optProblem$getChildObject(CCommonName("Reference=Best Value"))
 s <- o$getCN()$getString()
 invisible(body$push_back(CRegisteredCommonName(s)))
 invisible(body$push_back(CRegisteredCommonName(sep_string)))
-o <- fixedModelValue$getObject(CCommonName("Reference=InitialValue"))
+o <- fixedModelValue$getChildObject(CCommonName("Reference=InitialValue"))
 s <- o$getCN()$getString()
 invisible(body$push_back(CRegisteredCommonName(s)))
 

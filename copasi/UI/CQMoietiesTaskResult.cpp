@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -230,7 +230,7 @@ void CQMoietiesTaskResult::load()
   // Fill the stoichiometry matrix
   CColorScaleBiLog * tcs = NULL;
   const CDataArray * pAnnotation =
-    static_cast< const CDataArray * >(pModel->getObject(CCommonName("Array=Stoichiometry(ann)")));
+    static_cast< const CDataArray * >(pModel->getChildObject(CCommonName("Array=Stoichiometry(ann)")));
   tcs = new CColorScaleBiLog();
   mpStoichiometry->setColorCoding(tcs);
   mpStoichiometry->setColorScalingAutomatic(true);
@@ -238,7 +238,7 @@ void CQMoietiesTaskResult::load()
 
   // Fill the link matrix
   pAnnotation =
-    static_cast< const CDataArray * >(pModel->getObject(CCommonName("Array=Link matrix(ann)")));
+    static_cast< const CDataArray * >(pModel->getChildObject(CCommonName("Array=Link matrix(ann)")));
   tcs = new CColorScaleBiLog();
   mpLinkMatrix->setColorCoding(tcs);
   mpLinkMatrix->setColorScalingAutomatic(true);
@@ -246,7 +246,7 @@ void CQMoietiesTaskResult::load()
 
   // Fill the reduced stoichiometry matrix
   pAnnotation =
-    static_cast< const CDataArray * >(pModel->getObject(CCommonName("Array=Reduced stoichiometry(ann)")));
+    static_cast< const CDataArray * >(pModel->getChildObject(CCommonName("Array=Reduced stoichiometry(ann)")));
   tcs = new CColorScaleBiLog();
   mpReducedStoichiometry->setColorCoding(tcs);
   mpReducedStoichiometry->setColorScalingAutomatic(true);
@@ -317,7 +317,7 @@ void CQMoietiesTaskResult::slotCreateGlobalQuantity(const QModelIndex & index)
     pMV = pModel->createModelValue("Moiety[" + pMoiety->getObjectName() + "].TotalAmount_" + TO_UTF8(QString::number(++i)));
 
   pMV->setInitialExpression("(" + pMoiety->getExpression() + ")/<" +
-                            pModel->getObject(CCommonName("Reference=Quantity Conversion Factor"))->getCN() + ">");
+                            pModel->getChildObject(CCommonName("Reference=Quantity Conversion Factor"))->getCN() + ">");
 
   protectedNotify(ListViews::ObjectType::MODELVALUE, ListViews::ADD);
 }

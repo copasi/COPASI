@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -259,7 +259,7 @@ SEDMLUtils::resolveDatagenerator(CModel * model, const SedDataGenerator * dataRe
 
   if (var->isSetSymbol() && var->getSymbol() == SEDML_TIME_URN)
     {
-      return static_cast< const CDataObject * >(model->getObject(CCommonName("Reference=Time")));
+      return static_cast< const CDataObject * >(model->getChildObject(CCommonName("Reference=Time")));
     }
 
   return resolveVariable(model, var);
@@ -686,7 +686,7 @@ SEDMLUtils::getObjectForSbmlId(const CModel * pModel, const std::string & id, co
     return NULL;
 
   if (SBMLType == "Time")
-    return static_cast< const CDataObject * >(pModel->getObject(CCommonName("Reference=Time")));
+    return static_cast< const CDataObject * >(pModel->getChildObject(CCommonName("Reference=Time")));
 
   if (SBMLType == "species")
     {

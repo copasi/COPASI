@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,7 +29,6 @@
 #include "copasi/commandline/COptionParser.h"
 #include "copasi/commandline/COptions.h"
 #include "copasi/utilities/CCopasiException.h"
-
 
 #ifdef WIN32
 #include <windows.h>
@@ -143,7 +147,7 @@ int main(int argc, char *argv[])
       {
         if(compartments[j]->getStatus()!=CModelEntity::Status::FIXED)
         {
-          pBody->push_back(compartments[j]->getObject(CCommonName("Reference=Volume"))->getCN());
+          pBody->push_back(compartments[j]->getChildObject(CCommonName("Reference=Volume"))->getCN());
           pBody->push_back(pReport->getSeparator().getCN());
           pHeader->push_back(CCopasiStaticString(compartments[j]->getSBMLId()).getCN());
           pHeader->push_back(pReport->getSeparator().getCN());
@@ -157,7 +161,7 @@ int main(int argc, char *argv[])
         {
           if (metabolites[j].getStatus() != CModelEntity::Status::FIXED)
             {
-              pBody->push_back(metabolites[j].getObject(CCommonName("Reference=Concentration"))->getCN());
+              pBody->push_back(metabolites[j].getChildObject(CCommonName("Reference=Concentration"))->getCN());
               pBody->push_back(pReport->getSeparator().getCN());
               pHeader->push_back(CDataString(metabolites[j].getSBMLId()).getCN());
               pHeader->push_back(pReport->getSeparator().getCN());
@@ -171,7 +175,7 @@ int main(int argc, char *argv[])
       {
         if(parameters[j]->getStatus()!=CModelEntity::Status::FIXED)
         {
-          pBody->push_back(parameters[j]->getObject(CCommonName("Reference=Value"))->getCN());
+          pBody->push_back(parameters[j]->getChildObject(CCommonName("Reference=Value"))->getCN());
           pBody->push_back(pReport->getSeparator().getCN());
           pHeader->push_back(CCopasiStaticString(parameters[j]->getSBMLId()).getCN());
           pHeader->push_back(pReport->getSeparator().getCN());
@@ -181,7 +185,7 @@ int main(int argc, char *argv[])
       jMax = reactions.size();
       for (j = 0; j < jMax;++j)
       {
-        pBody->push_back(reactions[j]->getObject(CCommonName("Reference=Flux"))->getCN());
+        pBody->push_back(reactions[j]->getChildObject(CCommonName("Reference=Flux"))->getCN());
         pBody->push_back(pReport->getSeparator().getCN());
         pHeader->push_back(CCopasiStaticString(reactions[j]->getSBMLId()).getCN());
         pHeader->push_back(pReport->getSeparator().getCN());

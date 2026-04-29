@@ -53,6 +53,13 @@ public:
   virtual const CObjectInterface * getChildObject(const CCommonNameComponent::shared_ptr & pCN) const final;
 
   /**
+   * Retrieve a descendant object by its CN.
+   * @param const CCommonName & cn
+   * @return const CObjectInterface * pObject
+   */
+  virtual const CObjectInterface * getObject(const CCommonName & cn) const final;
+
+  /**
    * Destructor
    */
   virtual ~CObjectInterface();
@@ -63,13 +70,6 @@ public:
   virtual void calculateValue() = 0;
 
   virtual CCommonName getCN() const final;
-
-  /**
-   * Retrieve a descendant object by its CN.
-   * @param const CCommonName & cn
-   * @return const CObjectInterface * pObject
-   */
-  virtual const CObjectInterface * getObject(const CCommonName & cn) const = 0;
 
   /**
    * Retrieve the prerequisites, i.e., the objects which need to be evaluated

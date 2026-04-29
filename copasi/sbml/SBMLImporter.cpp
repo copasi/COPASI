@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -265,7 +265,7 @@ std::string getInitialCNForSBase(SBase* sbase, std::map<const CDataObject*, SBas
 
       if (!type.empty())
         {
-          auto obj = it->first->getObject(std::string("Reference=") + type);
+          auto obj = it->first->getChildObject(CCommonName("Reference=" + type));
 
           if (obj)
             return obj->getCN();
@@ -390,7 +390,7 @@ CModel* SBMLImporter::createCModelFromSBMLDocument(SBMLDocument* sbmlDocument, s
 
   size_t idCount = 0;
 
-  while (mpDataModel->getObject("Model=" + title) != NULL)
+  while (mpDataModel->getChildObject(CCommonName("Model=" + title)) != NULL)
     {
       std::stringstream str; str << sbmlModel->getName() << "_" << ++idCount;
       title = str.str();
@@ -3450,7 +3450,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
 
                         if (sbmlId == itNode->getName())
                           {
-                            itNode->setName(dynamic_cast< const CCompartment * >(it->first)->getObject(CCommonName("Reference=InitialVolume"))->getCN().c_str());
+                            itNode->setName(dynamic_cast< const CCompartment * >(it->first)->getChildObject(CCommonName("Reference=InitialVolume"))->getCN().c_str());
                             found = true;
                           }
 
@@ -3470,7 +3470,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
 
                         if (sbmlId == itNode->getName())
                           {
-                            itNode->setName(dynamic_cast< const CMetab * >(it->first)->getObject(CCommonName("Reference=InitialConcentration"))->getCN().c_str());
+                            itNode->setName(dynamic_cast< const CMetab * >(it->first)->getChildObject(CCommonName("Reference=InitialConcentration"))->getCN().c_str());
                             found = true;
                           }
 
@@ -3490,7 +3490,7 @@ bool SBMLImporter::sbmlId2CopasiCN(ASTNode* pNode, std::map<const CDataObject*, 
 
                         if (sbmlId == itNode->getName())
                           {
-                            itNode->setName(dynamic_cast< const CReaction * >(it->first)->getObject(CCommonName("Reference=ParticleFlux"))->getCN().c_str());
+                            itNode->setName(dynamic_cast< const CReaction * >(it->first)->getChildObject(CCommonName("Reference=ParticleFlux"))->getCN().c_str());
                             found = true;
                           }
 
@@ -3898,11 +3898,11 @@ void SBMLImporter::replaceTimeAndAvogadroNodeNames(ASTNode* pASTNode)
 
       if (itNode->getType() == AST_NAME_TIME)
         {
-          itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Time"))->getCN().c_str());
+          itNode->setName(this->mpCopasiModel->getChildObject(CCommonName("Reference=Time"))->getCN().c_str());
         }
       else if (itNode->getType() == AST_NAME_AVOGADRO)
         {
-          itNode->setName(this->mpCopasiModel->getObject(CCommonName("Reference=Avogadro Constant"))->getCN().c_str());
+          itNode->setName(this->mpCopasiModel->getChildObject(CCommonName("Reference=Avogadro Constant"))->getCN().c_str());
         }
     }
 }
@@ -6309,8 +6309,8 @@ bool SBMLImporter::setInitialValues(CModel* pModel, const std::map<const CDataOb
   //}
 
   // The Avogadro Constant and the quantity conversion factor may have changed and all expressions depending on it must be updated;
-  mChangedObjects.insert(CObjectInterface::DataObject(pModel->getObject(std::string("Reference=Avogadro Constant"))));
-  mChangedObjects.insert(CObjectInterface::DataObject(pModel->getObject(std::string("Reference=Quantity Conversion Factor"))));
+  mChangedObjects.insert(CObjectInterface::DataObject(pModel->getChildObject(CCommonName("Reference=Avogadro Constant"))));
+  mChangedObjects.insert(CObjectInterface::DataObject(pModel->getChildObject(CCommonName("Reference=Quantity Conversion Factor"))));
 
   pModel->updateInitialValues(mChangedObjects, true);
 

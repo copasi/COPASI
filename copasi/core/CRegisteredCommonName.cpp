@@ -29,7 +29,7 @@ using std::string;
 std::set< const CRegisteredCommonName * > CRegisteredCommonName::UnresolvedCNs;
 
 // static
-void CRegisteredCommonName::ResolveAll(const CDataContainer * pContainer)
+void CRegisteredCommonName::ResolveAll(const CDataObject *  pContainer)
 {
 #pragma omp critical(cregisteredcommonname_access)
   {
@@ -126,7 +126,7 @@ CRegisteredCommonName & CRegisteredCommonName::operator=(const CRegisteredCommon
   return *this;
 }
 
-const CObjectInterface * CRegisteredCommonName::resolve(const CDataContainer * pContainer) const
+const CObjectInterface * CRegisteredCommonName::resolve(const CDataObject *  pContainer) const
 {
   const CObjectInterface * pObject = CCommonName::resolve(pContainer);
 

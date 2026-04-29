@@ -219,7 +219,7 @@ bool CCommonName::operator <(const CCommonName & rhs) const
   return *mpCN < *rhs.mpCN;
 }
 
-const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer) const
+const CObjectInterface * CCommonName::resolve(const CDataObject *  pContainer) const
 {
   if (mpCN->empty()
       || pContainer == nullptr)
@@ -261,7 +261,7 @@ const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
 
           if (pModel != nullptr)
             {
-              const CObjectInterface * pObject = pModel->getObject(mpComponent->getPartialCN());
+              const CObjectInterface * pObject = pModel->getChildObject(mpComponent);
 
               if (pObject != nullptr)
                 {
@@ -272,6 +272,22 @@ const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
               return pObject;
             }
         }
+
+      // We may have the trailing part of a full CN which is rooted in the container, e.g., CN = Reference=ParticleNumber and pContainer is a species.
+      if (mpCN->find("CN=Root") == std::string::npos
+          && mpComponent->isValid())
+        {
+          CCommonName FullCN = CCommonNameComponent::append(pContainer->getCN(), *mpCN);
+          const CObjectInterface * pObject = FullCN.resolve(pContainer);
+
+          if (pObject != nullptr)
+            {
+              mpComponent = pObject->getCNComponent();
+              mpCN = mpComponent->getCN();
+
+              return pObject;
+            }
+          }
 
       return nullptr;
     }
@@ -297,7 +313,7 @@ const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
               continue;
             }
 
-          const CObjectInterface * pObject = resolved->getObject()->getObject((*it)->getPartialCN());
+          const CObjectInterface * pObject = resolved->getObject()->getChildObject(*it);
 
           if (pObject == nullptr)
             {
@@ -311,7 +327,7 @@ const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
       if (!resolved)
         {
           // This handles static strings and separators
-          const CObjectInterface * pObject = pContainer->getObject(mpComponent->getPartialCN());
+          const CObjectInterface * pObject = pContainer->getChildObject(mpComponent);
 
           if (pObject != nullptr)
             resolved = pObject->getCNComponent();
@@ -357,7 +373,7 @@ const CObjectInterface * CCommonName::resolve(const CDataContainer * pContainer)
   return pObject;
 }
 
-CCommonNameComponent::shared_ptr CCommonName::findAncestorCandidate(const CDataContainer * pContainer) const
+CCommonNameComponent::shared_ptr CCommonName::findAncestorCandidate(const CDataObject *  pContainer) const
 {
   if (pContainer == nullptr)
     return nullptr;
@@ -377,7 +393,7 @@ bool CCommonName::isResolved() const
   return mpComponent != nullptr && mpComponent->isResolved();
 }
 
-bool CCommonName::hasAncestor(const CDataContainer * pContainer) const
+bool CCommonName::hasAncestor(const CDataObject *  pContainer) const
 {
   if (mpComponent)
     return mpComponent->hasAncestor(pContainer);
@@ -385,7 +401,7 @@ bool CCommonName::hasAncestor(const CDataContainer * pContainer) const
   return false;
 }
 
-bool CCommonName::mayHaveAncestor(const CDataContainer * pContainer) const
+bool CCommonName::mayHaveAncestor(const CDataObject *  pContainer) const
 {
   if (mpComponent)
     return mpComponent->mayHaveAncestor(pContainer);
@@ -423,6 +439,9 @@ CCommonName::operator std::string() const
 
 CCommonName::operator CCommonNameComponent::shared_ptr() const
 {
+  if (mpComponent == nullptr)
+    mpComponent = createComponent(*mpCN);
+
   return mpComponent;
 }
 
@@ -446,7 +465,7 @@ CCommonName & CCommonName::operator +=(const std::string & rhs)
   if (!rhs.empty())
     {
       mpComponent = nullptr;
-      mpCN = std::make_shared< std::string >(*mpCN + rhs);
+      mpCN = std::make_shared< std::string >(CCommonNameComponent::append(*mpCN, rhs));
     }
 
   return *this;
@@ -454,7 +473,7 @@ CCommonName & CCommonName::operator +=(const std::string & rhs)
 
 std::string CCommonName::operator +(const std::string & rhs) const
 {
-  return *mpCN + rhs;
+  return CCommonNameComponent::append(*mpCN, rhs);
 }
 
 std::string::size_type CCommonName::size() const

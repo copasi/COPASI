@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -832,20 +832,19 @@ CCopasiParameterGroup & CReaction::getParameters()
 
 bool CReaction::isLocalParameter(const size_t & index) const
 {
-  if (index == C_INVALID_INDEX)
-    return false;
-
-  const std::vector< const CDataObject * > & Objects = mParameterIndexToObjects[index];
-
-  if (Objects.size() == 1)
+  if (index != C_INVALID_INDEX)
     {
-      const CDataObject * pObject = mParameterIndexToObjects[index][0];
+      const std::vector< const CDataObject * > & Objects = mParameterIndexToObjects[index];
 
-      return (pObject != NULL &&
-              pObject->getObjectParent() == &mParameters);
+      if (Objects.size() == 1)
+        {
+          const CDataObject * pObject = mParameterIndexToObjects[index][0];
+
+          return (pObject != NULL && pObject->getObjectParent() == &mParameters);
+        }
     }
 
-  return false;
+  return mpFunction == CRootContainer::getUndefinedFunction();
 }
 
 bool CReaction::isLocalParameter(const std::string & parameterName) const
@@ -857,11 +856,12 @@ bool CReaction::isLocalParameter(const std::string & parameterName) const
       return isLocalParameter(found->second);
     }
 
-  return false;
+  return mpFunction == CRootContainer::getUndefinedFunction();
 }
 //***********************************************************************************************
 
 // virtual
+/*
 const CObjectInterface * CReaction::getObject(const CCommonName & cn) const
 {
   const CDataObject * pObject =
@@ -891,6 +891,7 @@ const CObjectInterface * CReaction::getObject(const CCommonName & cn) const
 
   return pObject;
 }
+ */
 
 void CReaction::initializeParameters()
 {
@@ -1955,28 +1956,9 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
   return pTmpFunction;
 }
 
-CDataObject * CReaction::resolveCN(const CModel * pModel, CCommonName cn)
+CDataObject * CReaction::resolveCN(const CModel * pModel, const CCommonName & cn)
 {
-  if (!pModel)
-    return NULL;
-
-  std::string Type = cn.getObjectType();
-  std::string Name = cn.getObjectName();
-
-  if (Type == "CN" && Name == "Root")
-    cn = cn.getRemainder();
-
-  Type = cn.getObjectType();
-
-  if (Type == "Model")
-    cn = cn.getRemainder();
-
-  const auto* pInterface = pModel->getObject(cn);
-
-  if (pInterface)
-    return const_cast< CDataObject * >(CObjectInterface::DataObject(pInterface));
-
-  return NULL;
+  return const_cast< CDataObject * >(CObjectInterface::DataObject(cn.resolve(pModel)));
 }
 
 CEvaluationNode * CReaction::variables2objects(CEvaluationNode * expression)

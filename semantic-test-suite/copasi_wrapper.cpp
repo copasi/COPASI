@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -127,7 +132,7 @@ int main(int argc, char *argv[])
             {
               if (metabolites[j].getSBMLId() == pSBMLSpeciesIds[i])
                 {
-                  pTable->push_back(metabolites[j].getObject(CCommonName("Reference=Concentration"))->getCN());
+                  pTable->push_back(metabolites[j].getChildObject(CCommonName("Reference=Concentration"))->getCN());
                   //std::cout << "adding metabolite " << metabolites[j]->getObjectName() << " to report." << std::endl;
                   break;
                 }

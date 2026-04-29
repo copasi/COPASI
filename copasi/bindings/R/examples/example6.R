@@ -227,7 +227,7 @@ stopifnot(result == TRUE)
 stopifnot(objectMap$getRole(0) == "time")
 
 stopifnot(!is.null(model))
-timeReference <- model$getObject(CCommonName("Reference=Time"))
+timeReference <- model$getChildObject(CCommonName("Reference=Time"))
 stopifnot(!is.null(timeReference))
 invisible(objectMap$setObjectCN(0,timeReference$getCN()$getString()))
 
@@ -236,7 +236,7 @@ invisible(objectMap$setObjectCN(0,timeReference$getCN()$getString()))
 invisible(objectMap$setRole(1,"dependent"))
 metab <- metabVector[[1]]
 stopifnot(!is.null(metab))
-particleReference <- metab$getObject(CCommonName("Reference=Concentration"))
+particleReference <- metab$getChildObject(CCommonName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
 invisible(objectMap$setObjectCN(1,particleReference$getCN()$getString()))
 
@@ -244,7 +244,7 @@ invisible(objectMap$setRole(2,"dependent"))
 
 metab <- metabVector[[2]]
 stopifnot(!is.null(metab))
-particleReference <- metab$getObject(CCommonName("Reference=Concentration"))
+particleReference <- metab$getChildObject(CCommonName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
 invisible(objectMap$setObjectCN(2,particleReference$getCN()$getString()))
 
@@ -252,7 +252,7 @@ invisible(objectMap$setRole(3,"dependent"))
 
 metab <- metabVector[[3]]
 stopifnot(!is.null(metab))
-particleReference <- metab$getObject(CCommonName("Reference=Concentration"))
+particleReference <- metab$getChildObject(CCommonName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
 invisible(objectMap$setObjectCN(3,particleReference$getCN()$getString()))
 
@@ -272,7 +272,7 @@ parameter <- reaction$getParameters()$getParameter(0)
 stopifnot(!is.null(parameter))
 
 # define a CFitItem
-parameterReference <- parameter$getObject(CCommonName("Reference=Value"))
+parameterReference <- parameter$getChildObject(CCommonName("Reference=Value"))
 stopifnot(!is.null(parameterReference))
 fitItem1 <- fitProblem$addFitItem(parameterReference$getCN())
 stopifnot(!is.null(fitItem1))
@@ -291,7 +291,7 @@ parameter <- reaction$getParameters()$getParameter(0)
 stopifnot(!is.null(parameter))
 
 # define a CFitItem
-parameterReference <- parameter$getObject(CCommonName("Reference=Value"))
+parameterReference <- parameter$getChildObject(CCommonName("Reference=Value"))
 stopifnot(!is.null(parameterReference))
 fitItem2 <- fitProblem$addFitItem(parameterReference$getCN())
 stopifnot(!is.null(fitItem2))

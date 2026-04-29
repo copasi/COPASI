@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -6378,11 +6378,11 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
 
                       if (pObject->getObjectName() == "InitialConcentration")
                         {
-                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
+                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getChildObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
                         }
                       else
                         {
-                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
+                          pResult->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getChildObject(CCommonName("Reference=Volume"))->getCN() + ">"));
                         }
                     }
                   else
@@ -6428,11 +6428,11 @@ CEvaluationNode* CSBMLExporter::replaceSpeciesReferences(const CEvaluationNode* 
 
                       if (pObject->getObjectName() == "InitialParticleNumber")
                         {
-                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
+                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getChildObject(CCommonName("Reference=InitialVolume"))->getCN() + ">"));
                         }
                       else
                         {
-                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getObject(CCommonName("Reference=Volume"))->getCN() + ">"));
+                          pTmpNode->addChild(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pCompartment->getChildObject(CCommonName("Reference=Volume"))->getCN() + ">"));
                         }
 
                       pResult = pTmpNode;

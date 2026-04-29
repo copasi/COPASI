@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -118,15 +118,15 @@ void CQMathMatrixWidget::loadMatrices()
   const CDataArray * tmp;
 
   tmp = dynamic_cast<const CDataArray *>
-        (pModel->getObject(CCommonName("Array=Stoichiometry(ann)")));
+        (pModel->getChildObject(CCommonName("Array=Stoichiometry(ann)")));
   mpArrayWidget1->setArrayAnnotation(tmp);
 
   tmp = dynamic_cast<const CDataArray *>
-        (pModel->getObject(CCommonName("Array=Reduced stoichiometry(ann)")));
+        (pModel->getChildObject(CCommonName("Array=Reduced stoichiometry(ann)")));
   mpArrayWidget2->setArrayAnnotation(tmp);
 
   tmp = dynamic_cast<const CDataArray *>
-        (pModel->getObject(CCommonName("Array=Link matrix(ann)")));
+        (pModel->getChildObject(CCommonName("Array=Link matrix(ann)")));
   mpArrayWidget3->setArrayAnnotation(tmp);
 }
 

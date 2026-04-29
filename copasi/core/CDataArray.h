@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -197,7 +197,7 @@ public:
    * Resolve a cn. Since this is an array, the CN can start with an index like "[2][3]".
    * Since this is also a container, this is not necessarily the case.
    */
-  const CObjectInterface * getObject(const CCommonName & cn) const override;
+  // const CObjectInterface * getObject(const CCommonName & cn) const override;
 
   /**
    * Check whether the size of array is greater than 0 for each dimension.

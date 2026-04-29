@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -244,7 +244,7 @@ const CObjectInterface * CDataArray::resolve(const CCommonNameComponent::shared_
                  && (*range.first)->getObjectType() != "ElementReference")
             ++range.first;
 
-          if (range.first != range.second) //not found
+          if (range.first != range.second) // found
             pObject = *range.first;
           else
             {
@@ -287,6 +287,7 @@ const CObjectInterface * CDataArray::resolve(const CCommonNameComponent::shared_
   return pObject;
 }
 
+/*
 const CObjectInterface * CDataArray::getObject(const CCommonName & cn) const
 {
   if (cn.isResolved())
@@ -323,7 +324,7 @@ const CObjectInterface * CDataArray::getObject(const CCommonName & cn) const
 
   while (range.first != range.second && (*range.first)->getObjectType() != "ElementReference") ++range.first;
 
-  if (range.first != range.second) //not found
+  if (range.first != range.second) // found
     pObject = *range.first;
   else
     {
@@ -350,10 +351,11 @@ const CObjectInterface * CDataArray::getObject(const CCommonName & cn) const
     }
 
   if (pObject)
-    return pObject->getObject(CCommonName(cn.getRemainder()).getRemainder());
+    return pObject->getChildObject(CCommonName(cn.getRemainder()).getRemainder());
   else
     return nullptr;
 }
+ */
 
 void CDataArray::print(std::ostream * ostream) const
 {*ostream << *this;}

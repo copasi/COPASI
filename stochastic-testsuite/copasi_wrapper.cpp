@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
 
       // Add time column
       pHeader->push_back(CDataString("time").getCN());
-      pBody->push_back(pDataModel->getModel()->getObject(CCommonName("Reference=Time"))->getCN());
+      pBody->push_back(pDataModel->getModel()->getChildObject(CCommonName("Reference=Time"))->getCN());
 
       iMax = iMax - NUMARGS;
       const CDataVector<CMetab>& metabolites = pDataModel->getModel()->getMetabolites();
@@ -221,7 +221,7 @@ int main(int argc, char *argv[])
             }
 
           pHeader->push_back(CDataString(SBMLId).getCN());
-          pBody->push_back(metabolites[j].getObject(CCommonName("Reference=ParticleNumber"))->getCN());
+          pBody->push_back(metabolites[j].getChildObject(CCommonName("Reference=ParticleNumber"))->getCN());
         }
 
       CDataVectorN< CCopasiTask > & TaskList = * pDataModel->getTaskList();

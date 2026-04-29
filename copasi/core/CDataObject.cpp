@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -205,7 +205,8 @@ const CObjectInterface * CDataObject::resolve(const CCommonNameComponent::shared
         {
           pObject = pCN->getObject();
         }
-      else if (pCN->getPartialCN() == "Property=DisplayName")
+      else if (pCN->getPartialCN() == "Reference=DisplayName"
+               || pCN->getPartialCN() == "Property=DisplayName")
         {
           if (mpObjectDisplayName == nullptr)
             {
@@ -235,6 +236,7 @@ const CObjectInterface * CDataObject::resolve(const CCommonNameComponent::shared
   return pObject;
 }
 
+/*
 const CObjectInterface * CDataObject::getObject(const CCommonName & cn) const
 {
   if (cn == "")
@@ -242,12 +244,14 @@ const CObjectInterface * CDataObject::getObject(const CCommonName & cn) const
       return this;
     }
 
-  if (cn == "Property=DisplayName")
+  if (cn == "Reference=DisplayName"
+      || cn == "Property=DisplayName")
     {
       if (mpObjectDisplayName == nullptr)
         {
           mpObjectDisplayName = new CDataObjectReference< std::string >("DisplayName", nullptr, mObjectDisplayName, DisplayName);
           mpObjectDisplayName->mpObjectParent = static_cast< CDataContainer * >(const_cast< CDataObject * >(this));
+          mpObjectDisplayName->getCNComponent()->signalObjectParentChanged();
         }
 
       mObjectDisplayName = getObjectDisplayName();
@@ -261,6 +265,7 @@ const CObjectInterface * CDataObject::getObject(const CCommonName & cn) const
         {
           mpObjectName = new CDataObjectReference< std::string >("Name", nullptr, *const_cast< std::string * >(&mObjectName));
           mpObjectName->mpObjectParent = static_cast< CDataContainer * >(const_cast< CDataObject * >(this));
+          mpObjectName->getCNComponent()->signalObjectParentChanged();
         }
 
       return mpObjectName;
@@ -268,6 +273,7 @@ const CObjectInterface * CDataObject::getObject(const CCommonName & cn) const
 
   return nullptr;
 }
+ */
 
 const CObjectInterface * CDataObject::getObjectFromCN(const CCommonName & cn) const
 {
@@ -325,7 +331,7 @@ bool CDataObject::setObjectName(const std::string & name)
 
   if (mpObjectParent != nullptr &&
       mpObjectParent->hasFlag(NameVector) &&
-      mpObjectParent->getObject("[" + escapedName + "]") != nullptr)
+      mpObjectParent->getChildObject(CCommonName("[" + escapedName + "]")) != nullptr)
     return false;
 
   std::string OldName = mObjectName;

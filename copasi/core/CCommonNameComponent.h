@@ -50,6 +50,8 @@ public:
                            const std::string & name,
                            const std::shared_ptr< CCommonNameComponent > & parent = nullptr);
 
+  static std::string append(const std::string & parentCN, const std::string & partialCN);
+
   static std::string::size_type findNext(const std::string & cn,
                                          const std::string & toFind,
                                          const std::string::size_type & pos = 0);
@@ -81,9 +83,10 @@ public:
 
   const CDataObject * getObject();
   bool isResolved() const;
-  bool hasAncestor(const CDataContainer * pObject) const;
-  bool mayHaveAncestor(const CDataContainer * pObject) const;
+  bool hasAncestor(const CDataObject * pObject) const;
+  bool mayHaveAncestor(const CDataObject * pObject) const;
   bool isValid() const;
+  size_t size() const;
   void addPrerequisite(shared_ptr prerequisite);
   void clearPrerequisites();
 
@@ -94,12 +97,10 @@ protected:
   std::string getObjectTypeFromParent() const;
   void signalChanged();
   void signalParentCNChanged(const std::string & parentCN) const;
-  std::string getParentCN() const;
-  void appendPartialCN(std::string & parentCN) const;
   void addDependent(const CCommonNameComponent * pDependent);
   void removeDependent(const CCommonNameComponent * pDependent);
   void signalPrerequisiteChanged(shared_ptr prerequisite) const;
-  std::string getCNasString() const;
+  std::string buildStringCN() const;
 
   std::string mPartialCN;
   const std::string mType;

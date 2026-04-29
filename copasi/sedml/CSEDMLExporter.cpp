@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1146,7 +1146,7 @@ void CSEDMLExporter::setCurrentTime(std::string & taskId)
   if (!mpDataModel)
     return;
 
-  const CDataObject * pTime = static_cast< const CDataObject * >(mpDataModel->getModel()->getObject(CCommonName("Reference=Time")));
+  const CDataObject * pTime = static_cast< const CDataObject * >(mpDataModel->getModel()->getChildObject(CCommonName("Reference=Time")));
   mTimeCN = pTime->getCN();
   auto it = mDataGenerators.find(std::make_pair(taskId, VariableInfo(pTime)));
 

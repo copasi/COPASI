@@ -1,4 +1,4 @@
-// Copyright (C) 2022 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1618,7 +1618,7 @@ void CQCustomPlot::wheelEvent(QWheelEvent * event)
         }
 
       legend->setFillOrder(legend->fillOrder(), true);
-      
+
       // force layout update
       auto minSize = minimumSize();
       setMinimumSize(minSize.grownBy(QMargins(1, 1, 1, 1)));
@@ -2197,7 +2197,7 @@ CQCustomPlot::initializeIndependentData(const CDataModel& model)
       for (int c = 0; c < numCols; ++c)
         {
           std::string cn = pExperiment->getObjectMap().getNthCnOfType(c, CExperiment::independent);
-          auto *obj = model.getObject(CCommonName(cn));
+          auto *obj = model.getChildObject(CCommonName(cn));
 
           if (!obj)
             continue;

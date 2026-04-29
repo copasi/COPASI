@@ -416,10 +416,10 @@ CMathContainer::CMathContainer(CModel & model)
   // do not use &model in the constructor of CDataContainer
   setObjectParent(mpModel);
 
-  mpAvogadro = CObjectInterface::DataObject(mpModel->getObject(CCommonName("Reference=Avogadro Constant")));
+  mpAvogadro = CObjectInterface::DataObject(mpModel->getChildObject(CCommonName("Reference=Avogadro Constant")));
   mDataValue2DataObject[(C_FLOAT64 *) mpAvogadro->getValuePointer()] = const_cast< CDataObject * >(mpAvogadro);
 
-  mpQuantity2NumberFactor = CObjectInterface::DataObject(mpModel->getObject(CCommonName("Reference=Quantity Conversion Factor")));
+  mpQuantity2NumberFactor = CObjectInterface::DataObject(mpModel->getChildObject(CCommonName("Reference=Quantity Conversion Factor")));
   mDataValue2DataObject[(C_FLOAT64 *) mpQuantity2NumberFactor->getValuePointer()] = const_cast< CDataObject * >(mpQuantity2NumberFactor);
 
   mpProcessQueue = new CMathEventQueue(*this);
@@ -1374,10 +1374,17 @@ CCommonName CMathContainer::getCNProtected() const
 // virtual
 const CObjectInterface * CMathContainer::resolve(const CCommonNameComponent::shared_ptr & pCN) const
 {
-  return mpModel->getChildObject(pCN);
+  const CObjectInterface * pObject = mpModel->getChildObject(pCN);
+  const CMathObject * pMathObject = getMathObject(pObject);
+
+  if (pMathObject != nullptr)
+    return pMathObject;
+
+  return pObject;
 }
 
 // virtual
+/*
 const CObjectInterface * CMathContainer::getObject(const CCommonName & cn) const
 {
   // Since the CN should be relative we check in the model first
@@ -1418,6 +1425,7 @@ const CObjectInterface * CMathContainer::getObject(const CCommonName & cn) const
 
   return pObject;
 }
+ */
 
 const CObjectInterface * CMathContainer::getObjectFromCN(const CCommonName & cn) const
 {

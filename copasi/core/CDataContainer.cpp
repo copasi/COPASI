@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -268,6 +268,7 @@ const CObjectInterface * CDataContainer::resolve(const CCommonNameComponent::sha
   return pObject;
 }
 
+/*
 const CObjectInterface * CDataContainer::getObject(const CCommonName & cn) const
 {
   if (cn == "")
@@ -279,6 +280,7 @@ const CObjectInterface * CDataContainer::getObject(const CCommonName & cn) const
     }
 
   if (cn == "Reference=Name"
+      || cn == "Reference=DisplayName"
       || cn == "Property=Name"
       || cn == "Property=DisplayName")
     {
@@ -355,6 +357,7 @@ const CObjectInterface * CDataContainer::getObject(const CCommonName & cn) const
 
   return (*range.first)->getObject(cn.getRemainder());
 }
+ */
 
 const CDataContainer::ObjectMap & CDataContainer::getObjects() const
 {return mObjects;}

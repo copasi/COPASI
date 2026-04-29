@@ -111,7 +111,15 @@ CCommonNameComponent::shared_ptr CCommonNameComponent::create(const std::string 
   std::string Type = type;
   CDataObject::sanitizeObjectName(Type);
 
-  return shared_ptr(new CCommonNameComponent(partialCN, Type, Name, parent));
+  std::string PartialCN = partialCN;
+
+  if (Type == "Property")
+    {
+      Type = "Reference";
+      PartialCN = Type +  "="  + Name;
+    }
+
+  return shared_ptr(new CCommonNameComponent(PartialCN, Type, Name, parent));
 }
 
 std::vector< CCommonNameComponent::shared_ptr > CCommonNameComponent::getComponentList() const
@@ -150,8 +158,7 @@ void CCommonNameComponent::signalChanged()
 {
   // We must not use getCN() which would return the stored value if it exists
   // It is assumed that an existing CN is correct. This is the time to update.
-  std::string NewCN = getParentCN();
-  appendPartialCN(NewCN);
+  std::string NewCN = buildStringCN();
 
   cn_ptr pCN = mpCN.lock();
 
@@ -207,8 +214,7 @@ CCommonNameComponent::cn_ptr CCommonNameComponent::getCN() const
     if (! (pCN = mpCN.lock()))
       {
         pCN = std::make_shared< std::string >();
-        *pCN = getParentCN();
-        appendPartialCN(*pCN);
+        *pCN = buildStringCN();
         mpCN = pCN;
       }
 
@@ -240,7 +246,7 @@ bool CCommonNameComponent::isResolved() const
   return mpObject != nullptr;
 }
 
-bool CCommonNameComponent::hasAncestor(const CDataContainer * pAncestor) const
+bool CCommonNameComponent::hasAncestor(const CDataObject *  pAncestor) const
 {
   if (pAncestor == nullptr
       || mpObject == nullptr)
@@ -262,7 +268,7 @@ bool CCommonNameComponent::hasAncestor(const CDataContainer * pAncestor) const
   return false;
 }
 
-bool CCommonNameComponent::mayHaveAncestor(const CDataContainer * pAncestor) const
+bool CCommonNameComponent::mayHaveAncestor(const CDataObject *  pAncestor) const
 {
   if (pAncestor == nullptr)
     return false;
@@ -283,38 +289,47 @@ bool CCommonNameComponent::isValid() const
   return isResolved()
          || mpParent
          || (!mType.empty()
-             && !mName.empty());
+             && !mName.empty())
+         || (mPartialCN.size() > 2
+             && mPartialCN.front() == '['
+             && mPartialCN.back() == ']');
 }
 
-std::string CCommonNameComponent::getParentCN() const
+size_t CCommonNameComponent::size() const
 {
-  return mpParent
-         && mPartialCN != "CN=Root"
-         && mType != "String"
-         && mType != "Separator"
-           ? mpParent->getCNasString()
-           : "";
+  size_t Size = 0;
+  shared_ptr pComponent = const_cast< CCommonNameComponent * >(this)->shared_from_this();
+
+  while (pComponent)
+    {
+      ++Size;
+      pComponent = pComponent->mpParent;
+    }
+
+  return Size;
 }
 
-std::string CCommonNameComponent::getCNasString() const
+std::string CCommonNameComponent::buildStringCN() const
 {
   std::vector< CCommonNameComponent::shared_ptr > Components = getComponentList();
   std::string CN;
 
   for (auto it = Components.rbegin(); it != Components.rend(); ++it)
     {
-      if ((*it)->mPartialCN == "CN=Root")
+      if ((*it)->mPartialCN == "CN=Root"
+          || (*it)->mType == "String"
+          || (*it)->mType == "Separator")
         CN.clear();
 
-      (*it)->appendPartialCN(CN);
+      CN = append(CN, (*it)->mPartialCN);
     }
 
   return CN;
 }
+
 void CCommonNameComponent::signalParentCNChanged(const std::string & parentCN) const
 {
-  std:: string NewCN = parentCN;
-  appendPartialCN(NewCN);
+  std:: string NewCN = append(parentCN, mPartialCN);
 
   cn_ptr pCN = mpCN.lock();
 
@@ -323,18 +338,6 @@ void CCommonNameComponent::signalParentCNChanged(const std::string & parentCN) c
 
   for (auto & pChild : mChildren)
     pChild->signalParentCNChanged(NewCN);
-}
-
-void CCommonNameComponent::appendPartialCN(std::string & parentCN) const
-{
-  if (parentCN.empty()
-      || mPartialCN.find("String=") == 0)
-    parentCN = mPartialCN;
-  else if (mPartialCN.size()
-           && mPartialCN.front() == '[')
-    parentCN += mPartialCN;
-  else
-    parentCN += "," + mPartialCN;
 }
 
 bool CCommonNameComponent::updatePartialCN() {
@@ -453,6 +456,26 @@ std::string CCommonNameComponent::getObjectTypeFromParent() const
     return ObjectTypeFromVectorName(mpParent->mName);
 
   return " "; // This is an invalid type.
+}
+
+// static
+std::string CCommonNameComponent::append(const std::string & parentCN, const std::string & partialCN)
+{
+  std::string CN = parentCN;
+
+  if (parentCN.empty()
+      || partialCN.find("String=") == 0)
+    CN = partialCN;
+  else if ((parentCN.size()
+            && parentCN.back() == ',')
+           || (partialCN.size()
+               && (partialCN.front() == ','
+                   || partialCN.front() == '[')))
+    CN += partialCN;
+  else
+    CN += "," + partialCN;
+
+  return CN;
 }
 
 // static

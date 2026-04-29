@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -72,10 +72,10 @@ public:
   bool operator !=(const CCommonName & rhs) const;
   bool operator <(const CCommonName & rhs) const;
 
-  virtual const CObjectInterface * resolve(const CDataContainer * pContainer) const;
+  virtual const CObjectInterface * resolve(const CDataObject *  pContainer) const;
   bool isResolved() const;
-  bool hasAncestor(const CDataContainer * pContainer) const;
-  bool mayHaveAncestor(const CDataContainer * pContainer) const;
+  bool hasAncestor(const CDataObject *  pContainer) const;
+  bool mayHaveAncestor(const CDataObject *  pContainer) const;
   bool isValid() const;
 
   const CObjectInterface * getObject() const;
@@ -123,7 +123,7 @@ public:
 
 private:
   static CCommonNameComponent::shared_ptr createComponent(const std::string & cn);
-  CCommonNameComponent::shared_ptr findAncestorCandidate(const CDataContainer * pContainer) const;
+  CCommonNameComponent::shared_ptr findAncestorCandidate(const CDataObject *  pContainer) const;
 
   void fixSpelling();
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -62,6 +62,11 @@ TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
   SECTION("simple_v3_event")
   {
     REQUIRE(dm->loadModel(getTestFile("test-data/simple_v3_event.cps"), NULL) == true);
+
+    const auto* comp = CObjectInterface::DataObject(dm->getObject({"CN=Root,Model=New Model,Vector=Compartments[compartment]"}));
+    CCommonName objName("CN=Root,Model=New Model,Vector=Compartments[compartment],Property=DisplayName");
+    auto* ref2 = objName.resolve(comp);
+    REQUIRE(ref2 != nullptr);
 
     REQUIRE(verify_cn(dm, "CN=Root,Model=New Model,Vector=Compartments[compartment],Reference=InitialVolume"));
     REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[\\[C\\]][Values\\[X\\].InitialValue]"));

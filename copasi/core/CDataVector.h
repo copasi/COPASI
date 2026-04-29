@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -731,6 +731,7 @@ public:
    * @param const CCommonName &name
    * @return const CObjectInterface * object
    */
+  /*
   const CObjectInterface * getObject(const CCommonName &name) const override
   {
     size_t Index = name.getElementIndex(0);
@@ -745,6 +746,7 @@ public:
 
     return CDataContainer::getObject(name);
   }
+  */
 
   /**
    *  Retrieves the size of the vector
@@ -1004,7 +1006,7 @@ public:
 
     for (; it != end; ++it)
       {
-        CType * pObject = const_cast< CType * >(dynamic_cast< const CType *>(getObject("[" + CCommonName::escape(it->getProperty(CData::OBJECT_NAME).toString()) + "]")));
+        CType * pObject = const_cast< CType * >(dynamic_cast< const CType *>(CDataVector < CType >::getObject("[" + CCommonName::escape(it->getProperty(CData::OBJECT_NAME).toString()) + "]")));
 
         if (pObject == NULL)
           {
@@ -1305,6 +1307,7 @@ public:
    * @param const std::string & name
    * @return const CObjectInterface * pObject
    */
+  /*
   const CObjectInterface * getObject(const CCommonName &name) const override
   {
     std::string ElementName = name.getElementName(0);
@@ -1322,6 +1325,7 @@ public:
 
     return CDataVector< CType >::getObject(name);
   }
+  */
 
   /**
    * Retrieve the index of the named object in the vector. If an object with the

@@ -125,10 +125,16 @@ CObjectInterface::CObjectInterface()
 CObjectInterface::~CObjectInterface()
 {}
 
-// virtual
+// virtual final
 const CObjectInterface * CObjectInterface::getChildObject(const CCommonNameComponent::shared_ptr & pCN) const
 {
   return resolve(pCN);
+}
+
+// virtual final
+const CObjectInterface * CObjectInterface::getObject(const CCommonName & cn) const
+{
+  return cn.resolve(DataObject(this));
 }
 
 // virtual
@@ -138,6 +144,7 @@ const CCommonNameComponent::shared_ptr & CObjectInterface::getCNComponent() cons
   return empty;
 }
 
+// virtual final
 CCommonName CObjectInterface::getCN() const
 {
   return getCNComponent();

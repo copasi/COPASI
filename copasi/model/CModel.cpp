@@ -2684,7 +2684,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
         }
 
       std::stringstream trigger; trigger
-          << "<"  << getObject(CCommonName("Reference=Time"))->getCN()
+          << "<"  << getChildObject(CCommonName("Reference=Time"))->getCN()
           << ">" << " > " << current;
       pEvent->setTriggerExpression(trigger.str());
       pEvent->getTriggerExpressionPtr()->compile();

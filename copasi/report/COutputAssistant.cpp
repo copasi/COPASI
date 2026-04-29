@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -755,7 +755,7 @@ COutputAssistant::createDefaultOutput(
             if (it == end) continue;
 
             data2 =
-              static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Independent Value")));
+              static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Independent Value")));
 
             for (; it != end; ++it)
               {
@@ -771,7 +771,7 @@ COutputAssistant::createDefaultOutput(
                 //1
                 if (needMeasured)
                   {
-                    data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Measured Value"))));
+                    data1.push_back(static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Measured Value"))));
                     ChannelX.push_back(data2->getCN());
                     Names.push_back(Name + "(Measured Value)");
                     LineTypes.push_back(3);      //symbols & lines
@@ -783,7 +783,7 @@ COutputAssistant::createDefaultOutput(
                 //2
                 if (needFitted)
                   {
-                    data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Fitted Value"))));
+                    data1.push_back(static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Fitted Value"))));
                     ChannelX.push_back(data2->getCN());
                     Names.push_back(Name + "(Fitted Value)");
 
@@ -805,7 +805,7 @@ COutputAssistant::createDefaultOutput(
                 if (needErrors)
                   {
                     //3
-                    data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Weighted Error"))));
+                    data1.push_back(static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Weighted Error"))));
                     ChannelX.push_back(data2->getCN());
                     Names.push_back(Name + "(Weighted Error)");
                     LineTypes.push_back(2);      //symbols
@@ -871,7 +871,7 @@ COutputAssistant::createDefaultOutput(
           if (it == end) continue;
 
           data2 =
-            static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Independent Value")));
+            static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Independent Value")));
 
           for (; it != end; ++it)
             {
@@ -885,7 +885,7 @@ COutputAssistant::createDefaultOutput(
               Name = pExperiment->getObjectName() + "," + Name;
 
               //1
-              data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Measured Value"))));
+              data1.push_back(static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Measured Value"))));
               ChannelX.push_back(data2->getCN());
               Names.push_back(Name + "(Measured Value)");
               LineTypes.push_back(3); //symbols & lines
@@ -894,7 +894,7 @@ COutputAssistant::createDefaultOutput(
               Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
 
               //2
-              data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Fitted Value"))));
+              data1.push_back(static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Fitted Value"))));
               ChannelX.push_back(data2->getCN());
               Names.push_back(Name + "(Fitted Value)");
 
@@ -913,7 +913,7 @@ COutputAssistant::createDefaultOutput(
               Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
 
               //3
-              data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Weighted Error"))));
+              data1.push_back(static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Weighted Error"))));
               ChannelX.push_back(data2->getCN());
               Names.push_back(Name + "(Weighted Error)");
               LineTypes.push_back(2); //symbols
@@ -984,7 +984,7 @@ COutputAssistant::createDefaultOutput(
 
             if (it == end) continue;
 
-            data2 = static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Independent Value")));
+            data2 = static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Independent Value")));
             data1.clear();
 
             bool needMeasured = isOptionEnabled(pOptions, "Measured Values", true);
@@ -994,13 +994,13 @@ COutputAssistant::createDefaultOutput(
             for (; it != end; ++it)
               {
                 if (needMeasured)
-                  data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Measured Value"))));
+                  data1.push_back(static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Measured Value"))));
 
                 if (needFitted)
-                  data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Fitted Value"))));
+                  data1.push_back(static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Fitted Value"))));
 
                 if (needErrors)
-                  data1.push_back(static_cast< const CDataObject * >(it->getObject(CCommonName("Reference=Weighted Error"))));
+                  data1.push_back(static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Weighted Error"))));
               }
 
             pPlotSpecification =
@@ -1110,7 +1110,7 @@ COutputAssistant::createDefaultOutput(
 
             std::string Name = pExperiment->getObjectName();
             CPlotDataChannelSpec ChannelX =
-              it->getObject(CCommonName("Reference=Independent Value"))->getCN();
+              it->getChildObject(CCommonName("Reference=Independent Value"))->getCN();
             unsigned C_INT32 LineType;
 
             if (isTimeCourse)
@@ -1167,7 +1167,7 @@ COutputAssistant::createDefaultOutput(
                         pItem->setValue("Symbol subtype", (unsigned C_INT32) 1); //fat cross
                         pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                         pItem->addChannel(ChannelX);
-                        pItem->addChannel(it->getObject(CCommonName("Reference=Measured Value"))->getCN());
+                        pItem->addChannel(it->getChildObject(CCommonName("Reference=Measured Value"))->getCN());
                       }
 
                     if (needFitted)
@@ -1184,7 +1184,7 @@ COutputAssistant::createDefaultOutput(
 
                         pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                         pItem->addChannel(ChannelX);
-                        pItem->addChannel(it->getObject(CCommonName("Reference=Fitted Value"))->getCN());
+                        pItem->addChannel(it->getChildObject(CCommonName("Reference=Fitted Value"))->getCN());
                       }
 
                     if (needErrors)
@@ -1196,7 +1196,7 @@ COutputAssistant::createDefaultOutput(
                         pItem->setValue("Symbol subtype", (unsigned C_INT32) 2);
                         pItem->setValue("Color", CPlotColors::getCopasiColorStr(colorindex));
                         pItem->addChannel(ChannelX);
-                        pItem->addChannel(it->getObject(CCommonName("Reference=Weighted Error"))->getCN());
+                        pItem->addChannel(it->getChildObject(CCommonName("Reference=Weighted Error"))->getCN());
                       }
                   }
               }
@@ -1219,9 +1219,9 @@ COutputAssistant::createDefaultOutput(
 
         //        const C_FLOAT64 & SolutionValue = pFitProblem->getSolutionValue();
 
-        data2 = static_cast< const CDataObject * >(pFitProblem->getObject(CCommonName("Reference=Function Evaluations")));
+        data2 = static_cast< const CDataObject * >(pFitProblem->getChildObject(CCommonName("Reference=Function Evaluations")));
         data1.clear();
-        data1.push_back(static_cast< const CDataObject * >(pFitProblem->getObject(CCommonName("Reference=Best Value"))));
+        data1.push_back(static_cast< const CDataObject * >(pFitProblem->getChildObject(CCommonName("Reference=Best Value"))));
 
         pPlotSpecification =
           createPlot("Progress of Fit", data2, false, data1, false,  getItem(id).mTaskType, pDataModel);
@@ -1259,10 +1259,10 @@ COutputAssistant::createDefaultOutput(
 
         //        const C_FLOAT64 & SolutionValue = pFitProblem->getSolutionValue();
 
-        data2 = static_cast< const CDataObject * >(pOptProblem->getObject(CCommonName("Reference=Function Evaluations")));
+        data2 = static_cast< const CDataObject * >(pOptProblem->getChildObject(CCommonName("Reference=Function Evaluations")));
 
         data1.clear();
-        data1.push_back(static_cast< const CDataObject * >(pOptProblem->getObject(CCommonName("Reference=Best Value"))));
+        data1.push_back(static_cast< const CDataObject * >(pOptProblem->getChildObject(CCommonName("Reference=Best Value"))));
 
         pPlotSpecification =
           createPlot("Progress of Optimization", data2, false, data1, false, getItem(id).mTaskType, pDataModel);
@@ -1293,7 +1293,7 @@ COutputAssistant::createDefaultOutput(
   C_INT32 idMod = id % 200;
   bool logY = false; //this is onyl used for plots; it indicates whether the y axis is plotted logarithmically
 
-  const CDataObject* pTime = static_cast< const CDataObject * >(Model.getObject(CCommonName("Reference=Time")));
+  const CDataObject* pTime = static_cast< const CDataObject * >(Model.getChildObject(CCommonName("Reference=Time")));
 
   switch (idMod)
     {
@@ -1443,7 +1443,7 @@ COutputAssistant::createDefaultOutput(
 
         if (pFitProblem == NULL) break;
 
-        data1.push_back(static_cast< const CDataObject * >(pFitProblem->getObject(CCommonName("Reference=Best Value"))));
+        data1.push_back(static_cast< const CDataObject * >(pFitProblem->getChildObject(CCommonName("Reference=Best Value"))));
         logY = true;
       }
       break;
@@ -1458,7 +1458,7 @@ COutputAssistant::createDefaultOutput(
 
         if (pOptProblem == NULL) break;
 
-        data1.push_back(static_cast< const CDataObject * >(pOptProblem->getObject(CCommonName("Reference=Best Value"))));
+        data1.push_back(static_cast< const CDataObject * >(pOptProblem->getChildObject(CCommonName("Reference=Best Value"))));
       }
       break;
 
@@ -1476,7 +1476,7 @@ COutputAssistant::createDefaultOutput(
 
         if (pProblem == NULL) break;
 
-        const CDataArray* pArray = dynamic_cast<const CDataArray*>(pProblem->getObject(CCommonName("Array=Scaled State Sensitivities array")));
+        const CDataArray* pArray = dynamic_cast<const CDataArray*>(pProblem->getChildObject(CCommonName("Array=Scaled State Sensitivities array")));
         add2DDataArrayToVector(data1, pArray);
 
         break;
@@ -1494,7 +1494,7 @@ COutputAssistant::createDefaultOutput(
 
         if (pProblem == NULL) break;
 
-        const CDataArray* pArray = dynamic_cast<const CDataArray*>(pProblem->getObject(CCommonName("Array=Scaled Target Sensitivities array")));
+        const CDataArray* pArray = dynamic_cast<const CDataArray*>(pProblem->getChildObject(CCommonName("Array=Scaled Target Sensitivities array")));
         add2DDataArrayToVector(data1, pArray);
 
         break;
@@ -1512,7 +1512,7 @@ COutputAssistant::createDefaultOutput(
 
         if (pProblem == NULL) break;
 
-        const CDataArray* pArray = dynamic_cast<const CDataArray*>(pProblem->getObject(CCommonName("Array=State Sensitivities array")));
+        const CDataArray* pArray = dynamic_cast<const CDataArray*>(pProblem->getChildObject(CCommonName("Array=State Sensitivities array")));
 
         add2DDataArrayToVector(data1, pArray);
         break;
@@ -1530,7 +1530,7 @@ COutputAssistant::createDefaultOutput(
 
         if (pProblem == NULL) break;
 
-        const CDataArray* pArray = dynamic_cast<const CDataArray*>(pProblem->getObject(CCommonName("Array=Target Sensitivities array")));
+        const CDataArray* pArray = dynamic_cast<const CDataArray*>(pProblem->getChildObject(CCommonName("Array=Target Sensitivities array")));
         add2DDataArrayToVector(data1, pArray);
 
         break;
@@ -1686,9 +1686,9 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
   bool isCrossSection = (problem != NULL && problem->getSubtask() == CTaskEnum::Task::crosssection) ||
                         (task != NULL && task->getType() == CTaskEnum::Task::crosssection);
 
-  bool isTimeSense = 
+  bool isTimeSense =
 #ifdef WITH_TIME_SENS
-    (problem != NULL && problem->getSubtask() == CTaskEnum::Task::timeSens) || 
+    (problem != NULL && problem->getSubtask() == CTaskEnum::Task::timeSens) ||
     (task != NULL && task->getType() == CTaskEnum::Task::timeSens);
 #else
     false;
@@ -1700,7 +1700,7 @@ CPlotSpecification* COutputAssistant::createPlot(const std::string & name,
 
       name2 = (*it)->getCN();
       itemTitle = static_cast< const CDataObject *>(*it)->getObjectDisplayName();
-      
+
       // remove "TaskList[Time-Course Sensitivities]." from title if present
       if (isTimeSense)
         {

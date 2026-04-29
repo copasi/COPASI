@@ -22,7 +22,7 @@ class CObjectInterface;
 class CRegisteredCommonName: public CCommonName
 {
 public:
-  static void ResolveAll(const CDataContainer * pContainer);
+  static void ResolveAll(const CDataObject *  pContainer);
 
   /**
    * Default Constructor
@@ -49,7 +49,7 @@ public:
   CRegisteredCommonName & operator=(const CCommonName & rhs);
   CRegisteredCommonName & operator=(const CRegisteredCommonName & rhs);
 
-  const CObjectInterface * resolve(const CDataContainer * pContainer) const override;
+  const CObjectInterface * resolve(const CDataObject *  pContainer) const override;
 
 private:
   static std::set< const CRegisteredCommonName * > UnresolvedCNs;
