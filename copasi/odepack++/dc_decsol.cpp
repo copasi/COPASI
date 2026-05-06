@@ -15,30 +15,39 @@
     http://www.netlib.org/f2c/libf2c.zip
  */
 
-#include "dc_decsol.h"
+#include "copasi/odepack++/dc_decsol.h"
 
 /* Common Block Declarations */
 
-static struct
-{
-  integer mle, mue, mbjac, mbb, mdiag, mdiff, mbdiag;
-} linal_;
-
-#define linal_1 linal_
-
-/* Table of constant values */
-
 static integer c__1 = 1;
+
+using namespace dc_decsol;
+
+#define linal_1 cmn.linal
 
 /* ****************************************** */
 /*     VERSION OF SEPTEMBER 18, 1995 */
 /* ****************************************** */
 
-/* Subroutine */ int decomr_(integer *n, doublereal *fjac, integer *ldjac,
-                             doublereal *fmas, integer *ldmas, integer *mlmas, integer *mumas,
-                             integer *m1, integer *m2, integer *nm1, doublereal *fac1, doublereal *
-                             e1, integer *lde1, integer *ip1, integer *ier, integer *ijob, logical
-                             *calhes, integer *iphes)
+int dc_decsol::decomr_(const common & cmn,
+                       const integer * n,
+                       doublereal * fjac,
+                       const integer * ldjac,
+                       const doublereal * fmas,
+                       const integer * ldmas,
+                       const integer * mlmas,
+                       const integer * mumas,
+                       const integer * m1,
+                       const integer * m2,
+                       const integer * nm1,
+                       const doublereal * fac1,
+                       doublereal * e1,
+                       const integer * lde1,
+                       integer * ip1,
+                       integer * ier,
+                       const integer * ijob,
+                       logical * calhes,
+                       integer * iphes)
 {
   /* System generated locals */
   integer fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e1_dim1,
@@ -437,11 +446,25 @@ L55:
 
 /* *********************************************************** */
 
-/* Subroutine */ int decomc_(integer *n, doublereal *fjac, integer *ldjac,
-                             doublereal *fmas, integer *ldmas, integer *mlmas, integer *mumas,
-                             integer *m1, integer *m2, integer *nm1, doublereal *alphn, doublereal
-                             *betan, doublereal *e2r, doublereal *e2i, integer *lde1, integer *ip2,
-                             integer *ier, integer *ijob)
+int dc_decsol::decomc_(const common & cmn,
+                       const integer * n,
+                       const doublereal * fjac,
+                       const integer * ldjac,
+                       const doublereal * fmas,
+                       const integer * ldmas,
+                       const integer * mlmas,
+                       const integer * mumas,
+                       const integer * m1,
+                       const integer * m2,
+                       const integer * nm1,
+                       const doublereal * alphn,
+                       const doublereal * betan,
+                       doublereal * e2r,
+                       doublereal * e2i,
+                       const integer * lde1,
+                       integer * ip2,
+                       integer * ier,
+                       const integer * ijob)
 {
   /* System generated locals */
   integer fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e2r_dim1,
@@ -901,23 +924,39 @@ L55:
 
 /* *********************************************************** */
 
-/* Subroutine */ int slvrar_(integer *n, doublereal *fjac, integer *ldjac,
-                             integer *mljac, integer *mujac, doublereal *fmas, integer *ldmas,
-                             integer *mlmas, integer *mumas, integer *m1, integer *m2, integer *
-                             nm1, doublereal *fac1, doublereal *e1, integer *lde1, doublereal *z1,
-                             doublereal *f1, integer *ip1, integer *iphes, integer * /* ier */, integer *
-                             ijob)
+int dc_decsol::slvrar_(const common & cmn,
+                       const integer * n,
+                       const doublereal * fjac,
+                       const integer * ldjac,
+                       const integer * mljac,
+                       const integer * mujac,
+                       const doublereal * fmas,
+                       const integer * ldmas,
+                       const integer * mlmas,
+                       const integer * mumas,
+                       const integer * m1,
+                       const integer * m2,
+                       const integer * nm1,
+                       const doublereal * fac1,
+                       const doublereal * e1,
+                       const integer * lde1,
+                       doublereal * z1,
+                       const doublereal * f1,
+                       const integer * ip1,
+                       const integer * iphes,
+                       const integer * /* ier */,
+                       const integer * ijob)
 {
   /* System generated locals */
   integer fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e1_dim1,
           e1_offset, i__1, i__2, i__3, i__4, i__5, i__6;
 
   /* Local variables */
-  static integer i__, j, k;
-  static doublereal s1;
-  static integer mm, mp, im1, mp1, jkm;
-  static doublereal sum1;
-  static doublereal zsafe;
+  integer i__, j, k;
+  doublereal s1;
+  integer mm, mp, im1, mp1, jkm;
+  doublereal sum1;
+  doublereal zsafe;
 
   /* Parameter adjustments */
   --iphes;
@@ -1306,13 +1345,33 @@ L55:
 
 /* *********************************************************** */
 
-/* Subroutine */ int slvrai_(integer *n, doublereal *fjac, integer *ldjac,
-                             integer *mljac, integer *mujac, doublereal *fmas, integer *ldmas,
-                             integer *mlmas, integer *mumas, integer *m1, integer *m2, integer *
-                             nm1, doublereal *alphn, doublereal *betan, doublereal *e2r,
-                             doublereal *e2i, integer *lde1, doublereal *z2, doublereal *z3,
-                             doublereal *f2, doublereal *f3, doublereal * /* cont */, integer *ip2,
-                             integer *iphes, integer * /* ier */, integer *ijob)
+int dc_decsol::slvrai_(const common & cmn,
+                       const integer * n,
+                       const doublereal * fjac,
+                       const integer * ldjac,
+                       const integer * mljac,
+                       const integer * mujac,
+                       const doublereal * fmas,
+                       const integer * ldmas,
+                       const integer * mlmas,
+                       const integer * mumas,
+                       const integer * m1,
+                       const integer * m2,
+                       const integer * nm1,
+                       const doublereal * alphn,
+                       const doublereal * betan,
+                       const doublereal * e2r,
+                       const doublereal * e2i,
+                       const integer * lde1,
+                       doublereal * z2,
+                       doublereal * z3,
+                       const doublereal * f2,
+                       const doublereal * f3,
+                       const doublereal * /* cont */,
+                       const integer * ip2,
+                       const integer * iphes,
+                       const integer * /* ier */,
+                       const integer * ijob)
 {
   /* System generated locals */
   integer fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e2r_dim1,
@@ -1321,15 +1380,15 @@ L55:
   doublereal d__1, d__2;
 
   /* Local variables */
-  static integer i__, j, k;
-  static doublereal s2, s3, bb;
-  static integer mm, mp, im1, jm1, mp1;
-  static doublereal z2i, z3i;
-  static integer jkm, mpi;
-  static doublereal sum2, sum3, abno;
-  static integer iimu;
-  static doublereal sumh, e1imp;
-  static doublereal zsafe;
+  integer i__, j, k;
+  doublereal s2, s3, bb;
+  integer mm, mp, im1, jm1, mp1;
+  doublereal z2i, z3i;
+  integer jkm, mpi;
+  doublereal sum2, sum3, abno;
+  integer iimu;
+  doublereal sumh, e1imp;
+  doublereal zsafe;
 
   /* Parameter adjustments */
   --iphes;
@@ -1804,14 +1863,38 @@ L55:
 
 /* *********************************************************** */
 
-/* Subroutine */ int slvrad_(integer *n, doublereal *fjac, integer *ldjac,
-                             integer *mljac, integer *mujac, doublereal *fmas, integer *ldmas,
-                             integer *mlmas, integer *mumas, integer *m1, integer *m2, integer *
-                             nm1, doublereal *fac1, doublereal *alphn, doublereal *betan,
-                             doublereal *e1, doublereal *e2r, doublereal *e2i, integer *lde1,
-                             doublereal *z1, doublereal *z2, doublereal *z3, doublereal *f1,
-                             doublereal *f2, doublereal *f3, doublereal * /* cont */, integer *ip1,
-                             integer *ip2, integer *iphes, integer * /* ier */, integer *ijob)
+int dc_decsol::slvrad_(const common & cmn,
+                       const integer * n,
+                       const doublereal * fjac,
+                       const integer * ldjac,
+                       const integer * mljac,
+                       const integer * mujac,
+                       const doublereal * fmas,
+                       const integer * ldmas,
+                       const integer * mlmas,
+                       const integer * mumas,
+                       const integer * m1,
+                       const integer * m2,
+                       const integer * nm1,
+                       const doublereal * fac1,
+                       const doublereal * alphn,
+                       const doublereal * betan,
+                       const doublereal * e1,
+                       const doublereal * e2r,
+                       const doublereal * e2i,
+                       const integer * lde1,
+                       doublereal * z1,
+                       doublereal * z2,
+                       doublereal * z3,
+                       const doublereal * f1,
+                       const doublereal * f2,
+                       const doublereal * f3,
+                       const doublereal * /* cont */,
+                       const integer * ip1,
+                       const integer * ip2,
+                       const integer * iphes,
+                       const integer * /* ier */,
+                       const integer * ijob)
 {
   /* System generated locals */
   integer fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e1_dim1,
@@ -1820,14 +1903,14 @@ L55:
   doublereal d__1, d__2;
 
   /* Local variables */
-  static integer i__, j, k;
-  static doublereal s1, s2, s3, bb;
-  static integer mm, mp, j1b, j2b, im1, jm1, mp1;
-  static doublereal z2i, z3i;
-  static integer jkm, mpi;
-  static doublereal sum1, sum2, sum3, ffja, abno;
-  static doublereal sumh, e1imp;
-  static doublereal zsafe;
+  integer i__, j, k;
+  doublereal s1, s2, s3, bb;
+  integer mm, mp, j1b, j2b, im1, jm1, mp1;
+  doublereal z2i, z3i;
+  integer jkm, mpi;
+  doublereal sum1, sum2, sum3, ffja, abno;
+  doublereal sumh, e1imp;
+  doublereal zsafe;
 
   /* Parameter adjustments */
   --iphes;
@@ -2358,16 +2441,43 @@ L55:
 
 /* *********************************************************** */
 
-/* Subroutine */ int estrad_(integer *n, doublereal *fjac, integer *ldjac,
-                             integer *mljac, integer *mujac, doublereal *fmas, integer *ldmas,
-                             integer *mlmas, integer *mumas, doublereal *h__, doublereal *dd1,
-                             doublereal *dd2, doublereal *dd3, CRadau5::evalF fcn, integer *nfcn, doublereal
-                             *y0, doublereal *y, integer *ijob, doublereal *x, integer *m1,
-                             integer *m2, integer *nm1, doublereal *e1, integer *lde1, doublereal *
-                             z1, doublereal *z2, doublereal *z3, doublereal *cont, doublereal *f1,
-                             doublereal *f2, integer *ip1, integer *iphes, doublereal *scal,
-                             doublereal *err, logical *first, logical *reject, doublereal *fac1,
-                             doublereal *rpar, integer *ipar)
+int dc_decsol::estrav_(const common & cmn,
+                       integer * n,
+                       doublereal * fjac,
+                       integer * ldjac,
+                       integer * mljac,
+                       integer * mujac,
+                       doublereal * fmas,
+                       integer * ldmas,
+                       integer * mlmas,
+                       integer * mumas,
+                       doublereal * h__,
+                       doublereal * dd,
+                       S_fp fcn,
+                       integer * nfcn,
+                       doublereal * y0,
+                       doublereal * y,
+                       integer * ijob,
+                       doublereal * x,
+                       integer * m1,
+                       integer * m2,
+                       integer * nm1,
+                       integer * ns,
+                       integer * nns,
+                       doublereal * e1,
+                       integer * lde1,
+                       doublereal * zz,
+                       doublereal * cont,
+                       doublereal * ff,
+                       integer * ip1,
+                       integer * iphes,
+                       doublereal * scal,
+                       doublereal * err,
+                       logical * first,
+                       logical * reject,
+                       doublereal * fac1,
+                       doublereal * rpar,
+                       integer * ipar)
 {
   /* System generated locals */
   integer fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e1_dim1,
@@ -2375,704 +2485,9 @@ L55:
   doublereal d__1;
 
   /* Local variables */
-  static integer i__, j, k, mm, mp, im1;
-  static doublereal sum, hee1, hee2, hee3, sum1;
-  static doublereal zsafe;
-
-  /* Parameter adjustments */
-  --scal;
-  --iphes;
-  --f2;
-  --f1;
-  --cont;
-  --z3;
-  --z2;
-  --z1;
-  --y;
-  --y0;
-  fjac_dim1 = *ldjac;
-  fjac_offset = 1 + fjac_dim1;
-  fjac -= fjac_offset;
-  --ip1;
-  fmas_dim1 = *ldmas;
-  fmas_offset = 1 + fmas_dim1;
-  fmas -= fmas_offset;
-  e1_dim1 = *lde1;
-  e1_offset = 1 + e1_dim1;
-  e1 -= e1_offset;
-  --rpar;
-  --ipar;
-
-  /* Function Body */
-  hee1 = *dd1 / *h__;
-  hee2 = *dd2 / *h__;
-  hee3 = *dd3 / *h__;
-
-  switch (*ijob)
-    {
-      case 1:  goto L1;
-
-      case 2:  goto L2;
-
-      case 3:  goto L3;
-
-      case 4:  goto L4;
-
-      case 5:  goto L5;
-
-      case 6:  goto L6;
-
-      case 7:  goto L7;
-
-      case 8:  goto L55;
-
-      case 9:  goto L55;
-
-      case 10:  goto L55;
-
-      case 11:  goto L11;
-
-      case 12:  goto L12;
-
-      case 13:  goto L13;
-
-      case 14:  goto L14;
-
-      case 15:  goto L15;
-    }
-
-L1:
-  /* ------  B=IDENTITY, JACOBIAN A FULL MATRIX */
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
-      cont[i__] = f2[i__] + y0[i__];
-    }
-
-  sol_(n, lde1, &e1[e1_offset], &cont[1], &ip1[1]);
-  goto L77;
-
-L11:
-  /* ------  B=IDENTITY, JACOBIAN A FULL MATRIX, SECOND ORDER */
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
-      cont[i__] = f2[i__] + y0[i__];
-    }
-
-L48:
-  mm = *m1 / *m2;
-  i__1 = *m2;
-
-  for (j = 1; j <= i__1; ++j)
-    {
-      sum1 = 0.;
-
-      for (k = mm - 1; k >= 0; --k)
-        {
-          sum1 = (cont[j + k * *m2] + sum1) / *fac1;
-          i__2 = *nm1;
-
-          for (i__ = 1; i__ <= i__2; ++i__)
-            {
-              im1 = i__ + *m1;
-              cont[im1] += fjac[i__ + (j + k * *m2) * fjac_dim1] * sum1;
-            }
-        }
-    }
-
-  sol_(nm1, lde1, &e1[e1_offset], &cont[*m1 + 1], &ip1[1]);
-
-  for (i__ = *m1; i__ >= 1; --i__)
-    {
-      cont[i__] = (cont[i__] + cont[*m2 + i__]) / *fac1;
-    }
-
-  goto L77;
-
-L2:
-  /* ------  B=IDENTITY, JACOBIAN A BANDED MATRIX */
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
-      cont[i__] = f2[i__] + y0[i__];
-    }
-
-  solb_(n, lde1, &e1[e1_offset], &linal_1.mle, &linal_1.mue, &cont[1], &ip1[
-          1]);
-  goto L77;
-
-L12:
-  /* ------  B=IDENTITY, JACOBIAN A BANDED MATRIX, SECOND ORDER */
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
-      cont[i__] = f2[i__] + y0[i__];
-    }
-
-L45:
-  mm = *m1 / *m2;
-  i__1 = *m2;
-
-  for (j = 1; j <= i__1; ++j)
-    {
-      sum1 = 0.;
-
-      for (k = mm - 1; k >= 0; --k)
-        {
-          sum1 = (cont[j + k * *m2] + sum1) / *fac1;
-          /* Computing MAX */
-          i__2 = 1, i__3 = j - *mujac;
-          /* Computing MIN */
-          i__5 = *nm1, i__6 = j + *mljac;
-          i__4 = std::min(i__5, i__6);
-
-          for (i__ = std::max(i__2, i__3); i__ <= i__4; ++i__)
-            {
-              im1 = i__ + *m1;
-              cont[im1] += fjac[i__ + *mujac + 1 - j + (j + k * *m2) *
-                                fjac_dim1] * sum1;
-            }
-        }
-    }
-
-  solb_(nm1, lde1, &e1[e1_offset], &linal_1.mle, &linal_1.mue, &cont[*m1 +
-        1], &ip1[1]);
-
-  for (i__ = *m1; i__ >= 1; --i__)
-    {
-      cont[i__] = (cont[i__] + cont[*m2 + i__]) / *fac1;
-    }
-
-  goto L77;
-
-L3:
-  /* ------  B IS A BANDED MATRIX, JACOBIAN A FULL MATRIX */
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      f1[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
-    }
-
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      sum = 0.;
-      /* Computing MAX */
-      i__4 = 1, i__2 = i__ - *mlmas;
-      /* Computing MIN */
-      i__5 = *n, i__6 = i__ + *mumas;
-      i__3 = std::min(i__5, i__6);
-
-      for (j = std::max(i__4, i__2); j <= i__3; ++j)
-        {
-          sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * f1[j];
-        }
-
-      f2[i__] = sum;
-      cont[i__] = sum + y0[i__];
-    }
-
-  sol_(n, lde1, &e1[e1_offset], &cont[1], &ip1[1]);
-  goto L77;
-
-L13:
-  /* ------  B IS A BANDED MATRIX, JACOBIAN A FULL MATRIX, SECOND ORDER */
-  i__1 = *m1;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
-      cont[i__] = f2[i__] + y0[i__];
-    }
-
-  i__1 = *n;
-
-  for (i__ = *m1 + 1; i__ <= i__1; ++i__)
-    {
-      f1[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
-    }
-
-  i__1 = *nm1;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      sum = 0.;
-      /* Computing MAX */
-      i__3 = 1, i__4 = i__ - *mlmas;
-      /* Computing MIN */
-      i__5 = *nm1, i__6 = i__ + *mumas;
-      i__2 = std::min(i__5, i__6);
-
-      for (j = std::max(i__3, i__4); j <= i__2; ++j)
-        {
-          sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * f1[j + *
-                 m1];
-        }
-
-      im1 = i__ + *m1;
-      f2[im1] = sum;
-      cont[im1] = sum + y0[im1];
-    }
-
-  goto L48;
-
-L4:
-  /* ------  B IS A BANDED MATRIX, JACOBIAN A BANDED MATRIX */
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      f1[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
-    }
-
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      sum = 0.;
-      /* Computing MAX */
-      i__2 = 1, i__3 = i__ - *mlmas;
-      /* Computing MIN */
-      i__5 = *n, i__6 = i__ + *mumas;
-      i__4 = std::min(i__5, i__6);
-
-      for (j = std::max(i__2, i__3); j <= i__4; ++j)
-        {
-          sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * f1[j];
-        }
-
-      f2[i__] = sum;
-      cont[i__] = sum + y0[i__];
-    }
-
-  solb_(n, lde1, &e1[e1_offset], &linal_1.mle, &linal_1.mue, &cont[1], &ip1[
-          1]);
-  goto L77;
-
-L14:
-  /* ------  B IS A BANDED MATRIX, JACOBIAN A BANDED MATRIX, SECOND ORDER */
-  i__1 = *m1;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
-      cont[i__] = f2[i__] + y0[i__];
-    }
-
-  i__1 = *n;
-
-  for (i__ = *m1 + 1; i__ <= i__1; ++i__)
-    {
-      f1[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
-    }
-
-  i__1 = *nm1;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      sum = 0.;
-      /* Computing MAX */
-      i__4 = 1, i__2 = i__ - *mlmas;
-      /* Computing MIN */
-      i__5 = *nm1, i__6 = i__ + *mumas;
-      i__3 = std::min(i__5, i__6);
-
-      for (j = std::max(i__4, i__2); j <= i__3; ++j)
-        {
-          sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * f1[j + *
-                 m1];
-        }
-
-      im1 = i__ + *m1;
-      f2[im1] = sum;
-      cont[im1] = sum + y0[im1];
-    }
-
-  goto L45;
-
-L5:
-  /* ------  B IS A FULL MATRIX, JACOBIAN A FULL MATRIX */
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      f1[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
-    }
-
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      sum = 0.;
-      i__3 = *n;
-
-      for (j = 1; j <= i__3; ++j)
-        {
-          sum += fmas[i__ + j * fmas_dim1] * f1[j];
-        }
-
-      f2[i__] = sum;
-      cont[i__] = sum + y0[i__];
-    }
-
-  sol_(n, lde1, &e1[e1_offset], &cont[1], &ip1[1]);
-  goto L77;
-
-L15:
-  /* ------  B IS A BANDED MATRIX, JACOBIAN A FULL MATRIX, SECOND ORDER */
-  i__1 = *m1;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
-      cont[i__] = f2[i__] + y0[i__];
-    }
-
-  i__1 = *n;
-
-  for (i__ = *m1 + 1; i__ <= i__1; ++i__)
-    {
-      f1[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
-    }
-
-  i__1 = *nm1;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      sum = 0.;
-      i__3 = *nm1;
-
-      for (j = 1; j <= i__3; ++j)
-        {
-          sum += fmas[i__ + j * fmas_dim1] * f1[j + *m1];
-        }
-
-      im1 = i__ + *m1;
-      f2[im1] = sum;
-      cont[im1] = sum + y0[im1];
-    }
-
-  goto L48;
-
-L6:
-  /* ------  B IS A FULL MATRIX, JACOBIAN A BANDED MATRIX */
-  /* ------  THIS OPTION IS NOT PROVIDED */
-  return 0;
-
-L7:
-  /* ------  B=IDENTITY, JACOBIAN A FULL MATRIX, HESSENBERG-OPTION */
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
-      cont[i__] = f2[i__] + y0[i__];
-    }
-
-  for (mm = *n - 2; mm >= 1; --mm)
-    {
-      mp = *n - mm;
-      i__ = iphes[mp];
-
-      if (i__ == mp)
-        {
-          goto L310;
-        }
-
-      zsafe = cont[mp];
-      cont[mp] = cont[i__];
-      cont[i__] = zsafe;
-L310:
-      i__1 = *n;
-
-      for (i__ = mp + 1; i__ <= i__1; ++i__)
-        {
-          cont[i__] -= fjac[i__ + (mp - 1) * fjac_dim1] * cont[mp];
-        }
-    }
-
-  solh_(n, lde1, &e1[e1_offset], &c__1, &cont[1], &ip1[1]);
-  i__1 = *n - 2;
-
-  for (mm = 1; mm <= i__1; ++mm)
-    {
-      mp = *n - mm;
-      i__3 = *n;
-
-      for (i__ = mp + 1; i__ <= i__3; ++i__)
-        {
-          cont[i__] += fjac[i__ + (mp - 1) * fjac_dim1] * cont[mp];
-        }
-
-      i__ = iphes[mp];
-
-      if (i__ == mp)
-        {
-          goto L440;
-        }
-
-      zsafe = cont[mp];
-      cont[mp] = cont[i__];
-      cont[i__] = zsafe;
-L440:
-      ;
-    }
-
-  /* -------------------------------------- */
-
-L77:
-  *err = 0.;
-  i__1 = *n;
-
-  for (i__ = 1; i__ <= i__1; ++i__)
-    {
-      /* Computing 2nd power */
-      d__1 = cont[i__] / scal[i__];
-      *err += d__1 * d__1;
-    }
-
-  /* Computing MAX */
-  d__1 = sqrt(*err / *n);
-  *err = std::max(d__1, 1e-10);
-
-  if (*err < 1.)
-    {
-      return 0;
-    }
-
-  if (*first || *reject)
-    {
-      i__1 = *n;
-
-      for (i__ = 1; i__ <= i__1; ++i__)
-        {
-          cont[i__] = y[i__] + cont[i__];
-        }
-
-      (*fcn)(n, x, &cont[1], &f1[1], &rpar[1], &ipar[1]);
-      ++(*nfcn);
-      i__1 = *n;
-
-      for (i__ = 1; i__ <= i__1; ++i__)
-        {
-          cont[i__] = f1[i__] + f2[i__];
-        }
-
-      switch (*ijob)
-        {
-          case 1:  goto L31;
-
-          case 2:  goto L32;
-
-          case 3:  goto L31;
-
-          case 4:  goto L32;
-
-          case 5:  goto L31;
-
-          case 6:  goto L32;
-
-          case 7:  goto L33;
-
-          case 8:  goto L55;
-
-          case 9:  goto L55;
-
-          case 10:  goto L55;
-
-          case 11:  goto L41;
-
-          case 12:  goto L42;
-
-          case 13:  goto L41;
-
-          case 14:  goto L42;
-
-          case 15:  goto L41;
-        }
-
-      /* ------ FULL MATRIX OPTION */
-L31:
-      sol_(n, lde1, &e1[e1_offset], &cont[1], &ip1[1]);
-      goto L88;
-      /* ------ FULL MATRIX OPTION, SECOND ORDER */
-L41:
-      i__1 = *m2;
-
-      for (j = 1; j <= i__1; ++j)
-        {
-          sum1 = 0.;
-
-          for (k = mm - 1; k >= 0; --k)
-            {
-              sum1 = (cont[j + k * *m2] + sum1) / *fac1;
-              i__3 = *nm1;
-
-              for (i__ = 1; i__ <= i__3; ++i__)
-                {
-                  im1 = i__ + *m1;
-                  cont[im1] += fjac[i__ + (j + k * *m2) * fjac_dim1] * sum1;
-                }
-            }
-        }
-
-      sol_(nm1, lde1, &e1[e1_offset], &cont[*m1 + 1], &ip1[1]);
-
-      for (i__ = *m1; i__ >= 1; --i__)
-        {
-          cont[i__] = (cont[i__] + cont[*m2 + i__]) / *fac1;
-        }
-
-      goto L88;
-      /* ------ BANDED MATRIX OPTION */
-L32:
-      solb_(n, lde1, &e1[e1_offset], &linal_1.mle, &linal_1.mue, &cont[1], &
-            ip1[1]);
-      goto L88;
-      /* ------ BANDED MATRIX OPTION, SECOND ORDER */
-L42:
-      i__1 = *m2;
-
-      for (j = 1; j <= i__1; ++j)
-        {
-          sum1 = 0.;
-
-          for (k = mm - 1; k >= 0; --k)
-            {
-              sum1 = (cont[j + k * *m2] + sum1) / *fac1;
-              /* Computing MAX */
-              i__3 = 1, i__4 = j - *mujac;
-              /* Computing MIN */
-              i__5 = *nm1, i__6 = j + *mljac;
-              i__2 = std::min(i__5, i__6);
-
-              for (i__ = std::max(i__3, i__4); i__ <= i__2; ++i__)
-                {
-                  im1 = i__ + *m1;
-                  cont[im1] += fjac[i__ + *mujac + 1 - j + (j + k * *m2) *
-                                    fjac_dim1] * sum1;
-                }
-            }
-        }
-
-      solb_(nm1, lde1, &e1[e1_offset], &linal_1.mle, &linal_1.mue, &cont[*
-            m1 + 1], &ip1[1]);
-
-      for (i__ = *m1; i__ >= 1; --i__)
-        {
-          cont[i__] = (cont[i__] + cont[*m2 + i__]) / *fac1;
-        }
-
-      goto L88;
-      /* ------ HESSENBERG MATRIX OPTION */
-L33:
-
-      for (mm = *n - 2; mm >= 1; --mm)
-        {
-          mp = *n - mm;
-          i__ = iphes[mp];
-
-          if (i__ == mp)
-            {
-              goto L510;
-            }
-
-          zsafe = cont[mp];
-          cont[mp] = cont[i__];
-          cont[i__] = zsafe;
-L510:
-          i__1 = *n;
-
-          for (i__ = mp + 1; i__ <= i__1; ++i__)
-            {
-              cont[i__] -= fjac[i__ + (mp - 1) * fjac_dim1] * cont[mp];
-            }
-        }
-
-      solh_(n, lde1, &e1[e1_offset], &c__1, &cont[1], &ip1[1]);
-      i__1 = *n - 2;
-
-      for (mm = 1; mm <= i__1; ++mm)
-        {
-          mp = *n - mm;
-          i__2 = *n;
-
-          for (i__ = mp + 1; i__ <= i__2; ++i__)
-            {
-              cont[i__] += fjac[i__ + (mp - 1) * fjac_dim1] * cont[mp];
-            }
-
-          i__ = iphes[mp];
-
-          if (i__ == mp)
-            {
-              goto L640;
-            }
-
-          zsafe = cont[mp];
-          cont[mp] = cont[i__];
-          cont[i__] = zsafe;
-L640:
-          ;
-        }
-
-      /* ----------------------------------- */
-L88:
-      *err = 0.;
-      i__1 = *n;
-
-      for (i__ = 1; i__ <= i__1; ++i__)
-        {
-          /* Computing 2nd power */
-          d__1 = cont[i__] / scal[i__];
-          *err += d__1 * d__1;
-        }
-
-      /* Computing MAX */
-      d__1 = sqrt(*err / *n);
-      *err = std::max(d__1, 1e-10);
-    }
-
-  return 0;
-  /* ----------------------------------------------------------- */
-L55:
-  return 0;
-} /* estrad_ */
-
-/*     END OF SUBROUTINE ESTRAD */
-
-/* *********************************************************** */
-
-/* Subroutine */ int estrav_(integer *n, doublereal *fjac, integer *ldjac,
-                             integer *mljac, integer *mujac, doublereal *fmas, integer *ldmas,
-                             integer *mlmas, integer *mumas, doublereal *h__, doublereal *dd, S_fp
-                             fcn, integer *nfcn, doublereal *y0, doublereal *y, integer *ijob,
-                             doublereal *x, integer *m1, integer *m2, integer *nm1, integer *ns,
-                             integer * /* nns */, doublereal *e1, integer *lde1, doublereal *zz,
-                             doublereal *cont, doublereal *ff, integer *ip1, integer *iphes,
-                             doublereal *scal, doublereal *err, logical *first, logical *reject,
-                             doublereal *fac1, doublereal *rpar, integer *ipar)
-{
-  /* System generated locals */
-  integer fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e1_dim1,
-          e1_offset, i__1, i__2, i__3, i__4, i__5, i__6;
-  doublereal d__1;
-
-  /* Local variables */
-  static integer i__, j, k, mm, mp, im1;
-  static doublereal sum, sum1;
-  static doublereal zsafe;
+  integer i__, j, k, mm, mp, im1;
+  doublereal sum, sum1;
+  doublereal zsafe;
 
   /* Parameter adjustments */
   --scal;
@@ -3857,12 +3272,30 @@ L55:
 
 /* *********************************************************** */
 
-/* Subroutine */ int slvrod_(integer *n, doublereal *fjac, integer *ldjac,
-                             integer *mljac, integer *mujac, doublereal *fmas, integer *ldmas,
-                             integer *mlmas, integer *mumas, integer *m1, integer *m2, integer *
-                             nm1, doublereal *fac1, doublereal *e, integer *lde, integer *ip,
-                             doublereal *dy, doublereal *ak, doublereal *fx, doublereal *ynew,
-                             doublereal *hd, integer *ijob, logical *stage1)
+int dc_decsol::slvrod_(const common & cmn,
+                       const integer * n,
+                       const doublereal * fjac,
+                       const integer * ldjac,
+                       const integer * mljac,
+                       const integer * mujac,
+                       const doublereal * fmas,
+                       const integer * ldmas,
+                       const integer * mlmas,
+                       const integer * mumas,
+                       const integer * m1,
+                       const integer * m2,
+                       const integer * nm1,
+                       const doublereal * fac1,
+                       const doublereal * e,
+                       const integer * lde,
+                       const integer * ip,
+                       const doublereal * dy,
+                       doublereal * ak,
+                       const doublereal * fx,
+                       const doublereal * ynew,
+                       const doublereal * hd,
+                       const integer * ijob,
+                       const logical * stage1)
 {
   /* System generated locals */
   integer fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e_dim1, e_offset,
@@ -4279,20 +3712,35 @@ L55:
 
 /* *********************************************************** */
 
-/* Subroutine */ int slvseu_(integer *n, doublereal *fjac, integer *ldjac,
-                             integer *mljac, integer *mujac, doublereal *fmas, integer *ldmas,
-                             integer * /* mlmas */, integer * /* mumas */, integer *m1, integer *m2, integer *
-                             nm1, doublereal *fac1, doublereal *e, integer *lde, integer *ip,
-                             integer *iphes, doublereal *del, integer *ijob)
+int dc_decsol::slvseu_(const common & cmn,
+                       const integer * n,
+                       const doublereal * fjac,
+                       const integer * ldjac,
+                       const integer * mljac,
+                       const integer * mujac,
+                       const doublereal * fmas,
+                       const integer * ldmas,
+                       const integer * /* mlmas */,
+                       const integer * /* mumas */,
+                       const integer * m1,
+                       const integer * m2,
+                       const integer * nm1,
+                       const doublereal * fac1,
+                       const doublereal * e,
+                       const integer * lde,
+                       const integer * ip,
+                       const integer * iphes,
+                       doublereal * del,
+                       const integer * ijob)
 {
   /* System generated locals */
   integer fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e_dim1, e_offset,
           i__1, i__2, i__3, i__4, i__5, i__6;
 
   /* Local variables */
-  static integer i__, j, k, mm, mp, im1, mp1, jkm, mmm;
-  static doublereal sum;
-  static doublereal zsafe;
+  integer i__, j, k, mm, mp, im1, mp1, jkm, mmm;
+  doublereal sum;
+  doublereal zsafe;
 
   /* Parameter adjustments */
   --del;

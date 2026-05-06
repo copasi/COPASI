@@ -3,74 +3,65 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-#include "copasi/odepack++/radar5.h"
-#include "copasi/odepack++/decsol.h"
+#include <cmath>
+#include <algorithm>
 
-using namespace fem::major_types;
+#include "copasi/copasi.h"
 
-radar5::common_constn::common_constn()
-  : c1(fem::double0)
-  , c2(fem::double0)
-  , c1m1(fem::double0)
-  , c2m1(fem::double0)
-  , c1mc2(fem::double0)
+#include "copasi/odepack++/CRadar5.h"
+using namespace dc_sumexpdel;
+
+#include "copasi/utilities/CCopasiMessage.h"
+
+CRadar5::common_constn::common_constn()
+  : c1(0.0)
+  , c2(0.0)
+  , c1m1(0.0)
+  , c2m1(0.0)
+  , c1mc2(0.0)
 {}
 
-radar5::common_posits::common_posits()
-  : x0b(fem::double0)
-  , uround(fem::double0)
-  , hmax(fem::double0)
-  , iact(fem::int0)
-  , irtrn(fem::int0)
-  , idif(fem::int0)
-  , mxst(fem::int0)
-  , flags(fem::bool0)
-  , flagn(fem::bool0)
+CRadar5::common_posits::common_posits()
+  : x0b(0.0)
+  , uround(0.0)
+  , hmax(0.0)
+  , iact(0)
+  , irtrn(0)
+  , idif(0)
+  , mxst(0)
+  , flags(0)
+  , flagn(0)
 {}
 
-radar5::common_bplog::common_bplog()
-  : first(fem::bool0)
-  , last(fem::bool0)
-  , reject(fem::bool0)
-  , bpd(fem::bool0)
+CRadar5::common_bplog::common_bplog()
+  : first(0)
+  , last(0)
+  , reject(0)
+  , bpd(0)
 {}
 
-radar5::common_bpcom::common_bpcom()
-  : bpp(fem::double0)
-  , ilbp(fem::int0)
-  , left(fem::bool0)
+CRadar5::common_bpcom::common_bpcom()
+  : bpp(0.0)
+  , ilbp(0)
+  , left(0)
 {}
 
-radar5::common_linal::common_linal()
-  : mle(fem::int0)
-  , mue(fem::int0)
-  , mbjac(fem::int0)
-  , mbb(fem::int0)
-  , mdiag(fem::int0)
-  , mdiff(fem::int0)
-  , mbdiag(fem::int0)
-{}
-
-radar5::common::common(integer argc, char const * argv[])
-  : fem::common(argc, argv)
-  , common_constn()
-  , common_posits()
-  , common_bplog()
-  , common_bpcom()
-  , common_linal()
+CRadar5::CRadar5()
+  : Cxerrwd(false)
+  , mCommon()
 {}
 
 //C********************************************************
 //C
-doublereal radar5::contr5(common & cmn,
-                      integer const & i,
-                      integer const & n,
-                      doublereal const & x,
-                      const CVectorCore< doublereal > & cont,
-                      doublereal const & xsol,
-                      doublereal const & hsol)
+doublereal CRadar5::contr5(const common & cmn,
+                          const integer & i,
+                          const integer & n,
+                          const doublereal & x,
+                          const CVectorCore< doublereal > & cont,
+                          const doublereal & xsol,
+                          const doublereal & hsol)
 {
-  doublereal return_value = fem::double0;
+  doublereal return_value = 0.0;
   //C ----------------------------------------------------------
   //C     THIS FUNCTION CAN BE USED FOR CONINUOUS OUTPUT. IT PROVIDES AN
   //C     APPROXIMATION TO THE I-TH COMPONENT OF THE SOLUTION AT X.
@@ -89,50 +80,50 @@ doublereal radar5::contr5(common & cmn,
 //C
 //C     END OF FUNCTION DLAGR5
 //C
-void radar5::bpdtct(common & cmn,
-                    integer const & n,
-                    doublereal const & x,
+void CRadar5::bpdtct(const common & cmn,
+                    const integer & n,
+                    const doublereal & x,
                     doublereal & h,
                     CVectorCore< doublereal > & y,
                     ARGLAG & arglag,
                     float const & rpar,
-                    integer const & ipar,
+                    const integer & ipar,
                     const CVectorCore< doublereal > & ucont,
                     const CVectorCore< doublereal > & grid,
-                    integer const & nlags,
-                    bool const & first,
-                    bool const & last,
-                    doublereal const & xend,
-                    integer const & igrid,
+                    const integer & nlags,
+                    logical const & first,
+                    logical const & last,
+                    const doublereal & xend,
+                    const integer & igrid,
                     CVectorCore< doublereal > & bpv,
                     integer & ibp,
                     integer & ilbp,
                     doublereal & bpp,
-                    bool & bpd,
-                    integer const & kmax,
+                    logical & bpd,
+                    const integer & kmax,
                     PHI & phi,
                     CVectorCore< doublereal > & past,
                     CVectorCore< integer > & ipast,
-                    integer const & nrds)
+                    const integer & nrds)
 {
-  integer lrc = fem::int0;
-  doublereal epsilon = fem::double0;
-  doublereal compar = fem::double0;
-  doublereal xlast = fem::double0;
-  doublereal hlast = fem::double0;
-  integer il = fem::int0;
-  doublereal als = fem::double0;
-  integer ic = fem::int0;
-  doublereal ald = fem::double0;
-  integer l = fem::int0;
-  doublereal thlim = fem::double0;
-  doublereal thrigh = fem::double0;
-  doublereal thleft = fem::double0;
-  integer k = fem::int0;
-  doublereal thnew = fem::double0;
-  doublereal xa = fem::double0;
-  doublereal aln = fem::double0;
-  doublereal hp = fem::double0;
+  integer lrc = 0;
+  doublereal epsilon = 0.0;
+  doublereal compar = 0.0;
+  doublereal xlast = 0.0;
+  doublereal hlast = 0.0;
+  integer il = 0;
+  doublereal als = 0.0;
+  integer ic = 0;
+  doublereal ald = 0.0;
+  integer l = 0;
+  doublereal thlim = 0.0;
+  doublereal thrigh = 0.0;
+  doublereal thleft = 0.0;
+  integer k = 0;
+  doublereal thnew = 0.0;
+  doublereal xa = 0.0;
+  doublereal aln = 0.0;
+  doublereal hp = 0.0;
   CVector< doublereal > yadv(n);
 
   //C ----------------------------------------------------------
@@ -150,164 +141,163 @@ void radar5::bpdtct(common & cmn,
   bpd = false;
   lrc = 4 * n;
   epsilon = 1.e-10;
-  FEM_THROW_UNHANDLED("executable allocate: allocate(yadv(n))");
-  compar = cmn.uround * fem::max(fem::abs(x), fem::abs(x + h));
+  compar = cmn.uround * std::max(dabs(x), dabs(x + h));
   xlast = ucont(lrc + 1);
   hlast = ucont(lrc + 2);
-  FEM_DO_SAFE(il, 1, nlags)
-  {
-    als = arglag(il, x, n, y, rpar, ipar, phi, past, ipast, nrds);
-    //C -----  DEVIATING ARGUMENT AT X
-    //C -----  EXTRAPOLATION OF THE COLLOCATION POLYNOMIAL
-    FEM_DO_SAFE(ic, 1, n)
+  for (size_t il = 1; il <= nlags; ++il) // for (size_t il =  1; il <=  nlags; ++il) // FEM_DO_SAFE(il, 1, nlags)
     {
-      yadv(ic) = contr5(cmn, ic, n, x + h, ucont, xlast, hlast);
-    }
-    ald = arglag(il, x + h, n, yadv, rpar, ipar, phi, past, ipast, nrds);
-    //C -----  DEVIATING ARGUMENT AT X+H
-    if (fem::abs(als - ald) <= compar)
-      {
-        goto statement_33;
-      }
-    FEM_DO_SAFE(l, 1, igrid - 1)
-    {
-      bpp = grid(l);
-      if ((als - bpp) * (ald - bpp) < compar)
+      als = arglag(il, x, n, y, rpar, ipar, phi, past, ipast, nrds);
+      //C -----  DEVIATING ARGUMENT AT X
+      //C -----  EXTRAPOLATION OF THE COLLOCATION POLYNOMIAL
+      for (size_t ic = 1; ic <= n; ++ic) // for (size_t ic =  1; ic <=  n; ++ic) // FEM_DO_SAFE(ic, 1, n)
         {
-          bpd = true;
-          //C          BREAKING POINT!
+          yadv(ic) = contr5(cmn, ic, n, x + h, ucont, xlast, hlast);
+        }
+      ald = arglag(il, x + h, n, yadv, rpar, ipar, phi, past, ipast, nrds);
+      //C -----  DEVIATING ARGUMENT AT X+H
+      if (dabs(als - ald) <= compar)
+        {
           goto statement_33;
         }
-    }
-    FEM_DOSTEP(l, ibp, 1, -1)
-    {
-      bpp = bpv(l);
-      if ((als - bpp) * (ald - bpp) < compar)
+      for (size_t l = 1; l <= igrid - 1; ++l) // for (size_t l =  1; l <=  igrid - 1; ++l) // FEM_DO_SAFE(l, 1, igrid - 1)
         {
-          //C          BREAKING POINT!
-          bpd = true;
-          goto statement_33;
+          bpp = grid(l);
+          if ((als - bpp) * (ald - bpp) < compar)
+            {
+              bpd = true;
+              //C          BREAKING POINT!
+              goto statement_33;
+            }
         }
-    }
-  statement_33:
-    if (bpd)
-      {
-        //C ---
-        thlim = 1.e0;
-        thrigh = thlim;
-        //C --------------------------------------------------
-        thleft = 0.e0;
-        //C ---
-        FEM_DO_SAFE(k, 1, kmax)
+      for (int l = ibp; l >= 1; --l) // FEM_DOSTEP(l, ibp, 1, -1)
         {
-          thnew = thleft - (als - bpp) * (thrigh - thleft) / (ald - als);
-          //C ---       TEST DI CONVERGENZA
-          if (fem::abs(thrigh - thnew) <= epsilon || fem::abs(thleft - thnew) <= epsilon)
+          bpp = bpv(l);
+          if ((als - bpp) * (ald - bpp) < compar)
             {
-              goto statement_36;
+              //C          BREAKING POINT!
+              bpd = true;
+              goto statement_33;
             }
-          xa = x + thnew * h;
-          FEM_DO_SAFE(ic, 1, n)
-          {
-            yadv(ic) = contr5(cmn, ic, n, xa, ucont, xlast, hlast);
-          }
-          aln = arglag(il, xa, n, yadv, rpar, ipar, phi, past, ipast, nrds);
-          if ((als - bpp) * (aln - bpp) <= 0.e0)
-            {
-              ald = aln;
-              thrigh = thnew;
-            }
-          else
-            {
-              als = aln;
-              thleft = thnew;
-            }
+        }
+    statement_33:
+      if (bpd)
+        {
           //C ---
-        }
-      statement_36:
-        //C ---      BP FOUND!
-        if ((thnew > compar) && (thnew < thlim))
-          {
-            hp = thnew * h;
-            //C ---
-            if (hp <= 1.e2 * compar)
-              {
-                bpd = false;
-                goto statement_37;
-              }
-            //C ---
-            FEM_DO_SAFE(l, 1, igrid - 1)
+          thlim = 1.e0;
+          thrigh = thlim;
+          //C --------------------------------------------------
+          thleft = 0.e0;
+          //C ---
+          for (size_t k = 1; k <= kmax; ++k) // FEM_DO_SAFE(k, 1, kmax)
             {
-              bpp = grid(l);
-              if (fem::abs(bpp - x - hp) <= compar)
+              thnew = thleft - (als - bpp) * (thrigh - thleft) / (ald - als);
+              //C ---       TEST DI CONVERGENZA
+              if (dabs(thrigh - thnew) <= epsilon || dabs(thleft - thnew) <= epsilon)
+                {
+                  goto statement_36;
+                }
+              xa = x + thnew * h;
+              for (size_t ic = 1; ic <= n; ++ic) // FEM_DO_SAFE(ic, 1, n)
+                {
+                  yadv(ic) = contr5(cmn, ic, n, xa, ucont, xlast, hlast);
+                }
+              aln = arglag(il, xa, n, yadv, rpar, ipar, phi, past, ipast, nrds);
+              if ((als - bpp) * (aln - bpp) <= 0.e0)
+                {
+                  ald = aln;
+                  thrigh = thnew;
+                }
+              else
+                {
+                  als = aln;
+                  thleft = thnew;
+                }
+              //C ---
+            }
+        statement_36:
+          //C ---      BP FOUND!
+          if ((thnew > compar) && (thnew < thlim))
+            {
+              hp = thnew * h;
+              //C ---
+              if (hp <= 1.e2 * compar)
                 {
                   bpd = false;
                   goto statement_37;
                 }
+              //C ---
+              for (size_t l = 1; l <= igrid - 1; ++l) // FEM_DO_SAFE(l, 1, igrid - 1)
+                {
+                  bpp = grid(l);
+                  if (dabs(bpp - x - hp) <= compar)
+                    {
+                      bpd = false;
+                      goto statement_37;
+                    }
+                }
+              ibp++;
+              bpv(ibp) = x + hp;
+              h = hp;
+              ilbp = il;
+              goto statement_37;
             }
-            ibp++;
-            bpv(ibp) = x + hp;
-            h = hp;
-            ilbp = il;
-            goto statement_37;
-          }
-        else
-          {
-            //C ---       BP ALREADY PRESENT
-            bpd = false;
-          }
-      }
-  }
+          else
+            {
+              //C ---       BP ALREADY PRESENT
+              bpd = false;
+            }
+        }
+    }
 statement_37:
-  FEM_THROW_UNHANDLED("executable deallocate: deallocate(yadv)");
+  return;
 }
 
-void radar5::bpacc(common & cmn,
-                   integer const & n,
-                   doublereal const & x,
+void CRadar5::bpacc(const common & cmn,
+                   const integer & n,
+                   const doublereal & x,
                    doublereal & h,
                    CVectorCore< doublereal > & y,
                    ARGLAG & arglag,
                    float const & rpar,
-                   integer const & ipar,
+                   const integer & ipar,
                    CVectorCore< doublereal > & z1,
                    CVectorCore< doublereal > & z2,
                    CVectorCore< doublereal > & z3,
-                   bool const & first,
+                   logical const & first,
                    CVectorCore< doublereal > & bpv,
-                   integer const & ibp,
-                   integer const & ilbp,
-                   doublereal const & bpp,
-                   integer const & kmax,
+                   const integer & ibp,
+                   const integer & ilbp,
+                   const doublereal & bpp,
+                   const integer & kmax,
                    PHI & phi,
                    CVectorCore< doublereal > & past,
                    CVectorCore< integer > & ipast,
-                   integer const & nrds)
+                   const integer & nrds)
 {
   CVector< doublereal > yapp(n);
   CVector< doublereal > ycont(4 * n);
-  doublereal epsilon = fem::double0;
-  integer i = fem::int0;
-  doublereal z3i = fem::double0;
-  doublereal yi = fem::double0;
-  doublereal z2i = fem::double0;
-  doublereal z1i = fem::double0;
-  doublereal a1 = fem::double0;
-  doublereal ak = fem::double0;
-  doublereal acont3 = fem::double0;
-  doublereal a2 = fem::double0;
-  doublereal xsol = fem::double0;
-  doublereal hsol = fem::double0;
-  doublereal thleft = fem::double0;
-  doublereal thrigh = fem::double0;
-  doublereal xl = fem::double0;
-  doublereal als = fem::double0;
-  doublereal xr = fem::double0;
-  doublereal ald = fem::double0;
-  integer k = fem::int0;
-  doublereal fac = fem::double0;
-  doublereal thnew = fem::double0;
-  doublereal xap = fem::double0;
+  doublereal epsilon = 0.0;
+  integer i = 0;
+  doublereal z3i = 0.0;
+  doublereal yi = 0.0;
+  doublereal z2i = 0.0;
+  doublereal z1i = 0.0;
+  doublereal a1 = 0.0;
+  doublereal ak = 0.0;
+  doublereal acont3 = 0.0;
+  doublereal a2 = 0.0;
+  doublereal xsol = 0.0;
+  doublereal hsol = 0.0;
+  doublereal thleft = 0.0;
+  doublereal thrigh = 0.0;
+  doublereal xl = 0.0;
+  doublereal als = 0.0;
+  doublereal xr = 0.0;
+  doublereal ald = 0.0;
+  integer k = 0;
+  doublereal fac = 0.0;
+  doublereal thnew = 0.0;
+  doublereal xap = 0.0;
   //C ----------------------------------------------------------
   //C     THIS SUBROUTINE CAN BE USED FOR APPROXIMATING BREAKING POINTS
   //C     IN TANDEM WITH THE SIMPLIFIED NEWTON ITERATION..
@@ -317,81 +307,81 @@ void radar5::bpacc(common & cmn,
   //C ---
   epsilon = cmn.uround * 1.e3;
   //C ---   DYNAMIC UPDATE
-  FEM_DO_SAFE(i, 1, n)
-  {
-    z3i = z3(i);
-    yi = y(i) + z3i;
-    ycont(i) = yi;
-    z2i = z2(i);
-    z1i = z1(i);
-    a1 = (z2i - z3i) / cmn.c2m1;
-    ycont(i + n) = a1;
-    ak = (z1i - z2i) / cmn.c1mc2;
-    acont3 = z1i / cmn.c1;
-    acont3 = (ak - acont3) / cmn.c2;
-    a2 = (ak - ycont(i + n)) / cmn.c1m1;
-    ycont(i + 2 * n) = a2;
-    if (!first)
-      {
-        ycont(i + 3 * n) = a2 - acont3;
-      }
-    else
-      {
-        ycont(i + 3 * n) = 0.e0;
-      }
-  }
+  for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+    {
+      z3i = z3(i);
+      yi = y(i) + z3i;
+      ycont(i) = yi;
+      z2i = z2(i);
+      z1i = z1(i);
+      a1 = (z2i - z3i) / cmn.c2m1;
+      ycont(i + n) = a1;
+      ak = (z1i - z2i) / cmn.c1mc2;
+      acont3 = z1i / cmn.c1;
+      acont3 = (ak - acont3) / cmn.c2;
+      a2 = (ak - ycont(i + n)) / cmn.c1m1;
+      ycont(i + 2 * n) = a2;
+      if (!first)
+        {
+          ycont(i + 3 * n) = a2 - acont3;
+        }
+      else
+        {
+          ycont(i + 3 * n) = 0.e0;
+        }
+    }
   //C ---   INITIAL VALUES FOR THE COMPUTATION
   xsol = x + h;
   hsol = h;
   thleft = 0.9e0;
   thrigh = 1.0e0;
   xl = x + thleft * h;
-  FEM_DO_SAFE(i, 1, n)
-  {
-    yapp(i) = contr5(cmn, i, n, xl, ycont, xsol, hsol);
-  }
+  for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+    {
+      yapp(i) = contr5(cmn, i, n, xl, ycont, xsol, hsol);
+    }
   als = arglag(ilbp, xl, n, yapp, rpar, ipar, phi, past, ipast, nrds);
   //C ---
   xr = x + thrigh * h;
   ald = arglag(ilbp, xr, n, ycont, rpar, ipar, phi, past, ipast, nrds);
-  FEM_DO_SAFE(k, 1, kmax)
-  {
-    if (fem::abs(ald - als) <= epsilon)
-      {
-        fac = 0.0e0;
-      }
-    else
-      {
-        fac = (ald - bpp) / (ald - als);
-      }
-    thnew = thrigh - fac * (thrigh - thleft);
-    thleft = thrigh;
-    //C ---       TEST DI CONVERGENZA
-    if (fem::abs(thnew - thrigh) <= epsilon)
-      {
-        goto statement_36;
-      }
-    if ((thnew <= 0.5e0) || (thnew >= 1.5e0))
-      {
-
-        return;
-      }
-    thrigh = thnew;
-    xap = x + thrigh * h;
-    als = ald;
-    FEM_DO_SAFE(i, 1, n)
+  for (size_t k = 1; k <= kmax; ++k) // FEM_DO_SAFE(k, 1, kmax)
     {
-      yapp(i) = contr5(cmn, i, n, xap, ycont, xsol, hsol);
+      if (dabs(ald - als) <= epsilon)
+        {
+          fac = 0.0e0;
+        }
+      else
+        {
+          fac = (ald - bpp) / (ald - als);
+        }
+      thnew = thrigh - fac * (thrigh - thleft);
+      thleft = thrigh;
+      //C ---       TEST DI CONVERGENZA
+      if (dabs(thnew - thrigh) <= epsilon)
+        {
+          goto statement_36;
+        }
+      if ((thnew <= 0.5e0) || (thnew >= 1.5e0))
+        {
+
+          return;
+        }
+      thrigh = thnew;
+      xap = x + thrigh * h;
+      als = ald;
+      for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+        {
+          yapp(i) = contr5(cmn, i, n, xap, ycont, xsol, hsol);
+        }
+      ald = arglag(ilbp, xap, n, yapp, rpar, ipar, phi, past, ipast, nrds);
+      if (dabs(ald - als) <= epsilon)
+        {
+          goto statement_36;
+        }
     }
-    ald = arglag(ilbp, xap, n, yapp, rpar, ipar, phi, past, ipast, nrds);
-    if (fem::abs(ald - als) <= epsilon)
-      {
-        goto statement_36;
-      }
-  }
 statement_36:
   //C ---   BP FOUND
-  h = fem::min(thrigh, thleft) * h;
+  h = std::min(thrigh, thleft) * h;
   bpv(ibp) = x + h;
 }
 
@@ -400,8 +390,8 @@ statement_36:
 //C
 //C ***********************************************************
 //C
-void radar5::radcor(common & cmn,
-                    integer const & n,
+void CRadar5::radcor(common & cmn,
+                    const integer & n,
                     doublereal & x,
                     CVectorCore< doublereal > & y,
                     doublereal & xend,
@@ -411,43 +401,43 @@ void radar5::radcor(common & cmn,
                     ARGLAG & arglag,
                     CVectorCore< doublereal > & rtol,
                     CVectorCore< doublereal > & atol,
-                    integer const & itol,
+                    const integer & itol,
                     JAC & jac,
-                    integer const & ijac,
-                    integer const & mljac,
-                    integer const & mujac,
+                    const integer & ijac,
+                    const integer & mljac,
+                    const integer & mujac,
                     JACLAG & jaclag,
                     MAS & mas,
-                    integer const & mlmas,
-                    integer const & mumas,
+                    const integer & mlmas,
+                    const integer & mumas,
                     SOLOUT & solout,
-                    integer const & iout,
+                    const integer & iout,
                     integer & idid,
-                    integer const & nmax,
-                    doublereal const & safe,
-                    doublereal const & thet,
-                    doublereal const & fnewt,
-                    doublereal const & quot1,
-                    doublereal const & quot2,
-                    integer const & nit,
+                    const integer & nmax,
+                    const doublereal & safe,
+                    const doublereal & thet,
+                    const doublereal & fnewt,
+                    const doublereal & quot1,
+                    const doublereal & quot2,
+                    const integer & nit,
                     integer & ijob,
-                    bool const & startn,
-                    integer const & nind1,
-                    integer const & nind2,
-                    integer const & nind3,
-                    bool const & pred,
-                    doublereal const & facl,
-                    doublereal const & facr,
-                    integer const & m1,
-                    integer const & m2,
-                    integer const & nm1,
-                    bool const & implct,
-                    bool const & neutral,
-                    integer const & ndimn,
-                    bool const & banded,
-                    integer const & ldjac,
-                    integer const & lde1,
-                    integer const & ldmas,
+                    logical const & startn,
+                    const integer & nind1,
+                    const integer & nind2,
+                    const integer & nind3,
+                    logical const & pred,
+                    const doublereal & facl,
+                    const doublereal & facr,
+                    const integer & m1,
+                    const integer & m2,
+                    const integer & nm1,
+                    logical const & implct,
+                    logical const & neutral,
+                    const integer & ndimn,
+                    logical const & banded,
+                    const integer & ldjac,
+                    const integer & lde1,
+                    const integer & ldmas,
                     integer & nfcn,
                     integer & njac,
                     integer & nstep,
@@ -456,232 +446,230 @@ void radar5::radcor(common & cmn,
                     integer & ndec,
                     integer & nsol,
                     integer & nfull,
-                    float const & rpar,
-                    integer const & ipar,
+                    const doublereal & rpar,
+                    const integer & ipar,
                     CVectorCore< integer > & ipast,
                     CVectorCore< doublereal > & grid,
-                    integer const & /* lgrid */,
-                    integer const & nrds,
-                    integer const & nlags,
-                    integer const & njacl,
-                    integer const & ngrid,
-                    integer const & ieflag,
-                    doublereal const & work7,
-                    doublereal const & tckbp,
-                    doublereal const & alpha,
-                    integer const & iswjl)
+                    const integer & /* lgrid */,
+                    const integer & nrds,
+                    const integer & nlags,
+                    const integer & njacl,
+                    const integer & ngrid,
+                    const integer & ieflag,
+                    const doublereal & work7,
+                    const doublereal & tckbp,
+                    const doublereal & alpha,
+                    const integer & iswjl)
 {
-  common_write write(cmn);
   doublereal & x0b = cmn.x0b;
-  doublereal & uround = cmn.uround;
+  const doublereal & uround = cmn.uround;
   doublereal & hmax = cmn.hmax;
   integer & iact = cmn.iact;
   integer & irtrn = cmn.irtrn;
-  integer & idif = cmn.idif;
-  integer & mxst = cmn.mxst;
-  bool & flags = cmn.flags;
-  bool & flagn = cmn.flagn;
+  const integer & idif = cmn.idif;
+  const integer & mxst = cmn.mxst;
+  logical & flags = cmn.flags;
+  logical & flagn = cmn.flagn;
   doublereal & c1 = cmn.c1;
   doublereal & c2 = cmn.c2;
   doublereal & c1m1 = cmn.c1m1;
   doublereal & c2m1 = cmn.c2m1;
   doublereal & c1mc2 = cmn.c1mc2;
-  bool & first = cmn.first;
-  bool & last = cmn.last;
-  bool & reject = cmn.reject;
-  bool & bpd = cmn.bpd;
+  logical & first = cmn.first;
+  logical & last = cmn.last;
+  logical & reject = cmn.reject;
+  logical & bpd = cmn.bpd;
   doublereal & bpp = cmn.bpp;
   integer & ilbp = cmn.ilbp;
-  bool & left = cmn.left;
+  logical & left = cmn.left;
   integer & mle = cmn.mle;
   integer & mue = cmn.mue;
   integer & mbjac = cmn.mbjac;
   //
-  integer lrc = fem::int0;
-  bool bpc = fem::bool0;
-  bool bpdmem = fem::bool0;
-  bool quadr = fem::bool0;
-  bool callag = fem::bool0;
-  integer ipos = fem::int0;
-  integer i = fem::int0;
-  integer igrid = fem::int0;
-  integer ibp = fem::int0;
-  doublereal btol = fem::double0;
-  integer kmax = fem::int0;
-  integer imant = fem::int0;
-  bool flagus = fem::bool0;
-  doublereal erracc = fem::double0;
-  doublereal rtolm = fem::double0;
-  bool index1 = fem::bool0;
-  bool index2 = fem::bool0;
-  bool index3 = fem::bool0;
-  doublereal sq6 = fem::double0;
-  doublereal cq1 = fem::double0;
-  doublereal cq2 = fem::double0;
-  doublereal cq3 = fem::double0;
-  doublereal cl1 = fem::double0;
-  doublereal cl2 = fem::double0;
-  doublereal cl3 = fem::double0;
-  doublereal cers = fem::double0;
-  doublereal cerc = fem::double0;
-  doublereal cerlq = fem::double0;
-  doublereal thrs = fem::double0;
-  doublereal dd1 = fem::double0;
-  doublereal dd2 = fem::double0;
-  doublereal dd3 = fem::double0;
-  doublereal u1 = fem::double0;
-  doublereal alph = fem::double0;
-  doublereal beta = fem::double0;
-  doublereal cno = fem::double0;
-  doublereal t11 = fem::double0;
-  doublereal t12 = fem::double0;
-  doublereal t13 = fem::double0;
-  doublereal t21 = fem::double0;
-  doublereal t22 = fem::double0;
-  doublereal t23 = fem::double0;
-  doublereal t31 = fem::double0;
-  doublereal ti11 = fem::double0;
-  doublereal ti12 = fem::double0;
-  doublereal ti13 = fem::double0;
-  doublereal ti21 = fem::double0;
-  doublereal ti22 = fem::double0;
-  doublereal ti23 = fem::double0;
-  doublereal ti31 = fem::double0;
-  doublereal ti32 = fem::double0;
-  doublereal ti33 = fem::double0;
-  doublereal ai11 = fem::double0;
-  doublereal ai12 = fem::double0;
-  doublereal ai13 = fem::double0;
-  doublereal ai21 = fem::double0;
-  doublereal ai22 = fem::double0;
-  doublereal ai23 = fem::double0;
-  doublereal ai31 = fem::double0;
-  doublereal ai32 = fem::double0;
-  doublereal ai33 = fem::double0;
-  doublereal hmaxn = fem::double0;
-  doublereal hold = fem::double0;
-  integer niter = fem::int0;
-  integer ipa = fem::int0;
-  integer j = fem::int0;
-  integer k = fem::int0;
-  doublereal faccon = fem::double0;
-  doublereal cfac = fem::double0;
-  integer nsing = fem::int0;
-  doublereal xold = fem::double0;
-  integer nrsol = fem::int0;
-  doublereal xosol = fem::double0;
-  doublereal xsol = fem::double0;
-  integer nsolu = fem::int0;
-  doublereal hsol = fem::double0;
-  integer n2 = fem::int0;
-  integer n3 = fem::int0;
-  doublereal hhfac = fem::double0;
-  doublereal alopt = fem::double0;
-  integer mujacp = fem::int0;
-  integer md = fem::int0;
-  integer mm = fem::int0;
-  integer j1 = fem::int0;
-  integer lbeg = fem::int0;
-  integer lend = fem::int0;
-  integer mujacj = fem::int0;
-  integer l = fem::int0;
-  doublereal ysafe = fem::double0;
-  doublereal delt = fem::double0;
-  bool caljac = fem::bool0;
-  bool calhes = fem::bool0;
-  integer jlflag = fem::int0;
-  doublereal a1 = fem::double0;
-  doublereal c3q = fem::double0;
-  doublereal c1q = fem::double0;
-  doublereal c2q = fem::double0;
-  doublereal ak1 = fem::double0;
-  doublereal ak2 = fem::double0;
-  doublereal ak3 = fem::double0;
-  doublereal z1i = fem::double0;
-  doublereal z2i = fem::double0;
-  doublereal z3i = fem::double0;
-  bool caljacl = fem::bool0;
-  doublereal x1 = fem::double0;
-  doublereal x2 = fem::double0;
-  doublereal x3 = fem::double0;
-  integer il = fem::int0;
-  integer ll = fem::int0;
-  integer nl = fem::int0;
-  integer is = fem::int0;
-  doublereal xact = fem::double0;
-  doublereal x13 = fem::double0;
-  doublereal s1 = fem::double0;
-  doublereal s2 = fem::double0;
-  doublereal s3 = fem::double0;
-  integer ile = fem::int0;
-  integer kk = fem::int0;
-  integer ik = fem::int0;
-  integer jk = fem::int0;
-  doublereal fac1 = fem::double0;
-  doublereal alphn = fem::double0;
-  doublereal betan = fem::double0;
-  integer ier = fem::int0;
-  doublereal xph = fem::double0;
-  integer newt = fem::int0;
-  doublereal theta = fem::double0;
-  doublereal ak = fem::double0;
-  doublereal acont3 = fem::double0;
-  doublereal a2 = fem::double0;
-  integer inrej = fem::int0;
-  doublereal dbp = fem::double0;
-  doublereal xx = fem::double0;
-  doublereal a3 = fem::double0;
-  doublereal dyno = fem::double0;
-  doublereal denom = fem::double0;
-  doublereal dynold = fem::double0;
-  doublereal thq = fem::double0;
-  doublereal thqold = fem::double0;
-  doublereal dyth = fem::double0;
-  doublereal hp = fem::double0;
-  doublereal qnewt = fem::double0;
-  doublereal f1i = fem::double0;
-  doublereal f2i = fem::double0;
-  doublereal f3i = fem::double0;
-  doublereal hnewt = fem::double0;
-  doublereal fij = fem::double0;
-  doublereal dl1 = fem::double0;
-  doublereal dl2 = fem::double0;
-  doublereal dl3 = fem::double0;
-  doublereal xl = fem::double0;
-  doublereal dcoli1 = fem::double0;
-  doublereal dcoli2 = fem::double0;
-  doublereal dcoli3 = fem::double0;
-  doublereal fjlk = fem::double0;
-  integer iki = fem::int0;
-  doublereal ai11h = fem::double0;
-  doublereal ai12h = fem::double0;
-  doublereal ai13h = fem::double0;
-  doublereal ai21h = fem::double0;
-  doublereal ai22h = fem::double0;
-  doublereal ai23h = fem::double0;
-  doublereal ai31h = fem::double0;
-  doublereal ai32h = fem::double0;
-  doublereal ai33h = fem::double0;
-  integer i1 = fem::int0;
-  doublereal serr = fem::double0;
-  doublereal cerr = fem::double0;
-  doublereal fac = fem::double0;
-  doublereal err = fem::double0;
-  doublereal quot = fem::double0;
-  doublereal hnew = fem::double0;
-  doublereal cerr2 = fem::double0;
-  bool repeat = fem::bool0;
-  doublereal hacc = fem::double0;
-  doublereal facgus = fem::double0;
-  doublereal yi = fem::double0;
-  doublereal he = fem::double0;
-  doublereal xlr = fem::double0;
-  bool project = fem::bool0;
-  doublereal posneg = fem::double0;
-  doublereal xeps = fem::double0;
-  doublereal hopt = fem::double0;
-  doublereal qt = fem::double0;
-  static const char * format_979 = "(' EXIT OF RADAR5 AT X=',e18.4)";
+  integer lrc = 0;
+  logical bpc = 0;
+  logical bpdmem = 0;
+  logical quadr = 0;
+  logical callag = 0;
+  integer ipos = 0;
+  integer i = 0;
+  integer igrid = 0;
+  integer ibp = 0;
+  doublereal btol = 0.0;
+  integer kmax = 0;
+  integer imant = 0;
+  logical flagus = 0;
+  doublereal erracc = 0.0;
+  doublereal rtolm = 0.0;
+  logical index1 = 0;
+  logical index2 = 0;
+  logical index3 = 0;
+  doublereal sq6 = 0.0;
+  doublereal cq1 = 0.0;
+  doublereal cq2 = 0.0;
+  doublereal cq3 = 0.0;
+  doublereal cl1 = 0.0;
+  doublereal cl2 = 0.0;
+  doublereal cl3 = 0.0;
+  doublereal cers = 0.0;
+  doublereal cerc = 0.0;
+  doublereal cerlq = 0.0;
+  doublereal thrs = 0.0;
+  doublereal dd1 = 0.0;
+  doublereal dd2 = 0.0;
+  doublereal dd3 = 0.0;
+  doublereal u1 = 0.0;
+  doublereal alph = 0.0;
+  doublereal beta = 0.0;
+  doublereal cno = 0.0;
+  doublereal t11 = 0.0;
+  doublereal t12 = 0.0;
+  doublereal t13 = 0.0;
+  doublereal t21 = 0.0;
+  doublereal t22 = 0.0;
+  doublereal t23 = 0.0;
+  doublereal t31 = 0.0;
+  doublereal ti11 = 0.0;
+  doublereal ti12 = 0.0;
+  doublereal ti13 = 0.0;
+  doublereal ti21 = 0.0;
+  doublereal ti22 = 0.0;
+  doublereal ti23 = 0.0;
+  doublereal ti31 = 0.0;
+  doublereal ti32 = 0.0;
+  doublereal ti33 = 0.0;
+  doublereal ai11 = 0.0;
+  doublereal ai12 = 0.0;
+  doublereal ai13 = 0.0;
+  doublereal ai21 = 0.0;
+  doublereal ai22 = 0.0;
+  doublereal ai23 = 0.0;
+  doublereal ai31 = 0.0;
+  doublereal ai32 = 0.0;
+  doublereal ai33 = 0.0;
+  doublereal hmaxn = 0.0;
+  doublereal hold = 0.0;
+  integer niter = 0;
+  integer ipa = 0;
+  integer j = 0;
+  integer k = 0;
+  doublereal faccon = 0.0;
+  doublereal cfac = 0.0;
+  integer nsing = 0;
+  doublereal xold = 0.0;
+  integer nrsol = 0;
+  doublereal xosol = 0.0;
+  doublereal xsol = 0.0;
+  integer nsolu = 0;
+  doublereal hsol = 0.0;
+  integer n2 = 0;
+  integer n3 = 0;
+  doublereal hhfac = 0.0;
+  doublereal alopt = 0.0;
+  integer mujacp = 0;
+  integer md = 0;
+  integer mm = 0;
+  integer j1 = 0;
+  integer lbeg = 0;
+  integer lend = 0;
+  integer mujacj = 0;
+  integer l = 0;
+  doublereal ysafe = 0.0;
+  doublereal delt = 0.0;
+  logical caljac = 0;
+  logical calhes = 0;
+  integer jlflag = 0;
+  doublereal a1 = 0.0;
+  doublereal c3q = 0.0;
+  doublereal c1q = 0.0;
+  doublereal c2q = 0.0;
+  doublereal ak1 = 0.0;
+  doublereal ak2 = 0.0;
+  doublereal ak3 = 0.0;
+  doublereal z1i = 0.0;
+  doublereal z2i = 0.0;
+  doublereal z3i = 0.0;
+  logical caljacl = 0;
+  doublereal x1 = 0.0;
+  doublereal x2 = 0.0;
+  doublereal x3 = 0.0;
+  integer il = 0;
+  integer ll = 0;
+  integer nl = 0;
+  integer is = 0;
+  doublereal xact = 0.0;
+  doublereal x13 = 0.0;
+  doublereal s1 = 0.0;
+  doublereal s2 = 0.0;
+  doublereal s3 = 0.0;
+  integer ile = 0;
+  integer kk = 0;
+  integer ik = 0;
+  integer jk = 0;
+  doublereal fac1 = 0.0;
+  doublereal alphn = 0.0;
+  doublereal betan = 0.0;
+  integer ier = 0;
+  doublereal xph = 0.0;
+  integer newt = 0;
+  doublereal theta = 0.0;
+  doublereal ak = 0.0;
+  doublereal acont3 = 0.0;
+  doublereal a2 = 0.0;
+  integer inrej = 0;
+  doublereal dbp = 0.0;
+  doublereal xx = 0.0;
+  doublereal a3 = 0.0;
+  doublereal dyno = 0.0;
+  doublereal denom = 0.0;
+  doublereal dynold = 0.0;
+  doublereal thq = 0.0;
+  doublereal thqold = 0.0;
+  doublereal dyth = 0.0;
+  doublereal hp = 0.0;
+  doublereal qnewt = 0.0;
+  doublereal f1i = 0.0;
+  doublereal f2i = 0.0;
+  doublereal f3i = 0.0;
+  doublereal hnewt = 0.0;
+  doublereal fij = 0.0;
+  doublereal dl1 = 0.0;
+  doublereal dl2 = 0.0;
+  doublereal dl3 = 0.0;
+  doublereal xl = 0.0;
+  doublereal dcoli1 = 0.0;
+  doublereal dcoli2 = 0.0;
+  doublereal dcoli3 = 0.0;
+  doublereal fjlk = 0.0;
+  integer iki = 0;
+  doublereal ai11h = 0.0;
+  doublereal ai12h = 0.0;
+  doublereal ai13h = 0.0;
+  doublereal ai21h = 0.0;
+  doublereal ai22h = 0.0;
+  doublereal ai23h = 0.0;
+  doublereal ai31h = 0.0;
+  doublereal ai32h = 0.0;
+  doublereal ai33h = 0.0;
+  integer i1 = 0;
+  doublereal serr = 0.0;
+  doublereal cerr = 0.0;
+  doublereal fac = 0.0;
+  doublereal err = 0.0;
+  doublereal quot = 0.0;
+  doublereal hnew = 0.0;
+  doublereal cerr2 = 0.0;
+  logical repeat = 0;
+  doublereal hacc = 0.0;
+  doublereal facgus = 0.0;
+  doublereal yi = 0.0;
+  doublereal he = 0.0;
+  doublereal xlr = 0.0;
+  logical project = 0;
+  doublereal posneg = 0.0;
+  doublereal xeps = 0.0;
+  doublereal hopt = 0.0;
+  doublereal qt = 0.0;
   //C ----------------------------------------------------------
   //C     CORE INTEGRATOR FOR RADAR5
   //C     PARAMETERS SAME AS IN RADAR5 WITH WORKSPACE ADDED
@@ -764,8 +752,6 @@ void radar5::radcor(common & cmn,
   CVector< doublereal > ucont(lrc + 2);
 
   //C ---
-  cmn.io.open(8, "radar5.log");
-  cmn.io.rewind(8);
   //C
   //C -------------------------------------------------
   bpc = false;
@@ -778,19 +764,19 @@ void radar5::radcor(common & cmn,
   callag = false;
   iact = 1;
   ipos = 1;
-  FEM_DO_SAFE(i, 1, nlags)
-  {
-    ipast(i + 2 * n) = 1;
-  }
+  for (size_t i = 1; i <= nlags; ++i) // FEM_DO_SAFE(i, 1, nlags)
+    {
+      ipast(i + 2 * n) = 1;
+    }
   x0b = x;
-  FEM_DO_SAFE(i, 1, ngrid)
-  {
-    if (grid(i) > x0b)
-      {
-        igrid = i;
-        goto statement_2;
-      }
-  }
+  for (size_t i = 1; i <= ngrid; ++i) // FEM_DO_SAFE(i, 1, ngrid)
+    {
+      if (grid(i) > x0b)
+        {
+          igrid = i;
+          goto statement_2;
+        }
+    }
 statement_2:
   xend = grid(igrid);
   ibp = 1;
@@ -815,13 +801,13 @@ statement_2:
   else
     {
       rtolm = rtol(1);
-      FEM_DO_SAFE(i, 2, n)
-      {
-        if (rtol(i) < rtolm)
-          {
-            rtolm = rtol(i);
-          }
-      }
+      for (size_t i = 2; i <= n; ++i) // FEM_DO_SAFE(i, 2, n)
+        {
+          if (rtol(i) < rtolm)
+            {
+              rtolm = rtol(i);
+            }
+        }
     }
   //C
   //C -------- CHECK THE INDEX OF THE PROBLEM -----
@@ -834,7 +820,7 @@ statement_2:
       mas(nm1, _fmas, ldmas, rpar, ipar);
     }
   //C ---------> REQUIRED CONSTANTS <---------
-  sq6 = fem::dsqrt(6.e0);
+  sq6 = std::sqrt(6.e0);
   c1 = (4.e0 - sq6) / 10.e0;
   c2 = (4.e0 + sq6) / 10.e0;
   c1m1 = c1 - 1.e0;
@@ -853,10 +839,10 @@ statement_2:
   dd1 = -(13.e0 + 7.e0 * sq6) / 3.e0;
   dd2 = (-13.e0 + 7.e0 * sq6) / 3.e0;
   dd3 = -1.e0 / 3.e0;
-  u1 = (6.e0 + fem::pow(81.e0, (1.e0 / 3.e0)) - fem::pow(9.e0, (1.e0 / 3.e0))) / 30.e0;
-  alph = (12.e0 - fem::pow(81.e0, (1.e0 / 3.e0)) + fem::pow(9.e0, (1.e0 / 3.e0))) / 60.e0;
-  beta = (fem::pow(81.e0, (1.e0 / 3.e0)) + fem::pow(9.e0, (1.e0 / 3.e0))) * fem::dsqrt(3.e0) / 60.e0;
-  cno = fem::pow2(alph) + fem::pow2(beta);
+  u1 = (6.e0 + pow(81.e0, (1.e0 / 3.e0)) - pow(9.e0, (1.e0 / 3.e0))) / 30.e0;
+  alph = (12.e0 - pow(81.e0, (1.e0 / 3.e0)) + pow(9.e0, (1.e0 / 3.e0))) / 60.e0;
+  beta = (pow(81.e0, (1.e0 / 3.e0)) + pow(9.e0, (1.e0 / 3.e0))) * std::sqrt(3.e0) / 60.e0;
+  cno = pow2(alph) + pow2(beta);
   u1 = 1.0e0 / u1;
   alph = alph / cno;
   beta = beta / cno;
@@ -895,12 +881,12 @@ statement_2:
     {
       ijob += 10;
     }
-  hmaxn = fem::min(hmax, xend - x);
+  hmaxn = std::min(hmax, xend - x);
   if (h <= 10.e0 * uround)
     {
       h = 1.0e-6;
     }
-  h = fem::min(h, hmaxn);
+  h = std::min(h, hmaxn);
   hold = h;
   reject = false;
   first = true;
@@ -912,19 +898,19 @@ statement_2:
       last = true;
     }
   //C ---  INITIALIZATION FOR THE ARRAY PAST
-  FEM_DO_SAFE(i, 0, mxst - 1)
-  {
-    past(1 + idif * i) = x;
-  }
+  for (size_t i = 0; i <= mxst - 1; ++i) // FEM_DO_SAFE(i, 0, mxst - 1)
+    {
+      past(1 + idif * i) = x;
+    }
   ipa = (mxst - 1) * idif + 1;
-  FEM_DO_SAFE(j, 1, nrds)
-  {
-    k = ipast(j);
-    past(j + ipa) = y(k);
-    past(j + 1 * nrds + ipa) = 0.e0;
-    past(j + 2 * nrds + ipa) = 0.e0;
-    past(j + 3 * nrds + ipa) = 0.e0;
-  }
+  for (size_t j = 1; j <= nrds; ++j) // FEM_DO_SAFE(j, 1, nrds)
+    {
+      k = ipast(j);
+      past(j + ipa) = y(k);
+      past(j + 1 * nrds + ipa) = 0.e0;
+      past(j + 2 * nrds + ipa) = 0.e0;
+      past(j + 3 * nrds + ipa) = 0.e0;
+    }
   past(ipa + idif - 1) = h;
   //C ---  END OF THE INITIALIZATION
   faccon = 1.e0;
@@ -957,17 +943,17 @@ statement_2:
   n3 = 3 * n;
   if (itol == 0)
     {
-      FEM_DO_SAFE(i, 1, n)
-      {
-        scal(i) = atol(1) + rtol(1) * fem::abs(y(i));
-      }
+      for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+        {
+          scal(i) = atol(1) + rtol(1) * dabs(y(i));
+        }
     }
   else
     {
-      FEM_DO_SAFE(i, 1, n)
-      {
-        scal(i) = atol(i) + rtol(i) * fem::abs(y(i));
-      }
+      for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+        {
+          scal(i) = atol(i) + rtol(i) * dabs(y(i));
+        }
     }
   hhfac = h;
   nfcn++;
@@ -998,58 +984,58 @@ statement_10:
         {
           //C --- JACOBIAN IS BANDED
           mujacp = mujac + 1;
-          md = fem::min(mbjac, m2);
-          FEM_DO_SAFE(mm, 1, m1 / m2 + 1)
-          {
-            FEM_DO_SAFE(k, 1, md)
+          md = std::min(mbjac, m2);
+          for (size_t mm = 1; mm <= m1 / m2 + 1; ++mm) // FEM_DO_SAFE(mm, 1, m1 / m2 + 1)
             {
-              j = k + (mm - 1) * m2;
-            statement_12:
-              f1(j) = y(j);
-              f2(j) = fem::dsqrt(uround * fem::max(1.e-5, fem::abs(y(j))));
-              y(j) += f2(j);
-              j += md;
-              if (j <= mm * m2)
+              for (size_t k = 1; k <= md; ++k) // FEM_DO_SAFE(k, 1, md)
                 {
-                  goto statement_12;
-                }
-              fcn(n, x, y, cont, arglag, phi, rpar, ipar, past, ipast, nrds);
-              j = k + (mm - 1) * m2;
-              j1 = k;
-              lbeg = fem::max(1, j1 - mujac) + m1;
-            statement_14:
-              lend = fem::min(m2, j1 + mljac) + m1;
-              y(j) = f1(j);
-              mujacj = mujacp - j1 - m1;
-              FEM_DO_SAFE(l, lbeg, lend)
-              {
-                fjac(l + mujacj, j) = (cont(l) - y0(l)) / f2(j);
-              }
-              j += md;
-              j1 += md;
-              lbeg = lend + 1;
-              if (j <= mm * m2)
-                {
-                  goto statement_14;
+                  j = k + (mm - 1) * m2;
+                statement_12:
+                  f1(j) = y(j);
+                  f2(j) = std::sqrt(uround * std::max(1.e-5, dabs(y(j))));
+                  y(j) += f2(j);
+                  j += md;
+                  if (j <= mm * m2)
+                    {
+                      goto statement_12;
+                    }
+                  fcn(n, x, y, cont, arglag, phi, rpar, ipar, past, ipast, nrds);
+                  j = k + (mm - 1) * m2;
+                  j1 = k;
+                  lbeg = std::max(1, j1 - mujac) + m1;
+                statement_14:
+                  lend = std::min(m2, j1 + mljac) + m1;
+                  y(j) = f1(j);
+                  mujacj = mujacp - j1 - m1;
+                  for (size_t l = lbeg; l <= lend; ++l) // FEM_DO_SAFE(l, lbeg, lend)
+                    {
+                      fjac(l + mujacj, j) = (cont(l) - y0(l)) / f2(j);
+                    }
+                  j += md;
+                  j1 += md;
+                  lbeg = lend + 1;
+                  if (j <= mm * m2)
+                    {
+                      goto statement_14;
+                    }
                 }
             }
-          }
         }
       else
         {
           //C --- JACOBIAN IS FULL
-          FEM_DO_SAFE(i, 1, n)
-          {
-            ysafe = y(i);
-            delt = fem::dsqrt(uround * fem::max(1.e-5, fem::abs(ysafe)));
-            y(i) = ysafe + delt;
-            fcn(n, x, y, cont, arglag, phi, rpar, ipar, past, ipast, nrds);
-            FEM_DO_SAFE(j, m1 + 1, n)
+          for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
             {
-              fjac(j - m1, i) = (cont(j) - y0(j)) / delt;
+              ysafe = y(i);
+              delt = std::sqrt(uround * std::max(1.e-5, dabs(ysafe)));
+              y(i) = ysafe + delt;
+              fcn(n, x, y, cont, arglag, phi, rpar, ipar, past, ipast, nrds);
+              for (size_t j = m1 + 1; j <= n; ++j) // FEM_DO_SAFE(j, m1 + 1, n)
+                {
+                  fjac(j - m1, i) = (cont(j) - y0(j)) / delt;
+                }
+              y(i) = ysafe;
             }
-            y(i) = ysafe;
-          }
         }
     }
   else
@@ -1082,52 +1068,52 @@ statement_20:
   //C
   if (first || startn)
     {
-      FEM_DO_SAFE(i, 1, n)
-      {
-        z1(i) = 0.e0;
-        z2(i) = 0.e0;
-        z3(i) = 0.e0;
-        f1(i) = 0.e0;
-        f2(i) = 0.e0;
-        f3(i) = 0.e0;
-        //C
-        a1 = y(i);
-        zl(i) = a1;
-        zl(i + n) = a1;
-        zl(i + n2) = a1;
-      }
+      for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+        {
+          z1(i) = 0.e0;
+          z2(i) = 0.e0;
+          z3(i) = 0.e0;
+          f1(i) = 0.e0;
+          f2(i) = 0.e0;
+          f3(i) = 0.e0;
+          //C
+          a1 = y(i);
+          zl(i) = a1;
+          zl(i + n) = a1;
+          zl(i + n2) = a1;
+        }
     }
   else
     {
       c3q = h / hold;
       c1q = c1 * c3q;
       c2q = c2 * c3q;
-      FEM_DO_SAFE(i, 1, n)
-      {
-        a1 = y(i);
-        ak1 = cont(i + n);
-        ak2 = cont(i + n2);
-        ak3 = cont(i + n3);
-        z1i = c1q * (ak1 + (c1q - c2m1) * (ak2 + (c1q - c1m1) * ak3));
-        z2i = c2q * (ak1 + (c2q - c2m1) * (ak2 + (c2q - c1m1) * ak3));
-        z3i = c3q * (ak1 + (c3q - c2m1) * (ak2 + (c3q - c1m1) * ak3));
-        z1(i) = z1i;
-        z2(i) = z2i;
-        z3(i) = z3i;
-        //C
-        zl(i) = a1 + z1i;
-        f1(i) = ti11 * z1i + ti12 * z2i + ti13 * z3i;
-        f2(i) = ti21 * z1i + ti22 * z2i + ti23 * z3i;
-        f3(i) = ti31 * z1i + ti32 * z2i + ti33 * z3i;
-      }
+      for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+        {
+          a1 = y(i);
+          ak1 = cont(i + n);
+          ak2 = cont(i + n2);
+          ak3 = cont(i + n3);
+          z1i = c1q * (ak1 + (c1q - c2m1) * (ak2 + (c1q - c1m1) * ak3));
+          z2i = c2q * (ak1 + (c2q - c2m1) * (ak2 + (c2q - c1m1) * ak3));
+          z3i = c3q * (ak1 + (c3q - c2m1) * (ak2 + (c3q - c1m1) * ak3));
+          z1(i) = z1i;
+          z2(i) = z2i;
+          z3(i) = z3i;
+          //C
+          zl(i) = a1 + z1i;
+          f1(i) = ti11 * z1i + ti12 * z2i + ti13 * z3i;
+          f2(i) = ti21 * z1i + ti22 * z2i + ti23 * z3i;
+          f3(i) = ti31 * z1i + ti32 * z2i + ti33 * z3i;
+        }
       if (nlags > 0)
         {
-          FEM_DO_SAFE(i, 1, n)
-          {
-            a1 = y(i);
-            zl(i + n) = a1 + z2(i);
-            zl(i + n2) = a1 + z3(i);
-          }
+          for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+            {
+              a1 = y(i);
+              zl(i + n) = a1 + z2(i);
+              zl(i + n2) = a1 + z3(i);
+            }
         }
     }
   //C ---
@@ -1153,41 +1139,41 @@ statement_20:
       x1 = x + c1 * h;
       x2 = x + c2 * h;
       x3 = x + h;
-      FEM_DO_SAFE(il, 1, nlags)
-      {
-        xlag(1, il) = 0.e0;
-        xlag(2, il) = 0.e0;
-        xlag(3, il) = 0.e0;
-        icoun(1, il) = 0;
-        icoun(2, il) = 0;
-        icoun(3, il) = 0;
-      }
+      for (size_t il = 1; il <= nlags; ++il) // FEM_DO_SAFE(il, 1, nlags)
+        {
+          xlag(1, il) = 0.e0;
+          xlag(2, il) = 0.e0;
+          xlag(3, il) = 0.e0;
+          icoun(1, il) = 0;
+          icoun(2, il) = 0;
+          icoun(3, il) = 0;
+        }
       //C ---  LOOP ON LAG TERMS
-      FEM_DO_SAFE(il, 1, nlags)
-      {
-        //C ---   DELAYED ARGUMENTS ARE COMPUTED
-        xlag(1, il) = arglag(il, x1, n, zl, rpar, ipar, phi, past, ipast, nrds);
-        if (xlag(1, il) > x)
-          {
-            icoun(1, il) = 1;
-          }
-        xlag(2, il) = arglag(il, x2, n, zl(n + 1), rpar, ipar, phi,
-                             past, ipast, nrds);
-        if (xlag(2, il) > x)
-          {
-            icoun(2, il) = 1;
-          }
-        xlag(3, il) = arglag(il, x3, n, zl(n2 + 1), rpar, ipar, phi,
-                             past, ipast, nrds);
-        if (xlag(3, il) > x)
-          {
-            icoun(3, il) = 1;
-          }
-        if (icoun(1, il) + icoun(2, il) + icoun(3, il) >= 1)
-          {
-            caljacl = true;
-          }
-      }
+      for (size_t il = 1; il <= nlags; ++il) // FEM_DO_SAFE(il, 1, nlags)
+        {
+          //C ---   DELAYED ARGUMENTS ARE COMPUTED
+          xlag(1, il) = arglag(il, x1, n, zl, rpar, ipar, phi, past, ipast, nrds);
+          if (xlag(1, il) > x)
+            {
+              icoun(1, il) = 1;
+            }
+          xlag(2, il) = arglag(il, x2, n, zl(n + 1), rpar, ipar, phi,
+                               past, ipast, nrds);
+          if (xlag(2, il) > x)
+            {
+              icoun(2, il) = 1;
+            }
+          xlag(3, il) = arglag(il, x3, n, zl(n2 + 1), rpar, ipar, phi,
+                               past, ipast, nrds);
+          if (xlag(3, il) > x)
+            {
+              icoun(3, il) = 1;
+            }
+          if (icoun(1, il) + icoun(2, il) + icoun(3, il) >= 1)
+            {
+              caljacl = true;
+            }
+        }
       //C
       if (caljacl)
         {
@@ -1198,91 +1184,90 @@ statement_20:
               callag = true;
               //C --     ORDERING STEP
               ll = 2 * nlags + 1;
-              FEM_DO_SAFE(l, 1, nlags)
-              {
-                nl = 0;
-                FEM_DO_SAFE(i, 1, njacl)
+              for (size_t l = 1; l <= nlags; ++l) // FEM_DO_SAFE(l, 1, nlags)
                 {
-                  if (ivl(i) == l)
+                  nl = 0;
+                  for (size_t i = 1; i <= njacl; ++i) // FEM_DO_SAFE(i, 1, njacl)
                     {
-                      ils(ll) = i;
-                      nl++;
-                      ll++;
+                      if (ivl(i) == l)
+                        {
+                          ils(ll) = i;
+                          nl++;
+                          ll++;
+                        }
                     }
+                  ils(2 * l - 1) = nl;
+                  ils(2 * l) = ll - 1;
                 }
-                ils(2 * l - 1) = nl;
-                ils(2 * l) = ll - 1;
-              }
             }
           //C
-          FEM_DO_SAFE(il, 1, nlags)
-          {
-            FEM_DO_SAFE(is, 1, 3)
+          for (size_t il = 1; il <= nlags; ++il) // FEM_DO_SAFE(il, 1, nlags)
             {
-              if (is == 1)
+              for (size_t is = 1; is <= 3; ++is) // FEM_DO_SAFE(is, 1, 3)
                 {
-                  xact = x1;
-                }
-              if (is == 2)
-                {
-                  xact = x2;
-                }
-              if (is == 3)
-                {
-                  xact = x13;
-                }
-              if (xlag(is, il) > xact)
-                {
-                  if (iout == 2)
+                  if (is == 1)
                     {
-                      write(6, star),
-                        " WARNING!: ADVANCED ARGUMENTS ARE USED AT X= ", xact;
+                      xact = x1;
                     }
-                  xlag(is, il) = xact;
+                  if (is == 2)
+                    {
+                      xact = x2;
+                    }
+                  if (is == 3)
+                    {
+                      xact = x13;
+                    }
+                  if (xlag(is, il) > xact)
+                    {
+                      if (iout == 2)
+                        {
+                          write("WARNING!: ADVANCED ARGUMENTS ARE USED AT X = ", xact);
+                        }
+                      xlag(is, il) = xact;
+                    }
+                }
+              //C
+              //C ------ JACOBIAN MAINTAINS THE TENSOR STRUCTURE
+              //C ------ UPDATING CONDITION
+              alopt = 0.e0;
+              if (icoun(1, il) == 1)
+                {
+                  s1 = dim(xlag(1, il), x) / h;
+                  alopt = (-1.e0 + s1) * s1 * (-13.e0 - 7.e0 * std::sqrt(6.e0) + 5.e0 * (2.e0 + 3.e0 * std::sqrt(6.e0)) * s1);
+                }
+              if (icoun(2, il) == 1)
+                {
+                  s2 = dim(xlag(2, il), x) / h;
+                  alopt = alopt - (-1 + s2) * s2 * (13.e0 - 7.e0 * std::sqrt(6.e0) + 5.e0 * (-2.e0 + 3.e0 * std::sqrt(6.e0)) * s2);
+                }
+              if (icoun(3, il) == 1)
+                {
+                  s3 = dim(xlag(3, il), x) / h;
+                  alopt += s3 * (1.e0 - 8.e0 * s3 + 10.e0 * pow2(s3));
+                }
+              alopt = alopt / 9.e0;
+              //C
+              //C         OPTIMAL COEFFICIENT (W.R.T. FROBENIUS NORM)
+              //C         JACLAG ~= ALOPT*I
+              //C
+              //C         ACTIVATES IF ALOPT DIFFERENT FROM ZERO
+              if (dabs(alopt) >= 1.e-8)
+                {
+                  nl = ils(2 * il - 1);
+                  ile = ils(2 * il);
+                  for (size_t k = 1; k <= nl; ++k) // FEM_DO_SAFE(k, 1, nl)
+                    {
+                      kk = ils(ile - k + 1);
+                      ik = ive(kk);
+                      jk = ivc(kk);
+                      fjac(ik, jk) += alopt * fjaclag(kk);
+                    }
+                }
+              else
+                {
+                  caljacl = false;
                 }
             }
-            //C
-            //C ------ JACOBIAN MAINTAINS THE TENSOR STRUCTURE
-            //C ------ UPDATING CONDITION
-            alopt = 0.e0;
-            if (icoun(1, il) == 1)
-              {
-                s1 = dim(xlag(1, il), x) / h;
-                alopt = (-1.e0 + s1) * s1 * (-13.e0 - 7.e0 * fem::sqrt(6.e0) + 5.e0 * (2.e0 + 3.e0 * fem::sqrt(6.e0)) * s1);
-              }
-            if (icoun(2, il) == 1)
-              {
-                s2 = dim(xlag(2, il), x) / h;
-                alopt = alopt - (-1 + s2) * s2 * (13.e0 - 7.e0 * fem::sqrt(6.e0) + 5.e0 * (-2.e0 + 3.e0 * fem::sqrt(6.e0)) * s2);
-              }
-            if (icoun(3, il) == 1)
-              {
-                s3 = dim(xlag(3, il), x) / h;
-                alopt += s3 * (1.e0 - 8.e0 * s3 + 10.e0 * fem::pow2(s3));
-              }
-            alopt = alopt / 9.e0;
-            //C
-            //C         OPTIMAL COEFFICIENT (W.R.T. FROBENIUS NORM)
-            //C         JACLAG ~= ALOPT*I
-            //C
-            //C         ACTIVATES IF ALOPT DIFFERENT FROM ZERO
-            if (fem::abs(alopt) >= 1.e-8)
-              {
-                nl = ils(2 * il - 1);
-                ile = ils(2 * il);
-                FEM_DO_SAFE(k, 1, nl)
-                {
-                  kk = ils(ile - k + 1);
-                  ik = ive(kk);
-                  jk = ivc(kk);
-                  fjac(ik, jk) += alopt * fjaclag(kk);
-                }
-              }
-            else
-              {
-                caljacl = false;
-              }
-          }
           //C
         }
       else
@@ -1318,13 +1303,13 @@ statement_22:
   alphn = alph / h;
   betan = beta / h;
   //C --- RK JACOBIAN FACTORIZATION
-  decomr(n, _fjac, ldjac, _fmas, ldmas, mlmas, mumas, m1, m2, nm1,
+  decomr(cmn, n, _fjac, ldjac, _fmas, ldmas, mlmas, mumas, m1, m2, nm1,
          fac1, _e1, lde1, ip1, ier, ijob, calhes, iphes);
   if (ier != 0)
     {
       goto statement_78;
     }
-  decomc(n, _fjac, ldjac, _fmas, ldmas, mlmas, mumas, m1, m2, nm1,
+  decomc(cmn, n, _fjac, ldjac, _fmas, ldmas, mlmas, mumas, m1, m2, nm1,
          alphn, betan, _e2r, _e2i, lde1, ip2, ier, ijob);
   if (ier != 0)
     {
@@ -1339,23 +1324,23 @@ statement_30:
     {
       goto statement_178;
     }
-  if (0.1e0 * h <= fem::abs(x) * uround)
+  if (0.1e0 * h <= dabs(x) * uround)
     {
       goto statement_177;
     }
   if (index2)
     {
-      FEM_DO_SAFE(i, nind1 + 1, nind1 + nind2)
-      {
-        scal(i) = scal(i) / hhfac;
-      }
+      for (size_t i = nind1 + 1; i <= nind1 + nind2; ++i) // FEM_DO_SAFE(i, nind1 + 1, nind1 + nind2)
+        {
+          scal(i) = scal(i) / hhfac;
+        }
     }
   if (index3)
     {
-      FEM_DO_SAFE(i, nind1 + nind2 + 1, nind1 + nind2 + nind3)
-      {
-        scal(i) = scal(i) / (hhfac * hhfac);
-      }
+      for (size_t i = nind1 + nind2 + 1; i <= nind1 + nind2 + nind3; ++i) // FEM_DO_SAFE(i, nind1 + nind2 + 1, nind1 + nind2 + nind3)
+        {
+          scal(i) = scal(i) / (hhfac * hhfac);
+        }
     }
   xph = x + h;
   //C
@@ -1369,8 +1354,8 @@ statement_30:
   flags = false;
   flagn = false;
   //C -----------------------
-  faccon = fem::pow(fem::max(faccon, uround), 0.8e0);
-  theta = fem::abs(thet);
+  faccon = pow(std::max(faccon, uround), 0.8e0);
+  theta = dabs(thet);
 //C -------------------------------------------------------
 //C           REFERENCE POINT FOR THE SIMPLE AZIONE SIMPLE
 //C -------------------------------------------------------
@@ -1383,21 +1368,21 @@ statement_40:
       //C -------------------------------------------------------------
       //C ---------- DYNAMIC UPDATE OF INTERPOLANT (in PAST).
       //C -------------------------------------------------------------
-      FEM_DO_SAFE(j, 1, nrds)
-      {
-        i = ipast(j);
-        past(j + iact) = y(i) + z3(i);
-        z2i = z2(i);
-        z1i = z1(i);
-        a1 = (z2i - z3(i)) / c2m1;
-        past(j + 1 * nrds + iact) = a1;
-        ak = (z1i - z2i) / c1mc2;
-        acont3 = z1i / c1;
-        acont3 = (ak - acont3) / c2;
-        a2 = (ak - a1) / c1m1;
-        past(j + 2 * nrds + iact) = a2;
-        past(j + 3 * nrds + iact) = a2 - acont3;
-      }
+      for (size_t j = 1; j <= nrds; ++j) // FEM_DO_SAFE(j, 1, nrds)
+        {
+          i = ipast(j);
+          past(j + iact) = y(i) + z3(i);
+          z2i = z2(i);
+          z1i = z1(i);
+          a1 = (z2i - z3(i)) / c2m1;
+          past(j + 1 * nrds + iact) = a1;
+          ak = (z1i - z2i) / c1mc2;
+          acont3 = z1i / c1;
+          acont3 = (ak - acont3) / c2;
+          a2 = (ak - a1) / c1m1;
+          past(j + 2 * nrds + iact) = a2;
+          past(j + 3 * nrds + iact) = a2 - acont3;
+        }
       //C ---        UPDATE DI PAST
       past(iact) = x;
       //C            LEFT ENDPOINT
@@ -1412,13 +1397,13 @@ statement_40:
     }
   //C -----------------------------------
   //C ---     COMPUTE THE RIGHT-HAND SIDE
-  FEM_DO_SAFE(i, 1, n)
-  {
-    a1 = y(i);
-    zl(i) = a1 + z1(i);
-    zl(i + n) = a1 + z2(i);
-    zl(i + n2) = a1 + z3(i);
-  }
+  for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+    {
+      a1 = y(i);
+      zl(i) = a1 + z1(i);
+      zl(i + n) = a1 + z2(i);
+      zl(i + n2) = a1 + z3(i);
+    }
   //C           COMPUTATION OF STAGE VALUES
   fcn(n, x + c1 * h, zl, z1, arglag, phi, rpar, ipar, past, ipast, nrds);
   fcn(n, x + c2 * h, zl(n + 1), z2, arglag, phi, rpar, ipar, past, ipast, nrds);
@@ -1439,10 +1424,10 @@ statement_40:
     {
       //C ---         DISC. FLAG
       xx = (x + h) * (1.e0 - btol);
-      FEM_DO_SAFE(i, 1, n)
-      {
-        zl(n2 + i) = (1.e0 - btol) * zl(n2 + i) + btol * zl(n + i);
-      }
+      for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+        {
+          zl(n2 + i) = (1.e0 - btol) * zl(n2 + i) + btol * zl(n + i);
+        }
       fcn(n, xx, zl(n2 + 1), z3, arglag, phi, rpar, ipar, past, ipast, nrds);
       goto statement_42;
     }
@@ -1452,32 +1437,32 @@ statement_42:
   nfcn += 3;
   //C -----------------------------------
   //C ---     SOLVE THE LINEAR SYSTEMS
-  FEM_DO_SAFE(i, 1, n)
-  {
-    a1 = z1(i);
-    a2 = z2(i);
-    a3 = z3(i);
-    z1(i) = ti11 * a1 + ti12 * a2 + ti13 * a3;
-    z2(i) = ti21 * a1 + ti22 * a2 + ti23 * a3;
-    z3(i) = ti31 * a1 + ti32 * a2 + ti33 * a3;
-  }
+  for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+    {
+      a1 = z1(i);
+      a2 = z2(i);
+      a3 = z3(i);
+      z1(i) = ti11 * a1 + ti12 * a2 + ti13 * a3;
+      z2(i) = ti21 * a1 + ti22 * a2 + ti23 * a3;
+      z3(i) = ti31 * a1 + ti32 * a2 + ti33 * a3;
+    }
   //C
-  slvrad(n, _fjac, ldjac, mljac, mujac, _fmas, ldmas, mlmas, mumas, m1,
+  slvrad(cmn, n, _fjac, ldjac, mljac, mujac, _fmas, ldmas, mlmas, mumas, m1,
          m2, nm1, fac1, alphn, betan, _e1, _e2r, _e2i, lde1, z1, z2, z3, f1,
          f2, f3, cont, ip1, ip2, iphes, ier, ijob);
   nsol++;
   newt++;
   //C ---       NORM OF DY
   dyno = 0.e0;
-  FEM_DO_SAFE(i, 1, n)
-  {
-  }
-  FEM_DO_SAFE(i, 1, n)
-  {
-    denom = scal(i);
-    dyno += fem::pow2((z1(i) / denom)) + fem::pow2((z2(i) / denom)) + fem::pow2((z3(i) / denom));
-  }
-  dyno = fem::dsqrt(dyno / n3);
+  for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+    {
+    }
+  for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+    {
+      denom = scal(i);
+      dyno += pow2((z1(i) / denom)) + pow2((z2(i) / denom)) + pow2((z3(i) / denom));
+    }
+  dyno = std::sqrt(dyno / n3);
   //C --------------------------------------------------------
   //C ---     BAD CONVERGENCE OR NUMBER OF ITERATIONS TO LARGE
   //C --------------------------------------------------------
@@ -1490,7 +1475,7 @@ statement_42:
         }
       else
         {
-          theta = fem::sqrt(thq * thqold);
+          theta = std::sqrt(thq * thqold);
         }
       thqold = thq;
       inrej = 0;
@@ -1498,7 +1483,7 @@ statement_42:
       if (theta < 0.99e0)
         {
           faccon = theta / (1.0e0 - theta);
-          dyth = faccon * dyno * fem::pow(theta, (nit - 1 - newt)) / fnewt;
+          dyth = faccon * dyno * pow(theta, (nit - 1 - newt)) / fnewt;
           if (dyth >= 1.0e0)
             {
               inrej = 1;
@@ -1548,8 +1533,8 @@ statement_421:
             }
           else if (inrej == 1)
             {
-              qnewt = fem::dmax1(1.0e-4, fem::dmin1(20.0e0, dyth));
-              hhfac = .8e0 * fem::pow(qnewt, (-1.0e0 / (4.0e0 + nit - 1 - newt)));
+              qnewt = std::max(1.0e-4, std::min(20.0e0, dyth));
+              hhfac = .8e0 * pow(qnewt, (-1.0e0 / (4.0e0 + nit - 1 - newt)));
               h = hhfac * h;
               last = false;
               //C
@@ -1584,8 +1569,8 @@ statement_421:
                 }
               else if (inrej == 1)
                 {
-                  qnewt = fem::dmax1(1.0e-4, fem::dmin1(20.0e0, dyth));
-                  hhfac = .8e0 * fem::pow(qnewt, (-1.0e0 / (4.0e0 + nit - 1 - newt)));
+                  qnewt = std::max(1.0e-4, std::min(20.0e0, dyth));
+                  hhfac = .8e0 * pow(qnewt, (-1.0e0 / (4.0e0 + nit - 1 - newt)));
                   h = hhfac * h;
                   last = false;
                 }
@@ -1613,22 +1598,22 @@ statement_421:
     }
   //C ---- 2
   //C --------------------------------------------------------
-  dynold = fem::max(dyno, uround);
-  FEM_DO_SAFE(i, 1, n)
-  {
-    f1i = f1(i) + z1(i);
-    f2i = f2(i) + z2(i);
-    f3i = f3(i) + z3(i);
-    f1(i) = f1i;
-    f2(i) = f2i;
-    f3(i) = f3i;
-    z1(i) = t11 * f1i + t12 * f2i + t13 * f3i;
-    z2(i) = t21 * f1i + t22 * f2i + t23 * f3i;
-    z3i = t31 * f1i + f2i;
-    z3(i) = z3i;
-    //C ---          APPROX DELLA SOLUZIONE
-    zl(i + n2) = y(i) + z3i;
-  }
+  dynold = std::max(dyno, uround);
+  for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+    {
+      f1i = f1(i) + z1(i);
+      f2i = f2(i) + z2(i);
+      f3i = f3(i) + z3(i);
+      f1(i) = f1i;
+      f2(i) = f2i;
+      f3(i) = f3i;
+      z1(i) = t11 * f1i + t12 * f2i + t13 * f3i;
+      z2(i) = t21 * f1i + t22 * f2i + t23 * f3i;
+      z3i = t31 * f1i + f2i;
+      z3(i) = z3i;
+      //C ---          APPROX DELLA SOLUZIONE
+      zl(i + n2) = y(i) + z3i;
+    }
   //C -- -- -- -- -- -- -- -- -- -- -- -- -- --
   if (newt == 1 || faccon * dyno > fnewt)
     {
@@ -1662,7 +1647,7 @@ statement_421:
       //C
       bpacc(cmn, n, x, h, y, arglag, rpar, ipar, z1, z2, z3, first,
             bpv, ibp, ilbp, bpp, kmax, phi, past, ipast, nrds);
-      if (fem::abs(h - hnewt) / hnewt >= fem::max(btol, rtolm * 1.e-2))
+      if (dabs(h - hnewt) / hnewt >= std::max(btol, rtolm * 1.e-2))
         {
           goto statement_20;
           //C             REF POINT
@@ -1690,22 +1675,22 @@ statement_23:
   //C --- ALTERNATIVE FULL NEWTON JACOB. INTEGRATION STEP
   //C ----------------------------------------------------
   //C
-  FEM_DO_SAFE(i, 1, n)
-  {
-    FEM_DO_SAFE(j, 1, n)
+  for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
     {
-      fjacl(i + n, j) = 0.e0;
-      fjacl(i + 2 * n, j) = 0.e0;
-      fjacl(i + 2 * n, j + n) = 0.e0;
-      fjacl(i, j + n) = 0.e0;
-      fjacl(i, j + 2 * n) = 0.e0;
-      fjacl(i + n, j + 2 * n) = 0.e0;
-      fij = fjacs(i, j);
-      fjacl(i, j) = fij;
-      fjacl(i + n, j + n) = fij;
-      fjacl(i + 2 * n, j + 2 * n) = fij;
+      for (size_t j = 1; j <= n; ++j) // FEM_DO_SAFE(j, 1, n)
+        {
+          fjacl(i + n, j) = 0.e0;
+          fjacl(i + 2 * n, j) = 0.e0;
+          fjacl(i + 2 * n, j + n) = 0.e0;
+          fjacl(i, j + n) = 0.e0;
+          fjacl(i, j + 2 * n) = 0.e0;
+          fjacl(i + n, j + 2 * n) = 0.e0;
+          fij = fjacs(i, j);
+          fjacl(i, j) = fij;
+          fjacl(i + n, j + n) = fij;
+          fjacl(i + 2 * n, j + 2 * n) = fij;
+        }
     }
-  }
   //C
   quadr = first;
   if (!quadr)
@@ -1720,52 +1705,52 @@ statement_23:
       dl2 = (c2 - c1) * (c2 - 1.e0);
       dl3 = (1.e0 - c1) * (1.e0 - c2);
     }
-  FEM_DO_SAFE(il, 1, nlags)
-  {
-    FEM_DO_SAFE(i, 1, 3)
+  for (size_t il = 1; il <= nlags; ++il) // FEM_DO_SAFE(il, 1, nlags)
     {
-      xl = xlag(i, il);
-      if (xl > x)
+      for (size_t i = 1; i <= 3; ++i) // FEM_DO_SAFE(i, 1, 3)
         {
-          //CCC
-          //CCC            DERIVATIVES OF THE COLLOCATION POLYNOMIAL WRT STAGES
-          //CCC            d u/d Y_k = L_k(xlag_i)
-          //CCC
-          if (!quadr)
+          xl = xlag(i, il);
+          if (xl > x)
             {
-              dcoli1 = ((xl - x) / h) * ((xl - x2) / h) * ((xl - x3) / h) / dl1;
-              dcoli2 = ((xl - x) / h) * ((xl - x1) / h) * ((xl - x3) / h) / dl2;
-              dcoli3 = ((xl - x) / h) * ((xl - x1) / h) * ((xl - x2) / h) / dl3;
+              //CCC
+              //CCC            DERIVATIVES OF THE COLLOCATION POLYNOMIAL WRT STAGES
+              //CCC            d u/d Y_k = L_k(xlag_i)
+              //CCC
+              if (!quadr)
+                {
+                  dcoli1 = ((xl - x) / h) * ((xl - x2) / h) * ((xl - x3) / h) / dl1;
+                  dcoli2 = ((xl - x) / h) * ((xl - x1) / h) * ((xl - x3) / h) / dl2;
+                  dcoli3 = ((xl - x) / h) * ((xl - x1) / h) * ((xl - x2) / h) / dl3;
+                }
+              else
+                {
+                  dcoli1 = ((xl - x2) / h) * ((xl - x3) / h) / dl1;
+                  dcoli2 = ((xl - x1) / h) * ((xl - x3) / h) / dl2;
+                  dcoli3 = ((xl - x1) / h) * ((xl - x2) / h) / dl3;
+                }
+              //C
+              //C -----------> JACOBIAN IS UPDATED
+              nl = ils(2 * il - 1);
+              ile = ils(2 * il);
+              //C
+              //C -----------> FULL JACOBIAN MATRIX FJACL
+              for (size_t k = 1; k <= nl; ++k) // FEM_DO_SAFE(k, 1, nl)
+                {
+                  kk = ils(ile - k + 1);
+                  ik = ive(kk);
+                  jk = ivc(kk);
+                  fjlk = fjaclag(kk);
+                  iki = ik + (i - 1) * n;
+                  //C
+                  fjacl(iki, jk) += fjlk * dcoli1;
+                  fjacl(iki, jk + n) += fjlk * dcoli2;
+                  fjacl(iki, jk + 2 * n) += fjlk * dcoli3;
+                }
             }
-          else
-            {
-              dcoli1 = ((xl - x2) / h) * ((xl - x3) / h) / dl1;
-              dcoli2 = ((xl - x1) / h) * ((xl - x3) / h) / dl2;
-              dcoli3 = ((xl - x1) / h) * ((xl - x2) / h) / dl3;
-            }
-          //C
-          //C -----------> JACOBIAN IS UPDATED
-          nl = ils(2 * il - 1);
-          ile = ils(2 * il);
-          //C
-          //C -----------> FULL JACOBIAN MATRIX FJACL
-          FEM_DO_SAFE(k, 1, nl)
-          {
-            kk = ils(ile - k + 1);
-            ik = ive(kk);
-            jk = ivc(kk);
-            fjlk = fjaclag(kk);
-            iki = ik + (i - 1) * n;
-            //C
-            fjacl(iki, jk) += fjlk * dcoli1;
-            fjacl(iki, jk + n) += fjlk * dcoli2;
-            fjacl(iki, jk + 2 * n) += fjlk * dcoli3;
-          }
         }
+      //CCC
+      //CCC --> NLAGS
     }
-    //CCC
-    //CCC --> NLAGS
-  }
   //CCC <--
   //C
   ai11h = -ai11 / h;
@@ -1781,41 +1766,41 @@ statement_23:
   //C --- FJACL
   if (implct)
     {
-      FEM_DO_SAFE(i1, 1, n)
-      {
-        FEM_DO_SAFE(j1, 1, n)
+      for (size_t i1 = 1; i1 <= n; ++i1) // FEM_DO_SAFE(i1, 1, n)
         {
-          fjacl(i1, j1) += ai11h * fmas(i1, j1);
-          fjacl(i1, j1 + n) += ai12h * fmas(i1, j1);
-          fjacl(i1, j1 + 2 * n) += ai13h * fmas(i1, j1);
-          //C
-          fjacl(i1 + n, j1) += ai21h * fmas(i1, j1);
-          fjacl(i1 + n, j1 + n) += ai22h * fmas(i1, j1);
-          fjacl(i1 + n, j1 + 2 * n) += ai23h * fmas(i1, j1);
-          //C
-          fjacl(i1 + 2 * n, j1) += ai31h * fmas(i1, j1);
-          fjacl(i1 + 2 * n, j1 + n) += ai32h * fmas(i1, j1);
-          fjacl(i1 + 2 * n, j1 + 2 * n) += ai33h * fmas(i1, j1);
+          for (size_t j1 = 1; j1 <= n; ++j1) // FEM_DO_SAFE(j1, 1, n)
+            {
+              fjacl(i1, j1) += ai11h * fmas(i1, j1);
+              fjacl(i1, j1 + n) += ai12h * fmas(i1, j1);
+              fjacl(i1, j1 + 2 * n) += ai13h * fmas(i1, j1);
+              //C
+              fjacl(i1 + n, j1) += ai21h * fmas(i1, j1);
+              fjacl(i1 + n, j1 + n) += ai22h * fmas(i1, j1);
+              fjacl(i1 + n, j1 + 2 * n) += ai23h * fmas(i1, j1);
+              //C
+              fjacl(i1 + 2 * n, j1) += ai31h * fmas(i1, j1);
+              fjacl(i1 + 2 * n, j1 + n) += ai32h * fmas(i1, j1);
+              fjacl(i1 + 2 * n, j1 + 2 * n) += ai33h * fmas(i1, j1);
+            }
         }
-      }
     }
   else
     {
       //C ---  EXPLICIT CASE
-      FEM_DO_SAFE(i1, 1, n)
-      {
-        fjacl(i1, i1) += ai11h;
-        fjacl(i1, i1 + n) += ai12h;
-        fjacl(i1, i1 + 2 * n) += ai13h;
-        //C
-        fjacl(i1 + n, i1) += ai21h;
-        fjacl(i1 + n, i1 + n) += ai22h;
-        fjacl(i1 + n, i1 + 2 * n) += ai23h;
-        //C
-        fjacl(i1 + 2 * n, i1) += ai31h;
-        fjacl(i1 + 2 * n, i1 + n) += ai32h;
-        fjacl(i1 + 2 * n, i1 + 2 * n) += ai33h;
-      }
+      for (size_t i1 = 1; i1 <= n; ++i1) // FEM_DO_SAFE(i1, 1, n)
+        {
+          fjacl(i1, i1) += ai11h;
+          fjacl(i1, i1 + n) += ai12h;
+          fjacl(i1, i1 + 2 * n) += ai13h;
+          //C
+          fjacl(i1 + n, i1) += ai21h;
+          fjacl(i1 + n, i1 + n) += ai22h;
+          fjacl(i1 + n, i1 + 2 * n) += ai23h;
+          //C
+          fjacl(i1 + 2 * n, i1) += ai31h;
+          fjacl(i1 + 2 * n, i1 + n) += ai32h;
+          fjacl(i1 + 2 * n, i1 + 2 * n) += ai33h;
+        }
     }
   //C ----- FACTORIZATION OF THE FULL JACOBIAN
   dec(3 * n, 3 * ldjac, _fjacl, ipj, ier);
@@ -1832,7 +1817,7 @@ statement_23:
     {
       goto statement_178;
     }
-  if (0.1e0 * h <= fem::abs(x) * uround)
+  if (0.1e0 * h <= dabs(x) * uround)
     {
       goto statement_177;
     }
@@ -1848,8 +1833,8 @@ statement_23:
   flags = false;
   flagn = false;
   //C -----------------------
-  faccon = fem::pow(fem::max(faccon, uround), 0.8e0);
-  theta = fem::abs(thet);
+  faccon = pow(std::max(faccon, uround), 0.8e0);
+  theta = dabs(thet);
 //CCC --- --- --- --- --- --- --- --- --- --- --- --- ---
 //CCC         REFERENCE POINT FOR FULL ITERATION
 //CCC --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -1860,19 +1845,19 @@ statement_43:
       flagn = true;
       //C *****************
       //CCC ---      DYNAMIC UPDATE OF THE CURRENT INTETPOLANT (in PAST)
-      FEM_DO_SAFE(j, 1, nrds)
-      {
-        i = ipast(j);
-        past(j + iact) = y(i) + z3(i);
-        z2i = z2(i);
-        z1i = z1(i);
-        past(j + 1 * nrds + iact) = (z2i - z3(i)) / c2m1;
-        ak = (z1i - z2i) / c1mc2;
-        acont3 = z1i / c1;
-        acont3 = (ak - acont3) / c2;
-        past(j + 2 * nrds + iact) = (ak - past(j + 1 * nrds + iact)) / c1m1;
-        past(j + 3 * nrds + iact) = past(j + 2 * nrds + iact) - acont3;
-      }
+      for (size_t j = 1; j <= nrds; ++j) // FEM_DO_SAFE(j, 1, nrds)
+        {
+          i = ipast(j);
+          past(j + iact) = y(i) + z3(i);
+          z2i = z2(i);
+          z1i = z1(i);
+          past(j + 1 * nrds + iact) = (z2i - z3(i)) / c2m1;
+          ak = (z1i - z2i) / c1mc2;
+          acont3 = z1i / c1;
+          acont3 = (ak - acont3) / c2;
+          past(j + 2 * nrds + iact) = (ak - past(j + 1 * nrds + iact)) / c1m1;
+          past(j + 3 * nrds + iact) = past(j + 2 * nrds + iact) - acont3;
+        }
       //CCC          UPDATE
       past(iact) = x;
       //CCC          LEFT ENDPOINT OF CURRENT INTERVAL
@@ -1887,20 +1872,20 @@ statement_43:
       //C ---------> UNEXPECTED STEP-REJECTION
     }
   //C ---     COMPUTE THE RIGHT-HAND SIDE
-  FEM_DO_SAFE(i1, 1, n)
-  {
-    cont(i1) = y(i1) + z1(i1);
-  }
+  for (size_t i1 = 1; i1 <= n; ++i1) // FEM_DO_SAFE(i1, 1, n)
+    {
+      cont(i1) = y(i1) + z1(i1);
+    }
   fcn(n, x + c1 * h, cont, f1, arglag, phi, rpar, ipar, past, ipast, nrds);
-  FEM_DO_SAFE(i1, 1, n)
-  {
-    cont(i1) = y(i1) + z2(i1);
-  }
+  for (size_t i1 = 1; i1 <= n; ++i1) // FEM_DO_SAFE(i1, 1, n)
+    {
+      cont(i1) = y(i1) + z2(i1);
+    }
   fcn(n, x + c2 * h, cont, f2, arglag, phi, rpar, ipar, past, ipast, nrds);
-  FEM_DO_SAFE(i1, 1, n)
-  {
-    cont(i1) = y(i1) + z3(i1);
-  }
+  for (size_t i1 = 1; i1 <= n; ++i1) // FEM_DO_SAFE(i1, 1, n)
+    {
+      cont(i1) = y(i1) + z3(i1);
+    }
   fcn(n, xph, cont, f3, arglag, phi, rpar, ipar, past, ipast, nrds);
   nfcn += 3;
   //C
@@ -1908,51 +1893,51 @@ statement_43:
   if (implct)
     {
       zl = 0.e0;
-      FEM_DO_SAFE(i1, 1, n)
-      {
-        FEM_DO_SAFE(j1, 1, n)
+      for (size_t i1 = 1; i1 <= n; ++i1) // FEM_DO_SAFE(i1, 1, n)
         {
-          zl(i1) += ai11h * fmas(i1, j1) * z1(j1);
-          zl(i1) += ai12h * fmas(i1, j1) * z2(j1);
-          zl(i1) += ai13h * fmas(i1, j1) * z3(j1);
-          //C
-          zl(i1 + n) += ai21h * fmas(i1, j1) * z1(j1);
-          zl(i1 + n) += ai22h * fmas(i1, j1) * z2(j1);
-          zl(i1 + n) += ai23h * fmas(i1, j1) * z3(j1);
-          //C
-          zl(i1 + 2 * n) += ai31h * fmas(i1, j1) * z1(j1);
-          zl(i1 + 2 * n) += ai32h * fmas(i1, j1) * z2(j1);
-          zl(i1 + 2 * n) += ai33h * fmas(i1, j1) * z3(j1);
+          for (size_t j1 = 1; j1 <= n; ++j1) // FEM_DO_SAFE(j1, 1, n)
+            {
+              zl(i1) += ai11h * fmas(i1, j1) * z1(j1);
+              zl(i1) += ai12h * fmas(i1, j1) * z2(j1);
+              zl(i1) += ai13h * fmas(i1, j1) * z3(j1);
+              //C
+              zl(i1 + n) += ai21h * fmas(i1, j1) * z1(j1);
+              zl(i1 + n) += ai22h * fmas(i1, j1) * z2(j1);
+              zl(i1 + n) += ai23h * fmas(i1, j1) * z3(j1);
+              //C
+              zl(i1 + 2 * n) += ai31h * fmas(i1, j1) * z1(j1);
+              zl(i1 + 2 * n) += ai32h * fmas(i1, j1) * z2(j1);
+              zl(i1 + 2 * n) += ai33h * fmas(i1, j1) * z3(j1);
+            }
         }
-      }
     }
   else
     {
-      FEM_DO_SAFE(i1, 1, n)
-      {
-        zl(i1) = ai11h * z1(i1) + ai12h * z2(i1) + ai13h * z3(i1);
-        zl(n + i1) = ai21h * z1(i1) + ai22h * z2(i1) + ai23h * z3(i1);
-        zl(2 * n + i1) = ai31h * z1(i1) + ai32h * z2(i1) + ai33h * z3(i1);
-      }
+      for (size_t i1 = 1; i1 <= n; ++i1) // FEM_DO_SAFE(i1, 1, n)
+        {
+          zl(i1) = ai11h * z1(i1) + ai12h * z2(i1) + ai13h * z3(i1);
+          zl(n + i1) = ai21h * z1(i1) + ai22h * z2(i1) + ai23h * z3(i1);
+          zl(2 * n + i1) = ai31h * z1(i1) + ai32h * z2(i1) + ai33h * z3(i1);
+        }
     }
   //C
-  FEM_DO_SAFE(i1, 1, n)
-  {
-    zl(i1) = -zl(i1) - f1(i1);
-    zl(n + i1) = -zl(n + i1) - f2(i1);
-    zl(2 * n + i1) = -zl(2 * n + i1) - f3(i1);
-  }
+  for (size_t i1 = 1; i1 <= n; ++i1) // FEM_DO_SAFE(i1, 1, n)
+    {
+      zl(i1) = -zl(i1) - f1(i1);
+      zl(n + i1) = -zl(n + i1) - f2(i1);
+      zl(2 * n + i1) = -zl(2 * n + i1) - f3(i1);
+    }
   //C --------> SOLVE THE LINEAR SYSTEMS
   sol(3 * n, 3 * ldjac, _fjacl, zl, ipj);
   nsol++;
   newt++;
   dyno = 0.e0;
-  FEM_DO_SAFE(i, 1, n)
-  {
-    denom = scal(i);
-    dyno += fem::pow2((zl(i) / denom)) + fem::pow2((zl(i + n) / denom)) + fem::pow2((zl(i + 2 * n) / denom));
-  }
-  dyno = fem::dsqrt(dyno / n3);
+  for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+    {
+      denom = scal(i);
+      dyno += pow2((zl(i) / denom)) + pow2((zl(i + n) / denom)) + pow2((zl(i + 2 * n) / denom));
+    }
+  dyno = std::sqrt(dyno / n3);
   //C --------------------------------------------------------
   //C ---     BAD CONVERGENCE OR NUMBER OF ITERATIONS TO LARGE
   //C --------------------------------------------------------
@@ -1965,7 +1950,7 @@ statement_43:
         }
       else
         {
-          theta = fem::sqrt(thq * thqold);
+          theta = std::sqrt(thq * thqold);
         }
       thqold = thq;
       inrej = 0;
@@ -1973,7 +1958,7 @@ statement_43:
       if (theta < 0.99e0)
         {
           faccon = theta / (1.0e0 - theta);
-          dyth = faccon * dyno * fem::pow(theta, (nit - 1 - newt)) / fnewt;
+          dyth = faccon * dyno * pow(theta, (nit - 1 - newt)) / fnewt;
           if (dyth >= 1.0e0)
             {
               inrej = 1;
@@ -2004,8 +1989,8 @@ statement_431:
       //C ---        TURN TO A SIMPLE ITERATION
       if (inrej == 1)
         {
-          qnewt = fem::dmax1(1.0e-4, fem::dmin1(20.0e0, dyth));
-          hhfac = .8e0 * fem::pow(qnewt, (-1.0e0 / (4.0e0 + nit - 1 - newt)));
+          qnewt = std::max(1.0e-4, std::min(20.0e0, dyth));
+          hhfac = .8e0 * pow(qnewt, (-1.0e0 / (4.0e0 + nit - 1 - newt)));
           h = hhfac * h;
         }
       else if (inrej == 2)
@@ -2020,14 +2005,14 @@ statement_431:
       goto statement_10;
     }
   //C --------------------------------------------------------
-  dynold = fem::max(dyno, uround);
+  dynold = std::max(dyno, uround);
   //C --        UPDATE OF Z VALUES
-  FEM_DO_SAFE(i1, 1, n)
-  {
-    z1(i1) += zl(i1);
-    z2(i1) += zl(n + i1);
-    z3(i1) += zl(2 * n + i1);
-  }
+  for (size_t i1 = 1; i1 <= n; ++i1) // FEM_DO_SAFE(i1, 1, n)
+    {
+      z1(i1) += zl(i1);
+      z2(i1) += zl(n + i1);
+      z3(i1) += zl(2 * n + i1);
+    }
   //C -- -- -- -- -- -- -- -- -- -- -- -- -- --
   if (faccon * dyno > fnewt)
     {
@@ -2047,12 +2032,12 @@ statement_55:
   //C ********************
   //C
   //C    ERROR ESTIMATES
-  estrad(n, _fjac, ldjac, mljac, mujac, _fmas, ldmas, mlmas, mumas, h,
+  estrad(cmn, n, _fjac, ldjac, mljac, mujac, _fmas, ldmas, mlmas, mumas, h,
          u1, dd1, dd2, dd3, cl1, cl3, cq1, cq2, cq3, cerlq, fcn, nfcn, y0,
          y, ijob, x, m1, m2, nm1, _e1, lde1, alpha, z1, z2, z3, cont, f1,
          f2, f3, ip1, iphes, scal, serr, cerr, first, reject, fac1,
          arglag, phi, rpar, ipar, iout, past, ipast, nrds, jlflag, ieflag);
-  fac = fem::min(safe, cfac / (newt + 2 * nit));
+  fac = std::min(safe, cfac / (newt + 2 * nit));
   //C
   if (first)
     {
@@ -2061,7 +2046,7 @@ statement_55:
       //C ---------------------------------------------
       err = serr;
       //C ---  WE REQUIRE .2<=HNEW/H<=8.
-      quot = fem::max(facr, fem::min(facl, fem::pow(err, 0.25e0) / fac));
+      quot = std::max(facr, std::min(facl, pow(err, 0.25e0) / fac));
       hnew = h / quot;
     }
   else
@@ -2096,7 +2081,7 @@ statement_55:
       //C ------------------------------------
       //C ---  WE REQUIRE .2<=HNEW/H<=8.
       //C ---  LINEAR COMBINATION OF BOTH ERROR COMPONENTS
-      quot = fem::max(facr, fem::min(facl, fem::pow(err, .25e0) / fac));
+      quot = std::max(facr, std::min(facl, pow(err, .25e0) / fac));
       //C
       hnew = h / quot;
     }
@@ -2152,9 +2137,9 @@ statement_55:
             {
               if (flagus)
                 {
-                  facgus = (hacc / h) * fem::pow((fem::pow2(err) / erracc), 0.25e0) / safe;
-                  facgus = fem::max(facr, fem::min(facl, facgus));
-                  quot = fem::max(quot, facgus);
+                  facgus = (hacc / h) * pow((pow2(err) / erracc), 0.25e0) / safe;
+                  facgus = std::max(facr, std::min(facl, facgus));
+                  quot = std::max(quot, facgus);
                   hnew = h / quot;
                 }
               else
@@ -2164,74 +2149,74 @@ statement_55:
             }
           hacc = h;
         }
-      erracc = fem::max(1.0e-2, err);
+      erracc = std::max(1.0e-2, err);
       //C        ERRACC=ERR
       xold = x;
       hold = h;
       x = xph;
       //C ---    AGGIORNAMENTO DELLA SOLUZIONE
-      FEM_DO_SAFE(i, 1, n)
-      {
-        z3i = z3(i);
-        yi = y(i) + z3i;
-        y(i) = yi;
-        //C -------------------------------------------------------------------------
-        //C --------- UPDATE THE STAGES AND SOLUTION
-        //C -------------------------------------------------------------------------
-        //C ---
-        cont(i) = yi;
-        z2i = z2(i);
-        z1i = z1(i);
-        //C -------------------------------------------------------------------
-        //C ---         INVERSE DEVIDED DIFFERENCES
-        //C -------------------------------------------------------------------
-        a1 = (z2i - z3i) / c2m1;
-        cont(i + n) = a1;
-        ak = (z1i - z2i) / c1mc2;
-        acont3 = z1i / c1;
-        acont3 = (ak - acont3) / c2;
-        a2 = (ak - cont(i + n)) / c1m1;
-        cont(i + n2) = a2;
-        if (!first)
-          {
-            cont(i + n3) = a2 - acont3;
-          }
-        else
-          {
-            //C ---         QUADRATIC APPROXIMATION
-            cont(i + n3) = 0.e0;
-            //C ---         INVECE DI:
-            //C ---         CONT(I+N3)=CONT(I+N2)-ACONT3
-          }
-      }
+      for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+        {
+          z3i = z3(i);
+          yi = y(i) + z3i;
+          y(i) = yi;
+          //C -------------------------------------------------------------------------
+          //C --------- UPDATE THE STAGES AND SOLUTION
+          //C -------------------------------------------------------------------------
+          //C ---
+          cont(i) = yi;
+          z2i = z2(i);
+          z1i = z1(i);
+          //C -------------------------------------------------------------------
+          //C ---         INVERSE DEVIDED DIFFERENCES
+          //C -------------------------------------------------------------------
+          a1 = (z2i - z3i) / c2m1;
+          cont(i + n) = a1;
+          ak = (z1i - z2i) / c1mc2;
+          acont3 = z1i / c1;
+          acont3 = (ak - acont3) / c2;
+          a2 = (ak - cont(i + n)) / c1m1;
+          cont(i + n2) = a2;
+          if (!first)
+            {
+              cont(i + n3) = a2 - acont3;
+            }
+          else
+            {
+              //C ---         QUADRATIC APPROXIMATION
+              cont(i + n3) = 0.e0;
+              //C ---         INVECE DI:
+              //C ---         CONT(I+N3)=CONT(I+N2)-ACONT3
+            }
+        }
       //C ----------------------------------------
       //C ---    SAVE LAST ACCEPTED STEP INFORMATION
-      FEM_DO_SAFE(i, 1, lrc)
-      {
-        ucont(i) = cont(i);
-      }
+      for (size_t i = 1; i <= lrc; ++i) // FEM_DO_SAFE(i, 1, lrc)
+        {
+          ucont(i) = cont(i);
+        }
       ucont(lrc + 1) = x;
       ucont(lrc + 2) = h;
       //C ---    FOR POSSIBLE SEARCH OF BREAKING POINTS
       //C ------------------------------------------------------------------
       //C ---    STEP IS ACCEPTED> DENSE OUTPUT IS STORED IN PAST
       //C ---
-      FEM_DO_SAFE(j, 1, nrds)
-      {
-        i = ipast(j);
-        past(j + iact) = cont(i);
-        past(j + 1 * nrds + iact) = cont(i + n);
-        past(j + 2 * nrds + iact) = cont(i + n2);
-        if (!first)
-          {
-            past(j + 3 * nrds + iact) = cont(i + n3);
-          }
-        else
-          {
-            //C ---       QUADRATIC APPROXIMATION
-            past(j + 3 * nrds + iact) = 0.e0;
-          }
-      }
+      for (size_t j = 1; j <= nrds; ++j) // FEM_DO_SAFE(j, 1, nrds)
+        {
+          i = ipast(j);
+          past(j + iact) = cont(i);
+          past(j + 1 * nrds + iact) = cont(i + n);
+          past(j + 2 * nrds + iact) = cont(i + n2);
+          if (!first)
+            {
+              past(j + 3 * nrds + iact) = cont(i + n3);
+            }
+          else
+            {
+              //C ---       QUADRATIC APPROXIMATION
+              past(j + 3 * nrds + iact) = 0.e0;
+            }
+        }
       //C ---------> AGGIORNAMENTO DI PAST <---------
       past(iact) = xold;
       //C ---
@@ -2257,7 +2242,7 @@ statement_55:
           //C EXPLICIT PROBLEM
           if (!implct || neutral)
             {
-              he = fem::dmax1(h / 1.e4, 10.e0 * uround);
+              he = std::max(h / 1.e4, 10.e0 * uround);
               //C --------------------
               left = true;
               //C --------------------
@@ -2266,21 +2251,21 @@ statement_55:
               fcn(n, x, y, f2, arglag, phi, rpar, ipar, past, ipast, nrds);
               if (neutral)
                 {
-                  FEM_DO_SAFE(i, 1, n - ndimn)
-                  {
-                    z2(i) = y(i) + he * f2(i);
-                  }
-                  FEM_DO_SAFE(i, 1, ndimn)
-                  {
-                    z2(n - ndimn + i) = f2(ipast(nrds + i)) + he * f2(n - ndimn + i);
-                  }
+                  for (size_t i = 1; i <= n - ndimn; ++i) // FEM_DO_SAFE(i, 1, n - ndimn)
+                    {
+                      z2(i) = y(i) + he * f2(i);
+                    }
+                  for (size_t i = 1; i <= ndimn; ++i) // FEM_DO_SAFE(i, 1, ndimn)
+                    {
+                      z2(n - ndimn + i) = f2(ipast(nrds + i)) + he * f2(n - ndimn + i);
+                    }
                 }
               else
                 {
-                  FEM_DO_SAFE(i, 1, n)
-                  {
-                    z2(i) = y(i) + he * f2(i);
-                  }
+                  for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+                    {
+                      z2(i) = y(i) + he * f2(i);
+                    }
                 }
               //C --------------------
               left = false;
@@ -2288,21 +2273,21 @@ statement_55:
               fcn(n, x, y, f3, arglag, phi, rpar, ipar, past, ipast, nrds);
               if (neutral)
                 {
-                  FEM_DO_SAFE(i, 1, n - ndimn)
-                  {
-                    z3(i) = y(i) + he * f3(i);
-                  }
-                  FEM_DO_SAFE(i, 1, ndimn)
-                  {
-                    z3(n - ndimn + i) = f3(ipast(nrds + i)) + he * f3(n - ndimn + i);
-                  }
+                  for (size_t i = 1; i <= n - ndimn; ++i) // FEM_DO_SAFE(i, 1, n - ndimn)
+                    {
+                      z3(i) = y(i) + he * f3(i);
+                    }
+                  for (size_t i = 1; i <= ndimn; ++i) // FEM_DO_SAFE(i, 1, ndimn)
+                    {
+                      z3(n - ndimn + i) = f3(ipast(nrds + i)) + he * f3(n - ndimn + i);
+                    }
                 }
               else
                 {
-                  FEM_DO_SAFE(i, 1, n)
-                  {
-                    z3(i) = y(i) + he * f3(i);
-                  }
+                  for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+                    {
+                      z3(i) = y(i) + he * f3(i);
+                    }
                 }
               xl = arglag(ilbp, x + he, n, z2, rpar, ipar, phi, past, ipast, nrds);
               xlr = arglag(ilbp, x + he, n, z3, rpar, ipar, phi, past, ipast, nrds);
@@ -2320,11 +2305,11 @@ statement_55:
                     {
                       if (xl > bpp)
                         {
-                          write(6, star), " WARNING!: SOLUTION DOES NOT EXIST AT X= ", x;
+                          write("WARNING!: SOLUTION DOES NOT EXIST AT X = ", x);
                         }
                       else
                         {
-                          write(6, star), " WARNING!: SOLUTION IS  NOT UNIQUE AT X= ", x;
+                          write("WARNING!: SOLUTION IS NOT UNIQUE AT X = ", x);
                         }
                       goto statement_980;
                       //C             RETURN
@@ -2336,17 +2321,17 @@ statement_55:
                 {
                   if (left)
                     {
-                      FEM_DO_SAFE(j, 1, ndimn)
-                      {
-                        y(n - ndimn + j) = f2(ipast(nrds + j));
-                      }
+                      for (size_t j = 1; j <= ndimn; ++j) // FEM_DO_SAFE(j, 1, ndimn)
+                        {
+                          y(n - ndimn + j) = f2(ipast(nrds + j));
+                        }
                     }
                   else
                     {
-                      FEM_DO_SAFE(j, 1, ndimn)
-                      {
-                        y(n - ndimn + j) = f3(ipast(nrds + j));
-                      }
+                      for (size_t j = 1; j <= ndimn; ++j) // FEM_DO_SAFE(j, 1, ndimn)
+                        {
+                          y(n - ndimn + j) = f3(ipast(nrds + j));
+                        }
                     }
                 }
               //C GENERAL IMPLICIT
@@ -2361,17 +2346,17 @@ statement_55:
       //C -----------------------------------------------------------------
       if (itol == 0)
         {
-          FEM_DO_SAFE(i, 1, n)
-          {
-            scal(i) = atol(1) + rtol(1) * fem::abs(y(i));
-          }
+          for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+            {
+              scal(i) = atol(1) + rtol(1) * dabs(y(i));
+            }
         }
       else
         {
-          FEM_DO_SAFE(i, 1, n)
-          {
-            scal(i) = atol(i) + rtol(i) * fem::abs(y(i));
-          }
+          for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+            {
+              scal(i) = atol(i) + rtol(i) * dabs(y(i));
+            }
         }
       if (iout != 0)
         {
@@ -2402,14 +2387,14 @@ statement_55:
         {
           posneg = -posneg;
         }
-      xeps = posneg * (fem::abs(x) + 1.0e0) * 100 * uround;
+      xeps = posneg * (dabs(x) + 1.0e0) * 100 * uround;
       fcn(n, x + xeps, y, y0, arglag, phi, rpar, ipar, past, ipast, nrds);
       if (first)
         {
-          FEM_DO_SAFE(i, 1, ndimn)
-          {
-            y0(n - ndimn + i) = 0.0e0;
-          }
+          for (size_t i = 1; i <= ndimn; ++i) // FEM_DO_SAFE(i, 1, ndimn)
+            {
+              y0(n - ndimn + i) = 0.0e0;
+            }
         }
       nfcn++;
       first = false;
@@ -2432,7 +2417,7 @@ statement_55:
               //C              LEFT=.FALSE.
               first = true;
               xend = grid(igrid);
-              if (fem::abs(xend - x) <= (h * 1.e-2))
+              if (dabs(xend - x) <= (h * 1.e-2))
                 {
                   igrid++;
                   goto statement_45;
@@ -2443,14 +2428,14 @@ statement_55:
                   hmaxn = xend - x;
                   hmax = hmaxn;
                 }
-              hnew = fem::min(hnew, h);
+              hnew = std::min(hnew, h);
             }
         }
-      hnew = fem::min(hnew, hmaxn);
-      hopt = fem::min(h, hnew);
+      hnew = std::min(hnew, hmaxn);
+      hopt = std::min(h, hnew);
       if (reject)
         {
-          hnew = fem::min(hnew, h);
+          hnew = std::min(hnew, h);
         }
       reject = false;
       if ((x + hnew / quot1 - xend) >= 0.e0)
@@ -2458,9 +2443,8 @@ statement_55:
           h = xend - x;
           if (h < 0.e0)
             {
-              write(6, star), "ERROR!: NEGATIVE STEPSIZE! AT ";
-              write(6, star), "X > XEND = ", x, xend;
-              FEM_STOP(0);
+              write("ERROR!: NEGATIVE STEPSIZE! AT X = ", x , " > XEND = ", xend);
+              fatalError();
             }
           last = true;
         }
@@ -2591,58 +2575,33 @@ statement_175:
   idid = -5;
   goto statement_980;
 statement_176:
-  write(6, format_979), x;
-  write(6, star), " MATRIX IS REPEATEDLY SINGULAR, IER=", ier;
+  write("exit of radar5 at x = ", x);
+  write("MATRIX IS REPEATEDLY SINGULAR, IER = ", ier);
   idid = -4;
   goto statement_980;
 statement_177:
-  write(6, format_979), x;
-  write(6, star), " STEP SIZE TOO SMALL, H=", h;
+  write("exit of radar5 at x = ", x);
+  write("STEP SIZE TOO SMALL, H = ", h);
   idid = -3;
   goto statement_980;
 statement_178:
-  write(6, format_979), x;
-  write(6, star), " MORE THAN NMAX =", nmax, "STEPS ARE NEEDED";
+  write("exit of radar5 at x = ", x);
+  write("MORE THAN NMAX = R1 STEPS ARE NEEDED", nmax);
   idid = -2;
   goto statement_980;
 //C --- EXIT CAUSED BY SOLOUT
 statement_179:
-  write(6, format_979), x;
+  write("exit of radar5 at x = ", x);
   idid = 2;
 //C --- RETURN LABEL
 statement_980:
-  write(6, star), ibp, " COMPUTED BREAKING POINTS: ";
-  write(8, star), "BREAKING POINTS: ";
-  FEM_DO_SAFE(i, 1, ibp)
-  {
-    write(8, star), bpv(i);
-  }
-  write(8, star), " -------------- ";
-  cmn.io.close(8);
+  write("COMPUTED ", ibp, " BREAKING POINTS :");
+  for (size_t i = 1; i <= ibp; ++i) // FEM_DO_SAFE(i, 1, ibp)
+    write("  ", bpv(i));
+  write("--------------");
+
   //C --- DEALLOCATION OF THE MEMORY
-  FEM_THROW_UNHANDLED(
-    "executable deallocate: deallocate(z1,z2,z3,y0,scal,f1,f2,f3)");
-  FEM_THROW_UNHANDLED("executable deallocate: deallocate(bpv)");
-  FEM_THROW_UNHANDLED("executable deallocate: deallocate(fjac,zl)");
-  if (implct)
-    {
-      FEM_THROW_UNHANDLED("executable deallocate: if(implct)deallocate(fmas)");
-    }
-  FEM_THROW_UNHANDLED("executable deallocate: deallocate(ip1,ip2,iphes)");
-  FEM_THROW_UNHANDLED("executable deallocate: deallocate(e1,e2r,e2i)");
-  FEM_THROW_UNHANDLED("executable deallocate: deallocate(past)");
-  if (nlags > 0)
-    {
-      FEM_THROW_UNHANDLED("executable deallocate: deallocate(fjacs,fjaclag)");
-      FEM_THROW_UNHANDLED(
-        "executable deallocate: deallocate(ivl,ive,ivc,ils,icoun)");
-      if (iswjl != 1)
-        {
-          FEM_THROW_UNHANDLED(
-            "executable deallocate: if(iswjl.ne.1)deallocate(ipj,fjacl,xlag)");
-        }
-    }
-  FEM_THROW_UNHANDLED("executable deallocate: deallocate(cont,ucont)");
+  return;
 }
 
 //C ----------------------------------------------------------
@@ -2700,99 +2659,97 @@ statement_980:
 //C     A NEW DRIVER PROGRAM FOR AN EXAMPLE WITH IS AVAILABLE IN THE SAME WEBPAGE OF THE CODE.
 //C
 //C ----------------------------------------------------------
-void radar5::radar5(common & cmn,
-                    integer const & n,
-                    FCN & fcn,
-                    PHI & phi,
-                    ARGLAG arglag,
-                    doublereal & x,
-                    CVectorCore< doublereal > & y,
-                    doublereal & xend,
-                    doublereal & h,
-                    CVectorCore< doublereal > & rtol,
-                    CVectorCore< doublereal > & atol,
-                    integer const & itol,
-                    JAC & jac,
-                    integer const & ijac,
-                    integer & mljac,
-                    integer & mujac,
-                    JACLAG & jaclag,
-                    integer const & nlags,
-                    integer const & njacl,
-                    MAS & mas,
-                    integer const & imas,
-                    integer const & mlmas,
-                    integer const & mumas,
-                    SOLOUT & solout,
-                    integer const & iout,
-                    CVectorCore< doublereal > & work,
-                    integer const & lwork,
-                    CVectorCore< integer > & iwork,
-                    integer const & liwork,
-                    float const & rpar,
-                    integer const & ipar,
-                    integer & idid,
-                    CVectorCore< doublereal > & grid,
-                    integer const & lgrid,
-                    CVectorCore< integer > & ipast,
-                    integer const & nrdens)
+void CRadar5::operator()(const integer & n,
+                        FCN & fcn,
+                        PHI & phi,
+                        ARGLAG arglag,
+                        doublereal & x,
+                        CVectorCore< doublereal > & y,
+                        doublereal & xend,
+                        doublereal & h,
+                        CVectorCore< doublereal > & rtol,
+                        CVectorCore< doublereal > & atol,
+                        const integer & itol,
+                        JAC & jac,
+                        const integer & ijac,
+                        integer & mljac,
+                        integer & mujac,
+                        JACLAG & jaclag,
+                        const integer & nlags,
+                        const integer & njacl,
+                        MAS & mas,
+                        const integer & imas,
+                        const integer & mlmas,
+                        const integer & mumas,
+                        SOLOUT & solout,
+                        const integer & iout,
+                        CVectorCore< doublereal > & work,
+                        const integer & lwork,
+                        CVectorCore< integer > & iwork,
+                        const integer & liwork,
+                        const doublereal & rpar,
+                        const integer & ipar,
+                        integer & idid,
+                        CVectorCore< doublereal > & grid,
+                        const integer & lgrid,
+                        CVectorCore< integer > & ipast,
+                        const integer & nrdens)
 {
-  common_write write(cmn);
-  doublereal & uround = cmn.uround;
-  doublereal & hmax = cmn.hmax;
-  integer & idif = cmn.idif;
-  integer & mxst = cmn.mxst;
+  doublereal & uround = mCommon.uround;
+  doublereal & hmax = mCommon.hmax;
+  integer & idif = mCommon.idif;
+  integer & mxst = mCommon.mxst;
   //
-  integer nn = fem::int0;
-  integer nfcn = fem::int0;
-  integer njac = fem::int0;
-  integer nstep = fem::int0;
-  integer naccpt = fem::int0;
-  integer nrejct = fem::int0;
-  integer ndec = fem::int0;
-  integer nsol = fem::int0;
-  bool arret = fem::bool0;
-  integer ieflag = fem::int0;
-  integer ngrid = fem::int0;
-  integer ndimn = fem::int0;
-  integer lipast = fem::int0;
-  integer nrds = fem::int0;
-  integer i = fem::int0;
-  integer lrpast = fem::int0;
-  integer iswjl = fem::int0;
-  doublereal expm = fem::double0;
-  doublereal quot = fem::double0;
-  integer nmax = fem::int0;
-  integer nit = fem::int0;
-  bool startn = fem::bool0;
-  integer nind1 = fem::int0;
-  integer nind2 = fem::int0;
-  integer nind3 = fem::int0;
-  bool pred = fem::bool0;
-  integer m1 = fem::int0;
-  integer m2 = fem::int0;
-  integer nm1 = fem::int0;
-  doublereal safe = fem::double0;
-  doublereal thet = fem::double0;
-  doublereal tolst = fem::double0;
-  doublereal fnewt = fem::double0;
-  doublereal quot1 = fem::double0;
-  doublereal quot2 = fem::double0;
-  doublereal xuro = fem::double0;
-  integer igrid = fem::int0;
-  doublereal facl = fem::double0;
-  doublereal facr = fem::double0;
-  doublereal alpha = fem::double0;
-  doublereal tckbp = fem::double0;
-  bool implct = fem::bool0;
-  bool neutral = fem::bool0;
-  bool jband = fem::bool0;
-  integer ldjac = fem::int0;
-  integer lde1 = fem::int0;
-  integer ldmas = fem::int0;
-  integer ijob = fem::int0;
-  integer ldmas2 = fem::int0;
-  integer nfull = fem::int0;
+  integer nn = 0;
+  integer nfcn = 0;
+  integer njac = 0;
+  integer nstep = 0;
+  integer naccpt = 0;
+  integer nrejct = 0;
+  integer ndec = 0;
+  integer nsol = 0;
+  logical arret = 0;
+  integer ieflag = 0;
+  integer ngrid = 0;
+  integer ndimn = 0;
+  integer lipast = 0;
+  integer nrds = 0;
+  integer i = 0;
+  integer lrpast = 0;
+  integer iswjl = 0;
+  doublereal expm = 0.0;
+  doublereal quot = 0.0;
+  integer nmax = 0;
+  integer nit = 0;
+  logical startn = 0;
+  integer nind1 = 0;
+  integer nind2 = 0;
+  integer nind3 = 0;
+  logical pred = 0;
+  integer m1 = 0;
+  integer m2 = 0;
+  integer nm1 = 0;
+  doublereal safe = 0.0;
+  doublereal thet = 0.0;
+  doublereal tolst = 0.0;
+  doublereal fnewt = 0.0;
+  doublereal quot1 = 0.0;
+  doublereal quot2 = 0.0;
+  doublereal xuro = 0.0;
+  integer igrid = 0;
+  doublereal facl = 0.0;
+  doublereal facr = 0.0;
+  doublereal alpha = 0.0;
+  doublereal tckbp = 0.0;
+  logical implct = 0;
+  logical neutral = 0;
+  logical jband = 0;
+  integer ldjac = 0;
+  integer lde1 = 0;
+  integer ldmas = 0;
+  integer ijob = 0;
+  integer ldmas2 = 0;
+  integer nfull = 0;
   //C ----------------------------------------------------------
   //C     INPUT PARAMETERS
   //C --------------------
@@ -3240,12 +3197,12 @@ void radar5::radar5(common & cmn,
   ndec = 0;
   nsol = 0;
   arret = false;
-  cmn.flags = false;
-  cmn.flagn = false;
+  mCommon.flags = false;
+  mCommon.flagn = false;
   //C
   if (iout == 1)
     {
-      write(6, star), "STARTING INTEGRATION...";
+      write("STARTING INTEGRATION ...");
     }
   //C
   //C ------> OPERATIONS RELEVANT TO THE DELAY DEPENDENCE <------
@@ -3271,14 +3228,14 @@ void radar5::radar5(common & cmn,
     }
   if (iout == 1)
     {
-      write(6, star), "NUMBER OF PRESCRIBED GRID POINTS: ", ngrid;
+      write("NUMBER OF PRESCRIBED GRID POINTS: ", ngrid);
     }
   //C ------- NDIMN   NUMBER OF COMPONENTS OF A NEUTRAL PROBLEM
   if (imas == 2)
     {
       if (iwork(16) == 0)
         {
-          write(6, star), "NUMBER OF Y COMPONENTS HAS TO BE SPECIFIED";
+          write("NUMBER OF Y COMPONENTS HAS TO BE SPECIFIED");
           arret = true;
         }
       ndimn = iwork(16);
@@ -3293,7 +3250,7 @@ void radar5::radar5(common & cmn,
     {
       if (iout > 0)
         {
-          write(6, star), " CURIOUS INPUT IWORK(15)=", iwork(15);
+          write("CURIOUS INPUT IWORK(15) = ", iwork(15));
         }
       arret = true;
     }
@@ -3303,14 +3260,14 @@ void radar5::radar5(common & cmn,
     }
   if (nrds == n)
     {
-      FEM_DO_SAFE(i, 1, nrds)
-      {
-        ipast(i) = i;
-      }
+      for (size_t i = 1; i <= nrds; ++i) // FEM_DO_SAFE(i, 1, nrds)
+        {
+          ipast(i) = i;
+        }
     }
   if (iout == 1)
     {
-      write(6, star), "NUMBER OF DELAYED COMPONENTS: ", nrds;
+      write("NUMBER OF DELAYED COMPONENTS: ", nrds);
     }
   //C ------- LRPAST   DIMENSION OF VECTOR PAST
   mxst = iwork(12);
@@ -3319,7 +3276,7 @@ void radar5::radar5(common & cmn,
     {
       if (iout > 0)
         {
-          write(6, star), " INSUFFICIENT STORAGE FOR PAST, MIN. LRPAST=", 1;
+          write("INSUFFICIENT STORAGE FOR PAST, MIN. LRPAST: ", 1);
         }
       arret = true;
     }
@@ -3344,7 +3301,7 @@ void radar5::radar5(common & cmn,
       uround = work(1);
       if (uround <= 1.0e-19 || uround >= 1.0e0)
         {
-          write(6, star), " COEFFICIENTS HAVE 20 DIGITS, UROUND=", work(1);
+          write("COEFFICIENTS HAVE 20 DIGITS, UROUND = ", work(1));
           arret = true;
         }
     }
@@ -3355,32 +3312,32 @@ void radar5::radar5(common & cmn,
     {
       if (atol(1) <= 0.e0 || rtol(1) <= 10.e0 * uround)
         {
-          write(6, star), " TOLERANCES ARE TOO SMALL";
+          write("TOLERANCES ARE TOO SMALL");
           arret = true;
         }
       else
         {
           quot = atol(1) / rtol(1);
-          rtol(1) = 0.1e0 * fem::pow(rtol(1), expm);
+          rtol(1) = 0.1e0 * pow(rtol(1), expm);
           atol(1) = rtol(1) * quot;
         }
     }
   else
     {
-      FEM_DO_SAFE(i, 1, n)
-      {
-        if (atol(i) <= 0.e0 || rtol(i) <= 10.e0 * uround)
-          {
-            write(6, star), " TOLERANCES(", i, ") ARE TOO SMALL";
-            arret = true;
-          }
-        else
-          {
-            quot = atol(i) / rtol(i);
-            rtol(i) = 0.1e0 * fem::pow(rtol(i), expm);
-            atol(i) = rtol(i) * quot;
-          }
-      }
+      for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+        {
+          if (atol(i) <= 0.e0 || rtol(i) <= 10.e0 * uround)
+            {
+              write("TOLERANCES(", i, ") ARE TOO SMALL");
+              arret = true;
+            }
+          else
+            {
+              quot = atol(i) / rtol(i);
+              rtol(i) = 0.1e0 * pow(rtol(i), expm);
+              atol(i) = rtol(i) * quot;
+            }
+        }
     }
   //C
   //C -------> NMAX : THE MAXIMAL NUMBER OF STEPS <-------
@@ -3393,7 +3350,7 @@ void radar5::radar5(common & cmn,
       nmax = iwork(2);
       if (nmax <= 0)
         {
-          write(6, star), " WRONG INPUT IWORK(2)=", iwork(2);
+          write("WRONG INPUT IWORK(2) = ", iwork(2));
           arret = true;
         }
     }
@@ -3408,7 +3365,7 @@ void radar5::radar5(common & cmn,
       nit = iwork(3);
       if (nit <= 0)
         {
-          write(6, star), " CURIOUS INPUT IWORK(3)=", iwork(3);
+          write("CURIOUS INPUT IWORK(3) = ", iwork(3));
           arret = true;
         }
     }
@@ -3432,7 +3389,7 @@ void radar5::radar5(common & cmn,
     }
   if (nind1 + nind2 + nind3 != n)
     {
-      write(6, star), " CURIOUS INPUT FOR IWORK(5,6,7)=", nind1, nind2, nind3;
+      write("CURIOUS INPUT FOR IWORK(5,6,7): ", nind1, ", ", nind2, ", ", nind3);
       arret = true;
     }
   //C
@@ -3460,7 +3417,7 @@ void radar5::radar5(common & cmn,
     }
   if (m1 < 0 || m2 < 0 || m1 + m2 > n)
     {
-      write(6, star), " CURIOUS INPUT FOR IWORK(9,10)=", m1, m2;
+      write("CURIOUS INPUT FOR IWORK(9,10): ", m1, ", ", m2);
       arret = true;
     }
   //C
@@ -3474,7 +3431,7 @@ void radar5::radar5(common & cmn,
       safe = work(2);
       if (safe <= 0.001e0 || safe >= 1.0e0)
         {
-          write(6, star), " CURIOUS INPUT FOR WORK(2)=", work(2);
+          write("CURIOUS INPUT FOR WORK(2): ", work(2));
           arret = true;
         }
     }
@@ -3489,7 +3446,7 @@ void radar5::radar5(common & cmn,
       thet = work(3);
       if (thet >= 1.0e0)
         {
-          write(6, star), " CURIOUS INPUT FOR WORK(3)=", work(3);
+          write("CURIOUS INPUT FOR WORK(3): ", work(3));
           arret = true;
         }
     }
@@ -3498,15 +3455,15 @@ void radar5::radar5(common & cmn,
   tolst = rtol(1);
   if (work(4) == 0.e0)
     {
-      fnewt = fem::max(10 * uround / tolst, fem::min(0.03e0, fem::pow(tolst,
-                                                                      0.5e0)));
+      fnewt = std::max(10 * uround / tolst, std::min(0.03e0, pow(tolst,
+                                                                 0.5e0)));
     }
   else
     {
       fnewt = work(4);
       if (fnewt <= uround / tolst)
         {
-          write(6, star), " CURIOUS INPUT FOR WORK(4)=", work(4);
+          write("CURIOUS INPUT FOR WORK(4): ", work(4));
           arret = true;
         }
     }
@@ -3530,24 +3487,24 @@ void radar5::radar5(common & cmn,
     }
   if (quot1 > 1.0e0 || quot2 < 1.0e0)
     {
-      write(6, star), " CURIOUS INPUT FOR WORK(5,6)=", quot1, quot2;
+      write("CURIOUS INPUT FOR WORK(5,6): ", quot1, ", ", quot2);
       arret = true;
     }
   //C -------------------------------------------------------
   //C
   //C ---->    GRID WITH DISCONTINUITIES  <----
-  xuro = 100 * uround * fem::abs(xend);
+  xuro = 100 * uround * dabs(xend);
   if (ngrid > 0)
     {
       if (grid(ngrid) - xend >= xuro)
         {
           if (iout > 0)
             {
-              write(6, star), " GRID(NGRID) HAS TO BE <= XEND";
+              write("GRID(NGRID) HAS TO BE <= XEND ");
             }
           arret = true;
         }
-      if (fem::abs(grid(ngrid) - xend) >= xuro)
+      if (dabs(grid(ngrid) - xend) >= xuro)
         {
           ngrid++;
         }
@@ -3562,14 +3519,14 @@ void radar5::radar5(common & cmn,
   //C -------> MAXIMAL STEP SIZE <-------
   if (work(7) == 0.e0)
     {
-      FEM_DO_SAFE(i, 1, ngrid)
-      {
-        if (grid(i) > x)
-          {
-            igrid = i;
-            goto statement_2;
-          }
-      }
+      for (size_t i = 1; i <= ngrid; ++i) // FEM_DO_SAFE(i, 1, ngrid)
+        {
+          if (grid(i) > x)
+            {
+              igrid = i;
+              goto statement_2;
+            }
+        }
     statement_2:
       hmax = grid(igrid) - x;
     }
@@ -3597,14 +3554,14 @@ void radar5::radar5(common & cmn,
     }
   if (facl < 1.0e0 || facr > 1.0e0)
     {
-      write(6, star), " CURIOUS INPUT WORK(8,9)=", work(8), work(9);
+      write("CURIOUS INPUT WORK(8,9): ", work(8), ", ", work(9));
       arret = true;
     }
   //C ------->  PARAMETER FOR THE CONTROL OF DENSE OUTPUT <-------
   alpha = work(10);
   if (alpha < 0.e0 || alpha > 1.e0)
     {
-      write(6, star), " CURIOUS INPUT WORK(10)=", work(10);
+      write("CURIOUS INPUT WORK(10): ", work(10));
       arret = true;
     }
   //C ------->   PARAMETER FOR CONTROLLING THE SEARCH OF BP <-------
@@ -3657,8 +3614,7 @@ void radar5::radar5(common & cmn,
       //C ------ BANDWITH OF "MAS" NOT SMALLER THAN BANDWITH OF "JAC"
       if (mlmas > mljac || mumas > mujac)
         {
-          write(6, star),
-            "BANDWITH OF \"MAS\" NOT SMALLER THAN BANDWITH OF \"JAC\"";
+          write("BANDWITH OF \"MAS\" NOT SMALLER THAN BANDWITH OF \"JAC\"");
           arret = true;
         }
     }
@@ -3678,12 +3634,11 @@ void radar5::radar5(common & cmn,
             }
         }
     }
-  ldmas2 = fem::max(1, ldmas);
+  ldmas2 = std::max(1, ldmas);
   //C ------ HESSENBERG OPTION ONLY FOR EXPLICIT EQU. WITH FULL JACOBIAN
   if ((implct || jband) && ijob == 7)
     {
-      write(6, star),
-        " HESSENBERG OPTION ONLY FOR EXPLICIT EQUATIONS WITH FULL JACOBIAN";
+      write("HESSENBERG OPTION ONLY FOR EXPLICIT EQUATIONS WITH FULL JACOBIAN");
       arret = true;
     }
   //C
@@ -3695,9 +3650,9 @@ void radar5::radar5(common & cmn,
     }
   //C
   //C     NUMERICAL KERNEL
-  write(6, star), "INTEGRATION...";
+  write("INTEGRATION ...");
   //C -------- CALL TO CORE INTEGRATOR ------------
-  radcor(cmn, n, x, y, xend, h, fcn, phi, arglag, rtol, atol, itol, jac,
+  radcor(mCommon, n, x, y, xend, h, fcn, phi, arglag, rtol, atol, itol, jac,
          ijac, mljac, mujac, jaclag, mas, mlmas, mumas, solout, iout, idid,
          nmax, safe, thet, fnewt, quot1, quot2, nit, ijob, startn, nind1,
          nind2, nind3, pred, facl, facr, m1, m2, nm1, implct, neutral, ndimn,
@@ -3717,17 +3672,17 @@ void radar5::radar5(common & cmn,
   if (itol == 0)
     {
       quot = atol(1) / rtol(1);
-      rtol(1) = fem::pow((10.0e0 * rtol(1)), expm);
+      rtol(1) = pow((10.0e0 * rtol(1)), expm);
       atol(1) = rtol(1) * quot;
     }
   else
     {
-      FEM_DO_SAFE(i, 1, n)
-      {
-        quot = atol(i) / rtol(i);
-        rtol(i) = fem::pow((10.0e0 * rtol(i)), expm);
-        atol(i) = rtol(i) * quot;
-      }
+      for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
+        {
+          quot = atol(i) / rtol(i);
+          rtol(i) = pow((10.0e0 * rtol(i)), expm);
+          atol(i) = rtol(i) * quot;
+        }
     }
   //C ----------- RETURN -----------
 }
@@ -3737,43 +3692,42 @@ void radar5::radar5(common & cmn,
 //C
 //C ***********************************************************
 //C
-void radar5::lagr5(common & cmn,
-                   integer const & il,
-                   doublereal const & x,
-                   integer const & n,
+void CRadar5::lagr5(common & cmn,
+                   const integer & il,
+                   const doublereal & x,
+                   const integer & n,
                    float const & y,
                    ARGLAG & arglag,
                    CVectorCore< doublereal > & past,
                    doublereal & theta,
                    integer & ipos,
                    float const & rpar,
-                   integer const & ipar,
+                   const integer & ipar,
                    PHI & phi,
                    CVectorCore< integer > & ipast,
-                   integer const & nrds)
+                   const integer & nrds)
 {
-  common_write write(cmn);
-  bool & first = cmn.first;
-  bool & bpd = cmn.bpd;
-  doublereal & bpp = cmn.bpp;
-  integer & ilbp = cmn.ilbp;
-  bool & left = cmn.left;
-  doublereal & x0b = cmn.x0b;
-  doublereal & uround = cmn.uround;
-  integer & iact = cmn.iact;
-  integer & idif = cmn.idif;
-  integer & mxst = cmn.mxst;
+  const logical & first = cmn.first;
+  const logical & bpd = cmn.bpd;
+  const doublereal & bpp = cmn.bpp;
+  const integer & ilbp = cmn.ilbp;
+  const logical & left = cmn.left;
+  const doublereal & x0b = cmn.x0b;
+  const doublereal & uround = cmn.uround;
+  const integer & iact = cmn.iact;
+  const integer & idif = cmn.idif;
+  const integer & mxst = cmn.mxst;
   //
-  doublereal xlag = fem::double0;
-  doublereal compar = fem::double0;
-  doublereal epsact = fem::double0;
-  integer ipa = fem::int0;
-  integer inext = fem::int0;
-  doublereal xright = fem::double0;
-  doublereal h = fem::double0;
-  integer iprev = fem::int0;
-  integer iposb = fem::int0;
-  doublereal epsilon = fem::double0;
+  doublereal xlag = 0.0;
+  doublereal compar = 0.0;
+  doublereal epsact = 0.0;
+  integer ipa = 0;
+  integer inext = 0;
+  doublereal xright = 0.0;
+  doublereal h = 0.0;
+  integer iprev = 0;
+  integer iposb = 0;
+  doublereal epsilon = 0.0;
   //C ----------------------------------------------------------
   //C     THIS FUNCTION CAN BE USED FOR CONTINUOUS OUTPUT IN CONNECTION
   //C     WITH THE OUTPUT-SUBROUTINE FOR RADAR5. IT PROVIDES THE
@@ -3788,11 +3742,11 @@ void radar5::lagr5(common & cmn,
   ipos = -1;
   //C     EPSILON GIVES THE OVERLAPPING
   //C     MIN VALUE FOR THE SUPER-POSITION NEIGHBOURHOOD OF A BP
-  compar = uround * fem::max(fem::abs(xlag), fem::abs(x0b));
+  compar = uround * std::max(dabs(xlag), dabs(x0b));
   epsact = 10.e0 * compar;
   if (iact > 1)
     {
-      epsact = fem::dmax1(past(iact - 1) - 2, epsact);
+      epsact = std::max(past(iact - 1) - 2, epsact);
     }
   if (xlag <= x0b)
     {
@@ -3811,7 +3765,7 @@ void radar5::lagr5(common & cmn,
         }
       else
         {
-          if (fem::abs(xlag - x0b) <= epsact)
+          if (dabs(xlag - x0b) <= epsact)
             {
               if (left)
                 {
@@ -3824,7 +3778,7 @@ void radar5::lagr5(common & cmn,
                   theta = (xlag - (past(ipos) + past(ipos + idif - 1))) / past(ipos + idif - 1);
                 }
             }
-          else if (fem::abs(xlag - bpp) <= epsact)
+          else if (dabs(xlag - bpp) <= epsact)
             {
               ipos = -1;
               if (left)
@@ -3867,9 +3821,10 @@ void radar5::lagr5(common & cmn,
     }
   if (xlag - past(ipa) < 0.e0)
     {
-      write(6, star), " MEMORY FULL, MXST = ", mxst;
+      write("MEMORY FULL, MXST = ", mxst);
       cmn.irtrn = -1;
-      FEM_STOP(0);
+      fatalError();
+      ;
     }
   inext = iact - idif;
   if (inext < 1)
@@ -3961,11 +3916,11 @@ void radar5::lagr5(common & cmn,
             }
         }
       iposb = 0;
-      if (fem::abs(bpp - past(ipos)) <= 10.e0 * uround)
+      if (dabs(bpp - past(ipos)) <= 10.e0 * uround)
         {
           iposb = ipos;
         }
-      else if (fem::abs(bpp - past(inext)) <= 10.e0 * uround)
+      else if (dabs(bpp - past(inext)) <= 10.e0 * uround)
         {
           iposb = inext;
         }
@@ -3983,12 +3938,10 @@ void radar5::lagr5(common & cmn,
         }
       else
         {
-          epsilon = fem::dmin1(past(iposb + idif) - past(iposb), past(
-                                                                   iposb)
-                                                                   - past(iposb - idif));
+          epsilon = std::min(past(iposb + idif) - past(iposb), past(iposb) - past(iposb - idif));
         }
-      epsilon = fem::dmax1(epsilon * 1.e-2, epsact);
-      if (fem::abs(xlag - bpp) > epsilon)
+      epsilon = std::max(epsilon * 1.e-2, epsact);
+      if (dabs(xlag - bpp) > epsilon)
         {
           goto statement_10;
         }
@@ -4032,19 +3985,18 @@ void radar5::lagr5(common & cmn,
 //C
 //C ***********************************************************
 //C
-doublereal radar5::ylagr5(common & cmn,
-                      integer const & ic,
-                      doublereal const & theta,
-                      integer const & ipos,
-                      PHI & phi,
-                      float const & rpar,
-                      integer const & ipar,
-                      CVectorCore< doublereal > & past,
-                      CVectorCore< integer > & ipast,
-                      integer const & nrds)
+doublereal CRadar5::ylagr5(const common & cmn,
+                          const integer & ic,
+                          const doublereal & theta,
+                          const integer & ipos,
+                          PHI & phi,
+                          float const & rpar,
+                          const integer & ipar,
+                          CVectorCore< doublereal > & past,
+                          CVectorCore< integer > & ipast,
+                          const integer & nrds)
 {
-  doublereal return_value = fem::double0;
-  common_write write(cmn);
+  doublereal return_value = 0.0;
   //C ----------------------------------------------------------
   //C     THIS FUNCTION CAN BE USED FOR CONTINUOUS OUTPUT IN CONNECTION
   //C     WITH THE SUBROUTINE LAGR5. IT PROVIDES AN APPROXIMATION
@@ -4063,17 +4015,17 @@ doublereal radar5::ylagr5(common & cmn,
   //C ---
   //C --- COMPUTE PLACE OF IC-TH COMPONENT
   integer i = 0;
-  integer j = fem::int0;
-  FEM_DO_SAFE(j, 1, nrds)
-  {
-    if (ipast(j) == ic)
-      {
-        i = j;
-      }
-  }
+  integer j = 0;
+  for (size_t j = 1; j <= nrds; ++j) // FEM_DO_SAFE(j, 1, nrds)
+    {
+      if (ipast(j) == ic)
+        {
+          i = j;
+        }
+    }
   if (i == 0)
     {
-      write(6, star), " NO DENSE OUTPUT AVAILABLE FOR COMP.", ic;
+      write("NO DENSE OUTPUT AVAILABLE FOR COMP: ", ic);
       return return_value;
     }
   //C ----- COMPUTE DESIRED APPROXIMATION
@@ -4087,22 +4039,21 @@ doublereal radar5::ylagr5(common & cmn,
 //C
 //C ***********************************************************
 //C
-doublereal radar5::dlagr5(common & cmn,
-                      integer const & ic,
-                      doublereal const & theta,
-                      integer const & ipos,
-                      PHI & phi,
-                      float const & rpar,
-                      integer const & ipar,
-                      CVectorCore< doublereal > & past,
-                      CVectorCore< integer > & ipast,
-                      integer const & nrds)
+doublereal CRadar5::dlagr5(const common & cmn,
+                          const integer & ic,
+                          const doublereal & theta,
+                          const integer & ipos,
+                          PHI & phi,
+                          float const & rpar,
+                          const integer & ipar,
+                          CVectorCore< doublereal > & past,
+                          CVectorCore< integer > & ipast,
+                          const integer & nrds)
 {
-  doublereal return_value = fem::double0;
-  common_write write(cmn);
+  doublereal return_value = 0.0;
   // COMMON constn
-  doublereal & c1m1 = cmn.c1m1;
-  doublereal & c2m1 = cmn.c2m1;
+  const doublereal & c1m1 = cmn.c1m1;
+  const doublereal & c2m1 = cmn.c2m1;
   //
   //C ----------------------------------------------------------
   //C     THIS FUNCTION CAN BE USED FOR CONTINUOUS OUTPUT IN CONNECTION
@@ -4122,17 +4073,17 @@ doublereal radar5::dlagr5(common & cmn,
   //C ---
   //C --- COMPUTE PLACE OF IC-TH COMPONENT
   integer i = 0;
-  integer j = fem::int0;
-  FEM_DO_SAFE(j, 1, nrds)
-  {
-    if (ipast(j) == ic)
-      {
-        i = j;
-      }
-  }
+  integer j = 0;
+  for (size_t j = 1; j <= nrds; ++j) // FEM_DO_SAFE(j, 1, nrds)
+    {
+      if (ipast(j) == ic)
+        {
+          i = j;
+        }
+    }
   if (i == 0)
     {
-      write(6, star), " NO DENSE OUTPUT AVAILABLE FOR COMP.", ic;
+      write("NO DENSE OUTPUT AVAILABLE FOR COMP: ", ic);
       return return_value;
     }
   //C ----- COMPUTE DESIRED APPROXIMATION
@@ -4148,18 +4099,18 @@ doublereal radar5::dlagr5(common & cmn,
 //C
 //C ***********************************************************
 //C
-doublereal radar5::dontr5(common & cmn,
-                      integer const & i,
-                      integer const & n,
-                      doublereal const & x,
-                      const CVectorCore< doublereal > & cont,
-                      doublereal const & xsol,
-                      doublereal const & hsol)
+doublereal CRadar5::dontr5(const common & cmn,
+                          const integer & i,
+                          const integer & n,
+                          const doublereal & x,
+                          const CVectorCore< doublereal > & cont,
+                          const doublereal & xsol,
+                          const doublereal & hsol)
 {
-  doublereal return_value = fem::double0;
+  doublereal return_value = 0.0;
   // COMMON constn
-  doublereal & c1m1 = cmn.c1m1;
-  doublereal & c2m1 = cmn.c2m1;
+  const doublereal & c1m1 = cmn.c1m1;
+  const doublereal & c2m1 = cmn.c2m1;
   //
   //C ----------------------------------------------------------
   //C     THIS FUNCTION CAN BE USED FOR CONINUOUS OUTPUT. IT PROVIDES AN
@@ -4176,111 +4127,39 @@ doublereal radar5::dontr5(common & cmn,
   return return_value;
 }
 
-void radar5::decomr(integer const & n,
-                    const CMatrix< doublereal > & fjac,
-                    integer const & ldjac,
-                    const CMatrix< doublereal > & fmas,
-                    integer const & ldmas,
-                    integer const & mlmas,
-                    integer const & mumas,
-                    integer const & m1,
-                    integer const & m2,
-                    integer const & nm1,
-                    doublereal const & fac1,
-                    CMatrix< doublereal > & e1,
-                    integer const & lde1,
-                    const CVectorCore< integer > & ip1,
-                    integer const & ier,
-                    integer const & ijob,
-                    bool const & calhes,
-                    const CVectorCore< integer > & iphes)
-{}
-
-void radar5::decomc(integer const & n,
-                    const CMatrix< doublereal > & fjac,
-                    integer const & ldjac,
-                    const CMatrix< doublereal > & fmas,
-                    integer const & ldmas,
-                    integer const & mlmas,
-                    integer const & mumas,
-                    integer const & m1,
-                    integer const & m2,
-                    integer const & nm1,
-                    doublereal const & alphn,
-                    doublereal const & betan,
-                    CMatrix< doublereal > & e2r,
-                    CMatrix< doublereal > & e2i,
-                    integer const & lde1,
-                    const CVectorCore< integer > & ip2,
-                    integer const & ier,
-                    integer const & ijob)
-{}
-
-void radar5::slvrad(integer const & n,
+void CRadar5::estrad(const common & cmn,
+                    const integer & n,
                     CMatrix< doublereal > & fjac,
-                    integer const & ldjac,
-                    integer const & mljac,
-                    integer const & mujac,
+                    const integer & ldjac,
+                    const integer & mljac,
+                    const integer & mujac,
                     CMatrix< doublereal > & fmas,
-                    integer const & ldmas,
-                    integer const & mlmas,
-                    integer const & mumas,
-                    integer const & m1,
-                    integer const & m2,
-                    integer const & nm1,
-                    doublereal const & fac1,
-                    doublereal const & alphn,
-                    doublereal const & betan,
-                    CMatrix< doublereal > & e1,
-                    CMatrix< doublereal > & e2r,
-                    CMatrix< doublereal > & e2i,
-                    integer const & lde1,
-                    CVectorCore< doublereal > & z1,
-                    CVectorCore< doublereal > & z2,
-                    CVectorCore< doublereal > & z3,
-                    CVectorCore< doublereal > & f1,
-                    CVectorCore< doublereal > & f2,
-                    CVectorCore< doublereal > & f3,
-                    CVectorCore< doublereal > & cont,
-                    CVectorCore< integer > & ip1,
-                    CVectorCore< integer > & ip2,
-                    CVectorCore< integer > & phes,
-                    integer const & ier,
-                    integer const & ijob)
-{}
-
-void radar5::estrad(integer const & n,
-                    CMatrix< doublereal > & fjac,
-                    integer const & ldjac,
-                    integer const & mljac,
-                    integer const & mujac,
-                    CMatrix< doublereal > & fmas,
-                    integer const & ldmas,
-                    integer const & mlmas,
-                    integer const & mumas,
-                    doublereal const & h,
-                    doublereal const & g0,
-                    doublereal const & dd1,
-                    doublereal const & dd2,
-                    doublereal const & dd3,
-                    doublereal const & cl1,
-                    doublereal const & cl3,
-                    doublereal const & cq1,
-                    doublereal const & cq2,
-                    doublereal const & cq3,
-                    doublereal const & cerlq,
+                    const integer & ldmas,
+                    const integer & mlmas,
+                    const integer & mumas,
+                    const doublereal & h,
+                    const doublereal & g0,
+                    const doublereal & dd1,
+                    const doublereal & dd2,
+                    const doublereal & dd3,
+                    const doublereal & cl1,
+                    const doublereal & cl3,
+                    const doublereal & cq1,
+                    const doublereal & cq2,
+                    const doublereal & cq3,
+                    const doublereal & cerlq,
                     FCN & fcn,
                     integer & nfcn,
                     CVectorCore< doublereal > & y0,
                     CVectorCore< doublereal > & y,
-                    integer const & ijob,
-                    doublereal const & x,
-                    integer const & m1,
-                    integer const & m2,
-                    integer const & nm1,
+                    const integer & ijob,
+                    const doublereal & x,
+                    const integer & m1,
+                    const integer & m2,
+                    const integer & nm1,
                     CMatrix< doublereal > & e1,
-                    integer const & lde1,
-                    doublereal const & alpha,
+                    const integer & lde1,
+                    const doublereal & alpha,
                     CVectorCore< doublereal > & z1,
                     CVectorCore< doublereal > & z2,
                     CVectorCore< doublereal > & z3,
@@ -4293,39 +4172,338 @@ void radar5::estrad(integer const & n,
                     CVectorCore< doublereal > & scal,
                     doublereal & err,
                     doublereal & cerr,
-                    bool const & first,
-                    bool const & reject,
-                    doublereal const & fac1,
+                    logical const & first,
+                    logical const & reject,
+                    const doublereal & fac1,
                     ARGLAG & arglag,
                     PHI & phi,
-                    CVectorCore< doublereal > rpar,
-                    CVectorCore< integer > ipar,
-                    integer const & iout,
+                    const doublereal & rpar,
+                    const integer & ipar,
+                    const integer & iout,
                     CVectorCore< doublereal > & past,
                     CVectorCore< integer > & ipast,
-                    integer const & nrds,
-                    integer const & jeflag,
-                    integer const & ieflag)
-{}
+                    const integer & nrds,
+                    const integer & jeflag,
+                    const integer & ieflag)
+{
+  const integer & mbdiag = cmn.mbdiag;
+  //
+  double hee1 = 0.0;
+  double hee2 = 0.0;
+  double hee3 = 0.0;
+  integer nl = 0;
+  integer i = 0;
+  double bb = 0.0;
+  double errb = 0.0;
+  double errlb = 0.0;
+  double errl = 0.0;
+  double errqb = 0.0;
+  double errq = 0.0;
+  double cerrb = 0.0;
+  double xx = 0.0;
+  double serr = 0.0;
+  CVector< double > w1(n);
+  CVector< double > w2(n);
+  CVector< double > q1(n);
+  CVector< double > q2(n);
+  w1(1) = 1.0e0;
+  w2(1) = 1.0e0;
+  q1(1) = 1.0e0;
+  q2(1) = 1.0e0;
+  hee1 = dd1 / h;
+  hee2 = dd2 / h;
+  hee3 = dd3 / h;
+  switch (ijob)
+    {
+    case 1:
+      goto statement_1;
+    case 2:
+      goto statement_2;
+    case 3:
+      goto statement_3;
+    case 4:
+      goto statement_2;
+    case 5:
+      goto statement_55;
+    case 6:
+      goto statement_55;
+    case 7:
+      goto statement_55;
+    case 8:
+      goto statement_55;
+    case 9:
+      goto statement_55;
+    case 10:
+      goto statement_55;
+    case 11:
+      goto statement_2;
+    case 12:
+      goto statement_2;
+    case 13:
+      goto statement_55;
+    case 14:
+      goto statement_55;
+    case 15:
+      goto statement_55;
+    default:
+      break;
+    }
+//C
+statement_1:
+  //C ------  B=IDENTITY, JACOBIAN A FULL MATRIX
+  nl = n;
+  for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+    {
+      f2(i) = hee1 * z1(i) + hee2 * z2(i) + hee3 * z3(i);
+      cont(i) = f2(i) + y0(i);
+      w1(i) = cl1 * z1(i) + cl3 * z3(i);
+      q1(i) = cq1 * z1(i) + cq2 * z2(i) + cq3 * z3(i);
+    }
+  for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+    {
+      f3(i) = g0 * h * cont(i);
+    }
+  if (alpha != 0.e0)
+    {
+      for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+        {
+          w2(i) = w1(i) / (g0 * h);
+          q2(i) = q1(i) / (g0 * h);
+        }
+      sol(nl, lde1, e1, w2, ip1);
+      sol(nl, lde1, e1, q2, ip1);
+    }
+  sol(nl, lde1, e1, cont, ip1);
+  goto statement_77;
+//C
+statement_2:
+  //C ------  B IS DIAGONAL, JACOBIAN A BANDED MATRIX
+  nl = n - 2;
+  bb = 1.0e0;
+  for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+    {
+      if (ijob == 4)
+        {
+          bb = fmas(mbdiag, i);
+        }
+      f2(i) = bb * (hee1 * z1(i) + hee2 * z2(i) + hee3 * z3(i));
+      cont(i) = f2(i) + y0(i);
+      w1(i) = bb * (cl1 * z1(i) + cl3 * z3(i));
+      q1(i) = bb * (cq1 * z1(i) + cq2 * z2(i) + cq3 * z3(i));
+    }
+  for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+    {
+      f3(i) = g0 * h * cont(i);
+    }
+  if (alpha != 0.e0)
+    {
+      for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+        {
+          w2(i) = w1(i) / (g0 * h);
+          q2(i) = q1(i) / (g0 * h);
+        }
+      solexp(n, fjac, ldjac, mujac, nm1, lde1, e1, w2, ip1, fac1, ijob);
+      solexp(n, fjac, ldjac, mujac, nm1, lde1, e1, q2, ip1, fac1, ijob);
+    }
+  solexp(n, fjac, ldjac, mujac, nm1, lde1, e1, cont, ip1, fac1, ijob);
+  goto statement_77;
+//C
+statement_3:
+  //C ------  B IS DIAGONAL, JACOBIAN A FULL MATRIX
+  nl = n;
+  for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+    {
+      bb = fmas(mbdiag, i);
+      f2(i) = bb * (hee1 * z1(i) + hee2 * z2(i) + hee3 * z3(i));
+      w1(i) = bb * (cl1 * z1(i) + cl3 * z3(i));
+      q1(i) = bb * (cq1 * z1(i) + cq2 * z2(i) + cq3 * z3(i));
+      cont(i) = f2(i) + y0(i);
+    }
+  for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+    {
+      f3(i) = g0 * h * cont(i);
+    }
+  if (alpha != 0.e0)
+    {
+      for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+        {
+          w2(i) = w1(i) / (g0 * h);
+          q2(i) = q1(i) / (g0 * h);
+        }
+      sol(nl, lde1, e1, w2, ip1);
+      sol(nl, lde1, e1, q2, ip1);
+    }
+  sol(nl, lde1, e1, cont, ip1);
+  goto statement_77;
+//C
+//C --------------------------------------
+//C
+statement_77:
+  //C ********************
+  //C --- ERROR ESTIMATION
+  //C ********************
+  errb = 0.e0;
+  for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+    {
+      errb += pow2((w1(i) / scal(i)));
+    }
+  errlb = std::max(std::sqrt(errb / nl), 1.e-10);
+  if (alpha != 0.e0)
+    {
+      err = 0.e0;
+      for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+        {
+          err += pow2((w2(i) / scal(i)));
+        }
+      errl = std::max(std::sqrt(err / nl), 1.e-10);
+    }
+  else
+    {
+      errl = 0.e0;
+    }
+  errb = 0.e0;
+  for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+    {
+      errb += pow2((q1(i) / scal(i)));
+    }
+  errqb = std::max(std::sqrt(errb / nl), 1.e-10);
+  if (alpha != 0.e0)
+    {
+      err = 0.e0;
+      for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+        {
+          err += pow2((q2(i) / scal(i)));
+        }
+      errq = std::max(std::sqrt(err / nl), 1.e-10);
+    }
+  else
+    {
+      errq = 0.e0;
+    }
+  cerrb = errqb * (errqb / std::sqrt(errqb * errqb + cerlq * cerlq * pow2(std::min(errlb, errqb / cerlq))));
+  if (alpha != 0.e0)
+    {
+      cerr = errq * (errq / std::sqrt(errq * errq + cerlq * cerlq * pow2(std::min(errl, errq / cerlq))));
+    }
+  else
+    {
+      cerr = 0.e0;
+    }
+  cerr = alpha * cerr + (1.e0 - alpha) * cerrb;
+  errb = 0.e0;
+  for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+    {
+      errb += pow2((f3(i) / scal(i)));
+    }
+  errb = std::max(std::sqrt(errb / nl), 1.e-10);
+  err = 0.e0;
+  for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+    {
+      err += pow2((cont(i) / scal(i)));
+    }
+  err = std::max(std::sqrt(err / nl), 1.e-10);
+  err = std::min(errb, err);
+  if (err < 1.e0 || jeflag > 0)
+    {
+      return;
+    }
+  else if (first || reject)
+    {
+      for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+        {
+          cont(i) += y(i);
+        }
+      //C ---
+      xx = x;
+      fcn(n, xx, cont, f1, arglag, phi, rpar, ipar, past, ipast, nrds);
+      nfcn++;
+      for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+        {
+          cont(i) = f1(i) + f2(i);
+        }
+      switch (ijob)
+        {
+        case 1:
+          goto statement_31;
+        case 2:
+          goto statement_32;
+        case 3:
+          goto statement_31;
+        case 4:
+          goto statement_32;
+        case 5:
+          goto statement_31;
+        case 6:
+          goto statement_32;
+        case 7:
+          goto statement_55;
+        case 8:
+          goto statement_55;
+        case 9:
+          goto statement_55;
+        case 10:
+          goto statement_55;
+        case 11:
+          goto statement_32;
+        case 12:
+          goto statement_32;
+        case 13:
+          goto statement_31;
+        case 14:
+          goto statement_32;
+        case 15:
+          goto statement_31;
+        default:
+          break;
+        }
+    //C ----- FULL MATRIX OPTION
+    statement_31:
+      sol(nl, lde1, e1, cont, ip1);
+      goto statement_88;
+    //C ----- BANDED MATRIX OPTION
+    statement_32:
+      solexp(n, fjac, ldjac, mujac, nm1, lde1, e1, cont, ip1, fac1, ijob);
+      goto statement_88;
+    //C -----------------------------------
+    statement_88:
+      serr = err;
+      err = 0.e0;
+      for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
+        {
+          err += pow2((cont(i) / scal(i)));
+        }
+      err = std::max(std::sqrt(err / nl), 1.e-10);
+      err = std::min(serr, err);
+    }
+  return;
+//C -----------------------------------------------------------
+statement_55:
+  return;
+}
+
+//C
+//C     END OF SUBROUTINE ESTRAD
+//C
+//C ***********************************************************
 
 // Matrix Triangularization by Gaussian Elimination
 // integer dec_(integer n, doublereal **A, integer *ip);
-int radar5::dec(const integer & n,
-                 const integer & ldjac,
-                 CMatrix< doublereal > & fjacl,
-                 CVectorCore< integer > & ipj,
-                 integer & ier)
+integer CRadar5::dec(const integer & n,
+                    const integer & ldjac,
+                    CMatrix< doublereal > & fjacl,
+                    CVectorCore< integer > & ipj,
+                    integer & ier)
 {
   return dec_(&n, &ldjac, fjacl.array(), ipj.array(), &ier);
 }
 
 // Solution of linear system A*x = b
 // void sol_(integer n, doublereal **A, doublereal *b, integer *ip);
-int radar5::sol(const integer & n,
-                 const integer & ldjac,
-                 const CMatrix< doublereal > & fjacl,
-                 CVectorCore< doublereal > & zl,
-                 const CVectorCore< integer > & ipj)
+integer CRadar5::sol(const integer & n,
+                    const integer & ldjac,
+                    const CMatrix< doublereal > & fjacl,
+                    CVectorCore< doublereal > & zl,
+                    const CVectorCore< integer > & ipj)
 {
   return sol_(&n, &ldjac, fjacl.array(), zl.array(), ipj.array());
 }
