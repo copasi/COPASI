@@ -215,7 +215,12 @@ L50:
   /* ----------------------- END OF SUBROUTINE SOL ------------------------- */
 } /* sol_ */
 
-/* Subroutine */ int dech_(const integer * n, const integer * ndim, doublereal * a, integer * lb, integer * ip, integer * ier)
+/* Subroutine */ int dech_(const integer * n,
+                           const integer * ndim,
+                           doublereal * a,
+                           const integer * lb,
+                           integer * ip,
+                           integer * ier)
 {
   /* System generated locals */
   integer a_dim1, a_offset, i__1, i__2, i__3;
@@ -339,7 +344,12 @@ L80:
   /* ----------------------- END OF SUBROUTINE DECH ------------------------ */
 } /* dech_ */
 
-/* Subroutine */ int solh_(integer * n, integer * ndim, doublereal * a, integer * lb, doublereal * b, integer * ip)
+/* Subroutine */ int solh_(const integer * n,
+                           const integer * ndim,
+                           const doublereal * a,
+                           const integer * lb,
+                           doublereal * b,
+                           const integer * ip)
 {
   /* System generated locals */
   integer a_dim1, a_offset, i__1, i__2, i__3;
@@ -416,7 +426,12 @@ L50:
   /* ----------------------- END OF SUBROUTINE SOLH ------------------------ */
 } /* solh_ */
 
-/* Subroutine */ int decc_(integer * n, integer * ndim, doublereal * ar, doublereal * ai, integer * ip, integer * ier)
+/* Subroutine */ int decc_(const integer * n,
+                           const integer * ndim,
+                           doublereal * ar,
+                           doublereal * ai,
+                           integer * ip,
+                           integer * ier)
 {
   /* System generated locals */
   integer ar_dim1, ar_offset, ai_dim1, ai_offset, i__1, i__2, i__3;
@@ -584,7 +599,13 @@ L80:
   /* ----------------------- END OF SUBROUTINE DECC ------------------------ */
 } /* decc_ */
 
-/* Subroutine */ int solc_(integer * n, integer * ndim, doublereal * ar, doublereal * ai, doublereal * br, doublereal * bi, integer * ip)
+/* Subroutine */ int solc_(const integer * n,
+                           const integer * ndim,
+                           const doublereal * ar,
+                           const doublereal * ai,
+                           doublereal * br,
+                           doublereal * bi,
+                           const integer * ip)
 {
   /* System generated locals */
   integer ar_dim1, ar_offset, ai_dim1, ai_offset, i__1, i__2;
@@ -680,7 +701,13 @@ L50:
   /* ----------------------- END OF SUBROUTINE SOLC ------------------------ */
 } /* solc_ */
 
-/* Subroutine */ int dechc_(integer * n, integer * ndim, doublereal * ar, doublereal * ai, integer * lb, integer * ip, integer * ier)
+/* Subroutine */ int dechc_(const integer * n,
+                            const integer * ndim,
+                            doublereal * ar,
+                            doublereal * ai,
+                            const integer * lb,
+                            integer * ip,
+                            integer * ier)
 {
   /* System generated locals */
   integer ar_dim1, ar_offset, ai_dim1, ai_offset, i__1, i__2, i__3;
@@ -856,7 +883,14 @@ L80:
   /* ----------------------- END OF SUBROUTINE DECHC ----------------------- */
 } /* dechc_ */
 
-/* Subroutine */ int solhc_(integer * n, integer * ndim, doublereal * ar, doublereal * ai, integer * lb, doublereal * br, doublereal * bi, integer * ip)
+/* Subroutine */ int solhc_(const integer * n,
+                            const integer * ndim,
+                            const doublereal * ar,
+                            const doublereal * ai,
+                            const integer * lb,
+                            doublereal * br,
+                            doublereal * bi,
+                            const integer * ip)
 {
   /* System generated locals */
   integer ar_dim1, ar_offset, ai_dim1, ai_offset, i__1, i__2, i__3, i__4;
@@ -960,7 +994,13 @@ L50:
   /* ----------------------- END OF SUBROUTINE SOLHC ----------------------- */
 } /* solhc_ */
 
-/* Subroutine */ int decb_(integer * n, integer * ndim, doublereal * a, integer * ml, integer * mu, integer * ip, integer * ier)
+/* Subroutine */ int decb_(const integer * n,
+                           const integer * ndim,
+                           doublereal * a,
+                           const integer * ml,
+                           const integer * mu,
+                           integer * ip,
+                           integer * ier)
 {
   /* System generated locals */
   integer a_dim1, a_offset, i__1, i__2, i__3, i__4;
@@ -1130,7 +1170,13 @@ L80:
   /* ----------------------- END OF SUBROUTINE DECB ------------------------ */
 } /* decb_ */
 
-/* Subroutine */ int solb_(integer * n, integer * ndim, doublereal * a, integer * ml, integer * mu, doublereal * b, integer * ip)
+/* Subroutine */ int solb_(const integer * n,
+                           const integer * ndim,
+                           const doublereal * a,
+                           const integer * ml,
+                           const integer * mu,
+                           doublereal * b,
+                           const integer * ip)
 {
   /* System generated locals */
   integer a_dim1, a_offset, i__1, i__2, i__3;
@@ -1219,7 +1265,14 @@ L50:
   /* ----------------------- END OF SUBROUTINE SOLB ------------------------ */
 } /* solb_ */
 
-/* Subroutine */ int decbc_(integer * n, integer * ndim, doublereal * ar, doublereal * ai, integer * ml, integer * mu, integer * ip, integer * ier)
+/* Subroutine */ int decbc_(const integer * n,
+                            const integer * ndim,
+                            doublereal * ar,
+                            doublereal * ai,
+                            const integer * ml,
+                            const integer * mu,
+                            integer * ip,
+                            integer * ier)
 {
   /* System generated locals */
   integer ar_dim1, ar_offset, ai_dim1, ai_offset, i__1, i__2, i__3, i__4;
@@ -1443,7 +1496,15 @@ L80:
   /* ----------------------- END OF SUBROUTINE DECBC ------------------------ */
 } /* decbc_ */
 
-/* Subroutine */ int solbc_(integer * n, integer * ndim, doublereal * ar, doublereal * ai, integer * ml, integer * mu, doublereal * br, doublereal * bi, integer * ip)
+/* Subroutine */ int solbc_(const integer * n,
+                            const integer * ndim,
+                            const doublereal * ar,
+                            const doublereal * ai,
+                            const integer * ml,
+                            const integer * mu,
+                            doublereal * br,
+                            doublereal * bi,
+                            const integer * ip)
 {
   /* System generated locals */
   integer ar_dim1, ar_offset, ai_dim1, ai_offset, i__1, i__2, i__3;
@@ -1558,7 +1619,12 @@ L50:
   /* ----------------------- END OF SUBROUTINE SOLBC ------------------------ */
 } /* solbc_ */
 
-/* Subroutine */ int elmhes_(integer * nm, integer * n, integer * low, integer * igh, doublereal * a, integer * int__)
+/* Subroutine */ int elmhes_(const integer * nm,
+                             const integer * n,
+                             const integer * low,
+                             const integer * igh,
+                             doublereal * a,
+                             integer * int__)
 {
   /* System generated locals */
   integer a_dim1, a_offset, i__1, i__2, i__3;

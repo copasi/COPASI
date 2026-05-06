@@ -19,32 +19,55 @@
 
 #include "copasi/copasi.h"
 
-#include "CRadau5.h"
-#include "Cxerrwd.h"
-#include "CInternalSolver.h"
-#include "common.h"
+#include "copasi/odepack++/CRadau5.h"
+
+using namespace dc_decsol;
 
 //#define pow_dd(__x, __y) pow(*__x, *__y)
-double d_sign(double * a, double * b);
-static double pow_dd(double *ap, double *bp);
-static double pow_di(double *ap, C_INT *bp);
-
-/* Common Block Declarations */
-
-struct
+static double d_sign(double *a, double *b)
 {
-  C_INT nn, nn2, nn3, nn4;
-  double xsol, hsol, c2m1, c1m1;
-} conra5_;
+  double x;
+  x = (*a >= 0 ? *a : - *a);
+  return (*b >= 0 ? x : -x);
+}
 
-#define conra5_1 conra5_
-
-struct
+static double pow_dd(double *ap, double *bp)
 {
-  C_INT mle, mue, mbjac, mbb, mdiag, mdiff, mbdiag;
-} linal_;
+  return (pow(*ap, *bp));
+}
 
-#define linal_1 linal_
+static double pow_di(double *ap, C_INT *bp)
+{
+  double pow, x;
+  C_INT n;
+  unsigned long u;
+
+  pow = 1;
+  x = *ap;
+  n = *bp;
+
+  if (n != 0)
+    {
+      if (n < 0)
+        {
+          n = -n;
+          x = 1 / x;
+        }
+
+      for (u = n; ;)
+        {
+          if (u & 01)
+            pow *= x;
+
+          if (u >>= 1)
+            x *= x;
+          else
+            break;
+        }
+    }
+
+  return (pow);
+}
 
 /* Table of constant values */
 
@@ -58,10 +81,14 @@ static double c_b115 = .25;
 
 CRadau5::CRadau5()
   : Cxerrwd(true)
+  , mCommon()
 {}
 
 CRadau5::~CRadau5()
 {}
+
+#define conra5_1 mCommon.conra5
+#define linal_1 mCommon.linal
 
 /* Subroutine */
 C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
@@ -77,47 +104,33 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
   double d__1, d__2, d__3, d__4;
 
   /* Local variables */
-  static C_INT i__, m1, m2, nm1, nit, iee1, ief1, lde1, ief2, ief3, iey0,
+  C_INT i__, m1, m2, nm1, nit, iee1, ief1, lde1, ief2, ief3, iey0,
          iez1, iez2, iez3;
-  static double facl;
-  static C_INT ndec, njac;
-  static double facr, safe;
-  static C_INT ijob, nfcn;
-  static C_LOGICAL pred;
-  static double hmax;
-  static C_INT nmax;
-  static double thet, expm;
-  static C_INT nsol;
-  static double quot;
-  static C_INT iee2i, iee2r, ieip1, ieip2, nind1, nind2, nind3;
-  static double quot1, quot2;
-  static C_INT iejac, ldjac;
-  static C_LOGICAL jband;
-  static C_INT iecon, iemas, ldmas, ieiph;
-  static C_LOGICAL arret;
-  static double fnewt;
-  static C_INT nstep;
-  static double tolst;
-  static C_INT ldmas2, iescal, naccpt;
-  extern /* Subroutine */ int radcor_(C_INT *, CRadau5::evalF, double *,
-                                      double *, double *, double *, double *,
-                                      double *, double *, C_INT *, CRadau5::evalJ, C_INT *, C_INT *,
-                                      C_INT *, CRadau5::evalM, C_INT *, C_INT *, CRadau5::evalO, C_INT *, C_INT *
-                                      , C_INT *, double *, double *, double *, double
-                                      *, double *, double *, C_INT *, C_INT *, C_LOGICAL *,
-                                      C_INT *, C_INT *, C_INT *, C_LOGICAL *, double *,
-                                      double *, C_INT *, C_INT *, C_INT *, C_LOGICAL *, C_LOGICAL
-                                      *, C_INT *, C_INT *, C_INT *, double *, double *,
-                                      double *, double *, double *, double *,
-                                      double *, double *, double *, double *,
-                                      double *, double *, double *, C_INT *, C_INT *,
-                                      C_INT *, double *, C_INT *, C_INT *, C_INT *, C_INT
-                                      *, C_INT *, C_INT *, C_INT *, double *, C_INT *);
-  static C_INT nrejct;
-  static C_LOGICAL implct;
-  static C_INT istore;
-  static C_LOGICAL startn;
-  static double uround;
+  double facl;
+  C_INT ndec, njac;
+  double facr, safe;
+  C_INT ijob, nfcn;
+  C_LOGICAL pred;
+  double hmax;
+  C_INT nmax;
+  double thet, expm;
+  C_INT nsol;
+  double quot;
+  C_INT iee2i, iee2r, ieip1, ieip2, nind1, nind2, nind3;
+  double quot1, quot2;
+  C_INT iejac, ldjac;
+  C_LOGICAL jband;
+  C_INT iecon, iemas, ldmas, ieiph;
+  C_LOGICAL arret;
+  double fnewt;
+  C_INT nstep;
+  double tolst;
+  C_INT ldmas2, iescal, naccpt;
+  C_INT nrejct;
+  C_LOGICAL implct;
+  C_INT istore;
+  C_LOGICAL startn;
+  double uround;
 
   /* ---------------------------------------------------------- */
   /*     NUMERICAL SOLUTION OF A STIFF (OR DIFFERENTIAL ALGEBRAIC) */
@@ -992,23 +1005,80 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
 
 /* *********************************************************** */
 
-/* Subroutine */ int radcor_(C_INT *n, CRadau5::evalF fcn, double *x, double *
-                             y, double *xend, double *hmax, double *h__, double *
-                             rtol, double *atol, C_INT *itol, CRadau5::evalJ jac, C_INT *ijac,
-                             C_INT *mljac, C_INT *mujac, CRadau5::evalM mas, C_INT *mlmas, C_INT *
-                             mumas, CRadau5::evalO solout, C_INT *iout, C_INT *idid, C_INT *nmax,
-                             double *uround, double *safe, double *thet, double *
-                             fnewt, double *quot1, double *quot2, C_INT *nit, C_INT *
-                             ijob, C_LOGICAL *startn, C_INT *nind1, C_INT *nind2, C_INT *nind3,
-                             C_LOGICAL *pred, double *facl, double *facr, C_INT *m1,
-                             C_INT *m2, C_INT *nm1, C_LOGICAL *implct, C_LOGICAL *banded, C_INT *
-                             ldjac, C_INT *lde1, C_INT *ldmas, double *z1, double *z2,
-                             double *z3, double *y0, double *scal, double *f1,
-                             double *f2, double *f3, double *fjac, double *e1,
-                             double *e2r, double *e2i, double *fmas, C_INT *ip1,
-                             C_INT *ip2, C_INT *iphes, double *cont, C_INT *nfcn,
-                             C_INT *njac, C_INT *nstep, C_INT *naccpt, C_INT *nrejct,
-                             C_INT *ndec, C_INT *nsol, double *rpar, C_INT *ipar)
+int CRadau5::radcor_(C_INT * n,
+                     CRadau5::evalF fcn,
+                     double * x,
+                     double * y,
+                     double * xend,
+                     double * hmax,
+                     double * h__,
+                     double * rtol,
+                     double * atol,
+                     C_INT * itol,
+                     CRadau5::evalJ jac,
+                     C_INT * ijac,
+                     C_INT * mljac,
+                     C_INT * mujac,
+                     CRadau5::evalM mas,
+                     C_INT * mlmas,
+                     C_INT *
+                       mumas,
+                     CRadau5::evalO solout,
+                     C_INT * iout,
+                     C_INT * idid,
+                     C_INT * nmax,
+                     double * uround,
+                     double * safe,
+                     double * thet,
+                     double *
+                       fnewt,
+                     double * quot1,
+                     double * quot2,
+                     C_INT * nit,
+                     C_INT *
+                       ijob,
+                     C_LOGICAL * startn,
+                     C_INT * nind1,
+                     C_INT * nind2,
+                     C_INT * nind3,
+                     C_LOGICAL * pred,
+                     double * facl,
+                     double * facr,
+                     C_INT * m1,
+                     C_INT * m2,
+                     C_INT * nm1,
+                     C_LOGICAL * implct,
+                     C_LOGICAL * banded,
+                     C_INT *
+                       ldjac,
+                     C_INT * lde1,
+                     C_INT * ldmas,
+                     double * z1,
+                     double * z2,
+                     double * z3,
+                     double * y0,
+                     double * scal,
+                     double * f1,
+                     double * f2,
+                     double * f3,
+                     double * fjac,
+                     double * e1,
+                     double * e2r,
+                     double * e2i,
+                     double * fmas,
+                     C_INT * ip1,
+                     C_INT * ip2,
+                     C_INT * iphes,
+                     double * cont,
+                     C_INT * nfcn,
+                     C_INT * njac,
+                     C_INT * nstep,
+                     C_INT * naccpt,
+                     C_INT * nrejct,
+                     C_INT * ndec,
+                     C_INT * nsol,
+                     double * rpar,
+                     C_INT * ipar)
 {
   /* System generated locals */
   C_INT fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e1_dim1,
@@ -1017,66 +1087,42 @@ C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
   double d__1, d__2, d__3, d__4;
 
   /* Local variables */
-  static C_INT i__, j, k, l;
-  static double a1, a2, c1, c2, a3;
-  static C_INT j1, n2, n3;
-  static double u1, ak;
-  static C_INT md;
-  static double t11, t12, t13, t21, t22, t23, t31;
-  static C_INT mm;
-  static double qt, dd1, dd2, dd3, ak1, ak2, ak3, f1i, f2i, f3i, c1q,
+  C_INT i__, j, k, l;
+  double a1, a2, c1, c2, a3;
+  C_INT j1, n2, n3;
+  double u1, ak;
+  C_INT md;
+  double t11, t12, t13, t21, t22, t23, t31;
+  C_INT mm;
+  double qt, dd1, dd2, dd3, ak1, ak2, ak3, f1i, f2i, f3i, c1q,
          c2q, c3q, z1i, z2i, z3i, sq6, fac, ti11, cno;
-  static C_INT lrc;
-  static double ti12, ti13, ti21, ti22, ti23, ti31, ti32, ti33;
-  static C_INT ier;
-  static double xph, thq, err, fac1, cfac, hacc, c1mc2, beta;
-  static C_INT lbeg;
-  static double alph, hold;
-  static C_INT lend;
-  static double delt, hnew;
-  static C_LOGICAL last;
-  static double hopt, xold;
-  static C_INT newt;
-  static double dyno, dyth, quot, hhfac, betan, alphn, denom, theta,
+  C_INT lrc;
+  double ti12, ti13, ti21, ti22, ti23, ti31, ti32, ti33;
+  C_INT ier;
+  double xph, thq, err, fac1, cfac, hacc, c1mc2, beta;
+  C_INT lbeg;
+  double alph, hold;
+  C_INT lend;
+  double delt, hnew;
+  C_LOGICAL last;
+  double hopt, xold;
+  C_INT newt;
+  double dyno, dyth, quot, hhfac, betan, alphn, denom, theta,
          ysafe, hmaxn;
-  static C_INT nsing;
-  static C_LOGICAL first;
-  static C_INT irtrn, nrsol, nsolu;
-  static double qnewt, xosol, acont3;
-  static C_LOGICAL index2, index3, caljac;
-  static double faccon;
-  extern /* Subroutine */ int decomc_(C_INT *, double *, C_INT *,
-                                      double *, C_INT *, C_INT *, C_INT *, C_INT *, C_INT
-                                      *, C_INT *, double *, double *, double *,
-                                      double *, C_INT *, C_INT *, C_INT *, C_INT *);
-  static C_LOGICAL calhes;
-  static double erracc;
-  static C_INT mujacj;
-  extern /* Subroutine */ int decomr_(C_INT *, double *, C_INT *,
-                                      double *, C_INT *, C_INT *, C_INT *, C_INT *, C_INT
-                                      *, C_INT *, double *, double *, C_INT *, C_INT *,
-                                      C_INT *, C_INT *, C_LOGICAL *, C_INT *);
-  static C_LOGICAL reject;
-  static double facgus;
-  static C_INT mujacp;
-  extern /* Subroutine */ int estrad_(C_INT *, double *, C_INT *,
-                                      C_INT *, C_INT *, double *, C_INT *, C_INT *, C_INT
-                                      *, double *, double *, double *, double *, CRadau5::evalF,
-                                      C_INT *, double *, double *, C_INT *, double *,
-                                      C_INT *, C_INT *, C_INT *, double *, C_INT *,
-                                      double *, double *, double *, double *,
-                                      double *, double *, C_INT *, C_INT *, double *,
-                                      double *, C_LOGICAL *, C_LOGICAL *, double *, double *,
-                                      C_INT *);
-  static double dynold, posneg;
-  extern /* Subroutine */ int slvrad_(C_INT *, double *, C_INT *,
-                                      C_INT *, C_INT *, double *, C_INT *, C_INT *, C_INT
-                                      *, C_INT *, C_INT *, C_INT *, double *, double *,
-                                      double *, double *, double *, double *, C_INT *,
-                                      double *, double *, double *, double *,
-                                      double *, double *, double *, C_INT *, C_INT *,
-                                      C_INT *, C_INT *, C_INT *);
-  static double thqold;
+  C_INT nsing;
+  C_LOGICAL first;
+  C_INT irtrn, nrsol, nsolu;
+  double qnewt, xosol, acont3;
+  C_LOGICAL index2, index3, caljac;
+  double faccon;
+  C_LOGICAL calhes;
+  double erracc;
+  C_INT mujacj;
+  C_LOGICAL reject;
+  double facgus;
+  C_INT mujacp;
+  double dynold, posneg;
+  double thqold;
 
   /* ---------------------------------------------------------- */
   /*     CORE INTEGRATOR FOR RADAU5 */
@@ -1373,7 +1419,7 @@ L20:
   fac1 = u1 / *h__;
   alphn = alph / *h__;
   betan = beta / *h__;
-  decomr_(n, &fjac[fjac_offset], ldjac, &fmas[fmas_offset], ldmas, mlmas,
+  decomr_(mCommon, n, &fjac[fjac_offset], ldjac, &fmas[fmas_offset], ldmas, mlmas,
           mumas, m1, m2, nm1, &fac1, &e1[e1_offset], lde1, &ip1[1], &ier,
           ijob, &calhes, &iphes[1]);
 
@@ -1382,7 +1428,7 @@ L20:
       goto L78;
     }
 
-  decomc_(n, &fjac[fjac_offset], ldjac, &fmas[fmas_offset], ldmas, mlmas,
+  decomc_(mCommon, n, &fjac[fjac_offset], ldjac, &fmas[fmas_offset], ldmas, mlmas,
           mumas, m1, m2, nm1, &alphn, &betan, &e2r[e2r_offset], &e2i[e2i_offset], lde1, &ip2[1], &ier, ijob);
 
   if (ier != 0)
@@ -1525,7 +1571,7 @@ L40:
       z3[i__] = ti31 * a1 + ti32 * a2 + ti33 * a3;
     }
 
-  slvrad_(n, &fjac[fjac_offset], ldjac, mljac, mujac, &fmas[fmas_offset],
+  slvrad_(mCommon, n, &fjac[fjac_offset], ldjac, mljac, mujac, &fmas[fmas_offset],
           ldmas, mlmas, mumas, m1, m2, nm1, &fac1, &alphn, &betan, &e1[e1_offset], &e2r[e2r_offset], &e2i[e2i_offset], lde1, &z1[1], &z2[1], &z3[1], &f1[1], &f2[1], &f3[1], &cont[1], &ip1[1], &ip2[1], &iphes[1], &ier, ijob);
   ++(*nsol);
   ++newt;
@@ -1872,13 +1918,13 @@ L179:
 
 /* *********************************************************** */
 
-double contr5_(C_INT *i__, double *x, double *cont, C_INT * /* lrc */)
+double CRadau5::contr5_(C_INT *i__, double *x, double *cont, C_INT * /* lrc */)
 {
   /* System generated locals */
   double ret_val;
 
   /* Local variables */
-  static double s;
+  double s;
 
   /* ---------------------------------------------------------- */
   /*     THIS FUNCTION CAN BE USED FOR CONINUOUS OUTPUT. IT PROVIDES AN */
@@ -1897,47 +1943,729 @@ double contr5_(C_INT *i__, double *x, double *cont, C_INT * /* lrc */)
   return ret_val;
 } /* contr5_ */
 
-double d_sign(double *a, double *b)
+int CRadau5::estrad_(C_INT * n,
+            double * fjac,
+            C_INT * ldjac,
+            C_INT * mljac,
+            C_INT * mujac,
+            double * fmas,
+            C_INT * ldmas,
+            C_INT * mlmas,
+            C_INT * mumas,
+            double * h__,
+            double * dd1,
+            double * dd2,
+            double * dd3,
+            CRadau5::evalF fcn,
+            C_INT * nfcn,
+            double * y0,
+            double * y,
+            C_INT * ijob,
+            double * x,
+            C_INT * m1,
+            C_INT * m2,
+            C_INT * nm1,
+            double * e1,
+            C_INT * lde1,
+            double * z1,
+            double * z2,
+            double * z3,
+            double * cont,
+            double * f1,
+            double * f2,
+            C_INT * ip1,
+            C_INT * iphes,
+            double * scal,
+            double * err,
+            logical * first,
+            logical * reject,
+            double * fac1,
+            double * rpar,
+            C_INT * ipar)
 {
-  double x;
-  x = (*a >= 0 ? *a : - *a);
-  return (*b >= 0 ? x : -x);
-}
+  static const C_INT c__1 = 1;
 
-static double pow_dd(double *ap, double *bp)
-{
-  return (pow(*ap, *bp));
-}
+  /* System generated locals */
+  C_INT fjac_dim1, fjac_offset, fmas_dim1, fmas_offset, e1_dim1,
+          e1_offset, i__1, i__2, i__3, i__4, i__5, i__6;
+  double d__1;
 
-double pow_di(double *ap, C_INT *bp)
-{
-  double pow, x;
-  C_INT n;
-  unsigned long u;
+  /* Local variables */
+  static C_INT i__, j, k, mm, mp, im1;
+  static double sum, hee1, hee2, hee3, sum1;
+  static double zsafe;
 
-  pow = 1;
-  x = *ap;
-  n = *bp;
+  /* Parameter adjustments */
+  --scal;
+  --iphes;
+  --f2;
+  --f1;
+  --cont;
+  --z3;
+  --z2;
+  --z1;
+  --y;
+  --y0;
+  fjac_dim1 = *ldjac;
+  fjac_offset = 1 + fjac_dim1;
+  fjac -= fjac_offset;
+  --ip1;
+  fmas_dim1 = *ldmas;
+  fmas_offset = 1 + fmas_dim1;
+  fmas -= fmas_offset;
+  e1_dim1 = *lde1;
+  e1_offset = 1 + e1_dim1;
+  e1 -= e1_offset;
+  --rpar;
+  --ipar;
 
-  if (n != 0)
+  /* Function Body */
+  hee1 = *dd1 / *h__;
+  hee2 = *dd2 / *h__;
+  hee3 = *dd3 / *h__;
+
+  switch (*ijob)
     {
-      if (n < 0)
-        {
-          n = -n;
-          x = 1 / x;
-        }
+      case 1:  goto L1;
 
-      for (u = n; ;)
-        {
-          if (u & 01)
-            pow *= x;
+      case 2:  goto L2;
 
-          if (u >>= 1)
-            x *= x;
-          else
-            break;
+      case 3:  goto L3;
+
+      case 4:  goto L4;
+
+      case 5:  goto L5;
+
+      case 6:  goto L6;
+
+      case 7:  goto L7;
+
+      case 8:  goto L55;
+
+      case 9:  goto L55;
+
+      case 10:  goto L55;
+
+      case 11:  goto L11;
+
+      case 12:  goto L12;
+
+      case 13:  goto L13;
+
+      case 14:  goto L14;
+
+      case 15:  goto L15;
+    }
+
+L1:
+  /* ------  B=IDENTITY, JACOBIAN A FULL MATRIX */
+  i__1 = *n;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
+      cont[i__] = f2[i__] + y0[i__];
+    }
+
+  sol_(n, lde1, &e1[e1_offset], &cont[1], &ip1[1]);
+  goto L77;
+
+L11:
+  /* ------  B=IDENTITY, JACOBIAN A FULL MATRIX, SECOND ORDER */
+  i__1 = *n;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
+      cont[i__] = f2[i__] + y0[i__];
+    }
+
+L48:
+  mm = *m1 / *m2;
+  i__1 = *m2;
+
+  for (j = 1; j <= i__1; ++j)
+    {
+      sum1 = 0.;
+
+      for (k = mm - 1; k >= 0; --k)
+        {
+          sum1 = (cont[j + k * *m2] + sum1) / *fac1;
+          i__2 = *nm1;
+
+          for (i__ = 1; i__ <= i__2; ++i__)
+            {
+              im1 = i__ + *m1;
+              cont[im1] += fjac[i__ + (j + k * *m2) * fjac_dim1] * sum1;
+            }
         }
     }
 
-  return (pow);
-}
+  sol_(nm1, lde1, &e1[e1_offset], &cont[*m1 + 1], &ip1[1]);
+
+  for (i__ = *m1; i__ >= 1; --i__)
+    {
+      cont[i__] = (cont[i__] + cont[*m2 + i__]) / *fac1;
+    }
+
+  goto L77;
+
+L2:
+  /* ------  B=IDENTITY, JACOBIAN A BANDED MATRIX */
+  i__1 = *n;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
+      cont[i__] = f2[i__] + y0[i__];
+    }
+
+  solb_(n, lde1, &e1[e1_offset], &linal_1.mle, &linal_1.mue, &cont[1], &ip1[
+          1]);
+  goto L77;
+
+L12:
+  /* ------  B=IDENTITY, JACOBIAN A BANDED MATRIX, SECOND ORDER */
+  i__1 = *n;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
+      cont[i__] = f2[i__] + y0[i__];
+    }
+
+L45:
+  mm = *m1 / *m2;
+  i__1 = *m2;
+
+  for (j = 1; j <= i__1; ++j)
+    {
+      sum1 = 0.;
+
+      for (k = mm - 1; k >= 0; --k)
+        {
+          sum1 = (cont[j + k * *m2] + sum1) / *fac1;
+          /* Computing MAX */
+          i__2 = 1, i__3 = j - *mujac;
+          /* Computing MIN */
+          i__5 = *nm1, i__6 = j + *mljac;
+          i__4 = std::min(i__5, i__6);
+
+          for (i__ = std::max(i__2, i__3); i__ <= i__4; ++i__)
+            {
+              im1 = i__ + *m1;
+              cont[im1] += fjac[i__ + *mujac + 1 - j + (j + k * *m2) *
+                                fjac_dim1] * sum1;
+            }
+        }
+    }
+
+  solb_(nm1, lde1, &e1[e1_offset], &linal_1.mle, &linal_1.mue, &cont[*m1 +
+        1], &ip1[1]);
+
+  for (i__ = *m1; i__ >= 1; --i__)
+    {
+      cont[i__] = (cont[i__] + cont[*m2 + i__]) / *fac1;
+    }
+
+  goto L77;
+
+L3:
+  /* ------  B IS A BANDED MATRIX, JACOBIAN A FULL MATRIX */
+  i__1 = *n;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      f1[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
+    }
+
+  i__1 = *n;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      sum = 0.;
+      /* Computing MAX */
+      i__4 = 1, i__2 = i__ - *mlmas;
+      /* Computing MIN */
+      i__5 = *n, i__6 = i__ + *mumas;
+      i__3 = std::min(i__5, i__6);
+
+      for (j = std::max(i__4, i__2); j <= i__3; ++j)
+        {
+          sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * f1[j];
+        }
+
+      f2[i__] = sum;
+      cont[i__] = sum + y0[i__];
+    }
+
+  sol_(n, lde1, &e1[e1_offset], &cont[1], &ip1[1]);
+  goto L77;
+
+L13:
+  /* ------  B IS A BANDED MATRIX, JACOBIAN A FULL MATRIX, SECOND ORDER */
+  i__1 = *m1;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
+      cont[i__] = f2[i__] + y0[i__];
+    }
+
+  i__1 = *n;
+
+  for (i__ = *m1 + 1; i__ <= i__1; ++i__)
+    {
+      f1[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
+    }
+
+  i__1 = *nm1;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      sum = 0.;
+      /* Computing MAX */
+      i__3 = 1, i__4 = i__ - *mlmas;
+      /* Computing MIN */
+      i__5 = *nm1, i__6 = i__ + *mumas;
+      i__2 = std::min(i__5, i__6);
+
+      for (j = std::max(i__3, i__4); j <= i__2; ++j)
+        {
+          sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * f1[j + *
+                 m1];
+        }
+
+      im1 = i__ + *m1;
+      f2[im1] = sum;
+      cont[im1] = sum + y0[im1];
+    }
+
+  goto L48;
+
+L4:
+  /* ------  B IS A BANDED MATRIX, JACOBIAN A BANDED MATRIX */
+  i__1 = *n;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      f1[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
+    }
+
+  i__1 = *n;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      sum = 0.;
+      /* Computing MAX */
+      i__2 = 1, i__3 = i__ - *mlmas;
+      /* Computing MIN */
+      i__5 = *n, i__6 = i__ + *mumas;
+      i__4 = std::min(i__5, i__6);
+
+      for (j = std::max(i__2, i__3); j <= i__4; ++j)
+        {
+          sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * f1[j];
+        }
+
+      f2[i__] = sum;
+      cont[i__] = sum + y0[i__];
+    }
+
+  solb_(n, lde1, &e1[e1_offset], &linal_1.mle, &linal_1.mue, &cont[1], &ip1[
+          1]);
+  goto L77;
+
+L14:
+  /* ------  B IS A BANDED MATRIX, JACOBIAN A BANDED MATRIX, SECOND ORDER */
+  i__1 = *m1;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
+      cont[i__] = f2[i__] + y0[i__];
+    }
+
+  i__1 = *n;
+
+  for (i__ = *m1 + 1; i__ <= i__1; ++i__)
+    {
+      f1[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
+    }
+
+  i__1 = *nm1;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      sum = 0.;
+      /* Computing MAX */
+      i__4 = 1, i__2 = i__ - *mlmas;
+      /* Computing MIN */
+      i__5 = *nm1, i__6 = i__ + *mumas;
+      i__3 = std::min(i__5, i__6);
+
+      for (j = std::max(i__4, i__2); j <= i__3; ++j)
+        {
+          sum += fmas[i__ - j + linal_1.mbdiag + j * fmas_dim1] * f1[j + *
+                 m1];
+        }
+
+      im1 = i__ + *m1;
+      f2[im1] = sum;
+      cont[im1] = sum + y0[im1];
+    }
+
+  goto L45;
+
+L5:
+  /* ------  B IS A FULL MATRIX, JACOBIAN A FULL MATRIX */
+  i__1 = *n;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      f1[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
+    }
+
+  i__1 = *n;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      sum = 0.;
+      i__3 = *n;
+
+      for (j = 1; j <= i__3; ++j)
+        {
+          sum += fmas[i__ + j * fmas_dim1] * f1[j];
+        }
+
+      f2[i__] = sum;
+      cont[i__] = sum + y0[i__];
+    }
+
+  sol_(n, lde1, &e1[e1_offset], &cont[1], &ip1[1]);
+  goto L77;
+
+L15:
+  /* ------  B IS A BANDED MATRIX, JACOBIAN A FULL MATRIX, SECOND ORDER */
+  i__1 = *m1;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
+      cont[i__] = f2[i__] + y0[i__];
+    }
+
+  i__1 = *n;
+
+  for (i__ = *m1 + 1; i__ <= i__1; ++i__)
+    {
+      f1[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
+    }
+
+  i__1 = *nm1;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      sum = 0.;
+      i__3 = *nm1;
+
+      for (j = 1; j <= i__3; ++j)
+        {
+          sum += fmas[i__ + j * fmas_dim1] * f1[j + *m1];
+        }
+
+      im1 = i__ + *m1;
+      f2[im1] = sum;
+      cont[im1] = sum + y0[im1];
+    }
+
+  goto L48;
+
+L6:
+  /* ------  B IS A FULL MATRIX, JACOBIAN A BANDED MATRIX */
+  /* ------  THIS OPTION IS NOT PROVIDED */
+  return 0;
+
+L7:
+  /* ------  B=IDENTITY, JACOBIAN A FULL MATRIX, HESSENBERG-OPTION */
+  i__1 = *n;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      f2[i__] = hee1 * z1[i__] + hee2 * z2[i__] + hee3 * z3[i__];
+      cont[i__] = f2[i__] + y0[i__];
+    }
+
+  for (mm = *n - 2; mm >= 1; --mm)
+    {
+      mp = *n - mm;
+      i__ = iphes[mp];
+
+      if (i__ == mp)
+        {
+          goto L310;
+        }
+
+      zsafe = cont[mp];
+      cont[mp] = cont[i__];
+      cont[i__] = zsafe;
+L310:
+      i__1 = *n;
+
+      for (i__ = mp + 1; i__ <= i__1; ++i__)
+        {
+          cont[i__] -= fjac[i__ + (mp - 1) * fjac_dim1] * cont[mp];
+        }
+    }
+
+  solh_(n, lde1, &e1[e1_offset], &c__1, &cont[1], &ip1[1]);
+  i__1 = *n - 2;
+
+  for (mm = 1; mm <= i__1; ++mm)
+    {
+      mp = *n - mm;
+      i__3 = *n;
+
+      for (i__ = mp + 1; i__ <= i__3; ++i__)
+        {
+          cont[i__] += fjac[i__ + (mp - 1) * fjac_dim1] * cont[mp];
+        }
+
+      i__ = iphes[mp];
+
+      if (i__ == mp)
+        {
+          goto L440;
+        }
+
+      zsafe = cont[mp];
+      cont[mp] = cont[i__];
+      cont[i__] = zsafe;
+L440:
+      ;
+    }
+
+  /* -------------------------------------- */
+
+L77:
+  *err = 0.;
+  i__1 = *n;
+
+  for (i__ = 1; i__ <= i__1; ++i__)
+    {
+      /* Computing 2nd power */
+      d__1 = cont[i__] / scal[i__];
+      *err += d__1 * d__1;
+    }
+
+  /* Computing MAX */
+  d__1 = sqrt(*err / *n);
+  *err = std::max(d__1, 1e-10);
+
+  if (*err < 1.)
+    {
+      return 0;
+    }
+
+  if (*first || *reject)
+    {
+      i__1 = *n;
+
+      for (i__ = 1; i__ <= i__1; ++i__)
+        {
+          cont[i__] = y[i__] + cont[i__];
+        }
+
+      (*fcn)(n, x, &cont[1], &f1[1], &rpar[1], &ipar[1]);
+      ++(*nfcn);
+      i__1 = *n;
+
+      for (i__ = 1; i__ <= i__1; ++i__)
+        {
+          cont[i__] = f1[i__] + f2[i__];
+        }
+
+      switch (*ijob)
+        {
+          case 1:  goto L31;
+
+          case 2:  goto L32;
+
+          case 3:  goto L31;
+
+          case 4:  goto L32;
+
+          case 5:  goto L31;
+
+          case 6:  goto L32;
+
+          case 7:  goto L33;
+
+          case 8:  goto L55;
+
+          case 9:  goto L55;
+
+          case 10:  goto L55;
+
+          case 11:  goto L41;
+
+          case 12:  goto L42;
+
+          case 13:  goto L41;
+
+          case 14:  goto L42;
+
+          case 15:  goto L41;
+        }
+
+      /* ------ FULL MATRIX OPTION */
+L31:
+      sol_(n, lde1, &e1[e1_offset], &cont[1], &ip1[1]);
+      goto L88;
+      /* ------ FULL MATRIX OPTION, SECOND ORDER */
+L41:
+      i__1 = *m2;
+
+      for (j = 1; j <= i__1; ++j)
+        {
+          sum1 = 0.;
+
+          for (k = mm - 1; k >= 0; --k)
+            {
+              sum1 = (cont[j + k * *m2] + sum1) / *fac1;
+              i__3 = *nm1;
+
+              for (i__ = 1; i__ <= i__3; ++i__)
+                {
+                  im1 = i__ + *m1;
+                  cont[im1] += fjac[i__ + (j + k * *m2) * fjac_dim1] * sum1;
+                }
+            }
+        }
+
+      sol_(nm1, lde1, &e1[e1_offset], &cont[*m1 + 1], &ip1[1]);
+
+      for (i__ = *m1; i__ >= 1; --i__)
+        {
+          cont[i__] = (cont[i__] + cont[*m2 + i__]) / *fac1;
+        }
+
+      goto L88;
+      /* ------ BANDED MATRIX OPTION */
+L32:
+      solb_(n, lde1, &e1[e1_offset], &linal_1.mle, &linal_1.mue, &cont[1], &
+            ip1[1]);
+      goto L88;
+      /* ------ BANDED MATRIX OPTION, SECOND ORDER */
+L42:
+      i__1 = *m2;
+
+      for (j = 1; j <= i__1; ++j)
+        {
+          sum1 = 0.;
+
+          for (k = mm - 1; k >= 0; --k)
+            {
+              sum1 = (cont[j + k * *m2] + sum1) / *fac1;
+              /* Computing MAX */
+              i__3 = 1, i__4 = j - *mujac;
+              /* Computing MIN */
+              i__5 = *nm1, i__6 = j + *mljac;
+              i__2 = std::min(i__5, i__6);
+
+              for (i__ = std::max(i__3, i__4); i__ <= i__2; ++i__)
+                {
+                  im1 = i__ + *m1;
+                  cont[im1] += fjac[i__ + *mujac + 1 - j + (j + k * *m2) *
+                                    fjac_dim1] * sum1;
+                }
+            }
+        }
+
+      solb_(nm1, lde1, &e1[e1_offset], &linal_1.mle, &linal_1.mue, &cont[*
+            m1 + 1], &ip1[1]);
+
+      for (i__ = *m1; i__ >= 1; --i__)
+        {
+          cont[i__] = (cont[i__] + cont[*m2 + i__]) / *fac1;
+        }
+
+      goto L88;
+      /* ------ HESSENBERG MATRIX OPTION */
+L33:
+
+      for (mm = *n - 2; mm >= 1; --mm)
+        {
+          mp = *n - mm;
+          i__ = iphes[mp];
+
+          if (i__ == mp)
+            {
+              goto L510;
+            }
+
+          zsafe = cont[mp];
+          cont[mp] = cont[i__];
+          cont[i__] = zsafe;
+L510:
+          i__1 = *n;
+
+          for (i__ = mp + 1; i__ <= i__1; ++i__)
+            {
+              cont[i__] -= fjac[i__ + (mp - 1) * fjac_dim1] * cont[mp];
+            }
+        }
+
+      solh_(n, lde1, &e1[e1_offset], &c__1, &cont[1], &ip1[1]);
+      i__1 = *n - 2;
+
+      for (mm = 1; mm <= i__1; ++mm)
+        {
+          mp = *n - mm;
+          i__2 = *n;
+
+          for (i__ = mp + 1; i__ <= i__2; ++i__)
+            {
+              cont[i__] += fjac[i__ + (mp - 1) * fjac_dim1] * cont[mp];
+            }
+
+          i__ = iphes[mp];
+
+          if (i__ == mp)
+            {
+              goto L640;
+            }
+
+          zsafe = cont[mp];
+          cont[mp] = cont[i__];
+          cont[i__] = zsafe;
+L640:
+          ;
+        }
+
+      /* ----------------------------------- */
+L88:
+      *err = 0.;
+      i__1 = *n;
+
+      for (i__ = 1; i__ <= i__1; ++i__)
+        {
+          /* Computing 2nd power */
+          d__1 = cont[i__] / scal[i__];
+          *err += d__1 * d__1;
+        }
+
+      /* Computing MAX */
+      d__1 = sqrt(*err / *n);
+      *err = std::max(d__1, 1e-10);
+    }
+
+  return 0;
+  /* ----------------------------------------------------------- */
+L55:
+  return 0;
+} /* estrad_ */
+
+/*     END OF SUBROUTINE ESTRAD */
+
+/* *********************************************************** */
