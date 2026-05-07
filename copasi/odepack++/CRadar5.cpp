@@ -13,39 +13,6 @@ using namespace dc_sumexpdel;
 
 #include "copasi/utilities/CCopasiMessage.h"
 
-CRadar5::common_constn::common_constn()
-  : c1(0.0)
-  , c2(0.0)
-  , c1m1(0.0)
-  , c2m1(0.0)
-  , c1mc2(0.0)
-{}
-
-CRadar5::common_posits::common_posits()
-  : x0b(0.0)
-  , uround(0.0)
-  , hmax(0.0)
-  , iact(0)
-  , irtrn(0)
-  , idif(0)
-  , mxst(0)
-  , flags(0)
-  , flagn(0)
-{}
-
-CRadar5::common_bplog::common_bplog()
-  : first(0)
-  , last(0)
-  , reject(0)
-  , bpd(0)
-{}
-
-CRadar5::common_bpcom::common_bpcom()
-  : bpp(0.0)
-  , ilbp(0)
-  , left(0)
-{}
-
 CRadar5::CRadar5()
   : Cxerrwd(false)
   , mCommon()
@@ -81,30 +48,30 @@ doublereal CRadar5::contr5(const common & cmn,
 //C     END OF FUNCTION DLAGR5
 //C
 void CRadar5::bpdtct(const common & cmn,
-                    const integer & n,
-                    const doublereal & x,
-                    doublereal & h,
-                    CVectorCore< doublereal > & y,
-                    ARGLAG & arglag,
-                    float const & rpar,
-                    const integer & ipar,
-                    const CVectorCore< doublereal > & ucont,
-                    const CVectorCore< doublereal > & grid,
-                    const integer & nlags,
-                    logical const & first,
-                    logical const & last,
-                    const doublereal & xend,
-                    const integer & igrid,
-                    CVectorCore< doublereal > & bpv,
-                    integer & ibp,
-                    integer & ilbp,
-                    doublereal & bpp,
-                    logical & bpd,
-                    const integer & kmax,
-                    PHI & phi,
-                    CVectorCore< doublereal > & past,
-                    CVectorCore< integer > & ipast,
-                    const integer & nrds)
+                     const integer & n,
+                     const doublereal & x,
+                     doublereal & h,
+                     CVectorCore< doublereal > & y,
+                     ARGLAG & arglag,
+                     float const & rpar,
+                     const integer & ipar,
+                     const CVectorCore< doublereal > & ucont,
+                     const CVectorCore< doublereal > & grid,
+                     const integer & nlags,
+                     logical const & first,
+                     logical const & last,
+                     const doublereal & xend,
+                     const integer & igrid,
+                     CVectorCore< doublereal > & bpv,
+                     integer & ibp,
+                     integer & ilbp,
+                     doublereal & bpp,
+                     logical & bpd,
+                     const integer & kmax,
+                     PHI & phi,
+                     CVectorCore< doublereal > & past,
+                     CVectorCore< integer > & ipast,
+                     const integer & nrds)
 {
   integer lrc = 0;
   doublereal epsilon = 0.0;

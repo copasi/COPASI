@@ -12,17 +12,17 @@
 //C
 void dc_sumexpdel::decomr(const common & cmn,
                           const integer & n,
-                          const CMatrix< double > & fjac,
+                          const CMatrix< doublereal  > & fjac,
                           const integer & ldjac,
-                          const CMatrix< double > & fmas,
+                          const CMatrix< doublereal  > & fmas,
                           const integer & ldmas,
                           const integer & /* mlmas */,
                           const integer & /* mumas */,
                           const integer & /* m1 */,
                           const integer & /* m2 */,
                           const integer & nm1,
-                          const double & fac1,
-                          CMatrix< double > & e1,
+                          const doublereal  & fac1,
+                          CMatrix< doublereal  > & e1,
                           const integer & lde1,
                           CVectorCore< integer > & ip1,
                           integer & ier,
@@ -35,13 +35,13 @@ void dc_sumexpdel::decomr(const common & cmn,
   integer j = 0;
   integer i = 0;
   integer nd = 0;
-  double term = 0.0;
-  double sum = 0.0;
+  doublereal  term = 0.0;
+  doublereal  sum = 0.0;
   integer lexp = 0;
   integer ii = 0;
-  double fact = 0.0;
-  double cc = 0.0;
-  double u1 = 0.0;
+  doublereal  fact = 0.0;
+  doublereal  cc = 0.0;
+  doublereal  u1 = 0.0;
   //C
   switch (ijob)
     {
@@ -127,14 +127,14 @@ statement_2:
       }
     e1(j, j) += term;
   }
-  sum = 0.0e0;
+  sum = 0.0;
   lexp = n - nd - 2;
   ii = nd + 2;
   for (size_t i =  1; i <=  lexp; ++i) // FEM_DO_SAFE(i, 1, lexp)
   {
     fact = fjac(3, ii);
     ii++;
-    if (i == 1 || fact == 0.0e0)
+    if (i == 1 || fact == 0.0)
       {
         cc = 1.0e0;
       }
@@ -167,19 +167,19 @@ statement_55:;
 //C
 void dc_sumexpdel::decomc(const common & cmn,
                           const integer & n,
-                          const CMatrix< double > & fjac,
+                          const CMatrix< doublereal  > & fjac,
                           const integer & ldjac,
-                          const CMatrix< double > & fmas,
+                          const CMatrix< doublereal  > & fmas,
                           const integer & ldmas,
                           const integer & /* mlmas */,
                           const integer & /* mumas */,
                           const integer & /* m1 */,
                           const integer & /* m2 */,
                           const integer & nm1,
-                          const double & alphn,
-                          const double & betan,
-                          CMatrix< double > & e2r,
-                          CMatrix< double > & e2i,
+                          const doublereal  & alphn,
+                          const doublereal  & betan,
+                          CMatrix< doublereal  > & e2r,
+                          CMatrix< doublereal  > & e2i,
                           const integer & lde1,
                           CVectorCore< integer > & ip2,
                           integer & ier,
@@ -189,19 +189,19 @@ void dc_sumexpdel::decomc(const common & cmn,
   //
   integer j = 0;
   integer i = 0;
-  double bb = 0.0;
+  doublereal  bb = 0.0;
   integer nd = 0;
   integer lexp = 0;
-  double sumr = 0.0;
-  double sumi = 0.0;
+  doublereal  sumr = 0.0;
+  doublereal  sumi = 0.0;
   integer ii = 0;
-  double fact = 0.0;
-  double algam = 0.0;
-  double denom = 0.0;
-  double ur = 0.0;
-  double ui = 0.0;
-  double usave = 0.0;
-  double prod = 0.0;
+  doublereal  fact = 0.0;
+  doublereal  algam = 0.0;
+  doublereal  denom = 0.0;
+  doublereal  ur = 0.0;
+  doublereal  ui = 0.0;
+  doublereal  usave = 0.0;
+  doublereal  prod = 0.0;
   //C
   switch (ijob)
     {
@@ -295,14 +295,14 @@ statement_2:
     e2i(j, j) = betan * bb;
   }
   lexp = n - nd - 2;
-  sumr = 0.0e0;
-  sumi = 0.0e0;
+  sumr = 0.0;
+  sumi = 0.0;
   ii = nd + 2;
   for (size_t i =  1; i <=  lexp; ++i) // FEM_DO_SAFE(i, 1, lexp)
   {
     ii++;
     fact = fjac(3, ii - 1);
-    if (i == 1 || fact == 0.0e0)
+    if (i == 1 || fact == 0.0)
       {
         algam = alphn - fjac(2, ii);
         denom = pow2(algam) + pow2(betan);
@@ -341,29 +341,29 @@ statement_55:;
 //C ***********************************************************
 //C
 void dc_sumexpdel::solexp(const integer & n,
-                          const CMatrix< double > & fjac,
+                          const CMatrix< doublereal  > & fjac,
                           const integer & ldjac,
                           const integer & mujac,
                           const integer & nm1,
                           const integer & lde1,
-                          const CMatrix< double > & e1,
-                          CVectorCore< double > & z1,
+                          const CMatrix< doublereal  > & e1,
+                          CVectorCore< doublereal  > & z1,
                           const CVectorCore< integer > & ip1,
-                          const double & fac1,
+                          const doublereal  & fac1,
                           const integer & /* ijob */)
 {
   integer nd = mujac + 1;
   integer lexp = n - nd - 2;
-  double sum = 0.0e0;
+  doublereal  sum = 0.0;
   integer ii = nd + 1;
   integer i = 0;
-  double fact = 0.0;
-  double fjinv = 0.0;
-  double u1 = 0.0;
+  doublereal  fact = 0.0;
+  doublereal  fjinv = 0.0;
+  doublereal  u1 = 0.0;
   for (size_t i =  1; i <=  lexp; ++i) // FEM_DO_SAFE(i, 1, lexp)
   {
     fact = fjac(3, ii + 1);
-    if (i == 1 || fact == 0.0e0)
+    if (i == 1 || fact == 0.0)
       {
         fjinv = 1.0e0 / (fac1 - fjac(2, ii + 2));
         u1 = z1(ii) * fjinv;
@@ -382,7 +382,7 @@ void dc_sumexpdel::solexp(const integer & n,
   }
   sol_(&nd, &lde1, e1.array(), z1.array(), ip1.array());
   integer nd2 = nd + 2;
-  double prod = 0.0e0;
+  doublereal  prod = 0.0;
   integer ipro = 0;
   for (size_t ipro =  1; ipro <=  nd; ++ipro) // FEM_DO_SAFE(ipro, 1, nd)
   {
@@ -392,7 +392,7 @@ void dc_sumexpdel::solexp(const integer & n,
   for (size_t i =  1; i <=  lexp; ++i) // FEM_DO_SAFE(i, 1, lexp)
   {
     fact = fjac(3, ii + 1);
-    if (i == 1 || fact == 0.0e0)
+    if (i == 1 || fact == 0.0)
       {
         fjinv = 1.0e0 / (fac1 - fjac(2, ii + 2));
         z1(ii) = (z1(ii) + prod) * fjinv;
@@ -403,8 +403,8 @@ void dc_sumexpdel::solexp(const integer & n,
       }
     ii++;
   }
-  z1(n - 1) = 0.0e0;
-  z1(n) = 0.0e0;
+  z1(n - 1) = 0.0;
+  z1(n) = 0.0;
 }
 
 //C
@@ -413,37 +413,37 @@ void dc_sumexpdel::solexp(const integer & n,
 //C ***********************************************************
 //C
 void dc_sumexpdel::solexpc(const integer & n,
-                           const CMatrix< double > & fjac,
+                           const CMatrix< doublereal  > & fjac,
                            const integer & ldjac,
                            const integer & mujac,
                            const integer & nm1,
                            const integer & lde1,
-                           const CMatrix< double > & e2r,
-                           const CMatrix< double > & e2i,
-                           CVectorCore< double > & z2,
-                           CVectorCore< double > & z3,
+                           const CMatrix< doublereal  > & e2r,
+                           const CMatrix< doublereal  > & e2i,
+                           CVectorCore< doublereal  > & z2,
+                           CVectorCore< doublereal  > & z3,
                            const CVectorCore< integer > & /* ip1 */,
                            const CVectorCore< integer > & ip2,
-                           const double & alphn,
-                           const double & betan,
+                           const doublereal  & alphn,
+                           const doublereal  & betan,
                            const integer & /* ijob */)
 {
   integer nd = mujac + 1;
   integer lexp = n - nd - 2;
   integer ii = nd + 1;
-  double sumr = 0.0e0;
-  double sumi = 0.0e0;
+  doublereal  sumr = 0.0;
+  doublereal  sumi = 0.0;
   integer i = 0;
-  double fact = 0.0;
-  double algam = 0.0;
-  double denom = 0.0;
-  double ur = 0.0;
-  double ui = 0.0;
-  double usave = 0.0;
+  doublereal  fact = 0.0;
+  doublereal  algam = 0.0;
+  doublereal  denom = 0.0;
+  doublereal  ur = 0.0;
+  doublereal  ui = 0.0;
+  doublereal  usave = 0.0;
   for (size_t i =  1; i <=  lexp; ++i) // FEM_DO_SAFE(i, 1, lexp)
   {
     fact = fjac(3, ii + 1);
-    if (i == 1 || fact == 0.0e0)
+    if (i == 1 || fact == 0.0)
       {
         algam = alphn - fjac(2, ii + 2);
         denom = pow2(algam) + pow2(betan);
@@ -469,8 +469,8 @@ void dc_sumexpdel::solexpc(const integer & n,
   }
   solc_(&nd, &lde1, e2r.array(), e2i.array(), z2.array(), z3.array(), ip2.array());
   integer nd2 = nd + 2;
-  double prodr = 0.0e0;
-  double prodi = 0.0e0;
+  doublereal  prodr = 0.0;
+  doublereal  prodi = 0.0;
   integer ipro = 0;
   for (size_t ipro =  1; ipro <=  nd; ++ipro) // FEM_DO_SAFE(ipro, 1, nd)
   {
@@ -481,7 +481,7 @@ void dc_sumexpdel::solexpc(const integer & n,
   for (size_t i =  1; i <=  lexp; ++i) // FEM_DO_SAFE(i, 1, lexp)
   {
     fact = fjac(3, ii + 1);
-    if (i == 1 || fact == 0.0e0)
+    if (i == 1 || fact == 0.0)
       {
         algam = alphn - fjac(2, ii + 2);
         denom = pow2(algam) + pow2(betan);
@@ -500,10 +500,10 @@ void dc_sumexpdel::solexpc(const integer & n,
     z3(ii) = ui;
     ii++;
   }
-  z2(n - 1) = 0.0e0;
-  z2(n) = 0.0e0;
-  z3(n - 1) = 0.0e0;
-  z3(n) = 0.0e0;
+  z2(n - 1) = 0.0;
+  z2(n) = 0.0;
+  z3(n - 1) = 0.0;
+  z3(n) = 0.0;
 }
 
 //C
@@ -513,31 +513,31 @@ void dc_sumexpdel::solexpc(const integer & n,
 //C
 void dc_sumexpdel::slvrad(const common & cmn,
                           const integer & n,
-                          const CMatrix< double > & fjac,
+                          const CMatrix< doublereal  > & fjac,
                           const integer & ldjac,
                           const integer & /* mljac */,
                           const integer & /* mujac */,
-                          const CMatrix< double > & fmas,
+                          const CMatrix< doublereal  > & fmas,
                           const integer & ldmas,
                           const integer & /* mlmas */,
                           const integer & /* mumas */,
                           const integer & /* m1 */,
                           const integer & /* m2 */,
                           const integer & nm1,
-                          const double & fac1,
-                          const double & alphn,
-                          const double & betan,
-                          const CMatrix< double > & e1,
-                          const CMatrix< double > & e2r,
-                          const CMatrix< double > & e2i,
+                          const doublereal  & fac1,
+                          const doublereal  & alphn,
+                          const doublereal  & betan,
+                          const CMatrix< doublereal  > & e1,
+                          const CMatrix< doublereal  > & e2r,
+                          const CMatrix< doublereal  > & e2i,
                           const integer & lde1,
-                          CVectorCore< double > & z1,
-                          CVectorCore< double > & z2,
-                          CVectorCore< double > & z3,
-                          const CVectorCore< double > & f1,
-                          const CVectorCore< double > & f2,
-                          const CVectorCore< double > & f3,
-                          const CVectorCore< double > & /* cont */,
+                          CVectorCore< doublereal  > & z1,
+                          CVectorCore< doublereal  > & z2,
+                          CVectorCore< doublereal  > & z3,
+                          const CVectorCore< doublereal  > & f1,
+                          const CVectorCore< doublereal  > & f2,
+                          const CVectorCore< doublereal  > & f3,
+                          const CVectorCore< doublereal  > & /* cont */,
                           const CVectorCore< integer > & ip1,
                           const CVectorCore< integer > & ip2,
                           const CVectorCore< integer > & /* iphes */,
@@ -548,9 +548,9 @@ void dc_sumexpdel::slvrad(const common & cmn,
   const integer & mbdiag = cmn.mbdiag;
   //
   integer i = 0;
-  double s2 = 0.0;
-  double s3 = 0.0;
-  double bb = 0.0;
+  doublereal  s2 = 0.0;
+  doublereal  s3 = 0.0;
+  doublereal  bb = 0.0;
   //C
   switch (ijob)
     {

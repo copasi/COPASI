@@ -194,47 +194,39 @@ public:
 
 struct common_constn
 {
-  doublereal c1;
-  doublereal c2;
-  doublereal c1m1;
-  doublereal c2m1;
-  doublereal c1mc2;
-
-  common_constn();
+  doublereal c1 = 0.0;
+  doublereal c2 = 0.0;
+  doublereal c1m1 = 0.0;
+  doublereal c2m1 = 0.0;
+  doublereal c1mc2 = 0.0;
 };
 
 struct common_posits
 {
-  doublereal x0b;
-  doublereal uround;
-  doublereal hmax;
-  integer iact;
-  integer irtrn;
-  integer idif;
-  integer mxst;
-  logical flags;
-  logical flagn;
-
-  common_posits();
+  doublereal x0b = 0.0;
+  doublereal uround = 0.0;
+  doublereal hmax = 0.0;
+  integer iact = 0;
+  integer irtrn = 0;
+  integer idif = 0;
+  integer mxst = 0;
+  logical flags = 0;
+  logical flagn = 0;
 };
 
 struct common_bplog
 {
-  logical first;
-  logical last;
-  logical reject;
-  logical bpd;
-
-  common_bplog();
+  logical first = 0;
+  logical last = 0;
+  logical reject = 0;
+  logical bpd = 0;
 };
 
 struct common_bpcom
 {
-  doublereal bpp;
-  integer ilbp;
-  logical left;
-
-  common_bpcom();
+  doublereal bpp = 0.0;
+  integer ilbp = 0;
+  logical left = 0;
 };
 
 struct common : dc_sumexpdel::common
@@ -242,15 +234,7 @@ struct common : dc_sumexpdel::common
   , common_posits
   , common_bplog
   , common_bpcom
-{
-  common()
-  : dc_sumexpdel::common()
-  , common_constn()
-  , common_posits()
-  , common_bplog()
-  , common_bpcom()
-  {};
-};
+{};
 
 CRadar5();
 
@@ -585,18 +569,18 @@ void estrad(const common & cmn,
             const integer & ieflag);
 
 // Matrix Triangularization by Gaussian Elimination
-int dec(const integer & n,
-        const integer & ldjac,
-        CMatrix< doublereal > & fjacl,
-        CVectorCore< integer > & ipj,
-        integer & ier);
+integer dec(const integer & n,
+            const integer & ldjac,
+            CMatrix< doublereal > & fjacl,
+            CVectorCore< integer > & ipj,
+            integer & ier);
 
 // Solution of linear system A*x = b
-int sol(const integer & n,
-        const integer & ldjac,
-        const CMatrix< doublereal > & fjacl,
-        CVectorCore< doublereal > & zl,
-        const CVectorCore< integer > & ipj);
+integer sol(const integer & n,
+            const integer & ldjac,
+            const CMatrix< doublereal > & fjacl,
+            CVectorCore< doublereal > & zl,
+            const CVectorCore< integer > & ipj);
 
 common mCommon;
 };
