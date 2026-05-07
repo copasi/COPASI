@@ -13,6 +13,8 @@ using namespace dc_sumexpdel;
 
 #include "copasi/utilities/CCopasiMessage.h"
 
+static const integer one = 1;
+
 CRadar5::CRadar5()
   : Cxerrwd(false)
   , mCommon()
@@ -969,7 +971,7 @@ statement_10:
                   fcn(n, x, y, cont, arglag, phi, rpar, ipar, past, ipast, nrds);
                   j = k + (mm - 1) * m2;
                   j1 = k;
-                  lbeg = std::max(1, j1 - mujac) + m1;
+                  lbeg = std::max(one, j1 - mujac) + m1;
                 statement_14:
                   lend = std::min(m2, j1 + mljac) + m1;
                   y(j) = f1(j);
@@ -3601,7 +3603,7 @@ void CRadar5::operator()(const integer & n,
             }
         }
     }
-  ldmas2 = std::max(1, ldmas);
+  ldmas2 = std::max(one, ldmas);
   //C ------ HESSENBERG OPTION ONLY FOR EXPLICIT EQU. WITH FULL JACOBIAN
   if ((implct || jband) && ijob == 7)
     {
