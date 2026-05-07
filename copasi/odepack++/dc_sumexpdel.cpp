@@ -305,7 +305,7 @@ statement_2:
     if (i == 1 || fact == 0.0)
       {
         algam = alphn - fjac(2, ii);
-        denom = pow2(algam) + pow2(betan);
+        denom = __pow2(algam) + __pow2(betan);
         ur = algam / denom;
         ui = -betan / denom;
       }
@@ -446,7 +446,7 @@ void dc_sumexpdel::solexpc(const integer & n,
     if (i == 1 || fact == 0.0)
       {
         algam = alphn - fjac(2, ii + 2);
-        denom = pow2(algam) + pow2(betan);
+        denom = __pow2(algam) + __pow2(betan);
         ur = (z2(ii) * algam + z3(ii) * betan) / denom;
         ui = (z3(ii) * algam - z2(ii) * betan) / denom;
       }
@@ -484,7 +484,7 @@ void dc_sumexpdel::solexpc(const integer & n,
     if (i == 1 || fact == 0.0)
       {
         algam = alphn - fjac(2, ii + 2);
-        denom = pow2(algam) + pow2(betan);
+        denom = __pow2(algam) + __pow2(betan);
         ur = ((z2(ii) + prodr) * algam + (z3(ii) + prodi) * betan) / denom;
         ui = ((z3(ii) + prodi) * algam - (z2(ii) + prodr) * betan) / denom;
       }

@@ -14,13 +14,13 @@
 namespace dc_sumexpdel
 {
 template < typename __T >
-inline __T pow2(const __T & base)
+inline __T __pow2(const __T & base)
 {
   return base * base;
 }
 
 template < typename __T >
-inline doublereal dabs(const __T & d)
+inline doublereal __dabs(const __T & d)
 {
   return d < 0 ? -d : d;
 }

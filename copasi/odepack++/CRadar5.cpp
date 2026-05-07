@@ -108,7 +108,7 @@ void CRadar5::bpdtct(const common & cmn,
   bpd = false;
   lrc = 4 * n;
   epsilon = 1.e-10;
-  compar = cmn.uround * std::max(dabs(x), dabs(x + h));
+  compar = cmn.uround * std::max(__dabs(x), __dabs(x + h));
   xlast = ucont(lrc + 1);
   hlast = ucont(lrc + 2);
   for (size_t il = 1; il <= nlags; ++il) // for (size_t il =  1; il <=  nlags; ++il) // FEM_DO_SAFE(il, 1, nlags)
@@ -122,7 +122,7 @@ void CRadar5::bpdtct(const common & cmn,
         }
       ald = arglag(il, x + h, n, yadv, rpar, ipar, phi, past, ipast, nrds);
       //C -----  DEVIATING ARGUMENT AT X+H
-      if (dabs(als - ald) <= compar)
+      if (__dabs(als - ald) <= compar)
         {
           goto statement_33;
         }
@@ -159,7 +159,7 @@ void CRadar5::bpdtct(const common & cmn,
             {
               thnew = thleft - (als - bpp) * (thrigh - thleft) / (ald - als);
               //C ---       TEST DI CONVERGENZA
-              if (dabs(thrigh - thnew) <= epsilon || dabs(thleft - thnew) <= epsilon)
+              if (__dabs(thrigh - thnew) <= epsilon || __dabs(thleft - thnew) <= epsilon)
                 {
                   goto statement_36;
                 }
@@ -196,7 +196,7 @@ void CRadar5::bpdtct(const common & cmn,
               for (size_t l = 1; l <= igrid - 1; ++l) // FEM_DO_SAFE(l, 1, igrid - 1)
                 {
                   bpp = grid(l);
-                  if (dabs(bpp - x - hp) <= compar)
+                  if (__dabs(bpp - x - hp) <= compar)
                     {
                       bpd = false;
                       goto statement_37;
@@ -313,7 +313,7 @@ void CRadar5::bpacc(const common & cmn,
   ald = arglag(ilbp, xr, n, ycont, rpar, ipar, phi, past, ipast, nrds);
   for (size_t k = 1; k <= kmax; ++k) // FEM_DO_SAFE(k, 1, kmax)
     {
-      if (dabs(ald - als) <= epsilon)
+      if (__dabs(ald - als) <= epsilon)
         {
           fac = 0.0e0;
         }
@@ -324,7 +324,7 @@ void CRadar5::bpacc(const common & cmn,
       thnew = thrigh - fac * (thrigh - thleft);
       thleft = thrigh;
       //C ---       TEST DI CONVERGENZA
-      if (dabs(thnew - thrigh) <= epsilon)
+      if (__dabs(thnew - thrigh) <= epsilon)
         {
           goto statement_36;
         }
@@ -341,7 +341,7 @@ void CRadar5::bpacc(const common & cmn,
           yapp(i) = contr5(cmn, i, n, xap, ycont, xsol, hsol);
         }
       ald = arglag(ilbp, xap, n, yapp, rpar, ipar, phi, past, ipast, nrds);
-      if (dabs(ald - als) <= epsilon)
+      if (__dabs(ald - als) <= epsilon)
         {
           goto statement_36;
         }
@@ -809,7 +809,7 @@ statement_2:
   u1 = (6.e0 + pow(81.e0, (1.e0 / 3.e0)) - pow(9.e0, (1.e0 / 3.e0))) / 30.e0;
   alph = (12.e0 - pow(81.e0, (1.e0 / 3.e0)) + pow(9.e0, (1.e0 / 3.e0))) / 60.e0;
   beta = (pow(81.e0, (1.e0 / 3.e0)) + pow(9.e0, (1.e0 / 3.e0))) * std::sqrt(3.e0) / 60.e0;
-  cno = pow2(alph) + pow2(beta);
+  cno = __pow2(alph) + __pow2(beta);
   u1 = 1.0e0 / u1;
   alph = alph / cno;
   beta = beta / cno;
@@ -912,14 +912,14 @@ statement_2:
     {
       for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
         {
-          scal(i) = atol(1) + rtol(1) * dabs(y(i));
+          scal(i) = atol(1) + rtol(1) * __dabs(y(i));
         }
     }
   else
     {
       for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
         {
-          scal(i) = atol(i) + rtol(i) * dabs(y(i));
+          scal(i) = atol(i) + rtol(i) * __dabs(y(i));
         }
     }
   hhfac = h;
@@ -959,7 +959,7 @@ statement_10:
                   j = k + (mm - 1) * m2;
                 statement_12:
                   f1(j) = y(j);
-                  f2(j) = std::sqrt(uround * std::max(1.e-5, dabs(y(j))));
+                  f2(j) = std::sqrt(uround * std::max(1.e-5, __dabs(y(j))));
                   y(j) += f2(j);
                   j += md;
                   if (j <= mm * m2)
@@ -994,7 +994,7 @@ statement_10:
           for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
             {
               ysafe = y(i);
-              delt = std::sqrt(uround * std::max(1.e-5, dabs(ysafe)));
+              delt = std::sqrt(uround * std::max(1.e-5, __dabs(ysafe)));
               y(i) = ysafe + delt;
               fcn(n, x, y, cont, arglag, phi, rpar, ipar, past, ipast, nrds);
               for (size_t j = m1 + 1; j <= n; ++j) // FEM_DO_SAFE(j, m1 + 1, n)
@@ -1210,7 +1210,7 @@ statement_20:
               if (icoun(3, il) == 1)
                 {
                   s3 = dim(xlag(3, il), x) / h;
-                  alopt += s3 * (1.e0 - 8.e0 * s3 + 10.e0 * pow2(s3));
+                  alopt += s3 * (1.e0 - 8.e0 * s3 + 10.e0 * __pow2(s3));
                 }
               alopt = alopt / 9.e0;
               //C
@@ -1218,7 +1218,7 @@ statement_20:
               //C         JACLAG ~= ALOPT*I
               //C
               //C         ACTIVATES IF ALOPT DIFFERENT FROM ZERO
-              if (dabs(alopt) >= 1.e-8)
+              if (__dabs(alopt) >= 1.e-8)
                 {
                   nl = ils(2 * il - 1);
                   ile = ils(2 * il);
@@ -1291,7 +1291,7 @@ statement_30:
     {
       goto statement_178;
     }
-  if (0.1e0 * h <= dabs(x) * uround)
+  if (0.1e0 * h <= __dabs(x) * uround)
     {
       goto statement_177;
     }
@@ -1322,7 +1322,7 @@ statement_30:
   flagn = false;
   //C -----------------------
   faccon = pow(std::max(faccon, uround), 0.8e0);
-  theta = dabs(thet);
+  theta = __dabs(thet);
 //C -------------------------------------------------------
 //C           REFERENCE POINT FOR THE SIMPLE AZIONE SIMPLE
 //C -------------------------------------------------------
@@ -1427,7 +1427,7 @@ statement_42:
   for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
     {
       denom = scal(i);
-      dyno += pow2((z1(i) / denom)) + pow2((z2(i) / denom)) + pow2((z3(i) / denom));
+      dyno += __pow2((z1(i) / denom)) + __pow2((z2(i) / denom)) + __pow2((z3(i) / denom));
     }
   dyno = std::sqrt(dyno / n3);
   //C --------------------------------------------------------
@@ -1614,7 +1614,7 @@ statement_421:
       //C
       bpacc(cmn, n, x, h, y, arglag, rpar, ipar, z1, z2, z3, first,
             bpv, ibp, ilbp, bpp, kmax, phi, past, ipast, nrds);
-      if (dabs(h - hnewt) / hnewt >= std::max(btol, rtolm * 1.e-2))
+      if (__dabs(h - hnewt) / hnewt >= std::max(btol, rtolm * 1.e-2))
         {
           goto statement_20;
           //C             REF POINT
@@ -1784,7 +1784,7 @@ statement_23:
     {
       goto statement_178;
     }
-  if (0.1e0 * h <= dabs(x) * uround)
+  if (0.1e0 * h <= __dabs(x) * uround)
     {
       goto statement_177;
     }
@@ -1801,7 +1801,7 @@ statement_23:
   flagn = false;
   //C -----------------------
   faccon = pow(std::max(faccon, uround), 0.8e0);
-  theta = dabs(thet);
+  theta = __dabs(thet);
 //CCC --- --- --- --- --- --- --- --- --- --- --- --- ---
 //CCC         REFERENCE POINT FOR FULL ITERATION
 //CCC --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -1902,7 +1902,7 @@ statement_43:
   for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
     {
       denom = scal(i);
-      dyno += pow2((zl(i) / denom)) + pow2((zl(i + n) / denom)) + pow2((zl(i + 2 * n) / denom));
+      dyno += __pow2((zl(i) / denom)) + __pow2((zl(i + n) / denom)) + __pow2((zl(i + 2 * n) / denom));
     }
   dyno = std::sqrt(dyno / n3);
   //C --------------------------------------------------------
@@ -2104,7 +2104,7 @@ statement_55:
             {
               if (flagus)
                 {
-                  facgus = (hacc / h) * pow((pow2(err) / erracc), 0.25e0) / safe;
+                  facgus = (hacc / h) * pow((__pow2(err) / erracc), 0.25e0) / safe;
                   facgus = std::max(facr, std::min(facl, facgus));
                   quot = std::max(quot, facgus);
                   hnew = h / quot;
@@ -2315,14 +2315,14 @@ statement_55:
         {
           for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
             {
-              scal(i) = atol(1) + rtol(1) * dabs(y(i));
+              scal(i) = atol(1) + rtol(1) * __dabs(y(i));
             }
         }
       else
         {
           for (size_t i = 1; i <= n; ++i) // FEM_DO_SAFE(i, 1, n)
             {
-              scal(i) = atol(i) + rtol(i) * dabs(y(i));
+              scal(i) = atol(i) + rtol(i) * __dabs(y(i));
             }
         }
       if (iout != 0)
@@ -2354,7 +2354,7 @@ statement_55:
         {
           posneg = -posneg;
         }
-      xeps = posneg * (dabs(x) + 1.0e0) * 100 * uround;
+      xeps = posneg * (__dabs(x) + 1.0e0) * 100 * uround;
       fcn(n, x + xeps, y, y0, arglag, phi, rpar, ipar, past, ipast, nrds);
       if (first)
         {
@@ -2384,7 +2384,7 @@ statement_55:
               //C              LEFT=.FALSE.
               first = true;
               xend = grid(igrid);
-              if (dabs(xend - x) <= (h * 1.e-2))
+              if (__dabs(xend - x) <= (h * 1.e-2))
                 {
                   igrid++;
                   goto statement_45;
@@ -3460,7 +3460,7 @@ void CRadar5::operator()(const integer & n,
   //C -------------------------------------------------------
   //C
   //C ---->    GRID WITH DISCONTINUITIES  <----
-  xuro = 100 * uround * dabs(xend);
+  xuro = 100 * uround * __dabs(xend);
   if (ngrid > 0)
     {
       if (grid(ngrid) - xend >= xuro)
@@ -3471,7 +3471,7 @@ void CRadar5::operator()(const integer & n,
             }
           arret = true;
         }
-      if (dabs(grid(ngrid) - xend) >= xuro)
+      if (__dabs(grid(ngrid) - xend) >= xuro)
         {
           ngrid++;
         }
@@ -3709,7 +3709,7 @@ void CRadar5::lagr5(common & cmn,
   ipos = -1;
   //C     EPSILON GIVES THE OVERLAPPING
   //C     MIN VALUE FOR THE SUPER-POSITION NEIGHBOURHOOD OF A BP
-  compar = uround * std::max(dabs(xlag), dabs(x0b));
+  compar = uround * std::max(__dabs(xlag), __dabs(x0b));
   epsact = 10.e0 * compar;
   if (iact > 1)
     {
@@ -3732,7 +3732,7 @@ void CRadar5::lagr5(common & cmn,
         }
       else
         {
-          if (dabs(xlag - x0b) <= epsact)
+          if (__dabs(xlag - x0b) <= epsact)
             {
               if (left)
                 {
@@ -3745,7 +3745,7 @@ void CRadar5::lagr5(common & cmn,
                   theta = (xlag - (past(ipos) + past(ipos + idif - 1))) / past(ipos + idif - 1);
                 }
             }
-          else if (dabs(xlag - bpp) <= epsact)
+          else if (__dabs(xlag - bpp) <= epsact)
             {
               ipos = -1;
               if (left)
@@ -3883,11 +3883,11 @@ void CRadar5::lagr5(common & cmn,
             }
         }
       iposb = 0;
-      if (dabs(bpp - past(ipos)) <= 10.e0 * uround)
+      if (__dabs(bpp - past(ipos)) <= 10.e0 * uround)
         {
           iposb = ipos;
         }
-      else if (dabs(bpp - past(inext)) <= 10.e0 * uround)
+      else if (__dabs(bpp - past(inext)) <= 10.e0 * uround)
         {
           iposb = inext;
         }
@@ -3908,7 +3908,7 @@ void CRadar5::lagr5(common & cmn,
           epsilon = std::min(past(iposb + idif) - past(iposb), past(iposb) - past(iposb - idif));
         }
       epsilon = std::max(epsilon * 1.e-2, epsact);
-      if (dabs(xlag - bpp) > epsilon)
+      if (__dabs(xlag - bpp) > epsilon)
         {
           goto statement_10;
         }
@@ -4312,7 +4312,7 @@ statement_77:
   errb = 0.e0;
   for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
     {
-      errb += pow2((w1(i) / scal(i)));
+      errb += __pow2((w1(i) / scal(i)));
     }
   errlb = std::max(std::sqrt(errb / nl), 1.e-10);
   if (alpha != 0.e0)
@@ -4320,7 +4320,7 @@ statement_77:
       err = 0.e0;
       for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
         {
-          err += pow2((w2(i) / scal(i)));
+          err += __pow2((w2(i) / scal(i)));
         }
       errl = std::max(std::sqrt(err / nl), 1.e-10);
     }
@@ -4331,7 +4331,7 @@ statement_77:
   errb = 0.e0;
   for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
     {
-      errb += pow2((q1(i) / scal(i)));
+      errb += __pow2((q1(i) / scal(i)));
     }
   errqb = std::max(std::sqrt(errb / nl), 1.e-10);
   if (alpha != 0.e0)
@@ -4339,7 +4339,7 @@ statement_77:
       err = 0.e0;
       for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
         {
-          err += pow2((q2(i) / scal(i)));
+          err += __pow2((q2(i) / scal(i)));
         }
       errq = std::max(std::sqrt(err / nl), 1.e-10);
     }
@@ -4347,10 +4347,10 @@ statement_77:
     {
       errq = 0.e0;
     }
-  cerrb = errqb * (errqb / std::sqrt(errqb * errqb + cerlq * cerlq * pow2(std::min(errlb, errqb / cerlq))));
+  cerrb = errqb * (errqb / std::sqrt(errqb * errqb + cerlq * cerlq * __pow2(std::min(errlb, errqb / cerlq))));
   if (alpha != 0.e0)
     {
-      cerr = errq * (errq / std::sqrt(errq * errq + cerlq * cerlq * pow2(std::min(errl, errq / cerlq))));
+      cerr = errq * (errq / std::sqrt(errq * errq + cerlq * cerlq * __pow2(std::min(errl, errq / cerlq))));
     }
   else
     {
@@ -4360,13 +4360,13 @@ statement_77:
   errb = 0.e0;
   for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
     {
-      errb += pow2((f3(i) / scal(i)));
+      errb += __pow2((f3(i) / scal(i)));
     }
   errb = std::max(std::sqrt(errb / nl), 1.e-10);
   err = 0.e0;
   for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
     {
-      err += pow2((cont(i) / scal(i)));
+      err += __pow2((cont(i) / scal(i)));
     }
   err = std::max(std::sqrt(err / nl), 1.e-10);
   err = std::min(errb, err);
@@ -4437,7 +4437,7 @@ statement_77:
       err = 0.e0;
       for (size_t i = 1; i <= nl; ++i) // FEM_DO_SAFE(i, 1, nl)
         {
-          err += pow2((cont(i) / scal(i)));
+          err += __pow2((cont(i) / scal(i)));
         }
       err = std::max(std::sqrt(err / nl), 1.e-10);
       err = std::min(serr, err);
