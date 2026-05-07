@@ -183,7 +183,7 @@ public:
     typedef std::forward_iterator_tag iterator_category;
 #else
   class const_iterator:
-    public std::const_iterator< std::forward_iterator_tag, _Node, ptrdiff_t >
+    public std::iterator< std::forward_iterator_tag, _Node, ptrdiff_t >
   {
 #endif // __cplusplus >= 201703L
 #endif // (defined __GNUC__ && __GNUC__ < 3 && !defined __APPLE_CC__)
