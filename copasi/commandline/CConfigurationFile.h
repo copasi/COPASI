@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,6 +28,7 @@
 #include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/MIRIAM/CMIRIAMResource.h"
 #include "copasi/xml/CCopasiXMLInterface.h"
+#include "copasi/OpenMP/COpenMPConfig.h"
 
 class CMIRIAMResources;
 class CVersion;
@@ -229,6 +230,12 @@ public:
    * @return CRecentFiles & recentSEDMLFiles
    */
   CRecentFiles & getRecentSEDMLFiles();
+
+  /**
+   * Retrieve the OpenMP configuration
+   * @return COpenMPConfig & OpenMPConfig
+   */
+  COpenMPConfig & getOpenMPConfig();
 
   /**
    * Retrieve the application font.
@@ -602,6 +609,8 @@ private:
    * A pointer indicating whether to disable JIT compilation even if it is available
    */
   bool * mpDisableJIT;
+
+  COpenMPConfig * mpOpenMPConfig;
 };
 
 #endif // COPASI_CConfigurationFile

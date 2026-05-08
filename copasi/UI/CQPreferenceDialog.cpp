@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -241,6 +241,8 @@ void CQPreferenceDialog::slotBtnOk()
   if (mpConfiguration != NULL)
     {
       *CRootContainer::getConfiguration() = *mpConfiguration;
+      CRootContainer::getConfiguration()->getOpenMPConfig().apply();
+      CRootContainer::getConfiguration()->save();
 
       // remove items from tree, otherwise node pointers will become invalid
       mpTreeView->clearGroups();

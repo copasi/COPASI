@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,24 +37,24 @@
 #include "copasi/xml/CGroupXML.h"
 
 CRecentFiles::CRecentFiles(const std::string & name,
-                           const CDataContainer * pParent):
-  CCopasiParameterGroup(name, pParent),
-  mpMaxFiles(NULL),
-  mpRecentFiles(NULL)
+                           const CDataContainer * pParent)
+  : CCopasiParameterGroup(name, pParent)
+  , mpMaxFiles(NULL)
+  , mpRecentFiles(NULL)
 {initializeParameter();}
 
 CRecentFiles::CRecentFiles(const CRecentFiles & src,
-                           const CDataContainer * pParent):
-  CCopasiParameterGroup(src, pParent),
-  mpMaxFiles(NULL),
-  mpRecentFiles(NULL)
+                           const CDataContainer * pParent)
+  : CCopasiParameterGroup(src, pParent)
+  , mpMaxFiles(NULL)
+  , mpRecentFiles(NULL)
 {initializeParameter();}
 
 CRecentFiles::CRecentFiles(const CCopasiParameterGroup & group,
-                           const CDataContainer * pParent):
-  CCopasiParameterGroup(group, pParent),
-  mpMaxFiles(NULL),
-  mpRecentFiles(NULL)
+                           const CDataContainer * pParent)
+  : CCopasiParameterGroup(group, pParent)
+  , mpMaxFiles(NULL)
+  , mpRecentFiles(NULL)
 {initializeParameter();}
 
 CRecentFiles::~CRecentFiles()
@@ -115,32 +115,33 @@ void CRecentFiles::addFile(const std::string & file)
 CConfigurationFile::CConfigurationFile(const std::string & name,
                                        const CDataContainer * pParent)
   : CCopasiParameterGroup(name, pParent)
-  , mpRecentFiles(NULL)
-  , mpRecentSBMLFiles(NULL)
-  , mpRecentSEDMLFiles(NULL)
-  , mpApplicationFont(NULL)
-  , mpValidateUnits(NULL)
-  , mpDisplayIssueSeverity(NULL)
-  , mpDisplayIssueKinds(NULL)
-  , mpUseOpenGL(NULL)
-  , mpUseAdvancedSliders(NULL)
-  , mpUseAdvancedEditing(NULL)
-  , mpNormalizePerExperiment(NULL)
-  , mpEnableAdditionalOptimizationParameters(NULL)
-  , mpDisplayPopulations(NULL)
-  , mpWorkingDirectory(NULL)
-  , mpProxyServer(NULL)
-  , mpProxyPort(NULL)
-  , mpProxyUser(NULL)
-  , mpProxyPass(NULL)
-  , mpCurrentAuthorGivenName(NULL)
-  , mpCurrentAuthorFamilyName(NULL)
-  , mpCurrentAuthorOrganization(NULL)
-  , mpCurrentAuthorEmail(NULL)
-  , mpPrecision(NULL)
-  , mpCheckForUpdates(NULL)
-  , mpResizeToContents(NULL)
-  , mpDisableJIT(NULL)
+  , mpRecentFiles(nullptr)
+  , mpRecentSBMLFiles(nullptr)
+  , mpRecentSEDMLFiles(nullptr)
+  , mpApplicationFont(nullptr)
+  , mpValidateUnits(nullptr)
+  , mpDisplayIssueSeverity(nullptr)
+  , mpDisplayIssueKinds(nullptr)
+  , mpUseOpenGL(nullptr)
+  , mpUseAdvancedSliders(nullptr)
+  , mpUseAdvancedEditing(nullptr)
+  , mpNormalizePerExperiment(nullptr)
+  , mpEnableAdditionalOptimizationParameters(nullptr)
+  , mpDisplayPopulations(nullptr)
+  , mpWorkingDirectory(nullptr)
+  , mpProxyServer(nullptr)
+  , mpProxyPort(nullptr)
+  , mpProxyUser(nullptr)
+  , mpProxyPass(nullptr)
+  , mpCurrentAuthorGivenName(nullptr)
+  , mpCurrentAuthorFamilyName(nullptr)
+  , mpCurrentAuthorOrganization(nullptr)
+  , mpCurrentAuthorEmail(nullptr)
+  , mpPrecision(nullptr)
+  , mpCheckForUpdates(nullptr)
+  , mpResizeToContents(nullptr)
+  , mpDisableJIT(nullptr)
+  , mpOpenMPConfig(nullptr)
 {
   initializeParameter();
 }
@@ -214,6 +215,9 @@ bool CConfigurationFile::elevateChildren()
       CRootContainer::getMiriamResources() = *pMIRIAMResources;
       removeParameter(pMIRIAMResources);
     }
+
+  mpOpenMPConfig =
+    elevate<COpenMPConfig, CCopasiParameterGroup>(getGroup("OpenMP Configuration"));
 
   return success;
 }
@@ -298,6 +302,7 @@ void CConfigurationFile::initializeParameter()
   assertGroup("Check for Updates");
 
   mpDisableJIT = assertParameter("Disable JIT Compilation", CCopasiParameter::Type::BOOL, false);
+  assertGroup("OpenMP Configuration");
 
   elevateChildren();
 }
@@ -331,6 +336,8 @@ bool CConfigurationFile::load()
 
   if (success)
     *this = Configuration;
+
+  mpOpenMPConfig->apply();
 
   std::string configMIRIAMResourceFile(ConfigFile + std::string(".miriam"));
   bool haveConfigMiriam = CDirEntry::exist(configMIRIAMResourceFile);
@@ -405,6 +412,11 @@ CRecentFiles & CConfigurationFile::getRecentSBMLFiles()
 CRecentFiles & CConfigurationFile::getRecentSEDMLFiles()
 {
   return *mpRecentSEDMLFiles;
+}
+
+COpenMPConfig & CConfigurationFile::getOpenMPConfig()
+{
+  return *mpOpenMPConfig;
 }
 
 const std::string CConfigurationFile::getApplicationFont() const

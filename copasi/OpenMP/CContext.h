@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,11 +33,6 @@ const omp_sched_t omp_sched_monotonic = (omp_sched_t) 0x80000000;
 # define omp_get_num_threads() (1)
 # define omp_get_thread_num() (0)
 #endif // USE_OMP
-
-struct omp_info
-{
-  std::string operator()();
-};
 
 template < class Data > class CContext
 {

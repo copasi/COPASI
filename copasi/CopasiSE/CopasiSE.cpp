@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -58,7 +58,7 @@
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/sedml/SEDMLUtils.h"
 
-#include "copasi/OpenMP/CContext.h"
+#include "copasi/OpenMP/COpenMPConfig.h"
 
 #include <copasi/utilities/CCopasiMethod.h>
 #include <copasi/utilities/CProfileSettings.h>
@@ -102,7 +102,6 @@ std::string AssignReportDefinition;
 std::string ExportReportDefinition;
 std::string ImportReportDefinition;
 
-
 void printTasks()
 {
   if (!pDataModel)
@@ -116,24 +115,24 @@ void printReports()
 {
   if (!pDataModel)
     return;
- 
+
   for (auto& report : *pDataModel->getReportDefinitionList())
     std::cout << report.getObjectName() << std::endl;
 }
 
-int getReportIndex(const std::string& reportName)
+size_t getReportIndex(const std::string& reportName)
 {
   if (!pDataModel)
     return C_INVALID_INDEX;
-  
-  for (int i = 0; i < pDataModel->getReportDefinitionList()->size(); ++i)
+
+  for (size_t i = 0; i < pDataModel->getReportDefinitionList()->size(); ++i)
     {
       if ((*pDataModel->getReportDefinitionList())[i].getObjectName() == reportName)
         return i;
       if ((*pDataModel->getReportDefinitionList())[i].getKey() == reportName)
         return i;
     }
-  
+
   return C_INVALID_INDEX;
 }
 
@@ -157,7 +156,7 @@ void addReportItemsToList(const std::vector<std::string>& items, std::function< 
           continue;
         }
 
-      // if the item is not a reference after resolving from 
+      // if the item is not a reference after resolving from
       // display name, choose specific reference for model entities
       if (fromDisplayName && obj->getObjectType() != "Reference")
         {
@@ -179,7 +178,6 @@ void addReportItemsToList(const std::vector<std::string>& items, std::function< 
               obj = modelEntity->getValueReference();
             }
         }
-
 
       getCnListFunction()->push_back(obj->getCN());
     }
@@ -210,7 +208,7 @@ int importReportDefinition()
       return OPERATION_FAILED;
     }
   fs.close();
-  
+
   if (!j.contains("name") || !j.contains("is_table"))
     {
       std::cerr << "Invalid task specification file: " << ImportReportDefinition << std::endl;
@@ -251,29 +249,29 @@ int importReportDefinition()
           std::cerr << "Invalid table report definition: missing 'table' field." << std::endl;
           return OPERATION_FAILED;
         }
-      
+
       auto tableItems = j["table"].get< std::vector< std::string > >();
 
-      addReportItemsToList(tableItems, [&]() { return report->getTableAddr(); });
+      addReportItemsToList(tableItems, [&]() {return report->getTableAddr(); });
     }
   else
     {
       if (j.contains("header"))
         {
           auto headerItems = j["header"].get< std::vector< std::string > >();
-          addReportItemsToList(headerItems, [&]() { return report->getHeaderAddr(); });
+          addReportItemsToList(headerItems, [&]() {return report->getHeaderAddr(); });
         }
 
       if (j.contains("body"))
         {
           auto bodyItems = j["body"].get< std::vector< std::string > >();
-          addReportItemsToList(bodyItems, [&]() { return report->getBodyAddr(); });
+          addReportItemsToList(bodyItems, [&]() {return report->getBodyAddr(); });
         }
 
       if (j.contains("footer"))
         {
           auto footerItems = j["footer"].get< std::vector< std::string > >();
-          addReportItemsToList(footerItems, [&]() { return report->getFooterAddr(); });
+          addReportItemsToList(footerItems, [&]() {return report->getFooterAddr(); });
         }
     }
 
@@ -320,7 +318,7 @@ int exportReportDefinition()
     }
 
   auto & report = (*pDataModel->getReportDefinitionList())[reportIndex];
-  
+
   nlohmann::json j;
 
   j["name"] = report.getObjectName();
@@ -333,14 +331,13 @@ int exportReportDefinition()
   if (report.isTable())
     {
       j["print_headers"] = report.getTitle();
-      j["table"] = reportListToString([&]() { return report.getTableAddr(); });
-
+      j["table"] = reportListToString([&]() {return report.getTableAddr(); });
     }
   else
     {
-      j["header"] = reportListToString([&]() { return report.getHeaderAddr(); });
-      j["body"] = reportListToString([&]() { return report.getBodyAddr(); });
-      j["footer"] = reportListToString([&]() { return report.getFooterAddr(); });
+      j["header"] = reportListToString([&]() {return report.getHeaderAddr(); });
+      j["body"] = reportListToString([&]() {return report.getBodyAddr(); });
+      j["footer"] = reportListToString([&]() {return report.getFooterAddr(); });
     }
 
   // write to file
@@ -707,13 +704,13 @@ int main(int argc, char *argv[])
 
           if (!ImportReportDefinition.empty())
           {
-              retcode = importReportDefinition();           
+              retcode = importReportDefinition();
           }
 
           if (!ExportReportDefinition.empty())
           {
               retcode = exportReportDefinition();
-              goto finish;              
+              goto finish;
           }
 
           // combine archives or SED-ML will have defined tasks
@@ -795,7 +792,7 @@ int main(int argc, char *argv[])
                 {
                   retcode = importReportDefinition();
                 }
-              
+
               if (!ExportReportDefinition.empty())
                 {
                   retcode = exportReportDefinition();
@@ -866,7 +863,7 @@ int printUsage(const std::string& name)
 }
 
 void readTaskSpec(CCopasiTask& task, const std::string& jsonFile)
-{ 
+{
   // read the json file
   std::ifstream fs(CLocaleString::fromUtf8(jsonFile).c_str());
   if (!fs.good())
@@ -929,7 +926,7 @@ void writeTaskSpec(const CCopasiTask& task, const std::string& jsonFile)
 
   // include all method information
   j["method_name"] = task.getMethod()->getObjectName();
-  j["method"] = CProfileSettings::toJson(task.getMethod()); 
+  j["method"] = CProfileSettings::toJson(task.getMethod());
 
   std::ofstream fs(CLocaleString::fromUtf8(jsonFile).c_str());
   if (!fs.good())
@@ -938,11 +935,9 @@ void writeTaskSpec(const CCopasiTask& task, const std::string& jsonFile)
       return;
     }
 
-  
   fs << j.dump(2);
 
   fs.close();
-
 }
 
 int runScheduledTasks(CProcessReport * pProcessReport)
@@ -992,7 +987,6 @@ int runScheduledTasks(CProcessReport * pProcessReport)
             // skip running the task as we are just exporting
             return 0;
           }
-
 
         task.setCallBack(pProcessReport);
 
@@ -1220,7 +1214,7 @@ void writeLogo()
   if (NoLogo) return;
 
   std::cout << "COPASI "
-            << CVersion::VERSION.getVersion() <<  omp_info()() << std::endl
+            << CVersion::VERSION.getVersion() <<  COpenMPConfig::Info() << std::endl
             << "The use of this software indicates the acceptance of the attached license." << std::endl
             << "To view the license please use the option: --license" << std::endl
             << std::endl;
