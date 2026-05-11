@@ -131,7 +131,12 @@ QString AboutDialog::getDefaultVersionText()
 
 
   return QString(AboutDialog::text)
-         .arg(FROM_UTF8(CVersion::VERSION.getVersion() + omp_info()()))            // 1
+#ifdef ENABLE_OMP
+       .arg(FROM_UTF8(CVersion::VERSION.getVersion() + " " + omp_info()))            // 1
+#else
+       .arg(FROM_UTF8(CVersion::VERSION.getVersion()))            // 1
+#endif
+      
          .arg(QT_VERSION_STR)                                       // 2
          .arg(QWT_VERSION_STR)                                      // 3
          .arg(COPASI_EXPAT_VERSION)                                 // 4

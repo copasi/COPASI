@@ -65,6 +65,7 @@
 
 #cmakedefine QWT_VERSION @QWT_VERSION@
 
+#cmakedefine ENABLE_OMP
 #cmakedefine OMP_HAVE_MONOTONIC
 
 #define COPASI_EXPAT_VERSION "@EXPAT_VERSION@"
