@@ -437,6 +437,7 @@ if (ENABLE_OMP)
       set(OpenMP_C_LIB_NAMES omp)
       set(OpenMP_CXX_LIB_NAMES omp)
       set(OpenMP_omp_LIBRARY ${HOMEBREW_LIBOMP_PREFIX}/lib/libomp.dylib)
+      set(OMP_HAVE_MONOTONIC 1 CACHE INTERNAL "" FORCE)
     endif()
   endif()
 
@@ -445,7 +446,7 @@ if (ENABLE_OMP)
   if (OpenMP_CXX_SPEC_DATE GREATER_EQUAL "201811")
     # OpenMP 5.0 will always have monotonic scheduling
     set(OMP_HAVE_MONOTONIC 1 CACHE INTERNAL "" FORCE)
-  else()
+  elseif(NOT OMP_HAVE_MONOTONIC)
     # otherwise we need to check
     include_directories(BEFORE ${OpenMP_INCLUDE_PATH} ${OpenMP_CXX_INCLUDE_DIRS})
 
