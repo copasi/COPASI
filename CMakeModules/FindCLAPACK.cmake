@@ -59,7 +59,11 @@ if(BLAS_FOUND AND APPLE)
   if(NOT CLAPACK_INCLUDE_DIR)
     # as it turns out the new OSX has different definitions for blas
     # it is a bit hard to find the right directory, so lets try here
-    exec_program(xcode-select ARGS -print-path OUTPUT_VARIABLE CMAKE_XCODE_DEVELOPER_DIR)
+    execute_process(
+      COMMAND xcode-select -print-path
+      OUTPUT_VARIABLE CMAKE_XCODE_DEVELOPER_DIR
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
     find_path(CLAPACK_INCLUDE_DIR cblas.h
       PATHS
       ${CMAKE_OSX_SYSROOT}/System/Library/Frameworks/Accelerate.framework/Versions/Current/Frameworks/vecLib.framework/Headers/
