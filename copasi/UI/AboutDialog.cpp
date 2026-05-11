@@ -58,6 +58,9 @@
 #include <qcustomplot.h>
 #endif
 
+#ifdef ENABLE_OMP
+#include <omp.h>
+#endif
 
 const char *AboutDialog::text =
   "<h2>COPASI %1</h2>"
@@ -129,14 +132,12 @@ QString AboutDialog::getDefaultVersionText()
   additionalVersion += QString("<li>stduuid</li>");
   #endif
 
+  #ifdef ENABLE_OMP
+  additionalVersion += QString("<li>OpenMP %1, %2 threads</li>").arg(COPASI_OMP_VERSION).arg(omp_get_num_threads());
+  #endif
 
   return QString(AboutDialog::text)
-#ifdef ENABLE_OMP
-       .arg(FROM_UTF8(CVersion::VERSION.getVersion() + " " + omp_info()))            // 1
-#else
-       .arg(FROM_UTF8(CVersion::VERSION.getVersion()))            // 1
-#endif
-      
+         .arg(FROM_UTF8(CVersion::VERSION.getVersion()))            // 1      
          .arg(QT_VERSION_STR)                                       // 2
          .arg(QWT_VERSION_STR)                                      // 3
          .arg(COPASI_EXPAT_VERSION)                                 // 4
