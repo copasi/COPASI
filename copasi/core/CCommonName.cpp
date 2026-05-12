@@ -73,6 +73,9 @@ CObjectInterface * CCommonName::GetObjectFromCN(const CObjectInterface::Containe
 
   for (const CDataContainer * pContainer : listOfContainer)
     {
+      if (pContainer == nullptr)
+        continue;
+
       if (pDataModel == nullptr)
         pDataModel = pContainer->getObjectDataModel();
 
