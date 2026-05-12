@@ -2,6 +2,22 @@ name: Build and Test
 
 on: 
   workflow_dispatch:
+    inputs:
+      build_type:
+        description: CMake build type
+        type: choice
+        required: true
+        default: Release
+        options:
+          - Release
+          - Debug
+          - RelWithDebInfo
+          - MinSizeRel
+      run_valgrind:
+        description: Run tests under Valgrind (Ubuntu only)
+        type: boolean
+        required: false
+        default: false
   push:
     paths:
         - "**"
@@ -9,8 +25,7 @@ on:
         - ".github/workflows/copasi_se.yml"
 
 env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
+  BUILD_TYPE: ${{ github.event.inputs.build_type || 'Release' }}
 
 jobs:
   build:
@@ -106,10 +121,33 @@ jobs:
       working-directory: ${{github.workspace}}/build_copasi
       run: cmake --build . --config $BUILD_TYPE --target install
 
+    - name: Run test_api under GDB
+      if: matrix.platform == 'ubuntu-latest'
+      working-directory: ${{github.workspace}}/build_copasi
+      shell: bash
+      run: |
+        export srcdir="${{github.workspace}}/tests"
+        TEST_API="$PWD/tests/test_api"
+        sudo apt-get install -y gdb
+        gdb -batch -return-child-result \
+          -ex "set pagination off" \
+          -ex run \
+          -ex "thread apply all bt full" \
+          -ex quit \
+          -- "$TEST_API"
+
     - name: Test
       working-directory: ${{github.workspace}}/build_copasi
       shell: bash
       run: ctest -C $BUILD_TYPE -V
+
+    - name: Valgrind
+      if: github.event.inputs.run_valgrind == 'true' && matrix.platform == 'ubuntu-latest'
+      working-directory: ${{github.workspace}}/build_copasi
+      shell: bash
+      run: |
+        sudo apt-get install -y valgrind
+        ctest -T memcheck -C $BUILD_TYPE -V
 
     - name: binary archive
       uses: actions/upload-artifact@v4
