@@ -467,6 +467,12 @@ if (ENABLE_OMP)
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
   endif()
 
+  if(MSVC)
+  set (OpenMP_RUNTIME_MSVC "llvm")
+  set (OpenMP_C_FLAGS "/openmp:llvm")
+  set (OpenMP_CXX_FLAGS "/openmp:llvm")
+  endif()
+
   find_package (OpenMP REQUIRED)
 
   if (UNIX AND NOT APPLE AND (ENABLE_JAVA OR ENABLE_CSHARP OR ENABLE_PYTHON))
