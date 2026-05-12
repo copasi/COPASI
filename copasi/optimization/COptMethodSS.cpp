@@ -694,10 +694,10 @@ bool COptMethodSS::combination(void)
   C_INT32 improvement; // count iterations with improvement in go-beyond strategy
 
   // signal no children yet
-  mChildrenGenerated = false;
+  bool childrenGenerated = false;
 
   // generate children for each member of the population
-#pragma omp parallel for  reduction(| : mChildrenGenerated) schedule(runtime)
+#pragma omp parallel for  reduction(| : childrenGenerated) schedule(runtime)
   for (size_t i = 0; i < mPopulationSize; i++)
     {
       C_FLOAT64 alpha;      // 1 or -1
@@ -796,7 +796,7 @@ bool COptMethodSS::combination(void)
                   mStuck[i] = 0;
 
                   // signal we have generated a child (improvement)
-                  mChildrenGenerated = true;
+                  childrenGenerated = true;
                 }
             }
         }
@@ -868,6 +868,8 @@ bool COptMethodSS::combination(void)
             }
         }
     }
+
+  mChildrenGenerated = childrenGenerated;
 
   return true;
 }
