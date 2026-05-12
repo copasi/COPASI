@@ -25,8 +25,10 @@ typedef int MPI_Win;
 
 #ifdef USE_OMP
 # include <omp.h>
-# ifndef OMP_HAVE_MONOTONIC
+#  ifndef OMP_HAVE_MONOTONIC
+#   if (!defined(WIN32) && defined(KMP_VERSION_MAJOR) && KMP_VERSION_MAJOR < 5)
 const omp_sched_t omp_sched_monotonic = (omp_sched_t) 0x80000000;
+#   endif
 # endif // OMP_HAVE_MONOTONIC
 #else
 # define omp_get_max_threads() (1)
