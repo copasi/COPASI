@@ -129,12 +129,12 @@ jobs:
         export srcdir="${{github.workspace}}/tests"
         TEST_API="$PWD/tests/test_api"
         sudo apt-get install -y gdb valgrind
-        gdb -batch -return-child-result \
+        gdb -batch \
           -ex "set pagination off" \
           -ex run \
           -ex "thread apply all bt full" \
           -ex quit \
-          -- "$TEST_API"
+          -- "$TEST_API" || true
 
         valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1 --error-limit=no $TEST_API
 
