@@ -6,6 +6,7 @@
 #pragma once
 
 #include "copasi/utilities/CCopasiParameter.h"
+#include "copasi/commandline/COptions.h"
 
 /**
  *  COpenMPConfig class.
@@ -26,6 +27,18 @@ public:
 
   typedef CEnumAnnotation< std::string, ScheduleStrategy > ScheduleStrategyName;
   static const ScheduleStrategyName ScheduleStrategyNames;
+  static const CEnumAnnotation< omp_sched_t, ScheduleStrategy > ScheduleStrategyOpenMP;
+
+  enum struct Monotonic
+  {
+    nonmonotonic = 0,
+    monotonic,
+    __SIZE
+  };
+
+  typedef CEnumAnnotation< std::string, Monotonic > MonotonicName;
+  static const MonotonicName MonotonicNames;
+  static const CEnumAnnotation< omp_sched_t, Monotonic > MonotonicOpenMP;
 
   static const int MaxNumThreads;
 
@@ -36,7 +49,7 @@ public:
    * @param const std::string & name (default: MIRIAM Resource)
    * @param const CDataContainer * pParent (default: NULL)
    */
-  COpenMPConfig(const std::string & name = "OpenMP Configuration",
+  COpenMPConfig(const std::string & name = "Parallel Processing",
                 const CDataContainer * pParent = NO_PARENT);
 
   /**
@@ -90,7 +103,11 @@ private:
 
   bool *mpIsEnabled;
 
-  unsigned C_INT32 *mpMaxNumThreads;
+  C_UINT32 *mpMaxNumThreads;
 
   std::string *mpScheduleStrategy;
+
+  std::string *mpMonotonic;
+
+  C_UINT32 *mpChunkSize;
 };

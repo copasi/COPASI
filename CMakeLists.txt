@@ -464,7 +464,7 @@ if (ENABLE_OMP)
   # language bindings cant be linked against static libomp
   if (UNIX AND NOT APPLE AND (ENABLE_JAVA OR ENABLE_CSHARP OR ENABLE_PYTHON))
     set(_copasi_openmp_library_suffixes "${CMAKE_FIND_LIBRARY_SUFFIXES}")
-    set(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".so;.so.0")
   endif()
 
   if(MSVC)

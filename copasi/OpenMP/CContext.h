@@ -34,6 +34,12 @@ const omp_sched_t omp_sched_monotonic = (omp_sched_t) 0x80000000;
 # define omp_get_max_threads() (1)
 # define omp_get_num_threads() (1)
 # define omp_get_thread_num() (0)
+# define omp_sched_static 1u
+# define omp_sched_dynamic 2u
+# define omp_sched_guided 3u
+# define omp_sched_auto 4u
+typedef unsigned int omp_sched_t;
+const omp_sched_t omp_sched_monotonic = (omp_sched_t) 0x80000000;
 #endif // USE_OMP
 
 template < class Data > class CContext

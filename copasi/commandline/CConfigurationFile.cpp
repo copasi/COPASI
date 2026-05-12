@@ -217,7 +217,7 @@ bool CConfigurationFile::elevateChildren()
     }
 
   mpOpenMPConfig =
-    elevate<COpenMPConfig, CCopasiParameterGroup>(getGroup("OpenMP Configuration"));
+    elevate<COpenMPConfig, CCopasiParameterGroup>(getGroup("Parallel Processing"));
 
   return success;
 }
@@ -302,7 +302,7 @@ void CConfigurationFile::initializeParameter()
   assertGroup("Check for Updates");
 
   mpDisableJIT = assertParameter("Disable JIT Compilation", CCopasiParameter::Type::BOOL, false);
-  assertGroup("OpenMP Configuration");
+  assertGroup("Parallel Processing");
 
   elevateChildren();
 }
