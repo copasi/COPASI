@@ -30,6 +30,10 @@
 # we need at least cmake 2.8 for the FindLAPACK functions
 cmake_minimum_required(VERSION 2.8...3.19)
 
+# include the CMakeDependentOption module
+include(CMakeDependentOption)
+
+
 if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
 endif(POLICY CMP0048)
@@ -273,6 +277,15 @@ endif()
 
 option(ENABLE_JIT "Enable Just In Time compilation for math expressions" ${ENABLE_JIT_DEFAULT})
 
+# Java, C#, and Python bindings are configured before OpenMP so Linux can
+# prefer a shared libomp runtime when those bindings are enabled.
+option(ENABLE_CSHARP "Enable language bindings for the C# language." OFF)
+option(ENABLE_JAVA "Enable language bindings for the Java language." OFF)
+option(ENABLE_PYTHON "Enable language bindings for the Python language." OFF)
+option (ENABLE_PERL "Enable language bindings for the Perl language." OFF)
+option (ENABLE_OCTAVE "Enable language bindings for the Octave language." OFF)
+option (ENABLE_R "Enable language bindings for the R language." OFF)
+
 option(ENABLE_OMP "Enable the OpenMP support" OFF)
 
 set(EXTRA_DEFS "" CACHE STRING
@@ -448,7 +461,50 @@ if (ENABLE_OMP)
     endif()
   endif()
 
+  # language bindings cant be linked against static libomp
+  if (UNIX AND NOT APPLE AND (ENABLE_JAVA OR ENABLE_CSHARP OR ENABLE_PYTHON))
+    set(_copasi_openmp_library_suffixes "${CMAKE_FIND_LIBRARY_SUFFIXES}")
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".so")
+  endif()
+
   find_package (OpenMP REQUIRED)
+
+  if (UNIX AND NOT APPLE AND (ENABLE_JAVA OR ENABLE_CSHARP OR ENABLE_PYTHON))
+    # restore the original library suffixes
+    if (DEFINED _copasi_openmp_library_suffixes)
+      set(CMAKE_FIND_LIBRARY_SUFFIXES "${_copasi_openmp_library_suffixes}")
+      unset(_copasi_openmp_library_suffixes)
+    endif()
+
+    if (OpenMP_omp_LIBRARY AND OpenMP_omp_LIBRARY MATCHES "\\.a$")
+      get_filename_component(_copasi_openmp_library_dir "${OpenMP_omp_LIBRARY}" DIRECTORY)
+      find_library(_copasi_openmp_shared_library NAMES omp HINTS "${_copasi_openmp_library_dir}" NO_DEFAULT_PATH)
+
+      if (NOT _copasi_openmp_shared_library)
+        find_library(_copasi_openmp_shared_library NAMES omp)
+      endif()
+
+      if (_copasi_openmp_shared_library)
+        set(OpenMP_omp_LIBRARY "${_copasi_openmp_shared_library}" CACHE FILEPATH "Path to the OpenMP omp library." FORCE)
+
+        if (TARGET OpenMP::OpenMP_CXX)
+          set_target_properties(OpenMP::OpenMP_CXX PROPERTIES
+            IMPORTED_LOCATION "${_copasi_openmp_shared_library}"
+            IMPORTED_LOCATION_RELEASE "${_copasi_openmp_shared_library}")
+        endif()
+
+        if (TARGET OpenMP::OpenMP_C)
+          set_target_properties(OpenMP::OpenMP_C PROPERTIES
+            IMPORTED_LOCATION "${_copasi_openmp_shared_library}"
+            IMPORTED_LOCATION_RELEASE "${_copasi_openmp_shared_library}")
+        endif()
+
+        message(STATUS "OpenMP omp library for language bindings: ${_copasi_openmp_shared_library}")
+      else()
+        message(WARNING "COPASI language bindings require a shared OpenMP runtime (libomp.so), but only ${OpenMP_omp_LIBRARY} was found.")
+      endif()
+    endif()
+  endif()
 
   if (OpenMP_CXX_SPEC_DATE GREATER_EQUAL "201811")
     # OpenMP 5.0 will always have monotonic scheduling
@@ -654,16 +710,6 @@ endif(BUILD_GUI)
 
 # define what shall be build
 option (BUILD_CXX_EXAMPLES "Build the C++ examples." OFF)
-
-include(CMakeDependentOption)
-
-# for the language bindings we need swig
-option (ENABLE_CSHARP "Enable language bindings for the C# language." OFF)
-option (ENABLE_JAVA "Enable language bindings for the Java language." OFF)
-option (ENABLE_PYTHON "Enable language bindings for the Python language." OFF)
-option (ENABLE_PERL "Enable language bindings for the Perl language." OFF)
-option (ENABLE_OCTAVE "Enable language bindings for the Octave language." OFF)
-option (ENABLE_R "Enable language bindings for the R language." OFF)
 
 # we need swig for the language bindings. Only if SWIG was found, the options to
 # build the different language bindings are enabled
