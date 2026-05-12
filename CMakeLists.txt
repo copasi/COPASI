@@ -424,19 +424,26 @@ if (ENABLE_OMP)
   if (APPLE)
     find_package (OpenMP)
     if(NOT OpenMP_FOUND)
-      # libomp 15.0+ from brew is keg-only, so have to search in other locations.
-      # See https://github.com/Homebrew/homebrew-core/issues/112107#issuecomment-1278042927.
-      execute_process(COMMAND brew --prefix libomp
-                      OUTPUT_VARIABLE HOMEBREW_LIBOMP_PREFIX
-                      OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+      # read LIBOMP_PREFIX from environment variable
+      if(DEFINED ENV{LIBOMP_PREFIX})
+        set(LIBOMP_PREFIX $ENV{LIBOMP_PREFIX})
+      else()
+        # libomp 15.0+ from brew is keg-only, so have to search in other locations.
+        # See https://github.com/Homebrew/homebrew-core/issues/112107#issuecomment-1278042927.
+        execute_process(COMMAND brew --prefix libomp
+                        OUTPUT_VARIABLE LIBOMP_PREFIX
+                        OUTPUT_STRIP_TRAILING_WHITESPACE)
+      endif()
+
       # Apple/Homebrew Clang needs -Xpreprocessor to accept -fopenmp.
       # Store as a CMake list (semicolon-separated) so target_compile_options
       # passes each token as a separate argument to the compiler.
-      set(OpenMP_C_FLAGS "-Xpreprocessor;-fopenmp;-I${HOMEBREW_LIBOMP_PREFIX}/include")
-      set(OpenMP_CXX_FLAGS "-Xpreprocessor;-fopenmp;-I${HOMEBREW_LIBOMP_PREFIX}/include")
+      set(OpenMP_C_FLAGS "-Xpreprocessor;-fopenmp;-I${LIBOMP_PREFIX}/include")
+      set(OpenMP_CXX_FLAGS "-Xpreprocessor;-fopenmp;-I${LIBOMP_PREFIX}/include")
       set(OpenMP_C_LIB_NAMES omp)
       set(OpenMP_CXX_LIB_NAMES omp)
-      set(OpenMP_omp_LIBRARY ${HOMEBREW_LIBOMP_PREFIX}/lib/libomp.dylib)
+      set(OpenMP_omp_LIBRARY ${LIBOMP_PREFIX}/lib/libomp.dylib)
       set(OMP_HAVE_MONOTONIC 1 CACHE INTERNAL "" FORCE)
     endif()
   endif()
