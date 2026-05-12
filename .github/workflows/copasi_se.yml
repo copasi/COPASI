@@ -121,14 +121,14 @@ jobs:
       working-directory: ${{github.workspace}}/build_copasi
       run: cmake --build . --config $BUILD_TYPE --target install
 
-    - name: Run test_api under GDB
-      if: matrix.platform == 'ubuntu-latest'
+    - name: Run test_api under GDB and valgrind
+      if: matrix.platform == 'ubuntu-latest'  && github.event.inputs.run_valgrind == 'true'
       working-directory: ${{github.workspace}}/build_copasi
       shell: bash
       run: |
         export srcdir="${{github.workspace}}/tests"
         TEST_API="$PWD/tests/test_api"
-        sudo apt-get install -y gdb
+        sudo apt-get install -y gdb valgrind
         gdb -batch -return-child-result \
           -ex "set pagination off" \
           -ex run \
@@ -136,18 +136,12 @@ jobs:
           -ex quit \
           -- "$TEST_API"
 
+        valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1 --error-limit=no $TEST_API
+
     - name: Test
       working-directory: ${{github.workspace}}/build_copasi
       shell: bash
       run: ctest -C $BUILD_TYPE -V
-
-    - name: Valgrind
-      if: github.event.inputs.run_valgrind == 'true' && matrix.platform == 'ubuntu-latest'
-      working-directory: ${{github.workspace}}/build_copasi
-      shell: bash
-      run: |
-        sudo apt-get install -y valgrind
-        ctest -T memcheck -C $BUILD_TYPE -V
 
     - name: binary archive
       uses: actions/upload-artifact@v4
