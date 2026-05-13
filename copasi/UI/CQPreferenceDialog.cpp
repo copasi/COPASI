@@ -146,24 +146,44 @@ void CQPreferenceDialog::initTabsFromSettings(QSettings& settings)
       auto tooltip = settings.value("tooltip").toString();
 
       if (type == "string")
-      {
-        auto edit = new QLineEdit(value.toString());
-        edit->setToolTip(tooltip);
+        {
+          // If the parameter has valid values, we should use a combo box instead of a line edit
+          if (pNode && pNode->hasValidValues())
+            {
+              auto edit = new QComboBox();
+              edit->setToolTip(tooltip);
 
-        if (pNode)
-          edit->setText(FROM_UTF8(pNode->getValue<std::string>()));
-        layout->addRow(name, edit);
-        connect(edit, &QLineEdit::textChanged, this, &CQPreferenceDialog::slotPropertyChanged);
-        mWidgetToParameter[edit] = pNode;
-      }
+              for (const auto & validValue : pNode->getValidValues< std::string >())
+                edit->addItem(FROM_UTF8(validValue.second));
+
+              if (pNode)
+                edit->setCurrentText(FROM_UTF8(pNode->getValue< std::string >()));
+
+              layout->addRow(name, edit);
+              connect(edit, &QComboBox::currentTextChanged, this, &CQPreferenceDialog::slotPropertyChanged);
+              mWidgetToParameter[edit] = pNode;
+            }
+          else
+            {
+              auto edit = new QLineEdit(value.toString());
+              edit->setToolTip(tooltip);
+
+              if (pNode)
+                edit->setText(FROM_UTF8(pNode->getValue< std::string >()));
+
+              layout->addRow(name, edit);
+              connect(edit, &QLineEdit::textChanged, this, &CQPreferenceDialog::slotPropertyChanged);
+              mWidgetToParameter[edit] = pNode;
+            }
+        }
       else if (type == "bool")
-      {
-        auto edit = new QCheckBox(name);
-        edit->setChecked(value.toBool());
-        if (pNode)
-          edit->setChecked(pNode->getValue< bool >());
-        edit->setToolTip(tooltip);
-        layout->addRow(edit);
+        {
+          auto edit = new QCheckBox(name);
+          edit->setChecked(value.toBool());
+          if (pNode)
+            edit->setChecked(pNode->getValue< bool >());
+          edit->setToolTip(tooltip);
+          layout->addRow(edit);
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
         connect(edit, &QCheckBox::stateChanged, this, &CQPreferenceDialog::slotPropertyChanged);
@@ -211,28 +231,9 @@ void CQPreferenceDialog::init()
   mpTreeView->setAdvanced(false);
   mpTreeView->pushGroup(mpConfiguration);
 
-  // initialize other tabs from config file
-  auto copasiDir = COptions::getConfigDir();
-  auto preferenceConfigFile = copasiDir + "/preferences.ini";
-  if (!CDirEntry::exist(preferenceConfigFile))
-  {
-    // load default preference.ini from resource
-    Q_INIT_RESOURCE(copasi);
+  Q_INIT_RESOURCE(copasi);
+  QSettings settings(":/preferences.ini", QSettings::IniFormat, this);
 
-    QFile file(":/preferences.ini");
-    if (file.open(QIODevice::ReadOnly))
-      {
-        QFile outFile(FROM_UTF8(preferenceConfigFile));
-        if (outFile.open(QIODevice::WriteOnly))
-          {
-            outFile.write(file.readAll());
-            outFile.close();
-          }
-        file.close();
-      }
-  }
-
-  QSettings settings(preferenceConfigFile.c_str(), QSettings::IniFormat, this);
   initTabsFromSettings(settings);
 }
 
