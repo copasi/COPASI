@@ -197,7 +197,7 @@ bool COpenMPConfig::setScheduleStrategy(const std::string & scheduleStrategy)
 void COpenMPConfig::initializeParameter()
 {
   std::string OMP_NUM_THREADS = COptions::getEnvironmentVariable("OMP_NUM_THREADS");
-  C_UINT32 MaxNumThreads = OMP_NUM_THREADS.empty() ? ceil(MaxNumThreads / 2.0) : std::stoi(OMP_NUM_THREADS);
+  C_UINT32 MaxNumThreads = OMP_NUM_THREADS.empty() ? ceil(COpenMPConfig::MaxNumThreads / 2.0) : std::stoi(OMP_NUM_THREADS);
 
   _ScheduleStrategyOpenMP Schedule = getSchedule();
 
