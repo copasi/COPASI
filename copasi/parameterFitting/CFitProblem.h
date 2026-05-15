@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -186,6 +186,17 @@ public:
    */
   virtual bool calculateStatistics(const C_FLOAT64 & factor = 1.0e-003,
                                    const C_FLOAT64 & resolution = 1.0e-009) override;
+
+  /**
+   * @brief verifies that ther are no duplicate fit items in the problem.
+   *
+   * Note that this function does not log warnings about duplicates if logWarnings
+   * is false, so it may return true without logging a warning if logWarnings is false.
+   *
+   * @param logWarnings boolean, indicating whether to log warnings about duplicats
+   * @return true if duplicates are found, false otherwise.
+   */
+  bool checkForDuplicateFitItems(bool logWarnings) const;
 
   /**
    * Retrieve the root mean square of the objective value.

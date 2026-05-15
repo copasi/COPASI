@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -927,7 +927,6 @@ CFitConstraint & CFitProblem::addFitConstraint(const CRegisteredCommonName & obj
   return *pItem;
 }
 
-
 bool CFitProblem::calculate()
 {
   sCounter Counters;
@@ -1795,6 +1794,12 @@ bool CFitProblem::calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >&
       corr = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       sd = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 12);
+
+      // verify that we dont have duplicates in the list of
+      // fit items, as they are a common cause
+      bool logWarnings = true;
+      checkForDuplicateFitItems(logWarnings);
+
       return false;
     }
 
@@ -2182,6 +2187,56 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   mStoreResults = false;
   return true;
+}
+
+bool CFitProblem::checkForDuplicateFitItems(bool logWarnings) const
+{
+  if (!mpOptItems)
+    return false;
+
+  // map counting how many time a specific
+  // fit item (and experiment combination) appears in the list of fit items
+  std::map< std::string, size_t > FitItemNames;
+
+  // map counting for each object underlying a fit item
+  // how many times a combination of experiments appears in the list of
+  // fit items
+  std::map< std::string, std::map<std::string, size_t> > ObjectsWithExperiments;
+
+  bool hasDuplicates = false;
+  for (auto * optItem : *mpOptItems)
+    {
+      auto * item = static_cast< CFitItem * >(optItem);
+      auto * obj = item->getItemObject();
+      std::string name = obj != NULL ? obj->getObjectDisplayName() : "Not found";
+      auto experiments = item->getExperiments();
+      if (!experiments.empty())
+        name += " {" + experiments + "}";
+
+      if (FitItemNames.find(name) == FitItemNames.end())
+        {
+          FitItemNames[name] = 1;
+        }
+      else
+        {
+          hasDuplicates = true;
+          FitItemNames[name] += 1;
+        }
+    }
+
+  if (hasDuplicates && logWarnings)
+    {
+      std::stringstream ss;
+      ss << "Duplicate fit items detected. This prevents calculation of summary statistics." << std::endl;
+      for (const auto & pair : FitItemNames)
+        {
+          if (pair.second > 1)
+            ss << "Fit item '" << pair.first << "' appears " << pair.second << " times." << std::endl;
+        }
+
+      CCopasiMessage(CCopasiMessage::WARNING, "%s", ss.str().c_str());
+    }
+  return hasDuplicates;
 }
 
 const C_FLOAT64 & CFitProblem::getRMS() const
