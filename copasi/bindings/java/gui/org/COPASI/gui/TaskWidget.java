@@ -70,6 +70,7 @@ import org.COPASI.CCopasiTask;
 import org.COPASI.CCopasiMethod;
 import org.COPASI.CCopasiParameter;
 import org.COPASI.CRegisteredCommonName;
+import org.COPASI.CCommonName;
 import org.COPASI.CReport;
 import org.COPASI.CReportDefinition;
 import org.COPASI.COutputAssistant;
@@ -640,7 +641,7 @@ public class TaskWidget extends JPanel implements ActionListener, TableModelList
   			  }
   			  break;
   		  case CCopasiParameter.Type_CN:
-  			  CRegisteredCommonName on=new CRegisteredCommonName(value, this.mTask.getObjectDataModel());
+  			  CRegisteredCommonName on=new CRegisteredCommonName(new CCommonName(value));
   			  p.setCNValue(on);
   			  break;
   		  case CCopasiParameter.Type_KEY:
