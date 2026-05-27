@@ -362,14 +362,7 @@ const CObjectInterface * CCommonName::resolve(const CDataObject *  pContainer) c
   if (pObject == nullptr
       && mpComponent->isValid())
     {
-      // try the old way
-      pObject = CObjectInterface::__GetObjectFromCN({pContainer}, *mpCN);
-
-      if (pObject != nullptr)
-        {
-          std::cout << *mpCN << std::endl;
-          pObject = nullptr;
-        }
+      std::cout << *mpCN << std::endl;
     }
 #endif // DEBUG_CN
 

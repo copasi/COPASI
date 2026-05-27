@@ -25,7 +25,8 @@ const std::map< std::string, std::string > CCommonNameComponent::VectorName2Obje
   {"OutputDefinitions", "PlotItem"},
   {"Functions", "Function"},
   {"ModelList", "CN"},
-  {"Units list", "Unit"}};
+  {"Units list", "Unit"},
+  {"Fitted Points", "Fitted Point"}};
 
 // static
 std::string CCommonNameComponent::ObjectTypeFromVectorName(const std::string & name)
