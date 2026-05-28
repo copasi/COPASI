@@ -242,8 +242,8 @@ void CQPreferenceDialog::slotBtnOk()
   if (mpConfiguration != NULL)
     {
       *CRootContainer::getConfiguration() = *mpConfiguration;
-      CRootContainer::getConfiguration()->getOpenMPConfig().apply();
       CRootContainer::getConfiguration()->save();
+      COpenMPConfig::Apply();
 
       // remove items from tree, otherwise node pointers will become invalid
       mpTreeView->clearGroups();

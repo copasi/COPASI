@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -43,6 +43,7 @@
 #include <string>
 
 #include "copasi/OpenMP/CProblemContext.h"
+#include "copasi/OpenMP/COpenMPConfig.h"
 #include "copasi/utilities/CCopasiMethod.h"
 #include "copasi/optimization/COptLog.h"
 
@@ -102,6 +103,7 @@ protected:
   */
   COptLog mMethodLog;
 
+  std::shared_ptr< std::function< void() > > mOpenMPApplyCallback;
   // Operations
 private:
   /**
@@ -191,6 +193,8 @@ public:
    * @return a the current guess for parameters
    */
   virtual const CVector< C_FLOAT64 > * getCurrentParameters() const;
+
+  virtual void openMPApplyCallback();
 
 protected:
   /**

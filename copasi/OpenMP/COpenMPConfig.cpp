@@ -6,6 +6,9 @@
 #include "copasi/OpenMP/COpenMPConfig.h"
 #include "copasi/OpenMP/CContext.h"
 
+#include "copasi/core/CRootContainer.h"
+#include "copasi/commandline/CConfigurationFile.h"
+
 // static
 const COpenMPConfig::ScheduleStrategyName COpenMPConfig::ScheduleStrategyNames({"static",
                                                                                 "dynamic",
@@ -28,6 +31,18 @@ const CEnumAnnotation< omp_sched_t, COpenMPConfig::Monotonic > COpenMPConfig::Mo
 
 // static
 const int COpenMPConfig::MaxNumThreads = omp_get_max_threads();
+
+// static
+int COpenMPConfig::AppliedNumThreads = 0;
+
+// static
+std::vector< std::weak_ptr< std::function< void() > > > COpenMPConfig::ApplyCallbacks;
+
+// static
+void COpenMPConfig::RegisterApplyCallback(const std::shared_ptr< std::function< void() > > & callback)
+{
+  ApplyCallbacks.push_back(callback);
+}
 
 struct _ScheduleStrategyOpenMP
 {
@@ -113,6 +128,31 @@ COpenMPConfig & COpenMPConfig::operator=(const COpenMPConfig & rhs)
     }
 
   return *this;
+}
+
+// static
+void COpenMPConfig::Apply()
+{
+  const COpenMPConfig & OpenMPConfig = CRootContainer::getConfiguration()->getOpenMPConfig();
+  CRootContainer::getConfiguration()->getOpenMPConfig().apply();
+
+  if (AppliedNumThreads != omp_get_max_threads())
+    {
+      AppliedNumThreads = omp_get_max_threads();
+
+      for (auto it = ApplyCallbacks.begin(); it != ApplyCallbacks.end();)
+        {
+          if (auto callback = it->lock())
+            {
+              (*callback)();
+              ++it;
+            }
+          else
+            {
+              it = ApplyCallbacks.erase(it);
+            }
+        }
+      }
 }
 
 void COpenMPConfig::apply() const

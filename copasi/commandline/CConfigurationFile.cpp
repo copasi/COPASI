@@ -337,7 +337,7 @@ bool CConfigurationFile::load()
   if (success)
     *this = Configuration;
 
-  mpOpenMPConfig->apply();
+  COpenMPConfig::Apply();
 
   std::string configMIRIAMResourceFile(ConfigFile + std::string(".miriam"));
   bool haveConfigMiriam = CDirEntry::exist(configMIRIAMResourceFile);

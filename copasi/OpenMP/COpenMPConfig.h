@@ -5,6 +5,10 @@
 
 #pragma once
 
+#include <memory>
+#include <functional>
+#include <vector>
+#
 #include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/commandline/COptions.h"
 
@@ -13,8 +17,17 @@
  */
 class COpenMPConfig : public CCopasiParameterGroup
 {
+private:
+  static std::vector< std::weak_ptr< std::function< void() > > >  ApplyCallbacks;
+
+  static int AppliedNumThreads;
+
 public:
+  static void RegisterApplyCallback(const std::shared_ptr< std::function< void() > > & callback);
+
   static std::string Info();
+
+  static void Apply();
 
   enum struct ScheduleStrategy
   {
@@ -80,8 +93,6 @@ public:
    */
   COpenMPConfig & operator=(const COpenMPConfig & rhs);
 
-  void apply() const;
-
   const bool & getIsEnabled() const;
 
   const unsigned C_INT32 & getMaxNumThreads() const;
@@ -100,6 +111,8 @@ private:
    * properly initialized.
    */
   void initializeParameter();
+
+  void apply() const;
 
   bool *mpIsEnabled;
 
