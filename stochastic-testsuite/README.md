@@ -9,15 +9,19 @@ This folder contains the wrapper to run the stochastic test suite written by Dar
 ### 1) Obtaining the Test Suite SBML files
 They can be obtained by cloning the test suite repository <https://github.com/darrenjw/dsmts> and running `make sbml`. For this to work you will have to have the `csh` installed, as well as the `python-libsbml` package. So after: 
 
+```
 	sudo apt-get install csh
 	pip install python-libsbml 
+```
 
 you should be fine to run: 
 
+```
 	git clone https://github.com/darrenjw/dsmts
 	cd dsmts
 	chmod +x build.csh
 	make sbml
+```
 
 after this you should find the test-cases in the form of `dsmts-xxx-yy.xml` in the same folder.
 
@@ -54,7 +58,9 @@ with the following arguments:
 
 For example: 
 
+```
 	./run.sh ../../build_copasi/stochastic-testsuite/stochastic-testsuite ~/Development/dsmts dsmts-001-02 "stochastic" 2000
+```
 
 runs the: 
 
@@ -66,13 +72,17 @@ runs the:
 
 After the run in case of success, you will get a message like: 
 
+```bash
 	./run.sh ../../build_copasi/stochastic-testsuite/stochastic-testsuite ~/Development/dsmts dsmts-001-02 "stochastic" 2000
 	../../build_copasi/stochastic-testsuite/stochastic-testsuite stochastic "/root/Development/dsmts/dsmts-001-02.xml" 50 50 2000 "/root/Development/dsmts/dsmts-001-02.RESULT" X
 	time: 1.28 seconds
 	dsmts-001-02 passed
 	Time used for simulations: 1.28 seconds
+```
 
 or in case of a failure: 
+
+```bash
 
 	./run.sh ../../build_copasi/stochastic-testsuite/stochastic-testsuite ~/Development/dsmts dsmts-001-02 "directMethod" 2000
 	../../build_copasi/stochastic-testsuite/stochastic-testsuite directMethod "/root/Development/dsmts/dsmts-001-02.xml" 50 50 2000 "/root/Development/dsmts/dsmts-001-02.RESULT" X
@@ -83,6 +93,7 @@ or in case of a failure:
 	ERROR at /root/Development/dsmts/dsmts-001-02-mean.RESULT (44, 1): Mean: 66.688844, RefMean: 65.050910, Tol: 1.465752.
 	dsmts-001-02 failed
 	Time used for simulations: 1.24 seconds
+```
 
 in the case of a failure you would either re-run the test case (the occasional failure is expected after all) and/or increase the number of repeats. 
 
