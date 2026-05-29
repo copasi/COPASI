@@ -99,6 +99,10 @@ void CQPreferenceDialog::slotPropertyChanged()
   {
     parameter->setValue(parameter->getType() == CCopasiParameter::Type::UINT ? (unsigned int) edit->value() : edit->value());
   }
+  else if (auto edit = dynamic_cast<QComboBox*>(widget))
+  {
+    parameter->setValue(edit->currentText().toStdString());
+  }
 }
 
 void CQPreferenceDialog::initTabsFromSettings(QSettings& settings)
