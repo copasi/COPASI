@@ -931,6 +931,8 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
             {
               mObjects.insert(pObj);
               objectCN = pObj->getCN();
+              if (objectCN.empty())
+                objectCN = pItem->getChannels()[j];
               mCnNameMap[objectCN] = pObj->getObjectDisplayName();
 
               objectCNs << FROM_UTF8(objectCN);
