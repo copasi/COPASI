@@ -757,6 +757,15 @@ CCopasiTask * COptProblem::getSubTask() const
   return dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmSubTaskCN));
 }
 
+//virtual
+C_FLOAT64 COptProblem::getEstimatedSubtaskError() const
+{
+  if (getSubTask())
+    return getSubTask()->getEstimatedMethodError();
+  return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+}
+
+
 bool COptProblem::restore(const bool & updateModel)
 {
   bool success = true;

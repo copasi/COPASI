@@ -167,6 +167,12 @@ bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
   return true;
 }
 
+
+//virtual
+C_FLOAT64 CCopasiMethod::getEstimatedError() const
+{ return std::numeric_limits< C_FLOAT64 >::quiet_NaN(); }
+
+
 void CCopasiMethod::load(CReadConfig & /* configBuffer */,
                          CReadConfig::Mode /* mode */)
 {fatalError();}

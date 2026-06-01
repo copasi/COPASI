@@ -978,3 +978,12 @@ void CLsodaMethod::resetState(CLsodaMethod::State & state)
 
   mLSODAR.resetState(state.LsodaState);
 }
+
+//virtual
+C_FLOAT64 CLsodaMethod::getEstimatedError() const
+{
+  if(mpRelativeTolerance)
+    return *mpRelativeTolerance;
+  
+  return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+}

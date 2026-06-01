@@ -503,6 +503,15 @@ bool CFitProblem::initializeSubtaskBeforeOutput()
   return success;
 }
 
+//virtual
+C_FLOAT64 CFitProblem::getEstimatedSubtaskError() const
+{
+  C_FLOAT64 tc= mpTrajectory ? mpTrajectory->getEstimatedMethodError() : std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+  C_FLOAT64 ss= mpSteadyState ? mpSteadyState->getEstimatedMethodError() : std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+  return std::fmax(tc, ss); //return the bigger tolerance that is not NaN
+}
+
+
 bool CFitProblem::initialize()
 {
   bool success = true;

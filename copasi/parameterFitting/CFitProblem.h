@@ -86,6 +86,9 @@ public:
    */
   bool initializeSubtaskBeforeOutput() override;
 
+  virtual C_FLOAT64 getEstimatedSubtaskError() const override;
+
+  
   /**
    * Do all necessary initialization so that calls to calculate will
    * be successful. This is called once from CCopasiTask::process()

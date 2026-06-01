@@ -182,6 +182,8 @@ public:
    */
   CCopasiTask * getSubTask() const override;
 
+  virtual C_FLOAT64 getEstimatedSubtaskError() const;
+  
   /**
    * Check whether all parameters are within their boundaries.
    * @result bool within

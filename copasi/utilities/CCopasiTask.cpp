@@ -640,6 +640,15 @@ CCopasiMethod * CCopasiTask::getMethod() {return mpMethod;}
 
 const CCopasiMethod * CCopasiTask::getMethod() const {return mpMethod;}
 
+//virtual
+C_FLOAT64 CCopasiTask::getEstimatedMethodError() const
+{
+  if (mpMethod)
+    return mpMethod->getEstimatedError();
+  return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+}
+
+
 CReport & CCopasiTask::getReport() {return mReport;}
 
 const CReport & CCopasiTask::getReport() const {return mReport;}

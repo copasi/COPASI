@@ -388,6 +388,13 @@ public:
   const CCopasiMethod * getMethod() const;
 
   /**
+   *  Return a (possibly rough) estimate for the accuracy of the method under current method settings.
+   *   This is not intended for numerical calculations but rather for allowing sanity checks in parent tasks that use
+   *    this task as a subtask
+   */
+  virtual C_FLOAT64 getEstimatedMethodError() const;
+  
+  /**
    * Retrieve the report
    */
   CReport & getReport();

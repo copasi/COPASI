@@ -48,7 +48,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
   : COptMethod(pParent, methodType, taskType, false)
   , mIterationLimit(2000)
   , mTolerance(1.e-006)
-  , mModulation(1.e-006)
+  , mModulation(1.e-003)
   , mIteration(0)
   , mParameterOutOfBounds(0)
   , mhIteration(C_INVALID_INDEX)
@@ -67,7 +67,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
 {
   assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
   assertParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006);
-  assertParameter("Modulation", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006, eUserInterfaceFlag::editable);
+  assertParameter("Modulation", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-003, eUserInterfaceFlag::editable);
   assertParameter("Stop after # stalled iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
   assertParameter("Initial Lambda", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)1.0, eUserInterfaceFlag::editable);
   assertParameter("Lambda Decrease", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)2.0, eUserInterfaceFlag::editable);
@@ -170,6 +170,15 @@ bool COptMethodLevenbergMarquardt::optimise()
   // keep the current parameter for later
   mBest = mCurrent;
 
+  auto* pProblem = dynamic_cast< CFitProblem * >(mProblemContext.active());
+  if(pProblem && pProblem->getEstimatedSubtaskError()>mModulation*mModulation*10)
+  {
+    if (mLogVerbosity > 0)
+      mMethodLog.enterLogEntry(
+        COptLogEntry("Caution: Modulation factor may be too small",
+                "compared to the accuracy of the time course/steady state calculation"));
+  }
+  
   mEvaluationValue = evaluate(EvaluationPolicyFlag::All);
 
   if (!std::isnan(mEvaluationValue))
