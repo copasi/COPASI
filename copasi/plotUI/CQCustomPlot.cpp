@@ -1192,6 +1192,19 @@ bool CQCustomPlot::saveData(const std::string & filename)
   if (!fs.good())
     return false;
 
+  saveDataToStream(fs);
+
+  fs.close();
+
+  if (!fs.good())
+    return false;
+
+  return true;
+}
+
+void CQCustomPlot::saveDataToStream(std::ostream & fs)
+{
+
   // Write the table header
   fs << "# ";
 
@@ -1405,13 +1418,6 @@ bool CQCustomPlot::saveData(const std::string & filename)
             }
         }
     }
-
-  fs.close();
-
-  if (!fs.good())
-    return false;
-
-  return true;
 }
 
 void CQCustomPlot::setCurvesVisibility(const bool & visibility)

@@ -126,6 +126,7 @@ void PlotWindow::createMenus()
   QMenu *fileMenu = menuBar()->addMenu("&File");
   fileMenu->addAction(mpaSaveImage);
   fileMenu->addAction(mpaSaveData);
+  fileMenu->addAction(mpaCopyData);
   fileMenu->addAction(mpaPrint);
   fileMenu->addSeparator();
   fileMenu->addAction(mpaCloseWindow);
@@ -170,6 +171,11 @@ void PlotWindow::createActions()
   mpaSaveData ->setShortcut(QKeySequence::SaveAs);
   mpaSaveData ->setToolTip("Save Data");
   connect(mpaSaveData, SIGNAL(triggered()), this, SLOT(slotSaveData()));
+  mpaCopyData = new QAction("Copy Data To Clipboard", this);
+  mpaCopyData->setShortcut(QKeySequence::Copy);
+  mpaCopyData->setToolTip("Copy Data To Clipboard");
+  connect(mpaCopyData, SIGNAL(triggered()), this, SLOT(slotCopyData()));
+
   mpaZoomOut = new QAction("Zoom out", this);
   mpaZoomOut ->setShortcut(Qt::CTRL | Qt::Key_0);
   mpaZoomOut ->setToolTip("Zoom out");
@@ -442,6 +448,18 @@ void PlotWindow::slotSaveData()
       s += TO_UTF8(fileName);
       CQMessageBox::critical(this, "Save Error", FROM_UTF8(s), QMessageBox::Ok, QMessageBox::NoButton);
     }
+}
+
+void PlotWindow::slotCopyData()
+{
+  if (!mpPlot)
+    return;
+
+  std::stringstream ss;
+  mpPlot->saveDataToStream(ss);
+
+  QClipboard * clipboard = QApplication::clipboard();
+  clipboard->setText(FROM_UTF8(ss.str()));
 }
 
 void PlotWindow::slotZoomOut()

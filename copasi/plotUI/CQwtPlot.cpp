@@ -1222,15 +1222,27 @@ bool CQwtPlot::saveData(const std::string & filename)
 
   if (!fs.good()) return false;
 
+  saveDataToStream(fs);
+
+  fs.close();
+
+  if (!fs.good()) return false;
+
+  return true;
+}
+
+void CQwtPlot::saveDataToStream(std::ostream & fs)
+{
+
   // Write the table header
   fs << "# ";
 
-  std::vector< std::vector < std::string > >::const_iterator itX;
-  std::vector< std::vector < std::string > >::const_iterator endX =
+  std::vector< std::vector< std::string > >::const_iterator itX;
+  std::vector< std::vector< std::string > >::const_iterator endX =
     mSaveCurveObjects.end();
 
-  std::vector < std::string >::const_iterator it;
-  std::vector < std::string >::const_iterator end;
+  std::vector< std::string >::const_iterator it;
+  std::vector< std::string >::const_iterator end;
 
   for (itX = mSaveCurveObjects.begin(); itX != endX; ++itX)
     for (it = itX->begin(), end = itX->end(); it != end; ++it)
@@ -1258,29 +1270,25 @@ bool CQwtPlot::saveData(const std::string & filename)
       for (itX = mSaveCurveObjects.begin(), i = 0; itX != endX; ++itX)
         for (it = itX->begin(), end = itX->end(); it != end; ++it, ++i)
           {
-            if ((itActivity = mObjectIndex.find(COutputInterface::BEFORE)) != mObjectIndex.end() &&
-                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+            if ((itActivity = mObjectIndex.find(COutputInterface::BEFORE)) != mObjectIndex.end() && (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::BEFORE][itObject->second];
                 continue;
               }
 
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::DURING))) != mObjectIndex.end() &&
-                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::DURING))) != mObjectIndex.end() && (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING][itObject->second];
                 continue;
               }
 
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::AFTER))) != mObjectIndex.end() &&
-                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::AFTER))) != mObjectIndex.end() && (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::BEFORE | COutputInterface::AFTER][itObject->second];
                 continue;
               }
 
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
-                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() && (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
                 continue;
@@ -1293,8 +1301,10 @@ bool CQwtPlot::saveData(const std::string & filename)
         {
           for (itData = Data.begin(); itData != endData; ++itData)
             {
-              if (*itData) fs << (**itData)[i];
-              else fs << MissingValue;
+              if (*itData)
+                fs << (**itData)[i];
+              else
+                fs << MissingValue;
 
               fs << "\t";
             }
@@ -1308,32 +1318,28 @@ bool CQwtPlot::saveData(const std::string & filename)
       for (itX = mSaveCurveObjects.begin(), i = 0; itX != endX; ++itX)
         for (it = itX->begin(), end = itX->end(); it != end; ++it, ++i)
           {
-            if ((itActivity = mObjectIndex.find(COutputInterface::DURING)) != mObjectIndex.end() &&
-                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+            if ((itActivity = mObjectIndex.find(COutputInterface::DURING)) != mObjectIndex.end() && (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::DURING][itObject->second];
                 Offset[i] = 0;
                 continue;
               }
 
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::DURING))) != mObjectIndex.end() &&
-                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::DURING))) != mObjectIndex.end() && (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING][itObject->second];
                 Offset[i] = mDataBefore;
                 continue;
               }
 
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
-                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() && (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
                 Offset[i] = 0;
                 continue;
               }
 
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
-                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() && (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
                 Offset[i] = mDataBefore;
@@ -1347,8 +1353,10 @@ bool CQwtPlot::saveData(const std::string & filename)
         {
           for (itData = Data.begin(), itOffset = Offset.begin(); itData != endData; ++itData)
             {
-              if (*itData) fs << (**itData)[i + *itOffset];
-              else fs << MissingValue;
+              if (*itData)
+                fs << (**itData)[i + *itOffset];
+              else
+                fs << MissingValue;
 
               fs << "\t";
             }
@@ -1362,32 +1370,28 @@ bool CQwtPlot::saveData(const std::string & filename)
       for (itX = mSaveCurveObjects.begin(), i = 0; itX != endX; ++itX)
         for (it = itX->begin(), end = itX->end(); it != end; ++it, ++i)
           {
-            if ((itActivity = mObjectIndex.find(COutputInterface::AFTER)) != mObjectIndex.end() &&
-                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+            if ((itActivity = mObjectIndex.find(COutputInterface::AFTER)) != mObjectIndex.end() && (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::AFTER][itObject->second];
                 Offset[i] = 0;
                 continue;
               }
 
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::AFTER))) != mObjectIndex.end() &&
-                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::AFTER))) != mObjectIndex.end() && (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::BEFORE | COutputInterface::AFTER][itObject->second];
                 Offset[i] = mDataBefore;
                 continue;
               }
 
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
-                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() && (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
                 Offset[i] = mDataDuring;
                 continue;
               }
 
-            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() &&
-                (itObject = itActivity->second.find(*it)) != itActivity->second.end())
+            if ((itActivity = mObjectIndex.find((COutputInterface::Activity)(COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER))) != mObjectIndex.end() && (itObject = itActivity->second.find(*it)) != itActivity->second.end())
               {
                 Data[i] = mData[COutputInterface::BEFORE | COutputInterface::DURING | COutputInterface::AFTER][itObject->second];
                 Offset[i] = mDataBefore + mDataDuring;
@@ -1401,8 +1405,10 @@ bool CQwtPlot::saveData(const std::string & filename)
         {
           for (itData = Data.begin(), itOffset = Offset.begin(); itData != endData; ++itData)
             {
-              if (*itData) fs << (**itData)[i + *itOffset];
-              else fs << MissingValue;
+              if (*itData)
+                fs << (**itData)[i + *itOffset];
+              else
+                fs << MissingValue;
 
               fs << "\t";
             }
@@ -1419,7 +1425,8 @@ bool CQwtPlot::saveData(const std::string & filename)
 
   for (; (itCurves != endCurves) && (HistogramIndex < mSaveHistogramObjects.size()); ++itCurves, ++HistogramIndex)
     {
-      if (*itCurves == NULL) continue;
+      if (*itCurves == NULL)
+        continue;
 
       if ((*itCurves)->getType() == CPlotItem::histoItem1d)
         {
@@ -1431,11 +1438,11 @@ bool CQwtPlot::saveData(const std::string & filename)
 
           fs << mSaveHistogramObjects[HistogramIndex] << "\n";
 
-#if QWT_VERSION > QT_VERSION_CHECK(6,0,0)
+#  if QWT_VERSION > QT_VERSION_CHECK(6, 0, 0)
           CHistoCurveData * pData = static_cast< CHistoCurveData * >((*itCurves)->data());
-#else
+#  else
           CHistoCurveData * pData = static_cast< CHistoCurveData * >(&(*itCurves)->data());
-#endif
+#  endif
           size_t i, imax = pData->size();
 
           for (i = 0; i < imax; ++i)
@@ -1444,12 +1451,6 @@ bool CQwtPlot::saveData(const std::string & filename)
             }
         }
     }
-
-  fs.close();
-
-  if (!fs.good()) return false;
-
-  return true;
 }
 
 void CQwtPlot::showCurve(QwtPlotItem *item, bool on)

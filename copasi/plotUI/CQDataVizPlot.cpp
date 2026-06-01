@@ -838,6 +838,19 @@ bool CQDataVizPlot::saveData(const std::string & filename)
   if (!fs.good())
     return false;
 
+  saveDataToStream(fs);
+
+  fs.close();
+
+  if (!fs.good())
+    return false;
+
+  return true;
+}
+
+void CQDataVizPlot::saveDataToStream(std::ostream & fs)
+{
+
   // Write the table header
   fs << "# ";
 
@@ -1025,7 +1038,7 @@ bool CQDataVizPlot::saveData(const std::string & filename)
 
   for (auto & curve : mCurveMap)
     {
-      QSurface3DSeries * surface = qobject_cast< QSurface3DSeries * > (curve.second);
+      QSurface3DSeries * surface = qobject_cast< QSurface3DSeries * >(curve.second);
       QScatter3DSeries * scatter = qobject_cast< QScatter3DSeries * >(curve.second);
 
       fs << "\n"
@@ -1051,13 +1064,6 @@ bool CQDataVizPlot::saveData(const std::string & filename)
             }
         }
     }
-
-  fs.close();
-
-  if (!fs.good())
-    return false;
-
-  return true;
 }
 
 void CQDataVizPlot::setCurvesVisibility(const bool & visibility)

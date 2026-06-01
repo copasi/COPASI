@@ -11,6 +11,8 @@
 #include <QRect>
 
 #include <string>
+#include <ostream>
+
 #include "copasi/output/COutputHandler.h"
 #include "copasi/plot/CPlotSpecification.h"
 
@@ -71,6 +73,8 @@ public:
   virtual void render(QPainter * painter, QRect rect) = 0;
 
   virtual void saveToFile(const QString & fileName, QRect & rect);
+
+  virtual void saveDataToStream(std::ostream & os) = 0;
 
   /**
    * @return a string with supported file filters to save files
