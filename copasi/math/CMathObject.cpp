@@ -612,7 +612,9 @@ bool CMathObject::compile(CMathContainer & container)
       if (mEntityType == CMath::EntityType::Species)
         {
           const CMetab * pSpecies = static_cast< const CMetab * >(mpDataObject->getObjectParent());
-          mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
+          auto * pMathObj = container.getMathObject(pSpecies->getCompartment()->getValueReference());
+          if (pMathObj)
+          mpCompartmentValue = static_cast< const C_FLOAT64 * >(pMathObj->getValuePointer());
         }
       else if (mEntityType == CMath::EntityType::Reaction)
         {
@@ -620,7 +622,9 @@ bool CMathObject::compile(CMathContainer & container)
 
           if (pReaction->getScalingCompartment() != NULL)
             {
-              mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pReaction->getScalingCompartment()->getValueReference())->getValuePointer());
+              auto * pMathObj = container.getMathObject(pReaction->getScalingCompartment()->getValueReference());
+              if (pMathObj)
+                mpCompartmentValue = static_cast< const C_FLOAT64 * >(pMathObj->getValuePointer());
             }
         }
 
