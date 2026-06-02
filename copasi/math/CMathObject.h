@@ -64,6 +64,8 @@ public:
   void relocate(CMathContainer * pContainer,
                 const std::vector< CMath::sRelocate > & relocations);
 
+  const CCommonNameComponent::shared_ptr & getCNComponent() const override;
+
   /**
    * Retrieve the display name of the object
    * @param bool regular (default: true)

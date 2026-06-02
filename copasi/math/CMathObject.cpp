@@ -147,6 +147,19 @@ const CObjectInterface * CMathObject::resolve(const CCommonNameComponent::shared
   return nullptr;
 }
 
+const CCommonNameComponent::shared_ptr & CMathObject::getCNComponent() const
+{
+  if (mpDataObject == nullptr)
+    {
+      static const CCommonNameComponent::shared_ptr emptyCNComponent = CCommonNameComponent::create("Math Object=Math Container Internal Object", "Math Object", "Math Container Internal Object");
+
+      return emptyCNComponent;
+    }
+
+  return mpDataObject->getCNComponent();
+}
+
+
 std::string CMathObject::getObjectDisplayName() const
 {
   if (mpDataObject == NULL)
