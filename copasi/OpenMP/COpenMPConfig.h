@@ -17,18 +17,7 @@
  */
 class COpenMPConfig : public CCopasiParameterGroup
 {
-private:
-  static std::vector< std::weak_ptr< std::function< void() > > >  ApplyCallbacks;
-
-  static int AppliedNumThreads;
-
 public:
-  static void RegisterApplyCallback(const std::shared_ptr< std::function< void() > > & callback);
-
-  static std::string Info();
-
-  static void Apply();
-
   enum struct ScheduleStrategy
   {
     Static = 0,
@@ -38,8 +27,7 @@ public:
     __SIZE
   };
 
-  typedef CEnumAnnotation< std::string, ScheduleStrategy > ScheduleStrategyName;
-  static const ScheduleStrategyName ScheduleStrategyNames;
+  static const CEnumAnnotation< std::string, ScheduleStrategy > ScheduleStrategyNames;
   static const CEnumAnnotation< omp_sched_t, ScheduleStrategy > ScheduleStrategyOpenMP;
 
   enum struct Monotonic
@@ -49,11 +37,33 @@ public:
     __SIZE
   };
 
-  typedef CEnumAnnotation< std::string, Monotonic > MonotonicName;
-  static const MonotonicName MonotonicNames;
+  static const CEnumAnnotation< std::string, Monotonic > MonotonicNames;
   static const CEnumAnnotation< omp_sched_t, Monotonic > MonotonicOpenMP;
 
-  static const int MaxNumThreads;
+private:
+  static std::vector< std::weak_ptr< std::function< void() > > >  ApplyCallbacks;
+
+  static int AppliedNumThreads;
+
+  struct _ScheduleStrategyOpenMP
+  {
+    bool isEnabled = false;
+    int MaxNumThreads = 0;
+    ScheduleStrategy scheduleStrategy = ScheduleStrategy::Static;
+    Monotonic monotonicity = COpenMPConfig::Monotonic::nonmonotonic;
+    C_UINT32 chunkSize = 0;
+  };
+
+  static _ScheduleStrategyOpenMP EnvironmentOpenMP;
+
+  static void InitFromEnvironment();
+
+public:
+  static void RegisterApplyCallback(const std::shared_ptr< std::function< void() > > & callback);
+
+  static std::string Info();
+
+  static void Apply();
 
   COpenMPConfig() = delete;
 
