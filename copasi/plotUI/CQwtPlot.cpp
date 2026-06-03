@@ -734,9 +734,6 @@ bool CQwtPlot::compile(CObjectInterface::ContainerList listOfContainer)
             {
               mObjects.insert(pObj);
               objectCN = pObj->getCN();
-              if (objectCN.empty())
-                objectCN = pItem->getChannels()[j];
-
               mCnNameMap[objectCN] = pObj->getObjectDisplayName();
             }
           else
