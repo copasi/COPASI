@@ -773,7 +773,9 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
     {
       case ListViews::RENAME:
       case ListViews::CHANGE:
-        if (pNode->getDisplayRole() != DisplayRole)
+        if (pNode != nullptr
+            && pNode->getDisplayRole() != "Model"
+            && pNode->getDisplayRole() != DisplayRole)
           {
             pNode->setDisplayRole(DisplayRole);
 
