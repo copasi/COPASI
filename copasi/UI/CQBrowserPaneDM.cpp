@@ -772,9 +772,20 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
   switch (action)
     {
       case ListViews::RENAME:
-        break;
-
       case ListViews::CHANGE:
+        if (pNode->getDisplayRole() != DisplayRole)
+          {
+            pNode->setDisplayRole(DisplayRole);
+
+            if (mEmitDataChanged)
+              {
+                QModelIndex Index = index(pNode);
+                emit dataChanged(Index, Index);
+
+                Index = index(static_cast< CNode * >(pNode->getParent()));
+                emit dataChanged(Index, Index);
+              }
+          }
         break;
 
       case ListViews::DELETE:
