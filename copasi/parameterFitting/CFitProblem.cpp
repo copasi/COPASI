@@ -1382,12 +1382,17 @@ void CFitProblem::printResult(std::ostream * ostream) const
   os << "Standard Deviation:\t" << mSD << "\n";
 
   CCopasiTimeVariable CPUTime = const_cast<CFitProblem *>(this)->mCPUTime.getElapsedTime();
+  CCopasiTimeVariable WallTime = const_cast<CFitProblem *>(this)->mWallTime.getElapsedTime();
 
-  os << "Function Evaluations:\t" << mCounters.Counter << "\n";
-  os << "CPU Time [s]:\t"
+  os << "    Function Evaluations:\t" << mCounters.Counter << "\n";
+  os << "    CPU Time [s]:\t"
      << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
      << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << "\n";
-  os << "Evaluations/Second [1/s]:\t" << mCounters.Counter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << "\n";
+  os << "    Wall Time [s]:\t"
+     << CCopasiTimeVariable::LL2String(WallTime.getSeconds(), 1) << "."
+     << CCopasiTimeVariable::LL2String(WallTime.getMilliSeconds(true), 3) << "\n";
+  os << "    Evaluations/Second [1/s]:\t" << mCounters.Counter / (C_FLOAT64)(WallTime.getMilliSeconds() / 1e3) << "\n";
+  os << "    SpeedUp:\t" << CPUTime.getMilliSeconds() / WallTime.getMilliSeconds() << "\n";
   os << "\n";
 
   std::vector< COptItem * >::const_iterator itItem =
@@ -1969,6 +1974,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   // Make sure the timer is accurate.
   mCPUTime.calculateValue();
+  mWallTime.calculateValue();
 
   if (mSolutionValue == mWorstValue)
     return false;
@@ -2109,6 +2115,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
         {
           // Make sure the timer is accurate.
           mCPUTime.calculateValue();
+          mWallTime.calculateValue();
 
           CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 13);
           return false;
@@ -2132,6 +2139,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
         {
           // Make sure the timer is accurate.
           mCPUTime.calculateValue();
+          mWallTime.calculateValue();
+
           return false;
         }
 
@@ -2192,6 +2201,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       // Make sure the timer is accurate.
       mCPUTime.calculateValue();
+      mWallTime.calculateValue();
     }
 
   mStoreResults = false;

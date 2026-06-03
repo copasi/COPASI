@@ -509,10 +509,16 @@ public:
   const unsigned C_INT32 & geFailedConstraintCounter() const;
 
   /**
-   * Retrieve the objective function.
+   * Retrieve the CPU time.
    * @return const C_FLOAT64 & executionTime
    */
   const C_FLOAT64 & getExecutionTime() const;
+
+  /**
+   * Retrieve wall time.
+   * @return const C_FLOAT64 & wallTime
+   */
+  const C_FLOAT64 & getWallTime() const;
 
   /**
    * This is the output method for any object. The default implementation
@@ -687,6 +693,11 @@ protected:
    * A CPU Timer
    */
   CCopasiTimer mCPUTime;
+
+  /**
+   * A Wall Clock Timer
+   */
+  CCopasiTimer mWallTime;
 
   /**
    * Handle of "Best Value" process report item

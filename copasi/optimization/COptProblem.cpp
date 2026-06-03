@@ -108,6 +108,7 @@ COptProblem::COptProblem(const CTaskEnum::Task & type,
   , mSolutionValue(0)
   , mCounters()
   , mCPUTime(CCopasiTimer::Type::PROCESS, this)
+  , mWallTime(CCopasiTimer::Type::WALL, this)
   , mhSolutionValue(C_INVALID_INDEX)
   , mhCounter(C_INVALID_INDEX)
   , mStoreResults(false)
@@ -152,6 +153,7 @@ COptProblem::COptProblem(const COptProblem & src,
   , mSolutionValue(src.mSolutionValue)
   , mCounters()
   , mCPUTime(CCopasiTimer::Type::PROCESS, this)
+  , mWallTime(CCopasiTimer::Type::WALL, this)
   , mhSolutionValue(C_INVALID_INDEX)
   , mhCounter(C_INVALID_INDEX)
   , mStoreResults(src.mStoreResults)
@@ -707,6 +709,7 @@ bool COptProblem::initialize()
   mpContainer->getTransientDependencies().getUpdateSequence(mUpdateConstraints, CCore::SimulationContext::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
 
   mCPUTime.start();
+  mWallTime.start();
 
   // Sanity
   if (mpObjectiveExpression == NULL ||
@@ -1010,6 +1013,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   // Make sure the timer is accurate.
   mCPUTime.calculateValue();
+  mWallTime.calculateValue();
 
   if (mSolutionValue == mWorstValue)
     return false;
@@ -1058,6 +1062,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       // Make sure the timer is accurate.
       mCPUTime.calculateValue();
+      mWallTime.calculateValue();
     }
 
   return true;
@@ -1375,6 +1380,11 @@ const C_FLOAT64 & COptProblem::getExecutionTime() const
   return mCPUTime.getElapsedTimeSeconds();
 }
 
+const C_FLOAT64 & COptProblem::getWallTime() const
+{
+  return mWallTime.getElapsedTimeSeconds();
+}
+
 void COptProblem::print(std::ostream * ostream) const
 {*ostream << *this;}
 
@@ -1390,12 +1400,17 @@ void COptProblem::printResult(std::ostream * ostream) const
   os << "    Objective Function Value:\t" << mSolutionValue << "\n";
 
   CCopasiTimeVariable CPUTime = const_cast<COptProblem *>(this)->mCPUTime.getElapsedTime();
+  CCopasiTimeVariable WallTime = const_cast<COptProblem *>(this)->mWallTime.getElapsedTime();
 
   os << "    Function Evaluations:\t" << mCounters.Counter << "\n";
   os << "    CPU Time [s]:\t"
      << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
      << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << "\n";
-  os << "    Evaluations/Second [1/s]:\t" << mCounters.Counter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << "\n";
+  os << "    Wall Time [s]:\t"
+     << CCopasiTimeVariable::LL2String(WallTime.getSeconds(), 1) << "."
+     << CCopasiTimeVariable::LL2String(WallTime.getMilliSeconds(true), 3) << "\n";
+  os << "    Evaluations/Second [1/s]:\t" << mCounters.Counter / (C_FLOAT64)(WallTime.getMilliSeconds() / 1e3) << "\n";
+  os << "    SpeedUp:\t" << CPUTime.getMilliSeconds() / WallTime.getMilliSeconds() << "\n";
   os << "\n";
 
   std::vector< COptItem * >::const_iterator itItem =
