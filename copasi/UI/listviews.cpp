@@ -581,7 +581,7 @@ CopasiWidget* ListViews::createWidgetFromId(const ListViews::WidgetType& id)
             mpParameterSetWidget = new CQTabWidget(ListViews::ObjectType::MODELPARAMETERSET, overviewWidget, this);
 
             QPushButton * btn = new QPushButton("Save to File");
-            connect(btn, SIGNAL(pressed()), overviewWidget, SLOT(slotBtnSaveToFile()));
+            connect(btn, SIGNAL(clicked()), overviewWidget, SLOT(slotBtnSaveToFile()));
             mpParameterSetWidget->getHeaderLayout()->addWidget(btn);
 
             mpStackedWidget->addWidget(mpParameterSetWidget);
