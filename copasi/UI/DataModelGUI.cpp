@@ -788,6 +788,20 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
 
 //************** QApplication ***********************************************
 
+void DataModelGUI::detachOutputHandler()
+{
+  mpDataModel->removeInterface(mpOutputHandlerPlot);
+}
+
+void DataModelGUI::attachOutputHandler()
+{
+  mpDataModel->addInterface(mpOutputHandlerPlot);
+
+  mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
+  
+  linkDataModelToGUI();
+}
+
 //************Model-View Architecture*****************************************
 bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
 {

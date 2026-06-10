@@ -151,6 +151,9 @@ public:
   //bool updateMathModel();
   //bool scheduleMathModelUpdate(const bool & update = true);
 
+  void detachOutputHandler();
+  void attachOutputHandler();
+
   bool notify(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn = CRegisteredCommonName());
   void notifyChanges(const CUndoData::CChangeSet & changes);
 

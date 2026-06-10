@@ -2141,6 +2141,8 @@ void CopasiUI3Window::slotConvertODEsToReactions()
   if (this->mpSliders)
     this->mpSliders->reset();
 
+  mpDataModelGUI->detachOutputHandler();
+
   CCopasiMessage::clearDeque();
 
   if (!mpDataModel->convertODEsToReactions())
@@ -2155,7 +2157,7 @@ void CopasiUI3Window::slotConvertODEsToReactions()
 
   mpDataModel->changed();
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, CRegisteredCommonName());
-  mpListView->resetCache();
+  mpDataModelGUI->attachOutputHandler();
 }
 
 void CopasiUI3Window::slotConvertReactionsToODEs()
@@ -2176,6 +2178,8 @@ void CopasiUI3Window::slotConvertReactionsToODEs()
   if (this->mpSliders)
     this->mpSliders->reset();
 
+  mpDataModelGUI->detachOutputHandler();
+
   CCopasiMessage::clearDeque();
 
   if (!mpDataModel->convertReactionsToODEs())
@@ -2190,7 +2194,7 @@ void CopasiUI3Window::slotConvertReactionsToODEs()
 
   mpDataModel->changed();
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, CRegisteredCommonName());
-  mpListView->resetCache();
+  mpDataModelGUI->attachOutputHandler();
 }
 
 void CopasiUI3Window::slotPromoteLocalParameters()
@@ -2211,6 +2215,8 @@ void CopasiUI3Window::slotPromoteLocalParameters()
   if (this->mpSliders)
     this->mpSliders->reset();
 
+  mpDataModelGUI->detachOutputHandler();
+
   CCopasiMessage::clearDeque();
 
   if (!mpDataModel->convertParametersToGlobal())
@@ -2225,7 +2231,7 @@ void CopasiUI3Window::slotPromoteLocalParameters()
 
   mpDataModel->changed();
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, CRegisteredCommonName());
-  mpListView->resetCache();
+  mpDataModelGUI->attachOutputHandler();
 }
 
 void CopasiUI3Window::slotShowSliders(bool flag)
