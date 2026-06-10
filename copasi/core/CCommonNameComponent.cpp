@@ -12,21 +12,23 @@
 // static
 const std::map< std::string, std::string > CCommonNameComponent::VectorName2ObjectType = {
   {"Compartments", "Compartment"},
-  {"Metabolites", "Metabolite"},
-  {"Reduced Model Metabolites", "Metabolite"},
-  {"Reactions", "Reaction"},
   {"Events", "Event"},
-  {"Values", "ModelValue"},
-  {"ParameterSets", "ModelParameterSet"},
-  {"Moieties", "Moiety"},
-  {"ListOflayouts", "Layout"},
-  {"TaskList", "Task"},
-  {"ReportDefinitions", "ReportDefinition"},
-  {"OutputDefinitions", "PlotItem"},
+  {"Fitted Points", "Fitted Point"},
   {"Functions", "Function"},
+  {"ListOfLayouts", "Layout"},
+  {"ListOflayouts", "Layout"},
+  {"Metabolites", "Metabolite"},
   {"ModelList", "CN"},
+  {"Moieties", "Moiety"},
+  {"OutputDefinitions", "PlotItem"},
+  {"ParameterSets", "ModelParameterSet"},
+  {"Reactions", "Reaction"},
+  {"Reduced Model Metabolites", "Metabolite"},
+  {"ReportDefinitions", "ReportDefinition"},
+  {"TaskList", "Task"},
   {"Units list", "Unit"},
-  {"Fitted Points", "Fitted Point"}};
+  {"Values", "ModelValue"}
+};
 
 // static
 std::string CCommonNameComponent::ObjectTypeFromVectorName(const std::string & name)

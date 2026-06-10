@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -218,6 +218,8 @@ void DataModelGUI::downloadFileFromUrl(const std::string & url, const std::strin
   mRunningThreads["downloadFileFromUrl"].success = false;
 
   QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+  manager->setStrictTransportSecurityEnabled(true);
+  manager->setRedirectPolicy(QNetworkRequest::NoLessSafeRedirectPolicy);
 
   QString server = FROM_UTF8(CRootContainer::getConfiguration()->getProxyServer());
 
@@ -739,6 +741,7 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
   mpMiriamResources = &miriamResources;
 
   QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+  manager->setRedirectPolicy(QNetworkRequest::SameOriginRedirectPolicy);
 
   QString server = FROM_UTF8(CRootContainer::getConfiguration()->getProxyServer());
 
@@ -798,7 +801,7 @@ void DataModelGUI::attachOutputHandler()
   mpDataModel->addInterface(mpOutputHandlerPlot);
 
   mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
-  
+
   linkDataModelToGUI();
 }
 
