@@ -1945,6 +1945,13 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   calculate();
   mStoreResults = false;
 
+  // Reset the cross validation fitting points to NaN. The output triggered while
+  // streaming the experiment set below is also received by the validation plot,
+  // which would otherwise record the stale (final time course point) values and
+  // draw a spurious line back to the start of the validation data.
+  for (size_t k = 0, kmax = mpCrossValidationSet->getExperimentCount(); k < kmax; ++k)
+    mpCrossValidationSet->getExperiment(k)->updateFittedPointValues(C_INVALID_INDEX);
+
   // The statistics need to be calculated for the result, i.e., now.
   mpExperimentSet->calculateStatistics();
   size_t ValidDataCount = mpExperimentSet->getValidValueCount();
