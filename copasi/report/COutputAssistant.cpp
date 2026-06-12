@@ -311,6 +311,18 @@ bool COutputAssistant::initialize()
   };
   mMap.insert(tmp);
 
+  //fitting validation plots
+  tmp.first = 920;
+  tmp.second.name = "Parameter Estimation Validation Result";
+  tmp.second.description = "Curves of all dependent values of all validation data are created in one plot. For each dependent value the validation data, the fitted curve, and the weighted error are shown.";
+  tmp.second.isPlot = true;
+  tmp.second.mTaskType = CTaskEnum::Task::parameterFitting;
+  tmp.second.options = {{"Measured Values", true, "Displays Measured Values"},
+    {"Fitted Values", true, "Displays Fitted Values"},
+    {"Weighted Errors", false, "Displays Weighted Errors"}
+  };
+  mMap.insert(tmp);
+
   // need to reset the options
   tmp.second.options = {};
 
@@ -954,6 +966,139 @@ COutputAssistant::createDefaultOutput(
         }
 
         */
+
+        return pPlotSpecification;
+      }
+      break;
+
+      case 920:  // copied from above
+      {
+        CPlotSpecification * pPlotSpecification = NULL;
+        CCopasiTask * pTask = &pDataModel->getTaskList()->operator[]("Parameter Estimation");
+
+        if (pTask == NULL) return NULL;
+
+        CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pTask->getProblem());
+
+        if (pFitProblem == NULL) return NULL;
+
+        const CCrossValidationSet & ExperimentSet = pFitProblem->getCrossValidationSet();
+        size_t i, imax = ExperimentSet.getExperimentCount();
+
+        std::vector< std::string > ChannelX;
+        std::vector< std::string > Names;
+        std::vector< unsigned C_INT32 > LineTypes;
+        std::vector< unsigned C_INT32 > SymbolSubTypes;
+        std::vector< unsigned C_INT32 > LineSubTypes;
+        std::vector< std::string > Colors;
+
+        unsigned C_INT32 colorcounter = 0;
+
+        bool needMeasured = isOptionEnabled(pOptions, "Measured Values", true);
+        bool needFitted = isOptionEnabled(pOptions, "Fitted Values", true);
+        bool needErrors = isOptionEnabled(pOptions, "Weighted Errors", false);
+
+        for (i = 0; i < imax; i++)
+          {
+            const CExperiment * pExperiment = ExperimentSet.getExperiment(i);
+            const CDataVector< CFittingPoint > & FittingPoints = pExperiment->getFittingPoints();
+
+            CDataVector< CFittingPoint >::const_iterator it = FittingPoints.begin();
+            CDataVector< CFittingPoint >::const_iterator end = FittingPoints.end();
+
+            if (it == end) continue;
+
+            data2 =
+              static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Independent Value")));
+
+            for (; it != end; ++it)
+              {
+                std::string Name = it->getModelObjectCN();
+                const CDataObject * pObject =
+                  dynamic_cast< const CDataObject * >(pDataModel->getObject(Name));
+
+                if (pObject != NULL)
+                  Name = pObject->getObjectDisplayName();
+
+                Name = pExperiment->getObjectName() + "," + Name;
+
+                //1
+                if (needMeasured)
+                  {
+                    data1.push_back(static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Measured Value"))));
+                    ChannelX.push_back(data2->getCN());
+                    Names.push_back(Name + "(Measured Value)");
+                    LineTypes.push_back(3);      //symbols & lines
+                    SymbolSubTypes.push_back(1); //fat cross
+                    LineSubTypes.push_back(1);   //dotted
+                    Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
+                  }
+
+                //2
+                if (needFitted)
+                  {
+                    data1.push_back(static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Fitted Value"))));
+                    ChannelX.push_back(data2->getCN());
+                    Names.push_back(Name + "(Fitted Value)");
+
+                    if (pExperiment->getExperimentType() == CTaskEnum::Task::timeCourse)
+                      {
+                        LineTypes.push_back(0);      //curve
+                        SymbolSubTypes.push_back(0); //default, this value is not used
+                      }
+                    else
+                      {
+                        LineTypes.push_back(2);      //symbols
+                        SymbolSubTypes.push_back((int)CPlotItem::SymbolType::Square); //TODO
+                      }
+
+                    LineSubTypes.push_back(0); //default, solid
+                    Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
+                  }
+
+                if (needErrors)
+                  {
+                    //3
+                    data1.push_back(static_cast< const CDataObject * >(it->getChildObject(CCommonName("Reference=Weighted Error"))));
+                    ChannelX.push_back(data2->getCN());
+                    Names.push_back(Name + "(Weighted Error)");
+                    LineTypes.push_back(2);      //symbols
+                    SymbolSubTypes.push_back(2); //circles
+                    LineSubTypes.push_back(0);   //default, this value is not used
+                    Colors.push_back(CPlotColors::getCopasiColorStr(colorcounter));
+                  }
+
+                ++colorcounter;
+              }
+          }
+
+        pPlotSpecification =
+          createPlot(getItemName(id), data2, false, data1, false, getItem(id).mTaskType, pDataModel);
+
+        if (pPlotSpecification != NULL)
+          {
+            CDataVector< CPlotItem > & Items = pPlotSpecification->getItems();
+            CDataVector< CPlotItem >::iterator itItem = Items.begin();
+            CDataVector< CPlotItem >::iterator endItem = Items.end();
+            std::vector< std::string >::const_iterator itChannelX = ChannelX.begin();
+            std::vector< std::string >::const_iterator itName = Names.begin();
+            std::vector< unsigned C_INT32 >::const_iterator itLineType = LineTypes.begin();
+            std::vector< unsigned C_INT32 >::const_iterator itSymbolSubType = SymbolSubTypes.begin();
+            std::vector< unsigned C_INT32 >::const_iterator itLineSubType = LineSubTypes.begin();
+            std::vector<std::string>::const_iterator itColor = Colors.begin();
+
+            while (itItem != endItem)
+              {
+                itItem->getChannels()[0] = CPlotDataChannelSpec(CCommonName(*itChannelX++));
+                itItem->setTitle(*itName++);
+                itItem->setActivity(COutputInterface::AFTER);
+                itItem->setValue("Line type", *itLineType++);
+                itItem->setValue("Symbol subtype", *itSymbolSubType++);
+                itItem->setValue("Line subtype", *itLineSubType++);
+                itItem->setValue("Color", *itColor++);
+                itItem++;
+              }
+          }
 
         return pPlotSpecification;
       }
