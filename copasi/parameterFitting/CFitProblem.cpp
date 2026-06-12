@@ -511,7 +511,6 @@ C_FLOAT64 CFitProblem::getEstimatedSubtaskError() const
   return std::fmax(tc, ss); //return the bigger tolerance that is not NaN
 }
 
-
 bool CFitProblem::initialize()
 {
   bool success = true;
@@ -2476,7 +2475,7 @@ bool CFitProblem::calculateCrossValidation()
                     //calculate a reasonable number of intermediate points
                     numIntermediateSteps = 4; //TODO
                     //resize the storage for the extended time series
-                    pExp->initExtendedTimeSeries(numIntermediateSteps * kmax - numIntermediateSteps + 1);
+                    pExp->initExtendedTimeSeries(numIntermediateSteps * (kmax > 0 ? kmax - 1 : 0));
                   }
 
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
@@ -2567,12 +2566,6 @@ bool CFitProblem::calculateCrossValidation()
                       CalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
                     else
                       CalculateValue += pExp->sumOfSquares(j, Residuals);
-
-                    if (mStoreResults)
-                      {
-                        //additionally also store the the simulation result for the extended time series
-                        pExp->storeExtendedTimeSeriesData(pExp->getTimeData()[j]);
-                      }
                   }
               }
               break;
