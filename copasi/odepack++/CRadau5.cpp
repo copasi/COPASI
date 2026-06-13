@@ -91,13 +91,32 @@ CRadau5::~CRadau5()
 #define linal_1 mCommon.linal
 
 /* Subroutine */
-C_INT CRadau5::operator()(C_INT *n, CRadau5::evalF fcn, double *x, double *
-                          y, double *xend, double *h__, double *rtol, double *
-                          atol, C_INT *itol, CRadau5::evalJ jac, C_INT *ijac, C_INT *mljac, C_INT
-                          *mujac, CRadau5::evalM mas, C_INT *imas, C_INT *mlmas, C_INT *mumas, CRadau5::evalO
-                          solout, C_INT *iout, double *work, C_INT *lwork, C_INT *
-                          iwork, C_INT *liwork, double *rpar, C_INT *ipar, C_INT *
-                          idid)
+C_INT CRadau5::operator()(C_INT * n,
+                          CRadau5::evalF fcn,
+                          double * x,
+                          double * y,
+                          double * xend,
+                          double * h__,
+                          double * rtol,
+                          double * atol,
+                          C_INT * itol,
+                          CRadau5::evalJ jac,
+                          C_INT * ijac,
+                          C_INT * mljac,
+                          C_INT * mujac,
+                          CRadau5::evalM mas,
+                          C_INT * imas,
+                          C_INT * mlmas,
+                          C_INT * mumas,
+                          CRadau5::evalO solout,
+                          C_INT * iout,
+                          double * work,
+                          C_INT * lwork,
+                          C_INT * iwork,
+                          C_INT * liwork,
+                          double * rpar,
+                          C_INT * ipar,
+                          C_INT * idid)
 {
   /* System generated locals */
   C_INT i__1;
@@ -1918,7 +1937,10 @@ L179:
 
 /* *********************************************************** */
 
-double CRadau5::contr5_(C_INT *i__, double *x, double *cont, C_INT * /* lrc */)
+double CRadau5::contr5_(C_INT * i__,
+                        double * x,
+                        double * cont,
+                        C_INT * /* lrc */)
 {
   /* System generated locals */
   double ret_val;

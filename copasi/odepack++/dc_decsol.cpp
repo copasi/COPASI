@@ -21,8 +21,6 @@
 
 static integer c__1 = 1;
 
-using namespace dc_decsol;
-
 #define linal_1 cmn.linal
 
 /* ****************************************** */
