@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -78,6 +78,11 @@ protected:
    */
   CType * mpBuffer;
 
+  /**
+   * The array storing the matrix elements
+   */
+  bool mOwnsBuffer;
+
   // Operations
 public:
   /**
@@ -85,10 +90,11 @@ public:
    * @param size_t rows (default = 0)
    * @param size_t cols (default = 0)
    */
-  CMatrix(size_t rows = 0, size_t cols = 0) :
-    mRows(0),
-    mCols(0),
-    mpBuffer(NULL)
+  CMatrix(size_t rows = 0, size_t cols = 0, CType * pBuffer = NULL)
+    : mRows(0)
+    , mCols(0)
+    , mpBuffer(pBuffer)
+    , mOwnsBuffer(pBuffer == NULL)
   {
     resize(rows, cols);
   }
@@ -97,10 +103,11 @@ public:
    * Copy constructor
    * @param const CMatrix <CType> & src
    */
-  CMatrix(const CMatrix <CType> & src):
-    mRows(0),
-    mCols(0),
-    mpBuffer(NULL)
+  CMatrix(const CMatrix< CType > & src)
+    : mRows(0)
+    , mCols(0)
+    , mpBuffer(NULL)
+    , mOwnsBuffer(true)
   {
     resize(src.mRows, src.mCols);
 
@@ -113,7 +120,8 @@ public:
    */
   virtual ~CMatrix()
   {
-    if (mpBuffer)
+    if (mpBuffer
+        && mOwnsBuffer)
       delete [] mpBuffer;
   }
 
@@ -144,6 +152,9 @@ public:
   {
     if (rows != mRows ||  cols != mCols)
       {
+        if (!mOwnsBuffer)
+          __FatalError();
+
         size_t OldRows = mRows;
         size_t OldCols = mCols;
         CType * OldArray = mpBuffer;
@@ -458,6 +469,12 @@ public:
   inline const elementType & operator()(const size_t & row,
                                         const size_t & col) const
   {return mA(row - 1, col - 1);}
+
+  inline const elementType * array() const
+  {return mA.array();}
+
+  inline elementType * array()
+  {return mA.array();}
 };
 
 template <class Matrix>
