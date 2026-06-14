@@ -1248,16 +1248,16 @@ int CRadau5::radcor_(C_INT * n,
   d__1 = *xend - *x;
   posneg = d_sign(&c_b103, &d__1);
   /* Computing MIN */
-  d__2 = abs(*hmax), d__3 = (d__1 = *xend - *x, abs(d__1));
+  d__2 = std::abs(*hmax), d__3 = (d__1 = *xend - *x, std::abs(d__1));
   hmaxn = std::min(d__2, d__3);
 
-  if (abs(*h__) <= *uround * 10.)
+  if (std::abs(*h__) <= *uround * 10.)
     {
       *h__ = 1e-6;
     }
 
   /* Computing MIN */
-  d__1 = abs(*h__);
+  d__1 = std::abs(*h__);
   *h__ = std::min(d__1, hmaxn);
   *h__ = d_sign(h__, &posneg);
   hold = *h__;
@@ -1316,7 +1316,7 @@ int CRadau5::radcor_(C_INT * n,
 
       for (i__ = 1; i__ <= i__1; ++i__)
         {
-          scal[i__] = atol[1] + rtol[1] * (d__1 = y[i__], abs(d__1));
+          scal[i__] = atol[1] + rtol[1] * (d__1 = y[i__], std::abs(d__1));
         }
     }
   else
@@ -1325,7 +1325,7 @@ int CRadau5::radcor_(C_INT * n,
 
       for (i__ = 1; i__ <= i__1; ++i__)
         {
-          scal[i__] = atol[i__] + rtol[i__] * (d__1 = y[i__], abs(d__1));
+          scal[i__] = atol[i__] + rtol[i__] * (d__1 = y[i__], std::abs(d__1));
         }
     }
 
@@ -1359,7 +1359,7 @@ L10:
 L12:
                   f1[j] = y[j];
                   /* Computing MAX */
-                  d__2 = 1e-5, d__3 = (d__1 = y[j], abs(d__1));
+                  d__2 = 1e-5, d__3 = (d__1 = y[j], std::abs(d__1));
                   f2[j] = sqrt(*uround * std::max(d__2, d__3));
                   y[j] += f2[j];
                   j += md;
@@ -1409,7 +1409,7 @@ L14:
             {
               ysafe = y[i__];
               /* Computing MAX */
-              d__1 = 1e-5, d__2 = abs(ysafe);
+              d__1 = 1e-5, d__2 = std::abs(ysafe);
               delt = sqrt(*uround * std::max(d__1, d__2));
               y[i__] = ysafe + delt;
               (*fcn)(n, x, &y[1], &cont[1], &rpar[1], &ipar[1]);
@@ -1464,7 +1464,7 @@ L30:
       goto L178;
     }
 
-  if (abs(*h__) * .1 <= abs(*x) * *uround)
+  if (std::abs(*h__) * .1 <= std::abs(*x) * *uround)
     {
       goto L177;
     }
@@ -1541,7 +1541,7 @@ L30:
   newt = 0;
   d__1 = std::max(faccon, *uround);
   faccon = pow_dd(&d__1, &c_b113);
-  theta = abs(*thet);
+  theta = std::abs(*thet);
 L40:
 
   if (newt >= *nit)
@@ -1749,7 +1749,7 @@ L40:
 
           for (i__ = 1; i__ <= i__1; ++i__)
             {
-              scal[i__] = atol[1] + rtol[1] * (d__1 = y[i__], abs(d__1));
+              scal[i__] = atol[1] + rtol[1] * (d__1 = y[i__], std::abs(d__1));
             }
         }
       else
@@ -1758,7 +1758,7 @@ L40:
 
           for (i__ = 1; i__ <= i__1; ++i__)
             {
-              scal[i__] = atol[i__] + rtol[i__] * (d__1 = y[i__], abs(d__1))
+              scal[i__] = atol[i__] + rtol[i__] * (d__1 = y[i__], std::abs(d__1))
                           ;
             }
         }
@@ -1797,7 +1797,7 @@ L40:
       (*fcn)(n, x, &y[1], &y0[1], &rpar[1], &ipar[1]);
       ++(*nfcn);
       /* Computing MIN */
-      d__1 = abs(hnew);
+      d__1 = std::abs(hnew);
       hnew = posneg * std::min(d__1, hmaxn);
       hopt = hnew;
       hopt = std::min(*h__, hnew);
@@ -1805,7 +1805,7 @@ L40:
       if (reject)
         {
           /* Computing MIN */
-          d__1 = abs(hnew), d__2 = abs(*h__);
+          d__1 = std::abs(hnew), d__2 = std::abs(*h__);
           hnew = posneg * std::min(d__1, d__2);
         }
 
