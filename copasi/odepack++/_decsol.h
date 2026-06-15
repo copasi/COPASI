@@ -13,8 +13,7 @@
 
 #pragma once
 
-#include <cmath>
-#include "copasi/copasi.h"
+#include "copasi/core/CCore.h"
 
 #ifdef HAVE_F2C_H
 #  include <f2c.h>
@@ -62,7 +61,7 @@ void dech(const integer & n,
           CFortranAccess< CMatrix< doublereal > > & a,
           const integer & lb,
           CVectorCore< integer > & ip,
-          int & ier);
+          integer & ier);
 
 void solh(const integer & n,
           const integer & ndim,
@@ -76,7 +75,7 @@ void decc(const integer & n,
           CFortranAccess< CMatrix< doublereal > > & ar,
           CFortranAccess< CMatrix< doublereal > > & ai,
           CVectorCore< integer > & ip,
-          int & ier);
+          integer & ier);
 
 void solc(const integer & n,
           const integer & ndim,
@@ -100,7 +99,7 @@ void dechc(const integer & n,
            CFortranAccess< CMatrix< doublereal > > & ai,
            const integer & lb,
            CVectorCore< integer > & ip,
-           int & ier);
+           integer & ier);
 
 void solhc(const integer & n,
            const integer & ndim,
@@ -117,7 +116,7 @@ void decb(const integer & n,
           const integer & ml,
           const integer & mu,
           CVectorCore< integer > & ip,
-          int & ier);
+          integer & ier);
 
 void solb(const integer & n,
           const integer & ndim,
@@ -142,7 +141,7 @@ void decbc(const integer & n,
            const integer & ml,
            const integer & mu,
            CVectorCore< integer > & ip,
-           int & ier);
+           integer & ier);
 
 void solbc(const integer & n,
            const integer & ndim,

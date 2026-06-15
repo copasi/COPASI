@@ -7,6 +7,8 @@
 
 using namespace _dc_decsol;
 
+static const integer c__1 = 1;
+
 _CRadau5::_CRadau5()
   : Cxerrwd(true)
   , mCommon()
@@ -351,7 +353,7 @@ void _CRadau5::operator()(const integer & n,
             }
         }
     }
-  integer ldmas2 = std::max(1, ldmas);
+  integer ldmas2 = std::max(c__1, ldmas);
   //C ------ HESSENBERG OPTION ONLY FOR EXPLICIT EQU. WITH FULL JACOBIAN
   if ((implct || jband) && ijob == 7)
     {
@@ -804,7 +806,7 @@ statement_10:
                   fcn(n, x, y, cont, rpar, ipar);
                   j = k + (mm - 1) * m2;
                   j1 = k;
-                  lbeg = std::max(1, j1 - mujac) + m1;
+                  lbeg = std::max(c__1, j1 - mujac) + m1;
                 statement_14:
                   lend = std::min(m2, j1 + mljac) + m1;
                   y(j) = f1(j);

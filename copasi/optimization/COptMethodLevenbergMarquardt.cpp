@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -178,7 +178,7 @@ bool COptMethodLevenbergMarquardt::optimise()
         COptLogEntry("Caution: Modulation factor may be too small",
                 "compared to the accuracy of the time course/steady state calculation"));
   }
-  
+
   mEvaluationValue = evaluate(EvaluationPolicyFlag::All);
 
   if (!std::isnan(mEvaluationValue))
@@ -194,7 +194,6 @@ bool COptMethodLevenbergMarquardt::optimise()
 
   mpParentTask->output(COutputInterface::MONITORING);
 
-  
   for (mIteration = 0; (mIteration < mIterationLimit) && (nu != 0.0) && proceed();
        mIteration++, Stalled++)
     {
@@ -294,12 +293,12 @@ bool COptMethodLevenbergMarquardt::optimise()
 
               COptItem & OptItem = *OptItemList[i];
               pointInParameterDomain &= OptItem.setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
-              
+
               //We need to detect if the step would lead out of the parameter boundaries, so that we can
               //shorten the step accordingly. So we check if the prior call to setItemValue truncated the parameter value.
               //However, we disregard this if the parameter was already at the boundary before the current step,
               //allowing movement along the boundary and back inside the allowed region.
-              pointInParameterDomain &= ((Target == mCurrent[i]) || abs(mCurrent[i]-mBest[i])< 1e-6*abs(Factor*mStep[i]) );
+              pointInParameterDomain &= ((Target == mCurrent[i]) || std::abs(mCurrent[i]-mBest[i])< 1e-6*std::abs(Factor*mStep[i]) );
 
               if (!pointInParameterDomain)
                 {

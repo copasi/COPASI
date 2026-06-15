@@ -14,7 +14,6 @@
 
  http://www.netlib.org/f2c/libf2c.zip
  */
-#include <cmath>
 #include <algorithm>
 
 #include "copasi/copasi.h"

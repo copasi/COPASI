@@ -16,6 +16,7 @@
  */
 
 #include "copasi/odepack++/dc_decsol.h"
+#include <cmath>
 
 /* Common Block Declarations */
 

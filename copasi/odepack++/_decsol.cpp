@@ -5,6 +5,8 @@
 
 #include "copasi/odepack++/_decsol.h"
 
+static const integer c__1 = 1;
+
 void decsol::dec(const integer & n,
                  const integer & ndim,
                  CFortranAccess< CMatrix< doublereal > > & a,
@@ -190,7 +192,7 @@ void decsol::dech(const integer & n,
                   CFortranAccess< CMatrix< doublereal > > & a,
                   const integer & lb,
                   CVectorCore< integer > & ip,
-                  int & ier)
+                  integer & ier)
 {
   integer nm1 = 0;
   integer k = 0;
@@ -370,7 +372,7 @@ void decsol::decc(const integer & n,
                   CFortranAccess< CMatrix< doublereal > > & ar,
                   CFortranAccess< CMatrix< doublereal > > & ai,
                   CVectorCore< integer > & ip,
-                  int & ier)
+                  integer & ier)
 {
   integer nm1 = 0;
   integer k = 0;
@@ -627,7 +629,7 @@ void decsol::dechc(const integer & n,
                    CFortranAccess< CMatrix< doublereal > > & ai,
                    const integer & lb,
                    CVectorCore< integer > & ip,
-                   int & ier)
+                   integer & ier)
 {
   integer nm1 = 0;
   integer k = 0;
@@ -885,7 +887,7 @@ void decsol::decb(const integer & n,
                   const integer & ml,
                   const integer & mu,
                   CVectorCore< integer > & ip,
-                  int & ier)
+                  integer & ier)
 {
   integer md = 0;
   integer md1 = 0;
@@ -1108,7 +1110,7 @@ statement_25:
       b(k) = b(k) / a(md, k);
       t = -b(k);
       kmd = md - k;
-      lm = std::max(1, kmd + 1);
+      lm = std::max(c__1, kmd + 1);
       // FEM_DO_SAFE(i, lm, mdm)
       for (integer i = lm; i <= mdm; ++i)
         {
@@ -1140,7 +1142,7 @@ void decsol::decbc(const integer & n,
                    const integer & ml,
                    const integer & mu,
                    CVectorCore< integer > & ip,
-                   int & ier)
+                   integer & ier)
 {
   integer md = 0;
   integer md1 = 0;
@@ -1429,7 +1431,7 @@ statement_25:
       tr = -br(k);
       ti = -bi(k);
       kmd = md - k;
-      lm = std::max(1, kmd + 1);
+      lm = std::max(c__1, kmd + 1);
       // FEM_DO_SAFE(i, lm, mdm)
       for (integer i = lm; i <= mdm; ++i)
         {
@@ -1510,7 +1512,7 @@ void decsol::elmhes(const integer & nm,
   //C        which were used in the reduction are stored in the
   //C        remaining triangle under the hessenberg matrix;
   //C
-  //C      int contains information on the rows and columns
+  //C      identifier_int contains information on the rows and columns
   //C        interchanged in the reduction.
   //C        only elements low through igh are used.
   //C

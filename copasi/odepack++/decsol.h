@@ -14,8 +14,7 @@
 #ifndef decsol_h
 #define decsol_h
 
-#include <cmath>
-#include "copasi/copasi.h"
+#include "copasi/core/CCore.h"
 
 #ifdef HAVE_F2C_H
 #  include <f2c.h>

@@ -6,7 +6,7 @@
 // fingerprint 51b57d0ecdefa9751f678984a0863a96
 #include "copasi/odepack++/_dc_decsol.h"
 
-/* Common Block Declarations */
+static const integer c__1 = 1;
 
 //C ******************************************
 //C     VERSION OF SEPTEMBER 18, 1995
@@ -201,8 +201,8 @@ statement_3:
         {
           e1(i, j) = -fjac(i, j);
         }
-      // FEM_DO_SAFE(i, std::max(1, j - mumas), std::min(n, j + mlmas))
-      for (integer i = std::max(1, j - mumas); i <= std::min(n, j + mlmas); ++i)
+      // FEM_DO_SAFE(i, std::max(c__1, j - mumas), std::min(n, j + mlmas))
+      for (integer i = std::max(c__1, j - mumas); i <= std::min(n, j + mlmas); ++i)
         {
           e1(i, j) += fac1 * fmas(i - j + mbdiag, j);
         }
@@ -223,8 +223,8 @@ statement_13:
         {
           e1(i, j) = -fjac(i, jm1);
         }
-      // FEM_DO_SAFE(i, std::max(1, j - mumas), std::min(nm1, j + mlmas))
-      for (integer i = std::max(1, j - mumas); i <= std::min(nm1, j + mlmas); ++i)
+      // FEM_DO_SAFE(i, std::max(c__1, j - mumas), std::min(nm1, j + mlmas))
+      for (integer i = std::max(c__1, j - mumas); i <= std::min(nm1, j + mlmas); ++i)
         {
           e1(i, j) += fac1 * fmas(i - j + mbdiag, j);
         }
@@ -578,8 +578,8 @@ statement_3:
   // FEM_DO_SAFE(j, 1, n)
   for (integer j = 1; j <= n; ++j)
     {
-      // FEM_DO_SAFE(i, std::max(1, j - mumas), std::min(n, j + mlmas))
-      for (integer i = std::max(1, j - mumas); i <= std::min(n, j + mlmas); ++i)
+      // FEM_DO_SAFE(i, std::max(c__1, j - mumas), std::min(n, j + mlmas))
+      for (integer i = std::max(c__1, j - mumas); i <= std::min(n, j + mlmas); ++i)
         {
           bb = fmas(i - j + mbdiag, j);
           e2r(i, j) += alphn * bb;
@@ -603,8 +603,8 @@ statement_13:
           e2r(i, j) = -fjac(i, jm1);
           e2i(i, j) = 0.e0;
         }
-      // FEM_DO_SAFE(i, std::max(1, j - mumas), std::min(nm1, j + mlmas))
-      for (integer i = std::max(1, j - mumas); i <= std::min(nm1, j + mlmas); ++i)
+      // FEM_DO_SAFE(i, std::max(c__1, j - mumas), std::min(nm1, j + mlmas))
+      for (integer i = std::max(c__1, j - mumas); i <= std::min(nm1, j + mlmas); ++i)
         {
           ffma = fmas(i - j + mbdiag, j);
           e2r(i, j) += alphn * ffma;
@@ -627,8 +627,8 @@ statement_4:
           e2r(imle, j) = -fjac(i, j);
           e2i(imle, j) = 0.e0;
         }
-      // FEM_DO_SAFE(i, std::max(1, mumas + 2 - j), std::min(mbb, mumas + 1 - j + n))
-      for (integer i = std::max(1, mumas + 2 - j); i <= std::min(mbb, mumas + 1 - j + n); ++i)
+      // FEM_DO_SAFE(i, std::max(c__1, mumas + 2 - j), std::min(mbb, mumas + 1 - j + n))
+      for (integer i = std::max(c__1, mumas + 2 - j); i <= std::min(mbb, mumas + 1 - j + n); ++i)
         {
           ib = i + mdiff;
           bb = fmas(i, j);
@@ -898,8 +898,8 @@ statement_45:
         {
           jkm = j + k * m2;
           sum1 = (z1(jkm) + sum1) / fac1;
-          // FEM_DO_SAFE(i, std::max(1, j - mujac), std::min(nm1, j + mljac))
-          for (integer i = std::max(1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
+          // FEM_DO_SAFE(i, std::max(c__1, j - mujac), std::min(nm1, j + mljac))
+          for (integer i = std::max(c__1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
             {
               im1 = i + m1;
               z1(im1) += fjac(i + mujac + 1 - j, jkm) * sum1;
@@ -917,8 +917,8 @@ statement_3:
   for (integer i = 1; i <= n; ++i)
     {
       s1 = 0.0e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(n, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(n, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(n, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(n, i + mumas); ++j)
 
         {
           s1 = s1 - fmas(i - j + mbdiag, j) * f1(j);
@@ -942,8 +942,8 @@ statement_13:
     {
       im1 = i + m1;
       s1 = 0.0e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(nm1, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(nm1, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(nm1, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(nm1, i + mumas); ++j)
         {
           s1 = s1 - fmas(i - j + mbdiag, j) * f1(j + m1);
         }
@@ -963,8 +963,8 @@ statement_4:
   for (integer i = 1; i <= n; ++i)
     {
       s1 = 0.0e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(n, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(n, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(n, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(n, i + mumas); ++j)
         {
           s1 = s1 - fmas(i - j + mbdiag, j) * f1(j);
         }
@@ -1282,8 +1282,8 @@ statement_45:
           sum3 = (z3(jkm) + sum3) / abno;
           sum2 = sumh * alphn + sum3 * betan;
           sum3 = sum3 * alphn - sumh * betan;
-          // FEM_DO_SAFE(i, std::max(1, j - mujac), std::min(nm1, j + mljac))
-          for (integer i = std::max(1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
+          // FEM_DO_SAFE(i, std::max(c__1, j - mujac), std::min(nm1, j + mljac))
+          for (integer i = std::max(c__1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
             {
               im1 = i + m1;
               iimu = i + mujac + 1 - j;
@@ -1304,8 +1304,8 @@ statement_3:
     {
       s2 = 0.0e0;
       s3 = 0.0e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(n, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(n, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(n, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(n, i + mumas); ++j)
         {
           bb = fmas(i - j + mbdiag, j);
           s2 = s2 - bb * f2(j);
@@ -1335,8 +1335,8 @@ statement_13:
       im1 = i + m1;
       s2 = 0.0e0;
       s3 = 0.0e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(nm1, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(nm1, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(nm1, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(nm1, i + mumas); ++j)
         {
           jm1 = j + m1;
           bb = fmas(i - j + mbdiag, j);
@@ -1361,8 +1361,8 @@ statement_4:
     {
       s2 = 0.0e0;
       s3 = 0.0e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(n, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(n, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(n, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(n, i + mumas); ++j)
         {
           bb = fmas(i - j + mbdiag, j);
           s2 = s2 - bb * f2(j);
@@ -1730,8 +1730,8 @@ statement_45:
           sum3 = (z3(jkm) + sum3) / abno;
           sum2 = sumh * alphn + sum3 * betan;
           sum3 = sum3 * alphn - sumh * betan;
-          // FEM_DO_SAFE(i, std::max(1, j - mujac), std::min(nm1, j + mljac))
-          for (integer i = std::max(1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
+          // FEM_DO_SAFE(i, std::max(c__1, j - mujac), std::min(nm1, j + mljac))
+          for (integer i = std::max(c__1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
             {
               /* code */
             }
@@ -1759,8 +1759,8 @@ statement_3:
       s1 = 0.0e0;
       s2 = 0.0e0;
       s3 = 0.0e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(n, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(n, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(n, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(n, i + mumas); ++j)
         {
           bb = fmas(i - j + mbdiag, j);
           s1 = s1 - bb * f1(j);
@@ -1795,7 +1795,7 @@ statement_13:
       s1 = 0.0e0;
       s2 = 0.0e0;
       s3 = 0.0e0;
-      j1b = std::max(1, i - mlmas);
+      j1b = std::max(c__1, i - mlmas);
       j2b = std::min(nm1, i + mumas);
       // FEM_DO_SAFE(j, j1b, j2b)
       for (integer j = j1b; j <= j2b; ++j)
@@ -1826,8 +1826,8 @@ statement_4:
       s1 = 0.0e0;
       s2 = 0.0e0;
       s3 = 0.0e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(n, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(n, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(n, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(n, i + mumas); ++j)
         {
           bb = fmas(i - j + mbdiag, j);
           s1 = s1 - bb * f1(j);
@@ -2165,8 +2165,8 @@ statement_45:
       for (integer k = mm - 1; k >= 0; --k)
         {
           sum1 = (cont(j + k * m2) + sum1) / fac1;
-          // FEM_DO_SAFE(i, std::max(1, j - mujac), std::min(nm1, j + mljac))
-          for (integer i = std::max(1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
+          // FEM_DO_SAFE(i, std::max(c__1, j - mujac), std::min(nm1, j + mljac))
+          for (integer i = std::max(c__1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
             {
               im1 = i + m1;
               cont(im1) += fjac(i + mujac + 1 - j, j + k * m2) * sum1;
@@ -2192,8 +2192,8 @@ statement_3:
   for (integer i = 1; i <= n; ++i)
     {
       sum = 0.e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(n, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(n, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(n, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(n, i + mumas); ++j)
         {
           sum += fmas(i - j + mbdiag, j) * f1(j);
         }
@@ -2220,8 +2220,8 @@ statement_13:
   for (integer i = 1; i <= nm1; ++i)
     {
       sum = 0.e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(nm1, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(nm1, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(nm1, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(nm1, i + mumas); ++j)
         {
           sum += fmas(i - j + mbdiag, j) * f1(j + m1);
         }
@@ -2242,8 +2242,8 @@ statement_4:
   for (integer i = 1; i <= n; ++i)
     {
       sum = 0.e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(n, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(n, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(n, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(n, i + mumas); ++j)
         {
           sum += fmas(i - j + mbdiag, j) * f1(j);
         }
@@ -2270,8 +2270,8 @@ statement_14:
   for (integer i = 1; i <= nm1; ++i)
     {
       sum = 0.e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(nm1, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(nm1, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(nm1, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(nm1, i + mumas); ++j)
         {
           sum += fmas(i - j + mbdiag, j) * f1(j + m1);
         }
@@ -2491,8 +2491,8 @@ statement_77:
           for (integer k = mm - 1; k >= 0; --k)
             {
               sum1 = (cont(j + k * m2) + sum1) / fac1;
-              // FEM_DO_SAFE(i, std::max(1, j - mujac), std::min(nm1, j + mljac))
-              for (integer i = std::max(1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
+              // FEM_DO_SAFE(i, std::max(c__1, j - mujac), std::min(nm1, j + mljac))
+              for (integer i = std::max(c__1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
                 {
                   im1 = i + m1;
                   cont(im1) += fjac(i + mujac + 1 - j, j + k * m2) * sum1;
@@ -2752,8 +2752,8 @@ statement_45:
       for (integer k = mm - 1; k >= 0; --k)
         {
           sum1 = (cont(j + k * m2) + sum1) / fac1;
-          // FEM_DO_SAFE(i, std::max(1, j - mujac), std::min(nm1, j + mljac))
-          for (integer i = std::max(1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
+          // FEM_DO_SAFE(i, std::max(c__1, j - mujac), std::min(nm1, j + mljac))
+          for (integer i = std::max(c__1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
             {
               im1 = i + m1;
               cont(im1) += fjac(i + mujac + 1 - j, j + k * m2) * sum1;
@@ -2785,8 +2785,8 @@ statement_3:
   for (integer i = 1; i <= n; ++i)
     {
       sum = 0.e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(n, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(n, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(n, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(n, i + mumas); ++j)
         {
           sum += fmas(i - j + mbdiag, j) * ff(j);
         }
@@ -2825,8 +2825,8 @@ statement_13:
   for (integer i = 1; i <= nm1; ++i)
     {
       sum = 0.e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(nm1, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(nm1, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(nm1, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(nm1, i + mumas); ++j)
         {
           sum += fmas(i - j + mbdiag, j) * ff(j + m1);
         }
@@ -2853,8 +2853,8 @@ statement_4:
   for (integer i = 1; i <= n; ++i)
     {
       sum = 0.e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(n, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(n, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(n, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(n, i + mumas); ++j)
         {
           sum += fmas(i - j + mbdiag, j) * ff(j);
         }
@@ -2893,8 +2893,8 @@ statement_14:
   for (integer i = 1; i <= nm1; ++i)
     {
       sum = 0.e0;
-      // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(nm1, i + mumas))
-      for (integer j = std::max(1, i - mlmas); j <= std::min(nm1, i + mumas); ++j)
+      // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(nm1, i + mumas))
+      for (integer j = std::max(c__1, i - mlmas); j <= std::min(nm1, i + mumas); ++j)
         {
           sum += fmas(i - j + mbdiag, j) * ff(j + m1);
         }
@@ -3138,8 +3138,8 @@ statement_77:
           for (integer k = mm - 1; k >= 0; --k)
             {
               sum1 = (cont(j + k * m2) + sum1) / fac1;
-              //FEM_DO_SAFE(i, std::max(1, j - mujac), std::min(nm1, j + mljac))
-              for (integer i = std::max(1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
+              //FEM_DO_SAFE(i, std::max(c__1, j - mujac), std::min(nm1, j + mljac))
+              for (integer i = std::max(c__1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
                 {
                   im1 = i + m1;
                   cont(im1) += fjac(i + mujac + 1 - j, j + k * m2) * sum1;
@@ -3398,8 +3398,8 @@ statement_45:
         {
           jkm = j + k * m2;
           sum = (ak(jkm) + sum) / fac1;
-          // FEM_DO_SAFE(i, std::max(1, j - mujac), std::min(nm1, j + mljac))
-          for (integer i = std::max(1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
+          // FEM_DO_SAFE(i, std::max(c__1, j - mujac), std::min(nm1, j + mljac))
+          for (integer i = std::max(c__1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
             {
               im1 = i + m1;
               ak(im1) += fjac(i + mujac + 1 - j, jkm) * sum;
@@ -3424,8 +3424,8 @@ statement_3:
       for (integer i = 1; i <= n; ++i)
         {
           sum = 0.e0;
-          // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(n, i + mumas))
-          for (integer j = std::max(1, i - mlmas); j <= std::min(n, i + mumas); ++j)
+          // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(n, i + mumas))
+          for (integer j = std::max(c__1, i - mlmas); j <= std::min(n, i + mumas); ++j)
             {
               sum += fmas(i - j + mbdiag, j) * ynew(j);
             }
@@ -3450,8 +3450,8 @@ statement_13:
       for (integer i = 1; i <= nm1; ++i)
         {
           sum = 0.e0;
-          // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(nm1, i + mumas))
-          for (integer j = std::max(1, i - mlmas); j <= std::min(nm1, i + mumas); ++j)
+          // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(nm1, i + mumas))
+          for (integer j = std::max(c__1, i - mlmas); j <= std::min(nm1, i + mumas); ++j)
             {
               sum += fmas(i - j + mbdiag, j) * ynew(j + m1);
             }
@@ -3475,8 +3475,8 @@ statement_4:
       for (integer i = 1; i <= n; ++i)
         {
           sum = 0.e0;
-          // FEM_DO_SAFE(j, std::max(1, i - mlmas), std::min(n, i + mumas))
-          for (integer j = std::max(1, i - mlmas); j <= std::min(n, i + mumas); ++j)
+          // FEM_DO_SAFE(j, std::max(c__1, i - mlmas), std::min(n, i + mumas))
+          for (integer j = std::max(c__1, i - mlmas); j <= std::min(n, i + mumas); ++j)
             {
               sum += fmas(i - j + mbdiag, j) * ynew(j);
             }
@@ -3695,8 +3695,8 @@ statement_12:
         {
           jkm = j + k * m2;
           sum = (del(jkm) + sum) / fac1;
-          // FEM_DO_SAFE(i, std::max(1, j - mujac), std::min(nm1, j + mljac))
-          for (integer i = std::max(1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
+          // FEM_DO_SAFE(i, std::max(c__1, j - mujac), std::min(nm1, j + mljac))
+          for (integer i = std::max(c__1, j - mujac); i <= std::min(nm1, j + mljac); ++i)
             {
               im1 = i + m1;
               del(im1) += fjac(i + mujac + 1 - j, jkm) * sum;

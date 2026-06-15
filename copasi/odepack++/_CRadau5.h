@@ -25,10 +25,10 @@ public:
 
   struct conra5
   {
-    int nn = 0;
-    int nn2 = 0;
-    int nn3 = 0;
-    int nn4 = 0;
+    integer nn = 0;
+    integer nn2 = 0;
+    integer nn3 = 0;
+    integer nn4 = 0;
     double xsol = 0.0;
     double hsol = 0.0;
     double c2m1 = 0.0;
@@ -464,21 +464,21 @@ public:
                   const integer & itol,
                   evalJ & jac,
                   const integer & ijac,
-                  int & mljac,
-                  int & mujac,
+                  integer & mljac,
+                  integer & mujac,
                   evalM & mas,
                   const integer & imas,
                   const integer & mlmas,
-                  int & mumas,
+                  integer & mumas,
                   evalO & solout,
                   const integer & iout,
                   CVectorCore< double > & work,
                   const integer & lwork,
-                  CVectorCore< int > & iwork,
+                  CVectorCore< integer > & iwork,
                   const integer & liwork,
                   const CVectorCore< double > & rpar,
-                  const CVectorCore< int > & ipar,
-                  int & idid);
+                  const CVectorCore< integer > & ipar,
+                  integer & idid);
 
 private:
   //C********************************************************

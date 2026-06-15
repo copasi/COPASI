@@ -15,6 +15,7 @@
 		http://www.netlib.org/f2c/libf2c.zip
  */
 #include "decsol.h"
+#include <cmath>
 
 /* Subroutine */ int dec_(const integer * n,
                           const integer * ndim,
