@@ -14,6 +14,7 @@
 #ifndef decsol_h
 #define decsol_h
 
+#include <cmath>
 #include "copasi/core/CCore.h"
 
 #ifdef HAVE_F2C_H
@@ -29,6 +30,10 @@
 #ifdef max
 #  undef max
 #endif // max
+
+#ifdef abs
+#  undef abs
+#endif // abs
 
 // Matrix Triangularization by Gaussian Elimination
 int dec_(const integer * n,

@@ -13,6 +13,7 @@
 
 #pragma once
 
+#include <cmath>
 #include "copasi/core/CCore.h"
 
 #ifdef HAVE_F2C_H
@@ -28,6 +29,10 @@
 #ifdef max
 #  undef max
 #endif // max
+
+#ifdef abs
+#  undef abs
+#endif // abs
 
 #include "copasi/core/CVector.h"
 #include "copasi/core/CMatrix.h"
