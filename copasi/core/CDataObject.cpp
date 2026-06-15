@@ -150,45 +150,6 @@ CDataObject::~CDataObject()
 
 void CDataObject::print(std::ostream * ostream) const {(*ostream) << (*this);}
 
-CCommonName CDataObject::getCNProtected() const
-{
-  CCommonName CN;
-
-  // if the object has a parent and if the object is not a datamodel,
-  // we add the name of the parent to the common name
-  if (hasFlag(DataModel))
-    {
-      CN = (std::string) "CN=Root";
-    }
-  else if (mpObjectParent)
-    {
-      std::stringstream tmp;
-      tmp << mpObjectParent->getCNProtected();
-      size_t Index;
-
-      if (mpObjectParent->hasFlag(Vector)
-          && (Index = mpObjectParent->getIndex(this)) != C_INVALID_INDEX)
-        {
-          if (mpObjectParent->hasFlag(NameVector))
-            tmp << "[" << CCommonName::escape(mObjectName) << "]";
-          else if (mpObjectParent->hasFlag(Vector))
-            tmp << "[" << Index << "]";
-        }
-      else
-        tmp << "," << CCommonName::escape(mObjectType)
-            << "=" << CCommonName::escape(mObjectName);
-
-      CN = tmp.str();
-    }
-  else
-    {
-      CN = CCommonName::escape(mObjectType)
-           + "=" + CCommonName::escape(mObjectName);
-    }
-
-  return CN;
-}
-
 const CCommonNameComponent::shared_ptr & CDataObject::getCNComponent() const
 {
   return mpCNComponent;
@@ -551,14 +512,14 @@ CData CDataObject::toData() const
       {
         if (CN.empty())
           {
-            CN = (*it)->getCNProtected();
+            CN = (*it)->getCN();
             Index = (*it)->getIndex(this);
           }
         else
           {
             CData ReferenceData;
 
-            ReferenceData.addProperty(CData::OBJECT_REFERENCE_CN, (*it)->getCNProtected());
+            ReferenceData.addProperty(CData::OBJECT_REFERENCE_CN, (*it)->getCN());
             ReferenceData.addProperty(CData::OBJECT_REFERENCE_INDEX, (*it)->getIndex(this));
 
             References.push_back(ReferenceData);
@@ -638,7 +599,7 @@ void CDataObject::createUndoData(CUndoData & undoData, const CUndoData::Type & t
   // The UUID of an object must never be changed.
   // undoData.addProperty(CData::OBJECT_UUID, oldData.getProperty(CData::OBJECT_UUID), getUuid().str());
   undoData.addProperty(CData::OBJECT_TYPE, oldData.getProperty(CData::OBJECT_TYPE), mObjectType);
-  undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), (mpObjectParent != nullptr) ? mpObjectParent->getCNProtected() : CCommonName());
+  undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), (mpObjectParent != nullptr) ? mpObjectParent->getCN() : CCommonName());
   undoData.addProperty(CData::OBJECT_FLAG, oldData.getProperty(CData::OBJECT_FLAG), mObjectFlag.to_string());
   undoData.addProperty(CData::OBJECT_INDEX, oldData.getProperty(CData::OBJECT_INDEX), (mpObjectParent != nullptr) ? mpObjectParent->getIndex(this) : C_INVALID_INDEX);
 
@@ -651,7 +612,7 @@ void CDataObject::createUndoData(CUndoData & undoData, const CUndoData::Type & t
       {
         CData ReferenceData;
 
-        ReferenceData.addProperty(CData::OBJECT_REFERENCE_CN, (*it)->getCNProtected());
+        ReferenceData.addProperty(CData::OBJECT_REFERENCE_CN, (*it)->getCN());
         ReferenceData.addProperty(CData::OBJECT_REFERENCE_INDEX, (*it)->getIndex(this));
 
         References.push_back(ReferenceData);

@@ -248,13 +248,6 @@ public:
                     const std::string & mode,
                     const std::string & separator);
 
-protected:
-  /**
-   * Retrieve the CN of the object
-   * @return CCommonName
-   */
-  CCommonName getCNProtected() const override;
-
 private:
   void init();
 

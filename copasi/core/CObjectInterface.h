@@ -38,9 +38,6 @@ public:
   static CObjectInterface * GetObjectFromCN(const ContainerList & listOfContainer,
       const CCommonName & objName);
 
-  static CObjectInterface * __GetObjectFromCN(const ContainerList & listOfContainer,
-      const CCommonName & objName);
-
 protected:
   /**
    * Constructor
@@ -132,12 +129,6 @@ public:
   virtual void validityChanged(const CValidity & changedValidity) = 0;
 
 protected:
-  /**
-   * Retrieve the CN of the object
-   * @return CCommonName
-   */
-  virtual CCommonName getCNProtected() const = 0;
-
   virtual const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const = 0;
 
   mutable CValidity mValidity;

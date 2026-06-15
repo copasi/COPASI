@@ -281,12 +281,6 @@ public:
   void removeIssue(const CIssue & issue);
 
 protected:
-  /**
-   * Retrieve the CN of the object
-   * @return CCommonName
-   */
-  // API (for reporting and expressions)
-  CCommonName getCNProtected() const override;
   const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override;
 
 private:

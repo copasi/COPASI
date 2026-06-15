@@ -890,14 +890,6 @@ public:
 protected:
   const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override;
 
-  /**
-   * Retrieve the CN of the math container
-   * The math container provides values for the numerical values of model objects.
-   * For the CN mechanism to work properly it has to pretend to be the model.
-   * @return CCommonName
-   */
-  CCommonName getCNProtected() const override;
-
 private:
   /**
    * Allocate the memory for objects and values

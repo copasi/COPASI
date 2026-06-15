@@ -1366,12 +1366,6 @@ void CMathContainer::pushAllTransientValues()
 }
 
 // virtual
-CCommonName CMathContainer::getCNProtected() const
-{
-  return mpModel->getCN();
-}
-
-// virtual
 const CObjectInterface * CMathContainer::resolve(const CCommonNameComponent::shared_ptr & pCN) const
 {
   const CObjectInterface * pObject = mpModel->getChildObject(pCN);

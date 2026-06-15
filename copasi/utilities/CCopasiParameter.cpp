@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -528,21 +528,6 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
     }
 
   return false;
-}
-
-// virtual
-CCommonName CCopasiParameter::getCNProtected() const
-{
-  CDataContainer * pObjectParent = getObjectParent();
-  CCopasiParameterGroup * pGroup;
-
-  if (pObjectParent != NULL &&
-      (pGroup = dynamic_cast< CCopasiParameterGroup * >(pObjectParent)) != NULL)
-    {
-      return pObjectParent->getCN() + "," + CCommonName::escape(getObjectType()) + "=" + CCommonName::escape(pGroup->getUniqueParameterName(this));
-    }
-
-  return CDataObject::getCNProtected();
 }
 
 void * CCopasiParameter::getValuePointer() const

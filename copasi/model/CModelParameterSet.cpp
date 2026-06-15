@@ -246,12 +246,6 @@ CModelParameterSet::~CModelParameterSet()
   CRootContainer::getKeyFactory()->remove(mKey);
 }
 
-// virtual
-CCommonName CModelParameterSet::getCNProtected() const
-{
-  return CDataContainer::getCNProtected();
-}
-
 CModelParameterGroup * CModelParameterSet::toGroup()
 {
   return this;

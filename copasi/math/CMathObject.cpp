@@ -130,15 +130,6 @@ void CMathObject::relocate(CMathContainer * pContainer,
 }
 
 // virtual
-CCommonName CMathObject::getCNProtected() const
-{
-  if (mpDataObject == NULL)
-    return CCommonName("CMathObject: no data equivalence.");
-
-  return mpDataObject->getCN();
-}
-
-// virtual
 const CObjectInterface * CMathObject::resolve(const CCommonNameComponent::shared_ptr & pCN) const
 {
   if (mpDataObject != nullptr)
@@ -158,7 +149,6 @@ const CCommonNameComponent::shared_ptr & CMathObject::getCNComponent() const
 
   return mpDataObject->getCNComponent();
 }
-
 
 std::string CMathObject::getObjectDisplayName() const
 {
@@ -2465,7 +2455,7 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 
   if (o.mpCorrespondingProperty != NULL)
     {
-      os << o.mpCorrespondingProperty->getCNProtected() << "\n";
+      os << o.mpCorrespondingProperty->getCN() << "\n";
     }
   else
     {

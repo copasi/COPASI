@@ -289,11 +289,6 @@ public:
   void appendDelays(CMath::DelayData & Delays) const;
 
 protected:
-  /**
-   * Retrieve the CN of the object
-   * @return CCommonName
-   */
-  CCommonName getCNProtected() const override;
   const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override;
 
 private:
