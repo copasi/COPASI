@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -623,7 +623,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
         }
     }
 
-  mBifurcationIndicator_Fold = std::abs<C_FLOAT64>(tmpcpl);
+  mBifurcationIndicator_Fold = fabs(tmpcpl);
 
   tmpcpl = 1.0;
 
@@ -645,7 +645,7 @@ void CEigen::stabilityAnalysis(const C_FLOAT64 & resolution)
         tmpcpl *= std::complex<C_FLOAT64>(mR[i], mI[i]);
     }
 
-  mBifurcationIndicator_Fold_BDT = mBifurcationIndicator_Fold / (1 - 0.99 * exp(-std::abs<C_FLOAT64>(tmpcpl)));
+  mBifurcationIndicator_Fold_BDT = mBifurcationIndicator_Fold / (1 - 0.99 * exp(-fabs(tmpcpl)));
 
   C_FLOAT64 tmp_product = 1.0;
 

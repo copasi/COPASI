@@ -298,7 +298,7 @@ bool COptMethodLevenbergMarquardt::optimise()
               //shorten the step accordingly. So we check if the prior call to setItemValue truncated the parameter value.
               //However, we disregard this if the parameter was already at the boundary before the current step,
               //allowing movement along the boundary and back inside the allowed region.
-              pointInParameterDomain &= ((Target == mCurrent[i]) || std::abs(mCurrent[i]-mBest[i])< 1e-6*std::abs(Factor*mStep[i]) );
+              pointInParameterDomain &= ((Target == mCurrent[i]) || fabs(mCurrent[i]-mBest[i])< 1e-6*fabs(Factor*mStep[i]) );
 
               if (!pointInParameterDomain)
                 {
