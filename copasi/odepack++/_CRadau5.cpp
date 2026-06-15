@@ -705,12 +705,12 @@ void _CRadau5::radcor(const integer & n,
       ijob += 10;
     }
   posneg = _dc_decsol::sign(1.e0, xend - x);
-  hmaxn = std::min(fabs(hmax), fabs(xend - x));
-  if (fabs(h) <= 10.e0 * uround)
+  hmaxn = std::min(std::abs(hmax), std::abs(xend - x));
+  if (std::abs(h) <= 10.e0 * uround)
     {
       h = 1.0e-6;
     }
-  h = std::min(fabs(h), hmaxn);
+  h = std::min(std::abs(h), hmaxn);
   h = _dc_decsol::sign(h, posneg);
   hold = h;
   reject = false;
@@ -759,7 +759,7 @@ void _CRadau5::radcor(const integer & n,
       // FEM_DO_SAFE(i, 1, n)
       for (integer i = 1; i <= n; ++i)
         {
-          scal(i) = atol(1) + rtol(1) * fabs(y(i));
+          scal(i) = atol(1) + rtol(1) * std::abs(y(i));
         }
     }
   else
@@ -767,7 +767,7 @@ void _CRadau5::radcor(const integer & n,
       // FEM_DO_SAFE(i, 1, n)
       for (integer i = 1; i <= n; ++i)
         {
-          scal(i) = atol(i) + rtol(i) * fabs(y(i));
+          scal(i) = atol(i) + rtol(i) * std::abs(y(i));
         }
     }
   hhfac = h;
@@ -796,7 +796,7 @@ statement_10:
                   j = k + (mm - 1) * m2;
                 statement_12:
                   f1(j) = y(j);
-                  f2(j) = std::sqrt(uround * std::max(1.e-5, fabs(y(j))));
+                  f2(j) = std::sqrt(uround * std::max(1.e-5, std::abs(y(j))));
                   y(j) += f2(j);
                   j += md;
                   if (j <= mm * m2)
@@ -833,7 +833,7 @@ statement_10:
           for (integer i = 1; i <= n; ++i)
             {
               ysafe = y(i);
-              delt = std::sqrt(uround * std::max(1.e-5, fabs(ysafe)));
+              delt = std::sqrt(uround * std::max(1.e-5, std::abs(ysafe)));
               y(i) = ysafe + delt;
               fcn(n, x, y, cont, rpar, ipar);
               // FEM_DO_SAFE(j, m1 + 1, n)
@@ -884,7 +884,7 @@ statement_30:
     {
       goto statement_178;
     }
-  if (0.1e0 * fabs(h) <= fabs(x) * uround)
+  if (0.1e0 * std::abs(h) <= std::abs(x) * uround)
     {
       goto statement_177;
     }
@@ -948,7 +948,7 @@ statement_30:
   //C *** *** *** *** *** *** ***
   newt = 0;
   faccon = std::pow(std::max(faccon, uround), 0.8e0);
-  theta = fabs(thet);
+  theta = std::abs(thet);
 statement_40:
   if (newt >= nit)
     {
@@ -1104,7 +1104,7 @@ statement_40:
           // FEM_DO_SAFE(i, 1, n)
           for (integer i = 1; i <= n; ++i)
             {
-              scal(i) = atol(1) + rtol(1) * fabs(y(i));
+              scal(i) = atol(1) + rtol(1) * std::abs(y(i));
             }
         }
       else
@@ -1112,7 +1112,7 @@ statement_40:
           // FEM_DO_SAFE(i, 1, n)
           for (integer i = 1; i <= n; ++i)
             {
-              scal(i) = atol(i) + rtol(i) * fabs(y(i));
+              scal(i) = atol(i) + rtol(i) * std::abs(y(i));
             }
         }
       if (iout != 0)
@@ -1142,12 +1142,12 @@ statement_40:
         }
       fcn(n, x, y, y0, rpar, ipar);
       nfcn++;
-      hnew = posneg * std::min(fabs(hnew), hmaxn);
+      hnew = posneg * std::min(std::abs(hnew), hmaxn);
       hopt = hnew;
       hopt = std::min(h, hnew);
       if (reject)
         {
-          hnew = posneg * std::min(fabs(hnew), fabs(h));
+          hnew = posneg * std::min(std::abs(hnew), std::abs(h));
         }
       reject = false;
       if ((x + hnew / quot1 - xend) * posneg >= 0.e0)

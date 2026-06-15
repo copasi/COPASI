@@ -57,7 +57,7 @@ void decsol::dec(const integer & n,
       // FEM_DO_SAFE(i, kp1, n)
       for (integer i = kp1; i <= n; ++i)
         {
-          if (fabs(a(i, k)) > fabs(a(m, k)))
+          if (std::abs(a(i, k)) > std::abs(a(m, k)))
             {
               m = i;
             }
@@ -243,7 +243,7 @@ void decsol::dech(const integer & n,
       // FEM_DO_SAFE(i, kp1, na)
       for (integer i = kp1; i <= na; ++i)
         {
-          if (fabs(a(i, k)) > fabs(a(m, k)))
+          if (std::abs(a(i, k)) > std::abs(a(m, k)))
             {
               m = i;
             }
@@ -426,9 +426,9 @@ void decsol::decc(const integer & n,
       // FEM_DO_SAFE(i, kp1, n)
       for (integer i = kp1; i <= n; ++i)
         {
-          if (fabs(ar(i, k)) + fabs(ai(i, k)) > fabs(ar(m,
+          if (std::abs(ar(i, k)) + std::abs(ai(i, k)) > std::abs(ar(m,
                                                                     k))
-                                                          + fabs(ai(m, k)))
+                                                          + std::abs(ai(m, k)))
             {
               m = i;
             }
@@ -446,7 +446,7 @@ void decsol::decc(const integer & n,
       ar(k, k) = tr;
       ai(k, k) = ti;
     statement_20:
-      if (fabs(tr) + fabs(ti) == 0.e0)
+      if (std::abs(tr) + std::abs(ti) == 0.e0)
         {
           goto statement_80;
         }
@@ -470,7 +470,7 @@ void decsol::decc(const integer & n,
           ai(m, j) = ai(k, j);
           ar(k, j) = tr;
           ai(k, j) = ti;
-          if (fabs(tr) + fabs(ti) == 0.e0)
+          if (std::abs(tr) + std::abs(ti) == 0.e0)
             {
               goto statement_48;
             }
@@ -511,7 +511,7 @@ void decsol::decc(const integer & n,
     }
 statement_70:
   k = n;
-  if (fabs(ar(n, n)) + fabs(ai(n, n)) == 0.e0)
+  if (std::abs(ar(n, n)) + std::abs(ai(n, n)) == 0.e0)
     {
       goto statement_80;
     }
@@ -690,9 +690,9 @@ void decsol::dechc(const integer & n,
       // FEM_DO_SAFE(i, kp1, na)
       for (integer i = kp1; i <= na; ++i)
         {
-          if (fabs(ar(i, k)) + fabs(ai(i, k)) > fabs(ar(m,
+          if (std::abs(ar(i, k)) + std::abs(ai(i, k)) > std::abs(ar(m,
                                                                     k))
-                                                          + fabs(ai(m, k)))
+                                                          + std::abs(ai(m, k)))
             {
               m = i;
             }
@@ -710,7 +710,7 @@ void decsol::dechc(const integer & n,
       ar(k, k) = tr;
       ai(k, k) = ti;
     statement_20:
-      if (fabs(tr) + fabs(ti) == 0.e0)
+      if (std::abs(tr) + std::abs(ti) == 0.e0)
         {
           goto statement_80;
         }
@@ -734,7 +734,7 @@ void decsol::dechc(const integer & n,
           ai(m, j) = ai(k, j);
           ar(k, j) = tr;
           ai(k, j) = ti;
-          if (fabs(tr) + fabs(ti) == 0.e0)
+          if (std::abs(tr) + std::abs(ti) == 0.e0)
             {
               goto statement_48;
             }
@@ -775,7 +775,7 @@ void decsol::dechc(const integer & n,
     }
 statement_70:
   k = n;
-  if (fabs(ar(n, n)) + fabs(ai(n, n)) == 0.e0)
+  if (std::abs(ar(n, n)) + std::abs(ai(n, n)) == 0.e0)
     {
       goto statement_80;
     }
@@ -968,7 +968,7 @@ statement_7:
       // FEM_DO_SAFE(i, md1, mdl)
       for (integer i = md1; i <= mdl; ++i)
         {
-          if (fabs(a(i, k)) > fabs(a(m, k)))
+          if (std::abs(a(i, k)) > std::abs(a(m, k)))
             {
               m = i;
             }
@@ -1229,9 +1229,9 @@ statement_7:
       // FEM_DO_SAFE(i, md1, mdl)
       for (integer i = md1; i <= mdl; ++i)
         {
-          if (fabs(ar(i, k)) + fabs(ai(i, k)) > fabs(ar(m,
+          if (std::abs(ar(i, k)) + std::abs(ai(i, k)) > std::abs(ar(m,
                                                                     k))
-                                                          + fabs(ai(m, k)))
+                                                          + std::abs(ai(m, k)))
             {
               m = i;
             }
@@ -1249,7 +1249,7 @@ statement_7:
       ar(md, k) = tr;
       ai(md, k) = ti;
     statement_20:
-      if (fabs(tr) + fabs(ti) == 0.e0)
+      if (std::abs(tr) + std::abs(ti) == 0.e0)
         {
           goto statement_80;
         }
@@ -1286,7 +1286,7 @@ statement_7:
           ar(mm, j) = tr;
           ai(mm, j) = ti;
         statement_35:
-          if (fabs(tr) + fabs(ti) == 0.e0)
+          if (std::abs(tr) + std::abs(ti) == 0.e0)
             {
               goto statement_48;
             }
@@ -1332,7 +1332,7 @@ statement_7:
     }
 statement_70:
   k = n;
-  if (fabs(ar(md, n)) + fabs(ai(md, n)) == 0.e0)
+  if (std::abs(ar(md, n)) + std::abs(ai(md, n)) == 0.e0)
     {
       goto statement_80;
     }
@@ -1538,7 +1538,7 @@ void decsol::elmhes(const integer & nm,
       // FEM_DO_SAFE(j, m, igh)
       for (integer j = m; j <= igh; ++j)
         {
-          if (fabs(a(j, mm1)) <= fabs(x))
+          if (std::abs(a(j, mm1)) <= std::abs(x))
             {
               goto statement_100;
             }
