@@ -159,7 +159,7 @@ std::ostream &operator<<(std::ostream &os, const CFitItem & o)
 
   imax = o.mpGrpAffectedCrossValidations->size();
 
-  os << "    Affected Validation Experiments:" << "\n" << "      ";
+  os << "\n    Affected Validation Experiments:" << "\n" << "      ";
 
   if (imax == 0) os << "all";
 
