@@ -1378,7 +1378,15 @@ void CFitProblem::printResult(std::ostream * ostream) const
     }
 
   os << "Objective Function Value:\t" << mSolutionValue << "\n";
+  os << "Root Mean Square:\t" << mRMS << "\n";
   os << "Standard Deviation:\t" << mSD << "\n";
+
+  if (mpCrossValidationSet->size() > 0)
+  {
+      os << "Validation Objective Value:\t" << mCrossValidationSolutionValue << "\n";
+      os << "Validation Root Mean Square:\t" << mCrossValidationRMS << "\n";
+      os << "Validation Standard Deviation:\t" << mCrossValidationSD << "\n";
+  }
 
   CCopasiTimeVariable CPUTime = const_cast<CFitProblem *>(this)->mCPUTime.getElapsedTime();
   CCopasiTimeVariable WallTime = const_cast<CFitProblem *>(this)->mWallTime.getElapsedTime();
@@ -1446,12 +1454,25 @@ void CFitProblem::printResult(std::ostream * ostream) const
     }
 
   os << "\n";
+  os << "Experiments:";
+  os << "\n";
 
   size_t k, kmax = mpExperimentSet->getExperimentCount();
 
   for (k = 0; k < kmax; k++)
     {
       mpExperimentSet->getExperiment(k)->printResult(ostream);
+      os << "\n";
+    }
+
+  os << "\n";
+  os << "Validation Data:";
+  os << "\n";
+  k, kmax = mpCrossValidationSet->getExperimentCount();
+
+  for (k = 0; k < kmax; k++)
+    {
+      mpCrossValidationSet->getExperiment(k)->printResult(ostream);
       os << "\n";
     }
 
