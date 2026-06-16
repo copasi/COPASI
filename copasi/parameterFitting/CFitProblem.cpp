@@ -2644,8 +2644,8 @@ bool CFitProblem::calculateCrossValidation()
     Continue &= mProcessReport.progressItem(mhCounter);
 
   C_FLOAT64 CurrentObjective =
-    (1.0 - mpCrossValidationSet->getWeight()) * mSolutionValue
-    + mpCrossValidationSet->getWeight() * CalculateValue * mpCrossValidationSet->getDataPointCount() / mpExperimentSet->getDataPointCount();
+    (1.0 - mpCrossValidationSet->getWeight()) * mSolutionValue / mpExperimentSet->getDataPointCount()
+    + mpCrossValidationSet->getWeight() * CalculateValue / mpCrossValidationSet->getDataPointCount();
 
   if (CurrentObjective > mCrossValidationObjective)
     mThresholdCounter++;
