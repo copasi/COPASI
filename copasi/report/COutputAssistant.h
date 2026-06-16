@@ -37,6 +37,8 @@ class CReportDefinition;
 class CDataObject;
 class CDataModel;
 class CDataArray;
+class CFitProblem;
+class CExperimentSet;
 
 class COutputOption
 {
@@ -45,6 +47,38 @@ public:
   std::string name;
   bool enabled;
   std::string description;
+};
+
+struct SFittingPlotOptions
+{
+  bool needMeasured;
+  bool needFitted;
+  bool needErrors;
+  bool isValdation;
+  std::string measuredLabel;
+  std::string fittedLabel;
+  std::string errorLabel;
+
+  bool hasAny() const
+  {
+    return needMeasured || needFitted || needErrors;
+  }
+
+  void setExperimentLabels()
+  {
+    measuredLabel = "Measured Value";
+    fittedLabel = "Fitted Value";
+    errorLabel = "Weighted Error";
+    isValdation = false;
+  }
+
+  void setValidationLabels()
+  {
+    measuredLabel = "Validation Value";
+    fittedLabel = "Validation Fitted";
+    errorLabel = "Validation Error";
+    isValdation = true;
+  }
 };
 
 class CDefaultOutputDescription
@@ -140,6 +174,15 @@ private:           //************************************
   static
   bool initialize();
 
+  /**
+   * Check if an option is enabled.
+   * 
+   * @param pOptions pointer to the list of options (can be NULL)
+   * @param name the name of the option to check
+   * @param defaultValue the default value to return if the option is not found (default: true)
+   * 
+   * @return true if the option is enabled, false otherwise
+   */
   static bool isOptionEnabled(const std::vector< COutputOption > * pOptions,
                               const std::string& name,
                               bool defaultValue = true);
@@ -162,6 +205,69 @@ private:           //************************************
                                  CDataModel* pDataModel);
 
   static void add2DDataArrayToVector(std::vector<const CDataObject *> &pVector, const CDataArray* pArray);
+
+  /**
+   * @return a parameter estimation problem for the given data model, or NULL if no such problem exists
+   */
+  static CFitProblem* getParameterEstimationProblem(CDataModel* pDataModel);
+
+  /**
+   * @return the fitting plot options for the given list of options, 
+   * or default options if the list is NULL or does not contain any fitting plot options
+   */
+  static SFittingPlotOptions getExperimentFittingPlotOptions(const std::vector<COutputOption>* pOptions);
+
+  /**
+   * @return the validation fitting plot options for the given list of options,
+   * or default options if the list is NULL or does not contain any validation fitting plot options
+   */
+  static SFittingPlotOptions getValidationFittingPlotOptions(const std::vector<COutputOption>* pOptions);
+
+  /**
+   * @return a parameter estimation plot for the given data model and options, or NULL if no such plot can be created
+   */
+  static CPlotSpecification* createParameterEstimationPlot(C_INT32 id,
+                                                           CDataModel* pDataModel,
+                                                           const std::vector<COutputOption>* pOptions);
+
+  /**
+   * @return a fitting plot for the given data model, experiment set, and options, 
+   * or NULL if no such plot can be created
+   */
+  static CPlotSpecification* createCombinedFittingPlot(C_INT32 id,
+                                                       CDataModel* pDataModel,
+                                                       const CExperimentSet& experimentSet,
+                                                       const SFittingPlotOptions& options,
+                                                       CPlotSpecification* pExistingPlot = NULL);
+
+  /**
+   * @return a fitting plot for each experiment in the given experiment set, with the given options, 
+   * or NULL if no such plot can be created
+   */
+  static CPlotSpecification* createPerExperimentFittingPlot(C_INT32 id,
+                                                            CDataModel* pDataModel,
+                                                            const CExperimentSet& experimentSet,
+                                                            const SFittingPlotOptions& options);
+
+  /**
+   * @return a fitting plot for each dependent value in the given experiment set, with the given options,
+   * or NULL if no such plot can be created
+   */
+  static CPlotSpecification* createPerDependentValueFittingPlot(C_INT32 id,
+                                                                CDataModel* pDataModel,
+                                                                const CExperimentSet& experimentSet,
+                                                                const SFittingPlotOptions& options,
+                                                                std::map<const CDataObject*, CPlotSpecification*>* pPlotSpecMap = NULL);
+
+  /**
+   * @return a progress plot for the given data model and data objects, or NULL if no such plot can be created
+   */
+  static CPlotSpecification* createProgressPlot(C_INT32 id,
+                                                CDataModel* pDataModel,
+                                                const CDataObject* pXData,
+                                                const CDataObject* pYData,
+                                                const std::string& plotTitle,
+                                                const std::string& itemTitle);
 
   static const std::string emptyString;
   static const CDefaultOutputDescription emptyItem;
