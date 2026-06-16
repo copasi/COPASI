@@ -326,18 +326,6 @@ bool COutputAssistant::initialize()
   };
   mMap.insert(tmp);
 
-  //fitting validation plots
-  tmp.first = 920;
-  tmp.second.name = "Parameter Estimation Validation Result";
-  tmp.second.description = "Curves of all dependent values of all validation data are created in one plot. For each dependent value the validation data, the fitted curve, and the weighted error are shown.";
-  tmp.second.isPlot = true;
-  tmp.second.mTaskType = CTaskEnum::Task::parameterFitting;
-  tmp.second.options = {{"Measured Values", true, "Displays Measured Values"},
-    {"Fitted Values", true, "Displays Fitted Values"},
-    {"Weighted Errors", false, "Displays Weighted Errors"}
-  };
-  mMap.insert(tmp);
-
   // need to reset the options
   tmp.second.options = {};
 
@@ -1300,19 +1288,6 @@ COutputAssistant::createParameterEstimationPlot(C_INT32 id,
         return pPlotSpecification;
       }
 
-      case 920:
-      {
-        CFitProblem * pFitProblem = getParameterEstimationProblem(pDataModel);
-
-        if (pFitProblem == NULL)
-          return NULL;
-
-        SFittingPlotOptions options = getExperimentFittingPlotOptions(pOptions);
-        options.setValidationLabels();
-
-        return createCombinedFittingPlot(id, pDataModel, pFitProblem->getCrossValidationSet(), options);
-      }
-
       case 911:
       case 912:
       {
@@ -1419,7 +1394,6 @@ COutputAssistant::createDefaultOutput(
       case 912:
       case 913:
       case 914:
-      case 920:
         return createParameterEstimationPlot(id, pDataModel, pOptions);
     }
 
