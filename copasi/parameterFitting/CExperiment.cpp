@@ -282,7 +282,7 @@ void CExperiment::initializeParameter()
   mpLastRow = assertParameter("Last Row", CCopasiParameter::Type::UINT, (unsigned C_INT32) InvalidIndex);
   mpTaskType = (CTaskEnum::Task *) assertParameter("Experiment Type", CCopasiParameter::Type::UINT, (unsigned C_INT32) CTaskEnum::Task::UnsetTask);
   mpNormalizeWeightsPerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::Type::BOOL, true);
-  mpTimeSeriesStartInSteadyState = assertParameter("Time Series Start in Steady State", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2);
+  mpTimeSeriesStartInSteadyState = assertParameter("Time Series Start in Steady State", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
   mpSeparator = assertParameter("Separator", CCopasiParameter::Type::STRING, std::string("\t"));
   mpWeightMethod = (WeightMethod *) assertParameter("Weight Method", CCopasiParameter::Type::UINT, (unsigned C_INT32) MEAN_SQUARE);
   mpRowOriented = assertParameter("Data is Row Oriented", CCopasiParameter::Type::BOOL, (bool) true);

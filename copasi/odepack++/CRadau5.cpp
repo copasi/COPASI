@@ -23,19 +23,19 @@
 using namespace dc_decsol;
 
 //#define pow_dd(__x, __y) pow(*__x, *__y)
-static double d_sign(double *a, double *b)
+double d_sign(const double *a, const double *b)
 {
   double x;
   x = (*a >= 0 ? *a : - *a);
   return (*b >= 0 ? x : -x);
 }
 
-static double pow_dd(double *ap, double *bp)
+double pow_dd(const double *ap, const double *bp)
 {
   return (pow(*ap, *bp));
 }
 
-static double pow_di(double *ap, C_INT *bp)
+double pow_di(const double *ap, const C_INT *bp)
 {
   double pow, x;
   C_INT n;
@@ -70,13 +70,13 @@ static double pow_di(double *ap, C_INT *bp)
 
 /* Table of constant values */
 
-static double c_b54 = .5;
-static double c_b91 = 81.;
-static double c_b92 = .33333333333333331;
-static double c_b93 = 9.;
-static double c_b103 = 1.;
-static double c_b113 = .8;
-static double c_b115 = .25;
+static const double c_b54 = .5;
+static const double c_b91 = 81.;
+static const double c_b92 = .33333333333333331;
+static const double c_b93 = 9.;
+static const double c_b103 = 1.;
+static const double c_b113 = .8;
+static const double c_b115 = .25;
 
 CRadau5::CRadau5()
   : Cxerrwd(true)
@@ -2012,9 +2012,9 @@ int CRadau5::estrad_(C_INT * n,
   double d__1;
 
   /* Local variables */
-  static C_INT i__, j, k, mm, mp, im1;
-  static double sum, hee1, hee2, hee3, sum1;
-  static double zsafe;
+  C_INT i__, j, k, mm, mp, im1;
+  double sum, hee1, hee2, hee3, sum1;
+  double zsafe;
 
   /* Parameter adjustments */
   --scal;

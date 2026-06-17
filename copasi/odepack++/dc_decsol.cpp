@@ -20,7 +20,7 @@
 
 /* Common Block Declarations */
 
-static integer c__1 = 1;
+static const integer c__1 = 1;
 
 #define linal_1 cmn.linal
 
@@ -53,8 +53,8 @@ int dc_decsol::decomr_(const common & cmn,
           e1_offset, i__1, i__2, i__3, i__4, i__5, i__6;
 
   /* Local variables */
-  static integer i__, j, k, j1, ib, mm, jm1;
-  static doublereal sum;
+  integer i__, j, k, j1, ib, mm, jm1;
+  doublereal sum;
 
   /* Parameter adjustments */
   --iphes;
@@ -472,13 +472,13 @@ int dc_decsol::decomc_(const common & cmn,
   doublereal d__1, d__2;
 
   /* Local variables */
-  static integer i__, j, k, j1;
-  static doublereal bb;
-  static integer ib, mm, jm1;
-  static doublereal bet, alp;
-  static doublereal ffma, abno;
-  static integer imle;
-  static doublereal sumi, sumr, sums;
+  integer i__, j, k, j1;
+  doublereal bb;
+  integer ib, mm, jm1;
+  doublereal bet, alp;
+  doublereal ffma, abno;
+  integer imle;
+  doublereal sumi, sumr, sums;
 
   /* Parameter adjustments */
   fjac_dim1 = *ldjac;
