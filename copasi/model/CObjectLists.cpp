@@ -506,7 +506,8 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
         if (!pParent)
           break;
 
-        const CDataArray * pEV = dynamic_cast<const CDataArray*>(pParent->getChildObject(CCommonName("Vector=TaskList[Steady-State],Array=Eigenvalues of reduced system Jacobian")));
+        CCommonName cn(pParent->getCN() + "Vector=TaskList[Steady-State],Array=Eigenvalues of reduced system Jacobian");
+        const CDataArray * pEV = dynamic_cast<const CDataArray * >(cn.resolve(pParent));
 
         if (pEV->dimensionality() != 2) //2d matrix
           break;
@@ -529,7 +530,8 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
         if (!pParent)
           break;
 
-        const CDataArray * pEV = dynamic_cast<const CDataArray*>(pParent->getChildObject(CCommonName("Vector=TaskList[Steady-State],Array=Eigenvalues of reduced system Jacobian")));
+        CCommonName cn(pParent->getCN() + "Vector=TaskList[Steady-State],Array=Eigenvalues of reduced system Jacobian");
+        const CDataArray * pEV = dynamic_cast<const CDataArray * >(cn.resolve(pParent));
 
         if (pEV->dimensionality() != 2) //2d matrix
           break;
