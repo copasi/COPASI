@@ -66,7 +66,11 @@ public:
    * Retrieves the Message associated with the exception
    * @return const char* message
    */
-  const char* what() const throw() override;
+   #ifndef SWIG
+   const char* what() const throw() override;
+   #else
+   virtual const char* what() const;
+   #endif
 
 private:
   const CCopasiMessage mMessage;
