@@ -122,10 +122,13 @@ bool CFitTask::process(const bool & useInitialValues)
   bool success = pMethod->optimise();
 
   if (mProcessReport)
-    mProcessReport.setIgnoreStop();
+    mProcessReport.setIgnoreStop(true);
 
   pProblem->calculateStatistics();
   pProblem->createParameterSets();
+  
+  if (mProcessReport)
+    mProcessReport.setIgnoreStop(false);
 
   output(COutputInterface::AFTER);
 
