@@ -460,6 +460,9 @@ void CSBMLExporter::createTimeUnit(const CDataModel& dataModel)
 
   // create new one
   uDef = createUnitDefinitionFor(CUnit(dataModel.getModel()->getTimeUnit()));
+  if (!uDef)
+    return;
+
   uDef->setId("time");
   uDef->setName("time");
 
@@ -482,6 +485,9 @@ void CSBMLExporter::createVolumeUnit(const CDataModel& dataModel)
 
   // create new one
   uDef = createUnitDefinitionFor(CUnit(dataModel.getModel()->getVolumeUnit()));
+  if (!uDef)
+    return;
+
   uDef->setId("volume");
   uDef->setName("volume");
 
@@ -504,6 +510,9 @@ void CSBMLExporter::createSubstanceUnit(const CDataModel& dataModel)
 
   // create new one
   uDef = createUnitDefinitionFor(CUnit(dataModel.getModel()->getQuantityUnit()));
+  if (!uDef)
+    return;
+
   uDef->setId("substance");
   uDef->setName("substance");
 
@@ -531,6 +540,9 @@ void CSBMLExporter::createLengthUnit(const CDataModel& dataModel)
 
   // create new one
   uDef = createUnitDefinitionFor(CUnit(dataModel.getModel()->getLengthUnit()));
+  if (!uDef)
+    return;
+
   uDef->setId("length");
   uDef->setName("length");
 
@@ -553,6 +565,9 @@ void CSBMLExporter::createAreaUnit(const CDataModel& dataModel)
 
   // create new one
   uDef = createUnitDefinitionFor(CUnit(dataModel.getModel()->getAreaUnit()));
+  if (!uDef)
+    return;
+
   uDef->setId("area");
   uDef->setName("area");
 
