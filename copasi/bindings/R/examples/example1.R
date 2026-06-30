@@ -22,9 +22,9 @@ stopifnot(!is.null(model))
 # we want seconds as the time unit
 # microliter as the volume units
 # and nanomole as the substance units
-invisible(model$setTimeUnit('s'))
-invisible(model$setVolumeUnit('microl'))
-invisible(model$setQuantityUnit('nMol'))
+invisible(model$setTimeUnitFromString('s'))
+invisible(model$setVolumeUnitFromString('microl'))
+invisible(model$setQuantityUnitFromString('nmol'))
 
 # we have to keep a set of all the initial values that are changed during
 # the model building process
