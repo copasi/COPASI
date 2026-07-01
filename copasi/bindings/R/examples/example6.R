@@ -229,7 +229,7 @@ stopifnot(objectMap$getRole(0) == "time")
 stopifnot(!is.null(model))
 timeReference <- model$getChildObject(CCommonName("Reference=Time"))
 stopifnot(!is.null(timeReference))
-invisible(objectMap$setObjectCN(0,timeReference$getCN()$getString()))
+invisible(objectMap$setObjectCN(0,CRegisteredCommonName(timeReference$getCN()$getString())))
 
 # now we tell COPASI which column contain the concentrations of
 # metabolites and belong to dependent variables
@@ -238,7 +238,7 @@ metab <- metabVector[[1]]
 stopifnot(!is.null(metab))
 particleReference <- metab$getChildObject(CCommonName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
-invisible(objectMap$setObjectCN(1,particleReference$getCN()$getString()))
+invisible(objectMap$setObjectCN(1,CRegisteredCommonName(particleReference$getCN()$getString())))
 
 invisible(objectMap$setRole(2,"dependent"))
 
@@ -246,7 +246,7 @@ metab <- metabVector[[2]]
 stopifnot(!is.null(metab))
 particleReference <- metab$getChildObject(CCommonName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
-invisible(objectMap$setObjectCN(2,particleReference$getCN()$getString()))
+invisible(objectMap$setObjectCN(2,CRegisteredCommonName(particleReference$getCN()$getString())))
 
 invisible(objectMap$setRole(3,"dependent"))
 
@@ -254,7 +254,7 @@ metab <- metabVector[[3]]
 stopifnot(!is.null(metab))
 particleReference <- metab$getChildObject(CCommonName("Reference=Concentration"))
 stopifnot(!is.null(particleReference))
-invisible(objectMap$setObjectCN(3,particleReference$getCN()$getString()))
+invisible(objectMap$setObjectCN(3,CRegisteredCommonName(particleReference$getCN()$getString())))
 
 invisible(experimentSet$addExperiment(experiment))
 stopifnot(experimentSet$getExperimentCount() == 1)
@@ -274,12 +274,12 @@ stopifnot(!is.null(parameter))
 # define a CFitItem
 parameterReference <- parameter$getChildObject(CCommonName("Reference=Value"))
 stopifnot(!is.null(parameterReference))
-fitItem1 <- fitProblem$addFitItem(parameterReference$getCN())
+fitItem1 <- fitProblem$addFitItem(CRegisteredCommonName(parameterReference$getCN()))
 stopifnot(!is.null(fitItem1))
 #invisible(fitItem1$setObjectCN(parameterReference$getCN()))
 invisible(fitItem1$setStartValue(4.0))
-invisible(fitItem1$setLowerBound(CCommonName("0.00001")))
-invisible(fitItem1$setUpperBound(CCommonName("10")))
+invisible(fitItem1$setLowerBound(CRegisteredCommonName("0.00001")))
+invisible(fitItem1$setUpperBound(CRegisteredCommonName("10")))
 # add the fit item to the correct parameter group
 optimizationItemGroup <- fitProblem$getParameter("OptimizationItemList")
 stopifnot(!is.null(optimizationItemGroup))
@@ -293,11 +293,15 @@ stopifnot(!is.null(parameter))
 # define a CFitItem
 parameterReference <- parameter$getChildObject(CCommonName("Reference=Value"))
 stopifnot(!is.null(parameterReference))
-fitItem2 <- fitProblem$addFitItem(parameterReference$getCN())
+fitItem2 <- fitProblem$addFitItem(CRegisteredCommonName(parameterReference$getCN()))
 stopifnot(!is.null(fitItem2))
 invisible(fitItem2$setStartValue(4.0))
-invisible(fitItem2$setLowerBound(CCommonName("0.00001")))
-invisible(fitItem2$setUpperBound(CCommonName("10")))
+invisible(fitItem2$setLowerBound(CRegisteredCommonName("0.00001")))
+invisible(fitItem2$setUpperBound(CRegisteredCommonName("10")))
+
+# save the file temporarily
+saveFileName <- "example6.cps"
+invisible(dataModel$saveModel(saveFileName))
 
 result <- TRUE
 # running the task for this example will probably take some time
@@ -319,8 +323,8 @@ optItem2 <- fitProblem$getOptItem(1)
 solutionVariables <- fitProblem$getSolutionVariables();
 stopifnot(solutionVariables$size() == 2)
 
-cat("value for " , CCommonName_getString(optItem1$getObject()$getCN()) , ": " , solutionVariables$get(0), "\n", sep = "")
-cat("value for " , CCommonName_getString(optItem2$getObject()$getCN()) , ": " , solutionVariables$get(1), "\n", sep = "")
+cat("value for " , optItem1$getObjectCN()$getString() , ": " , solutionVariables$get(0), "\n", sep = "")
+cat("value for " , optItem2$getObjectCN()$getString() , ": " , solutionVariables$get(1), "\n", sep = "")
 # depending on the noise, the fit can be quite bad, so we are a litle
 # relaxed here (we should be within 3% of the original values)
 stopifnot((abs(solutionVariables$get(0) - 0.03) / 0.03) < 3e-2)
