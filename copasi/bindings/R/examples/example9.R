@@ -114,13 +114,14 @@ if (!is.null(aj)) {
     }
     cat("\n")
     
+
     i <- 0
     while (i < annotations$size()) {
         cat(format(annotations[i], width = 7))
         
         j <- 0
         while (j < annotations$size()) {
-            cat(format(arr$get(i,j), width = 7, digits = 3))
+            cat(format(CArrayInterface_get(arr, i, j), width = 7, digits = 3))            
             j <- j + 1
         }
         cat("\n")
