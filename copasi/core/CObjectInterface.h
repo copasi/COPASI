@@ -49,6 +49,10 @@ public:
 
   virtual const CObjectInterface * getChildObject(const CCommonNameComponent::shared_ptr & pCN) const final;
 
+  #ifdef SWIG
+  virtual const CObjectInterface * getChildObject(const CCommonName & cn) const final;
+  #endif
+
   /**
    * Retrieve a descendant object by its CN.
    * @param const CCommonName & cn

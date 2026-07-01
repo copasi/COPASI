@@ -654,6 +654,27 @@ GetDowncastSwigTypeForCDataObject(CDataObject* object)
           pInfo = SWIGTYPE_p_CDataString;
         }
     }
+  else if (dynamic_cast<CDataObjectReference<double>*>(object))
+    {
+      pInfo = SWIGTYPE_p_p_CDataObjectReferenceT_double_t;
+    }
+
+
+  return pInfo;
+}
+
+// CObjectInterface
+struct swig_type_info*
+GetDowncastSwigTypeForCObjectInterface(CObjectInterface* obj)
+{
+  if (obj == NULL) return SWIGTYPE_p_CObjectInterface;
+
+  struct swig_type_info* pInfo = SWIGTYPE_p_CObjectInterface;
+
+  if (dynamic_cast<CDataObject*>(obj))
+    {
+      return GetDowncastSwigTypeForCDataObject(static_cast<CDataObject*>(obj));
+    }
 
   return pInfo;
 }

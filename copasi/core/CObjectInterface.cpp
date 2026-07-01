@@ -52,6 +52,13 @@ const CObjectInterface * CObjectInterface::getChildObject(const CCommonNameCompo
   return resolve(pCN);
 }
 
+#ifdef SWIG
+const CObjectInterface * CObjectInterface::getChildObject(const CCommonName & cn) const
+{
+  return getObject(cn);
+}
+#endif
+
 // virtual final
 const CObjectInterface * CObjectInterface::getObject(const CCommonName & cn) const
 {
