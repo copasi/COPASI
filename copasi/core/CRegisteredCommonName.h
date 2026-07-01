@@ -42,10 +42,17 @@ public:
   CRegisteredCommonName(const CRegisteredCommonName & src);
 
   /**
+   * Constructor from base class
+   * @param const std::string & name
+   */
+  CRegisteredCommonName(const std::string & name);
+
+  /**
    * Destructor
    */
   virtual ~CRegisteredCommonName();
 
+  CRegisteredCommonName & operator=(const std::string & rhs);
   CRegisteredCommonName & operator=(const CCommonName & rhs);
   CRegisteredCommonName & operator=(const CRegisteredCommonName & rhs);
 

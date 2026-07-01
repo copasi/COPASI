@@ -66,6 +66,14 @@ CRegisteredCommonName::CRegisteredCommonName(const CCommonName & name)
     UnresolvedCNs.insert(this);
 }
 
+CRegisteredCommonName::CRegisteredCommonName(const std::string & name)
+  : CCommonName(name)
+{
+  if (!empty())
+#pragma omp critical(cregisteredcommonname_access)
+    UnresolvedCNs.insert(this);
+}
+
 CRegisteredCommonName::CRegisteredCommonName(const CRegisteredCommonName & src)
   : CCommonName(src)
 {
@@ -80,6 +88,11 @@ CRegisteredCommonName::~CRegisteredCommonName()
 {
 #pragma omp critical (cregisteredcommonname_access)
   UnresolvedCNs.erase(this);
+}
+
+CRegisteredCommonName& CRegisteredCommonName::operator=(const std::string& rhs)
+{
+  return CRegisteredCommonName::operator=(CCommonName(rhs));
 }
 
 CRegisteredCommonName & CRegisteredCommonName::operator=(const CCommonName & rhs)
