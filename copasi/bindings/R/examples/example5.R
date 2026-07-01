@@ -98,8 +98,8 @@ optItem <- optProblem$addOptItem(fixedModelValue$getChildObject(CCommonName("Ref
 # we want to change the fixed model value from -100 to +100 with a start
 # value of 50
 invisible(optItem$setStartValue(50.0))
-invisible(optItem$setLowerBound(CCommonName("-100")))
-invisible(optItem$setUpperBound(CCommonName("100")))
+invisible(optItem$setLowerBound(CRegisteredCommonName("-100")))
+invisible(optItem$setUpperBound(CRegisteredCommonName("100")))
 
 # now we set some parameters on the method
 # these parameters are specific to the method type we set above
