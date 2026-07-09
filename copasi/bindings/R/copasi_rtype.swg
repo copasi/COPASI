@@ -10,21 +10,6 @@
    stopifnot(typeof($input) != "externalptr" || !(capture.output($input) %in% c("<pointer: 0x0>", "<pointer: (nil)>")))
  %}
 
-%typemap(in) SWIGTYPE * {
-    stopifnot(!is.null($input))
-
-    if (inherits($input, "ExternalReference")) {
-        $input <- $input@ref
-    } else if (isS4($input) && "ref" %in% slotNames($input)) {
-        $input <- $input@ref
-    }
-
-    stopifnot(typeof($input) == "externalptr")
-    stopifnot(!(capture.output($input) %in% c("<pointer: 0x0>", "<pointer: (nil)>")))
-
-    $1 = (SWIGTYPE *) R_ExternalPtrAddr($input);
-}
-
  %typemap(scoerceout) SWIGTYPE 
  %{
    if (capture.output($result) %in% c("<pointer: 0x0>", "<pointer: (nil)>")) return()
