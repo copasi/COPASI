@@ -49,6 +49,7 @@ public:
   std::string description;
 };
 
+#ifndef SWIG
 struct SFittingPlotOptions
 {
   bool needMeasured;
@@ -80,6 +81,7 @@ struct SFittingPlotOptions
     isValdation = true;
   }
 };
+#endif
 
 class CDefaultOutputDescription
 {
@@ -211,6 +213,7 @@ private:           //************************************
    */
   static CFitProblem* getParameterEstimationProblem(CDataModel* pDataModel);
 
+#ifndef SWIG
   /**
    * @return the fitting plot options for the given list of options, 
    * or default options if the list is NULL or does not contain any fitting plot options
@@ -268,6 +271,8 @@ private:           //************************************
                                                 const CDataObject* pYData,
                                                 const std::string& plotTitle,
                                                 const std::string& itemTitle);
+
+#endif // SWIG
 
   static const std::string emptyString;
   static const CDefaultOutputDescription emptyItem;
