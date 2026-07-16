@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -136,7 +136,9 @@ void * CArrayElementReference::getValuePointer() const
 {
   CDataArray * pArray = dynamic_cast< CDataArray * >(getObjectParent());
 
-  if (pArray != NULL)
+  if (pArray != NULL
+      && getObjectName().find("[not found]") == std::string::npos
+      && getObjectName().find("[.]") == std::string::npos)
     {
       return &pArray->operator [](CDataArray::name_index_type(mIndex.begin(), mIndex.end()));
     }

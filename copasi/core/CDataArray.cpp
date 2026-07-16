@@ -255,27 +255,37 @@ const CObjectInterface * CDataArray::resolve(const CCommonNameComponent::shared_
               while ((tmp = CCommonNameComponent::getElementName(pCN->getObjectName(), ii++, false)) != "")
                 DisplayNames.push_back(tmp);
 
-              const CDataObject * pNew = addElementReference(displayNamesToCN(DisplayNames));
-              const CDataObject * pExisting = nullptr;
-              range = mObjects.equal_range(pNew->getObjectName());
+              name_index_type CNIndex = displayNamesToCN(DisplayNames);
 
-              while (range.first != range.second
-                     && pExisting == nullptr)
+              bool resolvable = true;
+
+              for (auto & cn : CNIndex)
+                resolvable &= (cn != "not found");
+
+              if (resolvable)
                 {
-                  if (*range.first != pNew
-                      && (*range.first)->getObjectType() == "ElementReference")
-                    pExisting = *range.first;
+                  const CDataObject * pNew = addElementReference(CNIndex);
+                  const CDataObject * pExisting = nullptr;
+                  range = mObjects.equal_range(pNew->getObjectName());
 
-                  ++range.first;
-                }
+                  while (range.first != range.second
+                        && pExisting == nullptr)
+                    {
+                      if (*range.first != pNew
+                          && (*range.first)->getObjectType() == "ElementReference")
+                        pExisting = *range.first;
 
-              if (pExisting != nullptr)
-                {
-                  delete pNew;
-                  pObject = pExisting;
+                      ++range.first;
+                    }
+
+                  if (pExisting != nullptr)
+                    {
+                      delete pNew;
+                      pObject = pExisting;
+                    }
+                  else
+                    pObject = pNew;
                 }
-              else
-                pObject = pNew;
             }
           }
       else

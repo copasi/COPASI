@@ -495,6 +495,15 @@ bool COptProblem::initializeSubtaskBeforeOutput()
 {
   mpSubTaskSrc = getSubTask();
 
+  try
+    {
+      if (mpSubTaskSrc != NULL)
+        mpSubTaskSrc->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+    }
+
+  catch (...)
+    {}
+
   pdelete(mpSubTask);
   mpSubTask = CTaskFactory::copy(mpSubTaskSrc, this);
 
@@ -502,6 +511,8 @@ bool COptProblem::initializeSubtaskBeforeOutput()
     {
       if (mpSubTask != NULL)
         {
+          mpSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+
           mpSubTask->setMathContainer(mpContainer);
           mpSubTask->setCallBack(mProcessReport);
 
@@ -551,7 +562,7 @@ bool COptProblem::initialize()
 
   if (mpSubTask != nullptr)
     ContainerList.push_back(mpSubTask);
-  else if (mpSubTaskSrc != NULL)
+  if (mpSubTaskSrc != NULL)
     ContainerList.push_back(mpSubTaskSrc);
 
   size_t Size = mpOptItems->size();
@@ -767,7 +778,6 @@ C_FLOAT64 COptProblem::getEstimatedSubtaskError() const
     return getSubTask()->getEstimatedMethodError();
   return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }
-
 
 bool COptProblem::restore(const bool & updateModel)
 {

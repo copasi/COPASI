@@ -31,27 +31,20 @@ std::set< const CRegisteredCommonName * > CRegisteredCommonName::UnresolvedCNs;
 // static
 void CRegisteredCommonName::ResolveAll(const CDataObject *  pContainer)
 {
-#pragma omp critical(cregisteredcommonname_access)
-  {
-    for (auto it = UnresolvedCNs.begin(); it != UnresolvedCNs.end();)
-      {
-        const CRegisteredCommonName * pCN = *it;
+  std::set< const CRegisteredCommonName * > UnresolvedCNsCopy;
 
-        if (pCN->CCommonName::resolve(pContainer) != nullptr)
-          it = UnresolvedCNs.erase(it);
-        else if (!pCN->isValid())
-          it = UnresolvedCNs.erase(it);
-        else
-          ++it;
-      }
+#pragma omp critical(cregisteredcommonname_access)
+  UnresolvedCNsCopy = UnresolvedCNs;
+
+  for (const CRegisteredCommonName * pCN : UnresolvedCNsCopy)
+    pCN->resolve(pContainer);
 
 #ifdef DEBUG_CN
-    for (auto it = UnresolvedCNs.begin(); it != UnresolvedCNs.end(); ++it)
-      std::cout << *it << ": " << **it << std::endl;
+  for (auto it = UnresolvedCNs.begin(); it != UnresolvedCNs.end(); ++it)
+    std::cout << *it << ": " << **it << std::endl;
 
-    std::cout << UnresolvedCNs.size() << std::endl;
+  std::cout << UnresolvedCNs.size() << std::endl;
 #endif // DEBUG_CN
-  }
 }
 
 CRegisteredCommonName::CRegisteredCommonName()
@@ -119,7 +112,7 @@ CRegisteredCommonName & CRegisteredCommonName::operator=(const CCommonName & rhs
 
 CRegisteredCommonName & CRegisteredCommonName::operator=(const CRegisteredCommonName & rhs)
 {
-    if (this != &rhs)
+  if (this != &rhs)
     {
       if (!empty()
           && (mpComponent == nullptr
@@ -143,7 +136,8 @@ const CObjectInterface * CRegisteredCommonName::resolve(const CDataObject *  pCo
 {
   const CObjectInterface * pObject = CCommonName::resolve(pContainer);
 
-  if (pObject != nullptr)
+  if (pObject != nullptr
+      || !isValid())
 #pragma omp critical (cregisteredcommonname_access)
     UnresolvedCNs.erase(this);
 
