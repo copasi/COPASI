@@ -301,6 +301,9 @@ const CObjectInterface * CCommonName::resolve(const CDataObject *  pContainer) c
       || !mpComponent->hasAncestor(pContainer))
     {
       const std::string & ContainerPartialCN = pContainer->getCNComponent()->getPartialCN();
+      const std::string & ContainerType = pContainer->getCNComponent()->getObjectType();
+      const std::string & ContainerName = pContainer->getCNComponent()->getObjectName();
+
       std::vector< CCommonNameComponent::shared_ptr > Components = mpComponent->getComponentList();
       CCommonNameComponent::shared_ptr resolved = nullptr;
 
@@ -309,10 +312,17 @@ const CObjectInterface * CCommonName::resolve(const CDataObject *  pContainer) c
           // Find the container component matching this component
           if (!resolved)
             {
-              if (ContainerPartialCN == (*it)->getPartialCN())
-                // This may lead to a structural change of the CN, e.g., an absolute CN may become relative
-                resolved = pContainer->getCNComponent();
+              if (ContainerType == (*it)->getObjectType()
+                  && ContainerName == (*it)->getObjectName())
+                {
+#ifdef DEBUG_CN
+                  if (ContainerPartialCN != (*it)->getPartialCN())
+                    std::cout << "Warning: CN resolution may be ambiguous: " << ContainerPartialCN << " != " << (*it)->getPartialCN() << std::endl;
+#endif // DEBUG_CN
 
+                  // This may lead to a structural change of the CN, e.g., an absolute CN may become relative
+                  resolved = pContainer->getCNComponent();
+                }
               continue;
             }
 
@@ -355,6 +365,12 @@ const CObjectInterface * CCommonName::resolve(const CDataObject *  pContainer) c
               mpComponent = resolved;
               mpCN = mpComponent->getCN();
             }
+#ifdef DEBUG_CN
+          else
+            {
+              std::cout << "Warning: CN resolution may be ambiguous: " << *mpCN << " != " << *resolved->getCN() << std::endl;
+            }
+#endif // DEBUG_CN
         }
     }
 
@@ -374,11 +390,13 @@ CCommonNameComponent::shared_ptr CCommonName::findAncestorCandidate(const CDataO
   if (pContainer == nullptr)
     return nullptr;
 
-  const std::string & ContainerPartialCN = pContainer->getCNComponent()->getPartialCN();
+  const std::string & ContainerType = pContainer->getCNComponent()->getObjectType();
+  const std::string & ContainerName = pContainer->getCNComponent()->getObjectName();
   std::vector< CCommonNameComponent::shared_ptr > Components = mpComponent->getComponentList();
 
   for (auto it = Components.rbegin(); it != Components.rend(); ++it)
-    if (ContainerPartialCN == (*it)->getPartialCN())
+    if (ContainerType == (*it)->getObjectType()
+        && ContainerName == (*it)->getObjectName())
       return pContainer->getCNComponent();
 
   return nullptr;

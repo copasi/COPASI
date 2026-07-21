@@ -281,10 +281,20 @@ bool CCommonNameComponent::mayHaveAncestor(const CDataObject *  pAncestor) const
       || mType == "Separator")
     return true;
 
-  cn_ptr pCN = getCN();
-  std::string AncestorCN = pAncestor->getCNComponent()->getPartialCN();
+  const std::string & Type = pAncestor->getObjectType();
+  const std::string & Name = pAncestor->getObjectName();
+  std::shared_ptr< const CCommonNameComponent > p = shared_from_this();
 
-  return pCN->find(AncestorCN) != std::string::npos;
+  while (p)
+    {
+      if (p->getObjectType() == Type
+          && p->getObjectName() == Name)
+        return true;
+
+      p = p->mpParent;
+    }
+
+  return false;
 }
 
 bool CCommonNameComponent::isValid() const
@@ -301,7 +311,7 @@ bool CCommonNameComponent::isValid() const
 size_t CCommonNameComponent::size() const
 {
   size_t Size = 0;
-  shared_ptr pComponent = const_cast< CCommonNameComponent * >(this)->shared_from_this();
+  std::shared_ptr< const CCommonNameComponent > pComponent = shared_from_this();
 
   while (pComponent)
     {

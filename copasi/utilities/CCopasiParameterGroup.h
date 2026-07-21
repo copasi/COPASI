@@ -52,13 +52,9 @@ public:
   typedef ObjectMap::const_type_iterator< CCopasiParameter > const_name_iterator;
 
   // Operations
-protected:
-  /**
-   * Default constructor
-   */
-  CCopasiParameterGroup();
+  CCopasiParameterGroup() = delete;
+  CCopasiParameterGroup(const CCopasiParameterGroup & src) = delete;
 
-public:
   /**
    * Copy constructor
    * @param "const CCopasiParameterGroup &" src
@@ -66,8 +62,8 @@ public:
    * @param const std::string & objectType (default: "ParameterGroup")
    */
   CCopasiParameterGroup(const CCopasiParameterGroup & src,
-                        const CDataContainer * pParent = NULL,
-                        const std::string & objectType = "ParameterGroup");
+                        const CDataContainer * pParent,
+                        const std::string & objectType);
 
   /**
    * Specific constructor
@@ -203,7 +199,7 @@ public:
         tmp->mpValue = const_cast<CType *>(& value);
 
         // Create the final parameter
-        pParameter = new CCopasiParameterGroup(*tmp, NO_PARENT);
+        pParameter = new CCopasiParameterGroup(*tmp, NO_PARENT, "ParameterGroup");
 
         tmp->mpValue = pGroup;
         delete tmp;
@@ -616,6 +612,64 @@ private:
  * @param CCopasiParameter * pParm
  * @return ElevateTo * pTo
  */
+template <typename ElevateFrom>
+CCopasiParameterGroup * elevate(CCopasiParameter * pParm)
+{
+  if (!pParm)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 2);
+      return NULL;
+    }
+
+  ElevateFrom * pFrom = dynamic_cast<ElevateFrom *>(pParm);
+
+  if (!pFrom)
+    {
+      CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 3);
+      return NULL;
+    }
+
+  // Even if the pParm is already of the desired type we still
+  // recreate it to assure that we have proper construction.
+  CCopasiParameterGroup * pTo = NULL;
+
+  CCopasiParameterGroup * pGrp =
+    dynamic_cast<CCopasiParameterGroup *>(pParm->getObjectParent());
+
+  if (pGrp)
+    {
+      std::vector< CCopasiParameter * >::iterator it = pGrp->beginIndex();
+      std::vector< CCopasiParameter * >::iterator end = pGrp->endIndex();
+
+      while (it != end && *it != pParm) ++it;
+
+      if (it == end)
+        {
+          CCopasiMessage(CCopasiMessage::ERROR, MCParameter + 5);
+          return NULL;
+        }
+
+      CCopasiParameter::UserInterfaceFlag Flag = pFrom->getUserInterfaceFlag();
+      pTo = new CCopasiParameterGroup(*pFrom, NO_PARENT, "ParameterGroup");
+
+      // We do not want the parameter to be removed from the group which would happen during deletion.
+      // To prevent this we remove it manually from the parent class.
+      pGrp->CCopasiParameter::remove(pParm);
+      delete pParm;
+
+      *it = NULL;
+
+      pGrp->CCopasiParameter::add(pTo, true);
+      pTo->CCopasiParameter::setUserInterfaceFlag(Flag);
+
+      *it = pTo;
+    }
+  else
+    pTo = new CCopasiParameterGroup(*pFrom, NO_PARENT, "ParameterGroup");
+
+  return pTo;
+}
+
 template <typename ElevateTo, typename ElevateFrom>
 ElevateTo * elevate(CCopasiParameter * pParm)
 {

@@ -38,21 +38,21 @@
 
 CRecentFiles::CRecentFiles(const std::string & name,
                            const CDataContainer * pParent)
-  : CCopasiParameterGroup(name, pParent)
+  : CCopasiParameterGroup(name, pParent, "Recent Files")
   , mpMaxFiles(NULL)
   , mpRecentFiles(NULL)
 {initializeParameter();}
 
 CRecentFiles::CRecentFiles(const CRecentFiles & src,
                            const CDataContainer * pParent)
-  : CCopasiParameterGroup(src, pParent)
+  : CCopasiParameterGroup(src, pParent, src.getObjectType())
   , mpMaxFiles(NULL)
   , mpRecentFiles(NULL)
 {initializeParameter();}
 
 CRecentFiles::CRecentFiles(const CCopasiParameterGroup & group,
                            const CDataContainer * pParent)
-  : CCopasiParameterGroup(group, pParent)
+  : CCopasiParameterGroup(group, pParent, "Recent Files")
   , mpMaxFiles(NULL)
   , mpRecentFiles(NULL)
 {initializeParameter();}
@@ -114,7 +114,7 @@ void CRecentFiles::addFile(const std::string & file)
 
 CConfigurationFile::CConfigurationFile(const std::string & name,
                                        const CDataContainer * pParent)
-  : CCopasiParameterGroup(name, pParent)
+  : CCopasiParameterGroup(name, pParent, "Configuration File")
   , mpRecentFiles(nullptr)
   , mpRecentSBMLFiles(nullptr)
   , mpRecentSEDMLFiles(nullptr)
@@ -148,7 +148,7 @@ CConfigurationFile::CConfigurationFile(const std::string & name,
 
 CConfigurationFile::CConfigurationFile(const CConfigurationFile & src,
                                        const CDataContainer * pParent)
-  : CCopasiParameterGroup(src, pParent)
+  : CCopasiParameterGroup(src, pParent, src.getObjectType())
   , mpRecentFiles(NULL)
   , mpRecentSBMLFiles(NULL)
   , mpRecentSEDMLFiles(NULL)
@@ -624,7 +624,7 @@ CCheckForUpdates & CConfigurationFile::getCheckForUpdates()
 }
 
 CCheckForUpdates::CCheckForUpdates(const std::string & name, const CDataContainer * pParent)
-  : CCopasiParameterGroup(name, pParent)
+  : CCopasiParameterGroup(name, pParent, "Check for Updates")
   , mpEnabled(NULL)
   , mpSkipVersion(NULL)
   , mpLastChecked(NULL)
@@ -636,7 +636,7 @@ CCheckForUpdates::CCheckForUpdates(const std::string & name, const CDataContaine
 
 CCheckForUpdates::CCheckForUpdates(const CCheckForUpdates & src,
                                    const CDataContainer * pParent)
-  : CCopasiParameterGroup(src, pParent)
+  : CCopasiParameterGroup(src, pParent, src.getObjectType())
   , mpEnabled(NULL)
   , mpSkipVersion(NULL)
   , mpLastChecked(NULL)
@@ -648,7 +648,7 @@ CCheckForUpdates::CCheckForUpdates(const CCheckForUpdates & src,
 
 CCheckForUpdates::CCheckForUpdates(const CCopasiParameterGroup & src,
                                    const CDataContainer * pParent)
-  : CCopasiParameterGroup(src, pParent)
+  : CCopasiParameterGroup(src, pParent, "Check for Updates")
   , mpEnabled(NULL)
   , mpSkipVersion(NULL)
   , mpLastChecked(NULL)

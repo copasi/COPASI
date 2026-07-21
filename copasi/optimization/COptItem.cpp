@@ -46,7 +46,7 @@ C_FLOAT64 NaN = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
 COptItem::COptItem(const CDataContainer * pParent,
                    const std::string & name)
-  : CCopasiParameterGroup(name, pParent)
+  : CCopasiParameterGroup(name, pParent, "Optimization Item")
   , mpParmObjectCN(NULL)
   , mpParmLowerBound(NULL)
   , mpParmUpperBound(NULL)
@@ -69,7 +69,7 @@ COptItem::COptItem(const CDataContainer * pParent,
 
 COptItem::COptItem(const COptItem & src,
                    const CDataContainer * pParent)
-  : CCopasiParameterGroup(src, (pParent != NULL) ? pParent : static_cast< const CDataContainer * >(src.getObjectDataModel()))
+  : CCopasiParameterGroup(src, (pParent != NULL) ? pParent : static_cast< const CDataContainer * >(src.getObjectDataModel()), src.getObjectType())
   , mpParmObjectCN(NULL)
   , mpParmLowerBound(NULL)
   , mpParmUpperBound(NULL)
@@ -92,7 +92,7 @@ COptItem::COptItem(const COptItem & src,
 
 COptItem::COptItem(const CCopasiParameterGroup & group,
                    const CDataContainer * pParent)
-  : CCopasiParameterGroup(group, (pParent != NULL) ? pParent : static_cast< const CDataContainer * >(group.getObjectDataModel()))
+  : CCopasiParameterGroup(group, (pParent != NULL) ? pParent : static_cast< const CDataContainer * >(group.getObjectDataModel()), "Optimization Item")
   , mpParmObjectCN(NULL)
   , mpParmLowerBound(NULL)
   , mpParmUpperBound(NULL)

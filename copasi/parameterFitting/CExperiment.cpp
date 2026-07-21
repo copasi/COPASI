@@ -86,7 +86,7 @@ const char* CExperiment::WeightMethodType[] =
 
 CExperiment::CExperiment(const CDataContainer * pParent,
                          const std::string & name):
-  CCopasiParameterGroup(name, pParent),
+  CCopasiParameterGroup(name, pParent, "Experiment"),
   mpFileName(NULL),
   mpFirstRow(NULL),
   mpLastRow(NULL),
@@ -138,7 +138,7 @@ CExperiment::CExperiment(const CDataContainer * pParent,
 
 CExperiment::CExperiment(const CExperiment & src,
                          const CDataContainer * pParent):
-  CCopasiParameterGroup(src, static_cast< const CDataContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel())),
+  CCopasiParameterGroup(src, static_cast< const CDataContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel()), src.getObjectType()),
   mpFileName(NULL),
   mpFirstRow(NULL),
   mpLastRow(NULL),

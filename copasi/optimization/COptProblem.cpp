@@ -283,7 +283,7 @@ bool COptProblem::elevateChildren()
     }
 
   mpGrpItems =
-    elevate< CCopasiParameterGroup, CCopasiParameterGroup >(mpGrpItems);
+    elevate< CCopasiParameterGroup >(mpGrpItems);
 
   if (!mpGrpItems) return false;
 
@@ -299,7 +299,7 @@ bool COptProblem::elevateChildren()
   mpOptItems = &mpGrpItems->CCopasiParameter::getValue< std::vector< COptItem * > >();
 
   mpGrpConstraints =
-    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpConstraints);
+    elevate< CCopasiParameterGroup >(mpGrpConstraints);
 
   if (!mpGrpConstraints) return false;
 

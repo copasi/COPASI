@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -29,7 +29,7 @@ CScanItemData::CScanItemData(const CScanProblem::Type & type) :
 
 CScanItemData::CScanItemData(const CScanItemData & src) :
   mType(src.mType),
-  mpData(src.mpData != NULL ? new CCopasiParameterGroup(*src.mpData, NO_PARENT) : NULL)
+  mpData(src.mpData != NULL ? new CCopasiParameterGroup(*src.mpData, NO_PARENT, src.mpData->getObjectType()) : NULL)
 {}
 
 // virtual

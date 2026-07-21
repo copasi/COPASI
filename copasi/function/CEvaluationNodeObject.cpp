@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -289,7 +289,10 @@ bool CEvaluationNodeObject::mapObject(const CDataContainer * pSource, const CDat
     return false;
 
   mpValue = NULL;
-  mpObject = mRegisteredObjectCN.resolve(pTarget);
+
+  // The existing CN is resolved in the context of the source container. We need to resolve it in the context of the target container.
+  CCommonName CN = mData.substr(1, mData.length() - 2);
+  mpObject = CN.resolve(pTarget);
 
   const CDataObject * pDataObject = CObjectInterface::DataObject(mpObject);
 

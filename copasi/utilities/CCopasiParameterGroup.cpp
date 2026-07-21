@@ -42,11 +42,6 @@
 #include "copasi/undo/CUndoData.h"
 #include "copasi/model/CReaction.h"
 
-CCopasiParameterGroup::CCopasiParameterGroup():
-  CCopasiParameter("NoName", CCopasiParameter::Type::GROUP),
-  mpElementTemplates(NULL)
-{}
-
 CCopasiParameterGroup::CCopasiParameterGroup(const CCopasiParameterGroup & src,
     const CDataContainer * pParent,
     const std::string & objectType):
@@ -547,7 +542,7 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
   for (; itToBeAdded != endToBeAdded; ++itToBeAdded)
     {
       if (itToBeAdded->second->getType() == CCopasiParameter::Type::GROUP)
-        pParameter = new CCopasiParameterGroup(* static_cast< CCopasiParameterGroup * >(itToBeAdded->second), NO_PARENT);
+        pParameter = new CCopasiParameterGroup(* static_cast< CCopasiParameterGroup * >(itToBeAdded->second), NO_PARENT, itToBeAdded->second->getObjectType());
       else
         pParameter = new CCopasiParameter(*itToBeAdded->second, NO_PARENT);
 
@@ -562,7 +557,7 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
   pdelete(mpElementTemplates);
 
   if (rhs.mpElementTemplates != NULL)
-    mpElementTemplates = new CCopasiParameterGroup(*rhs.mpElementTemplates, NO_PARENT);
+    mpElementTemplates = new CCopasiParameterGroup(*rhs.mpElementTemplates, NO_PARENT, rhs.mpElementTemplates->getObjectType());
 
   return *this;
 }
@@ -612,7 +607,7 @@ bool CCopasiParameterGroup::addParameter(const CCopasiParameter & parameter)
   if (parameter.getType() == CCopasiParameter::Type::GROUP)
     {
       CCopasiParameterGroup * pGroup =
-        new CCopasiParameterGroup(*dynamic_cast<const CCopasiParameterGroup *>(&parameter), NO_PARENT);
+        new CCopasiParameterGroup(*dynamic_cast<const CCopasiParameterGroup *>(&parameter), NO_PARENT, parameter.getObjectType());
       addParameter(pGroup);
     }
   else

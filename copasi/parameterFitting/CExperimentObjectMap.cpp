@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,21 +37,21 @@
 
 CExperimentObjectMap::CExperimentObjectMap(const std::string & name,
     const CDataContainer * pParent):
-  CCopasiParameterGroup(name, pParent),
+  CCopasiParameterGroup(name, pParent, "Experiment Object Map"),
   mObjects(0),
   mLastColumn(0)
 {initializeParameter();}
 
 CExperimentObjectMap::CExperimentObjectMap(const CExperimentObjectMap & src,
     const CDataContainer * pParent):
-  CCopasiParameterGroup(src, pParent),
+  CCopasiParameterGroup(src, pParent, src.getObjectType()),
   mObjects(src.mObjects),
   mLastColumn(src.mLastColumn)
 {initializeParameter();}
 
 CExperimentObjectMap::CExperimentObjectMap(const CCopasiParameterGroup & group,
     const CDataContainer * pParent):
-  CCopasiParameterGroup(group, pParent),
+  CCopasiParameterGroup(group, pParent, "Experiment Object Map"),
   mObjects(0),
   mLastColumn(0)
 {initializeParameter();}
@@ -325,7 +325,7 @@ void CExperimentObjectMap::fixBuild55()
 
 CExperimentObjectMap::CDataColumn::CDataColumn(const std::string & name,
     const CDataContainer * pParent) :
-  CCopasiParameterGroup(name, pParent),
+  CCopasiParameterGroup(name, pParent, "Experiment Object Map Column"),
   mpRole(NULL),
   mpObjectCN(NULL),
   mpScale(NULL)
@@ -335,7 +335,7 @@ CExperimentObjectMap::CDataColumn::CDataColumn(const std::string & name,
 
 CExperimentObjectMap::CDataColumn::CDataColumn(const CDataColumn & src,
     const CDataContainer * pParent) :
-  CCopasiParameterGroup(src, pParent),
+  CCopasiParameterGroup(src, pParent, src.getObjectType()),
   mpRole(NULL),
   mpObjectCN(NULL),
   mpScale(NULL)
@@ -345,7 +345,7 @@ CExperimentObjectMap::CDataColumn::CDataColumn(const CDataColumn & src,
 
 CExperimentObjectMap::CDataColumn::CDataColumn(const CCopasiParameterGroup & group,
     const CDataContainer * pParent) :
-  CCopasiParameterGroup(group, pParent),
+  CCopasiParameterGroup(group, pParent, "Experiment Object Map Column"),
   mpRole(NULL),
   mpObjectCN(NULL),
   mpScale(NULL)

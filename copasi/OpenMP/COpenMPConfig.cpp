@@ -10,14 +10,14 @@
 #include "copasi/commandline/CConfigurationFile.h"
 
 // static
-const CEnumAnnotation< std::string, COpenMPConfig::ScheduleStrategy > 
+const CEnumAnnotation< std::string, COpenMPConfig::ScheduleStrategy >
   COpenMPConfig::ScheduleStrategyNames({"static",
                                         "dynamic",
                                         "guided",
                                         "automatic"});
 
 // static
-const CEnumAnnotation< omp_sched_t, COpenMPConfig::ScheduleStrategy > 
+const CEnumAnnotation< omp_sched_t, COpenMPConfig::ScheduleStrategy >
   COpenMPConfig::ScheduleStrategyOpenMP({omp_sched_static,
                                          omp_sched_dynamic,
                                          omp_sched_guided,
@@ -29,7 +29,7 @@ const CEnumAnnotation< std::string, COpenMPConfig::Monotonic >
                                  "monotonic"});
 
 // static
-const CEnumAnnotation< omp_sched_t, COpenMPConfig::Monotonic > 
+const CEnumAnnotation< omp_sched_t, COpenMPConfig::Monotonic >
   COpenMPConfig::MonotonicOpenMP({(omp_sched_t) 0x0, // nonmonotonic
   omp_sched_monotonic});
 
@@ -48,7 +48,7 @@ void COpenMPConfig::RegisterApplyCallback(const std::shared_ptr< std::function< 
   ApplyCallbacks.push_back(callback);
 }
 
-// static 
+// static
 void COpenMPConfig::InitFromEnvironment()
 {
   if (AppliedNumThreads > -1)
@@ -114,7 +114,7 @@ void COpenMPConfig::InitFromEnvironment()
 
 COpenMPConfig::COpenMPConfig(const std::string & name,
                              const CDataContainer * pParent)
-  : CCopasiParameterGroup(name, pParent)
+  : CCopasiParameterGroup(name, pParent, "OpenMP Configuration")
   , mpIsEnabled(nullptr)
   , mpMaxNumThreads(nullptr)
   , mpScheduleStrategy(nullptr)
@@ -124,7 +124,7 @@ COpenMPConfig::COpenMPConfig(const std::string & name,
 
 COpenMPConfig::COpenMPConfig(const COpenMPConfig & src,
                              const CDataContainer * pParent)
-  : CCopasiParameterGroup(src, pParent)
+  : CCopasiParameterGroup(src, pParent, src.getObjectType())
   , mpIsEnabled(nullptr)
   , mpMaxNumThreads(nullptr)
   , mpScheduleStrategy(nullptr)
@@ -134,7 +134,7 @@ COpenMPConfig::COpenMPConfig(const COpenMPConfig & src,
 
 COpenMPConfig::COpenMPConfig(const CCopasiParameterGroup & group,
                              const CDataContainer * pParent)
-  : CCopasiParameterGroup(group, pParent)
+  : CCopasiParameterGroup(group, pParent, "OpenMP Configuration")
   , mpIsEnabled(nullptr)
   , mpMaxNumThreads(nullptr)
   , mpScheduleStrategy(nullptr)
@@ -188,7 +188,7 @@ void COpenMPConfig::apply() const
 
   if (MaxNumThreads == 0)
     MaxNumThreads = EnvironmentOpenMP.MaxNumThreads;
-    
+
   std::string ScheduleStrategy = EnvironmentOpenMP.scheduleStrategy == ScheduleStrategy::__SIZE ? *mpScheduleStrategy : ScheduleStrategyNames[EnvironmentOpenMP.scheduleStrategy];
   std::string Monotonic = EnvironmentOpenMP.monotonicity == Monotonic::__SIZE ? *mpMonotonic : MonotonicNames[EnvironmentOpenMP.monotonicity];
   C_UINT32 ChunkSize = EnvironmentOpenMP.chunkSize == (C_UINT32) -1 ? *mpChunkSize : EnvironmentOpenMP.chunkSize;
