@@ -422,11 +422,18 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   // We suppress all errors and warnings
   size_t MessageSize = CCopasiMessage::size();
 
-  if (!setQuantityUnit(tmp, CCore::Framework::ParticleNumbers) &&
-      !setQuantityUnit(tmp.substr(0, 1) + "mol", CCore::Framework::ParticleNumbers))
-    {
+  try
+  {
+      if (!setQuantityUnit(tmp, CCore::Framework::ParticleNumbers) && !setQuantityUnit(tmp.substr(0, 1) + "mol", CCore::Framework::ParticleNumbers))
+        {
+          setQuantityUnit("mmol", CCore::Framework::ParticleNumbers);
+        }
+  }
+  catch (CCopasiException&)
+  {
       setQuantityUnit("mmol", CCore::Framework::ParticleNumbers);
-    }
+  }
+ 
 
   // Remove error messages created by the task initialization as this may fail
   // due to incomplete task specification at this time.
