@@ -895,7 +895,19 @@ if(MSVC OR USING_INTEL)
 endif(MSVC OR USING_INTEL)
 
 if (EMSCRIPTEN)
-add_link_options(-sINITIAL_MEMORY=65536000 -sALLOW_MEMORY_GROWTH=1)
+if (COPASI_EMSCRIPTEN_COMPILE_OPTIONS)
+add_compile_options(${COPASI_EMSCRIPTEN_COMPILE_OPTIONS})
+else()
+# definitely need to compile with exceptions
+add_compile_options(-fexceptions)
+endif()
+
+if (COPASI_EMSCRIPTEN_LINK_OPTIONS)
+add_link_options(${COPASI_EMSCRIPTEN_LINK_OPTIONS})
+else()
+# start with more memory, and exception handling
+add_link_options(-sINITIAL_MEMORY=65536000 -sALLOW_MEMORY_GROWTH=1 -fexceptions)
+endif()
 endif(EMSCRIPTEN)
 
 set(APPS "" CACHE INTERNAL "")
