@@ -427,7 +427,6 @@ CopasiUI3Window::CopasiUI3Window():
   setAcceptDrops(true);
   mpListView->mpTreeView->setFocus();
 
-  QTimer::singleShot(10, this, SLOT(slotAutoCheckForUpdates()));
   connect(this, SIGNAL(signalDeferredLoadFile(QString)), this, SLOT(slotDeferredLoadFile(QString)));
 
   mpExternaltools->init(mpTools, mpaShowExternalToolDialog);
@@ -1110,6 +1109,9 @@ void CopasiUI3Window::openInitialDocument(const QString &file)
 #ifdef COPASI_SBW_INTEGRATION
   sbwConnect();
 #endif // COPASI_SBW_INTEGRATION
+
+  // Defer auto-update until after startup open (and any late FileOpen / download) settles.
+  QTimer::singleShot(500, this, SLOT(slotAutoCheckForUpdates()));
 }
 
 void CopasiUI3Window::slotDeferredLoadFile(QString str)
@@ -2922,6 +2924,12 @@ void CopasiUI3Window::setApplicationFont()
 
 void CopasiUI3Window::slotAutoCheckForUpdates()
 {
+  // Wait until startup URL/file open (or any other download/load) has finished.
+  if (mpDataModelGUI->isBusy() || !mActionStack.empty())
+    {
+      QTimer::singleShot(500, this, SLOT(slotAutoCheckForUpdates()));
+      return;
+    }
 
   if (CRootContainer::getConfiguration()->getCheckForUpdates().needToConfirmCheckForUpdate())
     {
@@ -4027,6 +4035,13 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
       return;
     }
 
+  // Do not start a second download while update-check (or another download) is active.
+  if (mpDataModelGUI->isBusy())
+    {
+      mActionStack.push_front(std::make_pair(DownloadUrl, TO_UTF8(url)));
+      return;
+    }
+
   // create temp filename
   std::string TmpFileName;
   COptions::getValue("Tmp", TmpFileName);
@@ -4149,6 +4164,12 @@ void CopasiUI3Window::performNextAction()
     {
       case DownloadUrl:
       {
+        if (mpDataModelGUI->isBusy())
+          {
+            mActionStack.push_front(std::make_pair(DownloadUrl, next.second));
+            return;
+          }
+
         slotFileOpenFromUrl(FROM_UTF8(next.second));
         return;
       }
@@ -4245,7 +4266,7 @@ void CopasiUI3Window::performNextAction()
       case CheckForUpdates:
       {
         slotCheckForUpdate();
-        break;
+        return;
       }
 
       default:
@@ -4410,7 +4431,7 @@ void CopasiUI3Window::slotCheckForUpdateFinished(const std::string &, bool succe
         {
           mAutoUpdateCheck = false;
           mpDataModelGUI->saveConfiguration(false);
-
+          performNextAction();
           return;
         }
 
@@ -4467,6 +4488,7 @@ void CopasiUI3Window::slotCheckForUpdateFinished(const std::string &, bool succe
 
       mAutoUpdateCheck = false;
       mpDataModelGUI->saveConfiguration(false);
+      performNextAction();
     }
   else if (mpDataModelGUI->getLastDownloadUrl() != "https://api.github.com/repos/copasi/COPASI/releases/latest")
     {
@@ -4476,6 +4498,7 @@ void CopasiUI3Window::slotCheckForUpdateFinished(const std::string &, bool succe
   else
     {
       mAutoUpdateCheck = false;
+      performNextAction();
     }
 }
 

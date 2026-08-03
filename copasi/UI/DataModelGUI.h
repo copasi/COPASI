@@ -109,7 +109,7 @@ public:
   const std::string& getLastDownloadDestination() const;
 
   /**
-   * @return true, if the operation thread is not null, false otherwise
+   * @return true if a progress dialog is active or a URL download is in progress
    */
   bool isBusy() const;
 
@@ -203,6 +203,7 @@ private:
   std::string mFileName;
   std::string mDownloadUrl;
   std::string mDownloadDestination;
+  bool mDownloadActive;
   bool mOverWrite;
   int mSBMLLevel;
   int mSBMLVersion;

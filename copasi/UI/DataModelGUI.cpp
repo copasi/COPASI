@@ -106,6 +106,7 @@ DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel)
   , mFileName()
   , mDownloadUrl()
   , mDownloadDestination()
+  , mDownloadActive(false)
   , mOverWrite(false)
   , mSBMLLevel(2)
   , mSBMLVersion(4)
@@ -216,6 +217,7 @@ void DataModelGUI::loadModel(const std::string & fileName)
 void DataModelGUI::downloadFileFromUrl(const std::string & url, const std::string& destination, bool withProgress)
 {
   mRunningThreads["downloadFileFromUrl"].success = false;
+  mDownloadActive = true;
 
   QNetworkAccessManager *manager = new QNetworkAccessManager(this);
   manager->setStrictTransportSecurityEnabled(true);
@@ -498,6 +500,9 @@ void DataModelGUI::exportSBMLToStringFinished()
 
 bool DataModelGUI::isBusy() const
 {
+  if (mDownloadActive)
+    return true;
+
   for (const std::pair< const std::string, sThreadData > &data: mRunningThreads)
     if (data.second.pProgressBar != nullptr)
       return true;
@@ -711,6 +716,7 @@ void DataModelGUI::downloadFinished(QNetworkReply *reply)
     }
 
   reply->deleteLater();
+  mDownloadActive = false;
   threadFinished("downloadFileFromUrl");
 }
 
