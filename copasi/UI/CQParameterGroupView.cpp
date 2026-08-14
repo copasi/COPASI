@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -125,8 +125,35 @@ void CQParameterGroupView::slotCreateComboBox(const QModelIndex & index)
       Source = static_cast< const QSortFilterProxyModel *>(Source.model())->mapToSource(index);
     }
 
-  this->setItemDelegateForRow(Source.row(), mpComboBoxDelegate);
-  this->openPersistentEditor(Source);
+  // skip if filtered out
+  auto current = mpSortFilterDM->mapFromSource(Source);
+  if (!current.isValid() || current.column() != 1)
+    return;
+
+  // skip if already set as delegate
+  auto currentRow = current.row();
+  auto oldDelegate = this->itemDelegateForRow(currentRow);
+  if (oldDelegate == mpComboBoxDelegate)
+    return;
+
+  // skip if source item is not suitable
+  CCopasiParameter * pParameter = CQParameterGroupDM::nodeFromIndex(Source);
+  if (!pParameter->hasValidValues())
+    return;
+
+  // verify that view item is the same as source item
+  auto currentSource = current;
+  while (currentSource.model()->inherits("QSortFilterProxyModel"))
+    {
+      currentSource = static_cast< const QSortFilterProxyModel * >(currentSource.model())->mapToSource(currentSource);
+    }
+  CCopasiParameter * pParameter2 = CQParameterGroupDM::nodeFromIndex(currentSource);
+  if (pParameter != pParameter2)
+    return;
+
+  // item delegates need to be run on view indices not source indices
+  this->setItemDelegateForRow(currentRow, mpComboBoxDelegate);
+  this->openPersistentEditor(current);
   this->expandAll();
 }
 
@@ -139,8 +166,33 @@ void CQParameterGroupView::slotCreatePushButton(const QModelIndex & index)
       Source = static_cast< const QSortFilterProxyModel *>(Source.model())->mapToSource(index);
     }
 
-  this->setItemDelegateForRow(Source.row(), mpPushButtonDelegate);
-  this->openPersistentEditor(Source);
+  // skip if filtered out
+  auto current = mpSortFilterDM->mapFromSource(Source);
+  if (!current.isValid() || current.column() != 1)
+    return;
+
+  // skip if already set as delegate
+  auto currentRow = current.row();
+  if (this->itemDelegateForRow(currentRow) == mpPushButtonDelegate)
+    return;
+
+  // ensure source item is suitable
+  CCopasiParameter * pParameter = CQParameterGroupDM::nodeFromIndex(Source);
+  if (!pParameter || pParameter->getType() != CCopasiParameter::Type::GROUP)
+    return;
+
+  // and view item matches source item
+  auto currentSource = current;
+  while (currentSource.model()->inherits("QSortFilterProxyModel"))
+    {
+      currentSource = static_cast< const QSortFilterProxyModel * >(currentSource.model())->mapToSource(currentSource);
+    }
+  CCopasiParameter * pParameter2 = CQParameterGroupDM::nodeFromIndex(currentSource);
+  if (pParameter != pParameter2)
+    return;
+
+  this->setItemDelegateForRow(currentRow, mpPushButtonDelegate);
+  this->openPersistentEditor(current);
   this->expandAll();
 }
 

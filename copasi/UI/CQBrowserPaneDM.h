@@ -188,8 +188,6 @@ private:
 
   std::map< std::string, CNode * > mCN2Node;
   std::map< ListViews::WidgetType, CNode * > mId2Node;
-
-  CRegisteredCommonName::RenameInterface * mpRenameHandler;
 };
 
 #endif // COPASI_CQBrowserPaneDM

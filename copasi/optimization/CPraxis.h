@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -62,7 +62,7 @@ public:
   virtual ~FPraxisTemplate() {};
 
   // override operator "()"
-  virtual const C_FLOAT64 & operator()(C_FLOAT64 * value, C_INT32 & n)
+  const C_FLOAT64 & operator()(C_FLOAT64 * value, C_INT32 & n) override
   {
     return (*mpType.*mMethod)(value, n);
   }; // execute member function

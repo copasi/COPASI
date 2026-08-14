@@ -135,7 +135,7 @@ CHybridNextReactionLSODAMethod::LSODA::LSODA(const CHybridNextReactionLSODAMetho
 {}
 
 // virtual
-void CHybridNextReactionLSODAMethod::LSODA::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
+void CHybridNextReactionLSODAMethod::LSODA::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /* y */, C_FLOAT64 * ydot)
 {
   *mpContainerStateTime = *t;
   static_cast< CHybridNextReactionLSODAMethod * >(getObjectParent())->evalF(ydot);

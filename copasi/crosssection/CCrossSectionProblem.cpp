@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -149,7 +149,7 @@ void CCrossSectionProblem::setTimeLimit(const C_FLOAT64 &timeLimit)
 /**
  * return the variable
  */
-const std::string& CCrossSectionProblem::getSingleObjectCN() const
+const CCommonName & CCrossSectionProblem::getSingleObjectCN() const
 {
   return *mpSingleObjectCN;
 }

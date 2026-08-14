@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -122,6 +122,8 @@ public:
    * @return bool success
    */
   bool saveData(const std::string & filename);
+
+  void saveDataToStream(std::ostream & os) override;
 
   /**
    * Shows or hide all curves depending on whether visibility is false or true

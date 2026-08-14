@@ -77,7 +77,7 @@ const CEnumAnnotation< std::string, CCopasiParameter::Type > CCopasiParameter::X
 });
 
 // static
-CCopasiParameter * CCopasiParameter::fromData(const CData & data, CUndoObjectInterface * pParent)
+CCopasiParameter * CCopasiParameter::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   CCopasiParameter * pNew = NULL;
 
@@ -125,8 +125,11 @@ CData CCopasiParameter::toData() const
       case CCopasiParameter::Type::KEY:
       case CCopasiParameter::Type::FILE:
       case CCopasiParameter::Type::EXPRESSION:
-      case CCopasiParameter::Type::CN:
         Data.addProperty(CData::PARAMETER_VALUE, * static_cast< std::string * >(mpValue));
+        break;
+
+      case CCopasiParameter::Type::CN:
+        Data.addProperty(CData::PARAMETER_VALUE, * static_cast< CRegisteredCommonName * >(mpValue));
         break;
 
       case CCopasiParameter::Type::GROUP:
@@ -206,8 +209,11 @@ void CCopasiParameter::createUndoData(CUndoData & undoData,
       case CCopasiParameter::Type::KEY:
       case CCopasiParameter::Type::FILE:
       case CCopasiParameter::Type::EXPRESSION:
-      case CCopasiParameter::Type::CN:
         undoData.addProperty(CData::PARAMETER_VALUE, oldData.getProperty(CData::PARAMETER_VALUE), * static_cast< std::string * >(mpValue));
+        break;
+
+      case CCopasiParameter::Type::CN:
+        undoData.addProperty(CData::PARAMETER_VALUE, oldData.getProperty(CData::PARAMETER_VALUE), * static_cast< CRegisteredCommonName * >(mpValue));
         break;
 
       case CCopasiParameter::Type::GROUP:
@@ -403,6 +409,13 @@ bool CCopasiParameter::isValidValue(const std::string & value) const
   return inValidValues(value);
 }
 
+bool CCopasiParameter::isValidValue(const CCommonName & /* value */) const
+{
+  if (mType != CCopasiParameter::Type::CN) return false;
+
+  return true;
+}
+
 bool CCopasiParameter::isValidValue(const CRegisteredCommonName & /* value */) const
 {
   if (mType != CCopasiParameter::Type::CN) return false;
@@ -515,21 +528,6 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
     }
 
   return false;
-}
-
-// virtual
-CCommonName CCopasiParameter::getCNProtected() const
-{
-  CDataContainer * pObjectParent = getObjectParent();
-  CCopasiParameterGroup * pGroup;
-
-  if (pObjectParent != NULL &&
-      (pGroup = dynamic_cast< CCopasiParameterGroup * >(pObjectParent)) != NULL)
-    {
-      return pObjectParent->getStringCN() + "," + CCommonName::escape(getObjectType()) + "=" + CCommonName::escape(pGroup->getUniqueParameterName(this));
-    }
-
-  return CDataObject::getCNProtected();
 }
 
 void * CCopasiParameter::getValuePointer() const

@@ -334,9 +334,10 @@ bool CFitProblem::elevateChildren()
   if (pTasks)
     {
       size_t i, imax = pTasks->size();
+      std::string TaskCN = *mpParmSteadyStateCN;
 
-      if (!mpParmSteadyStateCN->compare(0, 5, "Task_") ||
-          *mpParmSteadyStateCN == "")
+      if (!TaskCN.compare(0, 5, "Task_") ||
+          TaskCN == "")
         for (i = 0; i < imax; i++)
           if (pTasks->operator[](i).getType() == CTaskEnum::Task::steadyState)
             {
@@ -344,8 +345,10 @@ bool CFitProblem::elevateChildren()
               break;
             }
 
-      if (!mpParmTimeCourseCN->compare(0, 5, "Task_") ||
-          *mpParmTimeCourseCN == "")
+      TaskCN = *mpParmTimeCourseCN;
+
+      if (!TaskCN.compare(0, 5, "Task_") ||
+          TaskCN == "")
         for (i = 0; i < imax; i++)
           if (pTasks->operator[](i).getType() == CTaskEnum::Task::timeCourse)
             {
@@ -498,6 +501,14 @@ bool CFitProblem::initializeSubtaskBeforeOutput()
   success &= mpCrossValidationSet->compile(mpContainer);
 
   return success;
+}
+
+//virtual
+C_FLOAT64 CFitProblem::getEstimatedSubtaskError() const
+{
+  C_FLOAT64 tc= mpTrajectory ? mpTrajectory->getEstimatedMethodError() : std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+  C_FLOAT64 ss= mpSteadyState ? mpSteadyState->getEstimatedMethodError() : std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+  return std::fmax(tc, ss); //return the bigger tolerance that is not NaN
 }
 
 bool CFitProblem::initialize()
@@ -885,7 +896,7 @@ bool CFitProblem::initialize()
 
       for (auto dep : dependents)
         {
-          pProblem->addTargetCN(dep->getStringCN());
+          pProblem->addTargetCN(dep->getCN());
         }
 
       mpTimeSens->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
@@ -933,16 +944,13 @@ bool CFitProblem::calculate()
 
   size_t i, imax = mpExperimentSet->getExperimentCount();
   size_t j;
-  int kmax;
+  size_t kmax;
   mCalculateValue = 0.0;
 
   CExperiment * pExp = NULL;
 
   C_FLOAT64 * Residuals = mResiduals.array();
   C_FLOAT64 * DependentValues = mExperimentDependentValues.array();
-
-  std::vector<COptItem *>::iterator itItem;
-  std::vector<COptItem *>::iterator endItem = mpOptItems->end();
 
   std::vector<COptItem *>::iterator itConstraint;
   std::vector<COptItem *>::iterator endConstraint = mpConstraintItems->end();
@@ -978,7 +986,7 @@ bool CFitProblem::calculate()
 
           mpContainer->applyUpdateSequence(mExperimentInitialUpdates[i]);
 
-          kmax = (int)pExp->getNumDataRows();
+          kmax = pExp->getNumDataRows();
 
           const std::map< const CObjectInterface*, size_t >& map = pExp->getDependentObjectsMap();
           std::map<size_t, const CObjectInterface*> reverseObjectMap;
@@ -990,7 +998,7 @@ bool CFitProblem::calculate()
               for (auto it = map.begin(); it != map.end(); ++it)
                 {
                   reverseObjectMap[it->second] = it->first;
-                  reverseCnMap[it->second] = it->first->getStringCN();
+                  reverseCnMap[it->second] = it->first->getCN();
                 }
 
               for (size_t i = 0; i < mpOptItems->size(); ++i)
@@ -1057,7 +1065,7 @@ bool CFitProblem::calculate()
                     //calculate a reasonable number of intermediate points
                     numIntermediateSteps = 4; //TODO
                     //resize the storage for the extended time series
-                    pExp->initExtendedTimeSeries(numIntermediateSteps * std::max(kmax - 1, 0));
+                    pExp->initExtendedTimeSeries(numIntermediateSteps * (kmax > 0 ? kmax - 1 : 0));
                   }
 
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
@@ -1161,8 +1169,6 @@ bool CFitProblem::calculate()
                             CTimeSensProblem* pProblem = static_cast<CTimeSensProblem*>(mpTimeSens->getProblem());
                             // get current target result
                             CDataArray* pCurrentResult = pProblem->getTargetsResultAnnotated();
-
-                            auto it = mpOptItems->begin();
 
                             for (size_t i = 0 ; i < mpOptItems->size(); ++i)
                               {
@@ -1315,9 +1321,6 @@ void CFitProblem::createParameterSets()
 
   // Loop through all experiments and create
   size_t i, imax = mpExperimentSet->getExperimentCount();
-  std::vector<COptItem *>::iterator itItem;
-  std::vector<COptItem *>::iterator endItem = mpOptItems->end();
-
   CExperiment * pExp = NULL;
 
   for (i = 0; i < imax; i++) // For each experiment
@@ -1375,15 +1378,28 @@ void CFitProblem::printResult(std::ostream * ostream) const
     }
 
   os << "Objective Function Value:\t" << mSolutionValue << "\n";
+  os << "Root Mean Square:\t" << mRMS << "\n";
   os << "Standard Deviation:\t" << mSD << "\n";
 
-  CCopasiTimeVariable CPUTime = const_cast<CFitProblem *>(this)->mCPUTime.getElapsedTime();
+  if (mpCrossValidationSet->size() > 0)
+  {
+      os << "Validation Objective Value:\t" << mCrossValidationSolutionValue << "\n";
+      os << "Validation Root Mean Square:\t" << mCrossValidationRMS << "\n";
+      os << "Validation Standard Deviation:\t" << mCrossValidationSD << "\n";
+  }
 
-  os << "Function Evaluations:\t" << mCounters.Counter << "\n";
-  os << "CPU Time [s]:\t"
+  CCopasiTimeVariable CPUTime = const_cast<CFitProblem *>(this)->mCPUTime.getElapsedTime();
+  CCopasiTimeVariable WallTime = const_cast<CFitProblem *>(this)->mWallTime.getElapsedTime();
+
+  os << "    Function Evaluations:\t" << mCounters.Counter << "\n";
+  os << "    CPU Time [s]:\t"
      << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
      << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << "\n";
-  os << "Evaluations/Second [1/s]:\t" << mCounters.Counter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << "\n";
+  os << "    Wall Time [s]:\t"
+     << CCopasiTimeVariable::LL2String(WallTime.getSeconds(), 1) << "."
+     << CCopasiTimeVariable::LL2String(WallTime.getMilliSeconds(true), 3) << "\n";
+  os << "    Evaluations/Second [1/s]:\t" << mCounters.Counter / (C_FLOAT64)(WallTime.getMilliSeconds() / 1e3) << "\n";
+  os << "    SpeedUp:\t" << CPUTime.getMilliSeconds() / WallTime.getMilliSeconds() << "\n";
   os << "\n";
 
   std::vector< COptItem * >::const_iterator itItem =
@@ -1438,12 +1454,25 @@ void CFitProblem::printResult(std::ostream * ostream) const
     }
 
   os << "\n";
+  os << "Experiments:";
+  os << "\n";
 
   size_t k, kmax = mpExperimentSet->getExperimentCount();
 
   for (k = 0; k < kmax; k++)
     {
       mpExperimentSet->getExperiment(k)->printResult(ostream);
+      os << "\n";
+    }
+
+  os << "\n";
+  os << "Validation Data:";
+  os << "\n";
+  k, kmax = mpCrossValidationSet->getExperimentCount();
+
+  for (k = 0; k < kmax; k++)
+    {
+      mpCrossValidationSet->getExperiment(k)->printResult(ostream);
       os << "\n";
     }
 
@@ -1799,6 +1828,12 @@ bool CFitProblem::calcCov(const CMatrix< C_FLOAT64 >& fim, CMatrix< C_FLOAT64 >&
       corr = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       sd = std::numeric_limits<C_FLOAT64>::quiet_NaN();
       CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 12);
+
+      // verify that we dont have duplicates in the list of
+      // fit items, as they are a common cause
+      bool logWarnings = true;
+      checkForDuplicateFitItems(logWarnings);
+
       return false;
     }
 
@@ -1931,6 +1966,13 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
   calculate();
   mStoreResults = false;
 
+  // Reset the cross validation fitting points to NaN. The output triggered while
+  // streaming the experiment set below is also received by the validation plot,
+  // which would otherwise record the stale (final time course point) values and
+  // draw a spurious line back to the start of the validation data.
+  for (size_t k = 0, kmax = mpCrossValidationSet->getExperimentCount(); k < kmax; ++k)
+    mpCrossValidationSet->getExperiment(k)->updateFittedPointValues(C_INVALID_INDEX);
+
   // The statistics need to be calculated for the result, i.e., now.
   mpExperimentSet->calculateStatistics();
   size_t ValidDataCount = mpExperimentSet->getValidValueCount();
@@ -1959,6 +2001,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   // Make sure the timer is accurate.
   mCPUTime.calculateValue();
+  mWallTime.calculateValue();
 
   if (mSolutionValue == mWorstValue)
     return false;
@@ -2099,6 +2142,7 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
         {
           // Make sure the timer is accurate.
           mCPUTime.calculateValue();
+          mWallTime.calculateValue();
 
           CCopasiMessage(CCopasiMessage::WARNING, MCFitting + 13);
           return false;
@@ -2122,6 +2166,8 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
         {
           // Make sure the timer is accurate.
           mCPUTime.calculateValue();
+          mWallTime.calculateValue();
+
           return false;
         }
 
@@ -2182,10 +2228,61 @@ bool CFitProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       // Make sure the timer is accurate.
       mCPUTime.calculateValue();
+      mWallTime.calculateValue();
     }
 
   mStoreResults = false;
   return true;
+}
+
+bool CFitProblem::checkForDuplicateFitItems(bool logWarnings) const
+{
+  if (!mpOptItems)
+    return false;
+
+  // map counting how many time a specific
+  // fit item (and experiment combination) appears in the list of fit items
+  std::map< std::string, size_t > FitItemNames;
+
+  // map counting for each object underlying a fit item
+  // how many times a combination of experiments appears in the list of
+  // fit items
+  std::map< std::string, std::map<std::string, size_t> > ObjectsWithExperiments;
+
+  bool hasDuplicates = false;
+  for (auto * optItem : *mpOptItems)
+    {
+      auto * item = static_cast< CFitItem * >(optItem);
+      auto * obj = item->getItemObject();
+      std::string name = obj != NULL ? obj->getObjectDisplayName() : "Not found";
+      auto experiments = item->getExperiments();
+      if (!experiments.empty())
+        name += " {" + experiments + "}";
+
+      if (FitItemNames.find(name) == FitItemNames.end())
+        {
+          FitItemNames[name] = 1;
+        }
+      else
+        {
+          hasDuplicates = true;
+          FitItemNames[name] += 1;
+        }
+    }
+
+  if (hasDuplicates && logWarnings)
+    {
+      std::stringstream ss;
+      ss << "Duplicate fit items detected. This prevents calculation of summary statistics." << std::endl;
+      for (const auto & pair : FitItemNames)
+        {
+          if (pair.second > 1)
+            ss << "Fit item '" << pair.first << "' appears " << pair.second << " times." << std::endl;
+        }
+
+      CCopasiMessage(CCopasiMessage::WARNING, "%s", ss.str().c_str());
+    }
+  return hasDuplicates;
 }
 
 const C_FLOAT64 & CFitProblem::getRMS() const
@@ -2406,7 +2503,7 @@ bool CFitProblem::calculateCrossValidation()
                     //calculate a reasonable number of intermediate points
                     numIntermediateSteps = 4; //TODO
                     //resize the storage for the extended time series
-                    pExp->initExtendedTimeSeries(numIntermediateSteps * kmax - numIntermediateSteps + 1);
+                    pExp->initExtendedTimeSeries(numIntermediateSteps * (kmax > 0 ? kmax - 1 : 0));
                   }
 
                 for (j = 0; j < kmax && Continue; j++) // For each data row;
@@ -2497,12 +2594,6 @@ bool CFitProblem::calculateCrossValidation()
                       CalculateValue += pExp->sumOfSquaresStore(j, DependentValues);
                     else
                       CalculateValue += pExp->sumOfSquares(j, Residuals);
-
-                    if (mStoreResults)
-                      {
-                        //additionally also store the the simulation result for the extended time series
-                        pExp->storeExtendedTimeSeriesData(pExp->getTimeData()[j]);
-                      }
                   }
               }
               break;
@@ -2553,8 +2644,8 @@ bool CFitProblem::calculateCrossValidation()
     Continue &= mProcessReport.progressItem(mhCounter);
 
   C_FLOAT64 CurrentObjective =
-    (1.0 - mpCrossValidationSet->getWeight()) * mSolutionValue
-    + mpCrossValidationSet->getWeight() * CalculateValue * mpCrossValidationSet->getDataPointCount() / mpExperimentSet->getDataPointCount();
+    (1.0 - mpCrossValidationSet->getWeight()) * mSolutionValue / mpExperimentSet->getDataPointCount()
+    + mpCrossValidationSet->getWeight() * CalculateValue / mpCrossValidationSet->getDataPointCount();
 
   if (CurrentObjective > mCrossValidationObjective)
     mThresholdCounter++;

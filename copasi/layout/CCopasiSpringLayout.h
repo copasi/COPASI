@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -131,7 +136,7 @@ public:
    * that are needed for the calculation of the potential (or for a rough
    * on the fly drawing) are done.
    */
-  virtual bool setState(const std::vector<double> & vars);
+  bool setState(const std::vector<double> & vars) override;
 
   /**
    * complete the update of the layout. This updates the things
@@ -164,8 +169,8 @@ public:
 
 //  virtual bool getState(std::vector<double> & vars);
 
-  virtual double getPotential();
-  virtual const std::vector<double> & getInitialValues() const;
+  double getPotential() override;
+  const std::vector<double> & getInitialValues() const override;
 
   /**
    * if all participants of a reaction are in a single compartment return the compartment

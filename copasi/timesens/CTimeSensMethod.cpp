@@ -36,15 +36,28 @@ const bool CTimeSensMethod::ReducedModel(false);
  */
 CTimeSensMethod::CTimeSensMethod(const CDataContainer * pParent,
                                  const CTaskEnum::Method & methodType,
-                                 const CTaskEnum::Task & taskType):
-  CCopasiMethod(pParent, methodType, taskType),
-  mContainerState(),
-  mpContainerStateTime(NULL),
-  mpTask(NULL),
-  mpProblem(NULL),
-  mRootsFound(0),
-  mpReducedModel(&ReducedModel),
-  mSystemSize(0)
+                                 const CTaskEnum::Task & taskType)
+  : CCopasiMethod(pParent, methodType, taskType)
+  , mContainerState()
+  , mpContainerStateTime(NULL)
+  , mpTask(NULL)
+  , mpProblem(NULL)
+  , mRootsFound(0)
+  , mpReducedModel(&ReducedModel)
+  , mSystemSize(0)
+  , mNumParameters(0)
+  , mNumAssTargets(0)
+  , mJacobian()
+  , mdRate_dPar()
+  , mAssignmentJacobian()
+  , mdAssignment_dPar()
+  , mParameterInitialValuePointers()
+  , mParameterTransientValuePointers()
+  , mParameterIsInitialConcentration()
+  , mAssTargetValuePointers()
+  , mSeq1(nullptr)
+  , mSeq2(nullptr)
+  , mSeq3(nullptr)
 {
   mpTask = const_cast< CTimeSensTask * >(dynamic_cast< const CTimeSensTask * >(getObjectParent()));
 }
@@ -54,15 +67,28 @@ CTimeSensMethod::CTimeSensMethod(const CDataContainer * pParent,
  *  @param "const CTimeSensMethod &" src
  */
 CTimeSensMethod::CTimeSensMethod(const CTimeSensMethod & src,
-                                 const CDataContainer * pParent):
-  CCopasiMethod(src, pParent),
-  mContainerState(),
-  mpContainerStateTime(NULL),
-  mpTask(NULL),
-  mpProblem(NULL),
-  mRootsFound(0),
-  mpReducedModel(&ReducedModel),
-  mSystemSize(0)
+                                 const CDataContainer * pParent)
+  : CCopasiMethod(src, pParent)
+  , mContainerState()
+  , mpContainerStateTime(NULL)
+  , mpTask(NULL)
+  , mpProblem(NULL)
+  , mRootsFound(0)
+  , mpReducedModel(&ReducedModel)
+  , mSystemSize(0)
+  , mNumParameters(0)
+  , mNumAssTargets(0)
+  , mJacobian()
+  , mdRate_dPar()
+  , mAssignmentJacobian()
+  , mdAssignment_dPar()
+  , mParameterInitialValuePointers()
+  , mParameterTransientValuePointers()
+  , mParameterIsInitialConcentration()
+  , mAssTargetValuePointers()
+  , mSeq1(nullptr)
+  , mSeq2(nullptr)
+  , mSeq3(nullptr)
 {
   mpTask = const_cast< CTimeSensTask * >(dynamic_cast< const CTimeSensTask * >(getObjectParent()));
 }
@@ -115,7 +141,7 @@ bool CTimeSensMethod::setProblem(CCopasiProblem * pProblem)
 }
 
 // virtual
-void CTimeSensMethod::stateChange(const CMath::StateChange & change)
+void CTimeSensMethod::stateChange(const CMath::StateChange & /* change */)
 {}
 
 /**
@@ -653,9 +679,9 @@ void CTimeSensMethod::initializeDerivativesCalculations(bool reduced)
 }
 
 //static
+#ifdef DEBUG_OBJECTLISTS
 void CTimeSensMethod::printObjectSet(const std::string & s, const CObjectInterface::ObjectSet & os)
 {
-#ifdef DEBUG_OBJECTLISTS
   std::cout << "object set: " << s << std::endl;
   CObjectInterface::ObjectSet::const_iterator it;
 
@@ -663,13 +689,17 @@ void CTimeSensMethod::printObjectSet(const std::string & s, const CObjectInterfa
     std::cout << " - " << (*it)->getObjectDisplayName() << std::endl;
 
   std::cout << std::endl;
-#endif
 }
+#else
+void CTimeSensMethod::printObjectSet(const std::string &, const CObjectInterface::ObjectSet &)
+{}
+
+#endif
 
 //static
+#ifdef DEBUG_OBJECTLISTS
 void CTimeSensMethod::printUpdateSeq(const std::string & s, const CCore::CUpdateSequence & us)
 {
-#ifdef DEBUG_OBJECTLISTS
   std::cout << "update seq: " << s << std::endl;
   CMathUpdateSequence::const_iterator it = us.begin();
   CMathUpdateSequence::const_iterator end = us.end();
@@ -695,5 +725,9 @@ void CTimeSensMethod::printUpdateSeq(const std::string & s, const CCore::CUpdate
     }
 
   std::cout << std::endl;
-#endif
 }
+#else
+void CTimeSensMethod::printUpdateSeq(const std::string &, const CCore::CUpdateSequence &)
+{}
+
+#endif

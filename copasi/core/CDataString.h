@@ -67,7 +67,7 @@ public:
 
   ~CCopasiReportSeparator();
 
-  virtual std::string getObjectDisplayName() const;
+  std::string getObjectDisplayName() const override;
 
   CCopasiReportSeparator & operator = (const std::string & rhs);
 };

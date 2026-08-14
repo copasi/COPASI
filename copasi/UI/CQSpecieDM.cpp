@@ -499,7 +499,7 @@ bool CQSpecieDM::removeRows(int position, int rows, const QModelIndex & parent)
 
   for (; it != end; ++it, ++itRow)
     {
-      *it = itRow->getStringCN();
+      *it = itRow->getCN();
     }
 
   for (it = ToBeDeleted.begin(); it != end; ++it)
@@ -592,7 +592,7 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex & parent)
   for (const auto& index : rows)
     {
       if (index.isValid() && !isDefaultRow(index) && index.row() < (int) mpMetabolites->size())
-        names.append(mpMetabolites->operator[](index.row()).getStringCN());
+        names.append(mpMetabolites->operator[](index.row()).getCN());
     }
 
   for (auto& objectCn : names)

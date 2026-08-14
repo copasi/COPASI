@@ -137,7 +137,7 @@ CData CAnnotation::toData() const
   return Data;
 }
 
-bool CAnnotation::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CAnnotation::applyData(const CData & data, CUndoData::CChangeSet & /* changes */)
 {
   if (data.isSetProperty(CData::Property::NOTES))
     {
@@ -155,7 +155,7 @@ bool CAnnotation::applyData(const CData & data, CUndoData::CChangeSet & changes)
 void CAnnotation::createUndoData(CUndoData & undoData,
                                  const CUndoData::Type & type,
                                  const CData & oldData,
-                                 const CCore::Framework & framework) const
+                                 const CCore::Framework & /* framework */) const
 {
   switch (type)
     {

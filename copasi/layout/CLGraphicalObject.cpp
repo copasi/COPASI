@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -38,7 +38,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 
 // static
-CLGraphicalObject * CLGraphicalObject::fromData(const CData & data, CUndoObjectInterface * pParent)
+CLGraphicalObject * CLGraphicalObject::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CLGraphicalObject(data.getProperty(CData::OBJECT_NAME).toString(),
                                NO_PARENT);
@@ -56,7 +56,7 @@ CData CLGraphicalObject::toData() const
 }
 
 // virtual
-bool CLGraphicalObject::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CLGraphicalObject::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 

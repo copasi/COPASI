@@ -318,6 +318,13 @@ public:
    * @param const CRegisteredCommonName & value
    * @return bool isValidValue
    */
+  bool isValidValue(const CCommonName & value) const;
+
+  /**
+   * Check whether the value corresponds to the type
+   * @param const CRegisteredCommonName & value
+   * @return bool isValidValue
+   */
   bool isValidValue(const CRegisteredCommonName & value) const;
 
   /**
@@ -435,15 +442,6 @@ public:
 
   bool isDefault() const;
 
-protected:
-  /**
-   * Retrieve the CN of the math container
-   * The math container provides values for the numerical values of model objects.
-   * For the CN mechanism to work properly it has to pretend to be the model.
-   * @return CCommonName
-   */
-  CCommonName getCNProtected() const override;
-
 private:
   /**
    * Create or copy the value
@@ -510,6 +508,23 @@ bool compareValues(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
 }
 
 #include "copasi/utilities/CCopasiParameterGroup.h"
+
+template <>
+inline bool CCopasiParameter::setValue(const CCommonName &value)
+{
+  if (!isValidValue(value))
+    return false;
+
+  *static_cast< CRegisteredCommonName * >(mpValue) = value;
+
+  CDataContainer * pParent = getObjectParent();
+
+  if (pParent != nullptr
+      && dynamic_cast< CCopasiParameterGroup * >(pParent) != nullptr)
+    static_cast< CCopasiParameterGroup * >(pParent)->signalChanged(this);
+
+  return true;
+}
 
 template < class CType >
 bool CCopasiParameter::setValue(const CType & value)

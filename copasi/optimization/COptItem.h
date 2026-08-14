@@ -310,9 +310,9 @@ public:
    */
   bool influencesIntervals() const;
 
-  void setIntervalUpdateSequence(const CCore::CUpdateSequence & updateSequence);
-
   const CCore::CUpdateSequence & getIntervalUpdateSequence() const;
+
+  CCore::CUpdateSequence & getIntervalUpdateSequence();
 
   void addDependentItem(COptItem * pDependentItem);
 

@@ -107,11 +107,6 @@ CIssue::CIssue(const CIssue::eSeverity & severity,
   mKind(kind)
 {}
 
-CIssue::CIssue(const CIssue & src):
-  mSeverity(src.mSeverity),
-  mKind(src.mKind)
-{}
-
 CIssue::~CIssue()
 {}
 

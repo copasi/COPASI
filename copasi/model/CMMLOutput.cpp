@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -281,9 +281,6 @@ void CMMLOutput::writeRHS_ModelEntity(std::ostream & out,
 
 void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, bool localParameterNumbers, bool expand, bool expandFull)
 {
-  bool hasContents = false;
-  //mml.str("");
-
   size_t l = 0;
   mml << SPC(l) << "<mtable>" << "\n";
 
@@ -368,8 +365,6 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
 
           for (it = reacKeys.begin(); it != itEnd; ++it)
             {
-              hasContents = true;
-
               mml << SPC(l + 1) << "<mtr>" << "\n";
 
               //first column (lhs)
@@ -460,7 +455,6 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
   for (i = 0; i < imax; ++i)
     if (model->getModelValues()[i].getStatus() == CModelEntity::Status::ODE)
       {
-        hasContents = true;
         mml << SPC(l + 1) << "<mtr>" << "\n";
 
         //first column (lhs)
@@ -488,7 +482,6 @@ void CMMLOutput::writeDifferentialEquations(std::ostream & mml, CModel * model, 
   for (i = 0; i < imax; ++i)
     if (model->getModelValues()[i].getStatus() == CModelEntity::Status::ASSIGNMENT)
       {
-        hasContents = true;
         mml << SPC(l + 1) << "<mtr>" << "\n";
 
         //first column (lhs)

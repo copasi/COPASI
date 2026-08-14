@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -66,14 +66,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Default constructor
@@ -108,7 +108,7 @@ public:
    * Retrieve the key
    * @return const std::string & key
    */
-  const std::string & getKey() const;
+  const std::string & getKey() const override;
 
   /**
    * Set the key of the associated entity
@@ -145,9 +145,9 @@ public:
 
   /**
    * Retrieve the slider object CN.
-   * @return const std::string & sliderObjectCN
+   * @return const CCommonName & sliderObjectCN
    */
-  const std::string & getSliderObjectCN() const;
+  const CCommonName & getSliderObjectCN() const;
 
   /**
    * Set the slider type.

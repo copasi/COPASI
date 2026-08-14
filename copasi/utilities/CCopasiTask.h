@@ -191,14 +191,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -209,10 +209,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & type,
-                              const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+  void createUndoData(CUndoData & undoData,
+                      const CUndoData::Type & type,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
   /**
    * Specific constructor
@@ -253,7 +253,7 @@ public:
    * Retrieve the key for the task.
    * @return std::string key
    */
-  virtual const std::string & getKey() const;
+  const std::string & getKey() const override;
 
   /**
    * Set whether the task is scheduled
@@ -386,6 +386,13 @@ public:
    * Retrieve the method
    */
   const CCopasiMethod * getMethod() const;
+
+  /**
+   *  Return a (possibly rough) estimate for the accuracy of the method under current method settings.
+   *   This is not intended for numerical calculations but rather for allowing sanity checks in parent tasks that use
+   *    this task as a subtask
+   */
+  virtual C_FLOAT64 getEstimatedMethodError() const;
 
   /**
    * Retrieve the report
@@ -536,6 +543,8 @@ protected:
   OutputFlag mDoOutput;
   COutputHandler * mpOutputHandler;
   unsigned C_INT32 mOutputCounter;
+
+  std::string mMethodName;
 
 #ifndef SWIG
   // used by language bindings to hold last process warnings / errors

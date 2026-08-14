@@ -508,7 +508,6 @@ CEvaluationNode * CEvaluationNodeLogical::fromAST(const ASTNode * pASTNode, cons
 {
   assert(pASTNode->getNumChildren() == children.size());
 
-  size_t i = 0;
   size_t iMax = children.size();
 
   SubType subType;

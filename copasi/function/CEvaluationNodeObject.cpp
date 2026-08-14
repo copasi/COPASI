@@ -46,7 +46,7 @@
 CEvaluationNodeObject::CEvaluationNodeObject():
   CEvaluationNode(MainType::OBJECT, SubType::INVALID, ""),
   mpObject(NULL),
-  mRegisteredObjectCN(CRegisteredCommonName("", nullptr))
+  mRegisteredObjectCN()
 {mPrecedence = PRECEDENCE_NUMBER;}
 
 CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
@@ -67,17 +67,15 @@ CEvaluationNodeObject::CEvaluationNodeObject(const SubType & subType,
       case SubType::CN:
 
         if (mData == "<Reference=Avogadro Constant>")
-          {
-            mSubType = SubType::AVOGADRO;
-          }
+          mSubType = SubType::AVOGADRO;
 
-        mRegisteredObjectCN.assign(mData.substr(1, mData.length() - 2), mpTree);
+        mRegisteredObjectCN = mData.substr(1, mData.length() - 2);
 
         break;
 
       case SubType::AVOGADRO:
         mData = "<Reference=Avogadro Constant>";
-        mRegisteredObjectCN.assign(mData.substr(1, mData.length() - 2), mpTree);
+        mRegisteredObjectCN = mData.substr(1, mData.length() - 2);
 
         break;
 
@@ -142,7 +140,7 @@ CIssue CEvaluationNodeObject::compile()
           }
 
         getData();
-        mRegisteredObjectCN.assign(mData.substr(1, mData.length() - 2), mpTree);
+        mRegisteredObjectCN = mData.substr(1, mData.length() - 2);
         mpObject = mpTree->getNodeObject(mRegisteredObjectCN);
 
         const CDataObject * pDataObject = CObjectInterface::DataObject(mpObject);
@@ -164,7 +162,7 @@ CIssue CEvaluationNodeObject::compile()
             if (mpObject != pObject && pObject != NULL)
               {
                 mpObject = pObject;
-                mRegisteredObjectCN.assign(mpObject->getStringCN(), mpTree);
+                mRegisteredObjectCN = mpObject->getCN();
                 getData();
               }
 
@@ -230,7 +228,7 @@ CIssue CEvaluationNodeObject::compile()
           }
 
         getData();
-        mRegisteredObjectCN.assign(mData.substr(1, mData.length() - 2), mpTree);
+        mRegisteredObjectCN = mData.substr(1, mData.length() - 2);
         mpObject = mpTree->getNodeObject(mRegisteredObjectCN);
 
         if (mpObject != NULL)
@@ -246,7 +244,7 @@ CIssue CEvaluationNodeObject::compile()
               {
                 if (pDataModel->getModel() != NULL)
                   {
-                    mpObject = mpTree->getNodeObject(pDataModel->getModel()->getCN() + "," + mRegisteredObjectCN);
+                    mpObject = pDataModel->getModel()->getObject(mRegisteredObjectCN);
 
                     if (mpObject != NULL)
                       {
@@ -280,15 +278,21 @@ CIssue CEvaluationNodeObject::compile()
     return CIssue(CIssue::eSeverity::Error, CIssue::eKind::TooManyArguments);
 }
 
-bool CEvaluationNodeObject::mapObject(const std::string srcCN, const CDataContainer * pTarget)
+bool CEvaluationNodeObject::mapObject(const CDataContainer * pSource, const CDataContainer * pTarget)
 {
-  size_t Length = srcCN.length();
-
-  if (mRegisteredObjectCN.compare(0, Length, srcCN) != 0)
+  // We may only map object which have the source container as an ancestor
+  if (mpObject == nullptr
+      || !mpObject->getCNComponent()->mayHaveAncestor(pSource))
     return true;
 
+  if (!mpObject->getCNComponent()->mayHaveAncestor(pTarget))
+    return false;
+
   mpValue = NULL;
-  mpObject = pTarget->getObject(mRegisteredObjectCN.substr(Length + 1));
+
+  // The existing CN is resolved in the context of the source container. We need to resolve it in the context of the target container.
+  CCommonName CN = mData.substr(1, mData.length() - 2);
+  mpObject = CN.resolve(pTarget);
 
   const CDataObject * pDataObject = CObjectInterface::DataObject(mpObject);
 
@@ -354,7 +358,7 @@ bool CEvaluationNodeObject::setData(const Data & data)
   mData = data;
 
   if (mSubType == SubType::CN)
-    mRegisteredObjectCN.assign(mData.substr(1, mData.length() - 2), mpTree);
+    mRegisteredObjectCN = mData.substr(1, mData.length() - 2);
 
   return true;
 }

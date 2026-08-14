@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1094,7 +1094,6 @@ C_FLOAT64 CPraxis::operator()(C_FLOAT64 t0, C_FLOAT64 h0, C_INT32 n, C_INT32 pri
   C_FLOAT64 r;
   C_FLOAT64 s;
   C_FLOAT64 scbd;
-  C_INT32 seed;
   C_FLOAT64 sf;
   C_FLOAT64 sl;
   C_FLOAT64 small;
@@ -1126,7 +1125,7 @@ C_FLOAT64 CPraxis::operator()(C_FLOAT64 t0, C_FLOAT64 h0, C_INT32 n, C_INT32 pri
   vlarge = 1.0 / vsmall;
   m2 = sqrt(machep);
   m4 = sqrt(m2);
-  seed = 123456789;
+
   //
   //  Heuristic numbers:
   //

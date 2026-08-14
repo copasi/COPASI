@@ -86,7 +86,7 @@ const char* CExperiment::WeightMethodType[] =
 
 CExperiment::CExperiment(const CDataContainer * pParent,
                          const std::string & name):
-  CCopasiParameterGroup(name, pParent),
+  CCopasiParameterGroup(name, pParent, "Experiment"),
   mpFileName(NULL),
   mpFirstRow(NULL),
   mpLastRow(NULL),
@@ -111,8 +111,8 @@ CExperiment::CExperiment(const CDataContainer * pParent,
   mDependentValues(0),
   mIndependentValues(0),
   mpContainer(NULL),
-  mIndependentUpdateSequence(),
-  mDependentUpdateSequence(),
+  mIndependentUpdateSequence(nullptr),
+  mDependentUpdateSequence(nullptr),
   mIndependentObjects(),
   mNumDataRows(0),
   mpDataDependentCalculated(NULL),
@@ -138,7 +138,7 @@ CExperiment::CExperiment(const CDataContainer * pParent,
 
 CExperiment::CExperiment(const CExperiment & src,
                          const CDataContainer * pParent):
-  CCopasiParameterGroup(src, static_cast< const CDataContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel())),
+  CCopasiParameterGroup(src, static_cast< const CDataContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel()), src.getObjectType()),
   mpFileName(NULL),
   mpFirstRow(NULL),
   mpLastRow(NULL),
@@ -163,8 +163,8 @@ CExperiment::CExperiment(const CExperiment & src,
   mDependentValues(src.mDependentValues),
   mIndependentValues(src.mIndependentValues),
   mpContainer(src.mpContainer),
-  mIndependentUpdateSequence(src.mIndependentUpdateSequence),
-  mDependentUpdateSequence(src.mDependentUpdateSequence),
+  mIndependentUpdateSequence(src.mIndependentUpdateSequence, nullptr),
+  mDependentUpdateSequence(src.mDependentUpdateSequence, nullptr),
   mIndependentObjects(src.mIndependentObjects),
   mNumDataRows(src.mNumDataRows),
   mpDataDependentCalculated(src.mpDataDependentCalculated),
@@ -216,8 +216,8 @@ CExperiment::CExperiment(const CCopasiParameterGroup & group,
   mDependentValues(0),
   mIndependentValues(0),
   mpContainer(NULL),
-  mIndependentUpdateSequence(),
-  mDependentUpdateSequence(),
+  mIndependentUpdateSequence(nullptr),
+  mDependentUpdateSequence(nullptr),
   mIndependentObjects(),
   mNumDataRows(0),
   mpDataDependentCalculated(NULL),
@@ -282,7 +282,7 @@ void CExperiment::initializeParameter()
   mpLastRow = assertParameter("Last Row", CCopasiParameter::Type::UINT, (unsigned C_INT32) InvalidIndex);
   mpTaskType = (CTaskEnum::Task *) assertParameter("Experiment Type", CCopasiParameter::Type::UINT, (unsigned C_INT32) CTaskEnum::Task::UnsetTask);
   mpNormalizeWeightsPerExperiment = assertParameter("Normalize Weights per Experiment", CCopasiParameter::Type::BOOL, true);
-  mpTimeSeriesStartInSteadyState = assertParameter("Time Series Start in Steady State", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2);
+  mpTimeSeriesStartInSteadyState = assertParameter("Time Series Start in Steady State", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0);
   mpSeparator = assertParameter("Separator", CCopasiParameter::Type::STRING, std::string("\t"));
   mpWeightMethod = (WeightMethod *) assertParameter("Weight Method", CCopasiParameter::Type::UINT, (unsigned C_INT32) MEAN_SQUARE);
   mpRowOriented = assertParameter("Data is Row Oriented", CCopasiParameter::Type::BOOL, (bool) true);
@@ -349,7 +349,7 @@ void CExperiment::updateFittedPoints()
   for (i = 0; i < imax; i++)
     if (mpObjectMap->getRole(i) == dependent)
       {
-        pPoint = new CFittingPoint(CRegisteredCommonName(mpObjectMap->getObjectCN(i), this));
+        pPoint = new CFittingPoint(mpObjectMap->getObjectCN(i));
         mFittingPoints.add(pPoint, true);
       }
 }
@@ -1766,9 +1766,9 @@ void CExperiment::fixBuild55()
 
 /* CFittingPoint Implementation */
 // static
-CFittingPoint * CFittingPoint::fromData(const CData & data, CUndoObjectInterface * pParent)
+CFittingPoint * CFittingPoint::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
-  return new CFittingPoint(CRegisteredCommonName(data.getProperty(CData::OBJECT_NAME).toString(), nullptr), NO_PARENT);
+  return new CFittingPoint(CCommonName(data.getProperty(CData::OBJECT_NAME).toString()), NO_PARENT);
 }
 
 // virtual
@@ -1783,7 +1783,7 @@ CData CFittingPoint::toData() const
 }
 
 // virtual
-bool CFittingPoint::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CFittingPoint::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 
@@ -1835,7 +1835,7 @@ std::string CFittingPoint::getObjectDisplayName() const
   return pObject->getObjectDisplayName();
 }
 
-const std::string & CFittingPoint::getModelObjectCN() const
+const CCommonName & CFittingPoint::getModelObjectCN() const
 {
   return mModelObjectCN;
 }

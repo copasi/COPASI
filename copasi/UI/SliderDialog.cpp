@@ -70,7 +70,7 @@
 #include "copasi/core/CRootContainer.h"
 #include "copasi/commandline/CConfigurationFile.h"
 
-size_t SliderDialog::numMappings = 14;
+size_t SliderDialog::numMappings = 15;
 
 ListViews::WidgetType SliderDialog::folderMappings[][2] =
 {
@@ -86,6 +86,7 @@ ListViews::WidgetType SliderDialog::folderMappings[][2] =
   {ListViews::WidgetType::ParameterEstimation, ListViews::WidgetType::ParameterEstimation},
   {ListViews::WidgetType::ParameterEstimationResult, ListViews::WidgetType::ParameterEstimation},
   {ListViews::WidgetType::LinearNoiseApproximation, ListViews::WidgetType::LinearNoiseApproximation},
+  {ListViews::WidgetType::LinearNoiseApproximationResult, ListViews::WidgetType::LinearNoiseApproximation},
   {ListViews::WidgetType::CrossSection, ListViews::WidgetType::CrossSection},
   {ListViews::WidgetType::CrossSectionResult, ListViews::WidgetType::CrossSection}
 };

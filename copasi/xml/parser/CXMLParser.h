@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -88,14 +93,14 @@ public:
    * @param const XML_Char *pszName
    * @param const XML_Char **papszAttrs
    */
-  virtual void onStartElement(const XML_Char *pszName,
-                              const XML_Char **papszAttrs);
+  void onStartElement(const XML_Char * pszName,
+                      const XML_Char ** papszAttrs) override;
 
   /**
    * End element handler
    * @param const XML_Char *pszName
    */
-  virtual void onEndElement(const XML_Char *pszName);
+  void onEndElement(const XML_Char *pszName) override;
 
   /**
    * Set the datamodel.
@@ -135,8 +140,8 @@ public:
    * @param const XML_Char *entityName
    * @param int is_parameter_entity
    */
-  virtual void onSkippedEntityHandler(const XML_Char * entityName,
-                                      int is_parameter_entity);
+  void onSkippedEntityHandler(const XML_Char * entityName,
+                              int is_parameter_entity) override;
 
   /**
    * Enable/Disable the character data handler
@@ -149,8 +154,8 @@ public:
    * @param const XML_Char *pszData
    * @param int nLength
    */
-  virtual void onCharacterData(const XML_Char *pszData,
-                               int nLength);
+  void onCharacterData(const XML_Char * pszData,
+                       int nLength) override;
   /**
    * Retrieve the data.
    * Any sequence of toBeStripped characters is replaced by a single

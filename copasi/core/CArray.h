@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -49,13 +54,13 @@ public:
 
   void resize(const index_type & sizes);
 
-  virtual data_type & operator[](const index_type & index);
+  data_type & operator[](const index_type & index) override;
 
-  virtual const data_type & operator[](const index_type & index) const;
+  const data_type & operator[](const index_type & index) const override;
 
-  virtual const index_type & size() const;
+  const index_type & size() const override;
 
-  size_t dimensionality() const;
+  size_t dimensionality() const override;
 
 private:
   std::vector<data_type> mData;
@@ -88,14 +93,14 @@ public:
 
   virtual ~CMatrixInterface() {};
 
-  data_type & operator[](const index_type & index)
+  data_type & operator[](const index_type & index) override
   {
     assert(index.size() == 2);
 
     return (*mMatrix)(index[0], index[1]);
   }
 
-  const data_type & operator[](const index_type & index) const
+  const data_type & operator[](const index_type & index) const override
   {
     assert(index.size() == 2);
 
@@ -108,7 +113,7 @@ private:
   mutable std::vector<size_t> mSizes;
 
 public:
-  virtual const index_type & size() const
+  const index_type & size() const override
   {
     mSizes[0] = mMatrix->numRows();
     mSizes[1] = mMatrix->numCols();
@@ -116,7 +121,7 @@ public:
     return mSizes;
   }
 
-  size_t dimensionality() const
+  size_t dimensionality() const override
   {
     return 2;
   }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-<comment> Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the </comment>
+<comment> Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the </comment>
 <comment> University of Virginia, University of Heidelberg, and University </comment>
 <comment> of Connecticut School of Medicine. </comment>
 <comment> All rights reserved. </comment>
@@ -60,10 +60,10 @@
       <bool>true</bool>
      </property>
      <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <enum>QFrame::Shape::StyledPanel</enum>
      </property>
      <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
+      <enum>QFrame::Shadow::Raised</enum>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
@@ -96,10 +96,10 @@
         <item>
          <spacer name="spacer1">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeType">
-           <enum>QSizePolicy::Maximum</enum>
+           <enum>QSizePolicy::Policy::Maximum</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -174,10 +174,10 @@
         <item>
          <spacer name="spacer2">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeType">
-           <enum>QSizePolicy::Expanding</enum>
+           <enum>QSizePolicy::Policy::Expanding</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -214,10 +214,10 @@
         <item>
          <spacer name="spacer4">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeType">
-           <enum>QSizePolicy::Expanding</enum>
+           <enum>QSizePolicy::Policy::Expanding</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -243,7 +243,7 @@
            <string>Sub Task Output:</string>
           </property>
           <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           <set>Qt::AlignmentFlag::AlignRight|Qt::AlignmentFlag::AlignTrailing|Qt::AlignmentFlag::AlignVCenter</set>
           </property>
           <property name="wordWrap">
            <bool>false</bool>
@@ -253,7 +253,7 @@
         <item>
          <widget class="QCheckBox" name="mpCheckBefore">
           <property name="toolTip">
-           <string>If this is activated output will be generated during each calculation. &lt;p&gt;If it is not activated only the state at the end of each calculation will be plotted.</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If Sub Task Output &lt;span style=&quot; font-weight:700;&quot;&gt;before&lt;/span&gt; is activated, output (reports or plots) will be generated at the beginning of each sub task execution.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="text">
            <string>before</string>
@@ -269,7 +269,7 @@
         <item>
          <widget class="QCheckBox" name="mpCheckDuring">
           <property name="toolTip">
-           <string>If this is activated output will be generated during each calculation. &lt;p&gt;If it is not activated only the state at the end of each calculation will be plotted.</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If Sub Task Output &lt;span style=&quot; font-weight:700;&quot;&gt;during&lt;/span&gt; is activated, output (reports or plots) will be generated at each step during each sub task execution.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="text">
            <string>during</string>
@@ -285,7 +285,7 @@
         <item>
          <widget class="QCheckBox" name="mpCheckAfter">
           <property name="toolTip">
-           <string>If this is activated output will be generated during each calculation. &lt;p&gt;If it is not activated only the state at the end of each calculation will be plotted.</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If Sub Task Output &lt;span style=&quot; font-weight:700;&quot;&gt;after&lt;/span&gt; is activated, output (reports or plots) will be generated at the end of each sub task execution.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="text">
            <string>after</string>
@@ -301,10 +301,10 @@
         <item>
          <spacer name="spacer4_2">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeType">
-           <enum>QSizePolicy::Expanding</enum>
+           <enum>QSizePolicy::Policy::Expanding</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>

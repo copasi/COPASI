@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,9 +37,9 @@ public:
 
   virtual bool add(const CUnitDefinition & src);
   virtual bool add(CUnitDefinition * src, bool adopt = false);
-  virtual void remove(const size_t & index);
-  virtual bool remove(CDataObject * pObject);
-  virtual void remove(const std::string & name);
+  void remove(const size_t & index) override;
+  bool remove(CDataObject * pObject) override;
+  void remove(const std::string & name) override;
 
   bool containsSymbol(std::string symbol) const;
 

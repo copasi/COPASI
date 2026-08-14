@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,7 +24,7 @@
 #include "copasi/report/CKeyFactory.h"
 
 // static
-CLLocalStyle * CLLocalStyle::fromData(const CData & data, CUndoObjectInterface * pParent)
+CLLocalStyle * CLLocalStyle::fromData(const CData & /* data */, CUndoObjectInterface * /* pParent */)
 {
   return new CLLocalStyle(NO_PARENT);
 }
@@ -41,7 +41,7 @@ CData CLLocalStyle::toData() const
 }
 
 // virtual
-bool CLLocalStyle::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CLLocalStyle::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 

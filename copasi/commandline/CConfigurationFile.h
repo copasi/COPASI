@@ -28,6 +28,7 @@
 #include "copasi/utilities/CCopasiParameter.h"
 #include "copasi/MIRIAM/CMIRIAMResource.h"
 #include "copasi/xml/CCopasiXMLInterface.h"
+#include "copasi/OpenMP/COpenMPConfig.h"
 
 class CMIRIAMResources;
 class CVersion;
@@ -229,6 +230,12 @@ public:
    * @return CRecentFiles & recentSEDMLFiles
    */
   CRecentFiles & getRecentSEDMLFiles();
+
+  /**
+   * Retrieve the OpenMP configuration
+   * @return COpenMPConfig & OpenMPConfig
+   */
+  COpenMPConfig & getOpenMPConfig();
 
   /**
    * Retrieve the application font.
@@ -492,6 +499,11 @@ private:
   std::string * mpApplicationFont;
 
   /**
+   * A pointer indicating whether units will always be validated
+   */
+  bool * mpValidateUnits;
+
+  /**
    * A pointer indicating the severity level of issues
    * to be displayed.
    */
@@ -502,11 +514,6 @@ private:
    * should be displayed.
    */
   CCopasiParameterGroup * mpDisplayIssueKinds;
-
-  /**
-   * A pointer indicating whether units will always be validated
-   */
-  bool * mpValidateUnits;
 
   /**
   * A pointer indicating whether to use the OpenGL rendering, or the Qt based one
@@ -602,6 +609,8 @@ private:
    * A pointer indicating whether to disable JIT compilation even if it is available
    */
   bool * mpDisableJIT;
+
+  COpenMPConfig * mpOpenMPConfig;
 };
 
 #endif // COPASI_CConfigurationFile

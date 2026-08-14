@@ -100,6 +100,8 @@ public:
   */
   friend std::ostream &operator<<(std::ostream &os, const COptPopulationMethod & o);
 
+  void openMPApplyCallback() override;
+
 protected:
   bool createIndividual(const size_t & index, const COptItem::CheckPolicyFlag & policy);
 

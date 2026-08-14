@@ -36,7 +36,7 @@ class CDataArray: public CDataContainer
 public:
   typedef C_FLOAT64 data_type;
   typedef CArray::index_type index_type;
-  typedef std::vector< std::string > name_index_type;
+  typedef std::vector< CCommonName > name_index_type;
 
   /**
    * The annotation to an array can work in different modes. The mode
@@ -197,7 +197,7 @@ public:
    * Resolve a cn. Since this is an array, the CN can start with an index like "[2][3]".
    * Since this is also a container, this is not necessarily the case.
    */
-  const CObjectInterface * getObject(const CCommonName & cn) const override;
+  // const CObjectInterface * getObject(const CCommonName & cn) const override;
 
   /**
    * Check whether the size of array is greater than 0 for each dimension.
@@ -237,8 +237,12 @@ public:
 
   name_index_type displayNamesToCN(const std::vector< std::string > & DisplayNames) const;
   index_type cnToIndex(const name_index_type & cnIndex) const;
+
+protected:
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override;
+
 private:
-  std::string createDisplayName(const std::string & cn) const;
+  std::string createDisplayName(const CCommonName & cn) const;
   void updateDisplayNames() const;
 
   CArrayInterface * mpArray;

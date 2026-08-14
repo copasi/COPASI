@@ -353,6 +353,8 @@ void CQOptPopulation::slotCloseWindow()
 void CQOptPopulation::slotFullRefresh()
 {
   mGraphInitialized = false;
+  mpGS = new QGraphicsScene(this);
+  mpGV->setScene(mpGS);
   emit updateSignal();
 }
 
@@ -382,6 +384,37 @@ std::vector< C_FLOAT64 > to_std_vector(const CVector<C_FLOAT64>& other)
   return result;
 }
 
+class QMutexLockerWithTimeout
+{
+public:
+  QMutexLockerWithTimeout(QMutex * mutex, int timeoutMs)
+    : m_mutex(mutex)
+    , m_locked(false)
+  {
+    if (m_mutex && m_mutex->tryLock(timeoutMs))
+      {
+        m_locked = true;
+      }
+  }
+
+  ~QMutexLockerWithTimeout()
+  {
+    if (m_locked)
+      {
+        m_mutex->unlock();
+      }
+  }
+
+  bool isLocked() const
+  {
+    return m_locked;
+  }
+
+private:
+  QMutex * m_mutex;
+  bool m_locked;
+};
+
 void CQOptPopulation::output(const Activity& activity)
 {
 
@@ -402,6 +435,25 @@ void CQOptPopulation::output(const Activity& activity)
           mObjectiveValues = std::vector< C_FLOAT64 >();
           mDidAllocate = true;
         }
+
+      setCircle(0.05);
+    }
+
+  // on after display number of evaluations
+  if (activity == COutputInterface::Activity(COutputInterface::AFTER))
+    {
+      CCopasiTask * pTask = dynamic_cast< CCopasiTask * >(mpSourceMethod->getObjectParent());
+
+      if (!pTask)
+        return;
+
+      COptProblem * pProblem = dynamic_cast< COptProblem * >(pTask->getProblem());
+
+      if (!pProblem)
+        return;
+
+      emit setDebugText(QString("# evals: %1, obj: %2, # total: %3").arg(pProblem->getFunctionEvaluations()).arg(pProblem->getSolutionValue()).arg(mPopulation.size()));
+      return;
     }
 
   if (activity != COutputInterface::Activity(COutputInterface::MONITORING))
@@ -452,13 +504,28 @@ void CQOptPopulation::output(const Activity& activity)
   if (mpPopulationMethod)
     {
       mPopulation = mpPopulationMethod->getPopulation();
+      if (mPopulation.size() == 0)
+        {
+          return;
+        }
+
       mObjectiveValues = to_std_vector(mpPopulationMethod->getObjectiveValues());
+
+      // iterate over the objective values and remove from the population all with nan and infinite values
+      for (int i = (int)mObjectiveValues.size()-1; i >= 0; --i)
+        {
+          if (std::isnan(mObjectiveValues[i]) || std::isinf(mObjectiveValues[i]))
+            {
+              mPopulation.erase(mPopulation.begin() + i);
+              mObjectiveValues.erase(mObjectiveValues.begin() + i);
+            }
+        }
     }
   else
     {
       const auto* current = mpSourceMethod->getCurrentParameters();
 
-      if (current != NULL)
+      if (current != NULL && current->size() == mNumParameters)
         {
           double lastObjective = mObjectiveValues.empty() ? std::numeric_limits< double >::infinity() : mObjectiveValues.back();
 
@@ -554,7 +621,10 @@ void CQOptPopulation::update()
   if (mpSourceMethod == NULL)
     return;
 
-  QMutexLocker lock(&mMutex);
+  QMutexLockerWithTimeout lock(&mMutex, 100);
+  if (!lock.isLocked())
+    return;
+
   mInUpdate = true;
   setUpdatesEnabled(false);
 
@@ -669,6 +739,8 @@ void CQOptPopulation::update()
       C_INT32 j;
 
       CVector< C_FLOAT64 >* current = mPopulation[i];
+      if (current == NULL || current->size() < mNumParameters)
+        continue;
 
       for (j = 0; j < mNumParameters; ++j)
         {
@@ -725,13 +797,16 @@ void CQOptPopulation::update()
 
       for (j = 0; j < (int)mShiftX.size(); ++j) //loop over the different projections
         {
-          if (!mpPopulationMethod && i > 1)
+          if (!mpPopulationMethod && i > 1 && mLineItems[j].size() >= i + 1)
             {
               QGraphicsLineItem * line = dynamic_cast< QGraphicsLineItem  * >(mLineItems[j][i]);
               line->setLine(mShiftX[j] + last_values[mXIndex[j]], mShiftY[j]  + last_values[mYIndex[j]],
                             mShiftX[j] + scaled_values[mXIndex[j]], mShiftY[j] + scaled_values[mYIndex[j]]);
               line->setVisible(true);
             }
+
+          if (mGraphicItems[j].size() < i + 1)
+            continue;
 
           QGraphicsEllipseItem* gie = dynamic_cast<QGraphicsEllipseItem*>(mGraphicItems[j][i]);
 

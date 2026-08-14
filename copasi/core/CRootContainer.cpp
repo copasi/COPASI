@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -109,8 +109,6 @@ void CRootContainer::init(int argc, char *argv[], const bool & withGUI)
   // CLogger::setLogDir(COptions::getPWD() + CDirEntry::Separator + "COPASI");
 #endif // USE_OMP
 
-  CRegisteredCommonName::setEnabled(false);
-
   CCopasiMessage::setIsGUI(withGUI);
 
   if (pRootContainer == NULL)
@@ -118,8 +116,6 @@ void CRootContainer::init(int argc, char *argv[], const bool & withGUI)
 
   if (pRootContainer != NULL)
     pRootContainer->initializeChildren();
-
-  CRegisteredCommonName::setEnabled(true);
 }
 
 // static

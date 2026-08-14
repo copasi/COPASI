@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -112,7 +112,7 @@ bool SensitivitiesWidget::saveTaskProtected()
   if (FunctionChooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     {
       if (mpSingleFunction)
-        TargetFunctions.setSingleObjectCN(CRegisteredCommonName(mpSingleFunction->getStringCN()));
+        TargetFunctions.setSingleObjectCN(CRegisteredCommonName(mpSingleFunction->getCN()));
     }
   else
     TargetFunctions.setListType(FunctionChooser->getCurrentObjectList());
@@ -129,7 +129,7 @@ bool SensitivitiesWidget::saveTaskProtected()
   if (VariableChooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     {
       if (mpSingleVariable)
-        FirstVariables.setSingleObjectCN(CRegisteredCommonName(mpSingleVariable->getStringCN()));
+        FirstVariables.setSingleObjectCN(CRegisteredCommonName(mpSingleVariable->getCN()));
     }
   else
     FirstVariables.setListType(VariableChooser->getCurrentObjectList());
@@ -147,7 +147,7 @@ bool SensitivitiesWidget::saveTaskProtected()
   if (Variable2Chooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     {
       if (mpSingleVariable2)
-        SecondVariables.setSingleObjectCN(CRegisteredCommonName(mpSingleVariable2->getStringCN()));
+        SecondVariables.setSingleObjectCN(CRegisteredCommonName(mpSingleVariable2->getCN()));
     }
   else
     SecondVariables.setListType(Variable2Chooser->getCurrentObjectList());

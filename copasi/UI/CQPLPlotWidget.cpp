@@ -1,4 +1,4 @@
-// Copyright (C) 2026 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2025 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -242,6 +242,7 @@ QCustomPlot * CQPLPlotWidget::createPlot(const PlotArgs & args, bool allowPopout
   auto & label = args.label;
   auto & param_value = args.param_value;
   auto & param_sd = args.param_sd;
+  auto & parabola_coeff = args.parabola_coeff;
   auto & obj_val = args.obj_val;
   auto & thresholds = args.thresholds;
   auto & verticals = args.verticals;
@@ -350,17 +351,17 @@ QCustomPlot * CQPLPlotWidget::createPlot(const PlotArgs & args, bool allowPopout
 
   // add parabola: obj_val + (x-param_value)^2  / param_sd
   // if param_sd is not 0 or nan
-  if (!std::isnan(param_sd) && param_sd != 0)
+  if (!std::isnan(parabola_coeff))
     {
       auto * pParabola = pPlot->addGraph();
       pParabola->setPen(QPen(Qt::green, 2, Qt::DotLine));
       pParabola->setLineStyle(QCPGraph::lsLine);
       pParabola->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssNone));
       pParabola->setAntialiased(true);
-      pParabola->setVisible(false);
+      pParabola->setVisible(true);
       // lambda to compute the parabola
-      auto y_parabola = [obj_val, param_sd, param_value](double x) {
-        return obj_val + (x - param_value) * (x - param_value) / param_sd;
+      auto y_parabola = [obj_val, parabola_coeff, param_value](double x) {
+        return obj_val + (x - param_value) * (x - param_value) * parabola_coeff;
       };
       QVector< double > y_parabola_values;
       for (auto & x_value : x)
@@ -583,9 +584,17 @@ void CQPLPlotWidget::generatePlots()
     double param_value = param_values[param_index];
     double param_sd = param_sds[param_index];
 
+    //calculate the SD of the residuals from the data available in the results file
+    double tmp_residual_sd = sqrt(obj_val/(num_data-num_params));
+    //the param_sd is the SD of the residuals times the sqrt of the corresponding diagonal element of the correlation matrix
+    //therefore the diagonal element of the (unscaled) corr mat can be reconstructed as (param_sd/residual_sd)^2
+    //We assume that the curvature of the likelyhood profile is the inverse of the diag element of the corr mat
+    //and the coefficient for the quadratic approximation is 0.5 times that.
+    double parabola_coeff =  0.5/((param_sd/tmp_residual_sd)*(param_sd/tmp_residual_sd));
+
     auto verticals = computeVerticals(mpTxtVertical->text().split(";"), param_value, param_sd);
 
-    auto plotArgs = PlotArgs{x, y, label, param_value, param_sd, obj_val, thresholds, verticals, y_min, y_max, scale_bottom, scale_top};
+    auto plotArgs = PlotArgs{x, y, label, param_value, param_sd, parabola_coeff, obj_val, thresholds, verticals, y_min, y_max, scale_bottom, scale_top};
 
     auto* pPlot = createPlot(plotArgs);
 

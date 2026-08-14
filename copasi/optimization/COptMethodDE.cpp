@@ -278,7 +278,6 @@ bool COptMethodDE::optimise()
 
   // initialize the population
   // first individual is the initial guess
-  bool pointInParameterDomain = true;
   createIndividual(C_INVALID_INDEX, COptItem::CheckPolicyFlag::All);
 
   mValues[0] = evaluate(EvaluationPolicy::Constraints);

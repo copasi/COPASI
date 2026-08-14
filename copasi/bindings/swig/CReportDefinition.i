@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -131,22 +131,22 @@
 
   void addHeaderItem(std::string item)
   {
-    self->getHeaderAddr()->push_back(CRegisteredCommonName(item, self->getObjectDataModel()));
+    self->getHeaderAddr()->push_back(CCommonName(item));
   }
   
   void addFooterItem(std::string item)
   {
-    self->getFooterAddr()->push_back(CRegisteredCommonName(item, self->getObjectDataModel()));
+    self->getFooterAddr()->push_back(CCommonName(item));
   }
   
   void addBodyItem(std::string item)
   {
-    self->getBodyAddr()->push_back(CRegisteredCommonName(item, self->getObjectDataModel()));
+    self->getBodyAddr()->push_back(CCommonName(item));
   }
   
   void addTableItem(std::string item)
   {
-    self->getTableAddr()->push_back(CRegisteredCommonName(item, self->getObjectDataModel()));
+    self->getTableAddr()->push_back(CCommonName(item));
   }
   
 

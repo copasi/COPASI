@@ -179,10 +179,10 @@ public:
 
   virtual ~PJACFunctor() {}
 
-  virtual C_INT operator()(C_INT *neq, double *y, double *yh,
-                           C_INT *nyh, double *ewt, double *ftem,
-                           double *savf, double *wm, C_INT *iwm,
-                           evalF f, evalJ jac)
+  C_INT operator()(C_INT *neq, double *y, double *yh,
+                   C_INT *nyh, double *ewt, double *ftem,
+                   double *savf, double *wm, C_INT *iwm,
+                   evalF f, evalJ jac) override
   {
     return (*mpType.*mpMethod)(neq, y, yh, nyh, ewt, ftem, savf, wm,
                                iwm, f, jac);
@@ -228,8 +228,8 @@ public:
 
   virtual ~SLVSFunctor() {}
 
-  virtual C_INT operator()(double *wm, C_INT *iwm, double *x,
-                           double *tem)
+  C_INT operator()(double *wm, C_INT *iwm, double *x,
+                   double *tem) override
   {return (*mpType.*mpMethod)(wm, iwm, x, tem);}
 
 protected:

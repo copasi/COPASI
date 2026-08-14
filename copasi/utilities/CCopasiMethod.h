@@ -136,6 +136,13 @@ public:
   virtual bool isValidProblem(const CCopasiProblem * pProblem);
 
   /**
+   *  Return a (possibly rough) estimate for the accuracy of the method under current settings.
+   *   This is not intended for numerical calculations but rather for allowing sanity checks in tasks that use
+   *    this method
+   */
+  virtual C_FLOAT64 getEstimatedError() const;
+
+  /**
    * Load a list of parameters
    * @param "CReadConfig &" configBuffer
    * @param "CReadConfig::Mode" mode Default(CReadConfig::SEARCH)

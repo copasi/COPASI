@@ -1,12 +1,14 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/layout/CLRelAbsVector.cpp,v $
-//   $Revision: 1.5 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2012/04/23 15:44:51 $
-// End CVS Header
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2012 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
@@ -22,14 +24,12 @@
 
 #include "CLRelAbsVector.h"
 
-
 /**
  * Constructor with two values.
  * First value sets the absolute value, econd sets the relative value.
  */
 CLRelAbsVector::CLRelAbsVector(double a, double r): mAbs(a), mRel(r)
-{
-}
+{}
 
 /**
  * Constructor with two values.
@@ -249,17 +249,6 @@ std::ostream& operator<<(std::ostream& os, const CLRelAbsVector& v)
 {
   os << v.toString();
   return os;
-}
-
-CLRelAbsVector& CLRelAbsVector::operator=(const CLRelAbsVector & src)
-{
-  if (&src != this)
-    {
-      this->mAbs = src.mAbs;
-      this->mRel = src.mRel;
-    }
-
-  return *this;
 }
 
 /**

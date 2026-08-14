@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -92,8 +92,6 @@ void CHybridNextReactionRKMethod::integrateDeterministicPart(C_FLOAT64 dt)
 {
   size_t stepCounter = 0;
   C_FLOAT64 totalStepsTaken = stepCounter * mStepsize;
-
-  CHybridStochFlag * react = NULL;
 
   // This method uses a 4th order RungeKutta-method to integrate the deterministic part of the system. Maybe a better numerical method (adaptive stepsize, lsoda, ...) should be introduced here later on
   while (!SBMLImporter::areApproximatelyEqual(dt, totalStepsTaken, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon()))

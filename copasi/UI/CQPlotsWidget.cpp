@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -75,8 +75,8 @@ CQPlotsWidget::CQPlotsWidget(QWidget *parent, const char *name)
   connect(this, SIGNAL(initFilter()), this, SLOT(slotFilterChanged()));
   connect(mpLEFilter, SIGNAL(textChanged(const QString &)),
           this, SLOT(slotFilterChanged()));
-  connect(mpBtnActivateAll, SIGNAL(pressed()), this, SLOT(slotBtnActivateAllClicked()));
-  connect(mpBtnDeactivateAll, SIGNAL(pressed()), this, SLOT(slotBtnDeactivateAllClicked()));
+  connect(mpBtnActivateAll, SIGNAL(clicked()), this, SLOT(slotBtnActivateAllClicked()));
+  connect(mpBtnDeactivateAll, SIGNAL(clicked()), this, SLOT(slotBtnDeactivateAllClicked()));
 }
 
 /*

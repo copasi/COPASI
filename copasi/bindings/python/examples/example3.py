@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -183,7 +188,7 @@ def create_report(model):
             # alternatively, we could use "Reference=Amount" to get the
             # particle number
             body.push_back(
-                CRegisteredCommonName(metab.getObject(CCommonName("Reference=Concentration")).getCN().getString()))
+                CRegisteredCommonName(metab.getChildObject(CCommonName("Reference=Concentration")).getCN().getString()))
             # add the corresponding id to the header
             header.push_back(CRegisteredCommonName(CDataString(metab.getSBMLId()).getCN().getString()))
             # after each entry, we need a separator

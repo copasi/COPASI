@@ -343,7 +343,7 @@ void ReactionsWidget1::copy()
   const CDataObject * pObject = origToCopyMapping.getDuplicateFromObject(mpObject);
 
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN", pObject->getStringCN());
+  UndoData.addMetaDataProperty("Widget Object CN", pObject->getCN());
   UndoData.addMetaDataProperty("Widget Object Name", pObject->getObjectDisplayName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));

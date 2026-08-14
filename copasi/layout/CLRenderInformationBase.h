@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -246,7 +246,7 @@ public:
   /**
    * Returns the key of the render infomation object
    */
-  const std::string& getKey() const;
+  const std::string& getKey() const override;
 
   /**
    * Returns the id of the object.

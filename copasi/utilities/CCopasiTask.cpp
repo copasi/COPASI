@@ -87,7 +87,7 @@ const CCopasiTask::OutputFlag CCopasiTask::OUTPUT_UI = CCopasiTask::OutputFlag(C
 const CCopasiTask::OutputFlag CCopasiTask::ONLY_TIME_SERIES = CCopasiTask::OutputFlag(CCopasiTask::OutputFlagBase::TIME_SERIES) | CCopasiTask::OutputFlagBase::INITIALIZE | CCopasiTask::OutputFlagBase::STREAM | CCopasiTask::OutputFlagBase::FINISH;
 
 // static
-CCopasiTask * CCopasiTask::fromData(const CData & data, CUndoObjectInterface * pParent)
+CCopasiTask * CCopasiTask::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   CCopasiTask * pNew = CTaskFactory::create(CTaskEnum::TaskName.toEnum(data.getProperty(CData::TASK_TYPE).toString()), NO_PARENT);
 
@@ -107,7 +107,7 @@ CData CCopasiTask::toData() const
   Data.addProperty(CData::TASK_TYPE, CTaskEnum::TaskName[mType]);
   Data.addProperty(CData::TASK_SCHEDULED, mScheduled);
   Data.addProperty(CData::TASK_UPDATE_MODEL, mUpdateModel);
-  Data.addProperty(CData::TASK_REPORT, mReport.getReportDefinition() != NULL ? mReport.getReportDefinition()->getStringCN() : CCommonName());
+  Data.addProperty(CData::TASK_REPORT, mReport.getReportDefinition() != NULL ? mReport.getReportDefinition()->getCN() : CCommonName());
   Data.addProperty(CData::TASK_REPORT_TARGET, mReport.getTarget());
   Data.addProperty(CData::TASK_REPORT_APPEND, mReport.append());
   Data.addProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE, mReport.confirmOverwrite());
@@ -145,7 +145,8 @@ bool CCopasiTask::applyData(const CData & data, CUndoData::CChangeSet & changes)
 
   if (data.isSetProperty(CData::TASK_REPORT))
     {
-      const CReportDefinition * pReportDefinition = dynamic_cast< const CReportDefinition * >(getObjectFromCN(data.getProperty(CData::TASK_REPORT).toString()));
+      CCommonName CN = data.getProperty(CData::TASK_REPORT).toString();
+      const CReportDefinition * pReportDefinition = dynamic_cast< const CReportDefinition * >(getObjectFromCN(CN));
       mReport.setReportDefinition(pReportDefinition);
     }
 
@@ -200,7 +201,7 @@ void CCopasiTask::createUndoData(CUndoData & undoData,
   undoData.addProperty(CData::TASK_TYPE, oldData.getProperty(CData::TASK_TYPE), CTaskEnum::TaskName[mType]);
   undoData.addProperty(CData::TASK_SCHEDULED, oldData.getProperty(CData::TASK_SCHEDULED), mScheduled);
   undoData.addProperty(CData::TASK_UPDATE_MODEL, oldData.getProperty(CData::TASK_UPDATE_MODEL), mUpdateModel);
-  undoData.addProperty(CData::TASK_REPORT, oldData.getProperty(CData::TASK_REPORT), mReport.getReportDefinition() != NULL ? mReport.getReportDefinition()->getStringCN() : CCommonName());
+  undoData.addProperty(CData::TASK_REPORT, oldData.getProperty(CData::TASK_REPORT), mReport.getReportDefinition() != NULL ? mReport.getReportDefinition()->getCN() : CCommonName());
   undoData.addProperty(CData::TASK_REPORT_TARGET, oldData.getProperty(CData::TASK_REPORT_TARGET), mReport.getTarget());
   undoData.addProperty(CData::TASK_REPORT_APPEND, oldData.getProperty(CData::TASK_REPORT_APPEND), mReport.append());
   undoData.addProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE, oldData.getProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE), mReport.confirmOverwrite());
@@ -277,8 +278,8 @@ CCopasiTask::CCopasiTask()
   , mpProblem(NULL)
   , mpMethod(NULL)
   , mReport()
-  , mInitialState()
   , mpContainer(NULL)
+  , mInitialState()
   , mProcessReport()
   , mpSliders(NULL)
   , mDoOutput(OUTPUT_SE)
@@ -508,6 +509,8 @@ bool CCopasiTask::initialize(const OutputFlag & of,
   if (!isTaskValid())
     return false;
 
+  mMethodName = mpMethod ? mpMethod->getObjectName() : std::string();
+
   bool success = true;
 
   if (mpContainer != NULL)
@@ -637,6 +640,14 @@ CCopasiMethod * CCopasiTask::getMethod() {return mpMethod;}
 
 const CCopasiMethod * CCopasiTask::getMethod() const {return mpMethod;}
 
+//virtual
+C_FLOAT64 CCopasiTask::getEstimatedMethodError() const
+{
+  if (mpMethod)
+    return mpMethod->getEstimatedError();
+  return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+}
+
 CReport & CCopasiTask::getReport() {return mReport;}
 
 const CReport & CCopasiTask::getReport() const {return mReport;}
@@ -722,6 +733,7 @@ void CCopasiTask::separate(const COutputInterface::Activity & activity)
 void CCopasiTask::initObjects()
 {
   addObjectReference("Output counter", mOutputCounter, CDataObject::ValueInt);
+  addObjectReference("Method Name", mMethodName, CDataObject::ValueString);
   new CCopasiTimer(CCopasiTimer::Type::WALL, this);
   new CCopasiTimer(CCopasiTimer::Type::PROCESS, this);
 

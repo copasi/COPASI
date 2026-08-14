@@ -22,78 +22,18 @@ class CObjectInterface;
 class CRegisteredCommonName: public CCommonName
 {
 public:
-  class RenameInterface
-  {
-  public:
-    typedef void (*Type)(const std::string & /* oldCN */,
-                         const std::string & /* newCN */);
-
-    virtual ~RenameInterface() {};
-
-    virtual void operator()(const std::string & oldCN,
-                            const std::string &  newCN) = 0;
-  };
-
-  class Rename : public RenameInterface
-  {
-  public:
-    Rename() = delete;
-    Rename(Type method);
-
-    virtual ~Rename();
-
-    // override operator "()"
-    virtual void operator()(const std::string & oldCN,
-                            const std::string & newCN);
-
-  private:
-    Type mMethod;
-  };
-
-  template <class Renamer>
-  class ClassMemberRename : public RenameInterface
-  {
-  public:
-    ClassMemberRename() = delete;
-
-    ClassMemberRename(Renamer * pRenamer,
-                      void (Renamer::*method)(const std::string & /* oldCN */,
-                          const std::string & /* newCN */));
-
-    virtual ~ClassMemberRename() {};
-
-    // override operator "()"
-    virtual void operator()(const std::string & oldCN,
-                            const std::string & newCN);
-
-  private:
-    /**
-     * The pointer to the instance of the caller
-     */
-    Renamer * mpRenamer;             // pointer to object
-    void (Renamer::*mpMethod)(const std::string & /* oldCN */,
-                              const std::string & /* newCN */);
-  };
+  static void ResolveAll(const CDataObject *  pContainer);
 
   /**
    * Default Constructor
    */
   CRegisteredCommonName();
 
-#ifndef DEPRECATE_CONSTRUCTOR
   /**
    * Constructor from base class
-   * @param const std::string & name
+   * @param const CCommonName & name
    */
-  CRegisteredCommonName(const std::string & name);
-#endif // DEPRECATE_CONSTRUCTOR
-
-  /**
-   * Constructor from base class
-   * @param const std::string & name
-   * @param const CObjectInterface * pObject
-   */
-  CRegisteredCommonName(const std::string & name, const CObjectInterface * pObject);
+  CRegisteredCommonName(const CCommonName & name);
 
   /**
    * Copy Constructor
@@ -102,91 +42,24 @@ public:
   CRegisteredCommonName(const CRegisteredCommonName & src);
 
   /**
+   * Constructor from base class
+   * @param const std::string & name
+   */
+  CRegisteredCommonName(const std::string & name);
+
+  /**
    * Destructor
    */
-  ~CRegisteredCommonName();
+  virtual ~CRegisteredCommonName();
 
-  void assign(const std::string & CN, const CObjectInterface * pObject);
+  CRegisteredCommonName & operator=(const std::string & rhs);
+  CRegisteredCommonName & operator=(const CCommonName & rhs);
+  CRegisteredCommonName & operator=(const CRegisteredCommonName & rhs);
 
-  const CDataModel * getDataModel() const;
-
-  void setDataModel(const CDataModel * pDM);
-
-  /**
-   * Enable and disable the rename handler
-   * @param const bool & enabled
-   */
-  static void setEnabled(const bool & enabled);
-
-  /**
-   * Check whether the rename handler is enabled
-   * @return const bool & enabled
-   */
-  static const bool & isEnabled();
-
-  /**
-   * Update all registered common names which contain
-   * the oldCN
-   * @param const std::string & oldCN
-   * @param const std::string & newCN
-   * @param const CDataModel * pDataModel
-   */
-  static void handle(const std::string & oldCN,
-                     const std::string & newCN,
-                     CDataModel * pDataModel);
-
-  /**
-   * Old files (before build 171) may have common name where invalid characters have been used.
-   * This function sanitizes the name part
-   */
-  static void sanitizeObjectNames();
-
-  /**
-   * Register and additional handler
-   * @param RenameInterface * pRenameHandler
-   */
-  static void registerHandler(RenameInterface * pRenameHandler);
-
-  /**
-   * Deregister and additional handler
-   * @param RenameInterface * pRenameHandler
-   */
-  static void deregisterHandler(RenameInterface * pRenameHandler);
+  const CObjectInterface * resolve(const CDataObject *  pContainer) const override;
 
 private:
-  const CDataModel * mpDataModel;
-
-  /**
-   * A set which contains all registered comon names
-   */
-  static std::set< CRegisteredCommonName * > mSet;
-
-  /**
-   * A flag indicating whether renaming is enabled.
-   */
-  static bool mEnabled;
-
-  /**
-   * A set of registered handlers
-   */
-  static std::set< RenameInterface * > mRegisteredHandlers;
+  static std::set< const CRegisteredCommonName * > UnresolvedCNs;
 };
-
-template <class Renamer>
-CRegisteredCommonName::ClassMemberRename< Renamer >::ClassMemberRename(Renamer * pRenamer,
-    void (Renamer::*method)(const std::string & /* oldCN */, const std::string & /* newCN */)):
-  RenameInterface(),
-  mpRenamer(pRenamer),
-  mpMethod(method) {}
-
-// override operator "()"
-// virtual
-template <class Renamer>
-void CRegisteredCommonName::ClassMemberRename< Renamer >::operator()(const std::string & oldCN,
-    const std::string & newCN)
-{
-  // execute member function
-  return (*mpRenamer.*mpMethod)(oldCN, newCN);
-}
 
 #endif // COPASI_CRegisteredCommonName

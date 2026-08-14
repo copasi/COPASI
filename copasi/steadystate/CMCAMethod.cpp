@@ -224,12 +224,8 @@ void CMCAMethod::calculateUnscaledElasticities(C_FLOAT64 /* res */)
 
   // Calculate the dependencies of the elasticities this is helpful for scaling to determine
   // whether 0/0 is 0 or NaN
-  const CMathDependencyGraph & TransientDependencies = mpContainer->getTransientDependencies();
 
-  CMathObject * pParticleFluxObject = mpContainer->getMathObject(mpContainer->getParticleFluxes().array());
-  CMathObject * pParticleFluxObjectEnd = pParticleFluxObject + numReacs;
   CMathObject * pSpeciesObjectStart = mpContainer->getMathObject(mpContainer->getState(false).array()) + FirstReactionSpeciesIndex;
-  CMathObject * pSpeciesObjectEnd = pSpeciesObjectStart + numMetabs;
   //CMathObject * pSpeciesObject;
 
   // mUnscaledElasticities.resize(numReacs, numMetabs);
@@ -333,7 +329,6 @@ bool CMCAMethod::calculateUnscaledConcentrationCC()
   dgemm::eval(1.0, mReducedStoichiometry, aux1, 0.0, aux2);
 
   C_INT M = (C_INT) aux2.numCols(); /* LDA, LDC */
-  C_INT N = (C_INT) aux2.numRows();
 
   // Invert aux2
   C_INT info;
@@ -397,7 +392,6 @@ bool CMCAMethod::scaleMCA(const bool & status, C_FLOAT64 res)
   // We need the number of metabolites determined by reactions.
   size_t numMetabs = mpContainer->getCountIndependentSpecies() + mpContainer->getCountDependentSpecies();
   size_t FirstReactionSpeciesIndex = mpContainer->getCountFixedEventTargets() + 1 + mpContainer->getCountODEs();
-  size_t numReacs = mpContainer->getParticleFluxes().size();
 
   const CMathObject * pSpeciesObjectStart = mpContainer->getMathObject(mpContainer->getState(false).array()) + FirstReactionSpeciesIndex;
   const CMathObject * pSpeciesObjectEnd = pSpeciesObjectStart + numMetabs;
@@ -765,7 +759,7 @@ bool CMCAMethod::isValidProblem(const CCopasiProblem * pProblem)
       Requested.insert(mpContainer->getMathObject(it->getValueReference()));
     }
 
-  CCore::CUpdateSequence UpdateSequence;
+  CCore::CUpdateSequence UpdateSequence(mpContainer);
 
   mpContainer->getTransientDependencies().getUpdateSequence(UpdateSequence, CCore::SimulationContext::Default, mpContainer->getStateObjects(false), Requested);
 

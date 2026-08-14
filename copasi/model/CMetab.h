@@ -404,14 +404,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Default constructor

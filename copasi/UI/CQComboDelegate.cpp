@@ -43,6 +43,8 @@ QWidget *CQComboDelegate::createEditor(QWidget *parent,
 {
   QModelIndex  SourceIndex = index;
   const QAbstractItemModel *pModel = index.model();
+  if (pModel == NULL)
+    return NULL;
 
   while (pModel->inherits("QSortFilterProxyModel"))
     {
@@ -55,9 +57,10 @@ QWidget *CQComboDelegate::createEditor(QWidget *parent,
 
   pEditor->setAutoFillBackground(true);
 
-  if (!getItems(SourceIndex).empty())
+  auto items = getItems(SourceIndex);
+  if (!items.empty())
     {
-      pEditor->addItems(getItems(SourceIndex));
+      pEditor->addItems(items);
     }
 
   connect(pEditor, SIGNAL(currentIndexChanged(int)), this, SLOT(slotCurrentIndexChanged(int)));
@@ -69,17 +72,23 @@ QWidget *CQComboDelegate::createEditor(QWidget *parent,
 void CQComboDelegate::setEditorData(QWidget *editor,
                                     const QModelIndex &index) const
 {
+  if (!index.model())
+    return;
+
   QString value = index.model()->data(index, Qt::DisplayRole).toString();
   QComboBox *comboBox = static_cast<QComboBox*>(editor);
 
   comboBox->blockSignals(true);
-  comboBox->setCurrentIndex(comboBox->findText(value));
+  auto valIndx = comboBox->findText(value);
+  comboBox->setCurrentIndex(valIndx);
   comboBox->blockSignals(false);
 }
 
 void CQComboDelegate::setModelData(QWidget *editor, QAbstractItemModel *model,
                                    const QModelIndex &index) const
 {
+  if (!model)
+    return;
   QComboBox *comboBox = static_cast<QComboBox*>(editor);
   QVariant value(comboBox->currentText());
   QVariant current = model->data(index, Qt::EditRole);

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -54,14 +54,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -72,10 +72,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & type,
-                              const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+  void createUndoData(CUndoData & undoData,
+                      const CUndoData::Type & type,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
   /**
    * Default constructor
@@ -112,7 +112,7 @@ public:
    * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CDataContainer * pParent);
+  bool setObjectParent(const CDataContainer * pParent) override;
 
   /**
    * Compile the event assignment.
@@ -125,7 +125,7 @@ public:
    * Retrieve the key
    * @return const std::string & key
    */
-  const std::string & getKey() const;
+  const std::string & getKey() const override;
 
   /**
    * Set the CN of the target
@@ -235,14 +235,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -253,10 +253,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & type,
-                              const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+  void createUndoData(CUndoData & undoData,
+                      const CUndoData::Type & type,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
   /**
    * Default constructor
@@ -293,19 +293,19 @@ public:
    * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CDataContainer * pParent);
+  bool setObjectParent(const CDataContainer * pParent) override;
 
   /**
    * Retrieve display name. Special treatment for reaction to
    * provide a shorter display
    */
-  virtual std::string getObjectDisplayName() const;
+  std::string getObjectDisplayName() const override;
 
   /**
    * Retrieves the key of the event
    * @return std::string key
    */
-  virtual const std::string & getKey() const;
+  const std::string & getKey() const override;
 
   /**
    * Appends pointers to assignments which are dependent on the candidates to the

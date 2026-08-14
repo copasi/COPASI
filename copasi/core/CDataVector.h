@@ -61,6 +61,12 @@ public:
 
     ~iterator() {}
 
+    iterator & operator=(const iterator & rhs)
+    {
+      std::vector< CType * >::iterator::operator=(rhs);
+      return *this;
+    }
+
     CType & operator*() const
     {
       return *std::vector< CType * >::iterator::operator*();
@@ -139,6 +145,12 @@ public:
     const_iterator(const typename std::vector< CType * >::const_iterator & src): std::vector< CType * >::const_iterator(src) {}
 
     ~const_iterator() {}
+
+    const_iterator & operator =(const const_iterator & rhs)
+    {
+      std::vector< CType * >::const_iterator::operator=(rhs);
+      return *this;
+    }
 
     const CType & operator*() const
     {
@@ -284,9 +296,9 @@ public:
    * @return CUndoData undoData
    */
   void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & /* type */,
-                              const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override
+                      const CUndoData::Type & /* type */,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override
   {
     const std::vector< CData > & OldContent = oldData.getProperty(CData::VECTOR_CONTENT).toDataVector();
     std::vector< CData >::const_iterator itOld = OldContent.begin();
@@ -719,9 +731,10 @@ public:
    * @param const CCommonName &name
    * @return const CObjectInterface * object
    */
+  /*
   const CObjectInterface * getObject(const CCommonName &name) const override
   {
-    size_t Index = name.getElementIndex();
+    size_t Index = name.getElementIndex(0);
 
     if (Index < size())
       {
@@ -733,6 +746,7 @@ public:
 
     return CDataContainer::getObject(name);
   }
+  */
 
   /**
    *  Retrieves the size of the vector
@@ -856,6 +870,28 @@ public:
                                       const CDataVector<CType> & d);
 #endif // WIN32
 #endif // SWIG
+protected:
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override
+  {
+    const CObjectInterface * pObject = nullptr;
+
+    if (pCN)
+    {
+      if (pCN->isResolved())
+        pObject = pCN->getObject();
+      else
+        {
+          size_t Index = CCommonNameComponent::getElementIndex(pCN->getPartialCN(), 0);
+
+          if (Index < size())
+            pObject = std::vector< CType * >::at(Index);
+          else
+            pObject = CDataContainer::resolve(pCN);
+        }
+    }
+
+    return pObject;
+  }
 };
 
 template < class CType > class CDataVectorS: public CDataVector < CType >
@@ -937,7 +973,7 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const
+  CData toData() const override
   {
     CData Data;
     std::vector< CData > Content;
@@ -960,7 +996,7 @@ public:
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes)
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override
   {
     bool success = true;
     bool inserted = false;
@@ -970,7 +1006,7 @@ public:
 
     for (; it != end; ++it)
       {
-        CType * pObject = const_cast< CType * >(dynamic_cast< const CType *>(getObject("[" + CCommonName::escape(it->getProperty(CData::OBJECT_NAME).toString()) + "]")));
+        CType * pObject = const_cast< CType * >(dynamic_cast< const CType *>(CDataVector < CType >::getObject("[" + CCommonName::escape(it->getProperty(CData::OBJECT_NAME).toString()) + "]")));
 
         if (pObject == NULL)
           {
@@ -1020,10 +1056,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & /* type */,
-                              const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const
+  void createUndoData(CUndoData & undoData,
+                      const CUndoData::Type & /* type */,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override
   {
     const std::vector< CData > & OldContent = oldData.getProperty(CData::VECTOR_CONTENT).toDataVector();
     std::vector< CData >::const_iterator itOld = OldContent.begin();
@@ -1161,7 +1197,7 @@ public:
    * @param const bool & adopt (Default: false)
    * @return bool success
    */
-  virtual bool add(CDataObject * pObject, const bool & adopt = true)
+  bool add(CDataObject * pObject, const bool & adopt = true) override
   {
     // This is not very efficient !!!
     // It results in a lot of resizing of the vector !!!
@@ -1271,9 +1307,10 @@ public:
    * @param const std::string & name
    * @return const CObjectInterface * pObject
    */
-  virtual const CObjectInterface * getObject(const CCommonName &name) const
+  /*
+  const CObjectInterface * getObject(const CCommonName &name) const override
   {
-    CCommonName ElementName = name.getElementName(0);
+    std::string ElementName = name.getElementName(0);
 
     if (!ElementName.empty())
       {
@@ -1288,6 +1325,7 @@ public:
 
     return CDataVector< CType >::getObject(name);
   }
+  */
 
   /**
    * Retrieve the index of the named object in the vector. If an object with the
@@ -1328,6 +1366,36 @@ public:
         tmp << Name << "_" << Index;
         name = tmp.str();
       }
+  }
+
+protected:
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override
+  {
+    const CObjectInterface * pObject = nullptr;
+
+    if (pCN)
+    {
+      if (pCN->isResolved())
+        pObject = pCN->getObject();
+      else
+        {
+          std::string ElementName = CCommonNameComponent::getElementName(pCN->getPartialCN(), 0);
+
+          if (!ElementName.empty())
+            {
+              CDataContainer::ObjectMap::range Range = CDataVector< CType >::getObjects().equal_range(ElementName);
+
+              for (; Range.first != Range.second; ++Range.first)
+                if (dynamic_cast< CType * >(*Range.first) != NULL)
+                  pObject = *Range.first;
+            }
+
+          if (pObject == nullptr)
+            pObject = CDataVector< CType >::resolve(pCN);
+        }
+    }
+
+    return pObject;
   }
 
 private:

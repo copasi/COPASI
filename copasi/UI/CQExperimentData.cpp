@@ -1218,7 +1218,7 @@ void CQExperimentData::selectModelObject(const int & row)
   if (pObject)
     {
       mpTable->item(row, COL_OBJECT)->setText(FROM_UTF8(pObject->getObjectDisplayName()));
-      mpTable->item(row, COL_OBJECT_HIDDEN)->setText(FROM_UTF8(pObject->getStringCN()));
+      mpTable->item(row, COL_OBJECT_HIDDEN)->setText(FROM_UTF8(pObject->getCN()));
     }
 
   updateScales();
@@ -1577,7 +1577,7 @@ bool CQExperimentData::saveTable(CExperiment * pExperiment)
 
       if (ObjectMap.getObjectCN(i) != TO_UTF8(mpTable->item((int) i, COL_OBJECT_HIDDEN)->text()))
         {
-          ObjectMap.setObjectCN(i, CRegisteredCommonName(TO_UTF8(mpTable->item((int) i, COL_OBJECT_HIDDEN)->text()), mpDataModel));
+          ObjectMap.setObjectCN(i, CCommonName(TO_UTF8(mpTable->item((int) i, COL_OBJECT_HIDDEN)->text())));
           Changed = true;
         }
 

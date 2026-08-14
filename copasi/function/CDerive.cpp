@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -503,12 +503,6 @@ CEvaluationNode* CDerive::deriveBranch(const CEvaluationNode* node, const CDataO
 
   if (pENCall)
     {
-
-      //is it a function?
-      const CFunction * tmpFunction = dynamic_cast<const CFunction*>(pENCall->getCalledTree());
-
-//     const std::vector<CEvaluationNode *> getListOfChildNodes() const {return mCallNodes;}
-
       //create call environment for the called function
       std::vector<const CEvaluationNode*> subenv;
       size_t i, imax = pENCall->getListOfChildNodes().size();

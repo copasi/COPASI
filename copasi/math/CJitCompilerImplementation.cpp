@@ -822,7 +822,7 @@ CJitCompilerImplementation::Node * CJitCompilerImplementation::compile(const CEv
   return pNodeJIT;
 }
 
-CJitCompilerImplementation::Node * CJitCompilerImplementation::compile(const CEvaluationNodeChoice * pNode, const std::vector< CJitCompilerImplementation::Node * > & context)
+CJitCompilerImplementation::Node * CJitCompilerImplementation::compile(const CEvaluationNodeChoice * /* pNode */, const std::vector< CJitCompilerImplementation::Node * > & context)
 {
   /**
    * We have four different cases to consider:

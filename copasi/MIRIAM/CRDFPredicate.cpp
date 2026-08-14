@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -671,11 +671,6 @@ CRDFPredicate::CRDFPredicate(const std::string & uri):
   if (mType == rdf_li)
     mURI = CRDFPredicate::PredicateURI[mType];
 }
-
-CRDFPredicate::CRDFPredicate(const CRDFPredicate & src):
-  mType(src.mType),
-  mURI(src.mURI)
-{}
 
 CRDFPredicate::~CRDFPredicate()
 {}

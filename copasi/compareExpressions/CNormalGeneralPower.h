@@ -1,17 +1,24 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalGeneralPower.h,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2008/07/07 18:26:49 $
-// End CVS Header
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -52,10 +59,10 @@ class CNormalGeneralPower: public CNormalBase
     bool operator==(const CNormalGeneralPower& rhs) const;
     bool operator<(const CNormalGeneralPower& rhs) const;
 
-    virtual CNormalBase * copy() const;
-    virtual bool simplify();
+    CNormalBase * copy() const override;
+    bool simplify() override;
 
-    virtual std::string toString() const;
+    std::string toString() const override;
 
     CNormalFraction& getLeft();
     const CNormalFraction& getLeft() const;

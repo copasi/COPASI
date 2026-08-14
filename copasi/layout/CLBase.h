@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,8 +45,7 @@ class CLPoint;
 class CLBase
 {
 public:
-  CLBase() : mTag("") {};
-  CLBase(const CLBase &b) : mTag(b.mTag)  {};
+  CLBase() : mTag() {};
   CLBase(const SBase &) : mTag("") {};
   // make CLBase polymorphic so that we can dynamic cast from CLBase to
   // CLGraphicalObject
@@ -71,18 +70,16 @@ protected:
   C_FLOAT64 mZ;
 
 public:
-
-  CLPoint():
-    mX(0.0)
+  CLPoint()
+    : CLBase()
+    , mX(0.0)
     , mY(0.0)
     , mZ(0.0)
   {};
 
-  CLPoint(const C_FLOAT64 & x
-          , const C_FLOAT64 & y
-          , const C_FLOAT64 & z = 0.0
-         ):
-    mX(x)
+  CLPoint(const C_FLOAT64 & x, const C_FLOAT64 & y, const C_FLOAT64 & z = 0.0)
+    : CLBase()
+    , mX(x)
     , mY(y)
     , mZ(z)
   {};
@@ -129,7 +126,7 @@ public:
                   );
   };
 
-  virtual void moveBy(const CLPoint &p)
+  void moveBy(const CLPoint &p) override
   {
     mX += p.mX;
     mY += p.mY;
@@ -292,9 +289,9 @@ public:
   void setPosition(const CLPoint & p) {mPosition = p;}
   void setDimensions(const CLDimensions & d) {mDimensions = d;}
 
-  bool isEmpty() const { return mPosition.isEmpty() && mDimensions.isEmpty();  }
+  bool isEmpty() const {return mPosition.isEmpty() && mDimensions.isEmpty();}
 
-  virtual void moveBy(const CLPoint &p)
+  void moveBy(const CLPoint &p) override
   {
     mPosition.moveBy(p);
   };

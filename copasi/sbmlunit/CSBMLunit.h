@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -38,9 +38,6 @@ class CSBMLunit
 public:
   ///Default constructor
   CSBMLunit(unsigned int sbmlLevel, unsigned int sbmlVersion);
-
-  ///Copy constructor
-  CSBMLunit(const CSBMLunit & src);
 
   ///Constructor from libsbml units
   CSBMLunit(const UnitDefinition* ud);
@@ -150,7 +147,7 @@ public:
   ///retrieve the conflict flag
   bool isConflict() const {return mConflict;};
 
-  virtual std::string getDisplayString() const;
+  std::string getDisplayString() const override;
 
   static bool isEqual(const CSBMLunitInformation & unit1, const CSBMLunitInformation & unit2);
 

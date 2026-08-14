@@ -1,4 +1,4 @@
-// Copyright (C) 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -9,7 +9,6 @@
 #include <copasi/config.h>
 
 #  ifdef WITH_QT5_VISUALIZATION
-
 
 #  ifdef WITH_DATAVISUALIZATION_NAMESPACES
 #    define DATAVIS_NS_PREFIX QtDataVisualization::
@@ -48,7 +47,6 @@ class CQDataVizPlot
   , public CPlotInterface
 {
   Q_OBJECT
-
 
 private:
   /**
@@ -131,12 +129,13 @@ public:
    */
   virtual bool saveData(const std::string & filename);
 
+  void saveDataToStream(std::ostream & os) override;
+
   /**
    * Shows or hide all curves depending on whether visibility is false or true
    * @param const bool & visibility
    */
   virtual void setCurvesVisibility(const bool & visibility);
-
 
   virtual void saveToFile(const QString & fileName, QRect & rect);
 
@@ -144,7 +143,6 @@ public:
    * @return a string with supported file filters to save files
    */
   virtual QString getSaveFilters();
-
 
   //static QPointF getRange(const DATAVIS_NS_PREFIX QAbstractAxis * axis);
 
@@ -245,7 +243,6 @@ public slots:
   void toggleGradient();
 
   void contextActionTriggered(QAction * action);
-
 
 signals:
   void shadowQualityChanged(int quality);
@@ -375,7 +372,6 @@ protected:
 signals:
   void replotSignal();
 };
-
 
 # endif // WITH_QT5_VISUALIZATION
 

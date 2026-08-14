@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -130,24 +130,24 @@ public:
    * @param  const CDataModel* pDataModel
    * @return bool success
    */
-  virtual bool compile(CObjectInterface::ContainerList listOfContainer);
+  bool compile(CObjectInterface::ContainerList listOfContainer) override;
 
   /**
    * Perform an output event for the current activity
    * @param const Activity & activity
    */
-  virtual void output(const Activity & activity);
+  void output(const Activity & activity) override;
 
   /**
    * Introduce an additional separator into the output
    * @param const Activity & activity
    */
-  virtual void separate(const Activity & activity);
+  void separate(const Activity & activity) override;
 
   /**
    * Finish the output
    */
-  virtual void finish();
+  void finish() override;
 
   /**
    * Add an interface

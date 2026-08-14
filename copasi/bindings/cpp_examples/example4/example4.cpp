@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -88,7 +88,7 @@ int main()
   // the body will contain the actual timecourse data
   std::vector<CRegisteredCommonName>* pHeader = pReport->getHeaderAddr();
   std::vector<CRegisteredCommonName>* pBody = pReport->getBodyAddr();
-  pBody->push_back(pDataModel->getModel()->getObject("Reference=Time")->getCN());
+  pBody->push_back(pDataModel->getModel()->getChildObject(CCommonName("Reference=Time"))->getCN());
   pBody->push_back(pReport->getSeparator().getCN());
   pHeader->push_back(CDataString("time").getCN());
   pHeader->push_back(pReport->getSeparator().getCN());
@@ -106,7 +106,7 @@ int main()
           // we want the concentration oin the output
           // alternatively, we could use "Reference=Amount" to get the
           // particle number
-          pBody->push_back(pMetab->getObject(CCommonName("Reference=Concentration"))->getCN());
+          pBody->push_back(pMetab->getChildObject(CCommonName("Reference=Concentration"))->getCN());
           // after each entry, we need a seperator
           pBody->push_back(pReport->getSeparator().getCN());
 

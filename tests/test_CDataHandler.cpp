@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -30,7 +30,7 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi][datahandler]")
     CCopasiMessage::clearDeque();
 
     CDataHandler inv_handler;
-    inv_handler.addDuringName({"CN=Root,Model=The Brusselator", dm});  // this should not work and give a warning during compile, and stop it
+    inv_handler.addDuringName(CCommonName("CN=Root,Model=The Brusselator"));  // this should not work and give a warning during compile, and stop it
 
     REQUIRE(inv_handler.compile({dm}) == false);
 
@@ -40,16 +40,16 @@ TEST_CASE("1: load model, simulate, collect data", "[copasi][datahandler]")
     CCopasiMessage::clearDeque();
 
     CDataHandler handler;
-    handler.addDuringName({"CN=Root,Model=The Brusselator,Reference=Time", dm});
-    handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[X],Reference=Concentration", dm});
-    handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[Y],Reference=Concentration", dm});
-    handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Reactions[R1],Reference=Flux", dm});
-    handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Reactions[R2],Reference=Flux", dm});
-    handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Reactions[R3],Reference=Flux", dm});
-    handler.addDuringName({"CN=Root,Model=The Brusselator,Vector=Reactions[R4],Reference=Flux", dm});
+    handler.addDuringName(CCommonName("CN=Root,Model=The Brusselator,Reference=Time"));
+    handler.addDuringName(CCommonName("CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[X],Reference=Concentration"));
+    handler.addDuringName(CCommonName("CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[Y],Reference=Concentration"));
+    handler.addDuringName(CCommonName("CN=Root,Model=The Brusselator,Vector=Reactions[R1],Reference=Flux"));
+    handler.addDuringName(CCommonName("CN=Root,Model=The Brusselator,Vector=Reactions[R2],Reference=Flux"));
+    handler.addDuringName(CCommonName("CN=Root,Model=The Brusselator,Vector=Reactions[R3],Reference=Flux"));
+    handler.addDuringName(CCommonName("CN=Root,Model=The Brusselator,Vector=Reactions[R4],Reference=Flux"));
 
     // add test to verify that array element references can be correctly resolved
-    handler.addDuringName({"CN=Root,Vector=TaskList[Metabolic Control Analysis],Method=MCA Method (Reder),Array=Scaled elasticities[(R1)][X]", dm});
+    handler.addDuringName(CCommonName("CN=Root,Vector=TaskList[Metabolic Control Analysis],Method=MCA Method (Reder),Array=Scaled elasticities[(R1)][X]"));
 
     auto& task = dynamic_cast<CTrajectoryTask&>((*dm->getTaskList())["Time-Course"]);
     REQUIRE(task.initialize(CCopasiTask::OUTPUT_DURING, &handler, NULL) == true);
@@ -83,8 +83,8 @@ TEST_CASE("ensure that data handler with function evaluations can be compiled", 
   REQUIRE(dm->loadModel(getTestFile("test-data/brusselator.cps"), NULL) == true);
 
   CDataHandler handler;
-  handler.addDuringName({"CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations", dm});
-  handler.addDuringName({"CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value", dm});
+  handler.addDuringName(CCommonName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Function Evaluations"));
+  handler.addDuringName(CCommonName("CN=Root,Vector=TaskList[Optimization],Problem=Optimization,Reference=Best Value"));
 
   REQUIRE(handler.compile({dm}) == true);
 
@@ -96,15 +96,14 @@ TEST_CASE("ensure that data handler with function evaluations can be compiled", 
   auto * problem = dynamic_cast< COptProblem * >(task.getProblem());
 
   {
-    auto & item = problem->addOptItem(
-    {"CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=InitialConcentration", dm});
+    auto & item = problem->addOptItem(CCommonName("CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[A],Reference=InitialConcentration"));
     item.setLowerBound(0.0001);
     item.setUpperBound(100);
     item.setStartValue(0.5);
   }
 
   {
-    auto & item = problem->addOptItem({"CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[B],Reference=InitialConcentration", dm});
+    auto & item = problem->addOptItem(CCommonName("CN=Root,Model=The Brusselator,Vector=Compartments[compartment],Vector=Metabolites[B],Reference=InitialConcentration"));
     item.setLowerBound(0.0001);
     item.setUpperBound(100);
     item.setStartValue(3);
@@ -112,7 +111,7 @@ TEST_CASE("ensure that data handler with function evaluations can be compiled", 
 
   std::stringstream exp;
   exp << "<"
-      << (dm->getModel()->getMetabolites()[0]).getConcentrationRateReference()->getStringCN()
+      << (dm->getModel()->getMetabolites()[0]).getConcentrationRateReference()->getCN()
       << ">";
 
   problem->setObjectiveFunction(exp.str());

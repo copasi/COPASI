@@ -1,4 +1,4 @@
-// Copyright (C) 2026 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2025 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,10 +17,7 @@
 
 double d_sign(const double & a, const double & b);
 
-static double c_b3 = 1.0;
-
 static const C_INT c__0 = 0;
-static C_INT c__1 = 1;
 
 CRootCheck::CRootCheck(CInternalSolver & solver)
   : CInternalSolver(solver)
@@ -71,10 +68,9 @@ C_INT CRootCheck::check(const C_INT * job,
 
   /* Local variables */
   C_INT i__;
-  double x, t1, temp1, temp2;
-  C_INT iflag, jflag;
+  double t1, temp1, temp2;
+  C_INT iflag;
   double hming;
-  bool zroot;
 
   /* ----------------------------------------------------------------------- */
   /* This routine checks for the presence of a root in the vicinity of */

@@ -1,4 +1,4 @@
-// Copyright (C) 2026 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2025 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,7 +12,6 @@
 #include <copasi/commandline/COptions.h>
 
 #include <copasi/utilities/CCopasiParameter.h>
-#include <copasi/utilities/CCopasiParameterGroup.h>
 
 /**
  * Returns the values from the given parameter group as dictionary

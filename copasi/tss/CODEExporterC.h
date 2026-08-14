@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,60 +38,60 @@ public:
    */
   CODEExporterC();
 
-  virtual bool preprocess(const CModel* copasiModel);
+  bool preprocess(const CModel* copasiModel) override;
 
-  virtual bool exportTitleData(const CModel* copasiModel, std::ostream & os);
+  bool exportTitleData(const CModel* copasiModel, std::ostream & os) override;
 
-  virtual void setReservedNames();
+  void setReservedNames() override;
 
-  virtual std::string exportNumber(double number);
+  std::string exportNumber(double number) override;
 
-  virtual std::string translateTimeVariableName();
+  std::string translateTimeVariableName() override;
 
   std::string setExportName(const CModelEntity::Status & status, size_t n[], size_t dependent);
 
   std::string setConcentrationName(const CModelEntity::Status & status, size_t n[], size_t dependent);
 
-  std::string setODEName(const std::string & objName);
+  std::string setODEName(const std::string & objName) override;
 
   void setExportNameOfFunction(const CEvaluationNode* pNode, std::set<std::string> & tmpset);
 
-  virtual std::string translateObjectName(const std::string & realName);
+  std::string translateObjectName(const std::string & realName) override;
 
   std::string testName(const std::string & name);
 
-  virtual bool exportSingleObject(std::ostringstream & which,
-                                  const std::string & name,
-                                  const std::string & expression,
-                                  const std::string & comments);
+  bool exportSingleObject(std::ostringstream & which,
+                          const std::string & name,
+                          const std::string & expression,
+                          const std::string & comments) override;
 
-  virtual bool exportSingleMetabolite(const CMetab* metab, std::string & expression, std::string & comments);
+  bool exportSingleMetabolite(const CMetab* metab, std::string & expression, std::string & comments) override;
 
-  virtual bool exportSingleCompartment(const CCompartment* comp, std::string & expression, std::string & comments);
+  bool exportSingleCompartment(const CCompartment* comp, std::string & expression, std::string & comments) override;
 
-  virtual bool exportSingleModVal(const CModelValue* modval, std::string & expression, std::string & comments);
+  bool exportSingleModVal(const CModelValue* modval, std::string & expression, std::string & comments) override;
 
-  virtual bool exportSingleModelEntity(const CModelEntity* tmp, std::string & expression, std::string & comments);
+  bool exportSingleModelEntity(const CModelEntity* tmp, std::string & expression, std::string & comments) override;
 
-  virtual bool exportSingleParameter(const CCopasiParameter* param, std::string & expression, std::string & comments);
+  bool exportSingleParameter(const CCopasiParameter* param, std::string & expression, std::string & comments) override;
 
-  virtual bool exportSingleODE(const CModelEntity* mentity, std::string & equation, std::string & comments);
+  bool exportSingleODE(const CModelEntity* mentity, std::string & equation, std::string & comments) override;
 
-  virtual bool exportSingleFunction(const CFunction *func, std::set<std::string>& isExported);
+  bool exportSingleFunction(const CFunction *func, std::set<std::string>& isExported) override;
 
-  virtual std::string getSingleLineComment();
+  std::string getSingleLineComment() override;
 
-  virtual bool exportKineticFunctionGroup(const CModel* copasiModel);
+  bool exportKineticFunctionGroup(const CModel* copasiModel) override;
 
-  virtual std::string KineticFunction2ODEmember(const CReaction *reac);
+  std::string KineticFunction2ODEmember(const CReaction *reac) override;
 
-  virtual std::string exportTitleString(const size_t tmp);
+  std::string exportTitleString(const size_t tmp) override;
 
-  virtual std::string exportClosingString(const size_t tmp);
+  std::string exportClosingString(const size_t tmp) override;
 
-  virtual bool exportKineticFunction(const CReaction* reac);
+  bool exportKineticFunction(const CReaction* reac) override;
 
-  virtual std::string getDisplayExpressionString(CExpression * tmp);
+  std::string getDisplayExpressionString(CExpression * tmp) override;
 
   std::map< std::string, size_t > Frequancy;
   std::set<std::string> NameSet;

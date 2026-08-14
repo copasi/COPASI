@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -42,14 +42,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Constructor.
@@ -108,7 +108,7 @@ public:
    * @return 0, if the style does not apply, 1 if it applies by type,
    *         2 if it applies by role, 3 if it applies by key
    */
-  virtual int appliesTo(const CLGraphicalObject * pObject) const;
+  int appliesTo(const CLGraphicalObject * pObject) const override;
 
   /**
    * Converts this object to the corresponding SBML object.

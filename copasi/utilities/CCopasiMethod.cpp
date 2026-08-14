@@ -51,7 +51,7 @@ CCopasiMethod::CCopasiMethod(const CDataContainer * pParent,
 
 CCopasiMethod::CCopasiMethod(const CCopasiMethod & src,
                              const CDataContainer * pParent):
-  CCopasiParameterGroup(src, pParent),
+  CCopasiParameterGroup(src, pParent, src.getObjectType()),
   mTaskType(src.mTaskType),
   mSubType(src.mSubType),
   mpContainer(src.mpContainer),
@@ -166,6 +166,10 @@ bool CCopasiMethod::isValidProblem(const CCopasiProblem * pProblem)
 
   return true;
 }
+
+//virtual
+C_FLOAT64 CCopasiMethod::getEstimatedError() const
+{return std::numeric_limits< C_FLOAT64 >::quiet_NaN();}
 
 void CCopasiMethod::load(CReadConfig & /* configBuffer */,
                          CReadConfig::Mode /* mode */)

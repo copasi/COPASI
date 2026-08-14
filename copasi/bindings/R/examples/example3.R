@@ -55,7 +55,7 @@ if (length(args) == 1) {
     stopifnot(!is.null(cn_string))
     
     cn_string <- paste(cn_string,",Reference=Time", sep = "")
-    on <- CRegisteredCommonName(cn_string)
+    on <- CRegisteredCommonName(CCommonName(cn_string))
     stopifnot(!is.null(on))
     invisible(body$push_back(on))
 
@@ -64,7 +64,7 @@ if (length(args) == 1) {
     cn <- separator$getCN()
     stopifnot(!is.null(cn))
     cn_string <- cn$getString()
-    sep_on <- CRegisteredCommonName(cn_string)
+    sep_on <- CRegisteredCommonName(CCommonName(cn_string))
     stopifnot(!is.null(on))
     invisible(body$push_back(sep_on))
 
@@ -73,7 +73,7 @@ if (length(args) == 1) {
     cn <- s$getCN()
     stopifnot(!is.null(cn))
     cn_string <- cn$getString()
-    on <- CRegisteredCommonName(cn_string)
+    on <- CRegisteredCommonName(CCommonName(cn_string))
     stopifnot(!is.null(on))
 
     invisible(header$push_back(on))
@@ -91,16 +91,16 @@ if (length(args) == 1) {
             # particle number
             # We could probably just concatenate the string to get the common name for
             # the particle number, but in this case, we get the object and get its common name
-            obj <- CDataContainer_getObject(metab , CCommonName("Reference=Concentration"))
+            obj <- CObjectInterface_getObject(metab , CCommonName("Reference=Concentration"))
             cn <- obj$getCN()
             cn_string <- cn$getString()
-            on <- CRegisteredCommonName(cn_string)
+            on <- CRegisteredCommonName(CCommonName(cn_string))
             invisible(body$push_back(on))
             # add the corresponding id to the header
             s <- CDataString(metab$getSBMLId())
             cn <- s$getCN()
             cn_string <- cn$getString()
-            on <- CRegisteredCommonName(cn_string)
+            on <- CRegisteredCommonName(CCommonName(cn_string))
             invisible(header$push_back(on))
             # after each entry, we need a seperator
             if( i != (iMax-1) ) {

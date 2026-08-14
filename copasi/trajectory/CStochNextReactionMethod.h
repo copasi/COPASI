@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,7 +47,7 @@ private:
   /**
    * Initialization.
    */
-  virtual void initMethod();
+  void initMethod() override;
 
 private:
   /**
@@ -78,7 +78,7 @@ public:
    * Do one iteration of the simulation
    * @return Current simulation time or -1 if error.
    */
-  C_FLOAT64 doSingleStep(C_FLOAT64 time, C_FLOAT64 endTime);
+  C_FLOAT64 doSingleStep(C_FLOAT64 time, C_FLOAT64 endTime) override;
 
   /**
    * print internal information (for debugging)

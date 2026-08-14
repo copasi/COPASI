@@ -126,7 +126,7 @@ public:
 
   virtual ~CDataContainer();
 
-  const CObjectInterface * getObject(const CCommonName & cn) const override;
+  // const CObjectInterface * getObject(const CCommonName & cn) const override;
 
   const CDataObject * getValueObject() const override;
 
@@ -174,6 +174,8 @@ public:
   void getDescendants(CDataObject::DataObjectSet & descendants, const bool & recursive = false) const;
 
 protected:
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override;
+
   void initObjects();
 
   template <class CType> CDataObjectReference< CType > * addObjectReference(const std::string & name,

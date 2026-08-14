@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -103,15 +103,15 @@ void CQFittingResultTab1::load(const CFitProblem * pProblem)
       mpEditCVNumValidDataPoints->setText("");
     }
 
+  // Performance Statistics
   const unsigned C_INT32 & FunctionEvaluations = pProblem->getFunctionEvaluations();
-
   mpEditEvaluations->setText(QString::number(FunctionEvaluations));
-
   const C_FLOAT64 & ExecutionTime = pProblem->getExecutionTime();
+  const C_FLOAT64 & WallTime = pProblem->getWallTime();
+  mpEditWallTime->setText(convertToQString(WallTime));
+  mpEditSpeed->setText(convertToQString(FunctionEvaluations / WallTime));
+  mpEditSpeedUp->setText(convertToQString(ExecutionTime / WallTime));
 
-  mpEditCPUTime->setText(convertToQString(ExecutionTime));
-
-  mpEditSpeed->setText(convertToQString(FunctionEvaluations / ExecutionTime));
   const unsigned C_INT32 & FailedEvaluationsExc = pProblem->getFailedEvaluationsExc();
   mpEditFailedEvaluationsExc->setText(QString::number(FailedEvaluationsExc));
   const unsigned C_INT32 & FailedEvaluationsNaN = pProblem->getFailedEvaluationsNaN();

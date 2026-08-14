@@ -301,6 +301,13 @@ public:
   virtual void evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
                      const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD);
 
+  /**
+   *  Return a (possibly rough) estimate for the accuracy of the method under current settings.
+   *   This is not intended for numerical calculations but rather for allowing sanity checks in tasks that use
+   *    this method. For this method it is just the relative Tolerance Parameter.
+   */
+  virtual C_FLOAT64 getEstimatedError() const override;
+
 private:
   /**
    * Initialize the method parameter

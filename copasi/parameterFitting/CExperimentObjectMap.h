@@ -114,7 +114,7 @@ public:
      * Retrieve the object CN of the object mapped to the column
      * @return std::string objctCN
      */
-    CRegisteredCommonName getObjectCN() const;
+    const CRegisteredCommonName & getObjectCN() const;
 
     /**
      * Set the scaling factor for the column
@@ -260,7 +260,7 @@ public:
    * @param const size_t & index
    * @return std::stringobjctCN
    */
-  CRegisteredCommonName getObjectCN(const size_t & index) const;
+  const CRegisteredCommonName & getObjectCN(const size_t & index) const;
 
   /**
    * Set the scaling factor for the indexed column

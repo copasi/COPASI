@@ -118,11 +118,11 @@ class CScanItemRepeat: public CScanItem
 public:
   CScanItemRepeat(CCopasiParameterGroup* si);
 
-  virtual void step();
+  void step() override;
 
   virtual ~CScanItemRepeat() {};
 
-  virtual bool isValidScanItem(const bool & continueFromCurrentState);
+  bool isValidScanItem(const bool & continueFromCurrentState) override;
 };
 
 class CScanItemParameterSet : public CScanItem
@@ -135,14 +135,14 @@ private:
 
 public:
   CScanItemParameterSet(CCopasiParameterGroup * si);
-  virtual void step();
+  void step() override;
 
   virtual ~CScanItemParameterSet(){};
 
-  virtual bool isValidScanItem(const bool & continueFromCurrentState);
+  bool isValidScanItem(const bool & continueFromCurrentState) override;
 
 protected:
-  virtual void ensureParameterGroupHasAllElements(CCopasiParameterGroup * pg);
+  void ensureParameterGroupHasAllElements(CCopasiParameterGroup * pg) override;
 };
 
 //***********************************+
@@ -156,13 +156,13 @@ private:
   bool mUseValues;
 public:
   CScanItemLinear(CCopasiParameterGroup* si);
-  virtual void step();
+  void step() override;
 
   virtual ~CScanItemLinear() {};
 
-  virtual bool isValidScanItem(const bool & continueFromCurrentState);
+  bool isValidScanItem(const bool & continueFromCurrentState) override;
 protected:
-  virtual void ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg);
+  void ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg) override;
 };
 
 //***********************************+
@@ -178,10 +178,10 @@ public:
   CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg);
   virtual ~CScanItemRandom() {};
 
-  virtual void step();
-  virtual bool isNesting() const {return false;};
+  void step() override;
+  bool isNesting() const  override {return false;};
 protected:
-  virtual void ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg);
+  void ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg) override;
 };
 
 //***********************************+

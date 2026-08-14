@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,7 +39,7 @@
 #include "copasi/undo/CData.h"
 
 // static
-CLMetabGlyph * CLMetabGlyph::fromData(const CData & data, CUndoObjectInterface * pParent)
+CLMetabGlyph * CLMetabGlyph::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CLMetabGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                           NO_PARENT);
@@ -57,7 +57,7 @@ CData CLMetabGlyph::toData() const
 }
 
 // virtual
-bool CLMetabGlyph::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CLMetabGlyph::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 
@@ -140,7 +140,7 @@ void CLMetabGlyph::print(std::ostream * ostream) const
 //********* CLCompartmentGlyph ************************************************
 
 // static
-CLCompartmentGlyph * CLCompartmentGlyph::fromData(const CData & data, CUndoObjectInterface * pParent)
+CLCompartmentGlyph * CLCompartmentGlyph::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CLCompartmentGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                                 NO_PARENT);
@@ -158,7 +158,7 @@ CData CLCompartmentGlyph::toData() const
 }
 
 // virtual
-bool CLCompartmentGlyph::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CLCompartmentGlyph::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 
@@ -241,7 +241,7 @@ void CLCompartmentGlyph::print(std::ostream * ostream) const
 //********** CLTextGlyph ******************************************************
 
 // static
-CLTextGlyph * CLTextGlyph::fromData(const CData & data, CUndoObjectInterface * pParent)
+CLTextGlyph * CLTextGlyph::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CLTextGlyph(data.getProperty(CData::OBJECT_NAME).toString(),
                          NO_PARENT);
@@ -259,7 +259,7 @@ CData CLTextGlyph::toData() const
 }
 
 // virtual
-bool CLTextGlyph::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CLTextGlyph::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 

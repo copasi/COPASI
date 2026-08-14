@@ -201,14 +201,14 @@ private:
   // Attributes
 protected:
   /**
-   * Pointer to parameter value for duration.
-   */
-  C_FLOAT64 * mpDuration;
-
-  /**
    * Pointer to parameter value indicating automatic step size.
    */
   bool * mpAutomaticStepSize;
+
+  /**
+   * Pointer to parameter value for duration.
+   */
+  C_FLOAT64 * mpDuration;
 
   /**
    * Pointer to parameter value for step size.

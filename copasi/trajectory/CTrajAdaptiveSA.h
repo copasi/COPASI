@@ -189,6 +189,11 @@ protected:
   size_t mNumReactions;
 
   /**
+   *   Number of variable metabolites.
+   */
+  size_t mNumReactionSpecies;
+
+  /**
    * max number of single stochastic steps to do in one step()
    */
   unsigned C_INT32 mMaxSteps;
@@ -202,11 +207,6 @@ protected:
    * The index of the next reaction which fires
    */
   size_t mNextReactionIndex;
-
-  /**
-   *   Number of variable metabolites.
-   */
-  size_t mNumReactionSpecies;
 
   /**
    * A reference to the math container's reactions

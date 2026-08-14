@@ -134,7 +134,7 @@ header.push_back(CRegisteredCommonName(report.getSeparator().getCN().getString()
 header.push_back(CRegisteredCommonName(CDataString("initial value of F").getCN().getString()));
 % in the report body we write the best value of the objective function and
 % the initial value of the fixed parameter separated by a komma
-body.push_back(CRegisteredCommonName(optProblem.getObject(CCommonName("Reference=Best Value")).getCN().getString()));
+body.push_back(CRegisteredCommonName(optProblem.getChildObject(CCommonName("Reference=Best Value")).getCN().getString()));
 body.push_back(CRegisteredCommonName(report.getSeparator().getCN().getString()));
 body.push_back(CRegisteredCommonName(fixedModelValue.getInitialValueReference().getCN().getString()));
 

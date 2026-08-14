@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -23,7 +23,7 @@ CJitCompiler::CJitCompiler()
   : mExpressions()
 {}
 
-CJitCompiler::CJitCompiler(const CJitCompiler & src)
+CJitCompiler::CJitCompiler(const CJitCompiler & /* src */)
   : mExpressions()
 {}
 

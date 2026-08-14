@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -44,7 +44,7 @@
 const C_FLOAT64 CMoiety::DefaultFactor(1.0);
 
 // static
-CMoiety * CMoiety::fromData(const CData & data, CUndoObjectInterface * pParent)
+CMoiety * CMoiety::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CMoiety(data.getProperty(CData::OBJECT_NAME).toString(),
                      NO_PARENT);
@@ -62,7 +62,7 @@ CData CMoiety::toData() const
 }
 
 // virtual
-bool CMoiety::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CMoiety::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 
@@ -119,7 +119,7 @@ void CMoiety::initObjects()
 
   mpDNumberReference = new CDependentNumberReference("DependentValue", this, mNumber);
 
-  CDataObject * pObject = addObjectReference("Amount", mIAmount, CDataObject::ValueDbl);
+  addObjectReference("Amount", mIAmount, CDataObject::ValueDbl);
 
   return;
 }
@@ -274,7 +274,7 @@ std::string CMoiety::getExpression() const
           fabs(it->first) < 1.0 - 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon())
         Infix << fabs(it->first) << "*";
 
-      Infix << "<" << it->second->getInitialValueReference()->getStringCN() << ">";
+      Infix << "<" << it->second->getInitialValueReference()->getCN() << ">";
     }
 
   return Infix.str();

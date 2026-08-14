@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,7 +26,7 @@
 #include "copasi/report/CKeyFactory.h"
 
 // static
-CLGradientBase * CLGradientBase::fromData(const CData & data, CUndoObjectInterface * pParent)
+CLGradientBase * CLGradientBase::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CLGradientBase(data.getProperty(CData::OBJECT_NAME).toString(),
                             NO_PARENT);
@@ -44,7 +44,7 @@ CData CLGradientBase::toData() const
 }
 
 // virtual
-bool CLGradientBase::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CLGradientBase::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 

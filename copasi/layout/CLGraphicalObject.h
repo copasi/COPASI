@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -77,14 +77,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   CLGraphicalObject(const std::string & name = "GraphicalObject",
                     const CDataContainer * pParent = NO_PARENT);
@@ -109,12 +109,12 @@ public:
   /**
    *  Retrieves the key of the layout object
    */
-  virtual const std::string & getKey() const
+  virtual const std::string & getKey() const override
   {return mKey;};
 
   virtual CLGraphicalObject* clone() const {return new CLGraphicalObject(*this, NULL);};
 
-  virtual void moveBy(const CLPoint &p);
+  void moveBy(const CLPoint &p) override;
 
   const CLBoundingBox & getBoundingBox() const {return mBBox;};
   CLBoundingBox & getBoundingBox() {return mBBox;};
@@ -178,7 +178,7 @@ public:
     * insert operator
     */
   friend std::ostream & operator<<(std::ostream &os, const CLGraphicalObject & g);
-  void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 
   /**
    * This method is used for the export of several layout elements.

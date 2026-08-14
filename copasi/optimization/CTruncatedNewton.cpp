@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -384,11 +384,10 @@ CTruncatedNewton::~CTruncatedNewton()
   C_INT i__1;
 
   /* Local variables */
-  C_FLOAT64 fold, oldf;
+  C_FLOAT64 oldf;
   C_FLOAT64 fnew;
   C_INT numf;
   C_FLOAT64 peps;
-  C_INT lhyr;
   C_FLOAT64 zero, rtol, yksk, tiny;
   C_INT nwhy;
   C_FLOAT64 yrsr;
@@ -398,7 +397,7 @@ CTruncatedNewton::~CTruncatedNewton()
   C_FLOAT64 small;
   C_INT modet;
   C_INT niter;
-  C_FLOAT64 gnorm, ftest, fstop, pnorm, rteps, xnorm;
+  C_FLOAT64 gnorm, ftest, pnorm, rteps, xnorm;
   C_INT idiagb;
   C_FLOAT64 fm, pe, difold;
   C_INT icycle, nlincg, nfeval;
@@ -446,14 +445,11 @@ CTruncatedNewton::~CTruncatedNewton()
   nfeval = 0;
   nmodif = 0;
   nlincg = 0;
-  fstop = *f;
   zero = 0.;
   one = 1.;
   nm1 = *n - 1;
 
   /* WITHIN THIS ROUTINE THE ARRAY W(LOLDG) IS SHARED BY W(LHYR) */
-
-  lhyr = subscr_1.loldg;
 
   /* CHECK PARAMETERS AND SET CONSTANTS */
 
@@ -468,7 +464,6 @@ CTruncatedNewton::~CTruncatedNewton()
 
   CTruncatedNewton::setucr_(&small, &nftotl, &niter, n, f, &fnew, &fm, &gtg, &oldf,
                             sfun, &g[1], &x[1]);
-  fold = fnew;
 
   if (*msglvl >= 1)
     {
@@ -556,7 +551,6 @@ L20:
                             &spe, &w[subscr_1.lpk], &oldgtp, &x[1], &fnew, &alpha, &g[1],
                             &numf, &nwhy, &w[1], lw, msglvl, log);
 
-  fold = fnew;
   ++niter;
   nftotl += numf;
   gtg = ddot_(n, &g[1], &c__1, &g[1], &c__1);
@@ -758,12 +752,11 @@ L120:
   C_FLOAT64 d__1;
 
   /* Local variables */
-  C_FLOAT64 fold, oldf;
+  C_FLOAT64 oldf;
   C_FLOAT64 fnew;
   C_INT numf;
   C_INT conv;
   C_FLOAT64 peps;
-  C_INT lhyr;
   C_FLOAT64 zero, rtol, yksk, tiny;
   C_INT nwhy;
   C_FLOAT64 yrsr;
@@ -774,7 +767,7 @@ L120:
   C_INT modet;
   C_INT niter;
   C_FLOAT64 gnorm, ftest;
-  C_FLOAT64 fstop, pnorm, rteps, xnorm;
+  C_FLOAT64 pnorm, rteps, xnorm;
   C_INT idiagb;
   C_FLOAT64 fm, pe, difold;
   C_INT icycle, nlincg, nfeval;
@@ -834,15 +827,12 @@ L120:
   nfeval = 0;
   nmodif = 0;
   nlincg = 0;
-  fstop = *f;
   conv = FALSE_;
   zero = 0.;
   one = 1.;
   nm1 = *n - 1;
 
   /* WITHIN THIS ROUTINE THE ARRAY W(LOLDG) IS SHARED BY W(LHYR) */
-
-  lhyr = subscr_1.loldg;
 
   /* CHECK PARAMETERS AND SET CONSTANTS */
 
@@ -860,7 +850,6 @@ L120:
   CTruncatedNewton::setucr_(&small, &nftotl, &niter, n, f, &fnew, &fm, &gtg, &oldf,
                             sfun, &g[1], &x[1]);
 
-  fold = fnew;
   flast = fnew;
 
   /* TEST THE LAGRANGE MULTIPLIERS TO SEE IF THEY ARE NON-NEGATIVE. */
@@ -1010,7 +999,6 @@ L30:
       nwhy = 3;
     }
 
-  fold = fnew;
   ++niter;
   nftotl += numf;
 
@@ -1234,7 +1222,7 @@ L160:
 
 /* Subroutine */ int monit_(C_INT *n, C_FLOAT64 *x, C_FLOAT64 *  f,
                             C_FLOAT64 *g, C_INT * niter, C_INT * nftotl, C_INT * nfeval,
-                            C_INT * ireset, C_INT *ipivot, COptLog *log)
+                            C_INT * /* ireset */, C_INT *ipivot, COptLog *log)
 {
   /* System generated locals */
   C_INT i__1;
@@ -1964,7 +1952,7 @@ L10:
                             C_FLOAT64 *fmin, C_FLOAT64 *gmin, C_FLOAT64 *xw, C_FLOAT64 *fw,
                             C_FLOAT64 *gw, C_FLOAT64 *u, C_FLOAT64 *a, C_FLOAT64 *b,
                             C_FLOAT64 *tol, C_FLOAT64 *eps, C_FLOAT64 *scxbd,
-                            C_FLOAT64 *xlamda, COptLog *log)
+                            C_FLOAT64 * /* xlamda */, COptLog *log)
 {
   /* Local variables */
   C_FLOAT64 ybnd, ya, yb, yu, yw;
@@ -2395,7 +2383,6 @@ L100:
   C_INT i__1;
 
   /* Local variables */
-  C_FLOAT64 cond;
   C_FLOAT64 srds, yrsk;
   C_INT i__;
   C_FLOAT64 d1, dn, td, sds;
@@ -2506,7 +2493,6 @@ L110:
       /* L120: */
     }
 
-  cond = dn / d1;
   /*s_wsfe(&io___235);
   do_fio(&c__1, (char *)&d1, (ftnlen)sizeof(C_FLOAT64));
   do_fio(&c__1, (char *)&dn, (ftnlen)sizeof(C_FLOAT64));

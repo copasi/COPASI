@@ -396,7 +396,7 @@ bool COptMethodSS::creation(void)
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
       CRandom * pRandom = mRandomContext.active();
 
-      for (size_t j = 0; j < (C_INT32)mVariableSize; ++j)
+      for (size_t j = 0; j < mVariableSize; ++j)
         {
           // get pointers to appropriate elements (easier reading of code)
           COptItem & OptItem = *OptItemList[j];
@@ -471,10 +471,8 @@ bool COptMethodSS::creation(void)
   // at this point the pool is formed
   // now we partially sort the pool for the h = b/2 top elements,
   // where b is mPopulationSize, This is done in place with heap sort
-  CVector< C_FLOAT64 > *tempvec;
-  C_FLOAT64 tempval;
   C_INT32 parent, child;
-  C_INT32 h = mPopulationSize / 2;
+  size_t h = mPopulationSize / 2;
 
   // top h are the heap, we first have to sort it
   for (size_t i = 1; i < h; ++i)
@@ -501,7 +499,7 @@ bool COptMethodSS::creation(void)
         }
     }
 
-  for (size_t i = h; i < (C_INT32) mPoolSize; ++i)
+  for (size_t i = h; i < mPoolSize; ++i)
     {
       child = 0;
 
@@ -574,7 +572,7 @@ bool COptMethodSS::creation(void)
   // 1st b/2 are the best ones in the Pool (sorted already)
   // the 2nd b/2 are random (or later can be made diverse by
   // maximising the Euclidean distances)
-  for (size_t i = 0; i < (int)mPopulationSize; ++i)
+  for (size_t i = 0; i < mPopulationSize; ++i)
     {
       (*mIndividuals[i]) = (*mPool[i]); // copy the whole vector
       mValues[i] = mPoolVal[i]; // keep the value
@@ -696,10 +694,10 @@ bool COptMethodSS::combination(void)
   C_INT32 improvement; // count iterations with improvement in go-beyond strategy
 
   // signal no children yet
-  mChildrenGenerated = false;
+  bool childrenGenerated = false;
 
   // generate children for each member of the population
-#pragma omp parallel for  reduction(| : mChildrenGenerated) schedule(runtime)
+#pragma omp parallel for  reduction(| : childrenGenerated) schedule(runtime)
   for (size_t i = 0; i < mPopulationSize; i++)
     {
       C_FLOAT64 alpha;      // 1 or -1
@@ -708,7 +706,7 @@ bool COptMethodSS::combination(void)
       C_FLOAT64 dd;         // (x(i) - x(j) ) / 2 * (1-alpha*beta)
       C_FLOAT64 c1, c2;     // coordinates of the edges of hyperectangle
       CVector< C_FLOAT64 > xnew(mVariableSize), xpr(mVariableSize);
-      C_FLOAT64 xnewval, xprval; // to hold temp value of "parent" in go-beyond strategy
+      C_FLOAT64 xnewval; // to hold temp value of "parent" in go-beyond strategy
 
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
       CRandom * pRandom = mRandomContext.active();
@@ -733,7 +731,6 @@ bool COptMethodSS::combination(void)
               for (size_t k = 0; k < mVariableSize; ++k)
                 {
                   COptItem & OptItem = *OptItemList[k];
-                  C_FLOAT64 & Sol = (*mPool[i])[j];
                   const CIntervalValue & Interval = OptItem.getInterval();
 
                   try
@@ -799,7 +796,7 @@ bool COptMethodSS::combination(void)
                   mStuck[i] = 0;
 
                   // signal we have generated a child (improvement)
-                  mChildrenGenerated = true;
+                  childrenGenerated = true;
                 }
             }
         }
@@ -810,7 +807,6 @@ bool COptMethodSS::combination(void)
         {
           // copy the parent
           xpr = (*mIndividuals[i]);
-          xprval = mValues[i];
 
 #pragma omp critical (opt_method_SS_combination)
           {
@@ -854,23 +850,26 @@ bool COptMethodSS::combination(void)
 
               // old child becomes parent
               xpr = (*mChild[i]);
-              xprval = mChildVal[i];
               // new child becomes child
               (*mChild[i]) = xnew;
               mChildVal[i] = xnewval;
 
               // mark improvement
 #pragma omp critical (opt_method_SS_combination)
-              if (improvement = 2)
-                {
-                  lambda *= 0.5;
-                  improvement = 0;
-                }
-              else
-                improvement = 1;
+              {
+                if (improvement == 2)
+                  {
+                    lambda *= 0.5;
+                    improvement = 0;
+                  }
+                else
+                  improvement = 1;
+              }
             }
         }
     }
+
+  mChildrenGenerated = childrenGenerated;
 
   return true;
 }

@@ -280,7 +280,7 @@ CCommonName CModelExpansion::ElementsMap::getDuplicateFromCN(const CCommonName &
       const CDataObject* retObj = getDuplicateFromObject(tmp);
 
       if (retObj != NULL)
-        return retObj->getStringCN();
+        return retObj->getCN();
     }
 
   return CCommonName("");
@@ -1122,7 +1122,7 @@ void CModelExpansion::duplicateEvent(CEvent* source,
           if (source != newObj)
             {
               //create duplicate of assignment
-              CEventAssignment * pNewAssignment = new CEventAssignment(pSourceTarget->getStringCN());
+              CEventAssignment * pNewAssignment = new CEventAssignment(pSourceTarget->getCN());
               newObj->getAssignments().add(pNewAssignment, true);
               //now copy the expression
               pNewAssignment->setExpression(pSourceAssignment->getExpression());
@@ -1202,7 +1202,7 @@ void CModelExpansion::updateExpression(CExpression* exp,
         {
           CCommonName cn = node->getObjectCN();
 
-          while (cn.getPrimary().getObjectType() != "Model" && !cn.empty())
+          while (CCommonName(cn.getPrimary()).getObjectType() != "Model" && !cn.empty())
             {
               cn = cn.getRemainder();
             }
@@ -1248,7 +1248,7 @@ void CModelExpansion::updateExpression(CExpression* exp,
 
               //update the node
               if (pRef)
-                node->setData("<" + pRef->getStringCN() + ">");
+                node->setData("<" + pRef->getCN() + ">");
 
               // std::cout << node->getData() << std::endl;
             }
@@ -1410,9 +1410,6 @@ void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
       CCompartment* oldComp = const_cast<CCompartment*>(pX->getCompartment());
       CCompartment* newComp = const_cast<CCompartment*>(dynamic_cast<const CCompartment*>(emap.getDuplicateFromObject(pX->getCompartment())));
       bool success = false;
-      bool wasEnabled = CRegisteredCommonName::isEnabled();
-      CRegisteredCommonName::setEnabled(true);
-      auto oldCN = pX->getStringCN();
 
       do
         {
@@ -1421,7 +1418,6 @@ void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
           if (success)
             {
               oldComp->getMetabolites().remove(pX->getObjectName());
-              CRegisteredCommonName::handle(oldCN, pX->getStringCN(), pX->getObjectDataModel());
               mpModel->setCompileFlag();
               mpModel->initializeMetabolites();
             }
@@ -1433,8 +1429,6 @@ void CModelExpansion::replaceInMetab(CMetab* pX, const ElementsMap & emap)
             }
         }
       while (!success);
-
-      CRegisteredCommonName::setEnabled(wasEnabled);
     }
 }
 
@@ -1607,7 +1601,7 @@ void CModelExpansion::replaceInExpression(CExpression* exp, const ElementsMap & 
 
           //update the node
           if (pRef)
-            node->setData("<" + pRef->getStringCN() + ">");
+            node->setData("<" + pRef->getCN() + ">");
 
           //std::cout << node->getData() << std::endl;
         }

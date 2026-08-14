@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -43,53 +43,53 @@
 
 CTrajAdaptiveSA::CTrajAdaptiveSA(const CDataContainer * pParent,
                                  const CTaskEnum::Method & methodType,
-                                 const CTaskEnum::Task & taskType):
-  CTrajectoryMethod(pParent, methodType, taskType),
-  mMaxReactionFiring(0),
-  mReactionFiring(0),
-  mPartitionedReactionFiring(0),
-  mAvgDX(0),
-  mSigDX(0),
-  mpMethodSpecies(NULL),
-  mpRandomGenerator(NULL),
-  mNumReactions(0),
-  mNumReactionSpecies(0),
-  mMaxSteps(1000000),
-  mNextReactionTime(0.0),
-  mNextReactionIndex(C_INVALID_INDEX),
-  mAmu(0),
-  mPartitionedAmu(0),
-  mMethodState(),
-  mPartitionedDependencies(0),
-  mA0(0.0),
-  mMaxStepsReached(false)
+                                 const CTaskEnum::Task & taskType)
+  : CTrajectoryMethod(pParent, methodType, taskType)
+  , mMaxReactionFiring(0)
+  , mReactionFiring(0)
+  , mPartitionedReactionFiring(0)
+  , mAvgDX(0)
+  , mSigDX(0)
+  , mpMethodSpecies(NULL)
+  , mpRandomGenerator(NULL)
+  , mNumReactions(0)
+  , mNumReactionSpecies(0)
+  , mMaxSteps(1000000)
+  , mNextReactionTime(0.0)
+  , mNextReactionIndex(C_INVALID_INDEX)
+  , mAmu(0)
+  , mPartitionedAmu(0)
+  , mMethodState()
+  , mPartitionedDependencies(0)
+  , mA0(0.0)
+  , mMaxStepsReached(false)
 {
   initializeParameter();
 }
 
 CTrajAdaptiveSA::CTrajAdaptiveSA(const CTrajAdaptiveSA & src,
-                                 const CDataContainer * pParent):
-  CTrajectoryMethod(src, pParent),
-  mMaxReactionFiring(src.mMaxReactionFiring),
-  mReactionFiring(src.mReactionFiring),
-  mPartitionedReactionFiring(src.mPartitionedReactionFiring),
-  mAvgDX(src.mAvgDX),
-  mSigDX(src.mSigDX),
-  mpMethodSpecies(src.mpMethodSpecies),
-  mpRandomGenerator(NULL),
-  mNumReactions(src.mNumReactions),
-  mNumReactionSpecies(src.mNumReactionSpecies),
-  mMaxSteps(src.mMaxSteps),
-  mNextReactionTime(src.mNextReactionTime),
-  mNextReactionIndex(src.mNextReactionIndex),
-  mReactions(),
-  mPropensityObjects(),
-  mAmu(),
-  mPartitionedAmu(src.mPartitionedAmu),
-  mMethodState(src.mMethodState),
-  mPartitionedDependencies(src.mPartitionedDependencies),
-  mA0(src.mA0),
-  mMaxStepsReached(src.mMaxStepsReached)
+                                 const CDataContainer * pParent)
+  : CTrajectoryMethod(src, pParent)
+  , mMaxReactionFiring(src.mMaxReactionFiring)
+  , mReactionFiring(src.mReactionFiring)
+  , mPartitionedReactionFiring(src.mPartitionedReactionFiring)
+  , mAvgDX(src.mAvgDX)
+  , mSigDX(src.mSigDX)
+  , mpMethodSpecies(src.mpMethodSpecies)
+  , mpRandomGenerator(NULL)
+  , mNumReactions(src.mNumReactions)
+  , mNumReactionSpecies(src.mNumReactionSpecies)
+  , mMaxSteps(src.mMaxSteps)
+  , mNextReactionTime(src.mNextReactionTime)
+  , mNextReactionIndex(src.mNextReactionIndex)
+  , mReactions()
+  , mPropensityObjects()
+  , mAmu()
+  , mPartitionedAmu(src.mPartitionedAmu)
+  , mMethodState(src.mMethodState)
+  , mPartitionedDependencies(src.mPartitionedDependencies)
+  , mA0(src.mA0)
+  , mMaxStepsReached(src.mMaxStepsReached)
 {
   initializeParameter();
 }

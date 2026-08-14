@@ -19,11 +19,6 @@ bool CMathContext::sync()
 
   if (size() > 1)
     {
-      bool renameEnabled = CRegisteredCommonName::isEnabled();
-
-      if (renameEnabled)
-        CRegisteredCommonName::setEnabled(false);
-
 #pragma omp parallel for
       for (size_t i = 0; i < size(); ++i)
         {
@@ -42,9 +37,6 @@ bool CMathContext::sync()
           if (pMaster != NULL)
             threadData()[i] = pMaster->copy();
         }
-
-      if (renameEnabled)
-        CRegisteredCommonName::setEnabled(true);
     }
 
   return changed;

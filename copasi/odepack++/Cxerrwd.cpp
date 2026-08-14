@@ -35,6 +35,10 @@ Cxerrwd::Cxerrwd(const bool & print):
   mpOstream(NULL)
 {}
 
+static const C_INT zero = 0;
+static const C_INT one = 1;
+static const C_INT two = 2;
+
 Cxerrwd::~Cxerrwd() {}
 
 void Cxerrwd::setOstream(std::ostream & os)
@@ -111,44 +115,41 @@ void Cxerrwd::mxerrwd(const char * msg, const C_INT *, const C_INT *, const C_IN
   /*  Get logical unit number and message print flag. */
 
   /* ***FIRST EXECUTABLE STATEMENT  XERRWD */
-  if (!mPrint && !mpOstream)
+  if (mPrint && mpOstream != nullptr)
     {
-      goto L100;
+
+      /*  Write the message. */
+
+      *mpOstream << msg << "\n";
+
+      if (*ni == 1)
+        {
+          *mpOstream << "\tIn above message, I1 = '" << *i1 << "'\n";
+        }
+
+      if (*ni == 2)
+        {
+          *mpOstream << "\tIn above message, I1 = '" << *i1
+                     << "', I2 = '" << *i2 << "'\n";
+        }
+
+      if (*nr == 1)
+        {
+          *mpOstream << "\tIn above message, R1 = '" << *r1 << "'\n";
+        }
+
+      if (*nr == 2)
+        {
+          *mpOstream << "\tIn above message, R1 = '" << *r1
+                     << "', R2 = '" << *r2 << "'\n";
+        }
+
+      /*  Abort the run if LEVEL = 2. */
+      if (*level == 2)
+        {
+          // :TODO: We need to abort here
+        }
     }
-
-  /*  Write the message. */
-
-  *mpOstream << msg << "\n";
-
-  if (*ni == 1)
-    {
-      *mpOstream << "\tIn above message, I1 = '" << *i1 << "'\n";
-    }
-
-  if (*ni == 2)
-    {
-      *mpOstream << "\tIn above message, I1 = '" << *i1
-                 << "', I2 = '" << *i2 << "'\n";
-    }
-
-  if (*nr == 1)
-    {
-      *mpOstream << "\tIn above message, R1 = '" << *r1 << "'\n";
-    }
-
-  if (*nr == 2)
-    {
-      *mpOstream << "\tIn above message, R1 = '" << *r1
-                 << "', R2 = '" << *r2 << "'\n";
-    }
-
-  /*  Abort the run if LEVEL = 2. */
-  if (*level == 2)
-    {
-      // :TODO: We need to abort here
-    }
-
-L100:
 
   /* ----------------------- End of Subroutine XERRWD ---------------------- */
   return;

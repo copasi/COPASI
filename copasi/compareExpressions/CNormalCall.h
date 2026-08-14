@@ -1,17 +1,19 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalCall.h,v $
-//   $Revision: 1.3 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/03/07 19:26:19 $
-// End CVS Header
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2008 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., EML Research, gGmbH, University of Heidelberg,
 // and The University of Manchester.
 // All rights reserved.
@@ -86,7 +88,7 @@ public:
    */
   virtual ~CNormalCall();
 
-  virtual CNormalBase * copy() const;
+  CNormalBase * copy() const override;
 
   /**
    * Retrieve the number of summands of this sum.
@@ -117,9 +119,9 @@ public:
    */
   void setFractions(const std::vector<CNormalFraction*>& set);
 
-  virtual std::string toString() const;
+  std::string toString() const override;
 
-  virtual bool simplify();
+  bool simplify() override;
 
   const std::string& getName() const;
 

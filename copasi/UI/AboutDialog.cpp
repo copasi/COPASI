@@ -46,7 +46,7 @@
 #include <copasi/UI/qtUtilities.h>
 #include <copasi/math/CJitCompiler.h>
 #include <copasi/utilities/CVersion.h>
-#include "copasi/OpenMP/CContext.h"
+#include "copasi/OpenMP/COpenMPConfig.h"
 
 #include <copasi/utilities/json.hpp>
 
@@ -56,6 +56,10 @@
 
 #ifdef COPASI_USE_QCUSTOMPLOT
 #include <qcustomplot.h>
+#endif
+
+#ifdef ENABLE_OMP
+#include <omp.h>
 #endif
 
 const char *AboutDialog::text =
@@ -128,8 +132,12 @@ QString AboutDialog::getDefaultVersionText()
   additionalVersion += QString("<li>stduuid</li>");
 #endif
 
+#ifdef ENABLE_OMP
+  additionalVersion += QString("<li>%1 </li>").arg(FROM_UTF8(COpenMPConfig::Info()));
+#endif
+
   return QString(AboutDialog::text)
-         .arg(FROM_UTF8(CVersion::VERSION.getVersion() + omp_info()()))            // 1
+         .arg(FROM_UTF8(CVersion::VERSION.getVersion()))            // 1
          .arg(QT_VERSION_STR)                                       // 2
          .arg(QWT_VERSION_STR)                                      // 3
          .arg(COPASI_EXPAT_VERSION)                                 // 4

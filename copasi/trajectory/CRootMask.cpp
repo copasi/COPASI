@@ -1,4 +1,4 @@
-// Copyright (C) 2026 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2025 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,8 @@ CRootMask::operator const CVector< const RootMask > & () const
 
 bool CRootMask::operator== (const CRootMask & rhs) const
 {
-  return CVector< RootMask >::operator==(rhs);
+  return mType == rhs.mType
+         && CVector< RootMask >::operator==(rhs);
 }
 
 void CRootMask::setMathContainer(CMathContainer * pContainer)
@@ -81,24 +82,26 @@ void CRootMask::create(RootMask type, const CVectorCore< C_INT > & rootsFound)
   else
     {
       CVector< C_FLOAT64 > RootDerivatives(size());
-      CVector< C_INT > RootsFound;
       const CVectorCore< C_INT > *pRootsFound = &rootsFound;
 
       if ((RootMask::CONTINUOUS & mType) != RootMask::NONE)
         {
           mpContainer->updateSimulatedValues(false);
           mpContainer->calculateRootDerivatives(RootDerivatives);
+        }
 
-          if (rootsFound.size() != size())
-            {
-              RootsFound.resize(size());
-              RootsFound = 0;
-              pRootsFound = &RootsFound;
-            }
+      CVector< C_INT > RootsFound;
+
+      if (rootsFound.size() != size())
+        {
+          RootsFound.resize(size());
+          RootsFound = 0;
+          pRootsFound = &RootsFound;
         }
 
       RootMask *pMask = begin();
       RootMask *pMaskEnd = end();
+      const C_FLOAT64 & Time = mpContainer->getState(false)[mpContainer->getCountFixedEventTargets()];
       const C_FLOAT64 * pRootValue = mpContainer->getRoots().begin();
       const C_FLOAT64 * pRootDerivative = RootDerivatives.begin();
       const bool * pDiscrete = mpContainer->getRootIsDiscrete().begin();
@@ -112,7 +115,7 @@ void CRootMask::create(RootMask type, const CVectorCore< C_INT > & rootsFound)
           else if ((RootMask::CONTINUOUS & mType) != RootMask::NONE
                    && (fabs(*pRootValue) < 1e50 * std::numeric_limits< C_FLOAT64 >::min()
                        || ((*pFound > 0)
-                           && fabs(*pRootValue) < 1e3 * std::numeric_limits< C_FLOAT64 >::epsilon())))
+                           && fabs(*pRootValue) < 1e3 * Time * fabs(*pRootDerivative) * std::numeric_limits< C_FLOAT64 >::epsilon())))
             {
               if (*pRootValue < 0
                   && (RootMask::CONTINUOUS_NEGATIVE & mType) != RootMask::NONE)

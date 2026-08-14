@@ -242,7 +242,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
     {
       const CReaction *react = &reactions[counter - 1];
       std::string name = "flux(" + react->getObjectName() + ")";
-      pObject = static_cast< const CDataObject * >(react->getObject(CCommonName("Reference=Flux")));
+      pObject = static_cast< const CDataObject * >(react->getChildObject(CCommonName("Reference=Flux")));
 
       if (filter(classes, pObject))
         {
@@ -250,7 +250,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           treeItems[pItem] = pObject;
         }
 
-      pObject = static_cast< const CDataObject * >(react->getObject(CCommonName("Reference=ParticleFlux")));
+      pObject = static_cast< const CDataObject * >(react->getChildObject(CCommonName("Reference=ParticleFlux")));
 
       if (filter(classes, pObject))
         {
@@ -273,7 +273,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
           if (!react->isLocalParameter(pParameter->getObjectName()))
             continue;
 
-          pObject = static_cast< const CDataObject * >(pParameter->getObject(CCommonName("Reference=Value")));
+          pObject = static_cast< const CDataObject * >(pParameter->getChildObject(CCommonName("Reference=Value")));
 
           if (filter(classes, pObject))
             {
@@ -358,7 +358,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
         }
     }
 
-  pObject = static_cast< const CDataObject * >(pModel->getObject(CCommonName("Reference=Avogadro Constant")));
+  pObject = static_cast< const CDataObject * >(pModel->getChildObject(CCommonName("Reference=Avogadro Constant")));
 
   if (filter(classes, pObject))
     {
@@ -366,7 +366,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
       treeItems[pItem] = pObject;
     }
 
-  pObject = static_cast< const CDataObject * >(pModel->getObject(CCommonName("Reference=Quantity Conversion Factor")));
+  pObject = static_cast< const CDataObject * >(pModel->getChildObject(CCommonName("Reference=Quantity Conversion Factor")));
 
   if (filter(classes, pObject))
     {
@@ -379,7 +379,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
 
   if (StoiMatrix.array())
     {
-      pObject = static_cast< const CDataObject * >(pModel->getObject(CCommonName("Array=Stoichiometry(ann)")));
+      pObject = static_cast< const CDataObject * >(pModel->getChildObject(CCommonName("Array=Stoichiometry(ann)")));
 
       if (filter(classes, pObject))
         {
@@ -393,7 +393,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
 
   if (RedStoiMatrix.array())
     {
-      pObject = static_cast< const CDataObject * >(pModel->getObject(CCommonName("Array=Reduced stoichiometry(ann)")));
+      pObject = static_cast< const CDataObject * >(pModel->getChildObject(CCommonName("Array=Reduced stoichiometry(ann)")));
 
       if (filter(classes, pObject))
         {
@@ -407,7 +407,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
 
   if (LinkMatrix.array())
     {
-      pObject = static_cast< const CDataObject * >(pModel->getObject(CCommonName("Array=Link matrix(ann)")));
+      pObject = static_cast< const CDataObject * >(pModel->getChildObject(CCommonName("Array=Link matrix(ann)")));
 
       if (filter(classes, pObject))
         {
@@ -678,7 +678,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
     {
       if (task && task->updateMatrices())
         {
-          const CDataObject * pObject = static_cast< const CDataObject * >(task->getObject(std::string("Reference=Average divergence")));
+          const CDataObject * pObject = static_cast< const CDataObject * >(task->getChildObject(CCommonName("Reference=Average divergence")));
 
           if (filter(classes, pObject))
             {
@@ -691,7 +691,7 @@ void CQSimpleSelectionTree::populateTree(const CModel *pModel,
               std::ostringstream sss;
               sss << "Exponent " << i + 1;
 
-              pObject = static_cast< const CDataObject * >(task->getObject("Reference=" + sss.str()));
+              pObject = static_cast< const CDataObject * >(task->getChildObject(CCommonName("Reference=" + sss.str())));
 
               if (filter(classes, pObject))
                 {
@@ -952,7 +952,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
     <Object cn="CN=Root,CN=Information,Reference=File Name"/>
   */
 
-  const CDataObject * pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Reference=User Email")));
+  const CDataObject * pObject = CObjectInterface::DataObject(pDataModel->getChildObject(CCommonName("CN=Information,Reference=User Email")));
 
   if (filter(classes, pObject))
     {
@@ -960,7 +960,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Reference=User Family Name")));
+  pObject = CObjectInterface::DataObject(pDataModel->getChildObject(CCommonName("CN=Information,Reference=User Family Name")));
 
   if (filter(classes, pObject))
     {
@@ -968,7 +968,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Reference=User Given Name")));
+  pObject = CObjectInterface::DataObject(pDataModel->getChildObject(CCommonName("CN=Information,Reference=User Given Name")));
 
   if (filter(classes, pObject))
     {
@@ -976,7 +976,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Reference=User Organization")));
+  pObject = CObjectInterface::DataObject(pDataModel->getChildObject(CCommonName("CN=Information,Reference=User Organization")));
 
   if (filter(classes, pObject))
     {
@@ -984,7 +984,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Reference=COPASI Version")));
+  pObject = CObjectInterface::DataObject(pDataModel->getChildObject(CCommonName("CN=Information,Reference=COPASI Version")));
 
   if (filter(classes, pObject))
     {
@@ -992,7 +992,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Timer=Current Date/Time")));
+  pObject = CObjectInterface::DataObject(pDataModel->getChildObject(CCommonName("CN=Information,Timer=Current Date/Time")));
 
   if (filter(classes, pObject))
     {
@@ -1000,7 +1000,7 @@ void CQSimpleSelectionTree::populateInformation(CDataModel * pDataModel, const O
       treeItems[pItem] = pObject;
     }
 
-  pObject = CObjectInterface::DataObject(pDataModel->getObject(CCommonName("CN=Information,Reference=File Name")));
+  pObject = CObjectInterface::DataObject(pDataModel->getChildObject(CCommonName("CN=Information,Reference=File Name")));
 
   if (filter(classes, pObject))
     {

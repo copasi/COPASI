@@ -84,8 +84,8 @@ CMathEventQueue::CAction::CAction():
 
 CMathEventQueue::CAction::CAction(const CAction & src):
   mType(src.mType),
-  mpPriority(src.mpPriority),
   mValues(src.mValues),
+  mpPriority(src.mpPriority),
   mpEvent(src.mpEvent),
   mpProcessQueue(src.mpProcessQueue)
 {}
@@ -211,7 +211,7 @@ CMathEventQueue::CMathEventQueue() :
   mpContainer(NULL),
   mpTime(NULL),
   mActions(),
-  mUpdateSequence(),
+  mUpdateSequence(nullptr),
   mExecutionLimit(10000),
   mExecutionCounter(0),
   mEquality(true),
@@ -227,7 +227,7 @@ CMathEventQueue::CMathEventQueue(CMathContainer & container):
   mpContainer(& container),
   mpTime(NULL),
   mActions(),
-  mUpdateSequence(),
+  mUpdateSequence(& container),
   mExecutionLimit(10000),
   mExecutionCounter(0),
   mEquality(true),

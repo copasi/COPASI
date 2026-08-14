@@ -1,4 +1,4 @@
-# Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -31,7 +31,7 @@
 file(GLOB HEADERS_LAYOUT layout/*.h)
 file(GLOB SOURCES_LAYOUT layout/*.cpp)
 
-if(NOT OPENGL_FOUND)
+if(NOT WITH_LEGACY_OPENGL OR NOT OPENGL_FOUND)
 
   list(REMOVE_ITEM SOURCES_LAYOUT
     ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLLayoutRenderer.cpp
@@ -43,7 +43,7 @@ if(NOT OPENGL_FOUND)
 	  ${CMAKE_CURRENT_SOURCE_DIR}/layout/CLLayoutRenderer.h
 	  ${CMAKE_CURRENT_SOURCE_DIR}/layout/utility_classes.h
   )  
-endif(NOT OPENGL_FOUND)
+endif(NOT WITH_LEGACY_OPENGL OR NOT OPENGL_FOUND)
 
 # remove other elements that 
 list(REMOVE_ITEM SOURCES_LAYOUT 

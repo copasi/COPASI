@@ -32,8 +32,8 @@ jobs:
  
     - name: install latest cmake
       run: | 
-           /opt/python/cp38-cp38/bin/pip install cmake
-           ln -s /opt/python/cp38-cp38/bin/cmake /usr/bin/cmake
+           /opt/python/cp311-cp311/bin/pip install cmake
+           ln -s /opt/python/cp311-cp311/bin/cmake /usr/bin/cmake
 
     - name: install libuuid (static)
       run: |

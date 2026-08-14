@@ -539,14 +539,14 @@ public:
    * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  const CObjectInterface * getObject(const CCommonName & cn) const override;
+  // const CObjectInterface * getObject(const CCommonName & cn) const override;
 
   /**
    * Retrieve a object by its full CN.
-   * @param const CCommonName & cn
+   * @param CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  virtual const CObjectInterface * getObjectFromCN(const CCommonName & cn) const;
+  const CObjectInterface * getObjectFromCN(const CCommonName & cn) const override;
 
   /**
    * Retrieve a pointer to the corresponding the mathematical object
@@ -888,13 +888,7 @@ public:
   void deregisterUpdateSequence(CMathUpdateSequence * pUpdateSequence);
 
 protected:
-  /**
-   * Retrieve the CN of the math container
-   * The math container provides values for the numerical values of model objects.
-   * For the CN mechanism to work properly it has to pretend to be the model.
-   * @return CCommonName
-   */
-  CCommonName getCNProtected() const override;
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override;
 
 private:
   /**

@@ -449,7 +449,6 @@ void CRungeKutta::doOneStep()
     }
 
   // (2) New Time, mTNew
-  size_t s = mStage - 1;
   mTRight = mTLeft + mh;
 
   // (3) New Y, mYNew
@@ -535,7 +534,7 @@ void CRungeKutta::initialize(const size_t * pDim,
                              C_FLOAT64 * pTime,
                              C_FLOAT64 * pEndTime,
                              const size_t rootCount,
-                             CVectorCore< C_INT > & rootsFound,
+                             CVectorCore< C_INT > & /* rootsFound */,
                              const CVectorCore< const RootMask > & rootMask,
                              const RKMethodStatus & status,
                              C_FLOAT64 * rtol,
@@ -723,8 +722,6 @@ void CRungeKutta::setStatRecord()
 void CRungeKutta::setInitialStepSize()
 {
   // (1) First, set parameters, related step size control
-  C_FLOAT64 absT   = fabs(mTLeft);
-
   mhMin      = 16.0 * deps(mTLeft);
   mhMax      = fabs(mTEnd - mTLeft) / 10;
   mFac       = 0.8;
@@ -890,7 +887,7 @@ bool CRungeKutta::checkParameter(const size_t * pDim,
                                  C_FLOAT64 * pEndTime,
                                  const size_t rootCount,
                                  const CVectorCore< const RootMask > & rootMask,
-                                 const RKMethodStatus & status,
+                                 const RKMethodStatus & /* status */,
                                  C_FLOAT64 * rtol,
                                  C_FLOAT64 * atol,
                                  unsigned C_INT32 * pMaxSteps,
@@ -948,12 +945,6 @@ bool CRungeKutta::checkParameter(const size_t * pDim,
   if (pEvalDerivatives == NULL)
     {
       mErrorMessage << "Function that calculates derivatives should be set!" << std::endl;
-      return false;
-    }
-
-  if (rootCount < 0)
-    {
-      mErrorMessage << "Root Number should be a non-negative integer!" << std::endl;
       return false;
     }
 

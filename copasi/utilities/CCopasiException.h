@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -66,7 +66,11 @@ public:
    * Retrieves the Message associated with the exception
    * @return const char* message
    */
-  const char* what() const throw();
+#ifndef SWIG
+   const char* what() const throw() override;
+#else
+   virtual const char* what() const;
+#endif
 
 private:
   const CCopasiMessage mMessage;

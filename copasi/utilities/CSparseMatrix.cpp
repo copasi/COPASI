@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -825,7 +825,7 @@ bool SparseMatrixTest(const size_t & size,
           size_t imax = CR.numRows();
           size_t jmax = CR.numCols();
           C_FLOAT64 * pColElement, * pEndColElement;
-          size_t * pColElementRow, * pEndColElementRow;
+          size_t * pColElementRow;
           size_t * pColStart;
           CCompressedColumnFormat::const_row_iterator itRowElement;
           CCompressedColumnFormat::const_row_iterator endRowElement = C.endRow(0);
@@ -840,7 +840,6 @@ bool SparseMatrixTest(const size_t & size,
                   pColElement = CC.getValues() + *pColStart;
                   pEndColElement = CC.getValues() + *(pColStart + 1);
                   pColElementRow = CC.getRowIndex() + *pColStart;
-                  pEndColElementRow = CC.getRowIndex() + *(pColStart + 1);
 
                   while (itRowElement != endRowElement &&
                          pColElement != pEndColElement)

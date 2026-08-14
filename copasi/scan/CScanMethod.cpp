@@ -123,7 +123,7 @@ CScanItem::CScanItem(CCopasiParameterGroup * si)
 
   CCopasiProblem * pProblem = dynamic_cast< CCopasiProblem * >(si->getObjectAncestor("Problem"));
 
-  auto cn = si->getValue< CRegisteredCommonName >("Object");
+  std::string cn = si->getValue< CRegisteredCommonName >("Object");
 
   if (pProblem != NULL)
     {
@@ -440,6 +440,9 @@ CScanMethod::CScanMethod(const CDataContainer * pParent,
   , mLastNestingItem(C_INVALID_INDEX)
   , mContinueFromCurrentState(false)
   , mFailCounter(0)
+  , mScanItems()
+  , mInitialUpdates(nullptr)
+  , mInitialStateChanged(false)
 {
   mpRandomGenerator = CRandom::createGenerator();
 }
@@ -454,6 +457,9 @@ CScanMethod::CScanMethod(const CScanMethod & src,
   , mLastNestingItem(C_INVALID_INDEX)
   , mContinueFromCurrentState(false)
   , mFailCounter(0)
+  , mScanItems()
+  , mInitialUpdates(nullptr)
+  , mInitialStateChanged(false)
 {
   mpRandomGenerator = CRandom::createGenerator();
 }
@@ -619,8 +625,6 @@ bool CScanMethod::loop(size_t level)
   bool isLastMasterItem = (level == (mScanItems.size() - 1)); //TODO
 
   CScanItem* currentSI = mScanItems[level];
-  size_t failCounter = 0;
-
   mInitialStateChanged = dynamic_cast< CScanItemParameterSet * >(currentSI) != NULL;
 
   for (currentSI->reset(); !currentSI->isFinished(); currentSI->step())
@@ -793,7 +797,7 @@ void CScanItemParameterSet::step()
   ++mIndex;
 }
 
-bool CScanItemParameterSet::isValidScanItem(const bool & continueFromCurrentState)
+bool CScanItemParameterSet::isValidScanItem(const bool & /* continueFromCurrentState */)
 {
   if (mSets.empty())
     {

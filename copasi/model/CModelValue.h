@@ -548,14 +548,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -566,10 +566,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & type,
-                              const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+  void createUndoData(CUndoData & undoData,
+                      const CUndoData::Type & type,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
   /**
    * Default constructor
@@ -596,7 +596,7 @@ public:
    * Retrieve the units of the object.
    * @return std::string units
    */
-  virtual const std::string getUnits() const;
+  const std::string getUnits() const override;
 
   /**
    * insert operator

@@ -353,7 +353,7 @@ bool CMathDependencyGraph::dependsOn(const CObjectInterface * pObject,
                                      const CCore::SimulationContextFlag & context,
                                      const CObjectInterface * pChangedObject) const
 {
-  CCore::CUpdateSequence UpdateSequence;
+  CCore::CUpdateSequence UpdateSequence(mpContainer);
   CObjectInterface::ObjectSet ChangedObjects;
 
   if (pChangedObject != NULL)
@@ -377,7 +377,7 @@ bool CMathDependencyGraph::dependsOn(const CObjectInterface * pObject,
                                      const CCore::SimulationContextFlag & context,
                                      const CObjectInterface::ObjectSet & changedObjects) const
 {
-  CCore::CUpdateSequence UpdateSequence;
+  CCore::CUpdateSequence UpdateSequence(mpContainer);
   CObjectInterface::ObjectSet RequestedObjects;
 
   if (pObject != NULL)
@@ -394,7 +394,7 @@ bool CMathDependencyGraph::hasCircularDependencies(const CObjectInterface * pObj
     const CCore::SimulationContextFlag & context,
     const CObjectInterface * pChangedObject) const
 {
-  CCore::CUpdateSequence UpdateSequence;
+  CCore::CUpdateSequence UpdateSequence(mpContainer);
   CObjectInterface::ObjectSet ChangedObjects;
 
   if (pChangedObject != NULL)

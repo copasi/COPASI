@@ -540,7 +540,7 @@ void CQMarchingSquares::isoSubpath(IsoCell * input, int r, int c, levelPaths & i
   double xPrev = c + pt.x();
   double yPrev = r + pt.y();
 
-  if (abs(x - xPrev) > epsilon && abs(y - yPrev) > epsilon)
+  if (std::abs(x - xPrev) > epsilon && std::abs(y - yPrev) > epsilon)
     {
       iso.lineTo(x * _xStep + _xMin, y * _yStep + _yMin);
     }
@@ -578,7 +578,7 @@ void CQMarchingSquares::isoSubpath(IsoCell * input, int r, int c, levelPaths & i
       x = c + pt.x();
       y = r + pt.y();
 
-      if (abs(x - xPrev) > epsilon && abs(y - yPrev) > epsilon)
+      if (std::abs(x - xPrev) > epsilon && std::abs(y - yPrev) > epsilon)
         {
           iso.lineTo(x * _xStep + _xMin, y * _yStep + _yMin);
         }

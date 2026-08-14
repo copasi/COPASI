@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -10,6 +15,7 @@
 #include <vector>
 
 class CData;
+class CCommonName;
 
 class CDataValue
 {
@@ -46,6 +52,7 @@ public:
   CDataValue(const bool & value);
   CDataValue(const std::string & value);
   CDataValue(const char * value);
+  CDataValue(const CCommonName & value);
   CDataValue(const CData & value);
   CDataValue(const std::vector< CDataValue > & value);
   CDataValue(const std::vector< CData > & value);

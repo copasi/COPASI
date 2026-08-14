@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -44,7 +44,7 @@ CurveHandler::~CurveHandler()
 
 // virtual
 CXMLHandler * CurveHandler::processStart(const XML_Char * pszName,
-    const XML_Char ** papszAttrs)
+    const XML_Char ** /* papszAttrs */)
 {
   CXMLHandler * pHandlerToCall = NULL;
 

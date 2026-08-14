@@ -52,9 +52,16 @@ COptMethod::COptMethod(const CDataContainer * pParent,
   , mProblemContext(parallel, this)
   , mLogVerbosity(0)
   , mMethodLog()
+  , mOpenMPApplyCallback(nullptr)
   , mBestValue()
   , mProceed()
 {
+  if (parallel)
+    {
+      mOpenMPApplyCallback = std::make_shared< std::function< void() > >(std::bind(&COptMethod::openMPApplyCallback, this));
+      COpenMPConfig::RegisterApplyCallback(mOpenMPApplyCallback);
+    }
+
   assertParameter("Log Verbosity", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 }
 
@@ -68,9 +75,16 @@ COptMethod::COptMethod(const COptMethod & src,
   , mProblemContext(src.mParallel, this)
   , mLogVerbosity(src.mLogVerbosity)
   , mMethodLog(src.mMethodLog)
+  , mOpenMPApplyCallback(nullptr)
   , mBestValue()
   , mProceed()
 {
+  if (parallel)
+    {
+      mOpenMPApplyCallback = std::make_shared< std::function< void() > >(std::bind(&COptMethod::openMPApplyCallback, this));
+      COpenMPConfig::RegisterApplyCallback(mOpenMPApplyCallback);
+    }
+
   mMathContext.setMaster(src.mMathContext.master());
   mProblemContext.setMaster(src.mProblemContext.master());
   mProblemContext.setMathContext(mMathContext);
@@ -208,6 +222,23 @@ const CVector< C_FLOAT64 > * COptMethod::getBestParameters() const
 const CVector< C_FLOAT64 > * COptMethod::getCurrentParameters() const
 {
   return NULL;
+}
+
+// virtual
+void COptMethod::openMPApplyCallback()
+{
+  CMathContainer * pMasterMathContainer = mMathContext.master();
+  COptProblem * pMasterOptProblem = mProblemContext.master();
+
+  mMathContext.release();
+  mProblemContext.release();
+
+  mMathContext.init();
+  mProblemContext.init();
+
+  mMathContext.setMaster(pMasterMathContainer);
+  mProblemContext.setMaster(pMasterOptProblem );
+  mProblemContext.setMathContext(mMathContext);
 }
 
 // virtual evaluate the fitness of one individual

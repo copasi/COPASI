@@ -406,17 +406,6 @@ void CModelParameterGroup::compile()
   mValidatedUnits.clear();
 }
 
-void CModelParameterGroup::unsetDataModel()
-{
-  CModelParameter::unsetDataModel();
-  iterator it = begin();
-  iterator End = end();
-  for (; it != End; ++it)
-    {
-      (*it)->unsetDataModel();
-    }
-}
-
 void CModelParameterGroup::clear()
 {
   if (mModelParameters.empty())

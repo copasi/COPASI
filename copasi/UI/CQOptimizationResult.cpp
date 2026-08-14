@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,11 +18,11 @@
 // and The University of Manchester.
 // All rights reserved.
 
-#include "CQOptimizationResult.h"
+#include "copasi/UI/CQOptimizationResult.h"
 
-#include "CopasiFileDialog.h"
-#include "CQMessageBox.h"
-#include "qtUtilities.h"
+#include "copasi/UI/CopasiFileDialog.h"
+#include "copasi/UI/CQMessageBox.h"
+#include "copasi/UI/qtUtilities.h"
 
 #include "copasi/copasi.h"
 
@@ -46,7 +46,7 @@
 #include "copasi/model/CModel.h"
 #include "copasi/math/CMathContainer.h"
 
-#include <copasi/UI/CQParameterResultItemModel.h>
+#include "copasi/UI/CQParameterResultItemModel.h"
 #include <QSortFilterProxyModel>
 
 #ifdef DELETE
@@ -110,8 +110,10 @@ bool CQOptimizationResult::enterProtected()
   const unsigned C_INT32 & FunctionEvaluations = mpProblem->getFunctionEvaluations();
   mpEditEvaluations->setText(QString::number(FunctionEvaluations));
   const C_FLOAT64 & ExecutionTime = mpProblem->getExecutionTime();
-  mpEditCPUTime->setText(convertToQString(ExecutionTime));
-  mpEditSpeed->setText(convertToQString(FunctionEvaluations / ExecutionTime));
+  const C_FLOAT64 & WallTime = mpProblem->getWallTime();
+  mpEditWallTime->setText(convertToQString(WallTime));
+  mpEditSpeed->setText(convertToQString(FunctionEvaluations / WallTime));
+  mpEditSpeedUp->setText(convertToQString(ExecutionTime / WallTime));
   const unsigned C_INT32 & FailedEvaluationsExc = mpProblem->getFailedEvaluationsExc();
   mpEditFailedEvaluationsExc->setText(QString::number(FailedEvaluationsExc));
   const unsigned C_INT32 & FailedEvaluationsNaN = mpProblem->getFailedEvaluationsNaN();

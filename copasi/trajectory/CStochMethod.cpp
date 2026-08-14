@@ -75,7 +75,6 @@ CStochMethod::CStochMethod(const CDataContainer * pParent,
   mDG()
 {
   initializeParameter();
-  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
 }
 
 CStochMethod::CStochMethod(const CStochMethod & src,
@@ -97,7 +96,6 @@ CStochMethod::CStochMethod(const CStochMethod & src,
   mDG()
 {
   initializeParameter();
-  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
 }
 
 CStochMethod::~CStochMethod()

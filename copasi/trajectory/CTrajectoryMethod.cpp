@@ -133,7 +133,7 @@ bool CTrajectoryMethod::setProblem(CCopasiProblem * pProblem)
 }
 
 // virtual
-void CTrajectoryMethod::stateChange(const CMath::StateChange & change)
+void CTrajectoryMethod::stateChange(const CMath::StateChange & /* change */)
 {}
 
 /**

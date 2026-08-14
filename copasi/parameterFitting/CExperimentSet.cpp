@@ -54,7 +54,7 @@ CExperimentSet::CExperimentSet(const CDataContainer * pParent,
 
 CExperimentSet::CExperimentSet(const CExperimentSet & src,
                                const CDataContainer * pParent):
-  CCopasiParameterGroup(src, static_cast< const CDataContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel())),
+  CCopasiParameterGroup(src, static_cast< const CDataContainer * >((pParent != NULL) ? pParent : src.getObjectDataModel()), src.getObjectType()),
   mpExperiments(NULL),
   mNonExperiments(0),
   mDependentObjects(0),
@@ -68,7 +68,7 @@ CExperimentSet::CExperimentSet(const CExperimentSet & src,
 
 CExperimentSet::CExperimentSet(const CCopasiParameterGroup & group,
                                const CDataContainer * pParent):
-  CCopasiParameterGroup(group, static_cast< const CDataContainer * >((pParent != NULL) ? pParent : group.getObjectDataModel())),
+  CCopasiParameterGroup(group, static_cast< const CDataContainer * >((pParent != NULL) ? pParent : group.getObjectDataModel()), "CExperimentSet"),
   mpExperiments(NULL),
   mNonExperiments(0),
   mDependentObjects(0),

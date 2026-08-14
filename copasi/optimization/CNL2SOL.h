@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -26,7 +26,7 @@ class FNL2SOL
 public:
   virtual ~FNL2SOL() {};
 
-  virtual C_INT operator()(integer * C_UNUSED(n), integer * C_UNUSED(n), doublereal * C_UNUSED(value), integer * C_UNUSED(n), doublereal * C_UNUSED(value1), integer * C_UNUSED(n), doublereal * C_UNUSED(value2), U_fp)
+  virtual C_INT operator()(integer * /* n */, integer * /* n */, doublereal * /* value */, integer * /* n */, doublereal * /* value1 */, integer * /* n */, doublereal * /* value2 */, U_fp)
   {return std::numeric_limits<C_INT>::quiet_NaN();}
 };
 
@@ -50,7 +50,7 @@ public:
   virtual ~FNL2SOLTemplate() {};
 
   // override operator "()"
-  virtual C_INT operator()(integer *n, integer *p, doublereal *x, integer *nf, doublereal *resid, integer *uiparm, doublereal *urparm, U_fp ufparm)
+  C_INT operator()(integer *n, integer *p, doublereal *x, integer *nf, doublereal *resid, integer *uiparm, doublereal *urparm, U_fp ufparm) override
   {return (*mpType.*mMethod)(n, p, x, nf, resid, uiparm, urparm, ufparm);}    ; // execute member function
 };
 

@@ -153,12 +153,12 @@ void CQUpdatesWidget::loadOneTable(QTableWidget * pTable, const CMathUpdateSeque
       if (pDataObject != NULL)
         {
           pTable->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(pDataObject->getObjectParent()->getObjectDisplayName())));
-          pTable->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(pDataObject->getObjectDisplayName())));
+          pTable->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(pDataObject->getObjectDisplayName())));
         }
       else if (pMathObject != NULL)
         {
           pTable->setItem(i, 0, new QTableWidgetItem("Math Container"));
-          pTable->setItem(i, 0, new QTableWidgetItem(FROM_UTF8(pMathObject->getObjectDisplayName())));
+          pTable->setItem(i, 1, new QTableWidgetItem(FROM_UTF8(pMathObject->getObjectDisplayName())));
         }
     }
 }
@@ -394,27 +394,99 @@ void CQUpdatesWidget::loadMathContainer(const CMathContainer& MC)
   for (i = 0; i < imax; ++i)
     {
       QTableWidgetItem* tmpItem;
-      //QColor c;
+      QColor c;
       CMathObject* pMO = MC.getMathObject(&MC.getValues()[i]);
 
       if (pMO)
         {
           tmpItem = new QTableWidgetItem(FROM_UTF8(pMO->getObjectDisplayName()));
+          tmpItem->setBackground(pMO->isInitialValue() ? QColor(255, 255, 200) : QColor(200, 200, 250));
           mpTableMathState->setItem((int)i, 0, tmpItem);
 
           QString s = FROM_UTF8(CMath::ValueTypeName[pMO->getValueType()]);
           tmpItem = new QTableWidgetItem(s);
-          tmpItem->setBackground(pMO->isInitialValue() ? QColor(255, 255, 200) : QColor(200, 200, 250));
+            switch(pMO->getValueType())
+            {
+                case CMath::ValueType::Value :
+                    c=QColor(180,220,180); break;
+                case CMath::ValueType::Rate :
+                    c=QColor(200,200,180); break;
+                case CMath::ValueType::ParticleFlux :
+                    c=QColor(200,180,180); break;
+                case CMath::ValueType::Flux :
+                    c=QColor(215,180,180); break;
+                case CMath::ValueType::Noise :
+                    c=QColor(180,180,215); break;
+                case CMath::ValueType::ParticleNoise :
+                    c=QColor(180,180,200); break;
+                case CMath::ValueType::Propensity :
+                    c=QColor(195,175,195); break;
+                case CMath::ValueType::EventRoot :
+                case CMath::ValueType::EventDelay :
+                case CMath::ValueType::EventTrigger :
+                case CMath::ValueType::EventPriority :
+                case CMath::ValueType::EventAssignment :
+                case CMath::ValueType::EventRootState :
+                case CMath::ValueType::DelayLag :
+                case CMath::ValueType::DelayValue :
+                case CMath::ValueType::Discontinuous :
+                    c=QColor(180,210,210); break;
+                default:
+                    c=QColor(230,230,230);
+            }
+            tmpItem->setBackground(c);
+//          tmpItem->setBackground(pMO->isInitialValue() ? QColor(255, 255, 200) : QColor(200, 200, 250));
           mpTableMathState->setItem((int)i, 1, tmpItem);
 
           s = FROM_UTF8(CMath::SimulationTypeName[pMO->getSimulationType()]);
           tmpItem = new QTableWidgetItem(s);
+            switch(pMO->getSimulationType())
+            {
+                case CMath::SimulationType::Fixed:
+                    c=QColor(180,180,180); break;
+                case CMath::SimulationType::EventTarget:
+                    c=QColor(170,170,200); break;
+                case CMath::SimulationType::Time:
+                    c=QColor(255,200,200); break;
+                case CMath::SimulationType::ODE:
+                    c=QColor(180,255,180); break;
+                case CMath::SimulationType::Independent:
+                    c=QColor(200,255,200); break;
+                case CMath::SimulationType::Dependent:
+                    c=QColor(180,240,240); break;
+                case CMath::SimulationType::Assignment:
+                    c=QColor(185,185,255); break;
+                case CMath::SimulationType::Conversion:
+                    c=QColor(230,185,245); break;
+                default:
+                    c=QColor(230,230,230);
+            }
+            tmpItem->setBackground(c);
           mpTableMathState->setItem((int)i, 2, tmpItem);
 
           s = FROM_UTF8(CMath::EntityTypeName[pMO->getEntityType()]);
           tmpItem = new QTableWidgetItem(s);
-          tmpItem->setBackground(pMO->isIntensiveProperty() ? QColor(255, 220, 220) : QColor(220, 255, 220));
+            switch(pMO->getEntityType())
+            {
+                case CMath::EntityType::Model:
+                    c=QColor(230,200,200); break;
+                case CMath::EntityType::Species:
+                    c=QColor(180,230,180); break;
+                case CMath::EntityType::Reaction:
+                    c=QColor(215,180,180); break;
+                case CMath::EntityType::Compartment:
+                    c=QColor(180,180,230); break;
+                case CMath::EntityType::Event:
+                    c=QColor(180,230,230); break;
+                default:
+                    c=QColor(230,230,230);
+            }
+            tmpItem->setBackground(c);
           mpTableMathState->setItem((int)i, 3, tmpItem);
+
+            tmpItem = new QTableWidgetItem(convertToQString(MC.getValues()[i]));
+            tmpItem->setBackground(pMO->isIntensiveProperty() ? QColor(255, 220, 220) : QColor(220, 255, 220));
+            mpTableMathState->setItem((int)i, 4, tmpItem);
 
           const CMathExpression* pMExp = pMO->getExpressionPtr();
 
@@ -435,8 +507,8 @@ void CQUpdatesWidget::loadMathContainer(const CMathContainer& MC)
           mpTableMathState->setCellWidget((int)i, 5, tmpmml);
         }
 
-      tmpItem = new QTableWidgetItem(convertToQString(MC.getValues()[i]));
-      mpTableMathState->setItem((int)i, 4, tmpItem);
+      //tmpItem = new QTableWidgetItem(convertToQString(MC.getValues()[i]));
+      //mpTableMathState->setItem((int)i, 4, tmpItem);
     }
 }
 

@@ -872,7 +872,7 @@ CLGlobalRenderInformation * getDefaultStyle(const std::string & key)
       return NULL;
     }
 
-  for (int index = 0; index < DEFAULT_STYLES->size(); ++index)
+  for (size_t index = 0; index < DEFAULT_STYLES->size(); ++index)
     {
       CLGlobalRenderInformation* current = static_cast<CLGlobalRenderInformation*>(&DEFAULT_STYLES->operator[](index));
       if (current && current->getKey() == key)

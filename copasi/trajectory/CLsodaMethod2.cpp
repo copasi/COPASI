@@ -27,31 +27,36 @@
 
 CLsodaMethod2::CLsodaMethod2(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
-                             const CTaskEnum::Task & taskType):
-  CTrajectoryMethod(pParent, methodType, taskType),
-  mpRelativeTolerance(NULL),
-  mpAbsoluteTolerance(NULL),
-  mpMaxInternalSteps(NULL),
-  mpMaxInternalStepSize(NULL),
-  mData(),
-  mpY(NULL),
-  mpYdot(NULL),
-  mNumRoots(0),
-  mTime(),
-  mLsodaStatus(1),
-  mLastSuccessState(),
-  mAtol(),
-  mpAtol(NULL),
-  mErrorMsg(),
-  mLSODA(),
-  mTask(),
-  mDWork(),
-  mIWork(),
-  mJType(),
-  mRootMask(),
-  mRootMasking(RootMask::NONE),
-  mTargetTime(),
-  mPeekAheadMode(false)
+                             const CTaskEnum::Task & taskType)
+  : CTrajectoryMethod(pParent, methodType, taskType)
+  , mpRelativeTolerance(NULL)
+  , mpAbsoluteTolerance(NULL)
+  , mpMaxInternalSteps(NULL)
+  , mpMaxInternalStepSize(NULL)
+  , mData()
+  , mpY(NULL)
+  , mpYdot(NULL)
+  , mTime()
+  , mLsodaStatus(1)
+  , mLastSuccessState()
+  , mAtol()
+  , mpAtol(NULL)
+  , mErrorMsg()
+  , mLSODA()
+  , mTask()
+  , mDWork()
+  , mIWork()
+  , mJType()
+  , mContainerRoots()
+  , mNumRoots(0)
+  , mRootFinder()
+  , mRootValueCalculator()
+  , mRoots()
+  , mRootMask()
+  , mRootMasking(RootMask::NONE)
+  , mTargetTime()
+  , mPeekAheadMode(false)
+  , mSavedState()
 {
   mData.pMethod = this;
   mRootValueCalculator = std::bind(&CLsodaMethod2::evalRoot, this, std::placeholders::_1, std::placeholders::_2);
@@ -60,31 +65,35 @@ CLsodaMethod2::CLsodaMethod2(const CDataContainer * pParent,
 }
 
 CLsodaMethod2::CLsodaMethod2(const CLsodaMethod2 & src,
-                             const CDataContainer * pParent):
-  CTrajectoryMethod(src, pParent),
-  mpRelativeTolerance(NULL),
-  mpAbsoluteTolerance(NULL),
-  mpMaxInternalSteps(NULL),
-  mpMaxInternalStepSize(NULL),
-  mData(src.mData),
-  mpY(NULL),
-  mpYdot(NULL),
-  mNumRoots(src.mNumRoots),
-  mTime(src.mTime),
-  mLsodaStatus(src.mLsodaStatus),
-  mLastSuccessState(src.mLastSuccessState),
-  mAtol(src.mAtol),
-  mpAtol(NULL),
-  mErrorMsg(src.mErrorMsg.str()),
-  mLSODA(),
-  mTask(src.mTask),
-  mDWork(src.mDWork),
-  mIWork(src.mIWork),
-  mJType(src.mJType),
-  mRootMask(src.mRootMask),
-  mRootMasking(src.mRootMasking),
-  mTargetTime(src.mTargetTime),
-  mPeekAheadMode(src.mPeekAheadMode)
+                             const CDataContainer * pParent)
+  : CTrajectoryMethod(src, pParent)
+  , mpRelativeTolerance(NULL)
+  , mpAbsoluteTolerance(NULL)
+  , mpMaxInternalSteps(NULL)
+  , mpMaxInternalStepSize(NULL)
+  , mData(src.mData)
+  , mpY(NULL)
+  , mpYdot(NULL)
+  , mTime(src.mTime)
+  , mLsodaStatus(src.mLsodaStatus)
+  , mLastSuccessState(src.mLastSuccessState)
+  , mAtol(src.mAtol)
+  , mpAtol(NULL)
+  , mErrorMsg(src.mErrorMsg.str())
+  , mLSODA()
+  , mTask(src.mTask)
+  , mDWork(src.mDWork)
+  , mIWork(src.mIWork)
+  , mJType(src.mJType)
+  , mContainerRoots()
+  , mNumRoots(src.mNumRoots)
+  , mRootFinder()
+  , mRootValueCalculator()
+  , mRoots()
+  , mRootMask(src.mRootMask)
+  , mRootMasking(src.mRootMasking)
+  , mTargetTime(src.mTargetTime)
+  , mPeekAheadMode(src.mPeekAheadMode)
 {
   mData.pMethod = this;
   mRootValueCalculator = std::bind(&CLsodaMethod2::evalRoot, this, std::placeholders::_1, std::placeholders::_2);
@@ -148,7 +157,6 @@ CTrajectoryMethod::Status CLsodaMethod2::step(const double & deltaT, const bool 
       return NORMAL;
     }
 
-  C_FLOAT64 StartTime = mTime;
   C_FLOAT64 EndTime = mTime + deltaT;
 
   if (mTargetTime != EndTime)
@@ -358,8 +366,8 @@ void CLsodaMethod2::EvalJ(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 
 {static_cast<Data *>((void *) n)->pMethod->evalJ(t, y, ml, mu, pd, nRowPD);}
 
 // virtual
-void CLsodaMethod2::evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
-                          const C_INT * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
+void CLsodaMethod2::evalJ(const C_FLOAT64 * /* t */, const C_FLOAT64 * /* y */,
+                          const C_INT * /* ml */, const C_INT * /* mu */, C_FLOAT64 * /* pd */, const C_INT * /* nRowPD */)
 {
   // TODO Implement me.
 }

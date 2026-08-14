@@ -285,7 +285,7 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex & parent
       else
         {
           *itDeletedKey = itRow->getKey();
-          *itDeletedCN = itRow->getStringCN();
+          *itDeletedCN = itRow->getCN();
         }
     }
 
@@ -298,8 +298,8 @@ bool CQFunctionDM::removeRows(int position, int rows, const QModelIndex & parent
           if (CRootContainer::getFunctionList()->removeFunction(*itDeletedKey))
             {
               mFetched--;
-              emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, CRegisteredCommonName(*itDeletedCN, nullptr));
-              emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, CRegisteredCommonName()); //Refresh all as there may be dependencies.
+              emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, CCommonName(*itDeletedCN));
+              emit notifyGUI(ListViews::ObjectType::FUNCTION, ListViews::DELETE, CCommonName()); //Refresh all as there may be dependencies.
             }
         }
     }

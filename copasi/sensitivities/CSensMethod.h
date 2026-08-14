@@ -39,6 +39,10 @@ public:
   CArray tmp1;
   CArray tmp2;
 
+  CSensMethodLocalData();
+  CSensMethodLocalData(const CSensMethodLocalData & src);
+  virtual~CSensMethodLocalData();
+
   /**
    * A vector pointers to variables.
    */

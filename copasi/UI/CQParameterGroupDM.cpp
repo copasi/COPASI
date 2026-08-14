@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -116,7 +116,11 @@ Qt::ItemFlags CQParameterGroupDM::flags(const QModelIndex &index) const
         {
           emit signalCloseEditor(index);
         }
-      else if (pNode->hasValidValues())
+      else if (pNode->hasValidValues()
+               && pNode->getType() != CCopasiParameter::Type::DOUBLE
+               && pNode->getType() != CCopasiParameter::Type::UDOUBLE
+               && pNode->getType() != CCopasiParameter::Type::INT
+               && pNode->getType() != CCopasiParameter::Type::UINT)
         {
           emit signalCreateComboBox(index);
         }

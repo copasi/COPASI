@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -64,33 +64,33 @@ public:
    * Retrieve the infix value of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getInfix(const std::vector< std::string > & children) const;
+  std::string getInfix(const std::vector< std::string > & children) const override;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes.
    * @return const Data & value
    */
-  virtual std::string getDisplayString(const std::vector< std::string > & children) const;
+  std::string getDisplayString(const std::vector< std::string > & children) const override;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes in C.
    * @return const Data & value
    */
-  virtual std::string getCCodeString(const std::vector< std::string > & children) const;
+  std::string getCCodeString(const std::vector< std::string > & children) const override;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes
    * in Berkeley Madonna format.
    * @return const Data & value
    */
-  virtual std::string getBerkeleyMadonnaString(const std::vector< std::string > & children) const;
+  std::string getBerkeleyMadonnaString(const std::vector< std::string > & children) const override;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes
    * in XPPAUT format.
    * @return const Data & value
    */
-  virtual std::string getXPPString(const std::vector< std::string > & children) const;
+  std::string getXPPString(const std::vector< std::string > & children) const override;
 
   /**
    * Figure out the appropriate CUnit to use, based on the child nodes.
@@ -99,8 +99,8 @@ public:
    * @param const std::vector< CUnit > & units
    * @return CUnit unit
    */
-  virtual CValidatedUnit getUnit(const CMathContainer & container,
-                                 const std::vector< CValidatedUnit > & units) const;
+  CValidatedUnit getUnit(const CMathContainer & container,
+                         const std::vector< CValidatedUnit > & units) const override;
 
   /**
    * Set the unit for the node and return the resulting unit. The child node units are
@@ -110,9 +110,9 @@ public:
    * @param std::map < CEvaluationNode * , CValidatedUnit > & targetUnits
    * @return CUnit unit
    */
-  virtual CValidatedUnit setUnit(const CMathContainer & container,
-                                 const std::map < CEvaluationNode * , CValidatedUnit > & currentUnits,
-                                 std::map < CEvaluationNode * , CValidatedUnit > & targetUnits) const;
+  CValidatedUnit setUnit(const CMathContainer & container,
+                         const std::map< CEvaluationNode *, CValidatedUnit > & currentUnits,
+                         std::map< CEvaluationNode *, CValidatedUnit > & targetUnits) const override;
 
   /**
    * Creates a new CEvaluationNodeCall from an ASTNode and the given children
@@ -126,7 +126,7 @@ public:
    * Create a new ASTNode corresponding to this choice node.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const;
+  ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const override;
 
   /**
    * Add a child to a node.
@@ -138,7 +138,7 @@ public:
    * @return bool Success
    */
   bool addChild(CCopasiNode< Data > * pChild,
-                CCopasiNode< Data > * pAfter = NULL);
+                CCopasiNode< Data > * pAfter = NULL) override;
 
   /**
    * Retrieve the vector of evaluation nodes

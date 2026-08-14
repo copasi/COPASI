@@ -250,7 +250,7 @@ void CQReportDefinition::btnSeparatorClicked()
   else
     Separator = TO_UTF8_UNTRIMMED(mpSeparator->text());
 
-  _addItem(static_cast<QTableWidget*>(mpReportSectionTab->currentWidget()), new CQReportListItem(Separator.getStringCN(), mpDataModel));
+  _addItem(static_cast<QTableWidget*>(mpReportSectionTab->currentWidget()), new CQReportListItem(Separator.getCN(), mpDataModel));
 
   mChanged = true;
 
@@ -259,7 +259,7 @@ void CQReportDefinition::btnSeparatorClicked()
 
 void CQReportDefinition::btnLineBreakClicked()
 {
-  _addItem(static_cast<QTableWidget*>(mpReportSectionTab->currentWidget()), new CQReportListItem(CDataString("\n").getStringCN(), mpDataModel));
+  _addItem(static_cast<QTableWidget*>(mpReportSectionTab->currentWidget()), new CQReportListItem(CDataString("\n").getCN(), mpDataModel));
 }
 
 void CQReportDefinition::btnTextClicked()
@@ -271,7 +271,7 @@ void CQReportDefinition::btnTextClicked()
     {
       CDataString Text(TO_UTF8(pDialog->getText()));
 
-      _addItem(static_cast<QTableWidget*>(mpReportSectionTab->currentWidget()), new CQReportListItem(Text.getStringCN(), mpDataModel));
+      _addItem(static_cast<QTableWidget*>(mpReportSectionTab->currentWidget()), new CQReportListItem(Text.getCN(), mpDataModel));
     }
 
   delete pDialog;
@@ -666,11 +666,11 @@ void CQReportDefinition::slotAddSeparator()
 
   if (selected.empty())
     {
-      _addItem(current, new CQReportListItem(Separator.getStringCN(), mpDataModel));
+      _addItem(current, new CQReportListItem(Separator.getCN(), mpDataModel));
     }
   else
     {
-      _insertItem(current, current->row(selected.first()), new CQReportListItem(Separator.getStringCN(), mpDataModel));
+      _insertItem(current, current->row(selected.first()), new CQReportListItem(Separator.getCN(), mpDataModel));
     }
 
   mChanged = true;
@@ -686,11 +686,11 @@ void CQReportDefinition::slotAddLineBreak()
 
   if (selected.empty())
     {
-      _addItem(current, new CQReportListItem(CDataString("\n").getStringCN(), mpDataModel));
+      _addItem(current, new CQReportListItem(CDataString("\n").getCN(), mpDataModel));
     }
   else
     {
-      _insertItem(current, current->row(selected.first()), new CQReportListItem(CDataString("\n").getStringCN(), mpDataModel));
+      _insertItem(current, current->row(selected.first()), new CQReportListItem(CDataString("\n").getCN(), mpDataModel));
     }
 
   mChanged = true;

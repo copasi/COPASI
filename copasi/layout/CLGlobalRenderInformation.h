@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,14 +46,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    *  Constructor.
@@ -79,7 +79,7 @@ public:
   /**
    * Returns the number of styles.
    */
-  virtual size_t getNumStyles() const;
+  size_t getNumStyles() const override;
 
   /**
    * Returns a pointer to the LitOfStyles object.
@@ -95,20 +95,20 @@ public:
    * Returns a pointer to the style with the given index.
    * If the index is invalid, NULL is returned.
    */
-  virtual CLStyle* getStyle(size_t i);
+  CLStyle* getStyle(size_t i) override;
 
   /**
    * Returns a pointer to the style with the given index.
    * If the index is invalid, NULL is returned.
    */
-  virtual const CLStyle* getStyle(size_t i) const;
+  const CLStyle* getStyle(size_t i) const override;
 
   /**
    * Creates a new style, and adds it to the list of styles (where it is owned)
    *
    * @return the newly created style
    */
-  virtual CLStyle * createStyle();
+  CLStyle * createStyle() override;
 
   /**
    * Returns the style for the graphical object or NULL
@@ -116,7 +116,7 @@ public:
    * @param pObject the graphical object
    * @return the style if one is available for the object
    */
-  virtual const CLStyle * getStyleForGraphicalObject(const CLGraphicalObject * pObject) const;
+  const CLStyle * getStyleForGraphicalObject(const CLGraphicalObject * pObject) const override;
 
   static std::string getTypeForObject(const CLGraphicalObject * pObject);
 

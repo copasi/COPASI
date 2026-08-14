@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -78,9 +78,9 @@ public:
    * @param const CObjectInterface::ObjectSet & changedObjects
    * @return bool isPrerequisiteForContext
    */
-  virtual bool isPrerequisiteForContext(const CObjectInterface * pObject,
-                                        const CCore::SimulationContextFlag & context,
-                                        const CObjectInterface::ObjectSet & changedObjects) const;
+  bool isPrerequisiteForContext(const CObjectInterface * pObject,
+                                const CCore::SimulationContextFlag & context,
+                                const CObjectInterface::ObjectSet & changedObjects) const override;
 };
 
 class CDependentNumberReference : public CDataObjectReference< C_FLOAT64 >
@@ -121,9 +121,9 @@ public:
    * @param const CObjectInterface::ObjectSet & changedObjects
    * @return bool isPrerequisiteForContext
    */
-  virtual bool isPrerequisiteForContext(const CObjectInterface * pObject,
-                                        const CCore::SimulationContextFlag & context,
-                                        const CObjectInterface::ObjectSet & changedObjects) const;
+  bool isPrerequisiteForContext(const CObjectInterface * pObject,
+                                const CCore::SimulationContextFlag & context,
+                                const CObjectInterface::ObjectSet & changedObjects) const override;
 };
 
 class CMoiety : public CDataContainer
@@ -197,14 +197,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Default constructor
@@ -305,14 +305,14 @@ public:
    *  Returns a string with the name of this compartment.
    *  @return std::string key
    */
-  virtual const std::string & getKey() const; //By G
+  const std::string & getKey() const override;
 
   /**
    * Sets the parent of the moiety;
    * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CDataContainer * pParent);
+  bool setObjectParent(const CDataContainer * pParent) override;
 
   /**
    * Refreshes the value of the dependent number
