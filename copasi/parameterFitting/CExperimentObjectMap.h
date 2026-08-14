@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -114,7 +114,7 @@ public:
      * Retrieve the object CN of the object mapped to the column
      * @return std::string objctCN
      */
-    CRegisteredCommonName getObjectCN() const;
+    const CRegisteredCommonName & getObjectCN() const;
 
     /**
      * Set the scaling factor for the column
@@ -260,7 +260,7 @@ public:
    * @param const size_t & index
    * @return std::stringobjctCN
    */
-  CRegisteredCommonName getObjectCN(const size_t & index) const;
+  const CRegisteredCommonName & getObjectCN(const size_t & index) const;
 
   /**
    * Set the scaling factor for the indexed column

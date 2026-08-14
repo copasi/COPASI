@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,7 +28,7 @@
 #include "copasi/report/CKeyFactory.h"
 
 // static
-CLGlobalRenderInformation * CLGlobalRenderInformation::fromData(const CData & data, CUndoObjectInterface * pParent)
+CLGlobalRenderInformation * CLGlobalRenderInformation::fromData(const CData & /* data */, CUndoObjectInterface * /* pParent */)
 {
   return new CLGlobalRenderInformation(NO_PARENT);
 }
@@ -45,7 +45,7 @@ CData CLGlobalRenderInformation::toData() const
 }
 
 // virtual
-bool CLGlobalRenderInformation::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CLGlobalRenderInformation::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 
@@ -58,8 +58,9 @@ bool CLGlobalRenderInformation::applyData(const CData & data, CUndoData::CChange
 /**
  *  Constructor.
  */
-CLGlobalRenderInformation::CLGlobalRenderInformation(CDataContainer* pParent):
-  CLRenderInformationBase("GlobalRenderInformation", pParent)
+CLGlobalRenderInformation::CLGlobalRenderInformation(CDataContainer * pParent)
+  : CLRenderInformationBase("GlobalRenderInformation", pParent)
+  , mListOfStyles("ListOfStyles", this)
 {
   this->mKey = CRootContainer::getKeyFactory()->add("GlobalRenderInformation", this);
 }
@@ -77,15 +78,10 @@ CLGlobalRenderInformation::CLGlobalRenderInformation(const CLGlobalRenderInforma
 /**
  * Constructor to generate object from the corresponding SBML object.
  */
-CLGlobalRenderInformation::CLGlobalRenderInformation(const GlobalRenderInformation& source,
-    /*
-            std::map<std::string,std::string>& colorIdToKeyMap,
-            std::map<std::string,std::string>& gradientIdToKeyMap,
-            std::map<std::string,std::string>& lineEndingIdToKeyMap,
-      */
-    CDataContainer* pParent):
-  //CLRenderInformationBase(source,"GlobalRenderInformation",colorIdToKeyMap,gradientIdToKeyMap,lineEndingIdToKeyMap,pParent)
-  CLRenderInformationBase(source, "GlobalRenderInformation", pParent)
+CLGlobalRenderInformation::CLGlobalRenderInformation(const GlobalRenderInformation & source,
+                                                     CDataContainer * pParent)
+  : CLRenderInformationBase(source, "GlobalRenderInformation", pParent)
+  , mListOfStyles("ListOfStyles", this)
 {
   this->mKey = CRootContainer::getKeyFactory()->add("GlobalRenderInformation", this);
   unsigned int i, iMax = source.getNumStyles();

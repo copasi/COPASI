@@ -462,6 +462,10 @@ GetDowncastSwigTypeForCDataObject(CDataObject* object)
           pInfo = SWIGTYPE_p_CDataString;
         }
     }
+    else if (dynamic_cast<CDataObjectReference<double>*>(object))
+    {
+      pInfo = SWIGTYPE_p_p_CDataObjectReferenceT_double_t;
+    }
 
   return pInfo;
 }

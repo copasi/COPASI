@@ -147,11 +147,6 @@ CEvaluationNode::CPrecedence::CPrecedence(const size_t & left,
   right(right)
 {}
 
-CEvaluationNode::CPrecedence::CPrecedence(const CPrecedence & src):
-  left(src.left),
-  right(src.right)
-{}
-
 CEvaluationNode::CPrecedence::~CPrecedence() {}
 
 CEvaluationNode * CEvaluationNode::create(const CEvaluationNode::MainType & mainType,

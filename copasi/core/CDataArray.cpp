@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -86,7 +86,7 @@ void CDataArray::setAnnotation(size_t d, size_t i, const CDataObject * pObject)
     }
   else
     {
-      mAnnotationsCN[d][i] = CRegisteredCommonName("", this);
+      mAnnotationsCN[d][i] = CRegisteredCommonName();
       mAnnotationsString[d][i] = "";
     }
 }
@@ -96,7 +96,7 @@ void CDataArray::setAnnotationString(size_t d, size_t i, const std::string s)
   assert(d < dimensionality());
   assert(i < mAnnotationsString[d].size());
 
-  mAnnotationsCN[d][i] = CRegisteredCommonName("String=" + CCommonName::escape(s), this);
+  mAnnotationsCN[d][i] = CCommonName("String=" + CCommonName::escape(s));
   mAnnotationsString[d][i] = s;
 }
 
@@ -105,7 +105,7 @@ const std::vector<CRegisteredCommonName> & CDataArray::getAnnotationsCN(size_t d
   return mAnnotationsCN[d];
 }
 
-const std::vector<std::string> & CDataArray::getAnnotationsString(size_t d, bool display) const
+const std::vector<std::string> & CDataArray::getAnnotationsString(size_t d, bool /* display */) const
 {
   assert(d < mModes.size());
 
@@ -194,7 +194,7 @@ const CDataObject * CDataArray::addElementReference(const CDataArray::index_type
 
   for (; it != end; ++it, ++to, ++itCN)
     {
-      *to = *it < itCN->size() ? static_cast< std::string >(itCN->operator [](*it)) : std::string("");
+      *to = *it < itCN->size() ? itCN->operator [](*it) : CRegisteredCommonName();
 
       if (to->empty())
         {
@@ -224,17 +224,91 @@ const CDataObject * CDataArray::addElementReference(C_INT32 u) const
   return addElementReference(CIndex);
 }
 
-const CObjectInterface * CDataArray::getObject(const CCommonName & cn) const
+// virtual
+const CObjectInterface * CDataArray::resolve(const CCommonNameComponent::shared_ptr & pCN) const
 {
-  if (cn == "")
+  const CObjectInterface * pObject = nullptr;
+
+  if (pCN)
     {
-      return this;
+      if (pCN->isResolved())
+        {
+          pObject = pCN->getObject();
+        }
+      // Check whether we have an unresolved element reference;
+      else if (pCN->getObjectType() == "ElementReference")
+        {
+          ObjectMap::range range = mObjects.equal_range(pCN->getObjectName());
+
+          while (range.first != range.second
+                 && (*range.first)->getObjectType() != "ElementReference")
+            ++range.first;
+
+          if (range.first != range.second) // found
+            pObject = *range.first;
+          else
+            {
+              std::string tmp;
+              std::vector< std::string > DisplayNames;
+              C_INT32 ii = 0;
+
+              while ((tmp = CCommonNameComponent::getElementName(pCN->getObjectName(), ii++, false)) != "")
+                DisplayNames.push_back(tmp);
+
+              name_index_type CNIndex = displayNamesToCN(DisplayNames);
+
+              bool resolvable = true;
+
+              for (auto & cn : CNIndex)
+                resolvable &= (cn != "not found");
+
+              if (resolvable)
+                {
+                  const CDataObject * pNew = addElementReference(CNIndex);
+                  const CDataObject * pExisting = nullptr;
+                  range = mObjects.equal_range(pNew->getObjectName());
+
+                  while (range.first != range.second
+                        && pExisting == nullptr)
+                    {
+                      if (*range.first != pNew
+                          && (*range.first)->getObjectType() == "ElementReference")
+                        pExisting = *range.first;
+
+                      ++range.first;
+                    }
+
+                  if (pExisting != nullptr)
+                    {
+                      delete pNew;
+                      pObject = pExisting;
+                    }
+                  else
+                    pObject = pNew;
+                }
+            }
+          }
+      else
+        {
+          pObject = CDataContainer::resolve(pCN);
+        }
     }
 
-  if (cn == "Property=DisplayName")
-    {
-      return CDataObject::getObject(cn);
-    }
+  return pObject;
+}
+
+/*
+const CObjectInterface * CDataArray::getObject(const CCommonName & cn) const
+{
+  if (cn.isResolved())
+      return cn.getObject();
+
+  if (cn.empty())
+    return this;
+
+  if (cn.getObjectType() == "Property"
+      && cn.getObjectName() == "DisplayName")
+    return CDataObject::getObject(cn);
 
   //if there are no indices there could still be other children. This can be handled
   //by the container base class
@@ -247,35 +321,51 @@ const CObjectInterface * CDataArray::getObject(const CCommonName & cn) const
   std::vector< std::string > DisplayNames;
   C_INT32 ii = 0;
 
-  while ((tmp = cn.getElementName(ii, false)) != "")
+  while ((tmp = cn.getElementName(ii++, false)) != "")
     {
       ObjectName += "[" + CCommonName::escape(tmp) + "]";
       DisplayNames.push_back(tmp);
-
-      ++ii;
     }
 
   const CDataObject* pObject = NULL; //this will contain the element reference
 
-  //if the reference object already exists, its name will be identical to the index
+  // if the reference object already exists, its name will be identical to the index
   ObjectMap::range range = mObjects.equal_range(ObjectName);
 
   while (range.first != range.second && (*range.first)->getObjectType() != "ElementReference") ++range.first;
 
-  if (range.first != range.second) //not found
-    {
-      pObject = *range.first;
-    }
+  if (range.first != range.second) // found
+    pObject = *range.first;
   else
     {
       pObject = addElementReference(displayNamesToCN(DisplayNames));
+
+      range = mObjects.equal_range(pObject->getObjectName());
+      const CDataObject * pExisting = nullptr;
+
+      while (range.first != range.second
+             && pExisting == nullptr)
+        {
+          if (*range.first != pObject
+              && (*range.first)->getObjectType() == "ElementReference")
+            pExisting = *range.first;
+
+          ++range.first;
+        }
+
+      if (pExisting != nullptr)
+        {
+          delete pObject;
+          pObject = pExisting;
+        }
     }
 
   if (pObject)
-    return pObject->getObject(cn.getRemainder().getRemainder());
+    return pObject->getChildObject(CCommonName(cn.getRemainder()).getRemainder());
   else
-    return NULL;
+    return nullptr;
 }
+ */
 
 void CDataArray::print(std::ostream * ostream) const
 {*ostream << *this;}
@@ -471,8 +561,8 @@ CDataArray::index_type CDataArray::cnToIndex(const CDataArray::name_index_type &
     }
 
   index_type::iterator to = Index.begin();
-  std::vector< std::string >::const_iterator it = cnIndex.begin();
-  std::vector< std::string >::const_iterator itEnd = cnIndex.end();
+  name_index_type::const_iterator it = cnIndex.begin();
+  name_index_type::const_iterator itEnd = cnIndex.end();
   std::vector< std::vector<CRegisteredCommonName> >::const_iterator itCNs = mAnnotationsCN.begin();
   size_t index = 0;
 
@@ -495,7 +585,7 @@ CDataArray::index_type CDataArray::cnToIndex(const CDataArray::name_index_type &
   return Index;
 }
 
-std::string CDataArray::createDisplayName(const std::string & cn) const
+std::string CDataArray::createDisplayName(const CCommonName & cn) const
 {
   const CDataObject * pObject = CObjectInterface::DataObject(getObjectFromCN(cn));
 

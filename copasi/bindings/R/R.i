@@ -166,6 +166,13 @@
   $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCDataObject($1), 0);
 }
 
+/**
+ * Convert object objects into the most specific type possible.
+ */
+%typemap(out) CObjectInterface*
+{
+  $result = SWIG_NewPointerObj($1, GetDowncastSwigTypeForCObjectInterface($1), 0);
+}
 
 /*
 %pythoncode

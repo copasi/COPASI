@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -82,7 +82,7 @@ bool CMIRIAMResources::isCitation(const std::string & uri)
 
 CMIRIAMResources::CMIRIAMResources(const std::string & name,
                                    const CDataContainer * pParent) :
-  CCopasiParameterGroup(name, pParent),
+  CCopasiParameterGroup(name, pParent, "MIRIAM Resources"),
   mpLastUpdateDate(NULL),
   mpUpdateFrequency(NULL),
   mpMIRIAMResources(NULL)
@@ -90,7 +90,7 @@ CMIRIAMResources::CMIRIAMResources(const std::string & name,
 
 CMIRIAMResources::CMIRIAMResources(const CMIRIAMResources & src,
                                    const CDataContainer * pParent):
-  CCopasiParameterGroup(src, pParent),
+  CCopasiParameterGroup(src, pParent, src.getObjectType()),
   mpLastUpdateDate(NULL),
   mpUpdateFrequency(NULL),
   mpMIRIAMResources(NULL)
@@ -98,7 +98,7 @@ CMIRIAMResources::CMIRIAMResources(const CMIRIAMResources & src,
 
 CMIRIAMResources::CMIRIAMResources(const CCopasiParameterGroup & group,
                                    const CDataContainer * pParent):
-  CCopasiParameterGroup(group, pParent),
+  CCopasiParameterGroup(group, pParent, "MIRIAM Resources"),
   mpLastUpdateDate(NULL),
   mpUpdateFrequency(NULL),
   mpMIRIAMResources(NULL)
@@ -435,7 +435,7 @@ CMIRIAMResources::~CMIRIAMResources()
 /////////////////////////////////////////////////////////////////////////////////////
 CMIRIAMResource::CMIRIAMResource(const std::string & name,
                                  const CDataContainer * pParent)
-  : CCopasiParameterGroup(name, pParent)
+  : CCopasiParameterGroup(name, pParent, "MIRIAM Resource")
   , mpDisplayName(NULL)
   , mpURI(NULL)
   , mpCitation(NULL)
@@ -447,7 +447,7 @@ CMIRIAMResource::CMIRIAMResource(const std::string & name,
 
 CMIRIAMResource::CMIRIAMResource(const CMIRIAMResource & src,
                                  const CDataContainer * pParent)
-  : CCopasiParameterGroup(src, pParent)
+  : CCopasiParameterGroup(src, pParent, src.getObjectType())
   , mpDisplayName(NULL)
   , mpURI(NULL)
   , mpCitation(NULL)
@@ -459,7 +459,7 @@ CMIRIAMResource::CMIRIAMResource(const CMIRIAMResource & src,
 
 CMIRIAMResource::CMIRIAMResource(const CCopasiParameterGroup & group,
                                  const CDataContainer * pParent)
-  : CCopasiParameterGroup(group, pParent)
+  : CCopasiParameterGroup(group, pParent, "MIRIAM Resource")
   , mpDisplayName(NULL)
   , mpURI(NULL)
   , mpCitation(NULL)

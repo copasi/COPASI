@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -126,7 +126,7 @@ public:
 
   virtual ~CDataContainer();
 
-  const CObjectInterface * getObject(const CCommonName & cn) const override;
+  // const CObjectInterface * getObject(const CCommonName & cn) const override;
 
   const CDataObject * getValueObject() const override;
 
@@ -174,6 +174,8 @@ public:
   void getDescendants(CDataObject::DataObjectSet & descendants, const bool & recursive = false) const;
 
 protected:
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override;
+
   void initObjects();
 
   template <class CType> CDataObjectReference< CType > * addObjectReference(const std::string & name,

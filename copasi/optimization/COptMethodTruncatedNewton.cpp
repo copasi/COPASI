@@ -228,7 +228,7 @@ C_INT COptMethodTruncatedNewton::sFun(C_INT* n, C_FLOAT64* x, C_FLOAT64* f, C_FL
       size_t ResidualSize = Residuals.size();
       const C_FLOAT64* pEnd = Residuals.array() + ResidualSize;
 
-      for (size_t i = 0; i < mVariableSize; i++, g++)
+      for (C_INT i = 0; i < mVariableSize; i++, g++)
         {
           *g = 0.0;
           pCurrentResiduals = Residuals.array();

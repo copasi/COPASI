@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -98,9 +98,9 @@ public:
    * @return CUndoData undoData
    */
   void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & type,
-                              const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
+                      const CUndoData::Type & type,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
   /**
    * Default constructor
@@ -299,7 +299,7 @@ public:
    * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  const CObjectInterface * getObject(const CCommonName & cn) const override;
+  // const CObjectInterface * getObject(const CCommonName & cn) const override;
 
   /**
    *  Gets the description of what parameters the function expects.
@@ -586,7 +586,7 @@ private:
    *
    * @return the data object for the given cn
    */
-  CDataObject * resolveCN(const CModel* pModel, CCommonName cn);
+  CDataObject * resolveCN(const CModel* pModel, const CCommonName & cn);
 
   /**
    * Replaces all variable nodes in a function tree by object nodes.

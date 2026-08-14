@@ -50,11 +50,6 @@ CValidatedUnit::CValidatedUnit():
   mConflict(true)
 {}
 
-CValidatedUnit::CValidatedUnit(const CValidatedUnit & src):
-  CUnit(src),
-  mConflict(src.mConflict)
-{}
-
 CValidatedUnit::CValidatedUnit(const CUnit & unit, const bool & conflict):
   CUnit(unit),
   mConflict(conflict)

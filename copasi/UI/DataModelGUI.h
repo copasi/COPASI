@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -109,7 +109,7 @@ public:
   const std::string& getLastDownloadDestination() const;
 
   /**
-   * @return true, if the operation thread is not null, false otherwise
+   * @return true if a progress dialog is active or a URL download is in progress
    */
   bool isBusy() const;
 
@@ -150,6 +150,9 @@ public:
   //CMathModel * getMathModel() {return mpMathModel;}
   //bool updateMathModel();
   //bool scheduleMathModelUpdate(const bool & update = true);
+
+  void detachOutputHandler();
+  void attachOutputHandler();
 
   bool notify(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn = CRegisteredCommonName());
   void notifyChanges(const CUndoData::CChangeSet & changes);
@@ -200,6 +203,7 @@ private:
   std::string mFileName;
   std::string mDownloadUrl;
   std::string mDownloadDestination;
+  bool mDownloadActive;
   bool mOverWrite;
   int mSBMLLevel;
   int mSBMLVersion;

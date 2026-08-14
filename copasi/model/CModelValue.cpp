@@ -65,7 +65,7 @@ const CEnumAnnotation< std::string, CModelEntity::Status > CModelEntity::XMLStat
 });
 
 // static
-CModelEntity * CModelEntity::fromData(const CData & data, CUndoObjectInterface * pParent)
+CModelEntity * CModelEntity::fromData(const CData & /* data */, CUndoObjectInterface * /* pParent */)
 {
   // It is not possible to create a CModelEntity from data.
   // Only derived classes are allowed!
@@ -173,21 +173,25 @@ void CModelEntity::createUndoData(CUndoData & undoData,
 CModelEntity::CModelEntity(const std::string & name,
                            const CDataContainer * pParent,
                            const std::string & type,
-                           const CFlags< Flag > & flag):
-  CDataContainer(name, pParent, type, (flag | CDataObject::Container | CDataObject::ValueDbl | CDataObject::ModelEntity)),
-  CAnnotation(),
-  mValue(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-  mIValue(1.0),
-  mRate(0.0),
-  mNoise(std::numeric_limits<C_FLOAT64>::quiet_NaN()),
-  mpExpression(NULL),
-  mpInitialExpression(NULL),
-  mpNoiseExpression(NULL),
-  mHasNoise(false),
-  mStatus(Status::FIXED),
-  mUsed(false),
-  mpModel(NULL),
-  mUnitExpression("")
+                           const CFlags< Flag > & flag)
+  : CDataContainer(name, pParent, type, (flag | CDataObject::Container | CDataObject::ValueDbl | CDataObject::ModelEntity))
+  , CAnnotation()
+  , mValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mIValue(1.0)
+  , mRate(0.0)
+  , mNoise(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mpExpression(NULL)
+  , mpInitialExpression(NULL)
+  , mpNoiseExpression(NULL)
+  , mHasNoise(false)
+  , mUnitExpression("")
+  , mStatus(Status::FIXED)
+  , mUsed(false)
+  , mpIValueReference(nullptr)
+  , mpValueReference(nullptr)
+  , mpRateReference(nullptr)
+  , mpNoiseReference(nullptr)
+  , mpModel(NULL)
 {
   mKey = CRootContainer::getKeyFactory()->add(getObjectType(), this);
   initMiriamAnnotation(mKey);
@@ -198,21 +202,25 @@ CModelEntity::CModelEntity(const std::string & name,
 }
 
 CModelEntity::CModelEntity(const CModelEntity & src,
-                           const CDataContainer * pParent):
-  CDataContainer(src, pParent),
-  CAnnotation(src),
-  mValue(src.mValue),
-  mIValue(src.mIValue),
-  mRate(src.mRate),
-  mNoise(src.mNoise),
-  mpExpression(src.mpExpression != NULL ? new CExpression(*src.mpExpression, this) : NULL),
-  mpInitialExpression(src.mpInitialExpression != NULL ? new CExpression(*src.mpInitialExpression, this) : NULL),
-  mpNoiseExpression(src.mpNoiseExpression != NULL ? new CExpression(*src.mpNoiseExpression, this) : NULL),
-  mHasNoise(src.mHasNoise),
-  mStatus(Status::FIXED),
-  mUsed(false),
-  mpModel(NULL),
-  mUnitExpression(src.mUnitExpression)
+                           const CDataContainer * pParent)
+  : CDataContainer(src, pParent)
+  , CAnnotation(src)
+  , mValue(src.mValue)
+  , mIValue(src.mIValue)
+  , mRate(src.mRate)
+  , mNoise(src.mNoise)
+  , mpExpression(src.mpExpression != NULL ? new CExpression(*src.mpExpression, this) : NULL)
+  , mpInitialExpression(src.mpInitialExpression != NULL ? new CExpression(*src.mpInitialExpression, this) : NULL)
+  , mpNoiseExpression(src.mpNoiseExpression != NULL ? new CExpression(*src.mpNoiseExpression, this) : NULL)
+  , mHasNoise(src.mHasNoise)
+  , mUnitExpression(src.mUnitExpression)
+  , mStatus(Status::FIXED)
+  , mUsed(false)
+  , mpIValueReference(nullptr)
+  , mpValueReference(nullptr)
+  , mpRateReference(nullptr)
+  , mpNoiseReference(nullptr)
+  , mpModel(NULL)
 {
   mKey = CRootContainer::getKeyFactory()->add(getObjectType(), this);
   setMiriamAnnotation(src.getMiriamAnnotation(), mKey, src.mKey);
@@ -494,7 +502,7 @@ const CExpression* CModelEntity::getInitialExpressionPtr() const
 
 std::string CModelEntity::getDefaultNoiseExpression() const
 {
-  return "sqrt(abs(<" + mpRateReference->getStringCN() + ">))";
+  return "sqrt(abs(<" + mpRateReference->getCN() + ">))";
 }
 
 bool CModelEntity::setNoiseExpression(const std::string & expression)
@@ -939,7 +947,7 @@ const bool & CModelEntity::isUsed() const
 //********************************************************************+
 
 // static
-CModelValue * CModelValue::fromData(const CData & data, CUndoObjectInterface * pParent)
+CModelValue * CModelValue::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CModelValue(data.getProperty(CData::OBJECT_NAME).toString(),
                          NO_PARENT);

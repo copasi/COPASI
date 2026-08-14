@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,6 +17,7 @@
 #include <memory>
 
 #include "copasi/core/CCore.h"
+#include "copasi/core/CCommonNameComponent.h"
 #include "copasi/utilities/CValidity.h"
 
 class CDataObject;
@@ -27,7 +28,6 @@ class CRegisteredCommonName;
 //********************************************************************************
 
 class CObjectInterface
-  : public std::enable_shared_from_this< CObjectInterface >
 {
 public:
   typedef std::set< const CObjectInterface * > ObjectSet;
@@ -38,52 +38,27 @@ public:
   static CObjectInterface * GetObjectFromCN(const ContainerList & listOfContainer,
       const CCommonName & objName);
 
-  static CObjectInterface * GetObjectFromCN(const ContainerList & listOfContainer,
-      const CRegisteredCommonName & objName);
-
 protected:
   /**
    * Constructor
    */
   CObjectInterface();
 
-  /**
-   * Copy Constructor
-   */
-  CObjectInterface(const CObjectInterface & src);
-
 public:
-  template < class Derived >
-  std::shared_ptr< Derived > sharedFromThis()
-  {
-    return std::dynamic_pointer_cast< Derived >(shared_from_this());
-  }
+  virtual const CCommonNameComponent::shared_ptr & getCNComponent() const;
 
-  template < class Derived >
-  std::shared_ptr< const Derived > sharedFromThis() const
-  {
-    return std::dynamic_pointer_cast< const Derived >(shared_from_this());
-  }
+  virtual const CObjectInterface * getChildObject(const CCommonNameComponent::shared_ptr & pCN) const final;
 
-  template < class Derived >
-  std::weak_ptr< Derived > weakFromThis()
-  {
-#if __cpp_lib_enable_shared_from_this	< 201603L
-    return sharedFromThis< Derived >();
-#else
-    return std::dynamic_pointer_cast< Derived >(weak_from_this());
-#endif
-  }
+  #ifdef SWIG
+  virtual const CObjectInterface * getChildObject(const CCommonName & cn) const final;
+  #endif
 
-  template < class Derived >
-  std::weak_ptr< const Derived > weakFromThis() const
-  {
-#if __cpp_lib_enable_shared_from_this	< 201603L
-    return sharedFromThis< const Derived >();
-#else
-    return std::dynamic_pointer_cast< const Derived >(weak_from_this());
-#endif
-  }
+  /**
+   * Retrieve a descendant object by its CN.
+   * @param const CCommonName & cn
+   * @return const CObjectInterface * pObject
+   */
+  virtual const CObjectInterface * getObject(const CCommonName & cn) const final;
 
   /**
    * Destructor
@@ -95,16 +70,7 @@ public:
    */
   virtual void calculateValue() = 0;
 
-  CCommonName getStringCN() const;
-
-  CRegisteredCommonName getCN() const;
-
-  /**
-   * Retrieve a descendant object by its CN.
-   * @param const CCommonName & cn
-   * @return const CObjectInterface * pObject
-   */
-  virtual const CObjectInterface * getObject(const CCommonName & cn) const = 0;
+  virtual CCommonName getCN() const final;
 
   /**
    * Retrieve the prerequisites, i.e., the objects which need to be evaluated
@@ -167,11 +133,7 @@ public:
   virtual void validityChanged(const CValidity & changedValidity) = 0;
 
 protected:
-  /**
-   * Retrieve the CN of the object
-   * @return CCommonName
-   */
-  virtual CCommonName getCNProtected() const = 0;
+  virtual const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const = 0;
 
   mutable CValidity mValidity;
 };

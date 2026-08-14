@@ -74,14 +74,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   CLayout(const std::string & name = "Layout",
           const CDataContainer * pParent = NO_PARENT);
@@ -103,10 +103,10 @@ public:
   /**
    *  Retrieves the key of the layout
    */
-  virtual const std::string & getKey() const
+  const std::string & getKey() const override
   {return mKey;};
 
-  virtual void moveBy(const CLPoint &p);
+  void moveBy(const CLPoint &p) override;
 
   const CLDimensions & getDimensions() const {return mDimensions;};
   void setDimensions(const CLDimensions & d) {mDimensions = d;};
@@ -227,7 +227,7 @@ public:
     * insert operator
     */
   friend std::ostream & operator<<(std::ostream &os, const CLayout & g);
-  void print(std::ostream * ostream) const;
+  void print(std::ostream * ostream) const override;
 
   void exportToDotFile(std::ostream & os) const;
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -18,16 +18,16 @@
 
 CMathUpdateSequence::CMathUpdateSequence(CMathContainer * pContainer):
   CVector< CObjectInterface * >(),
-  mpContainer(NULL)
+  mpContainer(nullptr)
 {
   setMathContainer(pContainer);
 }
 
 CMathUpdateSequence::CMathUpdateSequence(const CMathUpdateSequence & src, CMathContainer * pContainer):
   CVector< CObjectInterface * >(src),
-  mpContainer(NULL)
+  mpContainer(nullptr)
 {
-  if (pContainer != NULL)
+  if (pContainer != nullptr)
     {
       setMathContainer(pContainer);
     }
@@ -39,7 +39,7 @@ CMathUpdateSequence::CMathUpdateSequence(const CMathUpdateSequence & src, CMathC
 
 CMathUpdateSequence::~CMathUpdateSequence()
 {
-  if (mpContainer != NULL)
+  if (mpContainer != nullptr)
     {
       mpContainer->deregisterUpdateSequence(this);
     }
@@ -73,6 +73,16 @@ CMathUpdateSequence & CMathUpdateSequence::operator = (const std::vector< CObjec
   return *this;
 }
 
+void CMathUpdateSequence::copy(const CMathUpdateSequence & src, CMathContainer * pContainer)
+{
+  CVector< CObjectInterface * >::operator=(src);
+
+  if (pContainer != nullptr)
+    setMathContainer(pContainer);
+  else
+    setMathContainer(src.mpContainer);
+}
+
 void CMathUpdateSequence::insert(const CMathUpdateSequence::iterator & loc, const CObjectInterface * pObject)
 {
   std::vector< CObjectInterface * > Insert(1, const_cast< CObjectInterface * >(pObject));
@@ -84,14 +94,14 @@ void CMathUpdateSequence::setMathContainer(CMathContainer * pContainer)
 {
   if (pContainer == mpContainer) return;
 
-  if (mpContainer != NULL)
+  if (mpContainer != nullptr)
     {
       mpContainer->deregisterUpdateSequence(this);
     }
 
   mpContainer = pContainer;
 
-  if (mpContainer != NULL)
+  if (mpContainer != nullptr)
     {
       mpContainer->registerUpdateSequence(this);
     }

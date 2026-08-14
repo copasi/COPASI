@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -29,6 +29,10 @@
 
 # we need at least cmake 2.8 for the FindLAPACK functions
 cmake_minimum_required(VERSION 2.8...3.19)
+
+# include the CMakeDependentOption module
+include(CMakeDependentOption)
+
 
 if(POLICY CMP0048)
   cmake_policy(SET CMP0048 NEW)
@@ -273,6 +277,15 @@ endif()
 
 option(ENABLE_JIT "Enable Just In Time compilation for math expressions" ${ENABLE_JIT_DEFAULT})
 
+# Java, C#, and Python bindings are configured before OpenMP so Linux can
+# prefer a shared libomp runtime when those bindings are enabled.
+option(ENABLE_CSHARP "Enable language bindings for the C# language." OFF)
+option(ENABLE_JAVA "Enable language bindings for the Java language." OFF)
+option(ENABLE_PYTHON "Enable language bindings for the Python language." OFF)
+option (ENABLE_PERL "Enable language bindings for the Perl language." OFF)
+option (ENABLE_OCTAVE "Enable language bindings for the Octave language." OFF)
+option (ENABLE_R "Enable language bindings for the R language." OFF)
+
 option(ENABLE_OMP "Enable the OpenMP support" OFF)
 
 set(EXTRA_DEFS "" CACHE STRING
@@ -388,6 +401,8 @@ if ( NOT CLAPACK_FOUND )
   find_package(CLAPACK REQUIRED)
 endif ()
 
+add_definitions(${CLAPACK_DEFINES})
+
 include_directories(BEFORE ${CLAPACK_INCLUDE_DIR})
 # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${LAPACK_CFLAGS}")
 
@@ -422,25 +437,85 @@ if (ENABLE_OMP)
   if (APPLE)
     find_package (OpenMP)
     if(NOT OpenMP_FOUND)
-      # libomp 15.0+ from brew is keg-only, so have to search in other locations.
-      # See https://github.com/Homebrew/homebrew-core/issues/112107#issuecomment-1278042927.
-      execute_process(COMMAND brew --prefix libomp
-                      OUTPUT_VARIABLE HOMEBREW_LIBOMP_PREFIX
-                      OUTPUT_STRIP_TRAILING_WHITESPACE)
-      set(OpenMP_C_FLAGS "-Xpreprocessor -fopenmp -I${HOMEBREW_LIBOMP_PREFIX}/include")
-      set(OpenMP_CXX_FLAGS "-Xpreprocessor -fopenmp -I${HOMEBREW_LIBOMP_PREFIX}/include")
+
+      # read LIBOMP_PREFIX from environment variable
+      if(DEFINED ENV{LIBOMP_PREFIX})
+        set(LIBOMP_PREFIX $ENV{LIBOMP_PREFIX})
+      else()
+        # libomp 15.0+ from brew is keg-only, so have to search in other locations.
+        # See https://github.com/Homebrew/homebrew-core/issues/112107#issuecomment-1278042927.
+        execute_process(COMMAND brew --prefix libomp
+                        OUTPUT_VARIABLE LIBOMP_PREFIX
+                        OUTPUT_STRIP_TRAILING_WHITESPACE)
+      endif()
+
+      # Apple/Homebrew Clang needs -Xpreprocessor to accept -fopenmp.
+      # Store as a CMake list (semicolon-separated) so target_compile_options
+      # passes each token as a separate argument to the compiler.
+      set(OpenMP_C_FLAGS "-Xpreprocessor;-fopenmp;-I${LIBOMP_PREFIX}/include")
+      set(OpenMP_CXX_FLAGS "-Xpreprocessor;-fopenmp;-I${LIBOMP_PREFIX}/include")
       set(OpenMP_C_LIB_NAMES omp)
       set(OpenMP_CXX_LIB_NAMES omp)
-      set(OpenMP_omp_LIBRARY ${HOMEBREW_LIBOMP_PREFIX}/lib/libomp.dylib)
+      set(OpenMP_omp_LIBRARY ${LIBOMP_PREFIX}/lib/libomp.dylib)
+      set(OMP_HAVE_MONOTONIC 1 CACHE INTERNAL "" FORCE)
     endif()
+  endif()
+
+  # language bindings cant be linked against static libomp
+  if (UNIX AND NOT APPLE AND (ENABLE_JAVA OR ENABLE_CSHARP OR ENABLE_PYTHON))
+    set(_copasi_openmp_library_suffixes "${CMAKE_FIND_LIBRARY_SUFFIXES}")
+    set(CMAKE_FIND_LIBRARY_SUFFIXES ".so;.so.0")
+  endif()
+
+  if(MSVC)
+  set (OpenMP_RUNTIME_MSVC "llvm")
+  set (OpenMP_C_FLAGS "/openmp:llvm")
+  set (OpenMP_CXX_FLAGS "/openmp:llvm")
   endif()
 
   find_package (OpenMP REQUIRED)
 
+  if (UNIX AND NOT APPLE AND (ENABLE_JAVA OR ENABLE_CSHARP OR ENABLE_PYTHON))
+    # restore the original library suffixes
+    if (DEFINED _copasi_openmp_library_suffixes)
+      set(CMAKE_FIND_LIBRARY_SUFFIXES "${_copasi_openmp_library_suffixes}")
+      unset(_copasi_openmp_library_suffixes)
+    endif()
+
+    if (OpenMP_omp_LIBRARY AND OpenMP_omp_LIBRARY MATCHES "\\.a$")
+      get_filename_component(_copasi_openmp_library_dir "${OpenMP_omp_LIBRARY}" DIRECTORY)
+      find_library(_copasi_openmp_shared_library NAMES omp HINTS "${_copasi_openmp_library_dir}" NO_DEFAULT_PATH)
+
+      if (NOT _copasi_openmp_shared_library)
+        find_library(_copasi_openmp_shared_library NAMES omp)
+      endif()
+
+      if (_copasi_openmp_shared_library)
+        set(OpenMP_omp_LIBRARY "${_copasi_openmp_shared_library}" CACHE FILEPATH "Path to the OpenMP omp library." FORCE)
+
+        if (TARGET OpenMP::OpenMP_CXX)
+          set_target_properties(OpenMP::OpenMP_CXX PROPERTIES
+            IMPORTED_LOCATION "${_copasi_openmp_shared_library}"
+            IMPORTED_LOCATION_RELEASE "${_copasi_openmp_shared_library}")
+        endif()
+
+        if (TARGET OpenMP::OpenMP_C)
+          set_target_properties(OpenMP::OpenMP_C PROPERTIES
+            IMPORTED_LOCATION "${_copasi_openmp_shared_library}"
+            IMPORTED_LOCATION_RELEASE "${_copasi_openmp_shared_library}")
+        endif()
+
+        message(STATUS "OpenMP omp library for language bindings: ${_copasi_openmp_shared_library}")
+      else()
+        message(WARNING "COPASI language bindings require a shared OpenMP runtime (libomp.so), but only ${OpenMP_omp_LIBRARY} was found.")
+      endif()
+    endif()
+  endif()
+
   if (OpenMP_CXX_SPEC_DATE GREATER_EQUAL "201811")
     # OpenMP 5.0 will always have monotonic scheduling
     set(OMP_HAVE_MONOTONIC 1 CACHE INTERNAL "" FORCE)
-  else()
+  elseif(NOT OMP_HAVE_MONOTONIC)
     # otherwise we need to check
     include_directories(BEFORE ${OpenMP_INCLUDE_PATH} ${OpenMP_CXX_INCLUDE_DIRS})
 
@@ -472,7 +547,7 @@ endif(ENABLE_OMP)
 
 # TODO raptor should be restricted to a version which is at least
 # 1.4.18, but lower then 2.0
-option(COPASI_USE_RAPTOR "Use Raptor (<2.0) for RDF support" ON)
+option(COPASI_USE_RAPTOR "Use Raptor (<2.0) for RDF support" OFF)
 if (COPASI_USE_RAPTOR)
 find_package(RAPTOR REQUIRED)
 endif()
@@ -641,16 +716,6 @@ endif(BUILD_GUI)
 
 # define what shall be build
 option (BUILD_CXX_EXAMPLES "Build the C++ examples." OFF)
-
-include(CMakeDependentOption)
-
-# for the language bindings we need swig
-option (ENABLE_CSHARP "Enable language bindings for the C# language." OFF)
-option (ENABLE_JAVA "Enable language bindings for the Java language." OFF)
-option (ENABLE_PYTHON "Enable language bindings for the Python language." OFF)
-option (ENABLE_PERL "Enable language bindings for the Perl language." OFF)
-option (ENABLE_OCTAVE "Enable language bindings for the Octave language." OFF)
-option (ENABLE_R "Enable language bindings for the R language." OFF)
 
 # we need swig for the language bindings. Only if SWIG was found, the options to
 # build the different language bindings are enabled
@@ -830,8 +895,19 @@ if(MSVC OR USING_INTEL)
 endif(MSVC OR USING_INTEL)
 
 if (EMSCRIPTEN)
+if (COPASI_EMSCRIPTEN_COMPILE_OPTIONS)
+add_compile_options(${COPASI_EMSCRIPTEN_COMPILE_OPTIONS})
+else()
+# definitely need to compile with exceptions
 add_compile_options(-fexceptions)
-add_link_options(-fexceptions -sINITIAL_MEMORY=65536000 -sALLOW_MEMORY_GROWTH=1)
+endif()
+
+if (COPASI_EMSCRIPTEN_LINK_OPTIONS)
+add_link_options(${COPASI_EMSCRIPTEN_LINK_OPTIONS})
+else()
+# start with more memory, and exception handling
+add_link_options(-sINITIAL_MEMORY=65536000 -sALLOW_MEMORY_GROWTH=1 -fexceptions)
+endif()
 endif(EMSCRIPTEN)
 
 set(APPS "" CACHE INTERNAL "")
@@ -969,6 +1045,7 @@ message(STATUS "-----------------------------------------------------------
  Dependencies:
    Vendor               = ${BLA_VENDOR}
    LAPACK Libs          = ${CLAPACK_LIBRARIES}
+   LAPACK DEFINES       = ${CLAPACK_DEFINES}
    LAPACK LDFLAGS       = ${CLAPACK_LINKER_FLAGS}
    LAPACK include       = ${CLAPACK_INCLUDE_DIR}
 

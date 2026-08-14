@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -300,7 +300,6 @@ int CLNAMethod::calculateCovarianceMatrixReduced()
   // copy the transposed Jacobian (reduced) into At
   CMatrix< C_FLOAT64 > At;
   At.resize(mJacobianReduced.numCols(), mJacobianReduced.numRows());
-  const C_FLOAT64 * pJacobian = mJacobianReduced.array();
   //const C_FLOAT64 * pJacobianEnd = pJacobian + mJacobianReduced.size();
 
   for (size_t i = 0; i < mJacobianReduced.numRows(); ++i)

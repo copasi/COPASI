@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -207,17 +207,22 @@ public:
 
   virtual ~CDataVectorReference() {}
 
-  virtual CDataObject * getObject(const CCommonName & cn)
+  /*
+  const CObjectInterface * getObject(const CCommonName & cn) const override
   {
-    size_t Index = cn.getElementIndex();
+    if (cn.empty())
+      return this;
+
+    size_t Index = cn.getElementIndex(0);
 
     if (Index < mReference.size())
-      return new CDataObjectReference< typename referenceType::elementType >(getObjectName() + cn,
+      return new CDataObjectReference< typename referenceType::elementType >((getObjectName() + cn),
              getObjectParent(),
              mReference[Index]);
 
     return NULL;
   }
+  */
 
   void * getValuePointer() const override {return &mReference;}
 
@@ -232,6 +237,30 @@ public:
    */
   void print(std::ostream * ostream) const override
   {*ostream << mReference;}
+
+protected:
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override
+  {
+    const CObjectInterface * pObject = nullptr;
+
+    if (pCN)
+      {
+        if (pCN->isResolved())
+          pObject = pCN->getObject();
+        else
+          {
+            const std::string & PartialCN = pCN->getPartialCN();
+            size_t Index = CCommonNameComponent::getElementIndex(PartialCN, 0);
+
+            if (Index < mReference.size())
+              pObject = new CDataObjectReference< typename referenceType::elementType >(getObjectName() + PartialCN,
+                                                                                        getObjectParent(),
+                                                                                        mReference[Index]);
+          }
+      }
+
+    return pObject;
+  }
 };
 
 template <class CType> class CDataMatrixReference: public CDataObject
@@ -268,8 +297,12 @@ public:
 
   virtual ~CDataMatrixReference() {}
 
-  virtual CDataObject * getObject(const CCommonName & cn)
+  /*
+  const CObjectInterface * getObject(const CCommonName & cn) const override
   {
+    if (cn.empty())
+      return this;
+
     size_t Index_0 = cn.getElementIndex(0);
     size_t Index_1 = cn.getElementIndex(1);
 
@@ -277,12 +310,39 @@ public:
         Index_1 < mReference.numCols())
       return new CDataObjectReference< typename referenceType::elementType >(getObjectName() + cn,
              getObjectParent(),
-             mReference(cn.getElementIndex(), cn.getElementIndex(1)));
+             mReference(cn.getElementIndex(0), cn.getElementIndex(1)));
 
     return NULL;
   }
+  */
 
   void * getValuePointer() const override {return &mReference;}
   const CDataObject * getValueObject() const override {return this;}
+
+protected:
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override
+  {
+    const CObjectInterface * pObject = nullptr;
+
+    if (pCN)
+      {
+        if (pCN->isResolved())
+          pObject = pCN->getObject();
+        else
+          {
+            const std::string & PartialCN = pCN->getPartialCN();
+            size_t Index_0 = CCommonNameComponent::getElementIndex(PartialCN, 0);
+            size_t Index_1 = CCommonNameComponent::getElementIndex(PartialCN, 1);
+
+            if (Index_0 < mReference.numRows()
+                && Index_1 < mReference.numCols())
+              pObject = new CDataObjectReference< typename referenceType::elementType >(getObjectName() + PartialCN,
+                                                                                        getObjectParent(),
+                                                                                        mReference(Index_0, Index_1));
+          }
+      }
+
+    return pObject;
+  }
 };
 #endif // COPASI_CDataObjectReference

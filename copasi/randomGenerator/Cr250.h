@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -66,38 +66,38 @@ public:
    * Note: seed = 12345 gives the default initilization as in W. L. Maier code
    * @param unsigned C_INT32 seed (default system seed)
    */
-  void initialize(unsigned C_INT32 seed = CRandom::getSystemSeed());
+  void initialize(unsigned C_INT32 seed = CRandom::getSystemSeed()) override;
 
   /**
    * Get a random number in 0 <= n <= Modulus
    * @return unsigned C_INT32 random
    */
-  unsigned C_INT32 getRandomU();
+  unsigned C_INT32 getRandomU() override;
 
   /**
    * Get a random number in 0 <= n <= (Modulus & 0x7ffffff)
    * @return C_INT32 random
    */
-  C_INT32 getRandomS();
+  C_INT32 getRandomS() override;
 
   /**
    * Produces a uniformly distributed random number in 0 <= x <= 1.
    * @return C_FLOAT64 random
    */
-  C_FLOAT64 getRandomCC();
+  C_FLOAT64 getRandomCC() override;
 
   /**
    * Produces a uniformly distributed random number in 0 <= x < 1.
    * Note: 0 < x <= 1 may be achieved by 1.0 - getRandomCO().
    * @return const C_FLOAT64 & random
    */
-  C_FLOAT64 getRandomCO();
+  C_FLOAT64 getRandomCO() override;
 
   /**
    * Produces a uniformly distributed random number in 0 < x < 1.
    * @return const C_FLOAT64 & random
    */
-  C_FLOAT64 getRandomOO();
+  C_FLOAT64 getRandomOO() override;
 
 private:
   /**

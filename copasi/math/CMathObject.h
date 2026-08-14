@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,11 +45,6 @@ public:
   CMathObject();
 
   /**
-   * Copy constructor
-   */
-  CMathObject(const CMathObject & src);
-
-  /**
    * Destructor
    */
   virtual ~CMathObject();
@@ -69,6 +64,8 @@ public:
   void relocate(CMathContainer * pContainer,
                 const std::vector< CMath::sRelocate > & relocations);
 
+  const CCommonNameComponent::shared_ptr & getCNComponent() const override;
+
   /**
    * Retrieve the display name of the object
    * @param bool regular (default: true)
@@ -82,7 +79,7 @@ public:
    * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  const CObjectInterface * getObject(const CCommonName & cn) const override;
+  // const CObjectInterface * getObject(const CCommonName & cn) const override;
 
   /**
    * Retrieve the prerequisites, i.e., the objects which need to be evaluated
@@ -292,11 +289,7 @@ public:
   void appendDelays(CMath::DelayData & Delays) const;
 
 protected:
-  /**
-   * Retrieve the CN of the object
-   * @return CCommonName
-   */
-  CCommonName getCNProtected() const override;
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override;
 
 private:
   void calculateExpression();

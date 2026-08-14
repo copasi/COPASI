@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -171,7 +171,7 @@ TEST_CASE("3: creating a new model testing avogadro", "[copasi][sbml]")
   std::stringstream str;
 
   str << "<"
-      << CObjectInterface::DataObject(model->getObject(CCommonName("Reference=Avogadro Constant")))->getValueObject()->getStringCN()
+      << CObjectInterface::DataObject(model->getChildObject(CCommonName("Reference=Avogadro Constant")))->getValueObject()->getCN()
       << ">";
 
   mv->setInitialExpression(str.str());
@@ -233,9 +233,9 @@ for (auto & metab : model->getMetabolites())
       str.str("");
       str
           << "<"
-          << metab.getConcentrationReference()->getStringCN()
+          << metab.getConcentrationReference()->getCN()
           << "> * <"
-          << metab.getCompartment()->getValueReference()->getStringCN()
+          << metab.getCompartment()->getValueReference()->getCN()
           << ">";
       mv->setStatus(CModelEntity::Status::ASSIGNMENT);
       REQUIRE(mv->setExpression(str.str()).isSuccess());
@@ -332,17 +332,17 @@ TEST_CASE("SBML import / export of events with particle numbers", "[copasi][sbml
   {
     auto * event = model->createEvent("event");
     std::stringstream str;
-    str << "<" << model->getValueReference()->getStringCN() << "> > 1";
+    str << "<" << model->getValueReference()->getCN() << "> > 1";
     event->setTriggerExpression(str.str());
     auto & assignments = event->getAssignments();
     assignments.clear();
-    auto * assignment = new CEventAssignment(model->getMetabolites()[0].getConcentrationReference()->getStringCN(), model);
+    auto * assignment = new CEventAssignment(model->getMetabolites()[0].getConcentrationReference()->getCN(), model);
     assignment->setExpression("1");
     assignments.add(assignment);
-    assignment = new CEventAssignment(model->getMetabolites()[1].getValueReference()->getStringCN(), model);
+    assignment = new CEventAssignment(model->getMetabolites()[1].getValueReference()->getCN(), model);
     assignment->setExpression("2");
     assignments.add(assignment);
-    assignment = new CEventAssignment(model->getMetabolites()[2].getStringCN(), model);
+    assignment = new CEventAssignment(model->getMetabolites()[2].getCN(), model);
     assignment->setExpression("3");
     assignments.add(assignment);
   }

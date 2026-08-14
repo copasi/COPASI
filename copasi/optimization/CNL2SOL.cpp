@@ -393,7 +393,7 @@ doublereal d1mach_(integer *i)
   return 0; /* for compilers that complain of missing return values */
 } /* d1mach_ */
 
-int da7sst_(integer *iv, integer *liv, integer *lv,
+int da7sst_(integer *iv, integer * /* liv */, integer * /* lv */,
             doublereal *v)
 {
   /* System generated locals */
@@ -1087,7 +1087,7 @@ L240:
 
   i__ = 0;
 
-  if (v[6] > 0. && v[6] <= emax || v[6] == 0. && v[7] == 0.)
+  if ((v[6] > 0. && v[6] <= emax) || (v[6] == 0. && v[7] == 0.))
     {
       i__ = 2;
     }
@@ -1367,7 +1367,7 @@ L999:
 } /* dd7tpr_ */
 
 int dd7upd_(doublereal *d__, doublereal *dr, integer *iv,
-            integer *liv, integer *lv, integer *n, integer *nd, integer *nn,
+            integer * /* liv */, integer * /* lv */, integer *n, integer *nd, integer *nn,
             integer *n2, integer *p, doublereal *v)
 {
   /* System generated locals */
@@ -1504,7 +1504,7 @@ L999:
 } /* dd7upd_ */
 
 int df7dhb_(doublereal *b, doublereal *d__, doublereal *g,
-            integer *irt, integer *iv, integer *liv, integer *lv, integer *p,
+            integer *irt, integer *iv, integer * /* liv */, integer * /* lv */, integer *p,
             doublereal *v, doublereal *x)
 {
   /* System generated locals */
@@ -2089,7 +2089,7 @@ int dg7itb_(doublereal *b, doublereal *d__, doublereal *g,
                             doublereal *);
   static logical havqtr;
   static integer stpmod;
-  static integer td1, tg1, lstgst, pp1, rstrst;
+  static integer td1, tg1, lstgst, pp1;
   static doublereal sttsst;
   static integer ipi, ipn, dig1, wlm1, qtr1;
 
@@ -2925,7 +2925,6 @@ L330:
       goto L360;
     }
 
-  rstrst = 2;
   goto L370;
 
   /*  ***  CHECK WHETHER EVALUATING F(X0 + STEP) LOOKS WORTHWHILE  *** */
@@ -2958,7 +2957,6 @@ L340:
       goto L360;
     }
 
-  rstrst = 0;
   goto L370;
 
   /*  ***  COMPUTE F(X0 + STEP)  *** */
@@ -2974,7 +2972,6 @@ L350:
   /* . . . . . . . . . . . . .  ASSESS CANDIDATE STEP  . . . . . . . . . . . */
 
 L360:
-  rstrst = 3;
 
 L370:
   x01 = iv[43];
@@ -6644,7 +6641,6 @@ int dparck_(integer *alg, doublereal *d__, integer *iv,
   static doublereal machep = -1.;
   static doublereal tiny = 1.;
   static doublereal zero = 0.;
-  static char vn[4 * 2 * 34] = "";
 
   static doublereal vm[34] = {.001, -.99, .001, .01, 1.2, .01, 1.2, 0., 0., .001,
                               -1., 0.0, 0., 0.0, 0., 0., 0.0, 0.0, 0., -10., 0., 0., 0., 0.0, 0.0, 0.0, 1.01,
@@ -6660,8 +6656,6 @@ int dparck_(integer *alg, doublereal *d__, integer *iv,
   static char cngd[4*3] = "---C" "HANG" "ED V";
   static char dflt[4*3] = "NOND" "EFAU" "LT V";*/
 
-  static char varnm[1 * 2] = "";
-  static char sh[1 * 2] = "";
   static char cngd[4 * 3] = "";
   static char dflt[4 * 3] = "";
 
@@ -8533,7 +8527,7 @@ L999:
 
 int ds7bqn_(doublereal *b, doublereal *d__, doublereal *dst,
             integer *ipiv, integer *ipiv1, integer *ipiv2, integer *kb,
-            doublereal *l, integer *lv, integer *ns, integer *p, integer *p1,
+            doublereal *l, integer * /* lv */, integer *ns, integer *p, integer *p1,
             doublereal *step, doublereal *td, doublereal *tg, doublereal *v,
             doublereal *w, doublereal *x, doublereal *x0)
 {
@@ -9426,7 +9420,7 @@ int dv7cpy_(integer *p, doublereal *y, doublereal *x)
   return 0;
 } /* dv7cpy_ */
 
-int dv7dfl_(integer *alg, integer *lv, doublereal *v)
+int dv7dfl_(integer *alg, integer * /* lv */, doublereal *v)
 {
   /* System generated locals */
   doublereal d__1, d__2, d__3;
@@ -9827,10 +9821,10 @@ integer i7mdcn_(integer *k)
   /*          (NOTE -- K = 2, 3 ARE USED ONLY BY TEST PROGRAMS.) */
 
   /*  +++  PORT VERSION FOLLOWS... */
-  /* old version
+  /* old version */
   /* ret_val = i1mach_(&mdperm[*k - 1]); */
   /* new version */
-  ret_val = i1mach_(&mdperm[(0 + (0 + (*k - 1 << 2))) / 4]);
+  ret_val = i1mach_(&mdperm[(0 + (0 + ((*k - 1) << 2))) / 4]);
   /*  +++  END OF PORT VERSION  +++ */
 
   /*  +++  NON-PORT VERSION FOLLOWS... */
@@ -9936,7 +9930,7 @@ L999:
   return 0;
 } /* i7shft_ */
 
-logical stopx_(integer *idummy)
+logical stopx_(integer * /* idummy */)
 {
   /* System generated locals */
   logical ret_val;

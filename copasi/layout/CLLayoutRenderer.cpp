@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -104,7 +104,6 @@
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #endif
-
 
 // specifies how many segments are used to approximate the rounded
 // corners of a rectangle
@@ -1478,8 +1477,6 @@ void CLLayoutRenderer::draw_group(const CLGroup* pGroup, const CLBoundingBox* pB
   glPopMatrix();
 }
 
-
-
 /**
  * Resize method that is called whenever the GL window is resized.
  */
@@ -2785,10 +2782,10 @@ void CLLayoutRenderer::draw_datapoints(GLdouble* pData, size_t numPoints, const 
           gluTessCallback(pTess, GLU_TESS_VERTEX, (GLvoid(__stdcall *)())CLLayoutRenderer::VERTEX_CALLBACK_GRADIENT);
           gluTessCallback(pTess, GLU_TESS_COMBINE, (GLvoid(__stdcall *)())CLLayoutRenderer::COMBINE_CALLBACK_GRADIENT);
 #else
-          gluTessCallback(pTess, GLU_TESS_BEGIN, (GLvoid(*)())glBegin);
+          gluTessCallback(pTess, GLU_TESS_BEGIN, (_GLUfuncptr)glBegin);
           gluTessCallback(pTess, GLU_TESS_END, glEnd);
-          gluTessCallback(pTess, GLU_TESS_VERTEX, (GLvoid(*)())CLLayoutRenderer::VERTEX_CALLBACK_GRADIENT);
-          gluTessCallback(pTess, GLU_TESS_COMBINE, (GLvoid(*)())CLLayoutRenderer::COMBINE_CALLBACK_GRADIENT);
+          gluTessCallback(pTess, GLU_TESS_VERTEX, (_GLUfuncptr)CLLayoutRenderer::VERTEX_CALLBACK_GRADIENT);
+          gluTessCallback(pTess, GLU_TESS_COMBINE, (_GLUfuncptr)CLLayoutRenderer::COMBINE_CALLBACK_GRADIENT);
 #endif // _WIN32
           stepsize = 5;
           pNewData = new GLdouble[5 * numPoints];
@@ -2833,10 +2830,11 @@ void CLLayoutRenderer::draw_datapoints(GLdouble* pData, size_t numPoints, const 
           gluTessCallback(pTess, GLU_TESS_VERTEX, (GLvoid(__stdcall *)())glVertex3dv);
           gluTessCallback(pTess, GLU_TESS_COMBINE, (GLvoid(__stdcall *)())CLLayoutRenderer::COMBINE_CALLBACK);
 #else
-          gluTessCallback(pTess, GLU_TESS_BEGIN, (GLvoid(*)())glBegin);
-          gluTessCallback(pTess, GLU_TESS_END, (GLvoid(*)())glEnd);
-          gluTessCallback(pTess, GLU_TESS_VERTEX, (GLvoid(*)())glVertex3dv);
-          gluTessCallback(pTess, GLU_TESS_COMBINE, (GLvoid(*)())CLLayoutRenderer::COMBINE_CALLBACK);
+          // typedef void (* _GLUfuncptr)(void) aka void (*)(void)
+          gluTessCallback(pTess, GLU_TESS_BEGIN, (_GLUfuncptr) glBegin);
+          gluTessCallback(pTess, GLU_TESS_END, (_GLUfuncptr)glEnd);
+          gluTessCallback(pTess, GLU_TESS_VERTEX, (_GLUfuncptr)glVertex3dv);
+          gluTessCallback(pTess, GLU_TESS_COMBINE, (_GLUfuncptr)CLLayoutRenderer::COMBINE_CALLBACK);
 #endif // _WIN32
         }
 
@@ -2868,7 +2866,7 @@ void CLLayoutRenderer::draw_datapoints(GLdouble* pData, size_t numPoints, const 
 #ifdef _WIN32
           gluTessCallback(pTess, GLU_TESS_ERROR, (GLvoid(__stdcall *)())CLLayoutRenderer::TESS_ERROR);
 #else
-          gluTessCallback(pTess, GLU_TESS_ERROR, (GLvoid(*)())CLLayoutRenderer::TESS_ERROR);
+          gluTessCallback(pTess, GLU_TESS_ERROR, (_GLUfuncptr)CLLayoutRenderer::TESS_ERROR);
 #endif // _WIN32
           gluTessBeginPolygon(pTess, NULL);
           gluTessBeginContour(pTess);

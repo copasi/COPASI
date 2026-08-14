@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -48,7 +48,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
   : COptMethod(pParent, methodType, taskType, false)
   , mIterationLimit(2000)
   , mTolerance(1.e-006)
-  , mModulation(1.e-006)
+  , mModulation(1.e-003)
   , mIteration(0)
   , mParameterOutOfBounds(0)
   , mhIteration(C_INVALID_INDEX)
@@ -67,7 +67,7 @@ COptMethodLevenbergMarquardt::COptMethodLevenbergMarquardt(const CDataContainer 
 {
   assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
   assertParameter("Tolerance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006);
-  assertParameter("Modulation", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-006, eUserInterfaceFlag::editable);
+  assertParameter("Modulation", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 1.e-003, eUserInterfaceFlag::editable);
   assertParameter("Stop after # stalled iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
   assertParameter("Initial Lambda", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)1.0, eUserInterfaceFlag::editable);
   assertParameter("Lambda Decrease", CCopasiParameter::Type::DOUBLE, (C_FLOAT64)2.0, eUserInterfaceFlag::editable);
@@ -128,13 +128,12 @@ bool COptMethodLevenbergMarquardt::optimise()
       )
     );
 
-  C_INT dim, starts, info, nrhs;
+  C_INT dim, starts, info;
   C_INT one = 1;
 
   size_t i;
   C_FLOAT64 LM_lambda, nu, convp, convx;
   bool calc_hess;
-  nrhs = 1;
 
   dim = (C_INT) mVariableSize;
 
@@ -171,6 +170,15 @@ bool COptMethodLevenbergMarquardt::optimise()
   // keep the current parameter for later
   mBest = mCurrent;
 
+  auto* pProblem = dynamic_cast< CFitProblem * >(mProblemContext.active());
+  if(pProblem && pProblem->getEstimatedSubtaskError()>mModulation*mModulation*10)
+  {
+    if (mLogVerbosity > 0)
+      mMethodLog.enterLogEntry(
+        COptLogEntry("Caution: Modulation factor may be too small",
+                "compared to the accuracy of the time course/steady state calculation"));
+  }
+
   mEvaluationValue = evaluate(EvaluationPolicyFlag::All);
 
   if (!std::isnan(mEvaluationValue))
@@ -186,7 +194,6 @@ bool COptMethodLevenbergMarquardt::optimise()
 
   mpParentTask->output(COutputInterface::MONITORING);
 
-  
   for (mIteration = 0; (mIteration < mIterationLimit) && (nu != 0.0) && proceed();
        mIteration++, Stalled++)
     {
@@ -286,12 +293,12 @@ bool COptMethodLevenbergMarquardt::optimise()
 
               COptItem & OptItem = *OptItemList[i];
               pointInParameterDomain &= OptItem.setItemValue(mCurrent[i], COptItem::CheckPolicyFlag::All);
-              
+
               //We need to detect if the step would lead out of the parameter boundaries, so that we can
               //shorten the step accordingly. So we check if the prior call to setItemValue truncated the parameter value.
               //However, we disregard this if the parameter was already at the boundary before the current step,
               //allowing movement along the boundary and back inside the allowed region.
-              pointInParameterDomain &= ((Target == mCurrent[i]) || abs(mCurrent[i]-mBest[i])< 1e-6*abs(Factor*mStep[i]) );
+              pointInParameterDomain &= ((Target == mCurrent[i]) || std::abs(mCurrent[i]-mBest[i])< 1e-6*std::abs(Factor*mStep[i]) );
 
               if (!pointInParameterDomain)
                 {

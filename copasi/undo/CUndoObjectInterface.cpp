@@ -64,13 +64,13 @@ CUndoObjectInterface::~CUndoObjectInterface()
 }
 
 // virtual
-CUndoObjectInterface * CUndoObjectInterface::insert(const CData & data)
+CUndoObjectInterface * CUndoObjectInterface::insert(const CData & /* data */)
 {
   return NULL;
 }
 
 // virtual
-void CUndoObjectInterface::updateIndex(const size_t & index, const CUndoObjectInterface * pUndoObject)
+void CUndoObjectInterface::updateIndex(const size_t & /* index */, const CUndoObjectInterface * /* pUndoObject */)
 {}
 
 std::string CUndoObjectInterface::getUuidString() const

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -142,6 +142,12 @@
 #include "qtUtilities.h"
 
 #include "copasi/math/CJitCompiler.h"
+
+#include <copasi/parameterFitting/CFitTask.h>
+#include <copasi/parameterFitting/CFitProblem.h>
+#include <copasi/parameterFitting/CExperimentSet.h>
+#include <copasi/parameterFitting/CExperiment.h>
+#include <copasi/UI/CQExperimentSelection.h>
 
 // static
 CopasiUI3Window *CopasiUI3Window::pMainWindow = NULL;
@@ -421,7 +427,6 @@ CopasiUI3Window::CopasiUI3Window():
   setAcceptDrops(true);
   mpListView->mpTreeView->setFocus();
 
-  QTimer::singleShot(10, this, SLOT(slotAutoCheckForUpdates()));
   connect(this, SIGNAL(signalDeferredLoadFile(QString)), this, SLOT(slotDeferredLoadFile(QString)));
 
   mpExternaltools->init(mpTools, mpaShowExternalToolDialog);
@@ -1104,6 +1109,9 @@ void CopasiUI3Window::openInitialDocument(const QString &file)
 #ifdef COPASI_SBW_INTEGRATION
   sbwConnect();
 #endif // COPASI_SBW_INTEGRATION
+
+  // Defer auto-update until after startup open (and any late FileOpen / download) settles.
+  QTimer::singleShot(500, this, SLOT(slotAutoCheckForUpdates()));
 }
 
 void CopasiUI3Window::slotDeferredLoadFile(QString str)
@@ -2000,6 +2008,7 @@ void CopasiUI3Window::slotExportMathModelFinished(const std::string & thread, bo
       CCopasiMessage::clearDeque();
     }
 }
+
 void CopasiUI3Window::slotCreateEventsForTimeseries()
 {
   if (mpDataModel == NULL) return;
@@ -2012,7 +2021,61 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
   mpListView->switchToOtherWidget(ListViews::WidgetType::Events, CRegisteredCommonName());
   CCopasiMessage::clearDeque();
 
-  if (!pModel->createEventsForTimeseries())
+  // determine which experiments are time series if there is more than one, prompt for selection
+  const CFitTask * task = dynamic_cast< const CFitTask * >(&mpDataModel->getTaskList()->operator[]("Parameter Estimation"));
+
+  if (task == NULL)
+    {
+      return;
+    }
+
+  const CFitProblem * problem = static_cast< const CFitProblem * >(task->getProblem());
+
+  const CExperimentSet & set = problem->getExperimentSet();
+
+  CExperiment * pSelected = NULL;
+  size_t numExperiments = set.size();
+  std::string firstTimeCourseExperiment = "";
+  for (size_t i = 0; i < numExperiments; ++i)
+    {
+      if (set.getExperiment(i)->getExperimentType() == CTaskEnum::Task::timeCourse)
+        {
+          firstTimeCourseExperiment = set.getExperiment(i)->getObjectName();
+          break;
+        }
+    }
+
+  if (firstTimeCourseExperiment.empty())
+  {
+    CQMessageBox::information(this, "No Time Course Experiments",
+                              "There are no time course experiments in the experiment set.",
+                              QMessageBox::Ok,
+                              QMessageBox::Ok);
+    return;
+  }
+
+  if (numExperiments > 1)
+    {
+      CQExperimentSelection * pDialog = new CQExperimentSelection(this);
+      pDialog->setMode(CQExperimentSelection::ExperimentSelectionMode::TimeCourse);
+      pDialog->setSingleSelection(true);
+      QComboBox * pBox = new QComboBox(NULL);
+      pBox->setVisible(false);
+      pBox->addItem(FROM_UTF8(firstTimeCourseExperiment));
+
+      pDialog->load(pBox, &set);
+
+      if (pDialog->exec() == QDialog::Accepted)
+        {
+          pSelected = const_cast<CExperiment *>(set.getExperiment(TO_UTF8(pBox->itemText(0))));
+        }
+      else
+        {
+          return;
+        }
+    }
+
+  if (!pModel->createEventsForTimeseries(pSelected))
     {
       // Display error messages.
       CQMessageBox::information(this, "Event Creation Failed",
@@ -2022,7 +2085,7 @@ void CopasiUI3Window::slotCreateEventsForTimeseries()
       CCopasiMessage::clearDeque();
     }
 
-  // show any warning messages that occured
+  // show any warning messages that occurred
   if (CCopasiMessage::size() != 0)
     {
       // Display warnings messages.
@@ -2080,6 +2143,8 @@ void CopasiUI3Window::slotConvertODEsToReactions()
   if (this->mpSliders)
     this->mpSliders->reset();
 
+  mpDataModelGUI->detachOutputHandler();
+
   CCopasiMessage::clearDeque();
 
   if (!mpDataModel->convertODEsToReactions())
@@ -2094,7 +2159,7 @@ void CopasiUI3Window::slotConvertODEsToReactions()
 
   mpDataModel->changed();
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, CRegisteredCommonName());
-  mpListView->resetCache();
+  mpDataModelGUI->attachOutputHandler();
 }
 
 void CopasiUI3Window::slotConvertReactionsToODEs()
@@ -2115,6 +2180,8 @@ void CopasiUI3Window::slotConvertReactionsToODEs()
   if (this->mpSliders)
     this->mpSliders->reset();
 
+  mpDataModelGUI->detachOutputHandler();
+
   CCopasiMessage::clearDeque();
 
   if (!mpDataModel->convertReactionsToODEs())
@@ -2129,7 +2196,7 @@ void CopasiUI3Window::slotConvertReactionsToODEs()
 
   mpDataModel->changed();
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, CRegisteredCommonName());
-  mpListView->resetCache();
+  mpDataModelGUI->attachOutputHandler();
 }
 
 void CopasiUI3Window::slotPromoteLocalParameters()
@@ -2150,6 +2217,8 @@ void CopasiUI3Window::slotPromoteLocalParameters()
   if (this->mpSliders)
     this->mpSliders->reset();
 
+  mpDataModelGUI->detachOutputHandler();
+
   CCopasiMessage::clearDeque();
 
   if (!mpDataModel->convertParametersToGlobal())
@@ -2164,7 +2233,7 @@ void CopasiUI3Window::slotPromoteLocalParameters()
 
   mpDataModel->changed();
   mpDataModelGUI->notify(ListViews::ObjectType::MODEL, ListViews::ADD, CRegisteredCommonName());
-  mpListView->resetCache();
+  mpDataModelGUI->attachOutputHandler();
 }
 
 void CopasiUI3Window::slotShowSliders(bool flag)
@@ -2855,6 +2924,12 @@ void CopasiUI3Window::setApplicationFont()
 
 void CopasiUI3Window::slotAutoCheckForUpdates()
 {
+  // Wait until startup URL/file open (or any other download/load) has finished.
+  if (mpDataModelGUI->isBusy() || !mActionStack.empty())
+    {
+      QTimer::singleShot(500, this, SLOT(slotAutoCheckForUpdates()));
+      return;
+    }
 
   if (CRootContainer::getConfiguration()->getCheckForUpdates().needToConfirmCheckForUpdate())
     {
@@ -3944,7 +4019,7 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
               QString("Enter URL to open"),
               QString("Please specify a URL to open (can be any supported format)"),
               QLineEdit::Normal,
-              QString("http://www.ebi.ac.uk/biomodels/model/download/BIOMD0000000001")
+              QString("https://biomodels.org/model/download/BIOMD0000000001")
 
             );
 
@@ -3957,6 +4032,13 @@ void CopasiUI3Window::slotFileOpenFromUrl(QString url)
   if (qUrl.scheme() == "copasi")
     {
       slotHandleCopasiScheme(qUrl);
+      return;
+    }
+
+  // Do not start a second download while update-check (or another download) is active.
+  if (mpDataModelGUI->isBusy())
+    {
+      mActionStack.push_front(std::make_pair(DownloadUrl, TO_UTF8(url)));
       return;
     }
 
@@ -4082,6 +4164,12 @@ void CopasiUI3Window::performNextAction()
     {
       case DownloadUrl:
       {
+        if (mpDataModelGUI->isBusy())
+          {
+            mActionStack.push_front(std::make_pair(DownloadUrl, next.second));
+            return;
+          }
+
         slotFileOpenFromUrl(FROM_UTF8(next.second));
         return;
       }
@@ -4178,7 +4266,7 @@ void CopasiUI3Window::performNextAction()
       case CheckForUpdates:
       {
         slotCheckForUpdate();
-        break;
+        return;
       }
 
       default:
@@ -4343,7 +4431,7 @@ void CopasiUI3Window::slotCheckForUpdateFinished(const std::string &, bool succe
         {
           mAutoUpdateCheck = false;
           mpDataModelGUI->saveConfiguration(false);
-
+          performNextAction();
           return;
         }
 
@@ -4400,6 +4488,7 @@ void CopasiUI3Window::slotCheckForUpdateFinished(const std::string &, bool succe
 
       mAutoUpdateCheck = false;
       mpDataModelGUI->saveConfiguration(false);
+      performNextAction();
     }
   else if (mpDataModelGUI->getLastDownloadUrl() != "https://api.github.com/repos/copasi/COPASI/releases/latest")
     {
@@ -4409,6 +4498,7 @@ void CopasiUI3Window::slotCheckForUpdateFinished(const std::string &, bool succe
   else
     {
       mAutoUpdateCheck = false;
+      performNextAction();
     }
 }
 

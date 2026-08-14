@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -66,7 +66,7 @@ CEnumAnnotation< std::string, CReaction::KineticLawUnit > CReaction::KineticLawU
 });
 
 // static
-CReaction * CReaction::fromData(const CData & data, CUndoObjectInterface * pParent)
+CReaction * CReaction::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CReaction(data.getProperty(CData::OBJECT_NAME).toString(),
                        NO_PARENT);
@@ -181,7 +181,7 @@ bool CReaction::applyData(const CData & data, CUndoData::CChangeSet & changes)
 
           for (; it != end; ++it)
             {
-              CNs.push_back(CRegisteredCommonName(it->toString(), this));
+              CNs.push_back(CCommonName(it->toString()));
             }
 
           Success &= setParameterCNs(Name, CNs);
@@ -228,7 +228,7 @@ bool CReaction::applyData(const CData & data, CUndoData::CChangeSet & changes)
 
           for (; it != end; ++it)
             {
-              CNs.push_back(CRegisteredCommonName(it->toString(), this));
+              CNs.push_back(CCommonName(it->toString()));
             }
 
           Success &= setParameterCNs(Name, CNs);
@@ -469,7 +469,7 @@ CReaction::CReaction(const CReaction & src,
   mParameterNameToIndex(src.mParameterNameToIndex),
   mParameterIndexToCNs(src.mParameterIndexToCNs),
   mParameterIndexToObjects(src.mParameterIndexToObjects),
-  mParameters(src.mParameters, this),
+  mParameters(src.mParameters, this, src.mParameters.getObjectType()),
   mSBMLId(src.mSBMLId),
   mFast(src.mFast),
   mKineticLawUnit(src.mKineticLawUnit),
@@ -832,20 +832,19 @@ CCopasiParameterGroup & CReaction::getParameters()
 
 bool CReaction::isLocalParameter(const size_t & index) const
 {
-  if (index == C_INVALID_INDEX)
-    return false;
-
-  const std::vector< const CDataObject * > & Objects = mParameterIndexToObjects[index];
-
-  if (Objects.size() == 1)
+  if (index != C_INVALID_INDEX)
     {
-      const CDataObject * pObject = mParameterIndexToObjects[index][0];
+      const std::vector< const CDataObject * > & Objects = mParameterIndexToObjects[index];
 
-      return (pObject != NULL &&
-              pObject->getObjectParent() == &mParameters);
+      if (Objects.size() == 1)
+        {
+          const CDataObject * pObject = mParameterIndexToObjects[index][0];
+
+          return (pObject != NULL && pObject->getObjectParent() == &mParameters);
+        }
     }
 
-  return false;
+  return mpFunction == CRootContainer::getUndefinedFunction();
 }
 
 bool CReaction::isLocalParameter(const std::string & parameterName) const
@@ -857,11 +856,12 @@ bool CReaction::isLocalParameter(const std::string & parameterName) const
       return isLocalParameter(found->second);
     }
 
-  return false;
+  return mpFunction == CRootContainer::getUndefinedFunction();
 }
 //***********************************************************************************************
 
 // virtual
+/*
 const CObjectInterface * CReaction::getObject(const CCommonName & cn) const
 {
   const CDataObject * pObject =
@@ -891,6 +891,7 @@ const CObjectInterface * CReaction::getObject(const CCommonName & cn) const
 
   return pObject;
 }
+ */
 
 void CReaction::initializeParameters()
 {
@@ -1367,7 +1368,7 @@ void CReaction::initObjects()
 
 std::string CReaction::getDefaultNoiseExpression() const
 {
-  return "sqrt(abs(<" + mpParticleFluxReference->getStringCN() + ">))";
+  return "sqrt(abs(<" + mpParticleFluxReference->getCN() + ">))";
 }
 
 bool CReaction::setNoiseExpression(const std::string & expression)
@@ -1955,28 +1956,9 @@ CFunction * CReaction::setFunctionFromExpressionTree(const CExpression & express
   return pTmpFunction;
 }
 
-CDataObject * CReaction::resolveCN(const CModel * pModel, CCommonName cn)
+CDataObject * CReaction::resolveCN(const CModel * pModel, const CCommonName & cn)
 {
-  if (!pModel)
-    return NULL;
-
-  std::string Type = cn.getObjectType();
-  std::string Name = cn.getObjectName();
-
-  if (Type == "CN" && Name == "Root")
-    cn = cn.getRemainder();
-
-  Type = cn.getObjectType();
-
-  if (Type == "Model")
-    cn = cn.getRemainder();
-
-  const auto* pInterface = pModel->getObject(cn);
-
-  if (pInterface)
-    return const_cast< CDataObject * >(CObjectInterface::DataObject(pInterface));
-
-  return NULL;
+  return const_cast< CDataObject * >(CObjectInterface::DataObject(cn.resolve(pModel)));
 }
 
 CEvaluationNode * CReaction::variables2objects(CEvaluationNode * expression)
@@ -2179,7 +2161,7 @@ CEvaluationNodeObject* CReaction::variable2object(CEvaluationNodeVariable* pVari
       CCopasiMessage(CCopasiMessage::EXCEPTION, MCReaction + 9, mParameterIndexToCNs[index][0].c_str());
     }
 
-  pObjectNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getStringCN() + ">");
+  pObjectNode = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + pObject->getCN() + ">");
   return pObjectNode;
 }
 
@@ -2315,7 +2297,7 @@ std::string CReaction::getKineticLawUnit() const
 
 void CReaction::setScalingCompartmentCN(const std::string & compartmentCN)
 {
-  mScalingCompartmentCN = CRegisteredCommonName(compartmentCN, this);
+  mScalingCompartmentCN = CCommonName(compartmentCN);
   ContainerList Containers;
   Containers.push_back(getObjectDataModel());
 
@@ -2344,7 +2326,6 @@ const CCompartment * CReaction::getScalingCompartment() const
 std::string
 CReaction::getReactionScheme() const
 {
-  CDataModel* pModel = getObjectDataModel();
   CReactionInterface reactionInterface;
   reactionInterface.init(*this);
   return reactionInterface.getChemEqString();

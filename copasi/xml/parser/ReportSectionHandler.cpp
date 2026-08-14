@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,7 +39,7 @@ ReportSectionHandler::~ReportSectionHandler()
 
 // virtual
 CXMLHandler * ReportSectionHandler::processStart(const XML_Char * pszName,
-    const XML_Char ** papszAttrs)
+    const XML_Char ** /* papszAttrs */)
 {
   CXMLHandler * pHandlerToCall = NULL;
 
@@ -87,7 +87,7 @@ bool ReportSectionHandler::processEnd(const XML_Char * pszName)
         break;
 
       case Object:
-        mpSectionContent->push_back(CRegisteredCommonName(mpData->CharacterData, mpData->pModel));
+        mpSectionContent->push_back(CCommonName(mpData->CharacterData));
         break;
 
       default:

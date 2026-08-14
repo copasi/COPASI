@@ -1,4 +1,4 @@
-// Copyright (C) 2022 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -930,7 +930,7 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
           if (pObj)
             {
               mObjects.insert(pObj);
-              objectCN = pObj->getStringCN();
+              objectCN = pObj->getCN();
               mCnNameMap[objectCN] = pObj->getObjectDisplayName();
 
               objectCNs << FROM_UTF8(objectCN);
@@ -945,7 +945,7 @@ bool CQCustomPlot::compile(CObjectInterface::ContainerList listOfContainer)
 
                   if (pCurve)
                     {
-                      pCurve->setProperty("experiment_cn", FROM_UTF8(pExp->getStringCN()));
+                      pCurve->setProperty("experiment_cn", FROM_UTF8(pExp->getCN()));
                       pCurve->setProperty("experiment_name", FROM_UTF8(pExp->getObjectDisplayName()));
                     }
                 }
@@ -1190,6 +1190,19 @@ bool CQCustomPlot::saveData(const std::string & filename)
   if (!fs.good())
     return false;
 
+  saveDataToStream(fs);
+
+  fs.close();
+
+  if (!fs.good())
+    return false;
+
+  return true;
+}
+
+void CQCustomPlot::saveDataToStream(std::ostream & fs)
+{
+
   // Write the table header
   fs << "# ";
 
@@ -1403,13 +1416,6 @@ bool CQCustomPlot::saveData(const std::string & filename)
             }
         }
     }
-
-  fs.close();
-
-  if (!fs.good())
-    return false;
-
-  return true;
 }
 
 void CQCustomPlot::setCurvesVisibility(const bool & visibility)
@@ -1618,7 +1624,7 @@ void CQCustomPlot::wheelEvent(QWheelEvent * event)
         }
 
       legend->setFillOrder(legend->fillOrder(), true);
-      
+
       // force layout update
       auto minSize = minimumSize();
       setMinimumSize(minSize.grownBy(QMargins(1, 1, 1, 1)));
@@ -2197,7 +2203,7 @@ CQCustomPlot::initializeIndependentData(const CDataModel& model)
       for (int c = 0; c < numCols; ++c)
         {
           std::string cn = pExperiment->getObjectMap().getNthCnOfType(c, CExperiment::independent);
-          auto *obj = model.getObject(CCommonName(cn));
+          auto *obj = model.getChildObject(CCommonName(cn));
 
           if (!obj)
             continue;

@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,19 +25,22 @@ typedef int MPI_Win;
 
 #ifdef USE_OMP
 # include <omp.h>
-# ifndef OMP_HAVE_MONOTONIC
+#  ifndef OMP_HAVE_MONOTONIC
+#   if (!defined(WIN32) && defined(KMP_VERSION_MAJOR) && KMP_VERSION_MAJOR < 5)
 const omp_sched_t omp_sched_monotonic = (omp_sched_t) 0x80000000;
+#   endif
 # endif // OMP_HAVE_MONOTONIC
 #else
 # define omp_get_max_threads() (1)
 # define omp_get_num_threads() (1)
 # define omp_get_thread_num() (0)
+# define omp_sched_static 1u
+# define omp_sched_dynamic 2u
+# define omp_sched_guided 3u
+# define omp_sched_auto 4u
+typedef unsigned int omp_sched_t;
+const omp_sched_t omp_sched_monotonic = (omp_sched_t) 0x80000000;
 #endif // USE_OMP
-
-struct omp_info
-{
-  std::string operator()();
-};
 
 template < class Data > class CContext
 {

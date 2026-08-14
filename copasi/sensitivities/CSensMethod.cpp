@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,6 +39,26 @@
 #include "copasi/math/CMathContainer.h"
 #include "copasi/utilities/CProcessReport.h"
 
+CSensMethodLocalData::CSensMethodLocalData()
+  : tmp1()
+  , tmp2()
+  , mInitialStateVariables()
+  , mInitialSequences(nullptr)
+  , index(0)
+{}
+
+CSensMethodLocalData::CSensMethodLocalData(const CSensMethodLocalData & src)
+  : tmp1(src.tmp1)
+  , tmp2(src.tmp2)
+  , mInitialStateVariables(src.mInitialStateVariables)
+  , mInitialSequences(src.mInitialSequences, nullptr)
+  , index(src.index)
+{}
+
+// virtual
+CSensMethodLocalData::~CSensMethodLocalData()
+{}
+
 /**
  *  Default constructor.
  */
@@ -50,7 +70,7 @@ CSensMethod::CSensMethod(const CDataContainer * pParent,
   mLocalData(),
   mTargetValuePointers(),
   mpSubTask(NULL),
-  mTargetValueSequence(),
+  mTargetValueSequence(nullptr),
   mpDeltaFactor(NULL),
   mpMinDelta(NULL),
   mStoreSubtasktUpdateFlag(false),
@@ -76,7 +96,7 @@ CSensMethod::CSensMethod(const CSensMethod & src,
   mLocalData(),
   mTargetValuePointers(),
   mpSubTask(NULL),
-  mTargetValueSequence(),
+  mTargetValueSequence(nullptr),
   mpDeltaFactor(NULL),
   mpMinDelta(NULL),
   mStoreSubtasktUpdateFlag(false),

@@ -65,9 +65,9 @@
 #endif
 
 CListOfLayouts::CListOfLayouts(const std::string & name,
-                               const CDataContainer * pParent):
-  CDataVectorN< CLayout >(name, pParent),
-  mKey(CRootContainer::getKeyFactory()->add("Layout", this))
+                               const CDataContainer * pParent)
+  : CDataVectorN< CLayout >(name, pParent)
+  , mKey(CRootContainer::getKeyFactory()->add("Layout", this))
   , mvGlobalRenderInformationObjects("ListOfGlobalRenderInformationObjects", this)
 {}
 
@@ -90,7 +90,7 @@ void CListOfLayouts::addLayout(CLayout * layout, const std::map<std::string, std
 }
 
 void CListOfLayouts::exportToSBML(ListOf * lol, std::map<const CDataObject*, SBase*> & copasimodelmap,
-                                  const std::map<std::string, const SBase*>& idMap, unsigned int level, unsigned int version) const
+                                  const std::map<std::string, const SBase*>& idMap, unsigned int /* level */, unsigned int /* version */) const
 {
   if (!lol) return;
 

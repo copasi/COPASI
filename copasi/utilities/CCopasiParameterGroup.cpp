@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,11 +40,7 @@
 
 #include "copasi/undo/CData.h"
 #include "copasi/undo/CUndoData.h"
-
-CCopasiParameterGroup::CCopasiParameterGroup():
-  CCopasiParameter("NoName", CCopasiParameter::Type::GROUP),
-  mpElementTemplates(NULL)
-{}
+#include "copasi/model/CReaction.h"
 
 CCopasiParameterGroup::CCopasiParameterGroup(const CCopasiParameterGroup & src,
     const CDataContainer * pParent,
@@ -321,6 +317,51 @@ CUndoObjectInterface * CCopasiParameterGroup::insert(const CData & data)
 }
 
 // virtual
+const CObjectInterface * CCopasiParameterGroup::resolve(const CCommonNameComponent::shared_ptr & pCN) const
+{
+  const CObjectInterface * pObject = nullptr;
+
+  if (pCN)
+    {
+      if (pCN->isResolved())
+        pObject = pCN->getObject();
+      else if ((pObject = CCopasiParameter::resolve(pCN)) == nullptr)
+        {
+          std::string UniqueName = pCN->getObjectName();
+
+          std::string::size_type pos = UniqueName.find_last_of('[');
+          std::string Name = UniqueName.substr(0, pos);
+          size_t Index = strToUnsignedInt(UniqueName.substr(pos + 1).c_str());
+          size_t counter = C_INVALID_INDEX;
+
+          index_iterator it = beginIndex();
+          index_iterator end = endIndex();
+
+          for (; it != end && pObject == nullptr; ++it)
+            if ((*it)->getObjectName() == Name)
+              if (++counter == Index)
+                pObject = *it;
+        }
+    }
+
+  const CDataObject * pDataObject = CObjectInterface::DataObject(pObject);
+
+  // We are hiding non local reaction parameters.
+  if (pDataObject != nullptr
+      && getObjectName() == "Parameters")
+    {
+      const CReaction * pReaction = dynamic_cast< const CReaction * >(getObjectParent());
+
+      if (pReaction != nullptr
+          && !pReaction->isLocalParameter(pDataObject->getObjectName()))
+        pObject = nullptr;
+    }
+
+  return pObject;
+}
+
+// virtual
+/*
 const CObjectInterface * CCopasiParameterGroup::getObject(const CCommonName & cn) const
 {
   const CObjectInterface * pObjectInterface = CDataContainer::getObject(cn);
@@ -353,8 +394,9 @@ const CObjectInterface * CCopasiParameterGroup::getObject(const CCommonName & cn
         }
     }
 
-  return NULL;
+  return CCopasiParameter::getObject(cn);
 }
+ */
 
 bool CCopasiParameterGroup::elevateChildren() {return true;}
 
@@ -500,7 +542,7 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
   for (; itToBeAdded != endToBeAdded; ++itToBeAdded)
     {
       if (itToBeAdded->second->getType() == CCopasiParameter::Type::GROUP)
-        pParameter = new CCopasiParameterGroup(* static_cast< CCopasiParameterGroup * >(itToBeAdded->second), NO_PARENT);
+        pParameter = new CCopasiParameterGroup(* static_cast< CCopasiParameterGroup * >(itToBeAdded->second), NO_PARENT, itToBeAdded->second->getObjectType());
       else
         pParameter = new CCopasiParameter(*itToBeAdded->second, NO_PARENT);
 
@@ -515,7 +557,7 @@ CCopasiParameterGroup & CCopasiParameterGroup::operator = (const CCopasiParamete
   pdelete(mpElementTemplates);
 
   if (rhs.mpElementTemplates != NULL)
-    mpElementTemplates = new CCopasiParameterGroup(*rhs.mpElementTemplates, NO_PARENT);
+    mpElementTemplates = new CCopasiParameterGroup(*rhs.mpElementTemplates, NO_PARENT, rhs.mpElementTemplates->getObjectType());
 
   return *this;
 }
@@ -565,7 +607,7 @@ bool CCopasiParameterGroup::addParameter(const CCopasiParameter & parameter)
   if (parameter.getType() == CCopasiParameter::Type::GROUP)
     {
       CCopasiParameterGroup * pGroup =
-        new CCopasiParameterGroup(*dynamic_cast<const CCopasiParameterGroup *>(&parameter), NO_PARENT);
+        new CCopasiParameterGroup(*dynamic_cast<const CCopasiParameterGroup *>(&parameter), NO_PARENT, parameter.getObjectType());
       addParameter(pGroup);
     }
   else

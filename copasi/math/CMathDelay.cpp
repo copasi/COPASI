@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -19,11 +19,12 @@
 #include "CMathExpression.h"
 #include "CMathContainer.h"
 
-CMathDelay::CMathDelay():
-  mpContainer(NULL),
-  mpLagObject(NULL),
-  mValueObjects(),
-  mValueSequence()
+CMathDelay::CMathDelay()
+  : mpContainer(nullptr)
+  , mpLagObject(nullptr)
+  , mValueObjects()
+  , mValueSequence(nullptr)
+  , mValueSequenceReduced(nullptr)
 {}
 
 CMathDelay::~CMathDelay()
@@ -39,7 +40,7 @@ void CMathDelay::create(CMath::DelayData::iterator & itDelayData,
 
   // Resize the value objects
   mValueObjects.resize(delayValueCount);
-  mValueObjects = NULL;
+  mValueObjects = nullptr;
 
   // Assign the expression to the lag object.
   mpLagObject->setExpression(itDelayData->first, false, container);
@@ -77,7 +78,12 @@ void CMathDelay::modifyMathObject(CMath::DelayValueData::iterator & itValueData,
 void CMathDelay::copy(const CMathDelay & src, CMathContainer & container)
 {
   assert(&src != this);
-  *this = src;
+
+  mpContainer = &container;
+  mpLagObject = src.mpLagObject;
+  mValueObjects = src.mValueObjects;
+  mValueSequence.copy(src.mValueSequence, &container);
+  mValueSequenceReduced.copy(src.mValueSequenceReduced, &container);
 }
 
 void CMathDelay::relocate(const CMathContainer * pContainer,
@@ -103,7 +109,7 @@ void CMathDelay::createUpdateSequences()
   CMathObject **pObjectEnd = pObject + mValueObjects.size();
 
   for (; pObject != pObjectEnd; ++pObject)
-    if (*pObject != NULL)
+    if (*pObject != nullptr)
       {
         Requested.insert(*pObject);
       }

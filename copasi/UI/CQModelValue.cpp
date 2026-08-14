@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -89,7 +89,7 @@ void CQModelValue::slotBtnNew()
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpModelValue);
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getStringCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", mpModelValue->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
@@ -123,7 +123,7 @@ void CQModelValue::slotBtnCopy()
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpModelValue);
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getStringCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpModelValue->getCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", mpModelValue->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));

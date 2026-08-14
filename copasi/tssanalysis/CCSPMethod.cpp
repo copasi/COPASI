@@ -778,7 +778,7 @@ cspiteration:
 /*  compute  the norm C  of the off-diagonal blocks   */
 C_INT CCSPMethod::isBlockDiagonal(C_INT N, C_INT M, const CMatrix< C_FLOAT64 > & ALA, const C_FLOAT64 & SMALL)
 {
-  C_INT i, j, imax, jmax, imaxl, jmaxl;
+  C_INT i, j;
   C_FLOAT64 max = -1., maxl = -1.;
 
   /* step #1: upper-right block */
@@ -787,7 +787,6 @@ C_INT CCSPMethod::isBlockDiagonal(C_INT N, C_INT M, const CMatrix< C_FLOAT64 > &
       if (fabs(ALA(i, j)) > max)
         {
           max = fabs(ALA(i, j));
-          imax = i; jmax = j;
         }
 
 #if 1
@@ -798,7 +797,6 @@ C_INT CCSPMethod::isBlockDiagonal(C_INT N, C_INT M, const CMatrix< C_FLOAT64 > &
       if (fabs(ALA(i, j)) > maxl)
         {
           maxl = fabs(ALA(i, j));
-          imaxl = i ; jmaxl = j;
         }
 
 #endif

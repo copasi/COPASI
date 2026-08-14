@@ -10,9 +10,10 @@
 
 #include "copasi/copasi.h"
 
-#include "CDataValue.h"
-#include "CData.h"
+#include "copasi/undo/CDataValue.h"
+#include "copasi/undo/CData.h"
 
+#include "copasi/core/CCommonName.h"
 #include "copasi/utilities/utility.h"
 
 // static
@@ -91,6 +92,13 @@ CDataValue::CDataValue(const std::string & value):
 }
 
 CDataValue::CDataValue(const char * value):
+  mType(CDataValue::INVALID),
+  mpData(NULL)
+{
+  assignData(std::string(value));
+}
+
+CDataValue::CDataValue(const CCommonName & value):
   mType(CDataValue::INVALID),
   mpData(NULL)
 {

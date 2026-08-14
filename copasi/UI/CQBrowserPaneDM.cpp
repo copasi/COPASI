@@ -115,8 +115,7 @@ CQBrowserPaneDM::CQBrowserPaneDM(QObject * pParent):
   mSeverityFilter(),
   mKindFilter(),
   mCN2Node(),
-  mId2Node(),
-  mpRenameHandler(NULL)
+  mId2Node()
 {
   createStaticDM();
 
@@ -137,18 +136,12 @@ CQBrowserPaneDM::CQBrowserPaneDM(QObject * pParent):
   connect(dynamic_cast<CopasiUI3Window *>(CopasiUI3Window::getMainWindow()), SIGNAL(signalPreferenceUpdated()), this, SLOT(slotRefreshValidityFilters()));
 
   slotRefreshValidityFilters();
-
-  mpRenameHandler = new CRegisteredCommonName::ClassMemberRename< CQBrowserPaneDM >(this, &CQBrowserPaneDM::rename);
-  CRegisteredCommonName::registerHandler(mpRenameHandler);
 }
 
 // virtual
 CQBrowserPaneDM::~CQBrowserPaneDM()
 {
   pdelete(mpRoot);
-
-  CRegisteredCommonName::deregisterHandler(mpRenameHandler);
-  pdelete(mpRenameHandler);
 }
 
 // virtual
@@ -780,6 +773,21 @@ bool CQBrowserPaneDM::slotNotify(ListViews::ObjectType objectType, ListViews::Ac
     {
       case ListViews::RENAME:
       case ListViews::CHANGE:
+        if (pNode != nullptr
+            && pNode->getDisplayRole() != "Model"
+            && pNode->getDisplayRole() != DisplayRole)
+          {
+            pNode->setDisplayRole(DisplayRole);
+
+            if (mEmitDataChanged)
+              {
+                QModelIndex Index = index(pNode);
+                emit dataChanged(Index, Index);
+
+                Index = index(static_cast< CNode * >(pNode->getParent()));
+                emit dataChanged(Index, Index);
+              }
+          }
         break;
 
       case ListViews::DELETE:

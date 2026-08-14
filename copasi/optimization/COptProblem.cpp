@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -98,16 +98,17 @@ COptProblem::COptProblem(const CTaskEnum::Task & type,
   , mpSubTask(NULL)
   , mpObjectiveExpression(NULL)
   , mpMathObjectiveExpression(NULL)
-  , mInitialRefreshSequence()
-  , mUpdateObjectiveFunction()
-  , mUpdateConstraints()
-  , mUpdateIntervals()
+  , mInitialRefreshSequence(nullptr)
+  , mUpdateObjectiveFunction(nullptr)
+  , mUpdateConstraints(nullptr)
+  , mUpdateIntervals(nullptr)
   , mCalculateValue(0)
   , mSolutionVariables()
   , mOriginalVariables()
   , mSolutionValue(0)
   , mCounters()
   , mCPUTime(CCopasiTimer::Type::PROCESS, this)
+  , mWallTime(CCopasiTimer::Type::WALL, this)
   , mhSolutionValue(C_INVALID_INDEX)
   , mhCounter(C_INVALID_INDEX)
   , mStoreResults(false)
@@ -142,16 +143,17 @@ COptProblem::COptProblem(const COptProblem & src,
   , mpSubTask(NULL)
   , mpObjectiveExpression(NULL)
   , mpMathObjectiveExpression(NULL)
-  , mInitialRefreshSequence()
-  , mUpdateObjectiveFunction()
-  , mUpdateConstraints()
-  , mUpdateIntervals()
+  , mInitialRefreshSequence(nullptr)
+  , mUpdateObjectiveFunction(nullptr)
+  , mUpdateConstraints(nullptr)
+  , mUpdateIntervals(nullptr)
   , mCalculateValue(src.mCalculateValue)
   , mSolutionVariables(src.mSolutionVariables)
   , mOriginalVariables(src.mOriginalVariables)
   , mSolutionValue(src.mSolutionValue)
   , mCounters()
   , mCPUTime(CCopasiTimer::Type::PROCESS, this)
+  , mWallTime(CCopasiTimer::Type::WALL, this)
   , mhSolutionValue(C_INVALID_INDEX)
   , mhCounter(C_INVALID_INDEX)
   , mStoreResults(src.mStoreResults)
@@ -178,9 +180,6 @@ COptProblem::~COptProblem()
 void  COptProblem::calculateValue()
 {
   mMinInterval = std::numeric_limits< C_FLOAT64 >::infinity();
-
-  std::vector< COptItem * >::const_iterator it = mpOptItems->begin();
-  std::vector< COptItem * >::const_iterator end = mpOptItems->end();
 
   for (COptItem * pOptItem : *mpOptItems)
     if (*static_cast< C_FLOAT64 * >(pOptItem->getValuePointer()) < mMinInterval)
@@ -284,7 +283,7 @@ bool COptProblem::elevateChildren()
     }
 
   mpGrpItems =
-    elevate< CCopasiParameterGroup, CCopasiParameterGroup >(mpGrpItems);
+    elevate< CCopasiParameterGroup >(mpGrpItems);
 
   if (!mpGrpItems) return false;
 
@@ -300,7 +299,7 @@ bool COptProblem::elevateChildren()
   mpOptItems = &mpGrpItems->CCopasiParameter::getValue< std::vector< COptItem * > >();
 
   mpGrpConstraints =
-    elevate<CCopasiParameterGroup, CCopasiParameterGroup>(mpGrpConstraints);
+    elevate< CCopasiParameterGroup >(mpGrpConstraints);
 
   if (!mpGrpConstraints) return false;
 
@@ -366,7 +365,6 @@ void COptProblem::initObjects()
   addVectorReference("Best Parameters", mSolutionVariables, CDataObject::ValueDbl);
 }
 
-
 void COptProblem::setCreateParameterSets(const bool & create)
 {
   *mpCreateParameterSets = create;
@@ -407,7 +405,7 @@ std::string replaceCnsWithNames(const std::string& expression, CDataModel* pDM)
             const CDataObject* obj = dynamic_cast<const CDataObject*>(pDM->getObject(CRegisteredCommonName(cn)));
             if (obj)
             {
-              result << obj->getObjectDisplayName();              
+              result << obj->getObjectDisplayName();
             }
 
             pos = end + 1;
@@ -445,7 +443,7 @@ void COptProblem::createParameterSets()
 
   notes << "## Parameter Set " << set->getName() << std::endl
         << std::endl;
-  notes << "Objective: " << (*mpParmMaximize ? "maximize" : "minimize") 
+  notes << "Objective: " << (*mpParmMaximize ? "maximize" : "minimize")
         << " " << replaceCnsWithNames(mpObjectiveExpression->getInfix(), getObjectDataModel()) << std::endl
         << std::endl;
   notes << "Solution Value: " << mSolutionValue << std::endl
@@ -458,13 +456,12 @@ void COptProblem::createParameterSets()
         continue;
       notes << obj->getObjectDisplayName() << " = " << mSolutionVariables[i] << std::endl;
     }
-  
+
   set->setNotes(notes.str());
 
   // Restore the current initial state
   mpContainer->setCompleteInitialState(CurrentCompleteInitialState);
 }
-
 
 /**
  * Utility function creating a parameter set for each experiment
@@ -498,6 +495,15 @@ bool COptProblem::initializeSubtaskBeforeOutput()
 {
   mpSubTaskSrc = getSubTask();
 
+  try
+    {
+      if (mpSubTaskSrc != NULL)
+        mpSubTaskSrc->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+    }
+
+  catch (...)
+    {}
+
   pdelete(mpSubTask);
   mpSubTask = CTaskFactory::copy(mpSubTaskSrc, this);
 
@@ -505,6 +511,8 @@ bool COptProblem::initializeSubtaskBeforeOutput()
     {
       if (mpSubTask != NULL)
         {
+          mpSubTask->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+
           mpSubTask->setMathContainer(mpContainer);
           mpSubTask->setCallBack(mProcessReport);
 
@@ -552,6 +560,8 @@ bool COptProblem::initialize()
       if (!mpReport->getStream()) mpReport = NULL;
     }
 
+  if (mpSubTask != nullptr)
+    ContainerList.push_back(mpSubTask);
   if (mpSubTaskSrc != NULL)
     ContainerList.push_back(mpSubTaskSrc);
 
@@ -624,13 +634,12 @@ bool COptProblem::initialize()
 
   for (COptItem * pOptItem : ItemsInfluencingIntervals)
     {
-      CCore::CUpdateSequence UpdateIntervals;
+      CCore::CUpdateSequence UpdateIntervals(nullptr);
       CObjectInterface::ObjectSet ChangedObject;
       ChangedObject.insert(pOptItem->getItemObject());
       ChangedObjects.insert(pOptItem->getItemObject());
 
-      IntervalDependencies.getUpdateSequence(UpdateIntervals, CCore::SimulationContext::UpdateMoieties, ChangedObject, ItemObjectsWithVaryingInterval);
-      pOptItem->setIntervalUpdateSequence(UpdateIntervals);
+      IntervalDependencies.getUpdateSequence(pOptItem->getIntervalUpdateSequence(), CCore::SimulationContext::UpdateMoieties, ChangedObject, ItemObjectsWithVaryingInterval);
 
       for (const CObjectInterface * pObject : UpdateIntervals)
         {
@@ -711,6 +720,7 @@ bool COptProblem::initialize()
   mpContainer->getTransientDependencies().getUpdateSequence(mUpdateConstraints, CCore::SimulationContext::Default, mpContainer->getStateObjects(false), Objects, mpContainer->getSimulationUpToDateObjects());
 
   mCPUTime.start();
+  mWallTime.start();
 
   // Sanity
   if (mpObjectiveExpression == NULL ||
@@ -759,6 +769,14 @@ CCopasiTask * COptProblem::getSubTask() const
   ListOfContainer.push_back(getObjectAncestor("Vector"));
 
   return dynamic_cast< CCopasiTask * >(CObjectInterface::GetObjectFromCN(ListOfContainer, *mpParmSubTaskCN));
+}
+
+//virtual
+C_FLOAT64 COptProblem::getEstimatedSubtaskError() const
+{
+  if (getSubTask())
+    return getSubTask()->getEstimatedMethodError();
+  return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }
 
 bool COptProblem::restore(const bool & updateModel)
@@ -1005,6 +1023,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 
   // Make sure the timer is accurate.
   mCPUTime.calculateValue();
+  mWallTime.calculateValue();
 
   if (mSolutionValue == mWorstValue)
     return false;
@@ -1053,6 +1072,7 @@ bool COptProblem::calculateStatistics(const C_FLOAT64 & factor,
 
       // Make sure the timer is accurate.
       mCPUTime.calculateValue();
+      mWallTime.calculateValue();
     }
 
   return true;
@@ -1370,6 +1390,11 @@ const C_FLOAT64 & COptProblem::getExecutionTime() const
   return mCPUTime.getElapsedTimeSeconds();
 }
 
+const C_FLOAT64 & COptProblem::getWallTime() const
+{
+  return mWallTime.getElapsedTimeSeconds();
+}
+
 void COptProblem::print(std::ostream * ostream) const
 {*ostream << *this;}
 
@@ -1385,12 +1410,17 @@ void COptProblem::printResult(std::ostream * ostream) const
   os << "    Objective Function Value:\t" << mSolutionValue << "\n";
 
   CCopasiTimeVariable CPUTime = const_cast<COptProblem *>(this)->mCPUTime.getElapsedTime();
+  CCopasiTimeVariable WallTime = const_cast<COptProblem *>(this)->mWallTime.getElapsedTime();
 
   os << "    Function Evaluations:\t" << mCounters.Counter << "\n";
   os << "    CPU Time [s]:\t"
      << CCopasiTimeVariable::LL2String(CPUTime.getSeconds(), 1) << "."
      << CCopasiTimeVariable::LL2String(CPUTime.getMilliSeconds(true), 3) << "\n";
-  os << "    Evaluations/Second [1/s]:\t" << mCounters.Counter / (C_FLOAT64)(CPUTime.getMilliSeconds() / 1e3) << "\n";
+  os << "    Wall Time [s]:\t"
+     << CCopasiTimeVariable::LL2String(WallTime.getSeconds(), 1) << "."
+     << CCopasiTimeVariable::LL2String(WallTime.getMilliSeconds(true), 3) << "\n";
+  os << "    Evaluations/Second [1/s]:\t" << mCounters.Counter / (C_FLOAT64)(WallTime.getMilliSeconds() / 1e3) << "\n";
+  os << "    SpeedUp:\t" << CPUTime.getMilliSeconds() / WallTime.getMilliSeconds() << "\n";
   os << "\n";
 
   std::vector< COptItem * >::const_iterator itItem =

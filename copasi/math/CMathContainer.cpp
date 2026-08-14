@@ -268,17 +268,17 @@ CMathContainer::CMathContainer()
   , mInitialDependencies(this)
   , mTransientDependencies(this)
   , mUpdateSequences()
-  , mSynchronizeInitialValuesSequenceExtensive()
-  , mSynchronizeInitialValuesSequenceIntensive()
-  , mApplyInitialValuesSequence()
-  , mSimulationValuesSequence()
-  , mSimulationValuesSequenceReduced()
-  , mRootSequence()
-  , mRootSequenceReduced()
-  , mNoiseSequence()
-  , mNoiseSequenceReduced()
-  , mPrioritySequence()
-  , mTransientDataObjectSequence()
+  , mSynchronizeInitialValuesSequenceExtensive(this)
+  , mSynchronizeInitialValuesSequenceIntensive(this)
+  , mApplyInitialValuesSequence(this)
+  , mSimulationValuesSequence(this)
+  , mSimulationValuesSequenceReduced(this)
+  , mRootSequence(this)
+  , mRootSequenceReduced(this)
+  , mNoiseSequence(this)
+  , mNoiseSequenceReduced(this)
+  , mPrioritySequence(this)
+  , mTransientDataObjectSequence(this)
   , mInitialStateValueExtensive()
   , mInitialStateValueIntensive()
   , mInitialStateValueAll()
@@ -311,9 +311,7 @@ CMathContainer::CMathContainer()
   , mpJITCompiler(CJitCompiler::create())
 #endif
   , mCompileTime()
-{
-  memset(&mSize, 0, sizeof(mSize));
-}
+{}
 
 CMathContainer::CMathContainer(CModel & model)
   : CDataContainer("Math Container", NULL, "CMathContainer")
@@ -321,7 +319,7 @@ CMathContainer::CMathContainer(CModel & model)
   , mpAvogadro(NULL)
   , mpQuantity2NumberFactor(NULL)
   , mRandom("Random", this, InvalidValue)
-  , mpProcessQueue(new CMathEventQueue(*this))
+  , mpProcessQueue(nullptr)
   , mpRandomGenerator(CRandom::createGenerator())
   , mValues()
   , mOldValues()
@@ -369,17 +367,17 @@ CMathContainer::CMathContainer(CModel & model)
   , mInitialDependencies(this)
   , mTransientDependencies(this)
   , mUpdateSequences()
-  , mSynchronizeInitialValuesSequenceExtensive()
-  , mSynchronizeInitialValuesSequenceIntensive()
-  , mApplyInitialValuesSequence()
-  , mSimulationValuesSequence()
-  , mSimulationValuesSequenceReduced()
-  , mRootSequence()
-  , mRootSequenceReduced()
-  , mNoiseSequence()
-  , mNoiseSequenceReduced()
-  , mPrioritySequence()
-  , mTransientDataObjectSequence()
+  , mSynchronizeInitialValuesSequenceExtensive(this)
+  , mSynchronizeInitialValuesSequenceIntensive(this)
+  , mApplyInitialValuesSequence(this)
+  , mSimulationValuesSequence(this)
+  , mSimulationValuesSequenceReduced(this)
+  , mRootSequence(this)
+  , mRootSequenceReduced(this)
+  , mNoiseSequence(this)
+  , mNoiseSequenceReduced(this)
+  , mPrioritySequence(this)
+  , mTransientDataObjectSequence(this)
   , mInitialStateValueExtensive()
   , mInitialStateValueIntensive()
   , mInitialStateValueAll()
@@ -414,17 +412,17 @@ CMathContainer::CMathContainer(CModel & model)
 #endif
   , mCompileTime()
 {
-  memset(&mSize, 0, sizeof(mSize));
-
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CDataContainer
   setObjectParent(mpModel);
 
-  mpAvogadro = CObjectInterface::DataObject(mpModel->getObject(CCommonName("Reference=Avogadro Constant")));
+  mpAvogadro = CObjectInterface::DataObject(mpModel->getChildObject(CCommonName("Reference=Avogadro Constant")));
   mDataValue2DataObject[(C_FLOAT64 *) mpAvogadro->getValuePointer()] = const_cast< CDataObject * >(mpAvogadro);
 
-  mpQuantity2NumberFactor = CObjectInterface::DataObject(mpModel->getObject(CCommonName("Reference=Quantity Conversion Factor")));
+  mpQuantity2NumberFactor = CObjectInterface::DataObject(mpModel->getChildObject(CCommonName("Reference=Quantity Conversion Factor")));
   mDataValue2DataObject[(C_FLOAT64 *) mpQuantity2NumberFactor->getValuePointer()] = const_cast< CDataObject * >(mpQuantity2NumberFactor);
+
+  mpProcessQueue = new CMathEventQueue(*this);
 }
 
 CMathContainer::CMathContainer(const CMathContainer & src)
@@ -433,7 +431,7 @@ CMathContainer::CMathContainer(const CMathContainer & src)
   , mpAvogadro(src.mpAvogadro)
   , mpQuantity2NumberFactor(src.mpQuantity2NumberFactor)
   , mRandom("Random", this, InvalidValue)
-  , mpProcessQueue(new CMathEventQueue(*this))
+  , mpProcessQueue(nullptr)
   , mpRandomGenerator(CRandom::createGenerator())
   , mValues()
   , mOldValues()
@@ -528,6 +526,7 @@ CMathContainer::CMathContainer(const CMathContainer & src)
   // We do not want the model to know about the math container therefore we
   // do not use &model in the constructor of CDataContainer
   setObjectParent(mpModel);
+  mpProcessQueue = new CMathEventQueue(*this);
 
   sSize size = mSize;
   size_t ObjectCount = src.mValues.size();
@@ -766,8 +765,7 @@ bool CMathContainer::areObjectsConstant(const CObjectInterface::ObjectSet & obje
         }
     }
 
-  CCore::CUpdateSequence UpdateSequence;
-
+  CCore::CUpdateSequence UpdateSequence(nullptr);
   mTransientDependencies.getUpdateSequence(UpdateSequence, CCore::SimulationContextFlag(CCore::SimulationContext::UpdateMoieties) | CCore::SimulationContext::EventHandling, mStateValues, objects);
 
   return UpdateSequence.empty();
@@ -1368,12 +1366,19 @@ void CMathContainer::pushAllTransientValues()
 }
 
 // virtual
-CCommonName CMathContainer::getCNProtected() const
+const CObjectInterface * CMathContainer::resolve(const CCommonNameComponent::shared_ptr & pCN) const
 {
-  return mpModel->getStringCN();
+  const CObjectInterface * pObject = mpModel->getChildObject(pCN);
+  const CMathObject * pMathObject = getMathObject(pObject);
+
+  if (pMathObject != nullptr)
+    return pMathObject;
+
+  return pObject;
 }
 
 // virtual
+/*
 const CObjectInterface * CMathContainer::getObject(const CCommonName & cn) const
 {
   // Since the CN should be relative we check in the model first
@@ -1389,7 +1394,7 @@ const CObjectInterface * CMathContainer::getObject(const CCommonName & cn) const
       ListOfContainer.push_back(mpModel);
       ListOfContainer.push_back(mpModel->getObjectDataModel());
 
-      CCommonName ModelCN = mpModel->getStringCN();
+      CCommonName ModelCN = mpModel->getCN();
 
       if (cn.getPrimary() != ModelCN.getPrimary())
         {
@@ -1414,6 +1419,7 @@ const CObjectInterface * CMathContainer::getObject(const CCommonName & cn) const
 
   return pObject;
 }
+ */
 
 const CObjectInterface * CMathContainer::getObjectFromCN(const CCommonName & cn) const
 {
@@ -1630,7 +1636,7 @@ void CMathContainer::compile()
         Changed.insert(pObject);
       }
 
-    CCore::CUpdateSequence Sequence;
+    CCore::CUpdateSequence Sequence(this);
     mTransientDependencies.getUpdateSequence(Sequence, CCore::SimulationContext::DelayValues, Changed, Changed);
 
     if (!Sequence.empty())
@@ -3041,7 +3047,7 @@ void CMathContainer::analyzeRoots()
 
       CObjectInterface::ObjectSet Requested;
       Requested.insert(pRoot);
-      CCore::CUpdateSequence UpdateSequence;
+      CCore::CUpdateSequence UpdateSequence(this);
 
       mTransientDependencies.getUpdateSequence(UpdateSequence, CCore::SimulationContext::Default, ContinuousStateValues, Requested);
       *pIsDiscrete = UpdateSequence.empty();
@@ -3290,7 +3296,7 @@ void CMathContainer::calculateJacobianDependencies(CMatrix< C_INT32 > & jacobian
 
   for (; pVariable != pVariableEnd; ++pVariable, ++col)
     {
-      CCore::CUpdateSequence Sequence;
+      CCore::CUpdateSequence Sequence(this);
       ObjectSet Changed;
 
       Changed.insert(pVariable);
@@ -3341,7 +3347,7 @@ void CMathContainer::calculateElasticityDependencies(CMatrix< C_INT32 > & elasti
 
   for (; pVariable != pVariableEnd; ++pVariable, ++col)
     {
-      CCore::CUpdateSequence Sequence;
+      CCore::CUpdateSequence Sequence(this);
       ObjectSet Changed;
 
       Changed.insert(pVariable);

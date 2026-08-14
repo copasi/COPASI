@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -68,7 +68,7 @@ public:
    */
   CNormalProduct(const CNormalProduct& src);
 
-  virtual CNormalBase * copy() const;
+  CNormalBase * copy() const override;
 
   /**
    * Assignment operator
@@ -185,9 +185,9 @@ public:
 
   bool operator==(const CNormalProduct & rhs) const;
 
-  virtual std::string toString() const;
+  std::string toString() const override;
 
-  virtual bool simplify();
+  bool simplify() override;
 
   CNormalGeneralPower* getDenominator() const;
 

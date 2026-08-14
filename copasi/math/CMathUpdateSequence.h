@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,18 +32,20 @@ public:
   typedef CObjectInterface ** iterator;
   typedef CObjectInterface *const * const_iterator;
 
+  CMathUpdateSequence(const CMathUpdateSequence & src) = delete;
+
   /**
    * Default Constructor
    * @param CMathContainer * pContainer (default: NULL)
    */
-  CMathUpdateSequence(CMathContainer * pContainer = NULL);
+  CMathUpdateSequence(CMathContainer * pContainer = nullptr);
 
   /**
    * Copy Constructor
    * @param const CMathUpdateSequence & src
    * @param CMathContainer * pContainer (default: NULL)
    */
-  CMathUpdateSequence(const CMathUpdateSequence & src, CMathContainer * pContainer = NULL);
+  CMathUpdateSequence(const CMathUpdateSequence & src, CMathContainer * pContainer);
 
   /**
    * Destructor
@@ -61,6 +63,14 @@ public:
    * @param const std::vector< CObjectInterface * > & rhs
    */
   CMathUpdateSequence & operator = (const std::vector< CObjectInterface * > & rhs);
+
+  /**
+   * Copy the content of another update sequence to this one.
+   * The math container is set to the given one or to the one of the source if the given one is NULL.
+   * @param const CMathUpdateSequence & src
+   * @param CMathContainer * pContainer
+   */
+  void copy(const CMathUpdateSequence & src, CMathContainer * pContainer);
 
   void insert(const iterator & loc, const CObjectInterface * pObject);
 

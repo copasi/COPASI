@@ -38,14 +38,23 @@ class CQExperimentSelection : public QDialog, public Ui::CQExperimentSelection
   Q_OBJECT
 
 public:
-  CQExperimentSelection(QWidget* parent = 0, const char* name = 0, bool modal = false, Qt::WindowFlags fl = Qt::WindowFlags());
+  enum ExperimentSelectionMode
+  {
+    All = 0,
+    TimeCourse,
+    SteadyState
+  };
+
+  CQExperimentSelection(QWidget * parent = 0, const char * name = 0, bool modal = false, Qt::WindowFlags fl = Qt::WindowFlags());
   ~CQExperimentSelection();
 
   virtual void load(QComboBox * pBox, const CExperimentSet * pExperimentSet);
   void setSingleSelection(bool isSingleSelection);
+  void setMode(ExperimentSelectionMode mode);
 
 protected:
   QComboBox * mpBox;
+  ExperimentSelectionMode mMode {All};
   bool mIsSingleSelection {false };
 
 protected slots:

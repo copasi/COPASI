@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -73,7 +73,7 @@ const CEnumAnnotation< std::string, CModel::ModelType > CModel::ModelTypeNames(
 });
 
 // static
-CModel * CModel::fromData(const CData & data, CUndoObjectInterface * pParent)
+CModel * CModel::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   CModel * pModel = new CModel(NO_PARENT);
   pModel->setObjectName(data.getProperty(CData::OBJECT_NAME).toString());
@@ -215,10 +215,10 @@ CModel::CModel(CDataContainer* pParent):
   mSteps("Reactions", this),
   mEvents("Events", this),
   mParticleFluxes(),
-  mReactionsPerSpecies(),
   mValues("Values", this),
   mParameterSet("Initial State", this),
   mParameterSets("ParameterSets", this),
+  mReactionsPerSpecies(),
   mActiveParameterSetKey(""),
   mMoieties("Moieties", this),
   mpStoiAnnotation(NULL),
@@ -422,11 +422,18 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   // We suppress all errors and warnings
   size_t MessageSize = CCopasiMessage::size();
 
-  if (!setQuantityUnit(tmp, CCore::Framework::ParticleNumbers) &&
-      !setQuantityUnit(tmp.substr(0, 1) + "mol", CCore::Framework::ParticleNumbers))
-    {
+  try
+  {
+      if (!setQuantityUnit(tmp, CCore::Framework::ParticleNumbers) && !setQuantityUnit(tmp.substr(0, 1) + "mol", CCore::Framework::ParticleNumbers))
+        {
+          setQuantityUnit("mmol", CCore::Framework::ParticleNumbers);
+        }
+  }
+  catch (CCopasiException&)
+  {
       setQuantityUnit("mmol", CCore::Framework::ParticleNumbers);
-    }
+  }
+ 
 
   // Remove error messages created by the task initialization as this may fail
   // due to incomplete task specification at this time.
@@ -493,9 +500,6 @@ CIssue CModel::compile()
 {
   //bool success = true;
   CIssue firstWorstIssue;
-  bool RenameHandlerEnabled = CRegisteredCommonName::isEnabled();
-
-  CRegisteredCommonName::setEnabled(false);
 
   unsigned C_INT32 CompileStep = 0;
   size_t hCompileStep;
@@ -709,11 +713,6 @@ finish:
   // on consistency between the stoichiometry matrix, reduced stoichiometry matrix and the Link matrix..
   mL.clearPivoting();
 
-  if (RenameHandlerEnabled)
-    {
-      CRegisteredCommonName::setEnabled(true);
-    }
-
   mCompileIsNecessary = !firstWorstIssue;
 
   if (mpProcessReport != NULL) mpProcessReport->finishItem(hCompileStep);
@@ -925,9 +924,8 @@ bool CModel::handleUnusedMetabolites()
   numRows = mStoi.numRows();
   numCols = mStoi.numCols();
 
-  C_FLOAT64 * pStoi, *pStoiEnd, *pRowEnd;
-  pStoi = mStoi.array();
-  pStoiEnd = mStoi.array() + numRows * numCols;
+  C_FLOAT64 * pStoi = mStoi.array();
+  C_FLOAT64 * pRowEnd;
 
   size_t i, NumUnused;
   C_FLOAT64 tmp;
@@ -2567,7 +2565,7 @@ std::string getNextId(const std::string& base, int count)
   return str.str();
 }
 
-const CObjectInterface * getDependentOrNull(const std::map< const CObjectInterface *, size_t > &  dependentMap, int index)
+const CObjectInterface * getDependentOrNull(const std::map< const CObjectInterface *, size_t > &  dependentMap, size_t index)
 {
 
   std::map< const CObjectInterface *, size_t >::const_iterator it = dependentMap.begin();
@@ -2585,9 +2583,6 @@ const CObjectInterface * getDependentOrNull(const std::map< const CObjectInterfa
 bool
 CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 {
-
-#pragma region   //find_experiment
-
   if (experiment == NULL)
     {
       // find experiment and invoke with it
@@ -2635,8 +2630,6 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
 
       return createEventsForTimeseries(const_cast<CExperiment*>(theExperiment));
     }
-
-#pragma endregion //find_experiment
 
   if (experiment->getExperimentType() != CTaskEnum::Task::timeCourse)
     {
@@ -2698,7 +2691,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
         }
 
       std::stringstream trigger; trigger
-          << "<"  << getObject("Reference=Time")->getStringCN()
+          << "<"  << getChildObject(CCommonName("Reference=Time"))->getCN()
           << ">" << " > " << current;
       pEvent->setTriggerExpression(trigger.str());
       pEvent->getTriggerExpressionPtr()->compile();
@@ -2728,7 +2721,7 @@ CModel::createEventsForTimeseries(CExperiment* experiment/* = NULL*/)
             }
 
           CEventAssignment * pNewAssignment =
-            new CEventAssignment(currentObject->getDataObject()->getObjectParent()->getStringCN());
+            new CEventAssignment(currentObject->getDataObject()->getObjectParent()->getCN());
           std::stringstream assignmentStr; assignmentStr << value;
           pNewAssignment->setExpression(assignmentStr.str());
           pNewAssignment->getExpressionPtr()->compile();
@@ -2997,8 +2990,8 @@ bool CModel::convert2NonReversible()
 
         for (; itParameter != endParameter; ++itParameter)
           {
-            Old = "<" + itParameter->first->getStringCN() + ">";
-            New = "<" + itParameter->second->getStringCN() + ">";
+            Old = "<" + itParameter->first->getCN() + ">";
+            New = "<" + itParameter->second->getCN() + ">";
             replaceInExpressions(Old, New);
           }
 
@@ -3006,13 +2999,13 @@ bool CModel::convert2NonReversible()
         // with the difference of the forward and backward reaction fluxes and particle fluxes, i.e,
         // flux = forward.flux - backward.flux
 
-        Old = "<" + reac0->getFluxReference()->getStringCN() + ">";
-        New = "(<" + reac1->getFluxReference()->getStringCN() + "> - <" + reac2->getFluxReference()->getStringCN() + ">)";
+        Old = "<" + reac0->getFluxReference()->getCN() + ">";
+        New = "(<" + reac1->getFluxReference()->getCN() + "> - <" + reac2->getFluxReference()->getCN() + ">)";
         replaceInExpressions(Old, New);
 
         // particleFlux = forward.particleFlux - backward.particleFlux
-        Old = "<" + reac0->getParticleFluxReference()->getStringCN() + ">";
-        New = "(<" + reac1->getParticleFluxReference()->getStringCN() + "> - <" + reac2->getParticleFluxReference()->getStringCN() + ">)";
+        Old = "<" + reac0->getParticleFluxReference()->getCN() + ">";
+        New = "(<" + reac1->getParticleFluxReference()->getCN() + "> - <" + reac2->getParticleFluxReference()->getCN() + ">)";
         replaceInExpressions(Old, New);
 
         // Schedule the old reaction for removal.
@@ -3344,7 +3337,8 @@ std::vector< const CEvaluationTree * > CModel::getTreesWithDiscontinuities() con
                 TreesWithDiscontinuities.push_back((*ppEntity)->getNoiseExpressionPtr());
               }
 
-          // Intentionally no break statement!
+            [[fallthrough]];
+            // Intentionally no break statement!
 
           case Status::ASSIGNMENT:
 
@@ -3415,9 +3409,10 @@ CIssue CModel::compileEvents()
 
 void CModel::updateInitialValues(std::set< const CDataObject * > & changedObjects, bool refreshParameterSet)
 {
-  bool success = compileIfNecessary(NULL);
+  compileIfNecessary(NULL);
 
-  CCore::CUpdateSequence UpdateSequence = buildInitialRefreshSequence(changedObjects);
+  CCore::CUpdateSequence UpdateSequence(mpMathContainer);
+  buildInitialRefreshSequence(UpdateSequence, changedObjects);
 
   mpMathContainer->fetchInitialState();
   mpMathContainer->applyUpdateSequence(UpdateSequence);
@@ -3434,8 +3429,8 @@ void CModel::updateInitialValues(const CDataObject* changedObject, bool refreshP
   updateInitialValues(changedObjects, refreshParameterSet);
 }
 
-CCore::CUpdateSequence
-CModel::buildInitialRefreshSequence(std::set< const CDataObject * > & changedObjects)
+void CModel::buildInitialRefreshSequence(CCore::CUpdateSequence & updateSequence,
+                                         std::set< const CDataObject * > & changedObjects)
 {
   // Map the changed objects to their math equivalents;
   std::set< const CDataObject * >::const_iterator it = changedObjects.begin();
@@ -3459,13 +3454,12 @@ CModel::buildInitialRefreshSequence(std::set< const CDataObject * > & changedObj
         }
     }
 
-  CCore::CUpdateSequence UpdateSequence;
-  mpMathContainer->getInitialDependencies().getUpdateSequence(UpdateSequence,
+  mpMathContainer->getInitialDependencies().getUpdateSequence(updateSequence,
       CCore::SimulationContext::UpdateMoieties,
       ChangedObjects,
       mpMathContainer->getInitialStateObjects());
 
-  return UpdateSequence;
+  return;
 }
 
 CVector< C_FLOAT64 > CModel::initializeAtolVector(const C_FLOAT64 & atol, const bool & reducedModel) const
@@ -3552,14 +3546,14 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
       CDerive der(env, derivExp, simplify);
 
       if (prod.size() == 1)
-        tmp_ma = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getStringCN() + ">");
+        tmp_ma = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getCN() + ">");
       else
         {
-          tmp_ma = der.multiply(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getStringCN() + ">"),
-                                new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[1]->getStringCN() + ">"));
+          tmp_ma = der.multiply(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getCN() + ">"),
+                                new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[1]->getCN() + ">"));
 
           for (j = 2; j < prod.size(); ++j)
-            tmp_ma = der.multiply(tmp_ma, new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[j]->getStringCN() + ">"));
+            tmp_ma = der.multiply(tmp_ma, new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[j]->getCN() + ">"));
         }
 
       //backwards part
@@ -3577,14 +3571,14 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
           prod.push_back(pReaction->getMap().getObjects()[2].value); //k2
 
           if (prod.size() == 1)
-            tt2 = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getStringCN() + ">");
+            tt2 = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getCN() + ">");
           else
             {
-              tt2 = der.multiply(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getStringCN() + ">"),
-                                 new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[1]->getStringCN() + ">"));
+              tt2 = der.multiply(new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[0]->getCN() + ">"),
+                                 new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[1]->getCN() + ">"));
 
               for (j = 2; j < prod.size(); ++j)
-                tt2 = der.multiply(tt2, new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[j]->getStringCN() + ">"));
+                tt2 = der.multiply(tt2, new CEvaluationNodeObject(CEvaluationNode::SubType::CN, "<" + prod[j]->getCN() + ">"));
             }
 
           tmp_ma = new CEvaluationNodeOperator(CEvaluationNode::SubType::MINUS, "-");
@@ -3619,7 +3613,7 @@ CEvaluationNode* CModel::prepareElasticity(const CReaction * pReaction, const CM
           if (tmpMetab)
             tmpObj = tmpMetab->getConcentrationReference();
 
-          std::string tmpstr = tmpObj ? "<" + tmpObj->getStringCN() + ">" : "<>";
+          std::string tmpstr = tmpObj ? "<" + tmpObj->getCN() + ">" : "<>";
           CEvaluationNodeObject* tmpENO = new CEvaluationNodeObject(CEvaluationNode::SubType::CN, tmpstr);
           env[i] = tmpENO;
           tmpENO->compile(); //this uses derivExp as a dummy expression (so that the node has a context for the compile()

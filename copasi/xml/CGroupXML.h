@@ -35,8 +35,8 @@
      * @param const std::string & relativeTo
      * @return bool success
      */
-    virtual bool save(std::ostream & os,
-                      const std::string & relativeTo);
+    bool save(std::ostream & os,
+              const std::string & relativeTo) override;
 
     /**
      * Load information from a given istream.
@@ -44,8 +44,8 @@
      * @param const std::string & relativeTo
      * @return bool success
      */
-    virtual bool load(std::istream & is,
-                      const std::string & relativeTo);
+    bool load(std::istream & is,
+              const std::string & relativeTo) override;
 
     // Attributes
   private:

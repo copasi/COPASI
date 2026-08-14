@@ -73,20 +73,20 @@ public:
   /**
    * Destruct the object
    */
-  virtual void destruct();
+  void destruct() override;
 
   /**
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -97,10 +97,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & type,
-                              const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+  void createUndoData(CUndoData & undoData,
+                      const CUndoData::Type & type,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
 private:
   /**
@@ -138,8 +138,6 @@ public:
    * @param CModelParameterGroup * pParent
    */
   void setParent(CModelParameterGroup * pParent);
-
-  virtual void unsetDataModel();
 
   /**
    * Retrieve the parent, i.e., containing group, of the parameter.
@@ -396,8 +394,6 @@ public:
    */
   void removeSpecies(CModelParameterSpecies * pSpecies);
 
-  void unsetDataModel() override;
-
 private:
   /**
    * The set of species parameters which are contained in the compartment
@@ -464,8 +460,6 @@ public:
    * @param const CRegisteredCommonName & cn
    */
   void setCN(const CRegisteredCommonName & cn) override;
-
-  void unsetDataModel() override;
 
   /**
    * Set the value of the parameter based on the current framework
@@ -541,8 +535,6 @@ public:
    * Compile the parameter
    */
   void compile() override;
-
-  void unsetDataModel() override;
 
   /**
    * Retrieve a pointer to the reaction the parameter belongs to.

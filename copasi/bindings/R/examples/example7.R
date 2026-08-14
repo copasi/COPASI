@@ -24,9 +24,9 @@ stopifnot(!is.null(model))
 # we want seconds as the time unit
 # microliter as the volume units
 # and nanomole as the substance units
-invisible(model$setTimeUnit("s"))
-invisible(model$setVolumeUnit("microl"))
-invisible(model$setQuantityUnit("nMol"))
+invisible(model$setTimeUnitFromString("s"))
+invisible(model$setVolumeUnitFromString("microl"))
+invisible(model$setQuantityUnitFromString("nmol"))
 
 # we have to keep a set of all the initial values that are changed during
 # the model building process
@@ -37,7 +37,7 @@ changedObjects <- ObjectStdVector()
 # create a compartment with the name cell and an initial volume of 5.0
 # microliter
 compartment <- model$createCompartment("cell", 5.0)
-object <- compartment$getObject(CCommonName("Reference=InitialVolume"))
+object <- compartment$getChildObject(CCommonName("Reference=InitialVolume"))
 stopifnot(!is.null(object))
 invisible(changedObjects$push_back(object))
 stopifnot(!is.null(compartment))
@@ -47,7 +47,7 @@ stopifnot(model$getCompartments()$size() == 1)
 # the metabolite belongs to the compartment we created and is is to be
 # fixed
 S <- model$createMetabolite("S", compartment$getObjectName(), 10.0, "FIXED")
-object <- S$getObject(CCommonName("Reference=InitialConcentration"))
+object <- S$getChildObject(CCommonName("Reference=InitialConcentration"))
 stopifnot(!is.null(object))
 invisible(changedObjects$push_back(object))
 stopifnot(!is.null(compartment))
@@ -57,7 +57,7 @@ stopifnot(model$getMetabolites()$size() == 1)
 # concentration of 0. This metabolite is to be changed by reactions
 P <- model$createMetabolite("P", compartment$getObjectName(), 0.0, "REACTIONS")
 stopifnot(!is.null(P))
-object <- P$getObject(CCommonName("Reference=InitialConcentration"))
+object <- P$getChildObject(CCommonName("Reference=InitialConcentration"))
 stopifnot(!is.null(object))
 invisible(changedObjects$push_back(object))
 stopifnot(model$getMetabolites()$size() == 2)
@@ -83,7 +83,7 @@ MV <- model$createModelValue("K", 42.0)
 # set the status to FIXED
 invisible(MV$setStatus("FIXED"))
 stopifnot(!is.null(MV))
-object <- MV$getObject(CCommonName("Reference=InitialValue"))
+object <- MV$getChildObject(CCommonName("Reference=InitialValue"))
 stopifnot(!is.null(object))
 invisible(changedObjects$push_back(object))
 stopifnot(model$getModelValues()$size() == 1)

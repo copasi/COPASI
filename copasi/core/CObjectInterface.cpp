@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,118 +35,47 @@ const CDataObject * CObjectInterface::DataObject(const CObjectInterface * pInter
 CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
     const CCommonName & objName)
 {
-  CCommonName Primary = objName.getPrimary();
-  std::string Type = Primary.getObjectType();
-
-  // Check that we have a fully qualified CN
-  // Note, CN=Root may point to the root container or a data model;
-
-  if (objName.getPrimary() != "CN=Root" &&
-      Type != "Separator" &&
-      Type != "String")
-    {
-      return NULL;
-    }
-
-  const CObjectInterface * pObject = NULL;
-
-  const CDataModel * pDataModel = NULL;
-
-  CObjectInterface::ContainerList::const_iterator it = listOfContainer.begin();
-
-  CObjectInterface::ContainerList::const_iterator end = listOfContainer.end();
-
-  CCommonName ContainerName;
-
-  std::string::size_type pos;
-
-  bool CheckDataModel = true;
-
-  //favor to search the list of container first
-  for (; it != end && pObject == NULL; ++it)
-    {
-      if (*it == NULL)
-        {
-          continue;
-        }
-
-      if (pDataModel == NULL)
-        {
-          pDataModel = (*it)->getObjectDataModel();
-        }
-
-      CheckDataModel &= (pDataModel != *it);
-
-      ContainerName = (*it)->getStringCN();
-
-      while (ContainerName.getRemainder() != "")
-        {
-          ContainerName = ContainerName.getRemainder();
-        }
-
-      if ((pos = objName.find(ContainerName)) == std::string::npos)
-        continue;
-
-      if (pos + ContainerName.length() == objName.length())
-        pObject = *it;
-      else
-        pObject = (*it)->getObject(CCommonName(objName.substr(pos)).getRemainder());
-    }
-
-  // if not found check the data model if we have one and have not yet done so
-  if (pObject == NULL &&
-      pDataModel != NULL &&
-      CheckDataModel)
-    {
-      pObject = pDataModel->getObject(objName);
-    }
-
-  // if still not found search the root container
-  if (pObject == NULL)
-    {
-      pObject = CRootContainer::getRoot()->getObject(objName);
-    }
-
-  return const_cast< CObjectInterface * >(pObject);
-}
-
-// static
-CObjectInterface * CObjectInterface::GetObjectFromCN(const CObjectInterface::ContainerList & listOfContainer,
-    const CRegisteredCommonName & objName)
-{
-  const CDataModel * pDataModel = objName.getDataModel();
-
-  if (pDataModel != nullptr)
-    {
-      CObjectInterface::ContainerList ListOfContainer = listOfContainer;
-      ListOfContainer.push_back(pDataModel);
-
-      return GetObjectFromCN(ListOfContainer, CCommonName(objName));
-    }
-
-  return GetObjectFromCN(listOfContainer, CCommonName(objName));
+  return CRegisteredCommonName::GetObjectFromCN(listOfContainer, objName);
 }
 
 CObjectInterface::CObjectInterface()
   : mValidity(this)
 {}
 
-CObjectInterface::CObjectInterface(const CObjectInterface & src)
-  : mValidity(src.mValidity, this)
-{}
-
 // virtual
 CObjectInterface::~CObjectInterface()
-{};
+{}
 
-CCommonName CObjectInterface::getStringCN() const
+// virtual final
+const CObjectInterface * CObjectInterface::getChildObject(const CCommonNameComponent::shared_ptr & pCN) const
 {
-  return getCNProtected();
+  return resolve(pCN);
 }
 
-CRegisteredCommonName CObjectInterface::getCN() const
+#ifdef SWIG
+const CObjectInterface * CObjectInterface::getChildObject(const CCommonName & cn) const
 {
-  return CRegisteredCommonName(getCNProtected(), DataObject(this));
+  return getObject(cn);
+}
+#endif
+
+// virtual final
+const CObjectInterface * CObjectInterface::getObject(const CCommonName & cn) const
+{
+  return cn.resolve(DataObject(this));
+}
+
+// virtual
+const CCommonNameComponent::shared_ptr & CObjectInterface::getCNComponent() const
+{
+  static const CCommonNameComponent::shared_ptr empty;
+  return empty;
+}
+
+// virtual final
+CCommonName CObjectInterface::getCN() const
+{
+  return getCNComponent();
 }
 
 bool CObjectInterface::appendPrerequisites(CObjectInterface::ObjectSet & prerequisites) const

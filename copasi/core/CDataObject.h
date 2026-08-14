@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,6 +27,7 @@
 #include <memory>
 
 #include "copasi/core/CObjectInterface.h"
+#include "copasi/core/CCommonNameComponent.h"
 #include "copasi/core/CFlags.h"
 #include "copasi/undo/CUndoObjectInterface.h"
 #include "copasi/utilities/CValidity.h"
@@ -153,7 +154,9 @@ public:
    * @param const CCommonName & cn
    * @return const CObjectInterface * pObject
    */
-  const CObjectInterface * getObject(const CCommonName & cn) const override;
+  // const CObjectInterface * getObject(const CCommonName & cn) const override;
+
+  const CCommonNameComponent::shared_ptr & getCNComponent() const override;
 
   /**
    * Retrieve the prerequisites, i.e., the objects which need to be evaluated
@@ -271,19 +274,14 @@ public:
 
   virtual const std::string & getKey() const;
 
-  const CObjectInterface * getObjectFromCN(const CCommonName & cn) const;
+  virtual const CObjectInterface * getObjectFromCN(const CCommonName & cn) const;
 
   void addIssue(const CIssue & issue);
 
   void removeIssue(const CIssue & issue);
 
 protected:
-  /**
-   * Retrieve the CN of the object
-   * @return CCommonName
-   */
-  // API (for reporting and expressions)
-  CCommonName getCNProtected() const override;
+  const CObjectInterface * resolve(const CCommonNameComponent::shared_ptr & pCN) const override;
 
 private:
   void refreshAggregateValidity();
@@ -293,7 +291,7 @@ private:
   std::string mObjectType;
 
   CDataContainer * mpObjectParent;
-
+  std::shared_ptr< CCommonNameComponent > mpCNComponent;
   mutable std::string mObjectDisplayName;
   mutable CDataObjectReference< std::string > * mpObjectDisplayName;
   mutable CDataObjectReference< std::string > * mpObjectName;

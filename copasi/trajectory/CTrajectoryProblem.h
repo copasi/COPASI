@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -201,14 +201,14 @@ private:
   // Attributes
 protected:
   /**
-   * Pointer to parameter value for duration.
-   */
-  C_FLOAT64 * mpDuration;
-
-  /**
    * Pointer to parameter value indicating automatic step size.
    */
   bool * mpAutomaticStepSize;
+
+  /**
+   * Pointer to parameter value for duration.
+   */
+  C_FLOAT64 * mpDuration;
 
   /**
    * Pointer to parameter value for step size.

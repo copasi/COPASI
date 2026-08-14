@@ -2,6 +2,22 @@ name: Build and Test
 
 on: 
   workflow_dispatch:
+    inputs:
+      build_type:
+        description: CMake build type
+        type: choice
+        required: true
+        default: Release
+        options:
+          - Release
+          - Debug
+          - RelWithDebInfo
+          - MinSizeRel
+      run_valgrind:
+        description: Run tests under Valgrind (Ubuntu only)
+        type: boolean
+        required: false
+        default: false
   push:
     paths:
         - "**"
@@ -9,8 +25,7 @@ on:
         - ".github/workflows/copasi_se.yml"
 
 env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: Release
+  BUILD_TYPE: ${{ github.event.inputs.build_type || 'Release' }}
 
 jobs:
   build:
@@ -105,6 +120,23 @@ jobs:
       shell: bash
       working-directory: ${{github.workspace}}/build_copasi
       run: cmake --build . --config $BUILD_TYPE --target install
+
+    - name: Run test_api under GDB and valgrind
+      if: matrix.platform == 'ubuntu-latest'  && github.event.inputs.run_valgrind == 'true'
+      working-directory: ${{github.workspace}}/build_copasi
+      shell: bash
+      run: |
+        export srcdir="${{github.workspace}}/tests"
+        TEST_API="$PWD/tests/test_api"
+        sudo apt-get install -y gdb valgrind
+        gdb -batch \
+          -ex "set pagination off" \
+          -ex run \
+          -ex "thread apply all bt full" \
+          -ex quit \
+          -- "$TEST_API" || true
+
+        valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1 --error-limit=no $TEST_API
 
     - name: Test
       working-directory: ${{github.workspace}}/build_copasi

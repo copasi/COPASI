@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,10 +45,35 @@ class Cxerrwd
 
     void setOstream(std::ostream & os);
     void enablePrint(const bool & print = true);
-
+    template < typename ... ARGS > void write(const ARGS & ... args);
   private:
+    template < typename ARG > void _write(const ARG & a);
+    template < typename ARG, typename ... ARGS > void _write(const ARG & a, const ARGS & ... args);
     bool mPrint;
     std::ostream * mpOstream;
   };
+
+template < typename ... ARGS >
+inline void Cxerrwd::write(const ARGS & ... args)
+{
+  if (mPrint && mpOstream != nullptr)
+    {
+      _write(args ...);
+      *mpOstream << '\n';
+    }
+}
+
+template < typename ARG >
+inline void Cxerrwd::_write(const ARG & a)
+{
+  *mpOstream << a;
+}
+
+template < typename ARG, typename ... ARGS >
+inline void Cxerrwd::_write(const ARG & a, const ARGS & ... args)
+{
+  *mpOstream << a;
+  _write(args ...);
+}
 
 #endif // ODEPACK_xerrwd

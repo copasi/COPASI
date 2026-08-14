@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
 # Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
@@ -50,7 +55,7 @@ def main():
      # create a compartment with the name cell and an initial volume of 5.0
      # microliter
      compartment = model.createCompartment("cell", 5.0)
-     object = compartment.getObject(CCommonName("Reference=InitialVolume"))
+     object = compartment.getChildObject(CCommonName("Reference=InitialVolume"))
      assert object != None
      changedObjects.push_back(object)
      assert compartment != None
@@ -60,7 +65,7 @@ def main():
      # the metabolite belongs to the compartment we created and is is to be
      # fixed
      S = model.createMetabolite("S", compartment.getObjectName(), 10.0, CModelEntity.Status_FIXED)
-     object = S.getObject(CCommonName("Reference=InitialConcentration"))
+     object = S.getChildObject(CCommonName("Reference=InitialConcentration"))
      assert object != None
      changedObjects.push_back(object)
      assert compartment != None
@@ -70,7 +75,7 @@ def main():
      # concentration of 0. This metabolite is to be changed by reactions
      P = model.createMetabolite("P", compartment.getObjectName(), 0.0, CModelEntity.Status_REACTIONS)
      assert P != None
-     object = P.getObject(CCommonName("Reference=InitialConcentration"))
+     object = P.getChildObject(CCommonName("Reference=InitialConcentration"))
      assert object != None
      changedObjects.push_back(object)
      assert model.getMetabolites().size() == 2
@@ -96,7 +101,7 @@ def main():
      # set the status to FIXED
      MV.setStatus(CModelEntity.Status_FIXED)
      assert MV != None
-     object = MV.getObject(CCommonName("Reference=InitialValue"))
+     object = MV.getChildObject(CCommonName("Reference=InitialValue"))
      assert object != None
      changedObjects.push_back(object)
      assert model.getModelValues().size() == 1
