@@ -57,6 +57,8 @@ TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
     REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Array=Stoichiometry(ann)[X][(R1)]"));
     REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[0][0]"));
     REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[\\[X\\]][(R1).k1]"));
+    REQUIRE(verify_cn(dm, "CN=Blubber") == false);
+    REQUIRE(CObjectInterface::GetObjectFromCN({dm}, {"CN=Blubber"}) == nullptr);
   }
 
   SECTION("simple_v3_event")

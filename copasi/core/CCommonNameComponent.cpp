@@ -46,7 +46,8 @@ CCommonNameComponent::CCommonNameComponent(const CDataObject * pObject)
   , mType(pObject->getObjectType())
   , mName(pObject->getObjectName())
   , mpParent((pObject->getObjectParent() != nullptr
-              && pObject->getObjectType() != "CN")
+              && (pObject->getObjectType() != "CN"
+                  || pObject->getObjectName() != "Root"))
                ? pObject->getObjectParent()->getCNComponent()
                : nullptr)
   , mpObject(pObject)
@@ -357,7 +358,8 @@ bool CCommonNameComponent::updatePartialCN() {
   std::string OldPartialCN = mPartialCN;
 
   // Root object
-  if (mType == "CN")
+  if (mType == "CN"
+      && mName == "Root")
     {
       mPartialCN = "CN=Root";
     }
