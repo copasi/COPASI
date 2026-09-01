@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,21 +16,20 @@
 #ifndef COPASI_CPermutation
 #define COPASI_CPermutation
 
+#include <set>
+
 #include "copasi/core/CVector.h"
 
 class CRandom;
 
 class CPermutation
 {
-private:
-  static size_t InvalidIndex;
-
+public:
   /**
    * Default constructor
    */
-  CPermutation();
+  CPermutation() = delete;
 
-public:
   /**
    * Specific constructor
    * @param CRandom * pRandom
@@ -58,9 +57,14 @@ public:
    * Shuffle the permutation
    * const size_t & swaps (Default: size of permutation)
    */
-  void shuffle(const size_t & swaps = C_INVALID_INDEX);
+  virtual void shuffle();
 
   /**
+   * Create a unique permutation
+   */
+  void createUniquePermutation(std::set< const CPermutation * > & permutations);
+
+   /**
    * Pick a random element
    */
   const size_t & pick();
@@ -76,7 +80,10 @@ public:
    */
   const CVector< size_t > & getVector() const;
 
-private:
+protected:
+  constexpr static size_t InvalidIndex = std::numeric_limits< size_t >::max();
+  constexpr static size_t MaxCount = 1000;
+
   // Attributes
   /**
    * A pointer to the random number generator to be used

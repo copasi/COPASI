@@ -99,6 +99,7 @@ The packages available on this page are provided under the
 [Artistic License 2.0](http://copasi.org/Download/License/), 
 which is an [OSI](http://www.opensource.org/) approved license. This license 
 allows non-commercial and commercial use free of charge.
+It statically links to a modified, re-entrant version of [SOBOL](https://people.math.sc.edu/burkardt/cpp_src/sobol/sobol.html) located in the /copasi/lgpl directory, which is licensed under the LGPL."
 
 ## Git maintenance
 

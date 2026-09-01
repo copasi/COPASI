@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,16 +17,6 @@
 
 #include "CPermutation.h"
 #include "CRandom.h"
-
-// static
-size_t CPermutation::InvalidIndex(C_INVALID_INDEX);
-
-CPermutation::CPermutation() :
-  mpRandom(NULL),
-  mVector(),
-  mpNext(NULL),
-  mpBeyond(NULL)
-{};
 
 CPermutation::CPermutation(CRandom * pRandom, const size_t & size) :
   mpRandom(pRandom),
@@ -56,42 +46,59 @@ CPermutation::~CPermutation()
 void CPermutation::init()
 {
   size_t Index = 0;
-  size_t * pIt = mVector.array();
-  size_t * pEnd = pIt + mVector.size();
 
-  for (; pIt != pEnd; ++pIt, ++Index)
-    {
-      *pIt = Index;
-    }
+  for (size_t & value : mVector)
+    value = Index++;
 
   if (Index != 0)
     {
-      mpNext = mVector.array();
-      mpBeyond = pEnd;
+      mpNext = mVector.begin();
+      mpBeyond = mVector.end();
     }
 }
 
-void CPermutation::shuffle(const size_t & swaps)
+void CPermutation::shuffle()
 {
   if (mpRandom == NULL || mpNext == NULL) return;
 
   if (mVector.size() > 1)
     {
       unsigned C_INT32 max = (unsigned C_INT32) mVector.size() - 1;
-      size_t Swaps = std::min(swaps, mVector.size());
 
       // We swap each element once.
-      size_t * pBegin = mVector.array();
-      size_t * pIt = pBegin;
-      size_t * pEnd = pIt + Swaps;
+      size_t * pBegin = mVector.begin();
+      size_t * pEnd = mVector.end();
+      size_t * pIt;
       size_t * pTo;
 
-      for (; pIt != pEnd; ++pIt)
+      for (pIt = pBegin; pIt != pEnd; ++pIt)
         {
           pTo = pBegin + mpRandom->getRandomU(max);
 
           if (pTo != pIt)
             std::swap(*pIt, *pTo);
+        }
+    }
+}
+
+void CPermutation::createUniquePermutation(std::set< const CPermutation * > & permutations)
+{
+  bool Found = false;
+  size_t Count = 0;
+
+  while (!Found
+         && Count < MaxCount)
+    {
+      ++Count;
+      shuffle();
+
+      for (const CPermutation * pPermutation : permutations)
+        {
+          if (mVector == pPermutation->mVector)
+            {
+              Found = false;
+              break;
+            }
         }
     }
 }
