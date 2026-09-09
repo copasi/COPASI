@@ -127,6 +127,19 @@ typedef CExpression DisownedExpression;
 
 %extend CEvent
 {
+
+  CEventAssignment* createAssignment(CCommonName& targetCN)
+  {
+    CEventAssignment* pAssignment=new CEventAssignment(targetCN);
+
+    if (!$self->getAssignments().add(pAssignment,true))
+      {
+        delete pAssignment;
+        pAssignment = NULL;
+      }
+     return pAssignment;
+  }
+
   CEventAssignment* createAssignment(std::string targetCN = "")
   {
     CEventAssignment* pAssignment=new CEventAssignment(targetCN);

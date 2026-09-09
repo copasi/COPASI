@@ -22,6 +22,13 @@
 
 %}
 
+%extend CModelParameterGroup
+{
+  CModelParameter * getModelParameter(const CCommonName & cn) const
+  {
+	return $self->CModelParameterGroup::getModelParameter(cn);
+  }
+}
 
 %include "model/CModelParameterGroup.h"
 

@@ -94,7 +94,30 @@
 	return !(value != value);
   }
 
+  void setCN(const std::string & cn)
+  {
+    $self->setCN(CRegisteredCommonName(cn));
+  }
+
+  void setCN(const CCommonName & cn)
+  {
+    $self->setCN(CRegisteredCommonName(cn));
+  }
   
+}
+
+%extend CModelParameterSpecies
+{
+
+  void setCN(const std::string & cn)
+  {
+    $self->setCN(CRegisteredCommonName(cn));
+  }
+
+  void setCN(const CCommonName & cn)
+  {
+    $self->setCN(CRegisteredCommonName(cn));
+  }
 }
 
 %include "model/CModelParameter.h"

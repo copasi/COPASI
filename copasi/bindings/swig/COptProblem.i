@@ -28,6 +28,29 @@
 
 %}
 
+%extend COptProblem
+{
+  COptItem & addOptItem(const CCommonName & objectCN)
+  {
+    return $self->addOptItem(CRegisteredCommonName(objectCN));
+  }
+  
+  COptItem & addOptItem(const std::string & objectCN)
+  {
+    return $self->addOptItem(CRegisteredCommonName(objectCN));
+  }
+
+  COptItem& addOptConstraint(const CCommonName & objectCN)
+  {
+    return $self->addOptConstraint(CRegisteredCommonName(objectCN));
+  }
+
+  COptItem& addOptConstraint(const std::string & objectCN)
+  {
+    return $self->addOptConstraint(CRegisteredCommonName(objectCN));
+  }
+}
+
 typedef std::vector<COptItem*> OptItemStdVector;
 
 %ignore operator<<(std::ostream& os, const COptProblem& o);

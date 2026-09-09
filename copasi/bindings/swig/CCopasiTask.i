@@ -77,6 +77,33 @@ typedef std::vector<CTaskEnum::Task> TaskSubTypeVector;
 typedef std::vector<CTaskEnum::Method> MethodSubTypeVector;
 #endif // SWIGJAVA
 
+#ifdef SWIGPYTHON
+// allow a CCopasiTask::OutputFlag (e.g. CCopasiTask::OUTPUT, or a combination
+// created via OR'ing several flags) to be passed wherever an int outputFlags
+// argument is expected, converting it to its underlying integer value
+%typemap(in) int outputFlags {
+  void *argp = 0;
+  int res = SWIG_ConvertPtr($input, &argp, $descriptor(CCopasiTask::OutputFlag *), 0);
+
+  if (SWIG_IsOK(res))
+  {
+    $1 = (int) reinterpret_cast< CCopasiTask::OutputFlag * >(argp)->to_ulong();
+  }
+  else
+  {
+    int val = 0;
+    res = SWIG_AsVal_int($input, &val);
+
+    if (!SWIG_IsOK(res))
+    {
+      %argument_fail(res, "int", $symname, $argnum);
+    }
+
+    $1 = val;
+  }
+}
+#endif // SWIGPYTHON
+
 %include "copasi/utilities/CTaskEnum.h"
 %include "copasi/utilities/CCopasiTask.h"
 
