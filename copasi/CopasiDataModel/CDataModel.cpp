@@ -128,7 +128,7 @@ CDataModel::ContentType CDataModel::contentType(std::istream & content)
       return ContentType::__SIZE;
     }
 
-  while (LinesRead <= 10)
+  while (LinesRead <= 100)
     {
       if (Line.find("<sedML") != std::string::npos
           || Line.find(":sedML") != std::string::npos)
