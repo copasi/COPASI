@@ -86,6 +86,7 @@ public:
   bool hasAncestor(const CDataObject * pObject) const;
   bool mayHaveAncestor(const CDataObject * pObject) const;
   bool isValid() const;
+  bool isVectorElement() const;
   size_t size() const;
   void addPrerequisite(shared_ptr prerequisite);
   void clearPrerequisites();

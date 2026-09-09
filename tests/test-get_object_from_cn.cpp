@@ -33,6 +33,18 @@ bool verify_cn(const CDataModel* dm, const std::string& cn)
   return true;
 }
 
+TEST_CASE("Ensure name is not resolvable", "[copasi][cn]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm->loadModel(getTestFile("test-data/brusselator.cps"), NULL) == true);
+
+  // getObject should not resolve [X] to the species X
+  auto * object = dm->getObject(CCommonName("[X]"));
+  REQUIRE(object == nullptr);
+
+  CRootContainer::removeDatamodel(dm);
+}
+
 TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
 {
 

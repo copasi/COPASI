@@ -304,9 +304,14 @@ bool CCommonNameComponent::isValid() const
          || mpParent
          || (!mType.empty()
              && !mName.empty())
-         || (mPartialCN.size() > 2
-             && mPartialCN.front() == '['
-             && mPartialCN.back() == ']');
+         || isVectorElement();
+}
+
+bool CCommonNameComponent::isVectorElement() const
+{
+  return mPartialCN.size() > 2
+         && mPartialCN.front() == '['
+         && mPartialCN.back() == ']';
 }
 
 size_t CCommonNameComponent::size() const
