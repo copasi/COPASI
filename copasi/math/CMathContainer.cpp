@@ -1581,8 +1581,15 @@ void CMathContainer::compile()
     }
 
   // Create eventual delays
-  createDelays();
-
+  try
+  {
+      createDelays();
+  }
+  catch (...)
+  {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Error while creating delays.");
+  }
+  
   createDependencyGraphs();
   createValueChangeProhibited();
   createUpdateSequences();

@@ -1758,9 +1758,7 @@ void CopasiUI3Window::slotImportSBMLFromStringFinished(const std::string & threa
     {
       QString Message = "Error while importing SBML model!\n\n";
       Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
-      CQMessageBox::critical(this, QString("Import Error"), Message,
-                             QMessageBox::Ok, QMessageBox::Ok);
-      CCopasiMessage::clearDeque();
+      checkPendingMessages(QString("File Error"), Message, QMessageBox::Critical);
       mpDataModelGUI->createModel();
     }
 
@@ -1873,9 +1871,7 @@ void CopasiUI3Window::slotImportSBMLFinished(const std::string & thread, bool su
   if (!success)
     {
       QString Message = "Error while loading file " + mNewFile + QString("!\n\n");
-      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
-      CQMessageBox::critical(this, QString("File Error"), Message,
-                             QMessageBox::Ok, QMessageBox::Ok);
+      checkPendingMessages(QString("File Error"), Message, QMessageBox::Critical);
       mpDataModelGUI->createModel();
     }
   else
@@ -2337,14 +2333,15 @@ ListViews *CopasiUI3Window::getMainWidget()
   return mpListView;
 }
 
-void CopasiUI3Window::checkPendingMessages()
+void CopasiUI3Window::checkPendingMessages(const QString & title /*= ""*/, const QString & initialMessage /*= ""*/, QMessageBox::Icon icon /*= QMessageBox::Information*/)
 {
   CCopasiMessage msg_pending = CCopasiMessage::getLastMessage();
 
   if (msg_pending.getNumber() != MCCopasiMessage + 1)
     {
-      QString text;
+      QString text = initialMessage;
       QString filteredText;
+      QString titleToUse = title.isEmpty() ? QString("COPASI Message") : title;
       unsigned int numMessages = 0;
       unsigned int numFilteredMessages = 0;
 
@@ -2373,15 +2370,15 @@ void CopasiUI3Window::checkPendingMessages()
                    "However some minor issues have occurred, which can be viewed in the Minor "
                    "Issues tab.";
 
-          CQMessageBox box(QMessageBox::Information,
-                           QString("COPASI Message"), text, QMessageBox::Ok, this);
+          CQMessageBox box(icon,
+                           titleToUse, text, QMessageBox::Ok, this);
           box.setDefaultButton(QMessageBox::Ok);
           box.setFilteredText(filteredText);
           box.exec();
         }
       else
         {
-          CQMessageBox::information(this, QString("COPASI Message"), text,
+          CQMessageBox::information(this, titleToUse, text,
                                     QMessageBox::Ok, QMessageBox::Ok);
         }
     }
@@ -3425,9 +3422,7 @@ void CopasiUI3Window::slotImportSEDMLFinished(const std::string & thread, bool s
   if (!success)
     {
       QString Message = "Error while loading file " + mNewFile + QString("!\n\n");
-      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
-      CQMessageBox::critical(this, QString("File Error"), Message,
-                             QMessageBox::Ok, QMessageBox::Ok);
+      checkPendingMessages(QString("File Error"), Message, QMessageBox::Critical);
       mpDataModelGUI->createModel();
     }
   else
@@ -3788,9 +3783,7 @@ void CopasiUI3Window::slotImportCombineFinished(const std::string & thread, bool
   if (!success)
     {
       QString Message = "Error while loading file " + mNewFile + QString("!\n\n");
-      Message += FROM_UTF8(CCopasiMessage::getLastMessage().getText());
-      CQMessageBox::critical(this, QString("File Error"), Message,
-                             QMessageBox::Ok, QMessageBox::Ok);
+      checkPendingMessages(QString("File Error"), Message, QMessageBox::Critical);
       mpDataModelGUI->createModel();
     }
   else

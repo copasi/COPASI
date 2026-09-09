@@ -12,6 +12,19 @@ extern std::string getTestFile(const std::string & fileName);
 #include <copasi/sbml/SBMLUnitSupport.h>
 #include <sbml/SBMLTypes.h>
 
+TEST_CASE("importing algebraic rules", "[copasi][sbml][algebraic]")
+{
+
+  auto * dm = CRootContainer::addDatamodel();
+  std::string test_file = getTestFile("test-data/01142-sbml-l3v1.xml");
+  dm->importSBML(test_file);
+  
+  auto allMessages = CCopasiMessage::getAllMessageText();
+  REQUIRE(allMessages.find("algebraic rules that were ignored") != std::string::npos);
+
+  REQUIRE(dm != NULL);
+}
+
 TEST_CASE("1: importing sbml files", "[copasi][sbml]")
 {
 

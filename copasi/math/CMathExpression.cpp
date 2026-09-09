@@ -300,7 +300,10 @@ CIssue CMathExpression::compile()
         }
     }
 
-  assert(mPrerequisites.erase(NULL) == 0);
+  if (mPrerequisites.erase(NULL) != 0)
+    {
+      fatalError();
+    }
 
   if (mInfix == "@")
     {

@@ -32,6 +32,7 @@
 #include <QtCore/QMap>
 #include <QtCore/QPointer>
 #include <QUrl>
+#include <QMessageBox>
 
 #include <copasi/config.h>
 #include <copasi/sedml/SedmlImportOptions.h>
@@ -116,7 +117,8 @@ public:
 
   ListViews* getMainWidget();
 
-  void checkPendingMessages();
+  void checkPendingMessages(const QString& title = "", const QString & initialMessage = "", QMessageBox::Icon icon = QMessageBox::Information);
+
   void suspendAutoSave(const bool & suspend);
 
   /**
