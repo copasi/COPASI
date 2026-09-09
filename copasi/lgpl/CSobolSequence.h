@@ -17,12 +17,15 @@
 
 class CSobolSequence
 {
+  typedef C_INT64 result_type;
+
 private:
   static C_INT32 bit_lo0(C_INT64 n);
 
-  constexpr static C_INT32 DIM_MAX = 40;
   constexpr static C_INT32 DIM_MAX2 = 1111;
   constexpr static C_INT32 LOG_MAX = 62;
+  constexpr static result_type MIN_RESULT = 0;
+  constexpr static result_type MAX_RESULT = 4611686018427387904; // 2^62
 
 public:
   CSobolSequence() = delete;
@@ -33,10 +36,11 @@ public:
 
   void seed(C_INT64 seed);
 
-  void operator()(CVectorCore<C_FLOAT64> & point);
+  void uniformI64(CVectorCore<C_INT64> & point);
+  void uniformR64(CVectorCore<C_FLOAT64> & point);
 
 private:
-  C_INT32 mDimension;
+  const C_INT32 mDimension;
   C_FLOAT64 mReciprocal;
   C_INT64 mSeed;
   C_INT64 mPoint[DIM_MAX2];

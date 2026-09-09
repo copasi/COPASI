@@ -123,7 +123,6 @@ CSobolSequence::CSobolSequence(const C_INT32 & dimension)
       13969, 13979, 13981, 13997, 14027, 14035, 14037, 14051, 14063, 14085,
       14095, 14107, 14113, 14125, 14137, 14145, 14151, 14163, 14193, 14199,
       14219, 14229, 14233, 14243, 14277, 14287, 14289, 14295, 14301, 14305,
-
       14323, 14339, 14341, 14359, 14365, 14375, 14387, 14411, 14425, 14441,
       14449, 14499, 14513, 14523, 14537, 14543, 14561, 14579, 14585, 14593,
       14599, 14603, 14611, 14641, 14671, 14695, 14701, 14723, 14725, 14743,
@@ -13460,25 +13459,26 @@ CSobolSequence::CSobolSequence(const C_INT32 & dimension)
   //
   //  Multiply columns of V by appropriate power of 2.
   //
-  C_INT32 l = 1;
-  for (j = LOG_MAX - 2; 0 <= j; j--)
+  size_t l = 1;
+
+  for (j = LOG_MAX - 2; j < C_INVALID_INDEX; j--)
     {
-      l = 2 * l;
+      l *= 2;
       for (i = 0; i < mDimension; i++)
         {
-          mV[i][j] = mV[i][j] * l;
+          mV[i][j] *= l;
         }
     }
   //
   //  RECIPD is 1/(common denominator of the elements in V).
   //
-  mReciprocal = 1.0E+00 / ((C_FLOAT64) (2 * l));
+  mReciprocal = 1.0E+00 / (C_FLOAT64) MAX_RESULT;
 }
 
 CSobolSequence::~CSobolSequence()
 {}
 
-void CSobolSequence::operator()(CVectorCore< C_FLOAT64 > & point)
+void CSobolSequence::uniformI64(CVectorCore< C_INT64 > & point)
 //****************************************************************************80
 //
 //  Purpose:
@@ -13567,7 +13567,7 @@ void CSobolSequence::operator()(CVectorCore< C_FLOAT64 > & point)
       fatalError();
     }
 
-  C_INT32 l = bit_lo0(++mSeed);
+  C_INT32 l = bit_lo0(mSeed++);
 
   //
   //  Check that the user is not calling too many times!
@@ -13583,9 +13583,120 @@ void CSobolSequence::operator()(CVectorCore< C_FLOAT64 > & point)
   //
   for (C_INT32 i = 0; i < mDimension; i++)
     {
-      point[i] = ((C_FLOAT64) mPoint[i]) * mReciprocal;
-
       mPoint[i] = (mPoint[i] ^ mV[i][l - 1]);
+      point[i] =  mPoint[i];
+    }
+
+  return;
+}
+
+void CSobolSequence::uniformR64(CVectorCore< C_FLOAT64 > & point)
+//****************************************************************************80
+//
+//  Purpose:
+//
+//    I8_SOBOL generates a new quasirandom Sobol vector with each call.
+//
+//  Discussion:
+//
+//    The routine adapts the ideas of Antonov and Saleev.
+//
+//    This routine uses LONG LONG INT for integers and DOUBLE for real values.
+//
+//    Thanks to Steffan Berridge for supplying (twice) the properly
+//    formatted V data needed to extend the original routine's dimension
+//    limit from 40 to 1111, 05 June 2007.
+//
+//    Thanks to Francis Dalaudier for pointing out that the range of allowed
+//    values of DIM_NUM should start at 1, not 2!  17 February 2009.
+//
+//  Licensing:
+//
+//    This code is distributed under the MIT license.
+//
+//  Modified:
+//
+//    17 February 2009
+//
+//  Author:
+//
+//    FORTRAN77 original version by Bennett Fox.
+//    This version by John Burkardt
+//
+//  Reference:
+//
+//    IA Antonov, VM Saleev,
+//    An Economic Method of Computing LP Tau-Sequences,
+//    USSR Computational Mathematics and Mathematical Physics,
+//    Volume 19, 1980, pages 252 - 256.
+//
+//    Paul Bratley, Bennett Fox,
+//    Algorithm 659:
+//    Implementing Sobol's Quasirandom Sequence Generator,
+//    ACM Transactions on Mathematical Software,
+//    Volume 14, Number 1, pages 88-100, 1988.
+//
+//    Bennett Fox,
+//    Algorithm 647:
+//    Implementation and Relative Efficiency of Quasirandom
+//    Sequence Generators,
+//    ACM Transactions on Mathematical Software,
+//    Volume 12, Number 4, pages 362-376, 1986.
+//
+//    Stephen Joe, Frances Kuo
+//    Remark on Algorithm 659:
+//    Implementing Sobol's Quasirandom Sequence Generator,
+//    ACM Transactions on Mathematical Software,
+//    Volume 29, Number 1, pages 49-57, March 2003.
+//
+//    Ilya Sobol,
+//    USSR Computational Mathematics and Mathematical Physics,
+//    Volume 16, pages 236-242, 1977.
+//
+//    Ilya Sobol, YL Levitan,
+//    The Production of Points Uniformly Distributed in a Multidimensional
+//    Cube (in Russian),
+//    Preprint IPM Akad. Nauk SSSR,
+//    Number 40, Moscow 1976.
+//
+//  Parameters:
+//
+//    Input, int DIM_NUM, the number of spatial dimensions.
+//    DIM_NUM must satisfy 1 <= DIM_NUM <= 1111.
+//
+//    Input/output, C_INT64 *SEED, the "seed" for the sequence.
+//    This is essentially the index in the sequence of the quasirandom
+//    value to be generated.  On output, SEED has been set to the
+//    appropriate next value, usually simply SEED+1.
+//    If SEED is less than 0 on input, it is treated as though it were 0.
+//    An input value of 0 requests the first (0-th) element of the sequence.
+//
+//    Output, double POINT[DIM_NUM], the next quasirandom vector.
+//
+{
+  if (mSeed < 0)
+    {
+      fatalError();
+    }
+
+  C_INT32 l = bit_lo0(mSeed++);
+
+  //
+  //  Check that the user is not calling too many times!
+  //
+  if (LOG_MAX < l)
+    {
+      // We could reinitialize the sequence here, but it is better to just report an error.
+      fatalError();
+    }
+  //
+  //  Calculate the new components of QUASI.
+  //  The caret indicates the bitwise exclusive OR.
+  //
+  for (C_INT32 i = 0; i < mDimension; i++)
+    {
+      mPoint[i] = (mPoint[i] ^ mV[i][l - 1]);
+      point[i] = ((C_FLOAT64) mPoint[i]) * mReciprocal;
     }
 
   return;
@@ -13724,6 +13835,8 @@ void CSobolSequence::seed(C_INT64 seed)
         }
       l = bit_lo0(seed);
     }
+
+  mSeed = seed;
   //
   //  Check that the user is not calling too many times!
   //
