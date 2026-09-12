@@ -1589,7 +1589,7 @@ void CMathContainer::compile()
   {
       CCopasiMessage(CCopasiMessage::EXCEPTION, "Error while creating delays.");
   }
-  
+
   createDependencyGraphs();
   createValueChangeProhibited();
   createUpdateSequences();
@@ -4922,6 +4922,8 @@ void CMathContainer::createDelays()
         }
     }
 
+  // Bug 3347: We need to call finishResize() before we call resize() since the latter relies on the fact mOldValues and mOldObjects are valid.
+  finishResize();
   std::vector< CMath::sRelocate > Relocations = resize(Size);
 
   // Update the mappings of the delays
@@ -5041,7 +5043,6 @@ void CMathContainer::createDelays()
         }
     }
 
-  finishResize();
   map();
 }
 
