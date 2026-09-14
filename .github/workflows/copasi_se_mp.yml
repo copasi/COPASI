@@ -35,10 +35,6 @@ jobs:
            /opt/python/cp311-cp311/bin/pip install cmake
            ln -s /opt/python/cp311-cp311/bin/cmake /usr/bin/cmake
 
-    - name: install libuuid (static)
-      run: |
-           yum install -y libuuid-devel
-
     - name: install libasan
       run: |
            yum install -y gcc-toolset-14-libasan-devel
@@ -49,7 +45,7 @@ jobs:
     - name: Configure COPASI
       shell: bash
       run: |
-        cmake -B build_copasi -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCOPASI_INSTALL_C_API=ON -DBUILD_TESTS=ON -DBUILD_GUI=OFF -DCOPASI_DEPENDENCY_DIR=./dependencies/ -DCMAKE_INSTALL_PREFIX=./install/ -DENABLE_OMP=ON -DENABLE_JIT=ON -DENABLE_USE_ASAN=ON -S . 
+        cmake -B build_copasi -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DCOPASI_INSTALL_C_API=ON -DBUILD_TESTS=ON -DBUILD_GUI=OFF -DCOPASI_DEPENDENCY_DIR=./dependencies/ -DCMAKE_INSTALL_PREFIX=./install/ -DCOPASI_USE_CROSSGUID=OFF -DENABLE_OMP=ON -DENABLE_JIT=ON -DENABLE_USE_ASAN=ON -S . 
         sed -i 's/libgomp.a/libgomp.so/g' build_copasi/CMakeCache.txt
         sed -i 's/libpthread.a/libpthread.so/g' build_copasi/CMakeCache.txt
 
