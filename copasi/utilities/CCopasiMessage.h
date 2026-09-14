@@ -203,6 +203,12 @@ public:
    */
   static void clearDeque();
 
+  /** 
+   * removes the last size messages from the queue
+   * @param size the number of messages to remove
+   */
+  static void popMessages(int size);
+
   /**
    * Retrieve the size of the dequeue
    * @return size_t size

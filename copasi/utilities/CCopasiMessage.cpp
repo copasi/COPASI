@@ -130,6 +130,15 @@ void CCopasiMessage::clearDeque()
   return;
 }
 
+void CCopasiMessage::popMessages(int size)
+{
+  if (size <= 0)
+    return;
+
+  while (CCopasiMessage::size() > size)
+    mMessageDeque.active().pop_back();
+}
+
 size_t CCopasiMessage::size()
 {
   return mMessageDeque.active().size();

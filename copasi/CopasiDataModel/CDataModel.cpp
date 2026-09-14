@@ -3369,7 +3369,7 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
               it->setMathContainer(&mData.pModel->getMathContainer());
             }
 
-          CCopasiMessage::clearDeque();
+          CCopasiMessage::popMessages(Size);          
 
           // need initialize, so that all objects are created for the
           // object browser
@@ -3379,7 +3379,7 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
           // by the task, without updating the model
           it->restore(false);
 
-          CCopasiMessage::clearDeque();
+          CCopasiMessage::popMessages(Size);          
         }
 
       catch (...)
@@ -3388,8 +3388,7 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
 
   // Remove error messages created by the task initialization as this may fail
   // due to incomplete task specification at this time.
-  while (CCopasiMessage::size() > Size)
-    CCopasiMessage::getLastMessage();
+  CCopasiMessage::popMessages(Size);     
 
   if (mData.pModel)
     {
