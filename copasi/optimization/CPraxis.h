@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,7 +28,7 @@
 #include <limits>
 #include "copasi/copasi.h"
 
-class CRandom;
+class CConfigurableRNG;
 
 class FPraxis
 {
@@ -71,15 +71,12 @@ public:
 class CPraxis
 {
 public:
-  CPraxis();
-
-  ~CPraxis();
-
   C_FLOAT64 operator()(C_FLOAT64 t0,
                        C_FLOAT64 h0,
                        C_INT32 n,
                        C_INT32 prin,
                        C_FLOAT64 x[],
+                       CConfigurableRNG * pRandom,
                        FPraxis * f);
 
 private:
@@ -178,9 +175,6 @@ private:
   void svsort(C_INT32 n, C_FLOAT64 d[], C_FLOAT64 v[]);
 
   void timestamp();
-
-private:
-  CRandom * mpRandom;
 };
 
 #endif // COPASI_CPraxis

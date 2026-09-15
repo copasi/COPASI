@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,7 @@
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/randomGenerator/CPermutation.h"
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/core/CDataObjectReference.h"
@@ -51,7 +51,7 @@ COptMethodGASR::COptMethodGASR(const CDataContainer * pParent,
 {
   assertParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
   assertParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 20);
-  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CConfigurableRNG::Type::MersenneTwister, eUserInterfaceFlag::editable);
   assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
   assertParameter("Pf", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.475); //*****ADDED for SR
   assertParameter("Mutation Variance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.1, eUserInterfaceFlag::editable);
@@ -106,7 +106,8 @@ bool COptMethodGASR::mutate(CVector< C_FLOAT64 > & individual)
   size_t j;
 
   const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
-  CRandom * pRandom = mRandomContext.active();
+  CConfigurableRNG * pRandom = mRandomContext.active();
+  std::normal_distribution< C_FLOAT64 > dist(1, mMutationVariance);
 
   // mutate the parameters
   for (j = 0; j < mVariableSize; j++)
@@ -114,7 +115,7 @@ bool COptMethodGASR::mutate(CVector< C_FLOAT64 > & individual)
       C_FLOAT64 & mut = individual[j];
 
       // calculate the mutated parameter
-      mut *= pRandom->getRandomNormal(1, mMutationVariance);
+      mut *= dist(*pRandom);
 
       // for SR do not force to be within bounds
 
@@ -131,7 +132,8 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
                                CVector< C_FLOAT64 > & child1,
                                CVector< C_FLOAT64 > & child2)
 {
-  CRandom * pRandom = mRandomContext.active();
+  CConfigurableRNG * pRandom = mRandomContext.active();
+  std::uniform_int_distribution< size_t > dist(0, mVariableSize - 1);
 
   size_t i, crp;
   size_t nCross = 0;
@@ -139,7 +141,7 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
   mCrossOver = mCrossOverFalse;
 
   if (mVariableSize > 1)
-    nCross = pRandom->getRandomU((unsigned C_INT32)(mVariableSize / 2));
+    nCross = std::uniform_int_distribution< size_t >(0, mVariableSize / 2)(*pRandom);
 
   if (nCross == 0)
     {
@@ -154,7 +156,7 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
   // We do not mind if a crossover point gets drawn twice
   for (i = 0; i < nCross; i++)
     {
-      crp = pRandom->getRandomU((unsigned C_INT32)(mVariableSize - 1));
+      crp = dist(*pRandom);
       mCrossOver[crp] = true;
     }
 
@@ -223,6 +225,9 @@ bool COptMethodGASR::select()
   // Selection Method for Stochastic Ranking
   // stochastic ranking "bubble sort"
 
+  CConfigurableRNG * pRandom = mRandomContext.master();
+  std::uniform_real_distribution< C_FLOAT64 > uniformDist(0, 1);
+
   for (i = 0; i < sweepNum; i++) // Here sweepNum is optimal number of sweeps from paper
     {
       wasSwapped = false;
@@ -232,7 +237,7 @@ bool COptMethodGASR::select()
       for (j = 0; j < TotalPopulation - 1; j++)  // lambda is number of individuals
         {
           if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||              // within bounds
-              (mRandomContext.master()->getRandomOO() < mPf))      // random chance to compare values outside bounds
+              (uniformDist(*pRandom) < mPf))      // random chance to compare values outside bounds
             {
               // compare obj fcn using mValue alternative code
               if (mValues[j] > mValues[j + 1])

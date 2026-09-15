@@ -39,7 +39,7 @@ class CJitCompiler;
 class CModelEntity;
 class CReaction;
 class CMoiety;
-class CRandom;
+class CConfigurableRNG;
 class CMathEventQueue;
 
 template < class CType > class CDataVector;
@@ -863,7 +863,7 @@ public:
   /**
    * Retrieve the random number generator.
    */
-  CRandom & getRandomGenerator() const;
+  CConfigurableRNG & getRandomGenerator() const;
 
   /**
    * Retrieve the object which triggers recalculation of random functions
@@ -1158,7 +1158,7 @@ private:
   CDataObjectReference< C_FLOAT64 > mRandom;
 
   CMathEventQueue * mpProcessQueue;
-  CRandom * mpRandomGenerator;
+  CConfigurableRNG * mpRandomGenerator;
 
   CVectorCore< C_FLOAT64 > mValues;
   CVectorCore< C_FLOAT64 > mOldValues;

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,7 +37,7 @@
 
 #include "copasi/parameterFitting/CFitProblem.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
 #define STORED 2
 #define NS 10
@@ -51,7 +51,6 @@ COptMethodSA::COptMethodSA(const CDataContainer * pParent,
   , mhTemperature(C_INVALID_INDEX)
   , mCoolingFactor(0.85)
   , mTolerance(1.e-006)
-  , mpRandom(NULL)
   , mVariableSize(0)
   , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
   , mCurrent()
@@ -62,7 +61,7 @@ COptMethodSA::COptMethodSA(const CDataContainer * pParent,
   assertParameter("Start Temperature", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0);
   assertParameter("Cooling Factor", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 0.85);
   assertParameter("Tolerance", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.e-006);
-  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CConfigurableRNG::Type::MersenneTwister, eUserInterfaceFlag::editable);
   assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
@@ -75,7 +74,6 @@ COptMethodSA::COptMethodSA(const COptMethodSA & src,
   , mhTemperature(C_INVALID_INDEX)
   , mCoolingFactor(src.mCoolingFactor)
   , mTolerance(src.mTolerance)
-  , mpRandom(NULL)
   , mVariableSize(src.mVariableSize)
   , mEvaluationValue(src.mEvaluationValue)
   , mCurrent(src.mCurrent)
@@ -176,6 +174,10 @@ bool COptMethodSA::optimise()
   // no temperature reductions yet
   k = 0;
 
+  CConfigurableRNG * pRandom = mRandomContext.active();
+  std::uniform_real_distribution< C_FLOAT64 > StepDistribution(-1.0, 1.0);
+  std::uniform_real_distribution< C_FLOAT64 > Probability(0.0, 1.0);
+
   do // number of internal cycles: max(5*mVariableSize, 100) * NS * mVariableSize
     {
       for (m = 0; m < nt && proceed(); m++) // step adjustments
@@ -186,7 +188,7 @@ bool COptMethodSA::optimise()
                 {
                   COptItem & OptItem = *OptItemList[h];
                   // Calculate the step
-                  xc = (2.0 * mpRandom->getRandomCC() - 1) * mStep[h];
+                  xc = StepDistribution(*pRandom) * mStep[h];
                   New = mCurrent[h] + xc;
 
                   // Set the new parameter value
@@ -226,7 +228,7 @@ bool COptMethodSA::optimise()
                       // keep with probability p, if energy is increased
                       p = exp((mCurrentValue - mEvaluationValue) / (K * mTemperature));
 
-                      if (p > mpRandom->getRandomCO())
+                      if (p > Probability(*pRandom))
                         {
                           // only one value has changed...
                           mCurrent[h] = New;
@@ -369,18 +371,6 @@ bool COptMethodSA::initialize()
   mTemperature = getValue< C_FLOAT64 >("Start Temperature");
   mCoolingFactor = getValue< C_FLOAT64 >("Cooling Factor");
   mTolerance = getValue< C_FLOAT64 >("Tolerance");
-
-  pdelete(mpRandom);
-
-  if (getParameter("Random Number Generator") != NULL && getParameter("Seed") != NULL)
-    {
-      mpRandom = CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                                          getValue< unsigned C_INT32 >("Seed"));
-    }
-  else
-    {
-      mpRandom = CRandom::createGenerator();
-    }
 
   if (mProcessReport)
     mhTemperature =

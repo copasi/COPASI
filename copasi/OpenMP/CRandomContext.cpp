@@ -1,4 +1,4 @@
-// Copyright (C) 2023 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2023 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -11,7 +11,7 @@ CRandomContext::CRandomContext(const bool & parallel)
 
 CRandomContext::~CRandomContext()
 {
-  CRandom * pRNG = Base::master();
+  CConfigurableRNG * pRNG = Base::master();
 
   if (pRNG != nullptr)
     {
@@ -24,7 +24,7 @@ CRandomContext::~CRandomContext()
       delete Base::threadData()[i];
 }
 
-void  CRandomContext::init(CRandom::Type type, unsigned C_INT32 seed)
+void  CRandomContext::init(CConfigurableRNG::Type type, CConfigurableRNG::result_type seed)
 {
   Base::init();
 
@@ -44,10 +44,10 @@ void  CRandomContext::init(CRandom::Type type, unsigned C_INT32 seed)
 
   Base::setMaster(nullptr);
 
-  Base::master() = CRandom::createGenerator(type, seed);
+  Base::master() = CConfigurableRNG::create(type, seed);
 
   // We must not parallelize this to ensure higher reproducibility.
   if (Base::size() > 1)
     for (size_t i = 0; i < Base::size(); ++i)
-      Base::threadData()[i] = CRandom::createGenerator(type, Base::master()->getRandomU());
+      Base::threadData()[i] = CConfigurableRNG::create(type, Base::master()->operator()());
 }

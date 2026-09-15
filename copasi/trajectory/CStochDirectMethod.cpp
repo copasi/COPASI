@@ -44,7 +44,7 @@
 #include "CStochDirectMethod.h"
 #include "copasi/core/CDataVector.h"
 #include "copasi/function/CFunction.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "CTrajectoryMethod.h"
 #include "CTrajectoryProblem.h"
 #include "copasi/math/CMathContainer.h"
@@ -183,7 +183,7 @@ void CStochDirectMethod::start()
 
   if (getValue< bool >("Use Random Seed"))
     {
-      mpRandomGenerator->initialize(getValue< unsigned C_INT32 >("Random Seed"));
+      mpRandomGenerator->seed(getValue< unsigned C_INT32 >("Random Seed"));
     }
 
   //mpCurrentState is initialized. This state is not used internally in the
@@ -326,10 +326,12 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 startTime, const C_FLOAT64 
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 27);
         }
 
-      mNextReactionTime = startTime - log(mpRandomGenerator->getRandomOO()) / mA0;
+      std::uniform_real_distribution< C_FLOAT64 > distribution(0.0, 1.0);
+
+      mNextReactionTime = startTime - log(distribution(*mpRandomGenerator)) / mA0;
 
       // We are sure that we have at least 1 reaction
-      C_FLOAT64 rand = mpRandomGenerator->getRandomOO() * mA0;
+      C_FLOAT64 rand = distribution(*mpRandomGenerator) * mA0;
       size_t * idxProp = mPropensityIdx.begin();
       C_FLOAT64 sum = 0.0;
 

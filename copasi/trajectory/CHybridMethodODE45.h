@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -69,6 +69,7 @@
 #define SLOW_REACT                  -1
 
 class CMathReaction;
+class CConfigurableRNG;
 
 /**
  * A class to record whether a metab is slow or fast
@@ -425,7 +426,7 @@ private:
   /**
    * The random number generator.
    */
-  CRandom * mpRandomGenerator;
+  CConfigurableRNG * mpRandomGenerator;
 
   //========System Related========
   /**

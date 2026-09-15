@@ -33,7 +33,7 @@ class CCommonName;
 class COptProblem;
 class CDataModel;
 class CMathObject;
-class CRandom;
+class CConfigurableRNG;
 
 class COptItem: public CCopasiParameterGroup
 {
@@ -291,10 +291,10 @@ public:
    * Retrieve a random value in the interval (lower bound, upper bound).
    * Optionally one may provide a random number generator to be used
    * to create the random value.
-   * @param CRandom & Random
+   * @param ConfigurableRNG * pRandom
    * @return C_FLOAT64 randomValue
    */
-  C_FLOAT64 getRandomValue(CRandom * Random) const;
+  C_FLOAT64 getRandomValue(CConfigurableRNG * pRandom) const;
 
   /**
    * Output stream operator

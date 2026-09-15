@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,7 @@
 #include "copasi/optimization/COptItem.h"
 #include "COptTask.h"
 
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/randomGenerator/CPermutation.h"
 #include "copasi/randomGenerator/CIntervalValue.h"
 #include "copasi/utilities/CProcessReport.h"
@@ -64,7 +64,7 @@ COptMethodPS::COptMethodPS(const CDataContainer * pParent,
   assertParameter("Iteration Limit", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
   assertParameter("Swarm Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 50);
   assertParameter("Std. Deviation", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0e-6);
-  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CConfigurableRNG::Type::MersenneTwister, eUserInterfaceFlag::editable);
   assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
   assertParameter("Stop after # Stalled Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
@@ -98,7 +98,8 @@ COptMethodPS::~COptMethodPS()
 bool COptMethodPS::move(const size_t & index)
 {
   COptProblem *& pProblem = mProblemContext.active();
-  CRandom * pRandom = mRandomContext.active();
+  CConfigurableRNG * pRandom = mRandomContext.active();
+  std::uniform_real_distribution< C_FLOAT64 > distribution(0.0, 1.0);
 
   static const C_FLOAT64 w = 1 / (2 * log(2.0));
   static const C_FLOAT64 c = 0.5 + log(2.0);
@@ -130,8 +131,8 @@ bool COptMethodPS::move(const size_t & index)
        ++pIndividual, ++pVelocity, ++pBestPosition, ++itOptItem, ++pBestInformantPosition)
     {
       *pVelocity *= w;
-      *pVelocity += c * pRandom->getRandomCC() * (*pBestPosition - *pIndividual);
-      *pVelocity += c * pRandom->getRandomCC() * (*pBestInformantPosition - *pIndividual);
+      *pVelocity += c * distribution(*pRandom) * (*pBestPosition - *pIndividual);
+      *pVelocity += c * distribution(*pRandom) * (*pBestInformantPosition - *pIndividual);
 
       *pIndividual += *pVelocity;
 
@@ -163,7 +164,7 @@ bool COptMethodPS::move(const size_t & index)
 
 // initialise an individual
 // virtual
-void COptMethodPS::finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom)
+void COptMethodPS::finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG * pRandom)
 {
   mVelocities(individual, index) = item.getRandomValue(pRandom) - mIndividuals[individual]->operator[](index);
   mBestPositions(individual, index) = mIndividuals[individual]->operator[](index);

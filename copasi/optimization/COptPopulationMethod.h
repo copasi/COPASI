@@ -100,12 +100,10 @@ public:
   */
   friend std::ostream &operator<<(std::ostream &os, const COptPopulationMethod & o);
 
-  void openMPApplyCallback() override;
-
 protected:
   bool createIndividual(const size_t & index, const COptItem::CheckPolicyFlag & policy);
 
-  virtual void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom);
+  virtual void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG * pRandom);
 
   /**
    * size of the population / swarm size
@@ -141,11 +139,6 @@ protected:
    * array of values of objective function f/ individuals
    */
   CVector< C_FLOAT64 > mValues;
-
-  /**
-   * a pointer to the random number generator.
-   */
-  CRandomContext  mRandomContext;
 };
 
 #endif // COPASI_COptPopulationMethod_H

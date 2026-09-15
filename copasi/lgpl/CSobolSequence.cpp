@@ -12,21 +12,28 @@
 
 #include "copasi/lgpl/CSobolSequence.h"
 
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/utilities/CCopasiMessage.h"
 
-CSobolSequence::CSobolSequence(const C_INT32 & dimension)
-  : mDimension(dimension)
-  , mReciprocal()
-  , mSeed(-1)
+CSobolSequence::CSobolSequence(result_type seed,
+                               const C_INT32 & dimension)
+  : mSeed(-1)
+  , mDimension(dimension)
   , mPoint()
+  , mpNext(0)
   , mV()
 {
-  if (mDimension < 1 || DIM_MAX2 < mDimension)
+  init();
+  CSobolSequence::seed(seed);
+}
+
+void CSobolSequence::init()
+{
+  if (mDimension < 1 || DIM_MAX < mDimension)
     fatalError();
 
   bool Odd[LOG_MAX];
-  C_INT64 poly[DIM_MAX2] =
+  C_INT64 poly[DIM_MAX] =
     {
       1, 3, 7, 11, 13, 19, 25, 37, 59, 47,
       61, 55, 41, 67, 97, 91, 109, 103, 115, 131,
@@ -144,7 +151,7 @@ CSobolSequence::CSobolSequence(const C_INT32 & dimension)
 
   size_t i, j;
 
-  for (i = 0; i < DIM_MAX2; i++)
+  for (i = 0; i < DIM_MAX; i++)
     {
       for (j = 0; j < LOG_MAX; j++)
         {
@@ -13404,7 +13411,7 @@ CSobolSequence::CSobolSequence(const C_INT32 & dimension)
   //
   //  Initialize the remaining rows of V.
   //
-  for (i = 1; i < mDimension; i++)
+  for (i = 1; i < DIM_MAX; i++)
     {
       //
       //  The bit pattern of the integer POLY(I) gives the form
@@ -13469,10 +13476,6 @@ CSobolSequence::CSobolSequence(const C_INT32 & dimension)
           mV[i][j] *= l;
         }
     }
-  //
-  //  RECIPD is 1/(common denominator of the elements in V).
-  //
-  mReciprocal = 1.0E+00 / (C_FLOAT64) MAX_RESULT;
 }
 
 CSobolSequence::~CSobolSequence()
@@ -13500,7 +13503,7 @@ void CSobolSequence::uniformI64(CVectorCore< C_INT64 > & point)
 //
 //  Licensing:
 //
-//    This code is distributed under the MIT license.
+//    This code is distributed under the GNU LGPL license.
 //
 //  Modified:
 //
@@ -13612,7 +13615,7 @@ void CSobolSequence::uniformR64(CVectorCore< C_FLOAT64 > & point)
 //
 //  Licensing:
 //
-//    This code is distributed under the MIT license.
+//    This code is distributed under the GNU LGPL license.
 //
 //  Modified:
 //
@@ -13739,7 +13742,7 @@ C_INT32 CSobolSequence::bit_lo0(C_INT64 n)
 //
 //  Licensing:
 //
-//    This code is distributed under the MIT license.
+//    This code is distributed under the GNU LGPL license.
 //
 //  Modified:
 //
@@ -13779,13 +13782,68 @@ C_INT32 CSobolSequence::bit_lo0(C_INT64 n)
 }
 //****************************************************************************80
 
-void CSobolSequence::seed(C_INT64 seed)
+void CSobolSequence::setDimension(const C_INT32 & dimension)
+{
+  mDimension = dimension;
+}
+
+const C_INT32 & CSobolSequence::getDimension() const
+{
+  return mDimension;
+}
+
+CSobolSequence::result_type CSobolSequence::operator()()
+{
+  return next();
+}
+
+void CSobolSequence::discard(result_type z)
+{
+  while (z-- > 0)
+    {
+      next();
+    }
+}
+
+CSobolSequence::result_type CSobolSequence::next()
+{
+  if (mpNext < mPoint + mDimension)
+    return *mpNext++;
+
+  if (mSeed < 0)
+    {
+      fatalError();
+    }
+
+  C_INT32 l = bit_lo0(mSeed++);
+
+  //
+  //  Check that the user is not calling too many times!
+  //
+  if (LOG_MAX < l)
+    {
+      // We could reinitialize the sequence here, but it is better to just report an error.
+      fatalError();
+    }
+  //
+  //  Calculate the new components of QUASI.
+  //  The caret indicates the bitwise exclusive OR.
+  //
+  for (C_INT32 i = 0; i < mDimension; i++)
+    {
+      mPoint[i] = (mPoint[i] ^ mV[i][l - 1]);
+    }
+
+  mpNext = mPoint;
+  return *mpNext++;
+}
+
+void CSobolSequence::seed(CSobolSequence::result_type seed)
 {
   C_INT32 i;
   C_INT32 l;
   C_INT64 seed_temp;
 
-  seed = std::max(seed, (C_INT64) 0);
   seed %= 541;
 
   if (seed == 0)
@@ -13837,6 +13895,8 @@ void CSobolSequence::seed(C_INT64 seed)
     }
 
   mSeed = seed;
+  mpNext = mPoint;
+
   //
   //  Check that the user is not calling too many times!
   //

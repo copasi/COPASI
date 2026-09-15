@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,15 +24,13 @@
 
 #include "copasi/copasi.h"
 
-#include "COptMethod.h"
-#include "COptProblem.h"
-#include "COptItem.h"
-#include "COptTask.h"
+#include "copasi/optimization/COptProblem.h"
+#include "copasi/optimization/COptItem.h"
+#include "copasi/optimization/COptTask.h"
 
-#include "COptMethodStatistics.h"
+#include "copasi/optimization/COptMethodStatistics.h"
 
 #include "copasi/core/CDataObjectReference.h"
-#include "copasi/randomGenerator/CRandom.h"
 
 COptMethodStatistics::COptMethodStatistics(const CDataContainer * pParent,
                                            const CTaskEnum::Method & methodType,

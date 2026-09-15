@@ -60,9 +60,9 @@
 #include "copasi/utilities/CDependencyGraph.h"
 #include "copasi/utilities/CIndexedPriorityQueue.h"
 #include "copasi/utilities/CVersion.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/math/CMathContainer.h"
-#include "CHybridMethodODE45.h"
+#include "copasi/trajectory/CHybridMethodODE45.h"
 
 // Uncomment this line below to get debug print out.
 // #define DEBUG_OUTPUT 1
@@ -309,10 +309,10 @@ void CHybridMethodODE45::start()
 
   if (*mpUseRandomSeed)
     {
-      mpRandomGenerator->initialize(*mpRandomSeed);
+      mpRandomGenerator->seed(*mpRandomSeed);
     }
 
-  mA0 = -log(mpRandomGenerator->getRandomOO());
+  mA0 = -log(std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mpRandomGenerator));
 
   //(6)----set attributes for ODE45
   mRKMethodStatus = CRungeKutta::INITIALIZE;
@@ -592,7 +592,7 @@ void CHybridMethodODE45::fireReaction()
   mFireReaction = false;
 
   mAmuVariables = 0.0;
-  mA0 = -log(mpRandomGenerator->getRandomOO());
+  mA0 = -log(std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mpRandomGenerator));
 
   // Update all values needed for simulation.
   // TODO PERFORMANCE Use a reaction dependent update sequence.
@@ -891,7 +891,7 @@ CMathReaction * CHybridMethodODE45::getReactionToFire()
   C_FLOAT64 * pAmuEnd = mAmuVariables.end();
 
   //get the threshold
-  C_FLOAT64 A0 = mA0 * mpRandomGenerator->getRandomOO();
+  C_FLOAT64 A0 = mA0 * std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mpRandomGenerator);
 
   //get the reaction index
   CMathReaction ** ppSlowReaction = mSlowReactions.array();

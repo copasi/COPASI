@@ -87,3 +87,4 @@ TestSuite/distribution/out.txt
 tests/opt.cps
 
 copasi/randomGenerator/LowDiscrepancySequences/
+/tests/test*_Data_set_*.txt

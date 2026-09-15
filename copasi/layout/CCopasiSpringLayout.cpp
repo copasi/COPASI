@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,7 +25,7 @@
 #include <copasi/model/CReaction.h>
 #include <copasi/model/CMetab.h>
 
-#include <copasi/randomGenerator/CRandom.h>
+#include <copasi/randomGenerator/CConfigurableRNG.h>
 
 /*
 
@@ -930,19 +930,23 @@ const std::vector<CCopasiSpringLayout::UpdateAction>& CCopasiSpringLayout::getUp
   return mUpdateActions;
 }
 
-void randomlyPlaceGlyphInCompartmentGlyph(CLGraphicalObject* pGl, const CLGraphicalObject* pContainer, CRandom *pRandom)
+void randomlyPlaceGlyphInCompartmentGlyph(CLGraphicalObject* pGl, const CLGraphicalObject* pContainer, CConfigurableRNG *pRandom)
 {
+  std::uniform_real_distribution< double > distribution(0.0, 1.0);
+
   double x = pContainer->getPosition().getX()
-             + pRandom->getRandomCC() * (pContainer->getDimensions().getWidth() - pGl->getDimensions().getWidth());
+             + distribution(*pRandom) * (pContainer->getDimensions().getWidth() - pGl->getDimensions().getWidth());
   double y = pContainer->getPosition().getY()
-             + pRandom->getRandomCC() * (pContainer->getDimensions().getHeight() - pGl->getDimensions().getHeight());
+             + distribution(*pRandom) * (pContainer->getDimensions().getHeight() - pGl->getDimensions().getHeight());
   pGl->setPosition(CLPoint(x, y));
 }
 
-void randomlyPlaceGlyphInDimensions(CLGraphicalObject* pGl, const CLDimensions* pContainer, CRandom *pRandom)
+void randomlyPlaceGlyphInDimensions(CLGraphicalObject* pGl, const CLDimensions* pContainer, CConfigurableRNG *pRandom)
 {
-  double x = pRandom->getRandomCC() * (pContainer->getWidth() - pGl->getDimensions().getWidth());
-  double y = pRandom->getRandomCC() * (pContainer->getHeight() - pGl->getDimensions().getHeight());
+  std::uniform_real_distribution< double > distribution(0.0, 1.0);
+
+  double x = distribution(*pRandom) * (pContainer->getWidth() - pGl->getDimensions().getWidth());
+  double y = distribution(*pRandom) * (pContainer->getHeight() - pGl->getDimensions().getHeight());
   pGl->setPosition(CLPoint(x, y));
 }
 
@@ -968,7 +972,7 @@ void placeTextGlyphs(CLayout* pLayout)
  */
 void CCopasiSpringLayout::randomize()
 {
-  CRandom* pRandom = CRandom::createGenerator(CRandom::mt19937, CRandom::getSystemSeed());
+  CConfigurableRNG* pRandom = CConfigurableRNG::create(CConfigurableRNG::Type::MersenneTwister);
 
   size_t i;
 
@@ -1007,6 +1011,8 @@ void CCopasiSpringLayout::randomize()
     }
 
   //reaction glyphs
+  std::uniform_real_distribution< double > distribution(-10.0, 10.0);
+
   for (i = 0; i < mpLayout->getListOfReactionGlyphs().size(); ++i)
     {
       CLReactionGlyph* pReactionGlyph = &mpLayout->getListOfReactionGlyphs()[i];
@@ -1023,7 +1029,7 @@ void CCopasiSpringLayout::randomize()
         }
 
       center = center * (1.0 / pReactionGlyph->getListOfMetabReferenceGlyphs().size());
-      center = center + CLPoint(pRandom->getRandomCC() * 20 - 10,  pRandom->getRandomCC() * 20 - 10);
+      center = center + CLPoint(distribution(*pRandom), distribution(*pRandom));
 
       pReactionGlyph->setPosition(center);
 

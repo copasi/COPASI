@@ -50,6 +50,7 @@ COptMethod::COptMethod(const CDataContainer * pParent,
   , mParallel(parallel)
   , mMathContext(parallel)
   , mProblemContext(parallel, this)
+  , mRandomContext(parallel)
   , mLogVerbosity(0)
   , mMethodLog()
   , mOpenMPApplyCallback(nullptr)
@@ -73,6 +74,7 @@ COptMethod::COptMethod(const COptMethod & src,
   , mParallel(parallel)
   , mMathContext(src.mParallel)
   , mProblemContext(src.mParallel, this)
+  , mRandomContext(src.mParallel)
   , mLogVerbosity(src.mLogVerbosity)
   , mMethodLog(src.mMethodLog)
   , mOpenMPApplyCallback(nullptr)
@@ -152,6 +154,12 @@ bool COptMethod::initialize()
         mProblemContext.threadData()[i]->initializeSubtaskBeforeOutput();
         mProblemContext.threadData()[i]->initialize();
       }
+
+  CConfigurableRNG::Type RNG = (getParameter("Random Number Generator") != NULL) ? (CConfigurableRNG::Type) getValue< unsigned C_INT32 >("Random Number Generator") : CConfigurableRNG::Type::MersenneTwister;
+  unsigned C_INT32 seed = (getParameter("Seed") != NULL) ? getValue< unsigned C_INT32 >("Seed") : 0;
+
+  mRandomContext.release();
+  mRandomContext.init(RNG, seed);
 
   mpParentTask = dynamic_cast< COptTask * >(getObjectParent());
 
@@ -239,6 +247,12 @@ void COptMethod::openMPApplyCallback()
   mMathContext.setMaster(pMasterMathContainer);
   mProblemContext.setMaster(pMasterOptProblem );
   mProblemContext.setMathContext(mMathContext);
+
+  CConfigurableRNG::Type RNG = (getParameter("Random Number Generator") != NULL) ? (CConfigurableRNG::Type) getValue< unsigned C_INT32 >("Random Number Generator") : CConfigurableRNG::Type::MersenneTwister;
+  unsigned C_INT32 seed = (getParameter("Seed") != NULL) ? getValue< unsigned C_INT32 >("Seed") : 0;
+
+  mRandomContext.release();
+  mRandomContext.init(RNG, seed);
 }
 
 // virtual evaluate the fitness of one individual

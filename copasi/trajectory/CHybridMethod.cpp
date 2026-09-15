@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -59,7 +59,7 @@
 #include "copasi/core/CMatrix.h"
 #include "copasi/utilities/CDependencyGraph.h"
 #include "copasi/utilities/CIndexedPriorityQueue.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/utilities/CVersion.h"
 #include "copasi/math/CMathContainer.h"
 
@@ -269,7 +269,7 @@ void CHybridMethod::start()
 
   if (mUseRandomSeed)
     {
-      mpRandomGenerator->initialize(mRandomSeed);
+      mpRandomGenerator->seed(mRandomSeed);
     }
 
   mStepsAfterPartitionSystem = 0;
@@ -509,7 +509,7 @@ C_FLOAT64 CHybridMethod::generateReactionTime(size_t rIndex)
 {
   if (mAmu[rIndex] == 0) return std::numeric_limits<C_FLOAT64>::infinity();
 
-  C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
+  C_FLOAT64 rand2 = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mpRandomGenerator);
   return -1.0 * log(rand2) / mAmu[rIndex];
 }
 

@@ -1,25 +1,6 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and University of
-// of Connecticut School of Medicine.
-// All rights reserved.
-
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., University of Heidelberg, and The University
-// of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
-// and The University of Manchester.
-// All rights reserved.
-
-// Copyright (C) 2002 - 2007 by Pedro Mendes, Virginia Tech Intellectual
-// Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
 /******************************************************************************
@@ -60,24 +41,23 @@
  *   Generator", Dr. Dobb's Journal #176.
  ******************************************************************************/
 
-#include "copasi/copasi.h"
-#include "CRandom.h"
+#include "copasi/randomGenerator/CR250.h"
 
-Cr250::Cr250(unsigned C_INT32 seed):
-  CRandom(),
-  mIndex(0)
+CR250::CR250(CR250::result_type seed)
+: mIndex(0)
+, mSeed()
+, mBuffer()
 {
-  setModulus(65535);
-  initialize(seed);
+  CR250::seed(seed);
 }
-Cr250::~Cr250() {}
+CR250::~CR250() {}
 
-void Cr250::initialize(unsigned C_INT32 seed)
+void CR250::seed(result_type seed)
 {
   /*--------------------------------------------------------------------------*/
-  int j, k;
-  unsigned int mask;
-  unsigned int msb;
+  size_t j, k;
+  unsigned C_INT16 mask;
+  unsigned C_INT16 msb;
   /*--------------------------------------------------------------------------*/
 
   mIndex = 0;
@@ -107,22 +87,7 @@ void Cr250::initialize(unsigned C_INT32 seed)
   return;
 }
 
-unsigned C_INT32 Cr250::getRandomU()
-{return r250();}
-
-C_INT32 Cr250::getRandomS()
-{return r250();}
-
-C_FLOAT64 Cr250::getRandomCC()
-{return r250() * mModulusInv;}
-
-C_FLOAT64 Cr250::getRandomCO()
-{return dr250();}
-
-C_FLOAT64 Cr250::getRandomOO()
-{return (r250() + .5) * mModulusInv1;}
-
-unsigned C_INT32 Cr250::r250(void)
+CR250::result_type CR250::operator()()
 {
   C_INT16 j;
 
@@ -131,39 +96,25 @@ unsigned C_INT32 Cr250::r250(void)
   else
     j = mIndex + 103;
 
-  mNumberU = mBuffer[mIndex] ^= mBuffer[j];
+  result_type Random = mBuffer[mIndex] ^= mBuffer[j];
 
   if (mIndex > 248)      /* Increment pointer for next time */
     mIndex = 0;
   else
     mIndex++;
 
-  return mNumberU;
+  return Random;
 }
 
-unsigned C_INT32 Cr250::r250n(const unsigned C_INT16 & max)
+void CR250::discard(result_type z)
 {
-  unsigned C_INT16 limit;
-
-  limit = (65535U / max) * max;
-
-  do
+  while (z-- > 0)
     {
-      r250();
-      r250(); // Why a second call?
+      operator()();
     }
-  while (mNumberU >= limit);
-
-  return mNumberU % max;
 }
 
-C_FLOAT64 Cr250::dr250()
-{
-  mNumberU = r250();
-  return mNumberU / 65536.;   /* Return a number in [0.0 to 1.0) */
-}
-
-unsigned C_INT16 Cr250::myrand()
+unsigned C_INT16 CR250::myrand()
 {
   mSeed = mSeed * 0x015a4e35L + 1;
   return (mSeed >> 16) & 0x7fff;

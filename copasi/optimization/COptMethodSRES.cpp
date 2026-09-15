@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,7 @@
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/utilities/CSort.h"
 #include "copasi/core/CDataObjectReference.h"
@@ -51,7 +51,7 @@ COptMethodSRES::COptMethodSRES(const CDataContainer * pParent,
 {
   assertParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
   assertParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 20);
-  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CConfigurableRNG::Type::MersenneTwister, eUserInterfaceFlag::editable);
   assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
   assertParameter("Pf", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.475);  //*****ADDED for SR
   assertParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
@@ -100,7 +100,8 @@ bool COptMethodSRES::replicate()
   // iterate over parents
   for (i = 0; itSrc != endSrc && Continue; ++itSrc, ++itSrcVariance, ++i)
     {
-      CRandom * pRandom = mRandomContext.active();
+      CConfigurableRNG * pRandom = mRandomContext.active();
+      std::uniform_int_distribution<size_t> dist(0, mPopulationSize - 1);
 
       // iterate over the child rate - 1 since the first child is the parent.
       for (j = 1; j < childrate; ++j, ++itTarget, ++itTargetVariance)
@@ -112,7 +113,7 @@ bool COptMethodSRES::replicate()
           // do recombination on the sigma
           // since sigmas already have one parent's component
           // need only average with the sigmas of the other parent
-          Parent = (i + pRandom->getRandomU(mPopulationSize - 1)) % mPopulationSize;
+          Parent = (i + dist(*pRandom)) % mPopulationSize;
 
           pVariance = (*itTargetVariance)->array();
           pVarianceEnd = pVariance + mVariableSize;
@@ -135,7 +136,7 @@ bool COptMethodSRES::mutate()
 #pragma omp parallel for schedule(runtime)
   for (size_t i = mPopulationSize; i < childrate * mPopulationSize; ++i)
     {
-      CRandom * pRandom = mRandomContext.active();
+      CConfigurableRNG * pRandom = mRandomContext.active();
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
       C_FLOAT64 * pVariable = mIndividuals[i]->array();
@@ -143,7 +144,8 @@ bool COptMethodSRES::mutate()
       C_FLOAT64 * pVariance = mVariance[i]->array();
       C_FLOAT64 * pMaxVariance = mMaxVariance.array();
 
-      C_FLOAT64 v1 = pRandom->getRandomNormal01();
+      std::normal_distribution< C_FLOAT64 > nd(0, 1);
+      C_FLOAT64 v1 = nd(*pRandom);
 
       for (size_t j = 0; pVariable != pVariableEnd; ++pVariable, ++pVariance, ++pMaxVariance, ++j)
         {
@@ -158,12 +160,12 @@ bool COptMethodSRES::mutate()
             {
               // update the parameter for the variances
               *pVariance =
-                std::min(*pVariance * exp(mTauPrime * v1 + mTau * pRandom->getRandomNormal01()), *pMaxVariance);
+                std::min(*pVariance * exp(mTauPrime * v1 + mTau * nd(*pRandom)), *pMaxVariance);
 
               for (l = 0; l < 10; l++)
                 {
                   // calculate the mutated parameter
-                  mut = Store + *pVariance * pRandom->getRandomNormal01();
+                  mut = Store + *pVariance * nd(*pRandom);
 
                   if (OptItem.checkConstraint(mut) == 0)
                     break;
@@ -201,7 +203,8 @@ void COptMethodSRES::select()
   // we have properly sorted the top mPopulationSize individuals.
   for (size_t i = 0; i < mPopulationSize; i++)
     {
-      CRandom * pRandom = mRandomContext.active();
+      CConfigurableRNG * pRandom = mRandomContext.active();
+      std::uniform_real_distribution< C_FLOAT64 > Probability(0, 1);
 
       for (size_t j = mIndividuals.size() - 1; j > 0; --j)
         {
@@ -215,7 +218,7 @@ void COptMethodSRES::select()
               if (mValues[j] + mPhi[j] < mValues[j - 1] + mPhi[j - 1])
                 swap(j, j - 1);
             }
-          else if (pRandom->getRandomOO() < mPf)      // random chance to compare values outside bounds
+          else if (Probability(*pRandom) < mPf)      // random chance to compare values outside bounds
             {
               if (mValues[j] < mValues[j - 1])
                 swap(j, j - 1);
@@ -241,7 +244,7 @@ size_t COptMethodSRES::fittest()
 }
 
 // virtual
-void COptMethodSRES::finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * /* pRandom */)
+void COptMethodSRES::finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG * /* pRandom */)
 {
   const C_FLOAT64 & Value = (*mIndividuals[individual])[index];
   (*mVariance[individual])[index] = std::min(*item.getUpperBoundValue() - Value, Value - *item.getLowerBoundValue()) / sqrt(double(mVariableSize));

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,7 +25,7 @@
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/randomGenerator/CPermutation.h"
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/utilities/CSort.h"
@@ -44,7 +44,7 @@ COptMethodDE::COptMethodDE(const CDataContainer * pParent,
 {
   assertParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 2000);
   assertParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 10);
-  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CConfigurableRNG::Type::MersenneTwister, eUserInterfaceFlag::editable);
   assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
   assertParameter("Mutation Variance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.1, eUserInterfaceFlag::editable);
   assertParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
@@ -106,17 +106,19 @@ bool COptMethodDE::replicate()
   for (size_t i = 2 * mPopulationSize; i < 3 * mPopulationSize; ++i)
     {
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
-      CRandom * pRandom = mRandomContext.active();
+      CConfigurableRNG * pRandom = mRandomContext.active();
+      std::uniform_int_distribution< size_t > dist(0, mPopulationSize - 1);
+      std::normal_distribution< C_FLOAT64 > nd(1.0, mMutationVariance);
 
       for (size_t j = 0; j < mVariableSize; ++j)
         {
           COptItem & OptItem = *OptItemList[j];
           C_FLOAT64 & mut = (*mIndividuals[i])[j];
 
-          size_t r = pRandom->getRandomU(mPopulationSize - 1);
-
-          if (r < 0.6 * mPopulationSize)
-            mut = (*mIndividuals[i - mPopulationSize])[j] * pRandom->getRandomNormal(1, mMutationVariance);
+          if (dist(*pRandom) < 0.6 * mPopulationSize)
+            {
+              mut = (*mIndividuals[i - mPopulationSize])[j] * nd(*pRandom);
+            }
           else
             mut = (*mIndividuals[i - 2 * mPopulationSize])[j];
 

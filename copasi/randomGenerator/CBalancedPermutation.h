@@ -13,7 +13,7 @@
 
 #include "copasi/randomGenerator/CPermutation.h"
 
-class CRandom;
+class CConfigurableRNG;
 
 class CBalancedPermutation: public CPermutation
 {
@@ -25,10 +25,10 @@ class CBalancedPermutation: public CPermutation
 public:
   /**
    * Specific constructor
-   * @param CRandom * pRandom
+   * @param ConfigurableRNG * pRandom
    * @param const size_t & size
    */
-  CBalancedPermutation(CRandom * pRandom, const size_t & size);
+  CBalancedPermutation(CConfigurableRNG * pRandom, const size_t & size);
 
   /**
    * Copy constructor

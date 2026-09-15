@@ -13,7 +13,7 @@
 
 #include "copasi/randomGenerator/CBalancedPermutation.h"
 
-CBalancedPermutation::CBalancedPermutation(CRandom * pRandom, const size_t & size) :
+CBalancedPermutation::CBalancedPermutation(CConfigurableRNG * pRandom, const size_t & size) :
   CPermutation(pRandom, size + size % 2) // make sure the size is even
 {}
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,7 @@
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/core/CDataObjectReference.h"
 #include "copasi/utilities/CSort.h"
 
@@ -47,7 +47,7 @@ COptMethodEP::COptMethodEP(const CDataContainer * pParent,
 {
   assertParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
   assertParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 20);
-  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CConfigurableRNG::Type::MersenneTwister, eUserInterfaceFlag::editable);
   assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
   assertParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
@@ -216,7 +216,7 @@ void COptMethodEP::initObjects()
 }
 
 // virtual
-void COptMethodEP::finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * /* pRandom */)
+void COptMethodEP::finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG * /* pRandom */)
 {
   (*mVariance[individual])[index] = fabs(item.getItemValue()) * 0.5;
 }
@@ -257,7 +257,8 @@ bool COptMethodEP::select()
 
   // compete with ~ 20% of the TotalPopulation
   nopp = std::max<size_t>(1, mPopulationSize / 5);
-  CRandom * pRandom = mRandomContext.active();
+  CConfigurableRNG * pRandom = mRandomContext.active();
+  std::uniform_int_distribution< size_t > dist(0, TotalPopulation - 1);
 
   // parents and offspring are all in competition
   for (i = 0; i < TotalPopulation; i++)
@@ -266,7 +267,7 @@ bool COptMethodEP::select()
         // get random opponent
         do
           {
-            opp = pRandom->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
+            opp = dist(*pRandom);
           }
         while (i == opp);
 
@@ -342,9 +343,9 @@ bool COptMethodEP::mutate(size_t i)
   CVector<C_FLOAT64> & Variance = *mVariance[i];
 
   const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
-  CRandom * pRandom = mRandomContext.active();
-
-  v1 = pRandom->getRandomNormal01();
+  CConfigurableRNG * pRandom = mRandomContext.active();
+  std::normal_distribution<C_FLOAT64> nd(0.0, 1.0);
+  v1 = nd(*pRandom);
 
   // update the variances
   for (j = 0; j < mVariableSize; j++)
@@ -356,10 +357,10 @@ bool COptMethodEP::mutate(size_t i)
         {
           // update the parameter for the variances
           Variance[j] =
-            std::max(Variance[j] * exp(tau1 * v1 + tau2 * pRandom->getRandomNormal01()), 1e-8);
+            std::max(Variance[j] * exp(tau1 * v1 + tau2 * nd(*pRandom)), 1e-8);
 
           // calculate the mutated parameter
-          mut += Variance[j] * pRandom->getRandomNormal01();
+          mut += Variance[j] * nd(*pRandom);
         }
 
       catch (...)

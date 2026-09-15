@@ -15,10 +15,10 @@
 
 #include "copasi/copasi.h"
 
-#include "CPermutation.h"
-#include "CRandom.h"
+#include "copasi/randomGenerator/CPermutation.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
-CPermutation::CPermutation(CRandom * pRandom, const size_t & size) :
+CPermutation::CPermutation(CConfigurableRNG * pRandom, const size_t & size) :
   mpRandom(pRandom),
   mVector(size),
   mpNext(NULL),
@@ -63,17 +63,17 @@ void CPermutation::shuffle()
 
   if (mVector.size() > 1)
     {
-      unsigned C_INT32 max = (unsigned C_INT32) mVector.size() - 1;
-
       // We swap each element once.
       size_t * pBegin = mVector.begin();
       size_t * pEnd = mVector.end();
       size_t * pIt;
       size_t * pTo;
 
+      std::uniform_int_distribution<size_t> dist(0, mVector.size() - 1);
+
       for (pIt = pBegin; pIt != pEnd; ++pIt)
         {
-          pTo = pBegin + mpRandom->getRandomU(max);
+          pTo = pBegin + dist(*mpRandom);
 
           if (pTo != pIt)
             std::swap(*pIt, *pTo);
@@ -107,8 +107,10 @@ const size_t & CPermutation::pick()
 {
   if (mpRandom == NULL || mpNext == NULL) return InvalidIndex;
 
+  std::uniform_int_distribution<size_t> dist(0, mVector.size() - 1);
+
   if (mVector.size() > 1)
-    mpNext = mVector.array() + mpRandom->getRandomU((unsigned C_INT32)mVector.size() - 1);
+    mpNext = mVector.array() + dist(*mpRandom);
 
   return *mpNext;
 }

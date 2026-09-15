@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -25,7 +25,7 @@
 #include "copasi/model/CState.h"
 
 class CModel;
-class CRandom;
+class CConfigurableRNG;
 
 class CStochasticRungeKuttaRI5 : public CTrajectoryMethod
 {
@@ -165,7 +165,7 @@ private:
   /**
    * A pointer to the random number generator
    */
-  CRandom * mpRandom;
+  CConfigurableRNG * mpRandom;
 
   C_FLOAT64 mStepSize;
   C_FLOAT64 mSqrtStepSize;

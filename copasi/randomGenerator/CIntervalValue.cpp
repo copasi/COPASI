@@ -1,4 +1,4 @@
-// Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2025 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -6,7 +6,7 @@
 #include <math.h>
 
 #include "copasi/randomGenerator/CIntervalValue.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
 CIntervalValue::CIntervalValue(const C_FLOAT64 *& pMinimum, const C_FLOAT64 *& pMaximum)
   : mpMinimum(pMinimum)
@@ -72,9 +72,10 @@ void CIntervalValue::compile()
     }
 }
 
-C_FLOAT64 CIntervalValue::randomValue(CRandom * pRandom) const
+C_FLOAT64 CIntervalValue::randomValue(CConfigurableRNG * pRandom) const
 {
   C_FLOAT64 result = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+  C_FLOAT64 Sample = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*pRandom);
 
   try
     {
@@ -82,14 +83,13 @@ C_FLOAT64 CIntervalValue::randomValue(CRandom * pRandom) const
         switch (mRange)
           {
           case CIntervalValue::Range::positive:
-            result = pow(10.0, log10(std::max(*mpMinimum, std::numeric_limits< C_FLOAT64 >::min())) + mLogarithmicScale * pRandom->getRandomCC());
+            result = pow(10.0, log10(std::max(*mpMinimum, std::numeric_limits< C_FLOAT64 >::min())) + mLogarithmicScale * Sample);
             break;
 
           case CIntervalValue::Range::containsZero:
             if (mLogarithmicScale > 0)
               {
                 C_FLOAT64 R = 2.0 / (2.0 + mLogarithmicScale);
-                C_FLOAT64 Sample = pRandom->getRandomCC();
 
                 if (Sample < R)
                   result = *mpMinimum * (1.0 - 2.0 * Sample/R);
@@ -99,7 +99,6 @@ C_FLOAT64 CIntervalValue::randomValue(CRandom * pRandom) const
             else
               {
                 C_FLOAT64 R = 2.0 / (2.0 - mLogarithmicScale);
-                C_FLOAT64 Sample = pRandom->getRandomCC();
 
                 if (Sample < R)
                   result = *mpMaximum * (1.0 - 2.0 * Sample/R);
@@ -109,7 +108,7 @@ C_FLOAT64 CIntervalValue::randomValue(CRandom * pRandom) const
             break;
 
           case CIntervalValue::Range::negative:
-            result = -pow(10.0, log10(std::max(-*mpMaximum, std::numeric_limits< C_FLOAT64 >::min())) + mLogarithmicScale * pRandom->getRandomCC());
+            result = -pow(10.0, log10(std::max(-*mpMaximum, std::numeric_limits< C_FLOAT64 >::min())) + mLogarithmicScale * Sample);
             break;
 
           case CIntervalValue::Range::invalid:
@@ -117,7 +116,7 @@ C_FLOAT64 CIntervalValue::randomValue(CRandom * pRandom) const
             break;
           }
       else
-        result = *mpMinimum + pRandom->getRandomCC() * (*mpMaximum - *mpMinimum);
+        result = *mpMinimum + Sample * (*mpMaximum - *mpMinimum);
     }
 
   catch (...)

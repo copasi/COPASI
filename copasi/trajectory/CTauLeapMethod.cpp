@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,7 +57,7 @@
 #include "copasi/core/CMatrix.h"
 #include "copasi/utilities/CDependencyGraph.h"
 #include "copasi/utilities/CIndexedPriorityQueue.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
 /* DEFINE ********************************************************************/
 #define TAU                    0.01
@@ -194,7 +194,10 @@ void CTauLeapMethod::start()
   bool useRandomSeed = getValue< bool >("Use Random Seed");
   unsigned C_INT32 randomSeed = getValue< unsigned C_INT32 >("Random Seed");
 
-  if (useRandomSeed) mpRandomGenerator->initialize(randomSeed);
+  if (useRandomSeed)
+    {
+      mpRandomGenerator->seed(randomSeed);
+    }
 
   mEpsilon = getValue< C_FLOAT64 >("Epsilon");
   mUseRandomSeed = getValue< bool >("Use Random Seed");
@@ -297,9 +300,11 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
   if (ds < Tau)
     Tau = ds;
 
-  pAmu = mAmu.array();
-  C_FLOAT64 * pK = mK.array();
-  C_FLOAT64 * pKEnd = pK + mNumReactions;
+  pAmu = mAmu.begin();
+  size_t * pK = mK.begin();
+  size_t * pKEnd = mK.end();
+
+  std::poisson_distribution< size_t > PoissonDistribution;
 
   for (; pAmu != pAmuEnd; ++pAmu, ++pK)
     {
@@ -310,21 +315,25 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
       else if (Lambda > 2.0e9)
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 26);
 
-      *pK = mpRandomGenerator->getRandomPoisson(Lambda);
+      *pK = PoissonDistribution(*mpRandomGenerator, std::poisson_distribution< size_t >::param_type(Lambda));
     }
+
+  std::uniform_int_distribution< unsigned short > UniformDistribution(0, 1);
 
   while (!updateSystem())
     {
       Tau *= 0.5;
-      pK = mK.array();
+      pK = mK.begin();
 
       for (; pK != pKEnd; ++pK)
         {
-          *pK *= 0.5;
+          size_t Tmp = *pK;
+          *pK /= 2;
 
-          if (*pK < floor(*pK + 0.75))
+          if (Tmp != 2 * *pK
+              && UniformDistribution(*mpRandomGenerator) == 1)
             {
-              *pK += mpRandomGenerator->getRandomCC() < 0.5 ? - 0.5 : 0.5;
+              *pK += 1;
             }
         }
     }
@@ -360,7 +369,7 @@ bool CTauLeapMethod::updateSystem()
 
   CMathReaction * pReaction = mReactions.array();
   CMathReaction * pReactionEnd = pReaction + mNumReactions;
-  const C_FLOAT64 * pK = mK.array();
+  const size_t * pK = mK.array();
 
   for (; pReaction != pReactionEnd; ++pK, ++pReaction)
     {

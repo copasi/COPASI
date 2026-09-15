@@ -24,7 +24,7 @@
 #include "copasi/math/CMathContainer.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CState.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
 // Uncomment this line below to get debug print out.
 // #define DEBUG_OUTPUT 1
@@ -486,7 +486,7 @@ C_FLOAT64 CStochasticRungeKuttaRI5::randomIHat()
 {
   static const double sqrt3 = sqrt(3.0);
 
-  switch (mpRandom->getRandomU(5))
+  switch (std::uniform_int_distribution< unsigned short >(0, 5)(*mpRandom))
     {
       case 0:
         return -sqrt3;
@@ -504,7 +504,7 @@ C_FLOAT64 CStochasticRungeKuttaRI5::randomIHat()
 
 C_FLOAT64 CStochasticRungeKuttaRI5::randomITilde()
 {
-  return mpRandom->getRandomU(1) ? 1.0 : -1.0;
+  return std::uniform_int_distribution< unsigned short >(0, 1)(*mpRandom) ? 1.0 : -1.0;
 }
 
 void CStochasticRungeKuttaRI5::buildStage1()

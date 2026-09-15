@@ -20,7 +20,7 @@
 
 #include "copasi/core/CVector.h"
 
-class CRandom;
+class CConfigurableRNG;
 
 class CPermutation
 {
@@ -32,10 +32,10 @@ public:
 
   /**
    * Specific constructor
-   * @param CRandom * pRandom
+   * @param ConfigurableRNG * pRandom
    * @param const size_t & size
    */
-  CPermutation(CRandom * pRandom, const size_t & size);
+  CPermutation(CConfigurableRNG * pRandom, const size_t & size);
 
   /**
    * Copy constructor
@@ -88,7 +88,7 @@ protected:
   /**
    * A pointer to the random number generator to be used
    */
-  CRandom * mpRandom;
+  CConfigurableRNG * mpRandom;
 
   /**
    * A vector containing the permutation

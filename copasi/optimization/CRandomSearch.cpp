@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -46,7 +46,7 @@ email                : rluktuke@vt.edu
 
 #include "copasi/math/CMathContainer.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
 CRandomSearch::CRandomSearch(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
@@ -56,11 +56,10 @@ CRandomSearch::CRandomSearch(const CDataContainer * pParent,
   , mCurrentIteration(0)
   , mIndividual()
   , mValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
-  , mpRandom(NULL)
   , mVariableSize(0)
 {
   assertParameter("Number of Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100000);
-  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CConfigurableRNG::Type::MersenneTwister, eUserInterfaceFlag::editable);
   assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
@@ -73,7 +72,6 @@ CRandomSearch::CRandomSearch(const CRandomSearch & src,
   , mCurrentIteration(src.mCurrentIteration)
   , mIndividual(src.mIndividual)
   , mValue(src.mValue)
-  , mpRandom(NULL)
   , mVariableSize(src.mVariableSize)
 {initObjects();}
 
@@ -103,18 +101,6 @@ bool CRandomSearch::initialize()
   if (!COptMethod::initialize()) return false;
 
   mIterations = getValue< unsigned C_INT32 >("Number of Iterations");
-
-  pdelete(mpRandom);
-
-  if (getParameter("Random Number Generator") != NULL && getParameter("Seed") != NULL)
-    {
-      mpRandom = CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                                          getValue< unsigned C_INT32 >("Seed"));
-    }
-  else
-    {
-      mpRandom = CRandom::createGenerator();
-    }
 
   mVariableSize = mProblemContext.active()->getOptItemList(true).size();
   mIndividual.resize(mVariableSize);
@@ -162,6 +148,7 @@ bool CRandomSearch::optimise()
   setSolution(mValue, mIndividual, true);
 
   CVector< C_FLOAT64 > LastIndividual;
+  CConfigurableRNG * pRandom = mRandomContext.active();
 
   for (mCurrentIteration = 1; mCurrentIteration < mIterations && proceed(); mCurrentIteration++)
     {
@@ -174,7 +161,7 @@ bool CRandomSearch::optimise()
           COptItem & OptItem = *OptItemList[j];
           C_FLOAT64 & mut = mIndividual[j];
 
-          mut = OptItem.getRandomValue(mpRandom);
+          mut = OptItem.getRandomValue(pRandom);
 
           if (!OptItem.setItemValue(mut, COptItem::CheckPolicyFlag::All))
             break;

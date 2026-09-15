@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -32,7 +32,7 @@
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/utilities/CSort.h"
 #include "copasi/core/CDataObjectReference.h"
@@ -53,7 +53,7 @@ COptMethodSS::COptMethodSS(const CDataContainer * pParent,
   , mpLocalProblem(NULL)
 {
   assertParameter("Number of Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
-  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CConfigurableRNG::Type::MersenneTwister, eUserInterfaceFlag::editable);
   assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
   assertParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
@@ -288,7 +288,7 @@ bool COptMethodSS::randomize(C_INT32 i)
   bool Running = true;  // flag for invalid values
 
   const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
-  CRandom * pRandom = mRandomContext.active();
+  CConfigurableRNG * pRandom = mRandomContext.active();
 
   for (size_t j = 0; j < mVariableSize; ++j)
     {
@@ -316,7 +316,8 @@ bool COptMethodSS::creation(void)
   for (size_t i = 0; (i < 4) && proceed(); i++)
     {
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
-      CRandom * pRandom = mRandomContext.master();
+      CConfigurableRNG * pRandom = mRandomContext.master();
+      std::uniform_real_distribution< C_FLOAT64 > distribution(0.0, 1.0);
 
       for (size_t j = 0; j < mVariableSize; ++j)
         {
@@ -324,6 +325,7 @@ bool COptMethodSS::creation(void)
           COptItem & OptItem = *OptItemList[j];
           C_FLOAT64 & Sol = (*mPool[i])[j];
           const CIntervalValue & Interval = OptItem.getInterval();
+          C_FLOAT64 Sample = distribution(*pRandom);
 
           try
             {
@@ -332,14 +334,14 @@ bool COptMethodSS::creation(void)
                   {
                   case CIntervalValue::Range::positive:
                     Sol = pow(10.0, log10(std::max(Interval.getMinimum(), std::numeric_limits< C_FLOAT64 >::min()))
-                                      + 0.25 * Interval.getLogarithmicScale() * ((C_FLOAT64) i + pRandom->getRandomCC()));
+                                      + 0.25 * Interval.getLogarithmicScale() * ((C_FLOAT64) i + Sample));
                     break;
 
                   case CIntervalValue::Range::containsZero:
                     if (Interval.getLogarithmicScale() > 0)
                       {
                         C_FLOAT64 R = 2.0 / (2.0 + Interval.getLogarithmicScale());
-                        C_FLOAT64 Sample = 0.25 * (i + pRandom->getRandomCC());
+                        C_FLOAT64 Sample = 0.25 * (i + Sample);
 
                         if (Sample < R)
                           Sol = Interval.getMinimum() * (1.0 - 2.0 * Sample / R);
@@ -349,7 +351,7 @@ bool COptMethodSS::creation(void)
                     else
                       {
                         C_FLOAT64 R = 2.0 / (2.0 - Interval.getLogarithmicScale());
-                        C_FLOAT64 Sample = 0.25 * (i + pRandom->getRandomCC());
+                        C_FLOAT64 Sample = 0.25 * (i + Sample);
 
                         if (Sample < R)
                           Sol = Interval.getMaximum() * (1.0 - 2.0 * Sample / R);
@@ -360,14 +362,14 @@ bool COptMethodSS::creation(void)
 
                   case CIntervalValue::Range::negative:
                     Sol = -pow(10.0, log10(std::max(-Interval.getMaximum(), std::numeric_limits< C_FLOAT64 >::min()))
-                                       + 0.25 * Interval.getLogarithmicScale() * ((C_FLOAT64) i + pRandom->getRandomCC()));
+                                       + 0.25 * Interval.getLogarithmicScale() * ((C_FLOAT64) i + Sample));
                     break;
 
                     case CIntervalValue::Range::invalid:
                       break;
                   }
               else
-                Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) i + pRandom->getRandomCC());
+                Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) i + Sample);
             }
           catch (const std::exception &)
             {
@@ -394,7 +396,8 @@ bool COptMethodSS::creation(void)
         continue;
 
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
-      CRandom * pRandom = mRandomContext.active();
+      CConfigurableRNG * pRandom = mRandomContext.active();
+      std::uniform_real_distribution< C_FLOAT64 > distribution(0.0, 1.0);
 
       for (size_t j = 0; j < mVariableSize; ++j)
         {
@@ -416,13 +419,15 @@ bool COptMethodSS::creation(void)
               if (k > 0) mProb[k] += mProb[k - 1];
             }
 
-          C_FLOAT64 a = mRandomContext.master()->getRandomCC();
+          C_FLOAT32 a = distribution(*pRandom);
 
           for (size_t k = 0; k < 4; k++)
             {
               // note that the original is <= but numerically < is essentially the same and faster
               if (a < mProb[k])
                 {
+                  C_FLOAT32 Sample = distribution(*pRandom);
+
                   try
                     {
                       if (Interval.isLogarithmic())
@@ -430,24 +435,24 @@ bool COptMethodSS::creation(void)
                           {
                           case CIntervalValue::Range::positive:
                             Sol = pow(10.0, log10(std::max(Interval.getMinimum(), std::numeric_limits< C_FLOAT64 >::min()))
-                                              + 0.25 * Interval.getLogarithmicScale() * ((C_FLOAT64) k + pRandom->getRandomCC()));
+                                              + 0.25 * Interval.getLogarithmicScale() * ((C_FLOAT64) k + Sample));
                             break;
 
                           case CIntervalValue::Range::containsZero:
                             // TODO This is sampled form a normal distribution with mean = (maximum + minimum)/2 and sigma = 3
-                            Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) k + pRandom->getRandomCC());
+                            Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) k + Sample);
                             break;
 
                           case CIntervalValue::Range::negative:
                             Sol = -pow(10.0, log10(std::max(-Interval.getMaximum(), std::numeric_limits< C_FLOAT64 >::min()))
-                                              + 0.25 * Interval.getLogarithmicScale() * ((C_FLOAT64) k + pRandom->getRandomCC()));
+                                              + 0.25 * Interval.getLogarithmicScale() * ((C_FLOAT64) k + Sample));
                             break;
 
                             case CIntervalValue::Range::invalid:
                               break;
                           }
                       else
-                        Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) k + pRandom->getRandomCC());
+                        Sol = Interval.getMinimum() + 0.25 * Interval.getSize() * ((C_FLOAT64) k + Sample);
                     }
 
                   catch (const std::exception &)
@@ -709,10 +714,11 @@ bool COptMethodSS::combination(void)
       C_FLOAT64 xnewval; // to hold temp value of "parent" in go-beyond strategy
 
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
-      CRandom * pRandom = mRandomContext.active();
+      CConfigurableRNG * pRandom = mRandomContext.active();
 
       // keep the parent value in childval[i] so that we only accept better than that
       mChildVal[i] = mValues[i];
+      std::uniform_real_distribution< C_FLOAT64 > distribution(0.0, 1.0);
 
       for (size_t j = 0; j < mPopulationSize; j++)
         {
@@ -767,7 +773,7 @@ bool COptMethodSS::combination(void)
                             break;
                         }
 
-                      xnew[k] = c1 + (c2 - c1) * pRandom->getRandomCC();
+                      xnew[k] = c1 + (c2 - c1) * distribution(*pRandom);
                     }
 
                   catch (...)
@@ -821,7 +827,7 @@ bool COptMethodSS::combination(void)
                 {
                   COptItem & OptItem = *OptItemList[k];
                   dd = (xpr[k] - (*mChild[i])[k]) * lambda;
-                  xnew[k] = (*mChild[i])[k] + dd * pRandom->getRandomCC();
+                  xnew[k] = (*mChild[i])[k] + dd * distribution(*pRandom);
                   // get the bounds of this parameter
 
                   // put it on the bounds if it had exceeded them

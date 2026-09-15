@@ -33,7 +33,7 @@
 #include "COptItem.h"
 
 #include "copasi/math/CMathObject.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/core/CDataContainer.h"
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/core/CRegisteredCommonName.h"
@@ -280,7 +280,7 @@ void COptItem::rememberStartValue()
   mLastStartValue = getStartValue();
 }
 
-C_FLOAT64 COptItem::getRandomValue(CRandom * pRandom) const
+C_FLOAT64 COptItem::getRandomValue(CConfigurableRNG * pRandom) const
 {
   C_FLOAT64 RandomValue;
 

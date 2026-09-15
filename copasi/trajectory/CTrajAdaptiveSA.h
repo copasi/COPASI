@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,7 @@
 #define SSA_UPPER_NUM 100
 
 class CTrajectoryProblem;
-class CRandom;
+class CConfigurableRNG;
 class CMathReaction;
 
 class CTrajAdaptiveSA : public CTrajectoryMethod
@@ -181,7 +181,7 @@ protected:
   /**
    * The random number generator
    */
-  CRandom *mpRandomGenerator;
+  CConfigurableRNG *mpRandomGenerator;
 
   /**
    * The particle and reaction numbers

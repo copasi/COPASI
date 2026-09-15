@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,33 +31,33 @@
 #include "copasi/utilities/CValidatedUnit.h"
 #include "copasi/utilities/CBalanceTree.h"
 
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
 #include "sbml/math/ASTNode.h"
 #include "copasi/sbml/ConverterASTNode.h"
 #include "copasi/sbml/SBMLImporter.h"
 
-CRandom * CEvaluationNodeFunction::mpRandom = NULL;
+CConfigurableRNG * CEvaluationNodeFunction::mpRandom = NULL;
 
 // static
 C_FLOAT64 CEvaluationNodeFunction::runiform(C_FLOAT64 lowerBound, C_FLOAT64 upperBound)
-{return lowerBound + mpRandom->getRandomOO() * (upperBound - lowerBound);}
+{return std::uniform_real_distribution< C_FLOAT64 >(lowerBound, upperBound)(*mpRandom);}
 
 // static
 C_FLOAT64 CEvaluationNodeFunction::rnormal(C_FLOAT64 mean, C_FLOAT64 sd)
-{return mpRandom->getRandomNormal(mean, sd);}
+{return std::normal_distribution< C_FLOAT64 >(mean, sd)(*mpRandom);}
 
 //static
 C_FLOAT64 CEvaluationNodeFunction::rgamma(C_FLOAT64 shape,
     C_FLOAT64 scale)
 {
-  return mpRandom->getRandomGamma(shape, scale);
+  return std::gamma_distribution< C_FLOAT64 >(shape, scale)(*mpRandom);
 }
 
 //static
 C_FLOAT64 CEvaluationNodeFunction::rpoisson(C_FLOAT64 mu)
 {
-  return mpRandom->getRandomPoisson(mu);
+  return std::poisson_distribution< size_t >(mu)(*mpRandom);
 }
 
 // static
@@ -290,7 +290,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
         mpFunction2 = runiform;
 
         if (!mpRandom)
-          mpRandom = CRandom::createGenerator();
+          mpRandom = CConfigurableRNG::create();
 
         break;
 
@@ -298,7 +298,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
         mpFunction2 = rnormal;
 
         if (!mpRandom)
-          mpRandom = CRandom::createGenerator();
+          mpRandom = CConfigurableRNG::create();
 
         break;
 
@@ -306,7 +306,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
         mpFunction1 = rpoisson;
 
         if (!mpRandom)
-          mpRandom = CRandom::createGenerator();
+          mpRandom = CConfigurableRNG::create();
 
         break;
 
@@ -314,7 +314,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
         mpFunction2 = rgamma;
 
         if (!mpRandom)
-          mpRandom = CRandom::createGenerator();
+          mpRandom = CConfigurableRNG::create();
 
         break;
 

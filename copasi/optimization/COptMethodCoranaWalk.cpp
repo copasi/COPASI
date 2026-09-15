@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -28,7 +28,7 @@
 
 #include "copasi/parameterFitting/CFitProblem.h"
 #include "copasi/core/CDataObjectReference.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
 #define STORED 2
 #define NS 5
@@ -42,7 +42,6 @@ COptMethodCoranaWalk::COptMethodCoranaWalk(const CDataContainer * pParent,
   , mhIterations(C_INVALID_INDEX)
   , mIterations(100)
   , mCurrentIteration(0)
-  , mpRandom(NULL)
   , mVariableSize(0)
   , mEvaluationValue(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
   , mCurrent()
@@ -52,7 +51,7 @@ COptMethodCoranaWalk::COptMethodCoranaWalk(const CDataContainer * pParent,
 {
   assertParameter("Iterations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 100);
   assertParameter("Temperature", CCopasiParameter::Type::UDOUBLE, (C_FLOAT64) 1.0);
-  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CConfigurableRNG::Type::MersenneTwister, eUserInterfaceFlag::editable);
   assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
 
   initObjects();
@@ -65,7 +64,6 @@ COptMethodCoranaWalk::COptMethodCoranaWalk(const COptMethodCoranaWalk & src,
   , mhIterations(C_INVALID_INDEX)
   , mIterations(src.mIterations)
   , mCurrentIteration(src.mCurrentIteration)
-  , mpRandom(NULL)
   , mVariableSize(src.mVariableSize)
   , mEvaluationValue(src.mEvaluationValue)
   , mCurrent(src.mCurrent)
@@ -159,6 +157,9 @@ bool COptMethodCoranaWalk::optimise()
   mAccepted = 0;
 
   processing = true; // we want to do some work
+  CConfigurableRNG * pRandom = mRandomContext.active();
+  std::uniform_real_distribution< C_FLOAT64 > StepDistribution(-1.0, 1.0);
+  std::uniform_real_distribution< C_FLOAT64 > Probability(0.0, 1.0);
 
   do
     {
@@ -168,7 +169,7 @@ bool COptMethodCoranaWalk::optimise()
             {
               COptItem & OptItem = *OptItemList[h];
               // Calculate the step
-              xc = (2.0 * mpRandom->getRandomCC() - 1) * mStep[h];
+              xc = (2.0 * StepDistribution(*pRandom) - 1) * mStep[h];
               New = mCurrent[h] + xc;
 
               // Set the new parameter value
@@ -216,7 +217,7 @@ bool COptMethodCoranaWalk::optimise()
                   // keep with probability p, if energy is increased
                   p = exp((mCurrentValue - mEvaluationValue) / (K * mTemperature));
 
-                  if (p > mpRandom->getRandomCO())
+                  if (p > Probability(*pRandom))
                     {
                       // only one value has changed...
                       mCurrent[h] = New;
@@ -293,9 +294,6 @@ bool COptMethodCoranaWalk::initialize()
 
   mTemperature = getValue< C_FLOAT64 >("Temperature");
   mIterations = getValue< unsigned C_INT32 >("Iterations");
-  mpRandom =
-    CRandom::createGenerator((CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator"),
-                             getValue< unsigned C_INT32 >("Seed"));
 
   mCurrentIteration = 0;
 

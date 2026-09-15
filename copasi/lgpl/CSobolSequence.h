@@ -12,37 +12,46 @@
 
 #pragma once
 
+#include <random>
+
 #include "copasi/core/CCore.h"
 #include "copasi/core/CVector.h"
 
 class CSobolSequence
 {
-  typedef C_INT64 result_type;
-
-private:
-  static C_INT32 bit_lo0(C_INT64 n);
-
-  constexpr static C_INT32 DIM_MAX2 = 1111;
-  constexpr static C_INT32 LOG_MAX = 62;
-  constexpr static result_type MIN_RESULT = 0;
-  constexpr static result_type MAX_RESULT = 4611686018427387904; // 2^62
-
 public:
-  CSobolSequence() = delete;
-  CSobolSequence(const CSobolSequence & src) = delete;
-  CSobolSequence(const C_INT32 & dimension);
+  using result_type = unsigned C_INT64;
+  static constexpr result_type min() {return MIN_RESULT;};
+  static constexpr result_type max() {return MAX_RESULT;};
 
+  CSobolSequence(const CSobolSequence & src) = default;
+  CSobolSequence(result_type seed = 0, const C_INT32 & dimension = 1);
   ~CSobolSequence();
 
-  void seed(C_INT64 seed);
+  void setDimension(const C_INT32 & dimension);
+  const C_INT32 & getDimension() const;
+
+  void seed(result_type seed = 0);
+  result_type operator()();
+  void discard(result_type z);
 
   void uniformI64(CVectorCore<C_INT64> & point);
   void uniformR64(CVectorCore<C_FLOAT64> & point);
 
 private:
-  const C_INT32 mDimension;
-  C_FLOAT64 mReciprocal;
-  C_INT64 mSeed;
-  C_INT64 mPoint[DIM_MAX2];
-  C_INT64 mV[DIM_MAX2][LOG_MAX];
+  static C_INT32 bit_lo0(C_INT64 n);
+  void init();
+  result_type next();
+
+  constexpr static C_INT32 DIM_MAX = 1111;
+  constexpr static C_INT32 LOG_MAX = 62;
+  constexpr static result_type MIN_RESULT = 0;
+  constexpr static result_type MAX_RESULT = 4611686018427387904; // 2^62
+  constexpr static C_FLOAT64 mReciprocal = 1.0E+00 / (C_FLOAT64) MAX_RESULT;
+
+  result_type mSeed;
+  C_INT32 mDimension;
+  result_type mPoint[DIM_MAX];
+  result_type * mpNext;
+  result_type mV[DIM_MAX][LOG_MAX];
 };

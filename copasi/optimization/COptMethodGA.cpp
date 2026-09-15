@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -37,7 +37,7 @@
 #include "COptItem.h"
 #include "COptTask.h"
 
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/randomGenerator/CPermutation.h"
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/utilities/CSort.h"
@@ -60,7 +60,7 @@ COptMethodGA::COptMethodGA(const CDataContainer * pParent,
 {
   assertParameter("Number of Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 200);
   assertParameter("Population Size", CCopasiParameter::Type::UINT, (unsigned C_INT32) 20);
-  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CRandom::mt19937, eUserInterfaceFlag::editable);
+  assertParameter("Random Number Generator", CCopasiParameter::Type::UINT, (unsigned C_INT32) CConfigurableRNG::Type::MersenneTwister, eUserInterfaceFlag::editable);
   assertParameter("Seed", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
   assertParameter("Mutation Variance", CCopasiParameter::Type::DOUBLE, (C_FLOAT64) 0.1, eUserInterfaceFlag::editable);
   assertParameter("Stop after # Stalled Generations", CCopasiParameter::Type::UINT, (unsigned C_INT32) 0, eUserInterfaceFlag::editable);
@@ -100,9 +100,10 @@ bool COptMethodGA::swap(size_t from, size_t to)
 bool COptMethodGA::mutate(size_t index)
 {
   CVector< C_FLOAT64 > & Individual = *mIndividuals[index];
-  COptProblem *& pOptProblem = mProblemContext.active();
-  CRandom *& pRandom = mRandomContext.active();
+  COptProblem * pOptProblem = mProblemContext.active();
+  CConfigurableRNG * pRandom = mRandomContext.active();
   const std::vector< COptItem * > & OptItemList = pOptProblem->getOptItemList(true);
+  std::normal_distribution< C_FLOAT64 > distribution(1, mMutationVariance);
 
   // mutate the parameters
   for (size_t j = 0; j < mVariableSize; j++)
@@ -111,7 +112,7 @@ bool COptMethodGA::mutate(size_t index)
       C_FLOAT64 & mut = Individual[j];
 
       // calculate the mutated parameter
-      mut *= pRandom->getRandomNormal(1, mMutationVariance);
+      mut *= distribution(*pRandom);
       OptItem.setItemValue(mut, COptItem::CheckPolicyFlag::All);
     }
 
@@ -125,11 +126,11 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
 {
   size_t nCross = 0;
 
-  CRandom *& pRandom = mRandomContext.active();
+  CConfigurableRNG *  pRandom = mRandomContext.active();
   mCrossOver = false;
 
   if (mVariableSize > 1)
-    nCross = pRandom->getRandomU((unsigned C_INT32)(mVariableSize / 2));
+    nCross = std::uniform_int_distribution< size_t >(0, mVariableSize / 2)(*pRandom);
 
   if (nCross == 0)
     {
@@ -140,10 +141,11 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
       return true;
     }
 
+  std::uniform_int_distribution< size_t> dist(0, mVariableSize - 1);
   // choose cross over points;
   // We do not mind if a crossover point gets drawn twice
   for (size_t i = 0; i < nCross; i++)
-    mCrossOver[pRandom->getRandomU((unsigned C_INT32)(mVariableSize - 1))] = true;
+    mCrossOver[dist(*pRandom)] = true;
 
   const CVector< C_FLOAT64 > * pParent1 = & parent1;
   const CVector< C_FLOAT64 > * pParent2 = & parent2;
@@ -209,7 +211,8 @@ bool COptMethodGA::select()
 #pragma omp parallel for schedule(runtime)
   for (size_t i = 0; i < TotalPopulation; ++i)
     {
-      CRandom * pRandom = mRandomContext.active();
+      CConfigurableRNG * pRandom = mRandomContext.active();
+      std::uniform_int_distribution< size_t > dist(0, TotalPopulation - 1);
       size_t opp;
 
       for (size_t j = 0; j < nopp; ++j)
@@ -217,8 +220,8 @@ bool COptMethodGA::select()
           // get random opponent
           do
             {
-              opp = pRandom->getRandomU((unsigned C_INT32)(TotalPopulation - 1));
-          } while (i == opp);
+              opp = dist(*pRandom);
+            } while (i == opp);
 
           size_t Lost = (mValues[i] < mValues[opp]) ? opp : i;
 

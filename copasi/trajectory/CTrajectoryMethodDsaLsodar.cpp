@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,7 +47,7 @@
 #include "copasi/core/CMatrix.h"
 #include "copasi/utilities/CDependencyGraph.h"
 #include "copasi/utilities/CIndexedPriorityQueue.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/utilities/CVersion.h"
 
 CTrajectoryMethodDsaLsodar::CPartition::CPartition():
@@ -276,7 +276,7 @@ CTrajectoryMethodDsaLsodar::CTrajectoryMethodDsaLsodar(const CDataContainer * pP
     const CTaskEnum::Task & taskType):
   CLsodaMethod(pParent, methodType, taskType)
 {
-  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
+  mpRandomGenerator = CConfigurableRNG::create(CConfigurableRNG::Type::MersenneTwister);
   initializeParameter();
 }
 
@@ -284,7 +284,7 @@ CTrajectoryMethodDsaLsodar::CTrajectoryMethodDsaLsodar(const CTrajectoryMethodDs
     const CDataContainer * pParent):
   CLsodaMethod(src, pParent)
 {
-  mpRandomGenerator = CRandom::createGenerator(CRandom::mt19937);
+  mpRandomGenerator = CConfigurableRNG::create(CConfigurableRNG::Type::MersenneTwister);
   initializeParameter();
 }
 
@@ -363,6 +363,7 @@ C_FLOAT64 CTrajectoryMethodDsaLsodar::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 
 {
   C_FLOAT64 DeltaT = 0.0;
   bool FireReaction = false;
+  std::uniform_real_distribution< C_FLOAT64 > distribution(0.0, 1.0);
 
   // if there are stochastic reactions
   if (mPartition.mHasStochastic) // there is at least one stochastic reaction
@@ -371,13 +372,13 @@ C_FLOAT64 CTrajectoryMethodDsaLsodar::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 
         {
           if (mA0 != 0)
             {
-              mNextReactionTime = curTime - log(mpRandomGenerator->getRandomOO()) / mA0;
+              mNextReactionTime = curTime - log(distribution(*mpRandomGenerator)) / mA0;
 
               // We are sure that we have at least 1 reaction
               mNextReactionIndex = 0;
 
               C_FLOAT64 sum = 0.0;
-              C_FLOAT64 rand = mpRandomGenerator->getRandomOO() * mA0;
+              C_FLOAT64 rand = distribution(*mpRandomGenerator) * mA0;
 
               C_FLOAT64 * pAmu = mAmu.array();
               C_FLOAT64 * endAmu = pAmu + mNumReactions;

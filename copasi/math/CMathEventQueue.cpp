@@ -21,7 +21,7 @@
 #include "CMathContainer.h"
 #include "CMathEvent.h"
 #include "copasi/function/CExpression.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
 #include "copasi/core/CRootContainer.h"
 #include "copasi/commandline/CConfigurationFile.h"
@@ -466,7 +466,7 @@ CMathEventQueue::iterator CMathEventQueue::getAction()
 
       // Pick one randomly
       default:
-        return PriorityActions[mpContainer->getRandomGenerator().getRandomU((int)PriorityActions.size() - 1)];
+        return PriorityActions[std::uniform_int_distribution< size_t>(0, PriorityActions.size() - 1)(mpContainer->getRandomGenerator())];
         break;
     }
 

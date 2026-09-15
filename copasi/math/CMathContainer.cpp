@@ -31,7 +31,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/utilities/CNodeIterator.h"
 #include "copasi/utilities/dgemm.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/lapack/blaswrap.h"
 
 // Uncomment this line below to get debug print out.
@@ -222,7 +222,7 @@ CMathContainer::CMathContainer()
   , mpQuantity2NumberFactor(NULL)
   , mRandom("Random", this, InvalidValue)
   , mpProcessQueue(new CMathEventQueue(*this))
-  , mpRandomGenerator(CRandom::createGenerator())
+  , mpRandomGenerator(CConfigurableRNG::create())
   , mValues()
   , mpValuesBuffer(NULL)
   , mInitialExtensiveValues()
@@ -320,7 +320,7 @@ CMathContainer::CMathContainer(CModel & model)
   , mpQuantity2NumberFactor(NULL)
   , mRandom("Random", this, InvalidValue)
   , mpProcessQueue(nullptr)
-  , mpRandomGenerator(CRandom::createGenerator())
+  , mpRandomGenerator(CConfigurableRNG::create())
   , mValues()
   , mOldValues()
   , mpValuesBuffer(NULL)
@@ -432,7 +432,7 @@ CMathContainer::CMathContainer(const CMathContainer & src)
   , mpQuantity2NumberFactor(src.mpQuantity2NumberFactor)
   , mRandom("Random", this, InvalidValue)
   , mpProcessQueue(nullptr)
-  , mpRandomGenerator(CRandom::createGenerator())
+  , mpRandomGenerator(CConfigurableRNG::create())
   , mValues()
   , mOldValues()
   , mpValuesBuffer(src.mpValuesBuffer)
@@ -4739,7 +4739,7 @@ bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
   return true;
 }
 
-CRandom & CMathContainer::getRandomGenerator() const
+CConfigurableRNG & CMathContainer::getRandomGenerator() const
 {
   return * mpRandomGenerator;
 }

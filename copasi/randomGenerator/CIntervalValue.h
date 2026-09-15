@@ -1,4 +1,4 @@
-// Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2025 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -7,7 +7,7 @@
 
 #include "copasi/core/CCore.h"
 
-class CRandom;
+class CConfigurableRNG;
 
 class CIntervalValue
 {
@@ -25,7 +25,7 @@ public:
 
   CIntervalValue(const C_FLOAT64 *& pMinimum, const C_FLOAT64 *& pMaximum);
 
-  C_FLOAT64 randomValue(CRandom * pRandom) const;
+  C_FLOAT64 randomValue(CConfigurableRNG * pRandom) const;
 
   const Range & getRange() const;
 

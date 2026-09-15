@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,7 +36,7 @@
 
 #include "copasi/core/CDataVector.h"
 #include "copasi/function/CFunction.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/math/CMathContainer.h"
 #include "copasi/math/CMathReaction.h"
 #include "copasi/model/CModel.h"
@@ -156,7 +156,8 @@ void CTrajAdaptiveSA::start()
   bool useRandomSeed = getValue< bool >("Use Random Seed");
   unsigned C_INT32 randomSeed = getValue< unsigned C_INT32 >("Random Seed");
 
-  if (useRandomSeed) mpRandomGenerator->initialize(randomSeed);
+  if (useRandomSeed)
+    mpRandomGenerator->seed(randomSeed);
 
   mMaxSteps = getValue< C_INT32 >("Max Internal Steps");
   mEpsilon = getValue< C_FLOAT64 >("Epsilon");
@@ -433,7 +434,7 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
   if (NonCriticalReactions == mNumReactions || AmuCritical == 0)
     CriticalReactionTau = std::numeric_limits< C_FLOAT64 >::infinity();
   else
-    CriticalReactionTau = -log(mpRandomGenerator->getRandomOO()) / AmuCritical;
+    CriticalReactionTau = -log(std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mpRandomGenerator)) / AmuCritical;
 
   bool isUpdated = false;
 
@@ -452,6 +453,7 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
       ppOrderedAmuEnd = mPartitionedAmu.array() + NonCriticalReactions;
 
       C_FLOAT64 **ppOrderedReactionFiring = mPartitionedReactionFiring.array();
+      std::poisson_distribution< size_t > poisson_dist;
 
       for (; ppOrderedAmu != ppOrderedAmuEnd; ++ppOrderedAmu, ++ppOrderedReactionFiring)
         {
@@ -462,7 +464,7 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
           else if (Lambda > 2.0e9)
             CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 26);
 
-          **ppOrderedReactionFiring = mpRandomGenerator->getRandomPoisson(Lambda);
+          **ppOrderedReactionFiring = poisson_dist(*mpRandomGenerator, std::poisson_distribution< size_t >::param_type(Lambda));
         }
 
       size_t CriticalReactionIndex = C_INVALID_INDEX;
@@ -471,7 +473,7 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
         {
           // Determine the critical reaction which fires.
           C_FLOAT64 sum = 0;
-          C_FLOAT64 rand = mpRandomGenerator->getRandomOO() * AmuCritical;
+          C_FLOAT64 rand = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mpRandomGenerator) * AmuCritical;
 
           ppOrderedAmu = mPartitionedAmu.array() + NonCriticalReactions;
           ppOrderedAmuEnd = mPartitionedAmu.array() + mNumReactions;
@@ -562,13 +564,15 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleSSAStep(const C_FLOAT64 & curTime, const C_FL
           CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 27);
         }
 
-      mNextReactionTime = curTime - log(mpRandomGenerator->getRandomOO()) / mA0;
+      std::uniform_real_distribution< C_FLOAT64 > distribution(0.0, 1.0);
+
+      mNextReactionTime = curTime - log(distribution(*mpRandomGenerator)) / mA0;
 
       // We are sure that we have at least 1 reaction
       mNextReactionIndex = 0;
 
       C_FLOAT64 sum = 0.0;
-      C_FLOAT64 rand = mpRandomGenerator->getRandomOO() * mA0;
+      C_FLOAT64 rand = distribution(*mpRandomGenerator) * mA0;
 
       const C_FLOAT64 * pAmu = mAmu.array();
       const C_FLOAT64 * pAmuEnd = pAmu + mNumReactions;

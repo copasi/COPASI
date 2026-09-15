@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -41,7 +41,7 @@ class CScanProblem;
 class CScanTask;
 class CSteadyStateTask;
 class CTrajectory;
-class CRandom;
+class CConfigurableRNG;
 class CModelParameterSet;
 
 class CScanItem
@@ -64,7 +64,7 @@ protected:
 public:
   static
   CScanItem* createScanItemFromParameterGroup(CCopasiParameterGroup* si,
-      CRandom* rg);
+      CConfigurableRNG* rg);
 
   size_t getNumSteps() const;
 
@@ -171,11 +171,11 @@ class CScanItemRandom: public CScanItem
 {
 private:
   C_FLOAT64 mMin, mMax, mFaktor;
-  CRandom* mRg;
+  CConfigurableRNG* mRg;
   unsigned C_INT32 mRandomType;
   bool mLog;
 public:
-  CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg);
+  CScanItemRandom(CCopasiParameterGroup* si, CConfigurableRNG* rg);
   virtual ~CScanItemRandom() {};
 
   void step() override;
@@ -216,7 +216,7 @@ protected:
   /**
    * A pointer to the random number generator
    */
-  CRandom * mpRandomGenerator;
+  CConfigurableRNG * mpRandomGenerator;
 
   std::vector<CScanItem*> mScanItems;
 

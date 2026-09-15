@@ -36,7 +36,7 @@
 #include "copasi/model/CModel.h"
 #include "copasi/model/CState.h"
 #include "copasi/utilities/CReadConfig.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 //#include "copasi/utilities/CWriteConfig.h"
 #include "CScanProblem.h"
 #include "CScanMethod.h"
@@ -64,7 +64,7 @@
 
 //static
 CScanItem* CScanItem::createScanItemFromParameterGroup(CCopasiParameterGroup* si,
-    CRandom* rg)
+    CConfigurableRNG* rg)
 {
   if (!si) return NULL;
 
@@ -335,7 +335,7 @@ void CScanItemLinear::ensureParameterGroupHasAllElements(CCopasiParameterGroup* 
 
 //*******
 
-CScanItemRandom::CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg):
+CScanItemRandom::CScanItemRandom(CCopasiParameterGroup* si, CConfigurableRNG* rg):
   CScanItem(si),
   mRg(rg),
   mRandomType(0),
@@ -373,7 +373,7 @@ void CScanItemRandom::step()
       switch (mRandomType)
         {
           case 0: // uniform
-            Value = mMin + mRg->getRandomCC() * mFaktor;
+            Value = std::uniform_real_distribution< C_FLOAT64 >(mMin, mMax)(*mRg);
 
             if (mLog)
               Value = exp(Value);
@@ -381,8 +381,7 @@ void CScanItemRandom::step()
             break;
 
           case 1: // normal
-            tmpF = mRg->getRandomNormal01();
-            Value = mMin + tmpF * mMax;
+            tmpF = std::normal_distribution< C_FLOAT64 >(mMin, mMax)(*mRg);
 
             if (mLog)
               Value = exp(Value);
@@ -394,12 +393,12 @@ void CScanItemRandom::step()
             if (mMin < 0)
               CCopasiMessage(CCopasiMessage::WARNING, "Invalid ScanItem: Requested Poisson random variable for negative argument: %lf", mMin);
 
-            Value = mRg->getRandomPoisson(mMin);
+            Value = std::poisson_distribution< size_t >(mMin)(*mRg);
 
             break;
 
           case 3: // gamma
-            Value = mRg->getRandomGamma(mMin, mMax);
+            Value = std::gamma_distribution< C_FLOAT64 >(mMin, mMax)(*mRg);
 
             if (mLog)
               Value = exp(Value);
@@ -444,7 +443,7 @@ CScanMethod::CScanMethod(const CDataContainer * pParent,
   , mInitialUpdates(nullptr)
   , mInitialStateChanged(false)
 {
-  mpRandomGenerator = CRandom::createGenerator();
+  mpRandomGenerator = CConfigurableRNG::create();
 }
 
 CScanMethod::CScanMethod(const CScanMethod & src,
@@ -461,7 +460,7 @@ CScanMethod::CScanMethod(const CScanMethod & src,
   , mInitialUpdates(nullptr)
   , mInitialStateChanged(false)
 {
-  mpRandomGenerator = CRandom::createGenerator();
+  mpRandomGenerator = CConfigurableRNG::create();
 }
 
 CScanMethod::~CScanMethod()
