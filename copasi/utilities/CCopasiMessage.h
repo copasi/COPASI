@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -203,11 +203,11 @@ public:
    */
   static void clearDeque();
 
-  /** 
-   * removes the last size messages from the queue
-   * @param size the number of messages to remove
+  /**
+   * Removes messages from the queue until size messages remain
+   * @param size_t size the number of messages to keep in the queue. If size is 0 all messages are removed.
    */
-  static void popMessages(int size);
+  static void popMessages(size_t size);
 
   /**
    * Retrieve the size of the dequeue
