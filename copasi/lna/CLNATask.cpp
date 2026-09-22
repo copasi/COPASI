@@ -94,10 +94,9 @@ bool CLNATask::initialize(const OutputFlag & of,
     dynamic_cast<CLNAProblem *>(mpProblem);
   assert(pProblem);
 
-  bool success = mpMethod->isValidProblem(mpProblem);
-
-  //we need to resize and initialize the result matrices before initializing the output
-  success &= updateMatrices();
+  // we need to resize and initialize the result matrices before initializing the output
+  // update matrices will also check whether the method is valid for the problem.
+  bool success = updateMatrices();
 
   //initialize reporting
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
