@@ -202,7 +202,7 @@ protected:
   /**
    *   The random number generator.
    */
-  CConfigurableRNG * mpRandomGenerator;
+  CConfigurableRNG * mRNG;
 
   /**
    * index of first species in a CState

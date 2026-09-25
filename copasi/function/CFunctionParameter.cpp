@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,39 +36,6 @@
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/core/CRootContainer.h"
 #include "copasi/undo/CData.h"
-
-// static
-const CEnumAnnotation< std::string, CFunctionParameter::Role > CFunctionParameter::RoleNameXML(
-{
-  "substrate",
-  "product",
-  "modifier",
-  "constant",
-  "volume",
-  "time",
-  "variable"
-});
-
-// static
-const CEnumAnnotation< std::string, CFunctionParameter::Role > CFunctionParameter::RoleNameDisplay(
-{
-  "Substrate",
-  "Product",
-  "Modifier",
-  "Parameter",
-  "Volume",
-  "Time",
-  "Variable"
-});
-
-// static
-const CEnumAnnotation< std::string, CFunctionParameter::DataType > CFunctionParameter::DataTypeName(
-{
-  "Integer",
-  "Double",
-  "Vector of Integer",
-  "Vector of Double"
-});
 
 // static
 CFunctionParameter * CFunctionParameter::fromData(const CData & data, CUndoObjectInterface * /* pParent */)

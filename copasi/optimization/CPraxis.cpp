@@ -950,7 +950,7 @@ C_FLOAT64 CPraxis::operator()(C_FLOAT64 t0,
                               C_INT32 n,
                               C_INT32 prin,
                               C_FLOAT64 x[],
-                              CConfigurableRNG * pRandom,
+                              CConfigurableRNG & rng,
                               FPraxis * f)
 
 //****************************************************************************80
@@ -1253,7 +1253,7 @@ C_FLOAT64 CPraxis::operator()(C_FLOAT64 t0,
                 {
                   for (j = 0; j < n; j++)
                     {
-                      r = distribution(*pRandom);
+                      r = distribution(rng);
                       s = (0.1 * ldt + t2 * pow(10.0, kt)) * (r - 0.5);
                       z[j] = s;
 

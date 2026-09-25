@@ -51,7 +51,7 @@ CTrajAdaptiveSA::CTrajAdaptiveSA(const CDataContainer * pParent,
   , mAvgDX(0)
   , mSigDX(0)
   , mpMethodSpecies(NULL)
-  , mpRandomGenerator(NULL)
+  , mRNG(NULL)
   , mNumReactions(0)
   , mNumReactionSpecies(0)
   , mMaxSteps(1000000)
@@ -76,7 +76,7 @@ CTrajAdaptiveSA::CTrajAdaptiveSA(const CTrajAdaptiveSA & src,
   , mAvgDX(src.mAvgDX)
   , mSigDX(src.mSigDX)
   , mpMethodSpecies(src.mpMethodSpecies)
-  , mpRandomGenerator(NULL)
+  , mRNG(NULL)
   , mNumReactions(src.mNumReactions)
   , mNumReactionSpecies(src.mNumReactionSpecies)
   , mMaxSteps(src.mMaxSteps)
@@ -151,13 +151,13 @@ void CTrajAdaptiveSA::start()
 
   /* get configuration data */
 
-  mpRandomGenerator = &mpContainer->getRandomGenerator();
+  mRNG = &mpContainer->getRandomGenerator();
 
   bool useRandomSeed = getValue< bool >("Use Random Seed");
   unsigned C_INT32 randomSeed = getValue< unsigned C_INT32 >("Random Seed");
 
   if (useRandomSeed)
-    mpRandomGenerator->seed(randomSeed);
+    mRNG->seed(randomSeed);
 
   mMaxSteps = getValue< C_INT32 >("Max Internal Steps");
   mEpsilon = getValue< C_FLOAT64 >("Epsilon");
@@ -434,7 +434,7 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
   if (NonCriticalReactions == mNumReactions || AmuCritical == 0)
     CriticalReactionTau = std::numeric_limits< C_FLOAT64 >::infinity();
   else
-    CriticalReactionTau = -log(std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mpRandomGenerator)) / AmuCritical;
+    CriticalReactionTau = -log(std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mRNG)) / AmuCritical;
 
   bool isUpdated = false;
 
@@ -464,7 +464,7 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
           else if (Lambda > 2.0e9)
             CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 26);
 
-          **ppOrderedReactionFiring = poisson_dist(*mpRandomGenerator, std::poisson_distribution< size_t >::param_type(Lambda));
+          **ppOrderedReactionFiring = poisson_dist(*mRNG, std::poisson_distribution< size_t >::param_type(Lambda));
         }
 
       size_t CriticalReactionIndex = C_INVALID_INDEX;
@@ -473,7 +473,7 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
         {
           // Determine the critical reaction which fires.
           C_FLOAT64 sum = 0;
-          C_FLOAT64 rand = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mpRandomGenerator) * AmuCritical;
+          C_FLOAT64 rand = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mRNG) * AmuCritical;
 
           ppOrderedAmu = mPartitionedAmu.array() + NonCriticalReactions;
           ppOrderedAmuEnd = mPartitionedAmu.array() + mNumReactions;
@@ -566,13 +566,13 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleSSAStep(const C_FLOAT64 & curTime, const C_FL
 
       std::uniform_real_distribution< C_FLOAT64 > distribution(0.0, 1.0);
 
-      mNextReactionTime = curTime - log(distribution(*mpRandomGenerator)) / mA0;
+      mNextReactionTime = curTime - log(distribution(*mRNG)) / mA0;
 
       // We are sure that we have at least 1 reaction
       mNextReactionIndex = 0;
 
       C_FLOAT64 sum = 0.0;
-      C_FLOAT64 rand = distribution(*mpRandomGenerator) * mA0;
+      C_FLOAT64 rand = distribution(*mRNG) * mA0;
 
       const C_FLOAT64 * pAmu = mAmu.array();
       const C_FLOAT64 * pAmuEnd = pAmu + mNumReactions;

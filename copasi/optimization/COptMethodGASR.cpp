@@ -106,7 +106,7 @@ bool COptMethodGASR::mutate(CVector< C_FLOAT64 > & individual)
   size_t j;
 
   const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
-  CConfigurableRNG * pRandom = mRandomContext.active();
+  CConfigurableRNG & RNG = mRandomContext.active();
   std::normal_distribution< C_FLOAT64 > dist(1, mMutationVariance);
 
   // mutate the parameters
@@ -115,7 +115,7 @@ bool COptMethodGASR::mutate(CVector< C_FLOAT64 > & individual)
       C_FLOAT64 & mut = individual[j];
 
       // calculate the mutated parameter
-      mut *= dist(*pRandom);
+      mut *= dist(RNG);
 
       // for SR do not force to be within bounds
 
@@ -132,7 +132,7 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
                                CVector< C_FLOAT64 > & child1,
                                CVector< C_FLOAT64 > & child2)
 {
-  CConfigurableRNG * pRandom = mRandomContext.active();
+  CConfigurableRNG & RNG = mRandomContext.active();
   std::uniform_int_distribution< size_t > dist(0, mVariableSize - 1);
 
   size_t i, crp;
@@ -141,7 +141,7 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
   mCrossOver = mCrossOverFalse;
 
   if (mVariableSize > 1)
-    nCross = std::uniform_int_distribution< size_t >(0, mVariableSize / 2)(*pRandom);
+    nCross = std::uniform_int_distribution< size_t >(0, mVariableSize / 2)(RNG);
 
   if (nCross == 0)
     {
@@ -156,7 +156,7 @@ bool COptMethodGASR::crossover(const CVector< C_FLOAT64 > & parent1,
   // We do not mind if a crossover point gets drawn twice
   for (i = 0; i < nCross; i++)
     {
-      crp = dist(*pRandom);
+      crp = dist(RNG);
       mCrossOver[crp] = true;
     }
 
@@ -225,7 +225,7 @@ bool COptMethodGASR::select()
   // Selection Method for Stochastic Ranking
   // stochastic ranking "bubble sort"
 
-  CConfigurableRNG * pRandom = mRandomContext.master();
+  CConfigurableRNG & RNG = mRandomContext.master();
   std::uniform_real_distribution< C_FLOAT64 > uniformDist(0, 1);
 
   for (i = 0; i < sweepNum; i++) // Here sweepNum is optimal number of sweeps from paper
@@ -237,7 +237,7 @@ bool COptMethodGASR::select()
       for (j = 0; j < TotalPopulation - 1; j++)  // lambda is number of individuals
         {
           if ((mPhi[j] == 0 && mPhi[j + 1] == 0) ||              // within bounds
-              (uniformDist(*pRandom) < mPf))      // random chance to compare values outside bounds
+              (uniformDist(RNG) < mPf))      // random chance to compare values outside bounds
             {
               // compare obj fcn using mValue alternative code
               if (mValues[j] > mValues[j + 1])

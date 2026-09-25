@@ -62,8 +62,7 @@ public:
     KEY,
     FILE,
     EXPRESSION,
-    INVALID,
-    __SIZE
+    INVALID
   };
 
   enum struct eUserInterfaceFlag
@@ -76,16 +75,36 @@ public:
 
   typedef CFlags< eUserInterfaceFlag > UserInterfaceFlag;
 
-  /**
-   * String literals for the GUI to display type names of parameters known
-   * to COPASI.
-   */
-  static const CEnumAnnotation< std::string, Type > TypeName;
+  constexpr static CEnumAnnotation TypeName{
+    Type::INVALID,
+    MapNode{Type::DOUBLE, "float"},
+    MapNode{Type::UDOUBLE, "unsigned float"},
+    MapNode{Type::INT, "integer"},
+    MapNode{Type::UINT, "unsigned integer"},
+    MapNode{Type::BOOL, "bool"},
+    MapNode{Type::GROUP, "group"},
+    MapNode{Type::STRING, "string"},
+    MapNode{Type::CN, "common name"},
+    MapNode{Type::KEY, "key"},
+    MapNode{Type::FILE, "file"},
+    MapNode{Type::EXPRESSION, "expression"},
+    MapNode{Type::INVALID, "invalid"}};
 
-  /**
-   * XML type names of parameters known to COPASI.
-   */
-  static const CEnumAnnotation< std::string, Type > XMLType;
+  // static
+  constexpr static CEnumAnnotation XMLType{
+    Type::INVALID,
+    MapNode{Type::DOUBLE, "float"},
+    MapNode{Type::UDOUBLE, "unsignedFloat"},
+    MapNode{Type::INT, "integer"},
+    MapNode{Type::UINT, "unsignedInteger"},
+    MapNode{Type::BOOL, "bool"},
+    MapNode{Type::GROUP, "group"},
+    MapNode{Type::STRING, "string"},
+    MapNode{Type::CN, "cn"},
+    MapNode{Type::KEY, "key"},
+    MapNode{Type::FILE, "file"},
+    MapNode{Type::EXPRESSION, "expression"},
+    MapNode{Type::INVALID, "invalid"}};
 
   static void allocateValue(const Type & type, void *& pValue);
   static void assignValue(const Type & type, void *& pValue, const void * pNewValue);
@@ -361,11 +380,11 @@ public:
     return true;
   }
 
-  template < class CType, class Enum> bool setValidValues(const CEnumAnnotation< CType, Enum> & validValues)
+  template < class T > bool setValidValues(const T & validValues)
   {
-    if (!isValidValue(CType())) return false;
+    if (!isValidValue(typename T::AnnotationTypeReturn())) return false;
 
-    std::vector< std::pair < CType, CType > > ValidValues;
+    std::vector< std::pair < typename T::AnnotationTypeReturn, typename T::AnnotationTypeReturn > > ValidValues;
 
     for (size_t i = 0; i < validValues.size(); i++)
       {

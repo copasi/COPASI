@@ -144,7 +144,7 @@ private:
   C_FLOAT64 phi(size_t indvNum);
 
 protected:
-  void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG * pRandom) override;
+  void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG & rng) override;
 
   // Attributes
 private:

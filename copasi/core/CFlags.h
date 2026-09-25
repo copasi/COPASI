@@ -196,13 +196,13 @@ public:
    * @param const CFlags & filter (Default: All)
    * @return std::vector< AType > Annotations
    */
-  template< typename AType >
-  std::vector< AType > getAnnotations(const CEnumAnnotation< AType, Enum > & annotation,
+  template< typename T >
+  std::vector< typename T::AnnotationTypeReturn > getAnnotations(const T & annotation,
                                       const CFlags & filter = All) const
   {
-    std::vector< AType > Annotations;
+    std::vector< typename T::AnnotationTypeReturn > Annotations;
 
-    for (size_t i = 0; i < static_cast< size_t >(Enum::__SIZE); i++)
+    for (size_t i = 0; i < annotation.size(); i++)
       if (bitset::operator[](i) && filter[i])
         {
           Annotations.push_back(annotation[i]);
@@ -217,14 +217,14 @@ public:
    * @param const CFlags & filter (Default: All)
    * @return std::vector< AType > Annotations
    */
-  template< typename AType >
-  void fromAnnotations(std::vector< AType > & annotations,
-                       const CEnumAnnotation< AType, Enum > & annotation)
+  template< typename T >
+  void fromAnnotations(std::vector< typename T::AnnotationType > & annotations,
+                       const T & annotation)
   {
     bitset::reset();
 
-for (const AType & a : annotations)
-      operator &= (annotation.toEnum(a));
+    for (const typename T::AnnotationType & a : annotations)
+      operator&=(annotation.toEnum(a));
   }
 };
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -271,7 +271,6 @@ CCopasiMethod * CMethodFactory::create(const CTaskEnum::Task & taskType,
       case CTaskEnum::Method::HybridGASA:
       case CTaskEnum::Method::LSODA2:
       case CTaskEnum::Method::analyticsMethod:
-      case CTaskEnum::Method::__SIZE:
         break;
     }
 
@@ -486,7 +485,6 @@ CCopasiMethod * CMethodFactory::copy(const CCopasiMethod * pSrc, const CDataCont
       case CTaskEnum::Method::HybridGASA:
       case CTaskEnum::Method::LSODA2:
       case CTaskEnum::Method::analyticsMethod:
-      case CTaskEnum::Method::__SIZE:
         break;
     }
 

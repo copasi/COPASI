@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -43,26 +43,6 @@
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/utilities/utility.h"
 #include "copasi/core/CRootContainer.h"
-
-//static
-const CEnumAnnotation< std::string, CModelEntity::Status > CModelEntity::StatusName(
-{
-  "fixed",
-  "assignment",
-  "reactions",
-  "ode",
-  "time"
-});
-
-//static
-const CEnumAnnotation< std::string, CModelEntity::Status > CModelEntity::XMLStatus(
-{
-  "fixed",
-  "assignment",
-  "reactions",
-  "ode",
-  "time"
-});
 
 // static
 CModelEntity * CModelEntity::fromData(const CData & /* data */, CUndoObjectInterface * /* pParent */)
@@ -769,7 +749,7 @@ void CModelEntity::setRate(const C_FLOAT64 & rate)
 
 bool CModelEntity::setStatus(const CModelEntity::Status & status)
 {
-  bool success = (status != Status::__SIZE);
+  bool success = true;
 
   if (success
       && mStatus != status)
@@ -851,10 +831,6 @@ bool CModelEntity::setStatus(const CModelEntity::Status & status)
             mRate = 0.0;
 
             mUsed = false;
-            break;
-
-          case Status::__SIZE:
-            success = false;
             break;
         }
     }

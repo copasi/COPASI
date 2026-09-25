@@ -25,10 +25,10 @@ class CBalancedPermutation: public CPermutation
 public:
   /**
    * Specific constructor
-   * @param ConfigurableRNG * pRandom
+   * @param ConfigurableRNG & rng
    * @param const size_t & size
    */
-  CBalancedPermutation(CConfigurableRNG * pRandom, const size_t & size);
+  CBalancedPermutation(CConfigurableRNG & rng, const size_t & size);
 
   /**
    * Copy constructor

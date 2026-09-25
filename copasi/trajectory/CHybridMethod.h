@@ -445,7 +445,7 @@ protected:
   /**
    *   The random number generator.
    */
-  CConfigurableRNG * mpRandomGenerator;
+  CConfigurableRNG * mRNG;
 
   /**
    *   The graph of reactions and their dependent reactions. When a reaction is

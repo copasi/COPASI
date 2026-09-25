@@ -100,7 +100,7 @@ bool COptMethodSRES::replicate()
   // iterate over parents
   for (i = 0; itSrc != endSrc && Continue; ++itSrc, ++itSrcVariance, ++i)
     {
-      CConfigurableRNG * pRandom = mRandomContext.active();
+      CConfigurableRNG & RNG = mRandomContext.active();
       std::uniform_int_distribution<size_t> dist(0, mPopulationSize - 1);
 
       // iterate over the child rate - 1 since the first child is the parent.
@@ -113,7 +113,7 @@ bool COptMethodSRES::replicate()
           // do recombination on the sigma
           // since sigmas already have one parent's component
           // need only average with the sigmas of the other parent
-          Parent = (i + dist(*pRandom)) % mPopulationSize;
+          Parent = (i + dist(RNG)) % mPopulationSize;
 
           pVariance = (*itTargetVariance)->array();
           pVarianceEnd = pVariance + mVariableSize;
@@ -136,7 +136,7 @@ bool COptMethodSRES::mutate()
 #pragma omp parallel for schedule(runtime)
   for (size_t i = mPopulationSize; i < childrate * mPopulationSize; ++i)
     {
-      CConfigurableRNG * pRandom = mRandomContext.active();
+      CConfigurableRNG & RNG = mRandomContext.active();
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
 
       C_FLOAT64 * pVariable = mIndividuals[i]->array();
@@ -145,7 +145,7 @@ bool COptMethodSRES::mutate()
       C_FLOAT64 * pMaxVariance = mMaxVariance.array();
 
       std::normal_distribution< C_FLOAT64 > nd(0, 1);
-      C_FLOAT64 v1 = nd(*pRandom);
+      C_FLOAT64 v1 = nd(RNG);
 
       for (size_t j = 0; pVariable != pVariableEnd; ++pVariable, ++pVariance, ++pMaxVariance, ++j)
         {
@@ -160,12 +160,12 @@ bool COptMethodSRES::mutate()
             {
               // update the parameter for the variances
               *pVariance =
-                std::min(*pVariance * exp(mTauPrime * v1 + mTau * nd(*pRandom)), *pMaxVariance);
+                std::min(*pVariance * exp(mTauPrime * v1 + mTau * nd(RNG)), *pMaxVariance);
 
               for (l = 0; l < 10; l++)
                 {
                   // calculate the mutated parameter
-                  mut = Store + *pVariance * nd(*pRandom);
+                  mut = Store + *pVariance * nd(RNG);
 
                   if (OptItem.checkConstraint(mut) == 0)
                     break;
@@ -203,7 +203,7 @@ void COptMethodSRES::select()
   // we have properly sorted the top mPopulationSize individuals.
   for (size_t i = 0; i < mPopulationSize; i++)
     {
-      CConfigurableRNG * pRandom = mRandomContext.active();
+      CConfigurableRNG & RNG = mRandomContext.active();
       std::uniform_real_distribution< C_FLOAT64 > Probability(0, 1);
 
       for (size_t j = mIndividuals.size() - 1; j > 0; --j)
@@ -218,7 +218,7 @@ void COptMethodSRES::select()
               if (mValues[j] + mPhi[j] < mValues[j - 1] + mPhi[j - 1])
                 swap(j, j - 1);
             }
-          else if (Probability(*pRandom) < mPf)      // random chance to compare values outside bounds
+          else if (Probability(RNG) < mPf)      // random chance to compare values outside bounds
             {
               if (mValues[j] < mValues[j - 1])
                 swap(j, j - 1);
@@ -244,7 +244,7 @@ size_t COptMethodSRES::fittest()
 }
 
 // virtual
-void COptMethodSRES::finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG * /* pRandom */)
+void COptMethodSRES::finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG & /* rng */)
 {
   const C_FLOAT64 & Value = (*mIndividuals[individual])[index];
   (*mVariance[individual])[index] = std::min(*item.getUpperBoundValue() - Value, Value - *item.getLowerBoundValue()) / sqrt(double(mVariableSize));

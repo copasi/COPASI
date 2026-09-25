@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,117 +8,202 @@
 // of Connecticut School of Medicine.
 // All rights reserved.
 
-#ifndef COPASI_CEnumAnnotation
-#define COPASI_CEnumAnnotation
+#pragma once
 
-#include <array>
+#include <cstdint>
 #include <vector>
-#include <map>
 
-template < class Type, class Enum > class CEnumAnnotation
-  : public std::array< Type, static_cast< size_t >(Enum::__SIZE) >
+#include "copasi/core/CBidirectionalMap.h"
+
+// Custom type trait to identify valid string types
+template < typename T >
+concept IsStringOrDerived =
+  std::same_as< std::decay_t< T >, std::string > || std::is_base_of_v< std::string, std::decay_t< T > >;
+// Custom type trait to identify valid string types
+
+template < typename _Map >
+class CEnumAnnotation : private _Map
 {
 public:
-  /**
-   * typedef for the base class
-   */
-  typedef std::array< Type, static_cast< size_t >(Enum::__SIZE) > base;
+  using EnumType = _Map::KeyType;
+  using AnnotationType = _Map::ValueType;
+  using AnnotationTypeReturn = std::conditional_t< std::is_same_v< AnnotationType, std::string_view >, std::string, const AnnotationType &>;
 
-  /**
-   * Default constructor
-   */
-  CEnumAnnotation():
-    base(),
-    mMap()
+  constexpr static size_t Size = _Map::Size;
+
+  constexpr CEnumAnnotation(const _Map & map, EnumType enumDefault)
+    : _Map(map)
+    , mEnumDefault(enumDefault)
   {
-    base::fill(Type());
+    isDefaultValid(this->keys(), mEnumDefault);
+  }
+
+  // Accepts the unpacked Nodes and constructs the flat arrays smoothly
+  template < typename... Nodes >
+  constexpr CEnumAnnotation(EnumType enumDefault, Nodes &&... nodes)
+    : _Map({std::forward< Nodes >(nodes)...})
+    , mEnumDefault(enumDefault)
+  {
+    isDefaultValid(this->keys(), mEnumDefault);
+  }
+
+  template < size_t N >
+  constexpr auto subset(EnumType enumDefault, const std::array< EnumType, N > keys) const
+  {
+    // Instantiates the sub-annotation using the new safely constructed sub-map
+    return CEnumAnnotation< CBidirectionalMap< EnumType, AnnotationType, N > >(
+        _Map::subset(keys),
+        enumDefault
+    );
+  }
+
+  constexpr size_t size() const
+  {
+    return Size;
   }
 
   /**
-   * Disable the copy constructor
+   * Operator []
+   * @param EnumType e
+   * @return const AnnotationType & annotation
    */
-  CEnumAnnotation(const CEnumAnnotation & src):
-    base(src),
-    mMap(src.mMap)
-  {}
-
-public:
-  /**
-   * Specific constructor from the base class
-   * @param const base & src
-   */
-  CEnumAnnotation(typename std::enable_if < !(std::is_same< Type, const char * >::value || std::is_const< Type >::value), const base & >::type src):
-    base(src),
-    mMap()
+  AnnotationTypeReturn operator[](EnumType e) const
   {
-    for (size_t i = 0; i < static_cast< size_t >(Enum::__SIZE); ++i)
+    if (!this->containsKey(e))
+      e = mEnumDefault;
+
+    if constexpr (std::is_same_v< AnnotationType, std::string_view >)
       {
-        mMap[base::at(i)] = static_cast< Enum >(i);
+        return std::string(*this->findByKey(e));
+      }
+    else
+      {
+        return *this->findByKey(e);
       }
   }
 
   /**
    * Operator []
-   * @param Enum e
-   * @return const Type & annotation
+   * @param std::int32_t e
+   * @return const AnnotationType & annotation
    */
-  typename base::const_reference operator [](Enum e) const
+  AnnotationTypeReturn operator[](std::int32_t e) const
   {
-    return base::at(static_cast< size_t >(e));
+    return operator[](static_cast< EnumType >(e));
   }
 
-  /**
-   * Operator []
-   * @param size_t i
-   * @return const Type & annotation
-   */
-  typename base::const_reference operator [](size_t i) const
+  EnumType toEnum(EnumType e) const
   {
-    return base::at(i);
+    if (this->containsKey(e))
+      return e;
+
+    return mEnumDefault;
+  }
+
+  EnumType toEnum(std::int32_t e) const
+  {
+    return toEnum(static_cast< EnumType >(e));
   }
 
   /**
    * Conversion from annotation to enum
-   * @param const Type & annotation
-   * @param Enum enumDefault (default: Enum::__SIZE)
+   * @param const AnnotationType & annotation
    */
-  Enum toEnum(const Type & annotation, Enum enumDefault = Enum::__SIZE) const
+  EnumType toEnum(const AnnotationType & annotation) const
   {
-    typename std::map< Type, Enum >::const_iterator Found = mMap.find(annotation);
+    return toEnum(annotation, mEnumDefault);
+  }
 
-    if (Found != mMap.end())
-      {
-        return Found->second;
-      }
+  /**
+   * Conversion from annotation to enum
+   * @param const AnnotationType & annotation
+   * @param EnumType enumDefault
+   */
+  EnumType toEnum(const AnnotationType & annotation, EnumType enumDefault) const
+  {
+    const EnumType * pEnum = this->findByValue(annotation);
 
-    return enumDefault;
+    if (pEnum != nullptr)
+      return *pEnum;
+
+    if (this->containsKey(enumDefault))
+      return enumDefault;
+
+    return mEnumDefault;
   }
 
   /**
    * Conversion from annotation to enum
    * @param const char * pAnnotation
-   * @param Enum enumDefault (default: Enum::__SIZE)
    */
-  Enum toEnum(const char * pAnnotation, Enum enumDefault = Enum::__SIZE) const
+  EnumType toEnum(const char * pAnnotation) const
+    requires IsStringOrDerived< AnnotationType >
   {
-    if (pAnnotation == NULL)
-      return enumDefault;
-
-    return toEnum(Type(pAnnotation), enumDefault);
+    return toEnum(AnnotationType(pAnnotation), mEnumDefault);
   }
 
-  std::vector< Type > annotations() const
+  /**
+   * Conversion from annotation to enum
+   * @param const char * pAnnotation
+   * @param EnumType enumDefault
+   */
+  EnumType toEnum(const char * pAnnotation, EnumType enumDefault) const
+    requires IsStringOrDerived< AnnotationType >
   {
-    std::vector< Type > Annotations;
+    return toEnum(AnnotationType(pAnnotation), enumDefault);
+  }
 
-    for (const std::pair< Type, Enum > & a : mMap)
-      Annotations.push_back(a.first);
+  std::vector< AnnotationTypeReturn > annotations() const
+  {
+    std::vector< AnnotationTypeReturn > Annotations;
+    Annotations.reserve(Size);
+
+    for (const AnnotationType & a: this->values())
+      if constexpr (std::is_same_v< AnnotationType, std::string_view >)
+        Annotations.emplace_back(std::string(a));
+      else
+        Annotations.emplace_back(a);
+
+    return Annotations;
+  }
+
+  template < typename Filter >
+  std::vector< AnnotationTypeReturn > annotations(const Filter & filter) const
+  {
+    std::vector< AnnotationTypeReturn > Annotations;
+    Annotations.reserve(filter.size());
+
+    for (const AnnotationType & a: this->values())
+      if (_Map::contains(filter, toEnum(a)))
+        {
+          if constexpr (std::is_same_v< AnnotationType, std::string_view >)
+            Annotations.emplace_back(std::string(a));
+          else
+            Annotations.emplace_back(a);
+        }
 
     return Annotations;
   }
 
 private:
-  std::map< Type, Enum > mMap;
+  template < typename Keys >
+  constexpr bool isDefaultValid(const Keys & keys, EnumType enumDefault)
+  {
+    for (const auto & key: keys)
+      if (key == enumDefault)
+        return true;
+
+    throw "CEnumAnnotation: Invalid Default";
+
+    return false;
+  }
+
+  const EnumType mEnumDefault;
 };
 
-#endif // COPASI_CEnumAnnotation
+// Custom deduction guide based on the lightweight MapNode aggregate type
+template < typename EnumType,
+           typename... Nodes,
+           typename K = std::common_type_t< typename std::decay_t< Nodes >::KeyType... >,
+           typename V = std::common_type_t< typename std::decay_t< Nodes >::ValueType... > >
+CEnumAnnotation(EnumType, Nodes...) -> CEnumAnnotation< CBidirectionalMap< K, V, sizeof...(Nodes) > >;

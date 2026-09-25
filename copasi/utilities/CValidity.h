@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -57,8 +57,68 @@ public:
     InitialExpressionWithAssignment, // 24
     SettingFixedExpression, // 25
     KineticsUndefined, // 26
-    __SIZE // 27
+    __SIZE // Needed for CFlags
   };
+
+  constexpr static CEnumAnnotation kindNames{
+    eKind::Unknown,
+    MapNode{eKind::Unknown, "unknown issue"},
+    MapNode{eKind::ExpressionInvalid, "invalid expression"},
+    MapNode{eKind::ExpressionEmpty, "empty expression"},
+    MapNode{eKind::MissingInitialValue, "missing initial value"},
+    MapNode{eKind::CalculationIssue, "calculation problem"},
+    MapNode{eKind::EventMissingAssignment, "missing event assignment"},
+    MapNode{eKind::EventAlreadyHasAssignment, "event already has assignment"},
+    MapNode{eKind::EventMissingTriggerExpression, "missing event trigger expression"},
+    MapNode{eKind::UnitUndefined, "undefined unit"},
+    MapNode{eKind::UnitConflict, "unit conflict"},
+    MapNode{eKind::UnitInvalid, "invalid unit"},
+    MapNode{eKind::NaNissue, "undefined or unrepresentable value"},
+    MapNode{eKind::ObjectNotFound, "unfound object"},
+    MapNode{eKind::ValueNotFound, "unfound value"},
+    MapNode{eKind::VariableNotfound, "unfound variable"},
+    MapNode{eKind::StructureInvalid, "Invalid structure"},
+    MapNode{eKind::TooManyArguments, "excess arguments"},
+    MapNode{eKind::HasCircularDependency, "circular dependency"},
+    MapNode{eKind::ExpressionDataTypeInvalid, "invalid expression data type"},
+    MapNode{eKind::VariableInExpression, "variable in expression"},
+    MapNode{eKind::CExpressionNotFound, "unfound expression"},
+    MapNode{eKind::CFunctionNotFound, "unfound function"},
+    MapNode{eKind::VariablesMismatch, "mismatched variables"},
+    MapNode{eKind::ValueTypeMismatch, "inconsistent value types"},
+    MapNode{eKind::InitialExpressionWithAssignment, "initial expression with assignment"},
+    MapNode{eKind::SettingFixedExpression, "setting fixed expression"},
+    MapNode{eKind::KineticsUndefined, "reaction kinetics not defined"}};
+
+  constexpr static CEnumAnnotation kindDescriptions{
+    eKind::Unknown,
+    MapNode{eKind::Unknown, "Unknown issue."},
+    MapNode{eKind::ExpressionInvalid, "Invalid expression."},
+    MapNode{eKind::ExpressionEmpty, "Empty expression."},
+    MapNode{eKind::MissingInitialValue, "Missing initial value."},
+    MapNode{eKind::CalculationIssue, "Problem with calculation."},
+    MapNode{eKind::EventMissingAssignment, "Missing event assignment."},
+    MapNode{eKind::EventAlreadyHasAssignment, "Event already has an assignment rule."},
+    MapNode{eKind::EventMissingTriggerExpression, "Missing event trigger expression."},
+    MapNode{eKind::UnitUndefined, "Unit is undefined."},
+    MapNode{eKind::UnitConflict, "Conflicting units."},
+    MapNode{eKind::UnitInvalid, "Invalid unit."},
+    MapNode{eKind::NaNissue, "Value is undefined or unrepresentable."},
+    MapNode{eKind::ObjectNotFound, "Object not found."},
+    MapNode{eKind::ValueNotFound, "Value not found."},
+    MapNode{eKind::VariableNotfound, "Variable not found."},
+    MapNode{eKind::StructureInvalid, "Invalid structure."},
+    MapNode{eKind::TooManyArguments, "Too many arguments."},
+    MapNode{eKind::HasCircularDependency, "Has circular dependency."},
+    MapNode{eKind::ExpressionDataTypeInvalid, "Invalid expression data type."},
+    MapNode{eKind::VariableInExpression, "Expression contains a variable."},
+    MapNode{eKind::CExpressionNotFound, "CExpression not found."},
+    MapNode{eKind::CFunctionNotFound, "CFunction not found."},
+    MapNode{eKind::VariablesMismatch, "Variables are mismatched."},
+    MapNode{eKind::ValueTypeMismatch, "Inconsistent value types encountered."},
+    MapNode{eKind::InitialExpressionWithAssignment, "Initial expressions prohibited with assignment."},
+    MapNode{eKind::SettingFixedExpression, "Changing fixed expression prohibited"},
+    MapNode{eKind::KineticsUndefined, "Reaction kinetics are not defined"}};
 
   enum struct eSeverity
   {
@@ -66,12 +126,15 @@ public:
     Information,
     Warning,
     Error,
-    __SIZE
+    __SIZE // Needed for CFlags
   };
 
-  static const CEnumAnnotation< std::string, CIssue::eSeverity > severityNames;
-  static const CEnumAnnotation< std::string, CIssue::eKind > kindNames;
-  static const CEnumAnnotation< std::string, CIssue::eKind > kindDescriptions;
+  constexpr static CEnumAnnotation severityNames{
+    eSeverity::Success,
+    MapNode{eSeverity::Success, "success"},
+    MapNode{eSeverity::Information, "information"},
+    MapNode{eSeverity::Warning, "warnings"},
+    MapNode{eSeverity::Error, "errors"}};
 
   static const CIssue Success;
   static const CIssue Information;

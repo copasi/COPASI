@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -35,15 +35,6 @@
 #include <copasi/CopasiDataModel/CDataModel.h>
 #include <copasi/utilities/CCopasiTask.h>
 #include <copasi/core/CDataVector.h>
-
-// static
-const CEnumAnnotation< std::string, CScanProblem::OutputType > CScanProblem::OutputTypeName(
-{
-  "none",
-  "subTaskBefore",
-  "subTaskDuring",
-  "subTaskAfter"
-});
 
 /**
  *  Default constructor.

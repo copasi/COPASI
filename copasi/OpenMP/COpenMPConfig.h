@@ -24,21 +24,42 @@ public:
     Dynamic,
     Guided,
     Automatic,
-    __SIZE
+    Undefined
   };
 
-  static const CEnumAnnotation< std::string, ScheduleStrategy > ScheduleStrategyNames;
-  static const CEnumAnnotation< omp_sched_t, ScheduleStrategy > ScheduleStrategyOpenMP;
+  constexpr static CEnumAnnotation ScheduleStrategyNames{
+    ScheduleStrategy::Undefined,
+    MapNode{ScheduleStrategy::Static, "static"},
+    MapNode{ScheduleStrategy::Dynamic, "dynamic"},
+    MapNode{ScheduleStrategy::Guided, "guided"},
+    MapNode{ScheduleStrategy::Automatic, "automatic"},
+    MapNode{ScheduleStrategy::Undefined, "undefind"}};
+
+  constexpr static CEnumAnnotation ScheduleStrategyOpenMP{
+    ScheduleStrategy::Undefined,
+    MapNode{ScheduleStrategy::Static, omp_sched_static},
+    MapNode{ScheduleStrategy::Dynamic, omp_sched_dynamic},
+    MapNode{ScheduleStrategy::Guided, omp_sched_guided},
+    MapNode{ScheduleStrategy::Automatic, omp_sched_auto},
+    MapNode{ScheduleStrategy::Undefined, (omp_sched_t) 0x0}};
 
   enum struct Monotonic
   {
     nonmonotonic = 0,
     monotonic,
-    __SIZE
+    undefined
   };
 
-  static const CEnumAnnotation< std::string, Monotonic > MonotonicNames;
-  static const CEnumAnnotation< omp_sched_t, Monotonic > MonotonicOpenMP;
+  constexpr static CEnumAnnotation MonotonicNames{
+    Monotonic::undefined,
+    MapNode{Monotonic::nonmonotonic, "nonmonotonic"},
+    MapNode{Monotonic::monotonic, "monotonic"},
+    MapNode{Monotonic::undefined, "undefined"}};
+
+  constexpr static CEnumAnnotation MonotonicOpenMP{
+    Monotonic::nonmonotonic,
+    MapNode{Monotonic::nonmonotonic, (omp_sched_t) 0x0}, // nonmonotonic
+    MapNode{Monotonic::monotonic, omp_sched_monotonic}};
 
 private:
   static std::vector< std::weak_ptr< std::function< void() > > >  ApplyCallbacks;

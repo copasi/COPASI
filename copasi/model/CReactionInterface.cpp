@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -461,9 +461,6 @@ CUndoData CReactionInterface::createUndoData(const CCore::Framework & framework)
           case CCore::Framework::ParticleNumbers:
             Species.setInitialValue(100.0);
             Species.setInitialConcentration(100.0 * mpModel->getNumber2QuantityFactor()); // value is ignored
-            break;
-
-          case CCore::Framework::__SIZE:
             break;
         }
 
@@ -1332,7 +1329,6 @@ std::vector< std::string > CReactionInterface::getUnitVector(size_t index) const
       case CFunctionParameter::Role::TEMPORARY:
       case CFunctionParameter::Role::VOLUME:
       case CFunctionParameter::Role::TIME:
-      case CFunctionParameter::Role::__SIZE:
         break;
     }
 
@@ -1413,9 +1409,6 @@ std::string CReactionInterface::getUnit(size_t index) const
 
       case CFunctionParameter::Role::TIME:
         return mpModel->getUnits();
-        break;
-
-      case CFunctionParameter::Role::__SIZE:
         break;
     }
 
@@ -1693,7 +1686,6 @@ std::string CReactionInterface::getEffectiveKineticLawUnit() const
         break;
 
       case CReaction::KineticLawUnit::Default:
-      case CReaction::KineticLawUnit::__SIZE:
         break;
     }
 

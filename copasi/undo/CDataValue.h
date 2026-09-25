@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,11 +31,21 @@ public:
     DATA_VALUES,
     DATA_VECTOR,
     VOID_POINTER,
-    INVALID,
-    __SIZE
+    INVALID
   };
 
-  static const CEnumAnnotation< std::string, Type > TypeName;
+  constexpr static CEnumAnnotation TypeName{
+    Type::STRING,
+    MapNode{Type::DOUBLE, "real"},
+    MapNode{Type::INT, "integer"},
+    MapNode{Type::UINT, "unsignedInteger"},
+    MapNode{Type::BOOL, "Boolean"},
+    MapNode{Type::STRING, "text"},
+    MapNode{Type::DATA, "data"},
+    MapNode{Type::DATA_VALUES, "dataValues"},
+    MapNode{Type::DATA_VECTOR, "dataVector"},
+    MapNode{Type::VOID_POINTER, "pointer"},
+    MapNode{Type::INVALID, "invalid"}};
 
   friend std::ostream & operator << (std::ostream & os, const CDataValue & o);
   friend std::istream & operator >> (std::istream & is, CDataValue & i);

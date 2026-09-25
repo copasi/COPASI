@@ -1581,11 +1581,11 @@ void CQFittingItemWidget::slotReset()
 
       case CQStartValueReset::RANDOM:
       {
-        CConfigurableRNG &Random = mpDataModel->getModel()->getMathContainer().getRandomGenerator();
+        CConfigurableRNG & RNG = mpDataModel->getModel()->getMathContainer().getRandomGenerator();
 
         for (; it != end; ++it)
           {
-            (*mpItemsCopy)[*it]->setStartValue((*mpItemsCopy)[*it]->getRandomValue(&Random));
+            (*mpItemsCopy)[*it]->setStartValue((*mpItemsCopy)[*it]->getRandomValue(RNG));
             mpEditStart->setText(convertToQString((*mpItemsCopy)[*it]->getStartValue()));
             setTableText((int) *it, (*mpItemsCopy)[*it]);
           }

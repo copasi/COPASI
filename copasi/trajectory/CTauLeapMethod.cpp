@@ -86,7 +86,7 @@ CTauLeapMethod::CTauLeapMethod(const CDataContainer * pParent,
   mMaxSteps(),
   mUseRandomSeed(false),
   mRandomSeed(),
-  mpRandomGenerator(NULL),
+  mRNG(NULL),
   mFirstReactionSpeciesIndex(C_INVALID_INDEX)
 {
   initializeParameter();
@@ -108,7 +108,7 @@ CTauLeapMethod::CTauLeapMethod(const CTauLeapMethod & src,
   mMaxSteps(),
   mUseRandomSeed(false),
   mRandomSeed(),
-  mpRandomGenerator(NULL),
+  mRNG(NULL),
   mFirstReactionSpeciesIndex(C_INVALID_INDEX)
 {
   initializeParameter();
@@ -189,14 +189,14 @@ void CTauLeapMethod::start()
 
   /* get configuration data */
 
-  mpRandomGenerator = &mpContainer->getRandomGenerator();
+  mRNG = &mpContainer->getRandomGenerator();
 
   bool useRandomSeed = getValue< bool >("Use Random Seed");
   unsigned C_INT32 randomSeed = getValue< unsigned C_INT32 >("Random Seed");
 
   if (useRandomSeed)
     {
-      mpRandomGenerator->seed(randomSeed);
+      mRNG->seed(randomSeed);
     }
 
   mEpsilon = getValue< C_FLOAT64 >("Epsilon");
@@ -315,7 +315,7 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
       else if (Lambda > 2.0e9)
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 26);
 
-      *pK = PoissonDistribution(*mpRandomGenerator, std::poisson_distribution< size_t >::param_type(Lambda));
+      *pK = PoissonDistribution(*mRNG, std::poisson_distribution< size_t >::param_type(Lambda));
     }
 
   std::uniform_int_distribution< unsigned short > UniformDistribution(0, 1);
@@ -331,7 +331,7 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
           *pK /= 2;
 
           if (Tmp != 2 * *pK
-              && UniformDistribution(*mpRandomGenerator) == 1)
+              && UniformDistribution(*mRNG) == 1)
             {
               *pK += 1;
             }

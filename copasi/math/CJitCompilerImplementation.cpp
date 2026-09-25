@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -219,7 +219,6 @@ CJitCompilerImplementation::Function CJitCompilerImplementation::compile(const C
                   case CEvaluationNode::MainType::STRUCTURE:
                   case CEvaluationNode::MainType::UNIT:
                   case CEvaluationNode::MainType::INVALID:
-                  case CEvaluationNode::MainType::__SIZE:
                     pNode = NULL;
                     break;
                 }

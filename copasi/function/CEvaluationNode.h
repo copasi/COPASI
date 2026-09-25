@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -71,11 +71,26 @@ public:
     MV_FUNCTION, // This not yet implemented
     VECTOR,
     DELAY,
-    UNIT,
-    __SIZE
-  };
+    UNIT};
 
-  static const CEnumAnnotation< std::string, MainType > MainTypeName;
+  constexpr static CEnumAnnotation MainTypeName{
+    MainType::INVALID,
+    MapNode{MainType::INVALID, "INVALID"},
+    MapNode{MainType::NUMBER, "NUMBER"},
+    MapNode{MainType::CONSTANT, "CONSTANT"},
+    MapNode{MainType::OPERATOR, "OPERATOR"},
+    MapNode{MainType::OBJECT, "OBJECT"},
+    MapNode{MainType::FUNCTION, "FUNCTION"},
+    MapNode{MainType::CALL, "CALL"},
+    MapNode{MainType::STRUCTURE, "STRUCTURE"},
+    MapNode{MainType::CHOICE, "CHOICE"},
+    MapNode{MainType::VARIABLE, "VARIABLE"},
+    MapNode{MainType::WHITESPACE, "WHITESPACE"},
+    MapNode{MainType::LOGICAL, "LOGICAL"},
+    MapNode{MainType::MV_FUNCTION, "MV_FUNCTION"}, // This not yet implemented
+    MapNode{MainType::VECTOR, "VECTOR"},
+    MapNode{MainType::DELAY, "DELAY"},
+    MapNode{MainType::UNIT, "UNIT"}};
 
   enum struct SubType
   {
@@ -161,11 +176,94 @@ public:
     RPOISSON,
     SIGN,
     AVOGADRO,
-    INVALID,
-    __SIZE
+    INVALID
   };
 
-  static const CEnumAnnotation< std::string, SubType > SubTypeName;
+  constexpr static CEnumAnnotation SubTypeName{
+    SubType::INVALID,
+    MapNode{SubType::DEFAULT, "DEFAULT"},
+    MapNode{SubType::DELAY, "DELAY"},
+    MapNode{SubType::IF, "IF"},
+    MapNode{SubType::VECTOR, "VECTOR"},
+    MapNode{SubType::CN, "CN"},
+    MapNode{SubType::DOUBLE, "DOUBLE"},
+    MapNode{SubType::FUNCTION, "FUNCTION"},
+    MapNode{SubType::LOG, "LOG"},
+    MapNode{SubType::OPEN, "OPEN"},
+    MapNode{SubType::PI, "PI"},
+    MapNode{SubType::POWER, "POWER"},
+    MapNode{SubType::EXPRESSION, "EXPRESSION"},
+    MapNode{SubType::POINTER, "POINTER"},
+    MapNode{SubType::EXPONENTIALE, "EXPONENTIALE"},
+    MapNode{SubType::INTEGER, "INTEGER"},
+    MapNode{SubType::LOG10, "LOG10"},
+    MapNode{SubType::MULTIPLY, "MULTIPLY"},
+    MapNode{SubType::OR, "OR"},
+    MapNode{SubType::VECTOROPEN, "VECTOROPEN"},
+    MapNode{SubType::COMMA, "COMMA"},
+    MapNode{SubType::DIVIDE, "DIVIDE"},
+    MapNode{SubType::ENOTATION, "ENOTATION"},
+    MapNode{SubType::EXP, "EXP"},
+    MapNode{SubType::True, "True"},
+    MapNode{SubType::XOR, "XOR"},
+    MapNode{SubType::IMPLIES, "IMPLIES"},
+    MapNode{SubType::RATIONALE, "RATIONALE"},
+    MapNode{SubType::AND, "AND"},
+    MapNode{SubType::CLOSE, "CLOSE"},
+    MapNode{SubType::False, "False"},
+    MapNode{SubType::MODULUS, "MODULUS"},
+    MapNode{SubType::SIN, "SIN"},
+    MapNode{SubType::VECTORCLOSE, "VECTORCLOSE"},
+    MapNode{SubType::COS, "COS"},
+    MapNode{SubType::EQ, "EQ"},
+    MapNode{SubType::Infinity, "Infinity"},
+    MapNode{SubType::PLUS, "PLUS"},
+    MapNode{SubType::NaN, "NaN"},
+    MapNode{SubType::MINUS, "MINUS"},
+    MapNode{SubType::NE, "NE"},
+    MapNode{SubType::TAN, "TAN"},
+    MapNode{SubType::REMAINDER, "REMAINDER"},
+    MapNode{SubType::QUOTIENT, "QUOTIENT"},
+    MapNode{SubType::GT, "GT"},
+    MapNode{SubType::SEC, "SEC"},
+    MapNode{SubType::CSC, "CSC"},
+    MapNode{SubType::GE, "GE"},
+    MapNode{SubType::COT, "COT"},
+    MapNode{SubType::LT, "LT"},
+    MapNode{SubType::LE, "LE"},
+    MapNode{SubType::SINH, "SINH"},
+    MapNode{SubType::COSH, "COSH"},
+    MapNode{SubType::TANH, "TANH"},
+    MapNode{SubType::SECH, "SECH"},
+    MapNode{SubType::CSCH, "CSCH"},
+    MapNode{SubType::COTH, "COTH"},
+    MapNode{SubType::ARCSIN, "ARCSIN"},
+    MapNode{SubType::ARCCOS, "ARCCOS"},
+    MapNode{SubType::ARCTAN, "ARCTAN"},
+    MapNode{SubType::ARCSEC, "ARCSEC"},
+    MapNode{SubType::ARCCSC, "ARCCSC"},
+    MapNode{SubType::ARCCOT, "ARCCOT"},
+    MapNode{SubType::ARCSINH, "ARCSINH"},
+    MapNode{SubType::ARCCOSH, "ARCCOSH"},
+    MapNode{SubType::ARCTANH, "ARCTANH"},
+    MapNode{SubType::ARCSECH, "ARCSECH"},
+    MapNode{SubType::ARCCSCH, "ARCCSCH"},
+    MapNode{SubType::ARCCOTH, "ARCCOTH"},
+    MapNode{SubType::SQRT, "SQRT"},
+    MapNode{SubType::ABS, "ABS"},
+    MapNode{SubType::FLOOR, "FLOOR"},
+    MapNode{SubType::CEIL, "CEIL"},
+    MapNode{SubType::FACTORIAL, "FACTORIAL"},
+    MapNode{SubType::NOT, "NOT"},
+    MapNode{SubType::RUNIFORM, "RUNIFORM"},
+    MapNode{SubType::RNORMAL, "RNORMAL"},
+    MapNode{SubType::MAX, "MAX"},
+    MapNode{SubType::MIN, "MIN"},
+    MapNode{SubType::RGAMMA, "RGAMMA"},
+    MapNode{SubType::RPOISSON, "RPOISSON"},
+    MapNode{SubType::SIGN, "SIGN"},
+    MapNode{SubType::AVOGADRO, "AVOGADRO"},
+    MapNode{SubType::INVALID, "INVALID"}};
 
   enum struct ValueType
   {

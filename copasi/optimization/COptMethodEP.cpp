@@ -216,7 +216,7 @@ void COptMethodEP::initObjects()
 }
 
 // virtual
-void COptMethodEP::finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG * /* pRandom */)
+void COptMethodEP::finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG & /* rng */)
 {
   (*mVariance[individual])[index] = fabs(item.getItemValue()) * 0.5;
 }
@@ -257,7 +257,7 @@ bool COptMethodEP::select()
 
   // compete with ~ 20% of the TotalPopulation
   nopp = std::max<size_t>(1, mPopulationSize / 5);
-  CConfigurableRNG * pRandom = mRandomContext.active();
+  CConfigurableRNG & RNG = mRandomContext.active();
   std::uniform_int_distribution< size_t > dist(0, TotalPopulation - 1);
 
   // parents and offspring are all in competition
@@ -267,7 +267,7 @@ bool COptMethodEP::select()
         // get random opponent
         do
           {
-            opp = dist(*pRandom);
+            opp = dist(RNG);
           }
         while (i == opp);
 
@@ -343,9 +343,9 @@ bool COptMethodEP::mutate(size_t i)
   CVector<C_FLOAT64> & Variance = *mVariance[i];
 
   const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
-  CConfigurableRNG * pRandom = mRandomContext.active();
+  CConfigurableRNG & RNG = mRandomContext.active();
   std::normal_distribution<C_FLOAT64> nd(0.0, 1.0);
-  v1 = nd(*pRandom);
+  v1 = nd(RNG);
 
   // update the variances
   for (j = 0; j < mVariableSize; j++)
@@ -357,10 +357,10 @@ bool COptMethodEP::mutate(size_t i)
         {
           // update the parameter for the variances
           Variance[j] =
-            std::max(Variance[j] * exp(tau1 * v1 + tau2 * nd(*pRandom)), 1e-8);
+            std::max(Variance[j] * exp(tau1 * v1 + tau2 * nd(RNG)), 1e-8);
 
           // calculate the mutated parameter
-          mut += Variance[j] * nd(*pRandom);
+          mut += Variance[j] * nd(RNG);
         }
 
       catch (...)

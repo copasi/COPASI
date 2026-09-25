@@ -94,7 +94,7 @@ CHybridMethod::CHybridMethod(const CDataContainer * pParent,
   , mMetab2React()
   , mAmu()
   , mAmuOld()
-  , mpRandomGenerator(nullptr)
+  , mRNG(nullptr)
   , mDG()
   , mPQ()
   , mAutomaticStepSize(false)
@@ -129,7 +129,7 @@ CHybridMethod::CHybridMethod(const CHybridMethod & src,
   , mMetab2React()
   , mAmu()
   , mAmuOld()
-  , mpRandomGenerator(nullptr)
+  , mRNG(nullptr)
   , mDG()
   , mPQ()
   , mAutomaticStepSize(src.mAutomaticStepSize)
@@ -265,11 +265,11 @@ void CHybridMethod::start()
   mUseRandomSeed = getValue< bool >("Use Random Seed");
   mRandomSeed = getValue< unsigned C_INT32 >("Random Seed");
 
-  mpRandomGenerator = &mpContainer->getRandomGenerator();
+  mRNG = &mpContainer->getRandomGenerator();
 
   if (mUseRandomSeed)
     {
-      mpRandomGenerator->seed(mRandomSeed);
+      mRNG->seed(mRandomSeed);
     }
 
   mStepsAfterPartitionSystem = 0;
@@ -509,7 +509,7 @@ C_FLOAT64 CHybridMethod::generateReactionTime(size_t rIndex)
 {
   if (mAmu[rIndex] == 0) return std::numeric_limits<C_FLOAT64>::infinity();
 
-  C_FLOAT64 rand2 = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mpRandomGenerator);
+  C_FLOAT64 rand2 = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mRNG);
   return -1.0 * log(rand2) / mAmu[rIndex];
 }
 

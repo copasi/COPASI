@@ -32,10 +32,10 @@ public:
 
   /**
    * Specific constructor
-   * @param ConfigurableRNG * pRandom
+   * @param ConfigurableRNG & rng
    * @param const size_t & size
    */
-  CPermutation(CConfigurableRNG * pRandom, const size_t & size);
+  CPermutation(CConfigurableRNG & rng, const size_t & size);
 
   /**
    * Copy constructor
@@ -88,7 +88,7 @@ protected:
   /**
    * A pointer to the random number generator to be used
    */
-  CConfigurableRNG * mpRandom;
+  CConfigurableRNG * mpRNG;
 
   /**
    * A vector containing the permutation

@@ -62,22 +62,6 @@
 #include "copasi/utilities/CBrent.h"
 
 // static
-const CTaskEnum::Task COptProblem::ValidSubtasks[] =
-{
-  CTaskEnum::Task::steadyState,
-  CTaskEnum::Task::timeCourse,
-  CTaskEnum::Task::scan,
-  CTaskEnum::Task::parameterFitting,
-  CTaskEnum::Task::mca,
-  CTaskEnum::Task::lyap,
-  CTaskEnum::Task::tssAnalysis,
-  CTaskEnum::Task::sens,
-  CTaskEnum::Task::crosssection,
-  CTaskEnum::Task::lna,
-  CTaskEnum::Task::UnsetTask
-};
-
-// static
 C_FLOAT64 COptProblem::MissingValue;
 
 //  Default constructor
@@ -1305,7 +1289,7 @@ void COptProblem::randomizeStartValues()
 
       for (; it != end; ++it)
         {
-          (*it)->setStartValue((*it)->getRandomValue(&mpContainer->getRandomGenerator()));
+          (*it)->setStartValue((*it)->getRandomValue(mpContainer->getRandomGenerator()));
         }
     }
 

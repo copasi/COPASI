@@ -76,7 +76,7 @@ public:
                        C_INT32 n,
                        C_INT32 prin,
                        C_FLOAT64 x[],
-                       CConfigurableRNG * pRandom,
+                       CConfigurableRNG & rng,
                        FPraxis * f);
 
 private:

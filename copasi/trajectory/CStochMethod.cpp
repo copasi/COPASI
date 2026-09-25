@@ -59,7 +59,7 @@ CStochMethod::CStochMethod(const CDataContainer * pParent,
                            const CTaskEnum::Method & methodType,
                            const CTaskEnum::Task & taskType):
   CTrajectoryMethod(pParent, methodType, taskType),
-  mpRandomGenerator(NULL),
+  mRNG(NULL),
   mA0(0.0),
   mNumReactions(0),
   mReactions(),
@@ -80,7 +80,7 @@ CStochMethod::CStochMethod(const CDataContainer * pParent,
 CStochMethod::CStochMethod(const CStochMethod & src,
                            const CDataContainer * pParent):
   CTrajectoryMethod(src, pParent),
-  mpRandomGenerator(NULL),
+  mRNG(NULL),
   mA0(0.0),
   mNumReactions(0),
   mReactions(),
@@ -178,13 +178,13 @@ void CStochMethod::start()
 {
   CTrajectoryMethod::start();
 
-  mpRandomGenerator = &mpContainer->getRandomGenerator();
+  mRNG = &mpContainer->getRandomGenerator();
 
   bool useRandomSeed = getValue< bool >("Use Random Seed");
   unsigned C_INT32 randomSeed = getValue< unsigned C_INT32 >("Random Seed");
 
   if (useRandomSeed)
-    mpRandomGenerator->seed(randomSeed);
+    mRNG->seed(randomSeed);
 
   mMaxSteps = getValue< C_INT32 >("Max Internal Steps");
 
@@ -262,7 +262,7 @@ void CStochMethod::start()
 size_t CStochMethod::generateReactionIndex()
 {
   C_FLOAT64 sum = 0.0;
-  C_FLOAT64 rand = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mpRandomGenerator) * mA0;
+  C_FLOAT64 rand = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mRNG) * mA0;
 
   const C_FLOAT64 * pAmu = mAmu.array();
   const C_FLOAT64 * pAmuEnd = pAmu + mNumReactions;
@@ -281,7 +281,7 @@ C_FLOAT64 CStochMethod::generateReactionTime()
 {
   if (mA0 == 0) return std::numeric_limits<C_FLOAT64>::infinity();
 
-  C_FLOAT64 rand2 = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mpRandomGenerator);
+  C_FLOAT64 rand2 = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mRNG);
   return - 1 * log(rand2) / mA0;
 }
 
@@ -289,7 +289,7 @@ C_FLOAT64 CStochMethod::generateReactionTime(size_t reaction_index)
 {
   if (mAmu[reaction_index] == 0) return std::numeric_limits<C_FLOAT64>::infinity();
 
-  C_FLOAT64 rand2 = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mpRandomGenerator);
+  C_FLOAT64 rand2 = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mRNG);
   return - 1 * log(rand2) / mAmu[reaction_index];
 }
 

@@ -23,43 +23,13 @@
 # include <sys/syscall.h>
 #endif // WIN32
 
+#include "copasi/core/CEnumValue.h"
 #include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/utilities/CopasiTime.h"
 
-// static
-const CEnumAnnotation< std::string, CConfigurableRNG::Type > CConfigurableRNG::TypeAnnotation({"R250",
-                                                                                             "Obsolete"
-                                                                                             "MersenneTwister"
-                                                                                             "SobolSequence"});
-
-// static
-CConfigurableRNG * CConfigurableRNG::create(CConfigurableRNG::Type engineType, CConfigurableRNG::result_type initialSeed)
-{
-  if (engineType == Type::Obsolete)
-    engineType = Type::MersenneTwister;
-
-  if (initialSeed == 0)
-    initialSeed = getSystemSeed();
-
-  return new CConfigurableRNG(engineType, initialSeed);
-}
-
 CConfigurableRNG::CConfigurableRNG(CConfigurableRNG::Type engineType, CConfigurableRNG::result_type initialSeed)
 {
-  mType = engineType;
-
-  switch (mType)
-    {
-    case Type::R250:
-      mEngine = std::independent_bits_engine< CR250, 64, result_type >{static_cast< CR250::result_type >(initialSeed)};
-      break;
-    case Type::MersenneTwister:
-      mEngine = std::mt19937_64{static_cast< std::mt19937_64::result_type >(initialSeed)};
-      break;
-    case Type::SobolSequence:
-      mEngine = std::independent_bits_engine< CSobolSequence, 64, result_type >{static_cast< CSobolSequence::result_type >(initialSeed)};
-      break;
-    }
+  setType(engineType, initialSeed);
 }
 
 CConfigurableRNG * CConfigurableRNG::copy()
@@ -108,6 +78,27 @@ void CConfigurableRNG::discard(result_type z)
 CConfigurableRNG::Type CConfigurableRNG::getType() const
 {
   return mType;
+}
+
+void CConfigurableRNG::setType(Type engineType, result_type initialSeed)
+{
+  if (initialSeed == 0)
+    initialSeed = getSystemSeed();
+
+  mType = engineType;
+
+  switch (mType)
+    {
+    case Type::R250:
+      mEngine = std::independent_bits_engine< CR250, 64, result_type >{static_cast< CR250::result_type >(initialSeed)};
+      break;
+    case Type::MersenneTwister:
+      mEngine = std::mt19937_64{static_cast< std::mt19937_64::result_type >(initialSeed)};
+      break;
+    case Type::SobolSequence:
+      mEngine = std::independent_bits_engine< CSobolSequence, 64, result_type >{static_cast< CSobolSequence::result_type >(initialSeed)};
+      break;
+    }
 }
 
 // static

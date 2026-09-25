@@ -101,7 +101,7 @@ bool COptMethodGA::mutate(size_t index)
 {
   CVector< C_FLOAT64 > & Individual = *mIndividuals[index];
   COptProblem * pOptProblem = mProblemContext.active();
-  CConfigurableRNG * pRandom = mRandomContext.active();
+  CConfigurableRNG & RNG = mRandomContext.active();
   const std::vector< COptItem * > & OptItemList = pOptProblem->getOptItemList(true);
   std::normal_distribution< C_FLOAT64 > distribution(1, mMutationVariance);
 
@@ -112,7 +112,7 @@ bool COptMethodGA::mutate(size_t index)
       C_FLOAT64 & mut = Individual[j];
 
       // calculate the mutated parameter
-      mut *= distribution(*pRandom);
+      mut *= distribution(RNG);
       OptItem.setItemValue(mut, COptItem::CheckPolicyFlag::All);
     }
 
@@ -126,11 +126,11 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
 {
   size_t nCross = 0;
 
-  CConfigurableRNG *  pRandom = mRandomContext.active();
+  CConfigurableRNG & RNG = mRandomContext.active();
   mCrossOver = false;
 
   if (mVariableSize > 1)
-    nCross = std::uniform_int_distribution< size_t >(0, mVariableSize / 2)(*pRandom);
+    nCross = std::uniform_int_distribution< size_t >(0, mVariableSize / 2)(RNG);
 
   if (nCross == 0)
     {
@@ -145,7 +145,7 @@ bool COptMethodGA::crossover(const CVector< C_FLOAT64 > & parent1,
   // choose cross over points;
   // We do not mind if a crossover point gets drawn twice
   for (size_t i = 0; i < nCross; i++)
-    mCrossOver[dist(*pRandom)] = true;
+    mCrossOver[dist(RNG)] = true;
 
   const CVector< C_FLOAT64 > * pParent1 = & parent1;
   const CVector< C_FLOAT64 > * pParent2 = & parent2;
@@ -211,7 +211,7 @@ bool COptMethodGA::select()
 #pragma omp parallel for schedule(runtime)
   for (size_t i = 0; i < TotalPopulation; ++i)
     {
-      CConfigurableRNG * pRandom = mRandomContext.active();
+      CConfigurableRNG & RNG = mRandomContext.active();
       std::uniform_int_distribution< size_t > dist(0, TotalPopulation - 1);
       size_t opp;
 
@@ -220,7 +220,7 @@ bool COptMethodGA::select()
           // get random opponent
           do
             {
-              opp = dist(*pRandom);
+              opp = dist(RNG);
             } while (i == opp);
 
           size_t Lost = (mValues[i] < mValues[opp]) ? opp : i;

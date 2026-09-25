@@ -6,13 +6,13 @@
 #ifndef COPASI_CRandomContext
 #define COPASI_CRandomContext
 
-#include "copasi/OpenMP/CPointerContext.h"
+#include "copasi/OpenMP/CContext.h"
 #include "copasi/randomGenerator/CConfigurableRNG.h"
 
-class CRandomContext : public CPointerContext< CConfigurableRNG >
+class CRandomContext : public CContext< CConfigurableRNG >
 {
 public:
-  typedef CPointerContext< CConfigurableRNG > Base;
+  typedef CContext< CConfigurableRNG > Base;
 
   CRandomContext() = delete;
 

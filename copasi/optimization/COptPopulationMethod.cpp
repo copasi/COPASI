@@ -136,7 +136,7 @@ bool COptPopulationMethod::createIndividual(const size_t & index, const COptItem
   size_t Index = useStartValues ? 0 : index;
 
   COptProblem *& pProblem = mProblemContext.active();
-  CConfigurableRNG * pRandom = mRandomContext.active();
+  CConfigurableRNG & RNG = mRandomContext.active();
 
   C_FLOAT64 * pIndividual = mIndividuals[Index]->begin();
   C_FLOAT64 * pEnd = mIndividuals[Index]->end();
@@ -152,7 +152,7 @@ bool COptPopulationMethod::createIndividual(const size_t & index, const COptItem
           *pIndividual = pOptItem->getStartValue();
           success &= pOptItem->setItemValue(*pIndividual, policy);
           pointInParameterDomain &= (*pIndividual == pOptItem->getStartValue());
-          finalizeCreation(Index, item, *pOptItem, pRandom);
+          finalizeCreation(Index, item, *pOptItem, RNG);
         }
 
       if (!pointInParameterDomain && !success && (mLogVerbosity > 0))
@@ -163,9 +163,9 @@ bool COptPopulationMethod::createIndividual(const size_t & index, const COptItem
       for (size_t item = 0; pIndividual != pEnd; ++pIndividual, ++item)
         {
           COptItem * pOptItem = OptItemList[item];
-          *pIndividual = pOptItem->getRandomValue(pRandom);
+          *pIndividual = pOptItem->getRandomValue(RNG);
           success &= pOptItem->setItemValue(*pIndividual, policy);
-          finalizeCreation(Index, item, *pOptItem, pRandom);
+          finalizeCreation(Index, item, *pOptItem, RNG);
         }
     }
 
@@ -173,7 +173,7 @@ bool COptPopulationMethod::createIndividual(const size_t & index, const COptItem
 }
 
 // virtual
-void COptPopulationMethod::finalizeCreation(const size_t & /* individual */ , const size_t & /* index */, const COptItem & /* item */, CConfigurableRNG * /* pRandom */)
+void COptPopulationMethod::finalizeCreation(const size_t & /* individual */ , const size_t & /* index */, const COptItem & /* item */, CConfigurableRNG & /* pRandom */)
 {}
 
 C_INT32 COptPopulationMethod::getPopulationSize()

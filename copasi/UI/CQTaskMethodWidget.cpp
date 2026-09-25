@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -234,11 +234,7 @@ CCopasiMethod * CQTaskMethodWidget::getFromHistory(const CTaskEnum::Method & Typ
 
 CTaskEnum::Method CQTaskMethodWidget::getActiveMethodType() const
 {
-  for (int i = 0; i < (int) CTaskEnum::Method::__SIZE; ++i)
-    if (mpBoxMethod->currentText() == FROM_UTF8(CTaskEnum::MethodName[i]))
-      return (CTaskEnum::Method) i;
-
-  return CTaskEnum::Method::UnsetMethod;
+  return CTaskEnum::MethodName.toEnum(TO_UTF8(mpBoxMethod->currentText()));
 }
 
 void CQTaskMethodWidget::setActiveMethod(const CTaskEnum::Method & Type)

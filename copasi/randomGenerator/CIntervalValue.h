@@ -25,7 +25,7 @@ public:
 
   CIntervalValue(const C_FLOAT64 *& pMinimum, const C_FLOAT64 *& pMaximum);
 
-  C_FLOAT64 randomValue(CConfigurableRNG * pRandom) const;
+  C_FLOAT64 randomValue(CConfigurableRNG & rng) const;
 
   const Range & getRange() const;
 

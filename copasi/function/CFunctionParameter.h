@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,15 +51,30 @@ public:
     VOLUME,
     TIME,
     VARIABLE,
-    TEMPORARY,
-    __SIZE
+    TEMPORARY
   };
 
-  /**
-   *  The string representation of valid roles of a function parameter
-   */
-  static const CEnumAnnotation< std::string, Role > RoleNameXML;
-  static const CEnumAnnotation< std::string, Role > RoleNameDisplay;
+constexpr static CEnumAnnotation RoleNameXML{
+  Role::VARIABLE,
+  MapNode{Role::SUBSTRATE, "substrate"},
+  MapNode{Role::PRODUCT, "product"},
+  MapNode{Role::MODIFIER, "modifier"},
+  MapNode{Role::PARAMETER, "constant"},
+  MapNode{Role::VOLUME, "volume"},
+  MapNode{Role::TIME, "time"},
+  MapNode{Role::VARIABLE, "variable"},
+  MapNode{Role::TEMPORARY, "temporary"}};
+
+constexpr static CEnumAnnotation RoleNameDisplay{
+  Role::VARIABLE,
+  MapNode{Role::SUBSTRATE, "Substrate"},
+  MapNode{Role::PRODUCT, "Product"},
+  MapNode{Role::MODIFIER, "Modifier"},
+  MapNode{Role::PARAMETER, "Parameter"},
+  MapNode{Role::VOLUME, "Volume"},
+  MapNode{Role::TIME, "Time"},
+  MapNode{Role::VARIABLE, "Variable"},
+  MapNode{Role::TEMPORARY, "Temporary"}};
 
   /**
    *  Valid data type for a function parameter
@@ -69,11 +84,15 @@ public:
     INT32,
     FLOAT64,
     VINT32,
-    VFLOAT64,
-    __SIZE
+    VFLOAT64
   };
 
-  static const CEnumAnnotation< std::string, DataType > DataTypeName;
+  constexpr static CEnumAnnotation DataTypeName{
+    DataType::FLOAT64,
+    MapNode{DataType::INT32, "Integer"},
+    MapNode{DataType::FLOAT64, "Double"},
+    MapNode{DataType::VINT32, "Vector of Integer"},
+    MapNode{DataType::VFLOAT64, "Vector of Double"}};
 
 private:
   /**

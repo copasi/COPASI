@@ -10,30 +10,6 @@
 #include "copasi/commandline/CConfigurationFile.h"
 
 // static
-const CEnumAnnotation< std::string, COpenMPConfig::ScheduleStrategy >
-  COpenMPConfig::ScheduleStrategyNames({"static",
-                                        "dynamic",
-                                        "guided",
-                                        "automatic"});
-
-// static
-const CEnumAnnotation< omp_sched_t, COpenMPConfig::ScheduleStrategy >
-  COpenMPConfig::ScheduleStrategyOpenMP({omp_sched_static,
-                                         omp_sched_dynamic,
-                                         omp_sched_guided,
-                                         omp_sched_auto});
-
-// static
-const CEnumAnnotation< std::string, COpenMPConfig::Monotonic >
-  COpenMPConfig::MonotonicNames({"nonmonotonic",
-                                 "monotonic"});
-
-// static
-const CEnumAnnotation< omp_sched_t, COpenMPConfig::Monotonic >
-  COpenMPConfig::MonotonicOpenMP({(omp_sched_t) 0x0, // nonmonotonic
-  omp_sched_monotonic});
-
-// static
 COpenMPConfig::_ScheduleStrategyOpenMP COpenMPConfig::EnvironmentOpenMP;
 
 // static
@@ -107,7 +83,7 @@ void COpenMPConfig::InitFromEnvironment()
   EnvironmentOpenMP.scheduleStrategy = COpenMPConfig::ScheduleStrategyNames.toEnum(OMP_SCHEDULE);
   EnvironmentOpenMP.monotonicity = COpenMPConfig::MonotonicNames.toEnum(Monotonic);
   EnvironmentOpenMP.chunkSize = (C_UINT32) ChunkSize.empty() ? -1 : std::stoi(ChunkSize);
-  EnvironmentOpenMP.isEnabled |= (EnvironmentOpenMP.scheduleStrategy != ScheduleStrategy::__SIZE);
+  EnvironmentOpenMP.isEnabled |= (EnvironmentOpenMP.scheduleStrategy != ScheduleStrategy::Undefined);
 
   return;
 }
@@ -189,8 +165,8 @@ void COpenMPConfig::apply() const
   if (MaxNumThreads == 0)
     MaxNumThreads = EnvironmentOpenMP.MaxNumThreads;
 
-  std::string ScheduleStrategy = EnvironmentOpenMP.scheduleStrategy == ScheduleStrategy::__SIZE ? *mpScheduleStrategy : ScheduleStrategyNames[EnvironmentOpenMP.scheduleStrategy];
-  std::string Monotonic = EnvironmentOpenMP.monotonicity == Monotonic::__SIZE ? *mpMonotonic : MonotonicNames[EnvironmentOpenMP.monotonicity];
+  std::string ScheduleStrategy = EnvironmentOpenMP.scheduleStrategy == ScheduleStrategy::Undefined ? *mpScheduleStrategy : ScheduleStrategyNames[EnvironmentOpenMP.scheduleStrategy];
+  std::string Monotonic = EnvironmentOpenMP.monotonicity == Monotonic::undefined ? *mpMonotonic : MonotonicNames[EnvironmentOpenMP.monotonicity];
   C_UINT32 ChunkSize = EnvironmentOpenMP.chunkSize == (C_UINT32) -1 ? *mpChunkSize : EnvironmentOpenMP.chunkSize;
 
 #ifdef USE_OMP
@@ -248,7 +224,7 @@ bool COpenMPConfig::setMaxNumThreads(const unsigned C_INT32 & maxNumThreads)
 
 bool COpenMPConfig::setScheduleStrategy(const std::string & scheduleStrategy)
 {
-  if (ScheduleStrategyNames.toEnum(scheduleStrategy) == ScheduleStrategy::__SIZE)
+  if (ScheduleStrategyNames.toEnum(scheduleStrategy) == ScheduleStrategy::Undefined)
     return false;
 
   *mpScheduleStrategy = scheduleStrategy;
@@ -267,8 +243,8 @@ void COpenMPConfig::initializeParameter()
   mpIsEnabled = assertParameter("Enabled", CCopasiParameter::Type::BOOL, EnvironmentOpenMP.isEnabled);
   C_UINT32 DefaultMaxNumThreads = EnvironmentOpenMP.isEnabled ? EnvironmentOpenMP.MaxNumThreads : ceil(EnvironmentOpenMP.MaxNumThreads / 2.0);
   mpMaxNumThreads = assertParameter("Max Number Threads", CCopasiParameter::Type::UINT, DefaultMaxNumThreads);
-  mpScheduleStrategy = assertParameter("Schedule Strategy", CCopasiParameter::Type::STRING, ScheduleStrategyNames[EnvironmentOpenMP.scheduleStrategy != ScheduleStrategy::__SIZE ? EnvironmentOpenMP.scheduleStrategy : ScheduleStrategy::Static]);
-  mpMonotonic = assertParameter("Monotonicity", CCopasiParameter::Type::STRING, MonotonicNames[EnvironmentOpenMP.monotonicity != Monotonic::__SIZE ? EnvironmentOpenMP.monotonicity : Monotonic::nonmonotonic]);
+  mpScheduleStrategy = assertParameter("Schedule Strategy", CCopasiParameter::Type::STRING, ScheduleStrategyNames[EnvironmentOpenMP.scheduleStrategy != ScheduleStrategy::Undefined? EnvironmentOpenMP.scheduleStrategy : ScheduleStrategy::Static]);
+  mpMonotonic = assertParameter("Monotonicity", CCopasiParameter::Type::STRING, MonotonicNames[EnvironmentOpenMP.monotonicity != Monotonic::undefined? EnvironmentOpenMP.monotonicity : Monotonic::nonmonotonic]);
   mpChunkSize = assertParameter("Chunk Size", CCopasiParameter::Type::UINT, EnvironmentOpenMP.chunkSize == (C_UINT32) -1 ? 0 : EnvironmentOpenMP.chunkSize);
 
   CCopasiParameter * pMaxNumThreadsParameter = getParameter("Max Number Threads");

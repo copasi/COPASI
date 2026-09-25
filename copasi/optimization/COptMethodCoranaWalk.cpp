@@ -157,7 +157,7 @@ bool COptMethodCoranaWalk::optimise()
   mAccepted = 0;
 
   processing = true; // we want to do some work
-  CConfigurableRNG * pRandom = mRandomContext.active();
+  CConfigurableRNG & RNG = mRandomContext.active();
   std::uniform_real_distribution< C_FLOAT64 > StepDistribution(-1.0, 1.0);
   std::uniform_real_distribution< C_FLOAT64 > Probability(0.0, 1.0);
 
@@ -169,7 +169,7 @@ bool COptMethodCoranaWalk::optimise()
             {
               COptItem & OptItem = *OptItemList[h];
               // Calculate the step
-              xc = (2.0 * StepDistribution(*pRandom) - 1) * mStep[h];
+              xc = (2.0 * StepDistribution(RNG) - 1) * mStep[h];
               New = mCurrent[h] + xc;
 
               // Set the new parameter value
@@ -217,7 +217,7 @@ bool COptMethodCoranaWalk::optimise()
                   // keep with probability p, if energy is increased
                   p = exp((mCurrentValue - mEvaluationValue) / (K * mTemperature));
 
-                  if (p > Probability(*pRandom))
+                  if (p > Probability(RNG))
                     {
                       // only one value has changed...
                       mCurrent[h] = New;

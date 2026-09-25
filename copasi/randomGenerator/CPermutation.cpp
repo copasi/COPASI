@@ -18,8 +18,8 @@
 #include "copasi/randomGenerator/CPermutation.h"
 #include "copasi/randomGenerator/CConfigurableRNG.h"
 
-CPermutation::CPermutation(CConfigurableRNG * pRandom, const size_t & size) :
-  mpRandom(pRandom),
+CPermutation::CPermutation(CConfigurableRNG & rng, const size_t & size) :
+  mpRNG(&rng),
   mVector(size),
   mpNext(NULL),
   mpBeyond(NULL)
@@ -28,7 +28,7 @@ CPermutation::CPermutation(CConfigurableRNG * pRandom, const size_t & size) :
 };
 
 CPermutation::CPermutation(const CPermutation & src) :
-  mpRandom(src.mpRandom),
+  mpRNG(src.mpRNG),
   mVector(src.mVector),
   mpNext(NULL),
   mpBeyond(NULL)
@@ -59,7 +59,7 @@ void CPermutation::init()
 
 void CPermutation::shuffle()
 {
-  if (mpRandom == NULL || mpNext == NULL) return;
+  if (mpRNG == NULL || mpNext == NULL) return;
 
   if (mVector.size() > 1)
     {
@@ -73,7 +73,7 @@ void CPermutation::shuffle()
 
       for (pIt = pBegin; pIt != pEnd; ++pIt)
         {
-          pTo = pBegin + dist(*mpRandom);
+          pTo = pBegin + dist(*mpRNG);
 
           if (pTo != pIt)
             std::swap(*pIt, *pTo);
@@ -105,19 +105,19 @@ void CPermutation::createUniquePermutation(std::set< const CPermutation * > & pe
 
 const size_t & CPermutation::pick()
 {
-  if (mpRandom == NULL || mpNext == NULL) return InvalidIndex;
+  if (mpRNG == NULL || mpNext == NULL) return InvalidIndex;
 
   std::uniform_int_distribution<size_t> dist(0, mVector.size() - 1);
 
   if (mVector.size() > 1)
-    mpNext = mVector.array() + dist(*mpRandom);
+    mpNext = mVector.array() + dist(*mpRNG);
 
   return *mpNext;
 }
 
 const size_t & CPermutation::next()
 {
-  if (mpRandom == NULL || mpNext == NULL) return InvalidIndex;
+  if (mpRNG == NULL || mpNext == NULL) return InvalidIndex;
 
   if (++mpNext >= mpBeyond)
     mpNext = mVector.array();

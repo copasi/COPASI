@@ -930,23 +930,23 @@ const std::vector<CCopasiSpringLayout::UpdateAction>& CCopasiSpringLayout::getUp
   return mUpdateActions;
 }
 
-void randomlyPlaceGlyphInCompartmentGlyph(CLGraphicalObject* pGl, const CLGraphicalObject* pContainer, CConfigurableRNG *pRandom)
+void randomlyPlaceGlyphInCompartmentGlyph(CLGraphicalObject* pGl, const CLGraphicalObject* pContainer, CConfigurableRNG & rng)
 {
   std::uniform_real_distribution< double > distribution(0.0, 1.0);
 
   double x = pContainer->getPosition().getX()
-             + distribution(*pRandom) * (pContainer->getDimensions().getWidth() - pGl->getDimensions().getWidth());
+             + distribution(rng) * (pContainer->getDimensions().getWidth() - pGl->getDimensions().getWidth());
   double y = pContainer->getPosition().getY()
-             + distribution(*pRandom) * (pContainer->getDimensions().getHeight() - pGl->getDimensions().getHeight());
+             + distribution(rng) * (pContainer->getDimensions().getHeight() - pGl->getDimensions().getHeight());
   pGl->setPosition(CLPoint(x, y));
 }
 
-void randomlyPlaceGlyphInDimensions(CLGraphicalObject* pGl, const CLDimensions* pContainer, CConfigurableRNG *pRandom)
+void randomlyPlaceGlyphInDimensions(CLGraphicalObject* pGl, const CLDimensions* pContainer, CConfigurableRNG & rng)
 {
   std::uniform_real_distribution< double > distribution(0.0, 1.0);
 
-  double x = distribution(*pRandom) * (pContainer->getWidth() - pGl->getDimensions().getWidth());
-  double y = distribution(*pRandom) * (pContainer->getHeight() - pGl->getDimensions().getHeight());
+  double x = distribution(rng) * (pContainer->getWidth() - pGl->getDimensions().getWidth());
+  double y = distribution(rng) * (pContainer->getHeight() - pGl->getDimensions().getHeight());
   pGl->setPosition(CLPoint(x, y));
 }
 
@@ -972,7 +972,7 @@ void placeTextGlyphs(CLayout* pLayout)
  */
 void CCopasiSpringLayout::randomize()
 {
-  CConfigurableRNG* pRandom = CConfigurableRNG::create(CConfigurableRNG::Type::MersenneTwister);
+  CConfigurableRNG RNG(CConfigurableRNG::Type::MersenneTwister);
 
   size_t i;
 
@@ -1005,9 +1005,9 @@ void CCopasiSpringLayout::randomize()
           }
 
       if (pCompGlyph)
-        randomlyPlaceGlyphInCompartmentGlyph(pMetabGlyph, pCompGlyph, pRandom);
+        randomlyPlaceGlyphInCompartmentGlyph(pMetabGlyph, pCompGlyph, RNG);
       else
-        randomlyPlaceGlyphInDimensions(pMetabGlyph, &mpLayout->getDimensions(), pRandom);
+        randomlyPlaceGlyphInDimensions(pMetabGlyph, &mpLayout->getDimensions(), RNG);
     }
 
   //reaction glyphs
@@ -1029,7 +1029,7 @@ void CCopasiSpringLayout::randomize()
         }
 
       center = center * (1.0 / pReactionGlyph->getListOfMetabReferenceGlyphs().size());
-      center = center + CLPoint(distribution(*pRandom), distribution(*pRandom));
+      center = center + CLPoint(distribution(RNG), distribution(RNG));
 
       pReactionGlyph->setPosition(center);
 
@@ -1040,8 +1040,6 @@ void CCopasiSpringLayout::randomize()
     }
 
   placeTextGlyphs(mpLayout);
-  delete pRandom;
-
   finalizeState();
 }
 

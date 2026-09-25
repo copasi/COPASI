@@ -65,13 +65,6 @@
 
 #define MNumMetabolitesReactionDependent (mNumMetabolitesReaction - mNumMetabolitesReactionIndependent)
 
-//static
-const CEnumAnnotation< std::string, CModel::ModelType > CModel::ModelTypeNames(
-{
-  "deterministic",
-  "stochastic"
-});
-
 // static
 CModel * CModel::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
@@ -433,7 +426,6 @@ C_INT32 CModel::load(CReadConfig & configBuffer)
   {
       setQuantityUnit("mmol", CCore::Framework::ParticleNumbers);
   }
- 
 
   // Remove error messages created by the task initialization as this may fail
   // due to incomplete task specification at this time.
@@ -3503,10 +3495,7 @@ CVector< C_FLOAT64 > CModel::initializeAtolVector(const C_FLOAT64 & atol, const 
   return Atol;
 }
 
-const CMathContainer & CModel::getMathContainer() const
-{return *mpMathContainer;}
-
-CMathContainer & CModel::getMathContainer()
+CMathContainer & CModel::getMathContainer() const
 {return *mpMathContainer;}
 
 #include "copasi/function/CDerive.h"

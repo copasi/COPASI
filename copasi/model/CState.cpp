@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -90,7 +90,6 @@ void CStateTemplate::reorder(const CVector< CModelEntity * > & entitiesX)
 
   assert(entitiesX.size() + 1 == mIndexMap.size());
 
-
   // Update mpEntities to reflect the new order;
 
   if (entitiesX.array() != NULL)
@@ -144,9 +143,6 @@ void CStateTemplate::reorder(const CVector< CModelEntity * > & entitiesX)
 
             case CModelEntity::Status::TIME:
               assert(false);
-              break;
-
-            case CModelEntity::Status::__SIZE:
               break;
           }
       else

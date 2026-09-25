@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -67,7 +67,20 @@ public:
   /**
    * The methods which can be selected for performing this task.
    */
-  static const CTaskEnum::Task ValidSubtasks[];
+  constexpr static CEnumAnnotation ValidSubtasks{
+    CTaskEnum::TaskName.subset(
+      CTaskEnum::Task::timeCourse,
+      std::array{
+        CTaskEnum::Task::steadyState,
+        CTaskEnum::Task::timeCourse,
+        CTaskEnum::Task::scan,
+        CTaskEnum::Task::parameterFitting,
+        CTaskEnum::Task::mca,
+        CTaskEnum::Task::lyap,
+        CTaskEnum::Task::tssAnalysis,
+        CTaskEnum::Task::sens,
+        CTaskEnum::Task::crosssection,
+        CTaskEnum::Task::lna})};
 
   struct sCounter
   {
@@ -183,7 +196,7 @@ public:
   CCopasiTask * getSubTask() const override;
 
   virtual C_FLOAT64 getEstimatedSubtaskError() const;
-  
+
   /**
    * Check whether all parameters are within their boundaries.
    * @result bool within
@@ -253,7 +266,6 @@ public:
    */
   void setParameters(const CVectorCore< C_FLOAT64 > & parameters);
 
-
   /**
    * Sets the 'Create Parameter Sets' parameter. When set it will create new model parameter
    * sets for each experiment after a run.
@@ -267,9 +279,9 @@ public:
   const bool & getCreateParameterSets() const;
 
   /**
-   * Create new parameter sets for each experiment in the model after optimization. 
+   * Create new parameter sets for each experiment in the model after optimization.
    */
-  virtual void createParameterSets();  
+  virtual void createParameterSets();
 
 // private:
   /**
@@ -290,7 +302,6 @@ protected:
    *
    */
   CModelParameterSet* createParameterSet(const std::string & Name, const std::string & prefix);
-
 
 public:
   /**
@@ -752,7 +763,7 @@ protected:
   bool mFunctionalConstraintPassed;
 
   C_FLOAT64 mFunctionalConstraintError;
-  
+
   /**
    * A pointer to the value of the CCopasiParameter holding Create Parameter Sets
    */

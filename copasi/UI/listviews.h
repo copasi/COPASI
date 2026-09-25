@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -140,99 +140,203 @@ public:
   enum Action {CHANGE = 0, ADD, DELETE, RENAME};
   enum struct ObjectType
   {
-    METABOLITE
-    , COMPARTMENT
-    , REACTION
-    , FUNCTION
-    , MODEL
-    , STATE
-    , REPORT
-    , PLOT
-    , MODELVALUE
-    , EVENT
-    , MIRIAM
-    , LAYOUT
-    , MODELPARAMETERSET
-    , TASK
-    , RESULT
-    , UNIT
-    , VECTOR
-    , PARAMETEROVERVIEW
-    , __SIZE
+    METABOLITE,
+    COMPARTMENT,
+    REACTION,
+    FUNCTION,
+    MODEL,
+    STATE,
+    REPORT,
+    PLOT,
+    MODELVALUE,
+    EVENT,
+    MIRIAM,
+    LAYOUT,
+    MODELPARAMETERSET,
+    TASK,
+    RESULT,
+    UNIT,
+    VECTOR,
+    PARAMETEROVERVIEW,
+    UNKNOWN
   };
 
-  static const CEnumAnnotation< std::string, ObjectType > ObjectTypeName;
-  static const CEnumAnnotation< std::string, ObjectType > DataObjectType;
+  constexpr static CEnumAnnotation ObjectTypeName{
+    ObjectType::UNKNOWN,
+    MapNode{ObjectType::METABOLITE, "Species"},
+    MapNode{ObjectType::COMPARTMENT, "Compartment"},
+    MapNode{ObjectType::REACTION, "Reaction"},
+    MapNode{ObjectType::FUNCTION, "Function"},
+    MapNode{ObjectType::MODEL, "Model"},
+    MapNode{ObjectType::STATE, "State"},
+    MapNode{ObjectType::REPORT, "Report"},
+    MapNode{ObjectType::PLOT, "Plot"},
+    MapNode{ObjectType::MODELVALUE, "Global Quantity"},
+    MapNode{ObjectType::EVENT, "Event"},
+    MapNode{ObjectType::MIRIAM, "Annotation"},
+    MapNode{ObjectType::LAYOUT, "Layout"},
+    MapNode{ObjectType::MODELPARAMETERSET, "Parameter Set"},
+    MapNode{ObjectType::TASK, "Task"},
+    MapNode{ObjectType::RESULT, "Result"},
+    MapNode{ObjectType::UNIT, "Unit"},
+    MapNode{ObjectType::VECTOR, "Vector"},
+    MapNode{ObjectType::PARAMETEROVERVIEW, "Parameter Overview"},
+    MapNode{ObjectType::UNKNOWN, "Unknown"}};
+
+  constexpr static CEnumAnnotation DataObjectType{
+    ObjectType::UNKNOWN,
+    MapNode{ObjectType::METABOLITE, "Metabolite"},
+    MapNode{ObjectType::COMPARTMENT, "Compartment"},
+    MapNode{ObjectType::REACTION, "Reaction"},
+    MapNode{ObjectType::FUNCTION, "Function"},
+    MapNode{ObjectType::MODEL, "Model"},
+    MapNode{ObjectType::STATE, "State"},
+    MapNode{ObjectType::REPORT, "ReportDefinition"},
+    MapNode{ObjectType::PLOT, "PlotItem"},
+    MapNode{ObjectType::MODELVALUE, "ModelValue"},
+    MapNode{ObjectType::EVENT, "Event"},
+    MapNode{ObjectType::MIRIAM, "CMIRIAMInfo"},
+    MapNode{ObjectType::LAYOUT, "Layout"},
+    MapNode{ObjectType::MODELPARAMETERSET, "ModelParameterSet"},
+    MapNode{ObjectType::TASK, "Task"},
+    MapNode{ObjectType::RESULT, "Result"},
+    MapNode{ObjectType::UNIT, "Unit"},
+    MapNode{ObjectType::VECTOR, "Vector"},
+    MapNode{ObjectType::PARAMETEROVERVIEW, "ParameterOverView"},
+    MapNode{ObjectType::UNKNOWN, "Unknown"}};
 
   enum struct WidgetType
   {
-    NotFound
-    , COPASI
-    , Model
-    , Biochemical
-    , Compartments
-    , CompartmentDetail
-    , Species
-    , SpeciesDetail
-    , Reactions
-    , ReactionDetail
-    , GlobalQuantities
-    , GlobalQuantityDetail
-    , Events
-    , EventDetail
-    , ParameterOverview
-    , ParameterSets
-    , ParameterSetDetail
-    , Mathematical
-    , DifferentialEquations
-    , Matrices
-    , UpdateOrder
-    , Diagrams
-    , Tasks
-    , SteadyState
-    , SteadyStateResult
-    , StoichiometricAnalysis
-    , ElementaryModes
-    , ElementaryModesResult
-    , MassConservation
-    , MassConservationResult
-    , TimeCourse
-    , TimeCourseResult
-    , MetabolicControlAnalysis
-    , MetabolicControlAnalysisResult
-    , LyapunovExponents
-    , LyapunovExponentsResult
-    , TimeScaleSeparationAnalysis
-    , TimeScaleSeparationAnalysisResult
-    , TimeCourseSensitivities
-    , TimeCourseSensitivitiesResult
-    , CrossSection
-    , CrossSectionResult
-    , Analytics
-    , AnalyticsResult
-    , ParameterScan
-    , Optimization
-    , OptimizationResult
-    , ParameterEstimation
-    , ParameterEstimationResult
-    , Sensitivities
-    , SensitivitiesResult
-    , LinearNoiseApproximation
-    , LinearNoiseApproximationResult
-    , Oscillation
-    , OutputSpecifications
-    , Plots
-    , PlotDetail
-    , ReportTemplates
-    , ReportTemplateDetail
-    , Functions
-    , FunctionDetail
-    , Units
-    , UnitDetail
-    , __SIZE
+    NotFound,
+    COPASI,
+    Model,
+    Biochemical,
+    Compartments,
+    CompartmentDetail,
+    Species,
+    SpeciesDetail,
+    Reactions,
+    ReactionDetail,
+    GlobalQuantities,
+    GlobalQuantityDetail,
+    Events,
+    EventDetail,
+    ParameterOverview,
+    ParameterSets,
+    ParameterSetDetail,
+    Mathematical,
+    DifferentialEquations,
+    Matrices,
+    UpdateOrder,
+    Diagrams,
+    Tasks,
+    SteadyState,
+    SteadyStateResult,
+    StoichiometricAnalysis,
+    ElementaryModes,
+    ElementaryModesResult,
+    MassConservation,
+    MassConservationResult,
+    TimeCourse,
+    TimeCourseResult,
+    MetabolicControlAnalysis,
+    MetabolicControlAnalysisResult,
+    LyapunovExponents,
+    LyapunovExponentsResult,
+    TimeScaleSeparationAnalysis,
+    TimeScaleSeparationAnalysisResult,
+    TimeCourseSensitivities,
+    TimeCourseSensitivitiesResult,
+    CrossSection,
+    CrossSectionResult,
+    Analytics,
+    AnalyticsResult,
+    ParameterScan,
+    Optimization,
+    OptimizationResult,
+    ParameterEstimation,
+    ParameterEstimationResult,
+    Sensitivities,
+    SensitivitiesResult,
+    LinearNoiseApproximation,
+    LinearNoiseApproximationResult,
+    Oscillation,
+    OutputSpecifications,
+    Plots,
+    PlotDetail,
+    ReportTemplates,
+    ReportTemplateDetail,
+    Functions,
+    FunctionDetail,
+    Units,
+    UnitDetail
   };
 
-  static const CEnumAnnotation< std::string, WidgetType > WidgetName;
+  constexpr static CEnumAnnotation WidgetName{
+    WidgetType::NotFound,
+    MapNode{WidgetType::NotFound, "NotFound"},
+    MapNode{WidgetType::COPASI, "COPASI"},
+    MapNode{WidgetType::Model, "Model"},
+    MapNode{WidgetType::Biochemical, "Biochemical"},
+    MapNode{WidgetType::Compartments, "Compartments"},
+    MapNode{WidgetType::CompartmentDetail, "Compartment Detail"},
+    MapNode{WidgetType::Species, "Species"},
+    MapNode{WidgetType::SpeciesDetail, "Species Detail"},
+    MapNode{WidgetType::Reactions, "Reactions"},
+    MapNode{WidgetType::ReactionDetail, "Reaction Detail"},
+    MapNode{WidgetType::GlobalQuantities, "Global Quantities"},
+    MapNode{WidgetType::GlobalQuantityDetail, "GlobalQuantity Detail"},
+    MapNode{WidgetType::Events, "Events"},
+    MapNode{WidgetType::EventDetail, "Event Detail"},
+    MapNode{WidgetType::ParameterOverview, "Parameter Overview"},
+    MapNode{WidgetType::ParameterSets, "Parameter Sets"},
+    MapNode{WidgetType::ParameterSetDetail, "Parameter Set Detail"},
+    MapNode{WidgetType::Mathematical, "Mathematical"},
+    MapNode{WidgetType::DifferentialEquations, "Differential Equations"},
+    MapNode{WidgetType::Matrices, "Matrices"},
+    MapNode{WidgetType::UpdateOrder, "Update Order"},
+    MapNode{WidgetType::Diagrams, "Diagrams"},
+    MapNode{WidgetType::Tasks, "Tasks"},
+    MapNode{WidgetType::SteadyState, "Steady-State"},
+    MapNode{WidgetType::SteadyStateResult, "Steady-State Result"},
+    MapNode{WidgetType::StoichiometricAnalysis, "Stoichiometric Analysis"},
+    MapNode{WidgetType::ElementaryModes, "Elementary Modes"},
+    MapNode{WidgetType::ElementaryModesResult, "Elementary Modes Result"},
+    MapNode{WidgetType::MassConservation, "Mass Conservation"},
+    MapNode{WidgetType::MassConservationResult, "Mass Conservation Result"},
+    MapNode{WidgetType::TimeCourse, "Time Course"},
+    MapNode{WidgetType::TimeCourseResult, "Time Course Result"},
+    MapNode{WidgetType::MetabolicControlAnalysis, "Metabolic Control Analysis"},
+    MapNode{WidgetType::MetabolicControlAnalysisResult, "Metabolic Control Analysis Result"},
+    MapNode{WidgetType::LyapunovExponents, "Lyapunov Exponents"},
+    MapNode{WidgetType::LyapunovExponentsResult, "Lyapunov Exponents Result"},
+    MapNode{WidgetType::TimeScaleSeparationAnalysis, "Time Scale Separation Analysis"},
+    MapNode{WidgetType::TimeScaleSeparationAnalysisResult, "Time Scale Separation Analysis Result"},
+    MapNode{WidgetType::TimeCourseSensitivities, "Time Course Sensitivities"},
+    MapNode{WidgetType::TimeCourseSensitivitiesResult, "Time Course Sensitivities Result"},
+    MapNode{WidgetType::CrossSection, "Cross Section"},
+    MapNode{WidgetType::CrossSectionResult, "Cross Section Result"},
+    MapNode{WidgetType::Analytics, "Analytics"},
+    MapNode{WidgetType::AnalyticsResult, "Analytics Result"},
+    MapNode{WidgetType::ParameterScan, "Parameter Scan"},
+    MapNode{WidgetType::Optimization, "Optimization"},
+    MapNode{WidgetType::OptimizationResult, "Optimization Result"},
+    MapNode{WidgetType::ParameterEstimation, "Parameter Estimation"},
+    MapNode{WidgetType::ParameterEstimationResult, "Parameter Estimation Result"},
+    MapNode{WidgetType::Sensitivities, "Sensitivities"},
+    MapNode{WidgetType::SensitivitiesResult, "Sensitivities Result"},
+    MapNode{WidgetType::LinearNoiseApproximation, "Linear Noise Approximation"},
+    MapNode{WidgetType::LinearNoiseApproximationResult, "Linear Noise Approximation Result"},
+    MapNode{WidgetType::Oscillation, "Oscillation"},
+    MapNode{WidgetType::OutputSpecifications, "Output Specifications"},
+    MapNode{WidgetType::Plots, "Plots"},
+    MapNode{WidgetType::PlotDetail, "Plot Detail"},
+    MapNode{WidgetType::ReportTemplates, "Report Templates"},
+    MapNode{WidgetType::ReportTemplateDetail, "Report Template Detail"},
+    MapNode{WidgetType::Functions, "Functions"},
+    MapNode{WidgetType::FunctionDetail, "Function Detail"},
+    MapNode{WidgetType::Units, "Units"},
+    MapNode{WidgetType::UnitDetail, "Unit Detail"}};
 
   DataModelGUI * getDataModelGUI();
   CDataModel * getDataModel();

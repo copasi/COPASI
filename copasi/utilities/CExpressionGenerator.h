@@ -1,4 +1,4 @@
-// Copyright (C) 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -15,6 +15,61 @@
 #include "copasi/core/CEnumAnnotation.h"
 
 class CModel;
+class CExpressionGenerator;
+
+class sOperation
+{
+private:
+  std::string_view join;
+  std::string_view surroundStart;
+  std::string_view surroundEnd;
+  std::string_view entryStart;
+  std::string_view entryEnd;
+
+public:
+  friend class CExpressionGenerator;
+
+  constexpr sOperation(std::string_view _join,
+                       std::string_view _surroundStart,
+                       std::string_view _surroundEnd,
+                       std::string_view _entryStart,
+                       std::string_view _entryEnd)
+    : join(_join)
+    , surroundStart(_surroundStart)
+    , surroundEnd(_surroundEnd)
+    , entryStart(_entryStart)
+    , entryEnd(_entryEnd)
+  {}
+
+  void swap(sOperation & rhs)
+  {
+    join.swap(rhs.join);
+    surroundStart.swap(rhs.surroundStart);
+    surroundEnd.swap(rhs.surroundEnd);
+    entryStart.swap(rhs.entryStart);
+    entryEnd.swap(rhs.entryEnd);
+  }
+
+  constexpr bool operator<(const sOperation & rhs) const
+  {
+    if (this == &rhs)
+      return false;
+
+    if (join != rhs.join)
+      return join < rhs.join;
+
+    if (surroundStart != rhs.surroundStart)
+      return surroundStart < rhs.surroundStart;
+
+    if (surroundEnd != rhs.surroundEnd)
+      return surroundEnd < rhs.surroundEnd;
+
+    if (entryStart != rhs.entryStart)
+      return entryStart < rhs.entryStart;
+
+    return entryEnd < rhs.entryEnd;
+  }
+};
 
 class CExpressionGenerator : public CDataObject
 {
@@ -28,39 +83,19 @@ public:
     __SIZE
   };
 
-  static const CEnumAnnotation< std::string, Operation > OperationNames;
+  constexpr static CEnumAnnotation OperationNames{
+    Operation::Sum,
+    MapNode{Operation::Sum, "Sum"},
+    MapNode{Operation::SumOfSquares, "Sum of Squares"},
+    MapNode{Operation::SumOfAbsolutes, "Sum of Absolutes"},
+    MapNode{Operation::Product, "Product"}};
 
-private:
-  struct sOperation
-  {
-    std::string join;
-    std::string surroundStart;
-    std::string surroundEnd;
-    std::string entryStart;
-    std::string entryEnd;
-
-    sOperation(const std::string & _join,
-               const std::string & _surroundStart,
-               const std::string & _surroundEnd,
-               const std::string & _entryStart,
-               const std::string & _entryEnd)
-      : join(_join)
-      , surroundStart(_surroundStart)
-      , surroundEnd(_surroundEnd)
-      , entryStart(_entryStart)
-      , entryEnd(_entryEnd)
-    {}
-
-    bool operator < (const sOperation & rhs) const
-    {
-      if (this != &rhs)
-        return join + surroundStart + surroundEnd + entryStart + entryEnd < rhs.join + rhs.surroundStart + rhs.surroundEnd + rhs.entryStart + rhs.entryEnd;
-
-      return false;
-    }
-  };
-
-  static const CEnumAnnotation< sOperation, Operation > OperationParts;
+  constexpr static CEnumAnnotation OperationParts{
+    Operation::Sum,
+    MapNode{Operation::Sum, sOperation(" + ", "", "", "", "")},
+    MapNode{Operation::SumOfSquares, sOperation(" + ", "", "", "", "^2")},
+    MapNode{Operation::SumOfAbsolutes, sOperation(" + ", "", "", "ABS(", ")")},
+    MapNode{Operation::Product, sOperation(" * ", "", "", "", "")}};
 
   std::string mType;
   std::string mSelection;

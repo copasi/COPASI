@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -389,7 +389,6 @@ QVariant CQParameterOverviewDM::diffData(const CModelParameter * pNode, int role
               break;
 
             case CModelParameter::CompareResult::Identical:
-            case CModelParameter::CompareResult::__SIZE:
               return QVariant();
               break;
           }
@@ -423,9 +422,6 @@ QVariant CQParameterOverviewDM::diffData(const CModelParameter * pNode, int role
 
             case CModelParameter::CompareResult::Identical:
               return QVariant(QString("The item's value is identical with the current model."));
-              break;
-
-            case CModelParameter::CompareResult::__SIZE:
               break;
           }
 

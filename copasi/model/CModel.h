@@ -63,14 +63,13 @@ public:
   enum struct ModelType
   {
     deterministic,
-    stochastic,
-    __SIZE
+    stochastic
   };
 
-  /**
-   * String representation of the valid model types.
-   */
-  static const CEnumAnnotation< std::string, ModelType > ModelTypeNames;
+constexpr static CEnumAnnotation ModelTypeNames{
+  ModelType::deterministic,
+  MapNode{ModelType::deterministic, "deterministic"},
+  MapNode{ModelType::stochastic, "stochastic"}};
 
   enum DependencyType {initial = 0, transient, physical};
 
@@ -1362,17 +1361,9 @@ private:
 public:
   /**
    * Retrieve the container of all mathematical objects
-   * @return const CMathContainer & mathContainer
-   */
-  const CMathContainer & getMathContainer() const;
-
-  /**
-   * Retrieve the container of all mathematical objects
    * @return CMathContainer & mathContainer
    */
-  CMathContainer & getMathContainer();
-
-  //bool prepareSymbolicJacobian();
+  CMathContainer & getMathContainer() const;
 
   CEvaluationNode* prepareElasticity(const CReaction * pReaction, const CModelEntity* pVar, bool simplify);
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,14 +20,6 @@
 #include "copasi/model/CMetab.h"
 #include "copasi/model/CModelParameterSet.h"
 #include "copasi/utilities/CCopasiParameter.h"
-
-// static
-const CEnumAnnotation< std::string, CUndoData::Type > CUndoData::TypeName(
-{
-  "Insert",
-  "Change",
-  "Remove"
-});
 
 CUndoData::CChangeSet::CChangeSet() :
   std::vector< ChangeInfo >(),
@@ -108,8 +100,6 @@ void CUndoData::CChangeSet::add(const CUndoData::ChangeInfo & info)
                 Info.objectAfter = info.objectAfter;
               }
 
-            break;
-          case Type::__SIZE:
             break;
         }
     }
@@ -235,9 +225,6 @@ CUndoData::CUndoData(const Type & type, const CUndoObjectInterface * pObject, co
 
         mNewData = mOldData;
         break;
-
-      case Type::__SIZE:
-        break;
     }
 }
 
@@ -289,9 +276,6 @@ CUndoData::CUndoData(const Type & type, const CData & data, const size_t & autho
         mNewData.addProperty(CData::OBJECT_UUID, data.getProperty(CData::OBJECT_UUID));
         mNewData.addProperty(CData::OBJECT_INDEX, data.getProperty(CData::OBJECT_INDEX));
 
-        break;
-
-      case Type::__SIZE:
         break;
     }
 }
@@ -358,9 +342,6 @@ bool CUndoData::addProperty(const std::string & name, const CDataValue & value)
       case Type::CHANGE:
         success = false;
         break;
-
-      case Type::__SIZE:
-        break;
     }
 
   return success;
@@ -384,7 +365,6 @@ bool CUndoData::addProperty(const std::string & name, const CDataValue & oldValu
     {
       case Type::INSERT:
       case Type::REMOVE:
-      case Type::__SIZE:
         break;
 
       case Type::CHANGE:
@@ -462,9 +442,6 @@ bool CUndoData::isSetProperty(const std::string & name) const
       case Type::CHANGE:
         isSet &= mNewData.isSetProperty(name);
         isSet &= mOldData.isSetProperty(name);
-        break;
-
-      case Type::__SIZE:
         break;
     }
 
@@ -598,9 +575,6 @@ bool CUndoData::apply(const CDataModel & dataModel, CUndoData::CChangeSet & chan
       case Type::CHANGE:
         success &= change(dataModel, true, changes, execute);
         break;
-
-      case Type::__SIZE:
-        break;
     }
 
   return success;
@@ -622,9 +596,6 @@ bool CUndoData::undo(const CDataModel & dataModel, CUndoData::CChangeSet & chang
 
       case Type::CHANGE:
         success &= change(dataModel, false, changes, execute);
-        break;
-
-      case Type::__SIZE:
         break;
     }
 
@@ -695,9 +666,6 @@ std::string CUndoData::getObjectDisplayName() const
       case Type::CHANGE:
         DisplayName = mOldData.getProperty(CData::OBJECT_NAME).toString();
         break;
-
-      case Type::__SIZE:
-        break;
     }
 
   // Species will always have the name of the parent compartment appended.
@@ -714,9 +682,6 @@ std::string CUndoData::getObjectDisplayName() const
           case Type::REMOVE:
           case Type::CHANGE:
             CN = mOldData.getProperty(CData::OBJECT_PARENT_CN).toString();
-            break;
-
-          case Type::__SIZE:
             break;
         }
 
@@ -747,9 +712,6 @@ std::string CUndoData::getObjectType() const
       case Type::REMOVE:
       case Type::CHANGE:
         return mOldData.getProperty(CData::OBJECT_TYPE).toString();
-        break;
-
-      case Type::__SIZE:
         break;
     }
 
@@ -795,9 +757,6 @@ bool CUndoData::operator < (const CUndoData & rhs) const
         if (CN != RhsCN) return CN > RhsCN;
       }
       break;
-
-      case Type::__SIZE:
-        break;
     }
 
   // At the point the data is of the same point and type now we sort by the index
@@ -836,9 +795,6 @@ bool CUndoData::operator < (const CUndoData & rhs) const
         if (Index != RhsIndex) return Index > RhsIndex;
       }
       break;
-
-      case Type::__SIZE:
-        break;
     }
 
   // Default by pointer
@@ -1043,9 +999,6 @@ const CData & CUndoData::getData(const bool & apply) const
 
       case Type::REMOVE:
         return mOldData;
-
-      case Type::__SIZE:
-        break;
     }
 
   // This will never be reached. It is there to satisfy the compiler.

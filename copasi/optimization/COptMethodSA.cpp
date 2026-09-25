@@ -174,7 +174,7 @@ bool COptMethodSA::optimise()
   // no temperature reductions yet
   k = 0;
 
-  CConfigurableRNG * pRandom = mRandomContext.active();
+  CConfigurableRNG & RNG = mRandomContext.active();
   std::uniform_real_distribution< C_FLOAT64 > StepDistribution(-1.0, 1.0);
   std::uniform_real_distribution< C_FLOAT64 > Probability(0.0, 1.0);
 
@@ -188,7 +188,7 @@ bool COptMethodSA::optimise()
                 {
                   COptItem & OptItem = *OptItemList[h];
                   // Calculate the step
-                  xc = StepDistribution(*pRandom) * mStep[h];
+                  xc = StepDistribution(RNG) * mStep[h];
                   New = mCurrent[h] + xc;
 
                   // Set the new parameter value
@@ -228,7 +228,7 @@ bool COptMethodSA::optimise()
                       // keep with probability p, if energy is increased
                       p = exp((mCurrentValue - mEvaluationValue) / (K * mTemperature));
 
-                      if (p > Probability(*pRandom))
+                      if (p > Probability(RNG))
                         {
                           // only one value has changed...
                           mCurrent[h] = New;

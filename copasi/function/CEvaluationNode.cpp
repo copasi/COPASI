@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,115 +31,6 @@
 
 #include "copasi/utilities/CNodeIterator.h"
 #include "copasi/utilities/CValidatedUnit.h"
-
-// static
-const CEnumAnnotation< std::string, CEvaluationNode::MainType > CEvaluationNode::MainTypeName(
-{
-  "INVALID",
-  "NUMBER",
-  "CONSTANT",
-  "OPERATOR",
-  "OBJECT",
-  "FUNCTION",
-  "CALL",
-  "STRUCTURE",
-  "CHOICE",
-  "VARIABLE",
-  "WHITESPACE",
-  "LOGICAL",
-  "MV_FUNCTION", // This not yet implemented
-  "VECTOR",
-  "DELAY",
-  "UNIT"
-});
-
-// static
-const CEnumAnnotation< std::string, CEvaluationNode::SubType > CEvaluationNode::SubTypeName(
-{
-  "Abs",
-  "And",
-  "Arccos",
-  "Arccosh",
-  "Arccot",
-  "Arccoth",
-  "Arccsc",
-  "Arccsch",
-  "Arcsec",
-  "Arcsech",
-  "Arcsin",
-  "Arcsinh",
-  "Arctan",
-  "Arctanh",
-  "Avogadro",
-  "CN",
-  "Ceil",
-  "Close",
-  "Comma",
-  "Cos",
-  "Cosh",
-  "Cot",
-  "Coth",
-  "Csc",
-  "Csch",
-  "Default",
-  "Delay",
-  "Divide",
-  "Double",
-  "Enotation",
-  "Eq",
-  "Exp",
-  "Exponentiale",
-  "Expression",
-  "Factorial",
-  "False",
-  "Floor",
-  "Function",
-  "Ge",
-  "Gt",
-  "If",
-  "Implies", // IMPLIES
-  "Infinity",
-  "Integer",
-  "Invalid",
-  "Le",
-  "Log",
-  "Log10",
-  "Lt",
-  "Max",
-  "Min",
-  "Minus",
-  "Modulus",
-  "Multiply",
-  "NaN",
-  "Ne",
-  "Not",
-  "Open",
-  "Or",
-  "Pi",
-  "Plus",
-  "Pointer",
-  "Power",
-  "Rationale",
-  "Remainder",
-  "Quotient", //     QUOTIENT
-  "Rgamma",
-  "Rnormal",
-  "Rpoisson",
-  "Runiform",
-  "Sec",
-  "Sech",
-  "Sign",
-  "Sin",
-  "Sinh",
-  "Sqrt",
-  "Tan",
-  "Tanh",
-  "True",
-  "Vector",
-  "VectorClose",
-  "VectorOpen",
-  "Xor",
-});
 
 CEvaluationNode::CPrecedence::CPrecedence(const size_t & left,
     const size_t & right):
@@ -218,9 +109,6 @@ CEvaluationNode * CEvaluationNode::create(const CEvaluationNode::MainType & main
         break;
 
       case MainType::MV_FUNCTION:
-        break;
-
-      case MainType::__SIZE:
         break;
     }
 
@@ -881,7 +769,6 @@ bool CEvaluationNode::operator<(const CEvaluationNode& right) const
         break;
 
       case MainType::UNIT:
-      case MainType::__SIZE:
         break;
     }
 

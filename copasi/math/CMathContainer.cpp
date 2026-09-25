@@ -222,7 +222,7 @@ CMathContainer::CMathContainer()
   , mpQuantity2NumberFactor(NULL)
   , mRandom("Random", this, InvalidValue)
   , mpProcessQueue(new CMathEventQueue(*this))
-  , mpRandomGenerator(CConfigurableRNG::create())
+  , mRNG()
   , mValues()
   , mpValuesBuffer(NULL)
   , mInitialExtensiveValues()
@@ -320,7 +320,7 @@ CMathContainer::CMathContainer(CModel & model)
   , mpQuantity2NumberFactor(NULL)
   , mRandom("Random", this, InvalidValue)
   , mpProcessQueue(nullptr)
-  , mpRandomGenerator(CConfigurableRNG::create())
+  , mRNG()
   , mValues()
   , mOldValues()
   , mpValuesBuffer(NULL)
@@ -432,7 +432,7 @@ CMathContainer::CMathContainer(const CMathContainer & src)
   , mpQuantity2NumberFactor(src.mpQuantity2NumberFactor)
   , mRandom("Random", this, InvalidValue)
   , mpProcessQueue(nullptr)
-  , mpRandomGenerator(CConfigurableRNG::create())
+  , mRNG()
   , mValues()
   , mOldValues()
   , mpValuesBuffer(src.mpValuesBuffer)
@@ -607,7 +607,6 @@ CMathContainer::CMathContainer(const CMathContainer & src)
 CMathContainer::~CMathContainer()
 {
   pdelete(mpProcessQueue);
-  pdelete(mpRandomGenerator);
   pdeletev(mpValuesBuffer)
   pdeletev(mpObjectsBuffer)
 
@@ -934,9 +933,6 @@ void CMathContainer::updateInitialValues(const CCore::Framework & framework)
       case CCore::Framework::ParticleNumbers:
         applyUpdateSequence(mSynchronizeInitialValuesSequenceExtensive);
         break;
-
-      case CCore::Framework::__SIZE:
-        break;
     }
 }
 
@@ -1121,9 +1117,6 @@ const CCore::CUpdateSequence & CMathContainer::getSynchronizeInitialValuesSequen
 
       case CCore::Framework::ParticleNumbers:
         return mSynchronizeInitialValuesSequenceExtensive;
-        break;
-
-      case CCore::Framework::__SIZE:
         break;
     }
 
@@ -2705,7 +2698,6 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
                   break;
 
-                case CMath::SimulationType::__SIZE:
                 case CMath::SimulationType::Undefined:
                   break;
               }
@@ -2823,7 +2815,6 @@ void CMathContainer::createApplyInitialValuesSequence()
                   Requested.insert(pObject);
                   break;
 
-                case CMath::SimulationType::__SIZE:
                 case CMath::SimulationType::Undefined:
                   break;
               }
@@ -4046,9 +4037,6 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
       case CMath::SimulationType::Conversion:
         fatalError();
         break;
-
-      case CMath::SimulationType::__SIZE:
-        break;
     }
 
   resize(Size);
@@ -4200,9 +4188,6 @@ bool CMathContainer::removeAnalysisObject(CMath::Entity< CMathObject > & mathObj
       case CMath::SimulationType::Independent:
       case CMath::SimulationType::Conversion:
         fatalError();
-        break;
-
-      case CMath::SimulationType::__SIZE:
         break;
     }
 
@@ -4739,9 +4724,9 @@ bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
   return true;
 }
 
-CConfigurableRNG & CMathContainer::getRandomGenerator() const
+CConfigurableRNG & CMathContainer::getRandomGenerator()
 {
-  return * mpRandomGenerator;
+  return mRNG;
 }
 
 const CDataObject * CMathContainer::getRandomObject() const

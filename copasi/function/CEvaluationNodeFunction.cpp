@@ -290,7 +290,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
         mpFunction2 = runiform;
 
         if (!mpRandom)
-          mpRandom = CConfigurableRNG::create();
+          mpRandom = new CConfigurableRNG();
 
         break;
 
@@ -298,7 +298,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
         mpFunction2 = rnormal;
 
         if (!mpRandom)
-          mpRandom = CConfigurableRNG::create();
+          mpRandom = new CConfigurableRNG();
 
         break;
 
@@ -306,7 +306,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
         mpFunction1 = rpoisson;
 
         if (!mpRandom)
-          mpRandom = CConfigurableRNG::create();
+          mpRandom = new CConfigurableRNG();
 
         break;
 
@@ -314,7 +314,7 @@ CEvaluationNodeFunction::CEvaluationNodeFunction(const SubType & subType,
         mpFunction2 = rgamma;
 
         if (!mpRandom)
-          mpRandom = CConfigurableRNG::create();
+          mpRandom = new CConfigurableRNG();
 
         break;
 

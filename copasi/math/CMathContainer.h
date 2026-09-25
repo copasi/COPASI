@@ -35,11 +35,11 @@ class CJitCompiler;
 
 #include "copasi/core/CVector.h"
 #include "copasi/model/CModelParameter.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
 class CModelEntity;
 class CReaction;
 class CMoiety;
-class CConfigurableRNG;
 class CMathEventQueue;
 
 template < class CType > class CDataVector;
@@ -863,7 +863,7 @@ public:
   /**
    * Retrieve the random number generator.
    */
-  CConfigurableRNG & getRandomGenerator() const;
+  CConfigurableRNG & getRandomGenerator();
 
   /**
    * Retrieve the object which triggers recalculation of random functions
@@ -1158,7 +1158,7 @@ private:
   CDataObjectReference< C_FLOAT64 > mRandom;
 
   CMathEventQueue * mpProcessQueue;
-  CConfigurableRNG * mpRandomGenerator;
+  CConfigurableRNG mRNG;
 
   CVectorCore< C_FLOAT64 > mValues;
   CVectorCore< C_FLOAT64 > mOldValues;

@@ -280,7 +280,7 @@ void COptItem::rememberStartValue()
   mLastStartValue = getStartValue();
 }
 
-C_FLOAT64 COptItem::getRandomValue(CConfigurableRNG * pRandom) const
+C_FLOAT64 COptItem::getRandomValue(CConfigurableRNG & rng) const
 {
   C_FLOAT64 RandomValue;
 
@@ -297,7 +297,7 @@ C_FLOAT64 COptItem::getRandomValue(CConfigurableRNG * pRandom) const
       return RandomValue;
     }
 
-  return mInterval.randomValue(pRandom);
+  return mInterval.randomValue(rng);
 }
 
 bool COptItem::isValid() const

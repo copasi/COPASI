@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -205,9 +205,6 @@ void CQSpeciesDetail::setFramework(int framework)
         mpEditInitialValue->setReadOnly(!mpMetab->isInitialValueChangeAllowed((CCore::Framework) mFramework));
         mpEditCurrentValue->setText(convertToQString(mpMetab->getValue()));
         mpEditRate->setText(convertToQString(mpMetab->getRate()));
-        break;
-
-      case CCore::Framework::__SIZE:
         break;
     }
 }
@@ -553,9 +550,6 @@ void CQSpeciesDetail::slotCompartmentChanged(int compartment)
       case CCore::Framework::ParticleNumbers:
         mInitialConcentration = CMetab::convertToConcentration(mInitialNumber, *pNewCompartment);
         break;
-
-      case CCore::Framework::__SIZE:
-        break;
     }
 
   mpCurrentCompartment = pNewCompartment;
@@ -627,9 +621,6 @@ void CQSpeciesDetail::slotInitialValueLostFocus()
 
         mInitialNumber = mpEditInitialValue->text().toDouble();
         mInitialConcentration = CMetab::convertToConcentration(mInitialNumber, *mpCurrentCompartment);
-        break;
-
-      case CCore::Framework::__SIZE:
         break;
     }
 }

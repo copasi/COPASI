@@ -58,14 +58,6 @@
 #include "copasi/sbml/SBMLImporter.h"
 
 // static
-CEnumAnnotation< std::string, CReaction::KineticLawUnit > CReaction::KineticLawUnitTypeName(
-{
-  "Default",
-  "AmountPerTime",
-  "ConcentrationPerTime"
-});
-
-// static
 CReaction * CReaction::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CReaction(data.getProperty(CData::OBJECT_NAME).toString(),

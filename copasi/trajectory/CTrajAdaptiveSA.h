@@ -181,7 +181,7 @@ protected:
   /**
    * The random number generator
    */
-  CConfigurableRNG *mpRandomGenerator;
+  CConfigurableRNG *mRNG;
 
   /**
    * The particle and reaction numbers

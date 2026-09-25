@@ -56,8 +56,8 @@ void CR250::seed(result_type seed)
 {
   /*--------------------------------------------------------------------------*/
   size_t j, k;
-  unsigned C_INT16 mask;
-  unsigned C_INT16 msb;
+  result_type mask;
+  result_type msb;
   /*--------------------------------------------------------------------------*/
 
   mIndex = 0;
@@ -89,7 +89,7 @@ void CR250::seed(result_type seed)
 
 CR250::result_type CR250::operator()()
 {
-  C_INT16 j;
+  CR250::result_type j;
 
   if (mIndex > 146)
     j = mIndex - 147;      /* Wrap pointer around */
@@ -114,7 +114,7 @@ void CR250::discard(result_type z)
     }
 }
 
-unsigned C_INT16 CR250::myrand()
+CR250::result_type CR250::myrand()
 {
   mSeed = mSeed * 0x015a4e35L + 1;
   return (mSeed >> 16) & 0x7fff;

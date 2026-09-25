@@ -1,3 +1,8 @@
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
 // Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
@@ -177,11 +182,31 @@ public:
     EventRootState,
     DelayValue,
     DelayLag,
-    TransitionTime,
-    __SIZE
+    TransitionTime
   };
 
-  static const CEnumAnnotation< std::string, ValueType > ValueTypeName;
+  constexpr static CEnumAnnotation ValueTypeName{
+    ValueType::Undefined,
+    MapNode{ValueType::Undefined, "undefined"},
+    MapNode{ValueType::Value, "value"},
+    MapNode{ValueType::Rate, "rate"},
+    MapNode{ValueType::ParticleFlux, "particle flux"},
+    MapNode{ValueType::Flux, "flux"},
+    MapNode{ValueType::Propensity, "propensity"},
+    MapNode{ValueType::Noise, "noise"},
+    MapNode{ValueType::ParticleNoise, "particle noise"},
+    MapNode{ValueType::TotalMass, "total mass"},
+    MapNode{ValueType::DependentMass, "dependent mass"},
+    MapNode{ValueType::Discontinuous, "discontinuous"},
+    MapNode{ValueType::EventDelay, "event delay"},
+    MapNode{ValueType::EventPriority, "event priority"},
+    MapNode{ValueType::EventAssignment, "event assignment"},
+    MapNode{ValueType::EventTrigger, "event trigger"},
+    MapNode{ValueType::EventRoot, "event root"},
+    MapNode{ValueType::EventRootState, "event root state"},
+    MapNode{ValueType::DelayValue, "delay value"},
+    MapNode{ValueType::DelayLag, "delay lag"},
+    MapNode{ValueType::TransitionTime, "transition time"}};
 
   enum struct SimulationType
   {
@@ -193,11 +218,20 @@ public:
     Independent,
     Dependent,
     Assignment,
-    Conversion,
-    __SIZE
+    Conversion
   };
 
-  static const CEnumAnnotation< std::string, SimulationType > SimulationTypeName;
+  constexpr static CEnumAnnotation SimulationTypeName{
+    SimulationType::Undefined,
+    MapNode{SimulationType::Undefined, "undefined"},
+    MapNode{SimulationType::Fixed, "fixed"},
+    MapNode{SimulationType::EventTarget, "event target"},
+    MapNode{SimulationType::Time, "time"},
+    MapNode{SimulationType::ODE, "ODE"},
+    MapNode{SimulationType::Independent, "independent"},
+    MapNode{SimulationType::Dependent, "dependent"},
+    MapNode{SimulationType::Assignment, "assignment"},
+    MapNode{SimulationType::Conversion, "conversion"}};
 
   enum struct EntityType
   {
@@ -212,11 +246,23 @@ public:
     Reaction,
     Moiety,
     Event,
-    Delay,
-    __SIZE
+    Delay
   };
 
-  static const CEnumAnnotation< std::string, EntityType > EntityTypeName;
+  constexpr static CEnumAnnotation EntityTypeName{
+    EntityType::Undefined,
+    MapNode{EntityType::Undefined, "undefined"},
+    MapNode{EntityType::Model, "model"},
+    MapNode{EntityType::Analysis, "analysis"},
+    MapNode{EntityType::GlobalQuantity, "global quantity"},
+    MapNode{EntityType::Compartment, "compartment"},
+    MapNode{EntityType::Species, "species"},
+    MapNode{EntityType::LocalReactionParameter, "local parameter"},
+    MapNode{EntityType::StoichiometricCoefficients, "stoich. coeff."},
+    MapNode{EntityType::Reaction, "reaction"},
+    MapNode{EntityType::Moiety, "moiety"},
+    MapNode{EntityType::Event, "event"},
+    MapNode{EntityType::Delay, "delay"}};
 
   enum struct eStateChange
   {

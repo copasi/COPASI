@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -77,11 +77,9 @@ CQPlotSubwidget::CQPlotSubwidget(QWidget* parent, const char* name, Qt::WindowFl
   mpSpectogramWidget = new CQSpectogramWidget(this);
   mpStack->addWidget(mpSpectogramWidget);
 
-  auto it = CTaskEnum::TaskName.begin();
-
-  for (; it != CTaskEnum::TaskName.end(); ++it)
+  for (auto A: CTaskEnum::TaskName.annotations())
     {
-      mTaskNames << FROM_UTF8(*it);
+      mTaskNames << FROM_UTF8(A);
     }
 
   mpAdvancedSettings = new CQAdvancedPlotSettings();

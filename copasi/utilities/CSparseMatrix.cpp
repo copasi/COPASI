@@ -606,8 +606,7 @@ bool SparseMatrixTest(const size_t & size,
                       const bool & CCMP)
 {
   size_t i, j, l, loop = 1;
-  CConfigurableRNG * pRandom =
-    CConfigurableRNG::create(CConfigurableRNG::Type::MersenneTwister, seed);
+  CConfigurableRNG RNG(CConfigurableRNG::Type::MersenneTwister, seed);
 
   // If the sparseness is not specified we expect 4 metabolites per reaction
   C_FLOAT64 Sparseness = sparseness;
@@ -624,15 +623,15 @@ bool SparseMatrixTest(const size_t & size,
   for (i = 0; i < size - 3; i++)
     for (j = 0; j < size; j++)
       {
-        if (distribution(*pRandom) < Sparseness)
-          S(i, j) = (distribution(*pRandom) - 0.5) * 100.0;
+        if (distribution(RNG) < Sparseness)
+          S(i, j) = (distribution(RNG) - 0.5) * 100.0;
       }
 
   for (i = 0; i < size; i++)
     for (j = 0; j < size + 3; j++)
       {
-        if (distribution(*pRandom) < Sparseness)
-          Ss(i, j) = (distribution(*pRandom) - 0.5) * 100.0;
+        if (distribution(RNG) < Sparseness)
+          Ss(i, j) = (distribution(RNG) - 0.5) * 100.0;
       }
 
   M = S;

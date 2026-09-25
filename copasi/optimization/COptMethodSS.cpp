@@ -288,14 +288,14 @@ bool COptMethodSS::randomize(C_INT32 i)
   bool Running = true;  // flag for invalid values
 
   const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
-  CConfigurableRNG * pRandom = mRandomContext.active();
+  CConfigurableRNG & RNG = mRandomContext.active();
 
   for (size_t j = 0; j < mVariableSize; ++j)
     {
       COptItem & OptItem = *OptItemList[j];
       C_FLOAT64 & Sol = (*mPool[i])[j];
 
-      Sol = OptItem.getRandomValue(pRandom);
+      Sol = OptItem.getRandomValue(RNG);
       OptItem.setItemValue(Sol, COptItem::CheckPolicyFlag::All);
     }
 
@@ -316,7 +316,7 @@ bool COptMethodSS::creation(void)
   for (size_t i = 0; (i < 4) && proceed(); i++)
     {
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
-      CConfigurableRNG * pRandom = mRandomContext.master();
+      CConfigurableRNG & RNG = mRandomContext.master();
       std::uniform_real_distribution< C_FLOAT64 > distribution(0.0, 1.0);
 
       for (size_t j = 0; j < mVariableSize; ++j)
@@ -325,7 +325,7 @@ bool COptMethodSS::creation(void)
           COptItem & OptItem = *OptItemList[j];
           C_FLOAT64 & Sol = (*mPool[i])[j];
           const CIntervalValue & Interval = OptItem.getInterval();
-          C_FLOAT64 Sample = distribution(*pRandom);
+          C_FLOAT64 Sample = distribution(RNG);
 
           try
             {
@@ -396,7 +396,7 @@ bool COptMethodSS::creation(void)
         continue;
 
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
-      CConfigurableRNG * pRandom = mRandomContext.active();
+      CConfigurableRNG & RNG = mRandomContext.active();
       std::uniform_real_distribution< C_FLOAT64 > distribution(0.0, 1.0);
 
       for (size_t j = 0; j < mVariableSize; ++j)
@@ -419,14 +419,14 @@ bool COptMethodSS::creation(void)
               if (k > 0) mProb[k] += mProb[k - 1];
             }
 
-          C_FLOAT32 a = distribution(*pRandom);
+          C_FLOAT32 a = distribution(RNG);
 
           for (size_t k = 0; k < 4; k++)
             {
               // note that the original is <= but numerically < is essentially the same and faster
               if (a < mProb[k])
                 {
-                  C_FLOAT32 Sample = distribution(*pRandom);
+                  C_FLOAT32 Sample = distribution(RNG);
 
                   try
                     {
@@ -714,7 +714,7 @@ bool COptMethodSS::combination(void)
       C_FLOAT64 xnewval; // to hold temp value of "parent" in go-beyond strategy
 
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
-      CConfigurableRNG * pRandom = mRandomContext.active();
+      CConfigurableRNG & RNG = mRandomContext.active();
 
       // keep the parent value in childval[i] so that we only accept better than that
       mChildVal[i] = mValues[i];
@@ -773,7 +773,7 @@ bool COptMethodSS::combination(void)
                             break;
                         }
 
-                      xnew[k] = c1 + (c2 - c1) * distribution(*pRandom);
+                      xnew[k] = c1 + (c2 - c1) * distribution(RNG);
                     }
 
                   catch (...)
@@ -827,7 +827,7 @@ bool COptMethodSS::combination(void)
                 {
                   COptItem & OptItem = *OptItemList[k];
                   dd = (xpr[k] - (*mChild[i])[k]) * lambda;
-                  xnew[k] = (*mChild[i])[k] + dd * distribution(*pRandom);
+                  xnew[k] = (*mChild[i])[k] + dd * distribution(RNG);
                   // get the bounds of this parameter
 
                   // put it on the bounds if it had exceeded them

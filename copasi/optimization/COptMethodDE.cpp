@@ -106,7 +106,7 @@ bool COptMethodDE::replicate()
   for (size_t i = 2 * mPopulationSize; i < 3 * mPopulationSize; ++i)
     {
       const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);
-      CConfigurableRNG * pRandom = mRandomContext.active();
+      CConfigurableRNG & RNG = mRandomContext.active();
       std::uniform_int_distribution< size_t > dist(0, mPopulationSize - 1);
       std::normal_distribution< C_FLOAT64 > nd(1.0, mMutationVariance);
 
@@ -115,9 +115,9 @@ bool COptMethodDE::replicate()
           COptItem & OptItem = *OptItemList[j];
           C_FLOAT64 & mut = (*mIndividuals[i])[j];
 
-          if (dist(*pRandom) < 0.6 * mPopulationSize)
+          if (dist(RNG) < 0.6 * mPopulationSize)
             {
-              mut = (*mIndividuals[i - mPopulationSize])[j] * nd(*pRandom);
+              mut = (*mIndividuals[i - mPopulationSize])[j] * nd(RNG);
             }
           else
             mut = (*mIndividuals[i - 2 * mPopulationSize])[j];

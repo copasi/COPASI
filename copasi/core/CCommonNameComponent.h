@@ -14,10 +14,28 @@
 class CDataObject;
 class CDataContainer;
 
+#include "copasi/core/CBidirectionalMap.h"
 class CCommonNameComponent : public std::enable_shared_from_this< CCommonNameComponent >
 {
 private:
-  static const std::map< std::string, std::string > VectorName2ObjectType;
+  constexpr static CBidirectionalMap VectorName2ObjectType{
+    MapNode{"Compartments", "Compartment"},
+    MapNode{"Events", "Event"},
+    MapNode{"Fitted Points", "Fitted Point"},
+    MapNode{"Functions", "Function"},
+    MapNode{"ListOfLayouts", "Layout"},
+    MapNode{"ListOflayouts", "Layout"},
+    MapNode{"Metabolites", "Metabolite"},
+    MapNode{"ModelList", "CN"},
+    MapNode{"Moieties", "Moiety"},
+    MapNode{"OutputDefinitions", "PlotItem"},
+    MapNode{"ParameterSets", "ModelParameterSet"},
+    MapNode{"Reactions", "Reaction"},
+    MapNode{"Reduced Model Metabolites", "Metabolite"},
+    MapNode{"ReportDefinitions", "ReportDefinition"},
+    MapNode{"TaskList", "Task"},
+    MapNode{"Units list", "Unit"},
+    MapNode{"Values", "ModelValue"}};
 
   /**
    * @brief Construct a new CCommonNameComponent object

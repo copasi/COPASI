@@ -36,12 +36,12 @@
 #include "copasi/steadystate/CSteadyStateTask.h"
 #include "copasi/trajectory/CTrajectoryTask.h"
 #include "copasi/report/CReport.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
 class CScanProblem;
 class CScanTask;
 class CSteadyStateTask;
 class CTrajectory;
-class CConfigurableRNG;
 class CModelParameterSet;
 
 class CScanItem
@@ -64,7 +64,7 @@ protected:
 public:
   static
   CScanItem* createScanItemFromParameterGroup(CCopasiParameterGroup* si,
-      CConfigurableRNG* rg);
+      CConfigurableRNG & rng);
 
   size_t getNumSteps() const;
 
@@ -171,11 +171,12 @@ class CScanItemRandom: public CScanItem
 {
 private:
   C_FLOAT64 mMin, mMax, mFaktor;
-  CConfigurableRNG* mRg;
+  CConfigurableRNG & mRNG;
   unsigned C_INT32 mRandomType;
   bool mLog;
 public:
-  CScanItemRandom(CCopasiParameterGroup* si, CConfigurableRNG* rg);
+  CScanItemRandom() = delete;
+  CScanItemRandom(CCopasiParameterGroup* si, CConfigurableRNG & rng);
   virtual ~CScanItemRandom() {};
 
   void step() override;
@@ -216,7 +217,7 @@ protected:
   /**
    * A pointer to the random number generator
    */
-  CConfigurableRNG * mpRandomGenerator;
+  CConfigurableRNG mRNG;
 
   std::vector<CScanItem*> mScanItems;
 

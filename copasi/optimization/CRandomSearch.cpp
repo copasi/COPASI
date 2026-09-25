@@ -148,7 +148,7 @@ bool CRandomSearch::optimise()
   setSolution(mValue, mIndividual, true);
 
   CVector< C_FLOAT64 > LastIndividual;
-  CConfigurableRNG * pRandom = mRandomContext.active();
+  CConfigurableRNG & RNG = mRandomContext.active();
 
   for (mCurrentIteration = 1; mCurrentIteration < mIterations && proceed(); mCurrentIteration++)
     {
@@ -161,7 +161,7 @@ bool CRandomSearch::optimise()
           COptItem & OptItem = *OptItemList[j];
           C_FLOAT64 & mut = mIndividual[j];
 
-          mut = OptItem.getRandomValue(pRandom);
+          mut = OptItem.getRandomValue(RNG);
 
           if (!OptItem.setItemValue(mut, COptItem::CheckPolicyFlag::All))
             break;

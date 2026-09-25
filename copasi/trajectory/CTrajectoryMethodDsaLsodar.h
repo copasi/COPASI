@@ -46,10 +46,10 @@
 
 #include "copasi/core/CDataVector.h"
 #include "copasi/model/CState.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
 class CReaction;
 class CMetab;
-class CConfigurableRNG;
 class CMathReaction;
 
 class CTrajectoryMethodDsaLsodar : public CLsodaMethod
@@ -314,7 +314,7 @@ protected:
   /**
    *   The random number generator.
    */
-  CConfigurableRNG * mpRandomGenerator;
+  CConfigurableRNG mRandomGenerator;
 
   /**
    * Index of the first species determined by reactions in CState

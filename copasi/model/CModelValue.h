@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -70,19 +70,29 @@ public:
     ASSIGNMENT, //the entity is changed by an assignment rule
     REACTIONS, //applies only for species, the species concentration is changed by reactions
     ODE, //the entity is changed by an ordinary differential equation
-    TIME,
-    __SIZE
+    TIME
   };
 
   /**
    * String representation of the states
    */
-  static const CEnumAnnotation< std::string, Status > StatusName;
+  //static
+  constexpr static CEnumAnnotation StatusName{
+    Status::FIXED,
+    MapNode{Status::FIXED, "fixed"},
+    MapNode{Status::ASSIGNMENT, "assignment"},
+    MapNode{Status::REACTIONS, "reactions"},
+    MapNode{Status::ODE, "ode"},
+    MapNode{Status::TIME, "time"}};
 
-  /**
-   * XML representation of the states
-   */
-  static const CEnumAnnotation< std::string, Status > XMLStatus;
+  //static
+  constexpr static CEnumAnnotation XMLStatus{
+    Status::FIXED,
+    MapNode{Status::FIXED, "fixed"},
+    MapNode{Status::ASSIGNMENT, "assignment"},
+    MapNode{Status::REACTIONS, "reactions"},
+    MapNode{Status::ODE, "ode"},
+    MapNode{Status::TIME, "time"}};
 
   /**
    * Static method to create a CDataObject based on the provided data

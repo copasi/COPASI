@@ -24,12 +24,12 @@ public:
 
   // Attributes
 private:
-  unsigned C_INT16 myrand(void);
+  result_type myrand(void);
 
   constexpr static result_type MIN_RESULT = 0;
   constexpr static result_type MAX_RESULT = 65535; // 2^16 - 1
 
   C_INT32 mIndex;
   result_type mSeed;
-  unsigned C_INT16 mBuffer[250];
+  result_type mBuffer[250];
 };

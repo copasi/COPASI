@@ -291,10 +291,10 @@ public:
    * Retrieve a random value in the interval (lower bound, upper bound).
    * Optionally one may provide a random number generator to be used
    * to create the random value.
-   * @param ConfigurableRNG * pRandom
+   * @param ConfigurableRNG & rng
    * @return C_FLOAT64 randomValue
    */
-  C_FLOAT64 getRandomValue(CConfigurableRNG * pRandom) const;
+  C_FLOAT64 getRandomValue(CConfigurableRNG & rng) const;
 
   /**
    * Output stream operator

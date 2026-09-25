@@ -10,33 +10,12 @@
 #include "copasi/utilities/utility.h"
 
 // static
-const std::map< std::string, std::string > CCommonNameComponent::VectorName2ObjectType = {
-  {"Compartments", "Compartment"},
-  {"Events", "Event"},
-  {"Fitted Points", "Fitted Point"},
-  {"Functions", "Function"},
-  {"ListOfLayouts", "Layout"},
-  {"ListOflayouts", "Layout"},
-  {"Metabolites", "Metabolite"},
-  {"ModelList", "CN"},
-  {"Moieties", "Moiety"},
-  {"OutputDefinitions", "PlotItem"},
-  {"ParameterSets", "ModelParameterSet"},
-  {"Reactions", "Reaction"},
-  {"Reduced Model Metabolites", "Metabolite"},
-  {"ReportDefinitions", "ReportDefinition"},
-  {"TaskList", "Task"},
-  {"Units list", "Unit"},
-  {"Values", "ModelValue"}
-};
-
-// static
 std::string CCommonNameComponent::ObjectTypeFromVectorName(const std::string & name)
 {
-  auto it = VectorName2ObjectType.find(name);
+  auto * pType = VectorName2ObjectType.findByKey(name);
 
-  if (it != VectorName2ObjectType.end())
-    return it->second;
+  if (pType != nullptr)
+    return std::string(*pType);
 
   return " "; // This is an invalid type
 }
@@ -473,7 +452,7 @@ std::string CCommonNameComponent::getObjectTypeFromParent() const
 {
   if (mpParent
       && mpParent->mType == "Vector")
-    return ObjectTypeFromVectorName(mpParent->mName);
+    return std::string(ObjectTypeFromVectorName(mpParent->mName));
 
   return " "; // This is an invalid type.
 }

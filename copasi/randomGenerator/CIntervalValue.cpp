@@ -72,10 +72,10 @@ void CIntervalValue::compile()
     }
 }
 
-C_FLOAT64 CIntervalValue::randomValue(CConfigurableRNG * pRandom) const
+C_FLOAT64 CIntervalValue::randomValue(CConfigurableRNG & rng) const
 {
   C_FLOAT64 result = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
-  C_FLOAT64 Sample = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*pRandom);
+  C_FLOAT64 Sample = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(rng);
 
   try
     {

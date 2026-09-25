@@ -36,8 +36,6 @@
 #include "copasi/model/CModel.h"
 #include "copasi/model/CState.h"
 #include "copasi/utilities/CReadConfig.h"
-#include "copasi/randomGenerator/CConfigurableRNG.h"
-//#include "copasi/utilities/CWriteConfig.h"
 #include "CScanProblem.h"
 #include "CScanMethod.h"
 #include "CScanTask.h"
@@ -63,8 +61,8 @@
 //**************** CScanItem classes ***************************
 
 //static
-CScanItem* CScanItem::createScanItemFromParameterGroup(CCopasiParameterGroup* si,
-    CConfigurableRNG* rg)
+CScanItem* CScanItem::createScanItemFromParameterGroup(CCopasiParameterGroup * si,
+    CConfigurableRNG & rng)
 {
   if (!si) return NULL;
 
@@ -79,7 +77,7 @@ CScanItem* CScanItem::createScanItemFromParameterGroup(CCopasiParameterGroup* si
     tmp = new CScanItemLinear(si);
 
   if (type == CScanProblem::SCAN_RANDOM)
-    tmp = new CScanItemRandom(si, rg);
+    tmp = new CScanItemRandom(si, rng);
 
   if (type == CScanProblem::SCAN_PARAMETER_SET)
     tmp = new CScanItemParameterSet(si);
@@ -335,9 +333,9 @@ void CScanItemLinear::ensureParameterGroupHasAllElements(CCopasiParameterGroup* 
 
 //*******
 
-CScanItemRandom::CScanItemRandom(CCopasiParameterGroup* si, CConfigurableRNG* rg):
+CScanItemRandom::CScanItemRandom(CCopasiParameterGroup* si, CConfigurableRNG & rng):
   CScanItem(si),
-  mRg(rg),
+  mRNG(rng),
   mRandomType(0),
   mLog(false)
 {
@@ -373,7 +371,7 @@ void CScanItemRandom::step()
       switch (mRandomType)
         {
           case 0: // uniform
-            Value = std::uniform_real_distribution< C_FLOAT64 >(mMin, mMax)(*mRg);
+            Value = std::uniform_real_distribution< C_FLOAT64 >(mMin, mMax)(mRNG);
 
             if (mLog)
               Value = exp(Value);
@@ -381,7 +379,7 @@ void CScanItemRandom::step()
             break;
 
           case 1: // normal
-            tmpF = std::normal_distribution< C_FLOAT64 >(mMin, mMax)(*mRg);
+            tmpF = std::normal_distribution< C_FLOAT64 >(mMin, mMax)(mRNG);
 
             if (mLog)
               Value = exp(Value);
@@ -393,12 +391,12 @@ void CScanItemRandom::step()
             if (mMin < 0)
               CCopasiMessage(CCopasiMessage::WARNING, "Invalid ScanItem: Requested Poisson random variable for negative argument: %lf", mMin);
 
-            Value = std::poisson_distribution< size_t >(mMin)(*mRg);
+            Value = std::poisson_distribution< size_t >(mMin)(mRNG);
 
             break;
 
           case 3: // gamma
-            Value = std::gamma_distribution< C_FLOAT64 >(mMin, mMax)(*mRg);
+            Value = std::gamma_distribution< C_FLOAT64 >(mMin, mMax)(mRNG);
 
             if (mLog)
               Value = exp(Value);
@@ -434,7 +432,7 @@ CScanMethod::CScanMethod(const CDataContainer * pParent,
   : CCopasiMethod(pParent, methodType, taskType)
   , mpProblem(NULL)
   , mpTask(NULL)
-  , mpRandomGenerator(NULL)
+  , mRNG()
   , mTotalSteps(1)
   , mLastNestingItem(C_INVALID_INDEX)
   , mContinueFromCurrentState(false)
@@ -442,16 +440,14 @@ CScanMethod::CScanMethod(const CDataContainer * pParent,
   , mScanItems()
   , mInitialUpdates(nullptr)
   , mInitialStateChanged(false)
-{
-  mpRandomGenerator = CConfigurableRNG::create();
-}
+{}
 
 CScanMethod::CScanMethod(const CScanMethod & src,
                          const CDataContainer * pParent)
   : CCopasiMethod(src, pParent)
   , mpProblem(NULL)
   , mpTask(NULL)
-  , mpRandomGenerator(NULL)
+  , mRNG()
   , mTotalSteps(1)
   , mLastNestingItem(C_INVALID_INDEX)
   , mContinueFromCurrentState(false)
@@ -459,15 +455,11 @@ CScanMethod::CScanMethod(const CScanMethod & src,
   , mScanItems()
   , mInitialUpdates(nullptr)
   , mInitialStateChanged(false)
-{
-  mpRandomGenerator = CConfigurableRNG::create();
-}
+{}
 
 CScanMethod::~CScanMethod()
 {
   cleanupScanItems();
-  delete mpRandomGenerator;
-  mpRandomGenerator = NULL;
 }
 
 bool CScanMethod::cleanupScanItems()
@@ -512,7 +504,7 @@ bool CScanMethod::init()
   for (i = 0; i < imax; ++i)
     {
       CScanItem * pItem = CScanItem::createScanItemFromParameterGroup(mpProblem->getScanItem(i),
-                          mpRandomGenerator);
+                          mRNG);
 
       if (pItem == NULL)
         {
@@ -724,7 +716,7 @@ bool CScanMethod::isValidProblem(const CCopasiProblem * pProblem)
   for (i = 0; i < imax; ++i)
     {
       CScanItem * si = CScanItem::createScanItemFromParameterGroup(mpProblem->getScanItem(i),
-                       mpRandomGenerator);
+                       mRNG);
 
       if (!si)
         {

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,79 +27,6 @@ const CIssue CIssue::Warning(CIssue::eSeverity::Warning);
 
 // static
 const CIssue CIssue::Error(CIssue::eSeverity::Error);
-
-// static
-const CEnumAnnotation< std::string, CIssue::eSeverity > CIssue::severityNames(
-{
-  "success",
-  "information",
-  "warnings",
-  "errors"
-});
-
-// static
-const CEnumAnnotation< std::string, CIssue::eKind > CIssue::kindNames(
-{
-  "unknown issue",
-  "invalid expression",
-  "empty expression",
-  "missing initial value",
-  "calculation problem",
-  "missing event assignment",
-  "event already has assignment",
-  "missing event trigger expression",
-  "undefined unit",
-  "unit conflict",
-  "invalid unit",
-  "undefined or unrepresentable value",
-  "unfound object",
-  "unfound value",
-  "unfound variable",
-  "Invalid structure",
-  "excess arguments",
-  "circular dependency",
-  "invalid expression data type",
-  "variable in expression",
-  "unfound expression",
-  "unfound function",
-  "mismatched variables",
-  "inconsistent value types",
-  "initial expression with assignment",
-  "setting fixed expression",
-  "reaction kinetics not defined"
-});
-
-// static
-const CEnumAnnotation< std::string, CIssue::eKind > CIssue::kindDescriptions(
-{
-  "Unknown issue.",
-  "Invalid expression.",
-  "Empty expression.",
-  "Missing initial value.",
-  "Problem with calculation.",
-  "Missing event assignment.",
-  "Event already has an assignment rule.",
-  "Missing event trigger expression.",
-  "Unit is undefined.",
-  "Conflicting units.",
-  "Invalid unit.",
-  "Value is undefined or unrepresentable.",
-  "Object not found.",
-  "Value not found.",
-  "Variable not found.",
-  "Invalid structure.",
-  "Too many arguments.",
-  "Has circular dependency.",
-  "Invalid expression data type.",
-  "Expression contains a variable.",
-  "CExpression not found.",
-  "CFunction not found.",
-  "Variables are mismatched.",
-  "Inconsistent value types encountered.",
-  "Initial expressions prohibited with assignment.",
-  "Changing fixed expression prohibited",
-  "Reaction kinetics are not defined"
-});
 
 CIssue::CIssue(const CIssue::eSeverity & severity,
                const CIssue::eKind & kind):

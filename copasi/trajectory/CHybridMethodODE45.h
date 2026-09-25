@@ -426,7 +426,7 @@ private:
   /**
    * The random number generator.
    */
-  CConfigurableRNG * mpRandomGenerator;
+  CConfigurableRNG * mRNG;
 
   //========System Related========
   /**

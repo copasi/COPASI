@@ -78,43 +78,6 @@ const char* CPlotItem::XMLRecordingActivity[] =
   NULL
 };
 
-const CEnumAnnotation< std::string, CPlotItem::LineType > CPlotItem::LineTypeNames(
-{
-  "Lines",
-  "Points",
-  "Symbols",
-  "Lines & Symbols",
-});
-
-const CEnumAnnotation< std::string, CPlotItem::LineStyle > CPlotItem::LineStyleNames(
-{
-  "Solid",
-  "Dotted",
-  "Dashed",
-  "Dot-Dash",
-  "Dot-Dot-Dash",
-  "None"
-});
-
-const CEnumAnnotation< std::string, CPlotItem::SymbolType > CPlotItem::SymbolNames(
-{
-  "small cross",
-  "large cross",
-  "circle",
-  "Square",
-  "Diamond",
-  "xCross",
-  "Plus",
-  "Star",
-  "TriangleUp",
-  "TriangleDown",
-  "TriangleLeft",
-  "TriangleRight",
-  "hDash",
-  "vDash",
-  "None"
-});
-
 // static
 CPlotItem * CPlotItem::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {

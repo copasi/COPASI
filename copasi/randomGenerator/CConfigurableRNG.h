@@ -25,17 +25,37 @@ public:
   enum struct Type
   {
     R250 = 0,
-    Obsolete,
     MersenneTwister,
-    SobolSequence,
-    __SIZE
+    SobolSequence
   };
 
-  static const CEnumAnnotation< std::string, Type > TypeAnnotation;
-  static CConfigurableRNG * create(Type engineType = Type::MersenneTwister, result_type initialSeed = 0);
+  enum struct OldType
+  {
+    r250 = 0,
+    mt19937,
+    mt19937HR,
+    unkown
+  };
+
+#ifndef SWIG
+  constexpr static CEnumAnnotation TypeAnnotation{
+    Type::MersenneTwister,
+    MapNode{Type::R250, "R250"},
+    MapNode{Type::MersenneTwister, "Mersenne Twister"},
+    MapNode{Type::SobolSequence, "Sobol Sequence"}
+  };
+
+  constexpr static CBidirectionalMap Conversion{
+    MapNode{OldType::r250, Type::R250},
+    MapNode{OldType::mt19937, Type::MersenneTwister},
+    MapNode{OldType::mt19937HR, Type::MersenneTwister},
+    MapNode{OldType::unkown, Type::MersenneTwister}
+  };
+#endif //SWIG
+
   static CConfigurableRNG::result_type getSystemSeed();
 
-  CConfigurableRNG() = delete;
+  CConfigurableRNG(Type engineType = Type::MersenneTwister, result_type initialSeed = 0);
   CConfigurableRNG(const CConfigurableRNG &) = default;
 
   CConfigurableRNG * copy();
@@ -43,23 +63,18 @@ public:
   void seed(result_type newSeed);
 
   result_type operator()();
+
   void discard(result_type z);
 
-  constexpr static result_type min()
-  {
-    return 0;
-  };
-  constexpr static result_type max()
-  {
-    return std::numeric_limits< result_type >::max();
-  };
+  constexpr static result_type min() {return 0;};
+
+  constexpr static result_type max() {return std::numeric_limits< result_type >::max();};
 
   Type getType() const;
+
   void setType(Type engineType, result_type initialSeed = 0);
 
 private:
-  CConfigurableRNG(Type mEngineType, result_type initialSeed);
-
   EngineVariant mEngine;
   Type mType;
 };

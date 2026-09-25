@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,11 +45,20 @@ public:
     Reaction,
     Group,
     Set,
-    unknown,
-    __SIZE
+    unknown
   };
 
-  static const CEnumAnnotation< std::string, Type > TypeNames;
+  constexpr static CEnumAnnotation TypeNames{
+    Type::unknown,
+    MapNode{Type::Model, "Model"},
+    MapNode{Type::Compartment, "Compartment"},
+    MapNode{Type::Species, "Species"},
+    MapNode{Type::ModelValue, "ModelValue"},
+    MapNode{Type::ReactionParameter, "ReactionParameter"},
+    MapNode{Type::Reaction, "Reaction"},
+    MapNode{Type::Group, "Group"},
+    MapNode{Type::Set, "Set"},
+    MapNode{Type::unknown, "unknown"}};
 
   enum struct CompareResult
   {
@@ -57,11 +66,16 @@ public:
     Missing,
     Modified,
     Conflict,
-    Identical,
-    __SIZE
+    Identical
   };
 
-  static const CEnumAnnotation< std::string, CompareResult > CompareResultNames;
+  constexpr static CEnumAnnotation CompareResultNames{
+    CompareResult::Identical,
+    MapNode{CompareResult::Obsolete, "Obsolete"},
+    MapNode{CompareResult::Missing, "Missing"},
+    MapNode{CompareResult::Modified, "Modified"},
+    MapNode{CompareResult::Conflict, "Conflict"},
+    MapNode{CompareResult::Identical, "Identical"}};
 
   /**
    * Static method to create a CDataObject based on the provided data

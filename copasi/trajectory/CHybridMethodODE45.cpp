@@ -117,7 +117,7 @@ CHybridMethodODE45::CHybridMethodODE45(const CDataContainer * pParent,
   , mRootMasking(RootMask::NONE)
   , mRootValuesLeft()
   , mRootValuesRight()
-  , mpRandomGenerator(NULL)
+  , mRNG(NULL)
   , mOutputFile()
   , mOutputFileName()
   , mOutputCounter(0)
@@ -173,7 +173,7 @@ CHybridMethodODE45::CHybridMethodODE45(const CHybridMethodODE45 & src,
   , mRootMasking(RootMask::NONE)
   , mRootValuesLeft()
   , mRootValuesRight()
-  , mpRandomGenerator(NULL)
+  , mRNG(NULL)
   , mOutputFile()
   , mOutputFileName()
   , mOutputCounter(0)
@@ -305,14 +305,14 @@ void CHybridMethodODE45::start()
   mRootCounter = 0;
   mMaxStepsReached = false;
 
-  mpRandomGenerator = &mpContainer->getRandomGenerator();
+  mRNG = &mpContainer->getRandomGenerator();
 
   if (*mpUseRandomSeed)
     {
-      mpRandomGenerator->seed(*mpRandomSeed);
+      mRNG->seed(*mpRandomSeed);
     }
 
-  mA0 = -log(std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mpRandomGenerator));
+  mA0 = -log(std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mRNG));
 
   //(6)----set attributes for ODE45
   mRKMethodStatus = CRungeKutta::INITIALIZE;
@@ -592,7 +592,7 @@ void CHybridMethodODE45::fireReaction()
   mFireReaction = false;
 
   mAmuVariables = 0.0;
-  mA0 = -log(std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mpRandomGenerator));
+  mA0 = -log(std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mRNG));
 
   // Update all values needed for simulation.
   // TODO PERFORMANCE Use a reaction dependent update sequence.
@@ -891,7 +891,7 @@ CMathReaction * CHybridMethodODE45::getReactionToFire()
   C_FLOAT64 * pAmuEnd = mAmuVariables.end();
 
   //get the threshold
-  C_FLOAT64 A0 = mA0 * std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mpRandomGenerator);
+  C_FLOAT64 A0 = mA0 * std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mRNG);
 
   //get the reaction index
   CMathReaction ** ppSlowReaction = mSlowReactions.array();

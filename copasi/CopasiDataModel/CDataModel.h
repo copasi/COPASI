@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -76,13 +76,17 @@ public:
     SBML,
     SEDML,
     OMEX,
-    __SIZE
+    UNKNOWN
   };
 
-  /**
-   * String representation of the valid model types.
-   */
-  static const CEnumAnnotation< std::string, ContentType > ContentTypeNames;
+  constexpr static CEnumAnnotation ContentTypeNames{
+    ContentType::UNKNOWN,
+    MapNode{ContentType::COPASI, "COPASI"},
+    MapNode{ContentType::GEPASI, "GEPASI"},
+    MapNode{ContentType::SBML, "SBML"},
+    MapNode{ContentType::SEDML, "SED-ML"},
+    MapNode{ContentType::OMEX, "OMEX"},
+    MapNode{ContentType::UNKNOWN, "UNKNOWN"}};
 
   /**
    * Determine the content type of the given content stream

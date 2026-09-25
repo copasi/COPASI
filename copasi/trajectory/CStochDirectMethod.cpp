@@ -56,7 +56,7 @@ CStochDirectMethod::CStochDirectMethod(const CDataContainer * pParent,
                                        const CTaskEnum::Method & methodType,
                                        const CTaskEnum::Task & taskType):
   CTrajectoryMethod(pParent, methodType, taskType),
-  mpRandomGenerator(NULL),
+  mRNG(NULL),
   mNumReactions(0),
   mMaxSteps(1000000),
   mNextReactionTime(0.0),
@@ -86,7 +86,7 @@ CStochDirectMethod::CStochDirectMethod(const CDataContainer * pParent,
 CStochDirectMethod::CStochDirectMethod(const CStochDirectMethod & src,
                                        const CDataContainer * pParent):
   CTrajectoryMethod(src, pParent),
-  mpRandomGenerator(NULL),
+  mRNG(NULL),
   mNumReactions(0),
   mMaxSteps(1000000),
   mNextReactionTime(0.0),
@@ -179,11 +179,11 @@ void CStochDirectMethod::start()
   /* get configuration data */
   mMaxSteps = getValue< C_INT32 >("Max Internal Steps");
 
-  mpRandomGenerator = &mpContainer->getRandomGenerator();
+  mRNG = &mpContainer->getRandomGenerator();
 
   if (getValue< bool >("Use Random Seed"))
     {
-      mpRandomGenerator->seed(getValue< unsigned C_INT32 >("Random Seed"));
+      mRNG->seed(getValue< unsigned C_INT32 >("Random Seed"));
     }
 
   //mpCurrentState is initialized. This state is not used internally in the
@@ -328,10 +328,10 @@ C_FLOAT64 CStochDirectMethod::doSingleStep(C_FLOAT64 startTime, const C_FLOAT64 
 
       std::uniform_real_distribution< C_FLOAT64 > distribution(0.0, 1.0);
 
-      mNextReactionTime = startTime - log(distribution(*mpRandomGenerator)) / mA0;
+      mNextReactionTime = startTime - log(distribution(*mRNG)) / mA0;
 
       // We are sure that we have at least 1 reaction
-      C_FLOAT64 rand = distribution(*mpRandomGenerator) * mA0;
+      C_FLOAT64 rand = distribution(*mRNG) * mA0;
       size_t * idxProp = mPropensityIdx.begin();
       C_FLOAT64 sum = 0.0;
 

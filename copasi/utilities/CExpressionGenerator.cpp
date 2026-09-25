@@ -1,4 +1,4 @@
-// Copyright (C) 2022 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2022 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -8,26 +8,6 @@
 #include <sstream>
 
 #include <copasi/model/CModel.h>
-
-// static
-const CEnumAnnotation< std::string, CExpressionGenerator::Operation > CExpressionGenerator::OperationNames(
-{
-  "Sum",
-  "Sum of Squares",
-  "Sum of Absolutes",
-  "Product"
-}
-);
-
-// static
-const CEnumAnnotation< CExpressionGenerator::sOperation, CExpressionGenerator::Operation > CExpressionGenerator::OperationParts(
-{
-  sOperation(" + ", "", "", "", ""),
-  sOperation(" + ", "", "", "", "^2"),
-  sOperation(" + ", "", "", "ABS(", ")"),
-  sOperation(" * ", "", "", "", "")
-}
-);
 
 // static
 std::vector< std::string > CExpressionGenerator::mSupportedTypes =

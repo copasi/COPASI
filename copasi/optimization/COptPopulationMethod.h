@@ -103,7 +103,7 @@ public:
 protected:
   bool createIndividual(const size_t & index, const COptItem::CheckPolicyFlag & policy);
 
-  virtual void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG * pRandom);
+  virtual void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG & rng);
 
   /**
    * size of the population / swarm size

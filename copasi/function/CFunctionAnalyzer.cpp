@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -1197,9 +1197,6 @@ void CFunctionAnalyzer::constructCallParameters(const CFunctionParameters & fp, 
           case CFunctionParameter::Role::TEMPORARY:
             callParameters[i] = posi ? CValue::positive : CValue::unknown;
             break;
-
-          case CFunctionParameter::Role::__SIZE:
-            break;
         }
     }
 }
@@ -1248,9 +1245,6 @@ void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> 
           case CFunctionParameter::Role::VARIABLE:
           case CFunctionParameter::Role::TEMPORARY:
             callParameters[i] = CValue::unknown;
-            break;
-
-          case CFunctionParameter::Role::__SIZE:
             break;
         }
     }

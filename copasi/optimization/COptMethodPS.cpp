@@ -98,7 +98,7 @@ COptMethodPS::~COptMethodPS()
 bool COptMethodPS::move(const size_t & index)
 {
   COptProblem *& pProblem = mProblemContext.active();
-  CConfigurableRNG * pRandom = mRandomContext.active();
+  CConfigurableRNG & RNG = mRandomContext.active();
   std::uniform_real_distribution< C_FLOAT64 > distribution(0.0, 1.0);
 
   static const C_FLOAT64 w = 1 / (2 * log(2.0));
@@ -131,8 +131,8 @@ bool COptMethodPS::move(const size_t & index)
        ++pIndividual, ++pVelocity, ++pBestPosition, ++itOptItem, ++pBestInformantPosition)
     {
       *pVelocity *= w;
-      *pVelocity += c * distribution(*pRandom) * (*pBestPosition - *pIndividual);
-      *pVelocity += c * distribution(*pRandom) * (*pBestInformantPosition - *pIndividual);
+      *pVelocity += c * distribution(RNG) * (*pBestPosition - *pIndividual);
+      *pVelocity += c * distribution(RNG) * (*pBestInformantPosition - *pIndividual);
 
       *pIndividual += *pVelocity;
 
@@ -164,9 +164,9 @@ bool COptMethodPS::move(const size_t & index)
 
 // initialise an individual
 // virtual
-void COptMethodPS::finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG * pRandom)
+void COptMethodPS::finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG & rng)
 {
-  mVelocities(individual, index) = item.getRandomValue(pRandom) - mIndividuals[individual]->operator[](index);
+  mVelocities(individual, index) = item.getRandomValue(rng) - mIndividuals[individual]->operator[](index);
   mBestPositions(individual, index) = mIndividuals[individual]->operator[](index);
 }
 

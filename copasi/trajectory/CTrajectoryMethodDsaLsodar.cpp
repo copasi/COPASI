@@ -23,11 +23,11 @@
 /* DEFINE ********************************************************************/
 
 #if defined(WIN32) && !defined(__MINGW32__) && !defined(__MINGW64__)
-#if _MSC_VER < 1600
-#define min _cpp_min
-#define max _cpp_max
-#endif // _MSC_VER
-#endif // WIN32
+#  if _MSC_VER < 1600
+#    define min _cpp_min
+#    define max _cpp_max
+#  endif // _MSC_VER
+#endif   // WIN32
 
 #include <limits.h>
 
@@ -47,47 +47,46 @@
 #include "copasi/core/CMatrix.h"
 #include "copasi/utilities/CDependencyGraph.h"
 #include "copasi/utilities/CIndexedPriorityQueue.h"
-#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/utilities/CVersion.h"
 
-CTrajectoryMethodDsaLsodar::CPartition::CPartition():
-  mSpeciesToReactions(),
-  mLowerThreshold(),
-  mUpperThreshold(),
-  mFirstReactionSpeciesIndex(C_INVALID_INDEX),
-  mNumReactionSpecies(0),
-  mStochasticReactions(0),
-  mDeterministicReactions(0),
-  mStochasticSpecies(0),
-  mHasStochastic(false),
-  mHasDeterministic(false),
-  mNumLowSpecies(0),
-  mpContainer(NULL),
-  mpFirstReactionValue(NULL)
+CTrajectoryMethodDsaLsodar::CPartition::CPartition()
+  : mSpeciesToReactions()
+  , mLowerThreshold()
+  , mUpperThreshold()
+  , mFirstReactionSpeciesIndex(C_INVALID_INDEX)
+  , mNumReactionSpecies(0)
+  , mStochasticReactions(0)
+  , mDeterministicReactions(0)
+  , mStochasticSpecies(0)
+  , mHasStochastic(false)
+  , mHasDeterministic(false)
+  , mNumLowSpecies(0)
+  , mpContainer(NULL)
+  , mpFirstReactionValue(NULL)
 {}
 
-CTrajectoryMethodDsaLsodar::CPartition::CPartition(const CTrajectoryMethodDsaLsodar::CPartition & src):
-  mSpeciesToReactions(src.mSpeciesToReactions),
-  mLowerThreshold(src.mLowerThreshold),
-  mUpperThreshold(src.mUpperThreshold),
-  mFirstReactionSpeciesIndex(C_INVALID_INDEX),
-  mNumReactionSpecies(src.mNumReactionSpecies),
-  mStochasticReactions(src.mStochasticReactions),
-  mDeterministicReactions(src.mDeterministicReactions),
-  mStochasticSpecies(src.mStochasticSpecies),
-  mHasStochastic(src.mHasStochastic),
-  mHasDeterministic(src.mHasDeterministic),
-  mNumLowSpecies(src.mNumLowSpecies),
-  mpContainer(src.mpContainer),
-  mpFirstReactionValue(src.mpFirstReactionValue)
+CTrajectoryMethodDsaLsodar::CPartition::CPartition(const CTrajectoryMethodDsaLsodar::CPartition & src)
+  : mSpeciesToReactions(src.mSpeciesToReactions)
+  , mLowerThreshold(src.mLowerThreshold)
+  , mUpperThreshold(src.mUpperThreshold)
+  , mFirstReactionSpeciesIndex(C_INVALID_INDEX)
+  , mNumReactionSpecies(src.mNumReactionSpecies)
+  , mStochasticReactions(src.mStochasticReactions)
+  , mDeterministicReactions(src.mDeterministicReactions)
+  , mStochasticSpecies(src.mStochasticSpecies)
+  , mHasStochastic(src.mHasStochastic)
+  , mHasDeterministic(src.mHasDeterministic)
+  , mNumLowSpecies(src.mNumLowSpecies)
+  , mpContainer(src.mpContainer)
+  , mpFirstReactionValue(src.mpFirstReactionValue)
 {}
 
 CTrajectoryMethodDsaLsodar::CPartition::~CPartition()
 {}
 
 void CTrajectoryMethodDsaLsodar::CPartition::intialize(const CMathContainer * pContainer,
-    const C_FLOAT64 & lowerThreshold,
-    const C_FLOAT64 & upperThreshold)
+                                                       const C_FLOAT64 & lowerThreshold,
+                                                       const C_FLOAT64 & upperThreshold)
 {
   mpContainer = pContainer;
   mLowerThreshold = lowerThreshold;
@@ -126,7 +125,7 @@ void CTrajectoryMethodDsaLsodar::CPartition::intialize(const CMathContainer * pC
       for (; itBalance != endBalance; ++itBalance)
         {
           mSpeciesToReactions.insert(std::pair< size_t, size_t * >(itBalance->first - mpFirstReactionValue,
-                                     mNumLowSpecies.array() + Index));
+                                                                   mNumLowSpecies.array() + Index));
         }
     }
 
@@ -144,8 +143,7 @@ void CTrajectoryMethodDsaLsodar::CPartition::intialize(const CMathContainer * pC
       if (*pValue < CriticalValue)
         {
           *pStochasticSpecies = true;
-          std::pair< speciesToReactionsMap::const_iterator, speciesToReactionsMap::const_iterator > Range
-            = mSpeciesToReactions.equal_range(Index);
+          std::pair< speciesToReactionsMap::const_iterator, speciesToReactionsMap::const_iterator > Range = mSpeciesToReactions.equal_range(Index);
 
           for (; Range.first != Range.second; ++Range.first)
             {
@@ -195,8 +193,7 @@ bool CTrajectoryMethodDsaLsodar::CPartition::rePartition(const CVectorCore< C_FL
           *pStochasticSpecies = true;
           PartitionChanged = true;
 
-          std::pair< speciesToReactionsMap::const_iterator, speciesToReactionsMap::const_iterator > Range
-            = mSpeciesToReactions.equal_range(Index);
+          std::pair< speciesToReactionsMap::const_iterator, speciesToReactionsMap::const_iterator > Range = mSpeciesToReactions.equal_range(Index);
 
           for (; Range.first != Range.second; ++Range.first)
             {
@@ -208,8 +205,7 @@ bool CTrajectoryMethodDsaLsodar::CPartition::rePartition(const CVectorCore< C_FL
           *pStochasticSpecies = false;
           PartitionChanged = true;
 
-          std::pair< speciesToReactionsMap::const_iterator, speciesToReactionsMap::const_iterator > Range
-            = mSpeciesToReactions.equal_range(Index);
+          std::pair< speciesToReactionsMap::const_iterator, speciesToReactionsMap::const_iterator > Range = mSpeciesToReactions.equal_range(Index);
 
           for (; Range.first != Range.second; ++Range.first)
             {
@@ -272,19 +268,47 @@ bool CTrajectoryMethodDsaLsodar::CPartition::rePartition(const CVectorCore< C_FL
  *   Default constructor.
  */
 CTrajectoryMethodDsaLsodar::CTrajectoryMethodDsaLsodar(const CDataContainer * pParent,
-    const CTaskEnum::Method & methodType,
-    const CTaskEnum::Task & taskType):
-  CLsodaMethod(pParent, methodType, taskType)
+                                                       const CTaskEnum::Method & methodType,
+                                                       const CTaskEnum::Task & taskType)
+  : CLsodaMethod(pParent, methodType, taskType)
+  , mpMaxSteps(NULL)
+  , mpLowerLimit(NULL)
+  , mpUpperLimit(NULL)
+  , mpPartitioningInterval(NULL)
+  , mpPartitioningSteps(NULL)
+  , mRandomGenerator(CConfigurableRNG::Type::MersenneTwister)
+  , mFirstReactionSpeciesIndex(0)
+  , mMaxStepsReached(false)
+  , mStepsAfterPartitionSystem(0)
+  , mNumReactions(0)
+  , mNextReactionTime(std::numeric_limits< C_FLOAT64 >::infinity())
+  , mNextReactionIndex(C_INVALID_INDEX)
+  , mA0(0.0)
+  , mAmu()
+  , mStatus(CTrajectoryMethod::NORMAL)
 {
-  mpRandomGenerator = CConfigurableRNG::create(CConfigurableRNG::Type::MersenneTwister);
   initializeParameter();
 }
 
 CTrajectoryMethodDsaLsodar::CTrajectoryMethodDsaLsodar(const CTrajectoryMethodDsaLsodar & src,
-    const CDataContainer * pParent):
-  CLsodaMethod(src, pParent)
+                                                       const CDataContainer * pParent)
+  : CLsodaMethod(src, pParent)
+  , mpMaxSteps(NULL)
+  , mpLowerLimit(NULL)
+  , mpUpperLimit(NULL)
+  , mpPartitioningInterval(NULL)
+  , mpPartitioningSteps(NULL)
+  , mRandomGenerator(CConfigurableRNG::Type::MersenneTwister)
+  , mFirstReactionSpeciesIndex(0)
+  , mMaxStepsReached(false)
+  , mStepsAfterPartitionSystem(0)
+  , mNumReactions(0)
+  , mNextReactionTime(std::numeric_limits< C_FLOAT64 >::infinity())
+  , mNextReactionIndex(C_INVALID_INDEX)
+  , mA0(0.0)
+  , mAmu()
+  , mStatus(CTrajectoryMethod::NORMAL)
 {
-  mpRandomGenerator = CConfigurableRNG::create(CConfigurableRNG::Type::MersenneTwister);
   initializeParameter();
 }
 
@@ -329,7 +353,7 @@ void CTrajectoryMethodDsaLsodar::stateChange(const CMath::StateChange & change)
 
 // virtual
 CTrajectoryMethod::Status CTrajectoryMethodDsaLsodar::step(const double & deltaT,
-    const bool & /* final */)
+                                                           const bool & /* final */)
 {
   // do several steps:
   C_FLOAT64 Time = *mpContainerStateTime;
@@ -372,17 +396,17 @@ C_FLOAT64 CTrajectoryMethodDsaLsodar::doSingleStep(C_FLOAT64 curTime, C_FLOAT64 
         {
           if (mA0 != 0)
             {
-              mNextReactionTime = curTime - log(distribution(*mpRandomGenerator)) / mA0;
+              mNextReactionTime = curTime - log(distribution(mRandomGenerator)) / mA0;
 
               // We are sure that we have at least 1 reaction
               mNextReactionIndex = 0;
 
               C_FLOAT64 sum = 0.0;
-              C_FLOAT64 rand = distribution(*mpRandomGenerator) * mA0;
+              C_FLOAT64 rand = distribution(mRandomGenerator) * mA0;
 
               C_FLOAT64 * pAmu = mAmu.array();
               C_FLOAT64 * endAmu = pAmu + mNumReactions;
-              const CMathReaction **ppStochastic = mPartition.mStochasticReactions.array();
+              const CMathReaction ** ppStochastic = mPartition.mStochasticReactions.array();
 
               // Only consider stochastic reactions
               for (; (sum <= rand) && (pAmu != endAmu); ++pAmu, ++mNextReactionIndex, ++ppStochastic)
@@ -498,7 +522,7 @@ void CTrajectoryMethodDsaLsodar::start()
 
   pPropensityObject = mPropensityObjects.array();
 
-  for (; pReaction  != pReactionEnd; ++pReaction, ++pUpdateSequence, ++pPropensityObject, ++pAmu)
+  for (; pReaction != pReactionEnd; ++pReaction, ++pUpdateSequence, ++pPropensityObject, ++pAmu)
     {
       // Update the propensity
       pPropensityObject->calculateValue();
@@ -553,9 +577,9 @@ void CTrajectoryMethodDsaLsodar::evalF(const C_FLOAT64 * t, const C_FLOAT64 * /*
 
       const CMathReaction::SpeciesBalance * endBalance = itBalance + (*ppReaction)->getNumberBalance().size();
 
-      C_FLOAT64 * pParticleFlux = (C_FLOAT64 *)(*ppReaction)->getParticleFluxObject()->getValuePointer();
+      C_FLOAT64 * pParticleFlux = (C_FLOAT64 *) (*ppReaction)->getParticleFluxObject()->getValuePointer();
 
-      for (; itBalance != endBalance; ++ itBalance)
+      for (; itBalance != endBalance; ++itBalance)
         {
           SpeciesRates[itBalance->first - mPartition.mpFirstReactionValue] += itBalance->second + 0.5 * *pParticleFlux;
         }
@@ -576,14 +600,12 @@ void CTrajectoryMethodDsaLsodar::evalR(const C_FLOAT64 * /* t */, const C_FLOAT6
  */
 void CTrajectoryMethodDsaLsodar::cleanup()
 {
-  pdelete(mpRandomGenerator);
-
   return;
 }
 
 /* DETERMINISTIC STUFF *******************************************************/
 
-void  CTrajectoryMethodDsaLsodar::integrateDeterministicPart(const C_FLOAT64 & deltaT)
+void CTrajectoryMethodDsaLsodar::integrateDeterministicPart(const C_FLOAT64 & deltaT)
 {
   mStatus = CLsodaMethod::step(deltaT);
   mpContainer->updateSimulatedValues(*mpReducedModel);
@@ -621,7 +643,7 @@ void CTrajectoryMethodDsaLsodar::calculatePropensities()
   // It suffices to recalculate the propensities for stochastic reactions.
   CMathObject * pPropensity = mPropensityObjects.array();
   CMathObject * pPropensityEnd = pPropensity + mNumReactions;
-  const CMathReaction **ppStochastic = mPartition.mStochasticReactions.array();
+  const CMathReaction ** ppStochastic = mPartition.mStochasticReactions.array();
 
   for (; pPropensity != pPropensityEnd; ++pPropensity, ++ppStochastic)
     {
@@ -657,9 +679,10 @@ void CTrajectoryMethodDsaLsodar::calculateTotalPropensity()
 //virtual
 bool CTrajectoryMethodDsaLsodar::isValidProblem(const CCopasiProblem * pProblem)
 {
-  if (!CTrajectoryMethod::isValidProblem(pProblem)) return false;
+  if (!CTrajectoryMethod::isValidProblem(pProblem))
+    return false;
 
-  const CTrajectoryProblem * pTP = dynamic_cast<const CTrajectoryProblem *>(pProblem);
+  const CTrajectoryProblem * pTP = dynamic_cast< const CTrajectoryProblem * >(pProblem);
 
   if (pTP->getDuration() < 0.0)
     {
