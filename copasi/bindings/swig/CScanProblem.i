@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -33,6 +33,21 @@
 %ignore CScanProblem::getScanItemType(size_t index);
 %ignore CScanProblem::getScanItem(size_t index) const;
 %ignore CScanProblem::load;
+%ignore CScanProblem::OutputTypeName;
+
+%extend CScanProblem {
+  %{
+    using CScanProblem_OutputTypeName = decltype(CScanProblem::OutputTypeName);
+    using CScanProblem_OutputTypeName_Map = CBidirectionalMap< CScanProblem_OutputTypeName::EnumType, CScanProblem_OutputTypeName::AnnotationType, CScanProblem_OutputTypeName::Size >;
+    using CScanProblem_OutputTypeName_AnnotationType = CEnumAnnotation< CScanProblem_OutputTypeName_Map >;
+  %}
+
+  // 2. Define the getter function for SWIG using a clean macro string definition
+  // We use RealAnnotationType const& so SWIG treats it as a non-owning read-only memory reference
+  const CScanProblem_OutputTypeName_AnnotationType& getOutputTypeName() {
+    return CScanProblem::OutputTypeName;
+  }
+}
 
 #if (defined SWIGJAVA || defined SWIGCSHARP)
   %ignore CScanProblem::OutputType;

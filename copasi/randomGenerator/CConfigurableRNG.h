@@ -37,7 +37,6 @@ public:
     unkown
   };
 
-#ifndef SWIG
   constexpr static CEnumAnnotation TypeAnnotation{
     Type::MersenneTwister,
     MapNode{Type::R250, "R250"},
@@ -51,7 +50,6 @@ public:
     MapNode{OldType::mt19937HR, Type::MersenneTwister},
     MapNode{OldType::unkown, Type::MersenneTwister}
   };
-#endif //SWIG
 
   static CConfigurableRNG::result_type getSystemSeed();
 

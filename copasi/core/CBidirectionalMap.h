@@ -179,10 +179,8 @@ private:
   const std::array< ValueType, N > _values;
 };
 
-#ifndef SWIG
 // Custom deduction guide based on the lightweight MapNode aggregate type
 template < typename... Nodes,
            typename K = std::common_type_t< typename std::decay_t< Nodes >::KeyType... >,
            typename V = std::common_type_t< typename std::decay_t< Nodes >::ValueType... > >
 CBidirectionalMap(Nodes...) -> CBidirectionalMap< K, V, sizeof...(Nodes) >;
-#endif //SWIG

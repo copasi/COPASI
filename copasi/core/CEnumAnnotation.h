@@ -48,7 +48,7 @@ public:
   }
 
   template < size_t N >
-  constexpr auto subset(EnumType enumDefault, const std::array< EnumType, N > keys) const
+  constexpr CEnumAnnotation< CBidirectionalMap< EnumType, AnnotationType, N > > subset(EnumType enumDefault, const std::array< EnumType, N > keys) const
   {
     // Instantiates the sub-annotation using the new safely constructed sub-map
     return CEnumAnnotation< CBidirectionalMap< EnumType, AnnotationType, N > >(
@@ -132,6 +132,7 @@ public:
     return mEnumDefault;
   }
 
+#ifndef SWIG
   /**
    * Conversion from annotation to enum
    * @param const char * pAnnotation
@@ -152,6 +153,7 @@ public:
   {
     return toEnum(AnnotationType(pAnnotation), enumDefault);
   }
+#endif // SWIG
 
   std::vector< AnnotationTypeReturn > annotations() const
   {
@@ -201,9 +203,11 @@ private:
   const EnumType mEnumDefault;
 };
 
+#ifndef SWIG
 // Custom deduction guide based on the lightweight MapNode aggregate type
 template < typename EnumType,
            typename... Nodes,
            typename K = std::common_type_t< typename std::decay_t< Nodes >::KeyType... >,
            typename V = std::common_type_t< typename std::decay_t< Nodes >::ValueType... > >
 CEnumAnnotation(EnumType, Nodes...) -> CEnumAnnotation< CBidirectionalMap< K, V, sizeof...(Nodes) > >;
+#endif // SWIG

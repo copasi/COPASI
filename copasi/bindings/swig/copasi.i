@@ -98,7 +98,7 @@ size_t INVALID_INDEX() {
 %ignore DebugFile;
 
 %include "copasi.h"
-%include <copasi/core/CCore.h>
+%include CCore.i
 
 // warp method to get C_INVALID_INDEX
 size_t INVALID_INDEX();
@@ -113,17 +113,6 @@ size_t INVALID_INDEX();
 %include std_set.i
 #endif
 
-%ignore CIssue::operator bool;
-%ignore CIssue::kindNames;
-%ignore CIssue::kindDescriptions;
-%ignore CIssue::Success;
-%ignore CIssue::Information;
-%ignore CIssue::Warning;
-%ignore CIssue::Error;
-
-%ignore CIssue::eKind;
-%ignore CIssue::eSeverity;
-
 %ignore *::beginName;
 %ignore *::begin_name;
 %ignore *::endName;
@@ -131,16 +120,14 @@ size_t INVALID_INDEX();
 
 %include <copasi/undo/CUndoObjectInterface.h>
 
-%ignore CDataValue::CDataValue(const CDataValue::Type &);
-%ignore CDataValue::CDataValue(const Type &);
-%include <copasi/undo/CDataValue.h>
-%template(CDataValueStdVector) std::vector<CDataValue>;
-%include <copasi/undo/CData.h>
-%template(CDataStdVector) std::vector<CData>;
-%include <copasi/undo/CUndoData.h>
+%include "CEnumAnnotation.i"
+%include "CTaskEnum.i"
+%include "CDataValue.i"
+%include "CData.i"
+%include "CUndoData.i"
 
+%include "CValidity.i"
 %include <copasi/core/CObjectInterface.h>
-%include <copasi/utilities/CValidity.h>
 
 %include "CCommonName.i"
 %include "CObjectLists.i"
@@ -509,3 +496,4 @@ typedef std::vector< CReactionResult > CReactionResultStdVector;
 
 %template(CFluxModeStdVector) std::vector<CFluxMode>;
 typedef std::vector<CFluxMode> CFluxModeStdVector;
+

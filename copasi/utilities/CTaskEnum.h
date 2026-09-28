@@ -18,7 +18,7 @@
 
 #include <string>
 
-#include "../core/CEnumAnnotation.h"
+#include "copasi/core/CEnumAnnotation.h"
 
 class CTaskEnum
 {

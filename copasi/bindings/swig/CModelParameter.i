@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -15,18 +15,30 @@
 
 
 
-%ignore CModelParameter::TypeNames;
-
 %{
 
 #include "copasi/model/CModelParameter.h"
 
 %}
 
+%ignore CModelParameter::TypeNames;
+%ignore CModelParameter::CompareResultNames;
+
 %extend CModelParameter
 {
+  %{
+    using CModelParameter_CompareResultNames = decltype(CModelParameter::CompareResultNames);
+    using CModelParameter_CompareResultNames_Map = CBidirectionalMap< CModelParameter_CompareResultNames::EnumType, CModelParameter_CompareResultNames::AnnotationType, CModelParameter_CompareResultNames::Size >;
+    using CModelParameter_CompareResultNames_AnnotationType = CEnumAnnotation< CModelParameter_CompareResultNames_Map >;
+  %}
 
-   CModelParameterGroup *asGroup() 
+  // 2. Define the getter function for SWIG using a clean macro string definition
+  // We use RealAnnotationType const& so SWIG treats it as a non-owning read-only memory reference
+  const CModelParameter_CompareResultNames_AnnotationType& getCompareResultNames() {
+    return CModelParameter::CompareResultNames;
+  }
+
+  CModelParameterGroup *asGroup() 
    {
      return dynamic_cast<CModelParameterGroup *>($self);
    }

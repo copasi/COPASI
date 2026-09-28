@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -23,10 +23,23 @@ typedef CDataVector<CSlider> SliderVector;
 
 %}
 
-#include <string>
+%ignore CDataModel::ContentTypeNames;
 
-%ignore CDataModelRenameHandler;
-%ignore CRenameHandler;
+%extend CDataModel {
+  %{
+    using CDataModel_ContentTypeNames = decltype(CDataModel::ContentTypeNames);
+    using CDataModel_ContentTypeNames_Map = CBidirectionalMap< CDataModel_ContentTypeNames::EnumType, CDataModel_ContentTypeNames::AnnotationType, CDataModel_ContentTypeNames::Size >;
+    using CDataModel_ContentTypeNames_AnnotationType = CEnumAnnotation< CDataModel_ContentTypeNames_Map >;
+  %}
+
+  // 2. Define the getter function for SWIG using a clean macro string definition
+  // We use RealAnnotationType const& so SWIG treats it as a non-owning read-only memory reference
+  const CDataModel_ContentTypeNames_AnnotationType& getContentTypeNames() {
+    return CDataModel::ContentTypeNames;
+  }
+}
+
+#include <string>
 
 %ignore CDataModel::CDataModel(const bool);
 %ignore CDataModel::autoSave();
@@ -117,12 +130,10 @@ typedef CDataVector<CSlider> SliderVector;
 
 %rename(newModel) CDataModel::newModel;
 
-
 %template(SliderVector) CDataVector<CSlider>;
 typedef CDataVector<CSlider> SliderVector;
 
-%extend CDataModel
-{
+%extend CDataModel {
   SliderVector* getSliders()
   {
     if (self->getGUI() == NULL)
