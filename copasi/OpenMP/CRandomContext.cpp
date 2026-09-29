@@ -14,8 +14,8 @@ CRandomContext::~CRandomContext()
 
 void  CRandomContext::init(CConfigurableRNG::Type type, CConfigurableRNG::result_type seed)
 {
-  Base::master().setType(type, seed);
   Base::init();
+  Base::master().setType(type, seed);
 
   if (Base::size() > 1)
     for (size_t i = 0; i < Base::size(); ++i)

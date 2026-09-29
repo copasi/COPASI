@@ -160,8 +160,8 @@ private:
     std::array< MapType, __N > Nodes;
     std::array< ValueType, __N > Values;
 
-    MapType * itNode = Nodes.begin();
-    ValueType * itValue = Values.begin();
+    auto itNode = Nodes.begin();
+    auto itValue = Values.begin();
 
     for (const auto& node : _array)
       for (const auto & key: keys)
