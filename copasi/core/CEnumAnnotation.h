@@ -12,6 +12,7 @@
 
 #include <cstdint>
 #include <vector>
+#include <string>
 
 #include "copasi/core/CBidirectionalMap.h"
 
