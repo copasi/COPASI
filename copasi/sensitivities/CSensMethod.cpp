@@ -503,17 +503,16 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
   switch (mpProblem->getSubTaskType())
     {
-      case CSensProblem::Evaluation:
-      case CSensProblem::__SIZE:
+      case CTaskEnum::Task::UnsetTask:
         mpSubTask = NULL;
         break;
 
-      case CSensProblem::SteadyState:
+      case CTaskEnum::Task::steadyState:
         mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Steady-State"));
         break;
 
-      case CSensProblem::TimeSeries:
+      case CTaskEnum::Task::timeCourse:
         mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Time-Course"));
         break;
@@ -523,17 +522,17 @@ bool CSensMethod::initialize(CSensProblem* problem)
                         (&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
             break;*/
 
-      case CSensProblem::ParameterEstimation:
+      case CTaskEnum::Task::parameterFitting:
         mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Parameter Estimation"));
         break;
 
-      case CSensProblem::Optimization:
+      case CTaskEnum::Task::optimization:
         mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Optimization"));
         break;
 
-      case CSensProblem::CrossSection:
+      case CTaskEnum::Task::crosssection:
         mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Cross Section"));
         break;

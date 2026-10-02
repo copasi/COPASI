@@ -34,11 +34,15 @@ public:
     REMOVE
   };
 
-  constexpr static CEnumAnnotation TypeName{
+private:
+  constexpr static CEnumAnnotationInstance _TypeName{
     Type::CHANGE,
     MapNode{Type::INSERT, "Insert"},
     MapNode{Type::CHANGE, "Change"},
     MapNode{Type::REMOVE, "Remove"}};
+
+public:
+  constexpr static CEnumAnnotation< Type, std::string_view > TypeName{_TypeName};
 
   struct ChangeInfo
   {

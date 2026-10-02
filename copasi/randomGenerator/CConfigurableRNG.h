@@ -37,12 +37,16 @@ public:
     unkown
   };
 
-  constexpr static CEnumAnnotation TypeAnnotation{
+private:
+  constexpr static CEnumAnnotationInstance _TypeAnnotation{
     Type::MersenneTwister,
     MapNode{Type::R250, "R250"},
     MapNode{Type::MersenneTwister, "Mersenne Twister"},
     MapNode{Type::SobolSequence, "Sobol Sequence"}
   };
+
+public:
+  constexpr static CEnumAnnotation< Type, std::string_view > TypeAnnotation{_TypeAnnotation};
 
   constexpr static CBidirectionalMap Conversion{
     MapNode{OldType::r250, Type::R250},

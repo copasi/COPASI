@@ -49,7 +49,7 @@ CData CFunctionParameter::toData() const
 {
   CData Data = CDataContainer::toData();
 
-  Data.addProperty(CData::PARAMETER_TYPE, CFunctionParameter::DataTypeName[mType]);
+  Data.addProperty(CData::PARAMETER_TYPE, CFunctionParameter::_DataTypeName[mType]);
   Data.addProperty(CData::PARAMETER_ROLE, CFunctionParameter::RoleNameXML[mUsage]);
   Data.addProperty(CData::PARAMETER_USED, mIsUsed);
 

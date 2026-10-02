@@ -9,23 +9,7 @@
 #include "copasi/core/CCore.h"
 %}
 
-%ignore CCore::FrameworkNames;
-
-%extend CCore {
-  // 1. Hide the C++17 type deduction from SWIG, but expose it to the C++ wrapper compiler
-  %{
-    using CCore_FrameworkNames = decltype(CCore::FrameworkNames);
-    using CCore_FrameworkNames_Map = CBidirectionalMap< CCore_FrameworkNames::EnumType, CCore_FrameworkNames::AnnotationType, CCore_FrameworkNames::Size >;
-    using CCore_FrameworkNames_AnnotationType = CEnumAnnotation< CCore_FrameworkNames_Map >;
-  %}
-
-  // 2. Define the getter function for SWIG using a clean macro string definition
-  // We use RealAnnotationType const& so SWIG treats it as a non-owning read-only memory reference
-  const CCore_FrameworkNames_AnnotationType& getFrameworkNames() {
-    return CCore::FrameworkNames;
-  }
-}
-
+%ignore CCore::_FrameworkNames;
 
 %include "copasi/core/CCore.h"
 

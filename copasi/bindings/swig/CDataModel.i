@@ -23,22 +23,6 @@ typedef CDataVector<CSlider> SliderVector;
 
 %}
 
-%ignore CDataModel::ContentTypeNames;
-
-%extend CDataModel {
-  %{
-    using CDataModel_ContentTypeNames = decltype(CDataModel::ContentTypeNames);
-    using CDataModel_ContentTypeNames_Map = CBidirectionalMap< CDataModel_ContentTypeNames::EnumType, CDataModel_ContentTypeNames::AnnotationType, CDataModel_ContentTypeNames::Size >;
-    using CDataModel_ContentTypeNames_AnnotationType = CEnumAnnotation< CDataModel_ContentTypeNames_Map >;
-  %}
-
-  // 2. Define the getter function for SWIG using a clean macro string definition
-  // We use RealAnnotationType const& so SWIG treats it as a non-owning read-only memory reference
-  const CDataModel_ContentTypeNames_AnnotationType& getContentTypeNames() {
-    return CDataModel::ContentTypeNames;
-  }
-}
-
 #include <string>
 
 %ignore CDataModel::CDataModel(const bool);

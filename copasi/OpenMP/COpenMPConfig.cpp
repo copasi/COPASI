@@ -10,7 +10,7 @@
 #include "copasi/commandline/CConfigurationFile.h"
 
 // static
-COpenMPConfig::_ScheduleStrategyOpenMP COpenMPConfig::EnvironmentOpenMP;
+COpenMPConfig::__ScheduleStrategyOpenMP COpenMPConfig::EnvironmentOpenMP;
 
 // static
 int COpenMPConfig::AppliedNumThreads = -1;

@@ -28,21 +28,7 @@
 
 %}
 
-%ignore COptProblem::ValidSubtasks;
-
 %extend COptProblem {
-  %{
-    using COptProblem_ValidSubtasks = decltype(COptProblem::ValidSubtasks);
-    using COptProblem_ValidSubtasks_Map = CBidirectionalMap< COptProblem_ValidSubtasks::EnumType, COptProblem_ValidSubtasks::AnnotationType, COptProblem_ValidSubtasks::Size >;
-    using COptProblem_ValidSubtasks_AnnotationType = CEnumAnnotation< COptProblem_ValidSubtasks_Map >;
-  %}
-
-  // 2. Define the getter function for SWIG using a clean macro string definition
-  // We use RealAnnotationType const& so SWIG treats it as a non-owning read-only memory reference
-  const COptProblem_ValidSubtasks_AnnotationType& getValidSubtasks() {
-    return COptProblem::ValidSubtasks;
-  }
-
   COptItem & addOptItem(const CCommonName & objectCN)
   {
     return $self->addOptItem(CRegisteredCommonName(objectCN));

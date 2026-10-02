@@ -65,11 +65,15 @@ public:
     ConcentrationPerTime
   };
 
-  constexpr static CEnumAnnotation KineticLawUnitTypeName{
+private:
+  constexpr static CEnumAnnotationInstance _KineticLawUnitTypeName{
     KineticLawUnit::Default,
     MapNode{KineticLawUnit::Default, "Default"},
     MapNode{KineticLawUnit::AmountPerTime, "AmountPerTime"},
     MapNode{KineticLawUnit::ConcentrationPerTime, "ConcentrationPerTime"}};
+
+public:
+  constexpr static CEnumAnnotation< KineticLawUnit, std::string_view > KineticLawUnitTypeName{_KineticLawUnitTypeName};
 
   /**
    * Static method to create a CDataObject based on the provided data

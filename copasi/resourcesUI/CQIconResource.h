@@ -100,7 +100,7 @@ private:
   static QVector< QIcon > Icons;
   static bool needInit;
 
-  constexpr static CEnumAnnotation BackupName{
+  constexpr static CEnumAnnotationInstance BackupName{
     IconID::unknown,
     MapNode{IconID::bars, "bars.png"},
     MapNode{IconID::captureImage, "captureImage.png"},
@@ -166,7 +166,7 @@ private:
     MapNode{IconID::unknown, ""},
   };
 
-  constexpr static CEnumAnnotation ThemeName{
+  constexpr static CEnumAnnotationInstance ThemeName{
     IconID::unknown,
     MapNode{IconID::bars, "bars"},
     MapNode{IconID::captureImage, "captureImage"},
@@ -231,7 +231,7 @@ private:
     MapNode{IconID::dialog_question, "dialog_question"},
     MapNode{IconID::unknown, "unknown"}};
 
-  constexpr static CEnumAnnotation StandardIcon{
+  constexpr static CEnumAnnotationInstance StandardIcon{
     IconID::unknown,
     MapNode{IconID::bars, QStyle::SP_CustomBase},
     MapNode{IconID::captureImage, QStyle::SP_CustomBase},

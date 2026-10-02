@@ -46,7 +46,8 @@ public:
     UnsetTask
   };
 
-  constexpr static CEnumAnnotation TaskName{
+private:
+  constexpr static CEnumAnnotationInstance _TaskName{
     Task::UnsetTask,
     MapNode{Task::steadyState, "Steady-State"},
     MapNode{Task::timeCourse, "Time-Course"},
@@ -65,7 +66,11 @@ public:
     MapNode{Task::timeSens, "Time-Course Sensitivities"},
     MapNode{Task::UnsetTask, "not specified"}};
 
-  constexpr static CEnumAnnotation TaskXML{
+public:
+  constexpr static CEnumAnnotation< Task, std::string_view > TaskName{_TaskName};
+
+private:
+  constexpr static CEnumAnnotationInstance _TaskXML{
     Task::UnsetTask,
     MapNode{Task::steadyState, "steadyState"},
     MapNode{Task::timeCourse, "timeCourse"},
@@ -83,6 +88,9 @@ public:
     MapNode{Task::analytics, "analytics"},
     MapNode{Task::timeSens, "timeSensitivities"},
     MapNode{Task::UnsetTask, "unset"}};
+
+public:
+  constexpr static CEnumAnnotation< Task, std::string_view > TaskXML{_TaskXML};
 
   /**
    * Enumeration of the sub types of methods known to COPASI.
@@ -143,7 +151,8 @@ public:
     timeSensLsoda
   };
 
-  constexpr static CEnumAnnotation MethodName{
+private:
+  constexpr static CEnumAnnotationInstance _MethodName{
     Method::UnsetMethod,
     MapNode{Method::UnsetMethod, "Not set"},
     MapNode{Method::RandomSearch, "Random Search"},
@@ -198,7 +207,11 @@ public:
     MapNode{Method::analyticsMethod, "Analytics Finder"},
     MapNode{Method::timeSensLsoda, "LSODA Sensitivities"}};
 
-  constexpr static CEnumAnnotation MethodXML{
+public:
+  constexpr static CEnumAnnotation< Method, std::string_view > MethodName{_MethodName};
+
+private:
+  constexpr static CEnumAnnotationInstance _MethodXML{
     Method::UnsetMethod,
     MapNode{Method::UnsetMethod, "NotSet"},
     MapNode{Method::RandomSearch, "RandomSearch"},
@@ -252,6 +265,9 @@ public:
     MapNode{Method::linearNoiseApproximation, "LinearNoiseApproximation"},
     MapNode{Method::analyticsMethod, "analyticsMethod"},
     MapNode{Method::timeSensLsoda, "Sensitivities(LSODA)"}};
+
+public:
+  constexpr static CEnumAnnotation< Method, std::string_view > MethodXML{_MethodXML};
 };
 
 #endif // COPASI_CTaskEnum

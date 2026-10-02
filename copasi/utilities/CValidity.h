@@ -60,7 +60,8 @@ public:
     __SIZE // Needed for CFlags
   };
 
-  constexpr static CEnumAnnotation kindNames{
+private:
+  constexpr static CEnumAnnotationInstance _kindNames{
     eKind::Unknown,
     MapNode{eKind::Unknown, "unknown issue"},
     MapNode{eKind::ExpressionInvalid, "invalid expression"},
@@ -90,7 +91,11 @@ public:
     MapNode{eKind::SettingFixedExpression, "setting fixed expression"},
     MapNode{eKind::KineticsUndefined, "reaction kinetics not defined"}};
 
-  constexpr static CEnumAnnotation kindDescriptions{
+public:
+  constexpr static CEnumAnnotation< eKind, std::string_view > kindNames{_kindNames};
+
+private:
+  constexpr static CEnumAnnotationInstance _kindDescriptions{
     eKind::Unknown,
     MapNode{eKind::Unknown, "Unknown issue."},
     MapNode{eKind::ExpressionInvalid, "Invalid expression."},
@@ -120,6 +125,9 @@ public:
     MapNode{eKind::SettingFixedExpression, "Changing fixed expression prohibited"},
     MapNode{eKind::KineticsUndefined, "Reaction kinetics are not defined"}};
 
+public:
+  constexpr static CEnumAnnotation< eKind, std::string_view > kindDescriptions{_kindDescriptions};
+
   enum struct eSeverity
   {
     Success,
@@ -129,12 +137,16 @@ public:
     __SIZE // Needed for CFlags
   };
 
-  constexpr static CEnumAnnotation severityNames{
+private:
+  constexpr static CEnumAnnotationInstance _severityNames{
     eSeverity::Success,
     MapNode{eSeverity::Success, "success"},
     MapNode{eSeverity::Information, "information"},
     MapNode{eSeverity::Warning, "warnings"},
     MapNode{eSeverity::Error, "errors"}};
+
+public:
+  constexpr static CEnumAnnotation< eSeverity, std::string_view > severityNames{_severityNames};
 
   static const CIssue Success;
   static const CIssue Information;

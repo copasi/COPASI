@@ -34,7 +34,8 @@ public:
     INVALID
   };
 
-  constexpr static CEnumAnnotation TypeName{
+private:
+  constexpr static CEnumAnnotationInstance _TypeName{
     Type::STRING,
     MapNode{Type::DOUBLE, "real"},
     MapNode{Type::INT, "integer"},
@@ -46,6 +47,9 @@ public:
     MapNode{Type::DATA_VECTOR, "dataVector"},
     MapNode{Type::VOID_POINTER, "pointer"},
     MapNode{Type::INVALID, "invalid"}};
+
+public:
+  constexpr static CEnumAnnotation< Type, std::string_view > TypeName{_TypeName};
 
   friend std::ostream & operator << (std::ostream & os, const CDataValue & o);
   friend std::istream & operator >> (std::istream & is, CDataValue & i);

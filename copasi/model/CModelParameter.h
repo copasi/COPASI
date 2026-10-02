@@ -48,7 +48,8 @@ public:
     unknown
   };
 
-  constexpr static CEnumAnnotation TypeNames{
+private:
+  constexpr static CEnumAnnotationInstance _TypeNames{
     Type::unknown,
     MapNode{Type::Model, "Model"},
     MapNode{Type::Compartment, "Compartment"},
@@ -60,6 +61,9 @@ public:
     MapNode{Type::Set, "Set"},
     MapNode{Type::unknown, "unknown"}};
 
+public:
+  constexpr static CEnumAnnotation< Type, std::string_view > TypeNames{_TypeNames};
+
   enum struct CompareResult
   {
     Obsolete,
@@ -69,13 +73,17 @@ public:
     Identical
   };
 
-  constexpr static CEnumAnnotation CompareResultNames{
+private:
+  constexpr static CEnumAnnotationInstance _CompareResultNames{
     CompareResult::Identical,
     MapNode{CompareResult::Obsolete, "Obsolete"},
     MapNode{CompareResult::Missing, "Missing"},
     MapNode{CompareResult::Modified, "Modified"},
     MapNode{CompareResult::Conflict, "Conflict"},
     MapNode{CompareResult::Identical, "Identical"}};
+
+public:
+  constexpr static CEnumAnnotation< CompareResult, std::string_view > CompareResultNames{_CompareResultNames};
 
   /**
    * Static method to create a CDataObject based on the provided data

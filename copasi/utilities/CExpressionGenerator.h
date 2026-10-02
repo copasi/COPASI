@@ -50,6 +50,15 @@ public:
     entryEnd.swap(rhs.entryEnd);
   }
 
+  constexpr bool operator==(const sOperation & rhs) const
+  {
+    return join == rhs.join
+           && surroundStart == rhs.surroundStart
+           && surroundEnd == rhs.surroundEnd
+           && entryStart == rhs.entryStart
+           && entryEnd == rhs.entryEnd;
+  }
+
   constexpr bool operator<(const sOperation & rhs) const
   {
     if (this == &rhs)
@@ -83,19 +92,27 @@ public:
     __SIZE
   };
 
-  constexpr static CEnumAnnotation OperationNames{
+private:
+  constexpr static CEnumAnnotationInstance _OperationNames{
     Operation::Sum,
     MapNode{Operation::Sum, "Sum"},
     MapNode{Operation::SumOfSquares, "Sum of Squares"},
     MapNode{Operation::SumOfAbsolutes, "Sum of Absolutes"},
     MapNode{Operation::Product, "Product"}};
 
-  constexpr static CEnumAnnotation OperationParts{
+public:
+  constexpr static CEnumAnnotation< Operation, std::string_view > OperationNames{_OperationNames};
+
+private:
+  constexpr static CEnumAnnotationInstance _OperationParts{
     Operation::Sum,
     MapNode{Operation::Sum, sOperation(" + ", "", "", "", "")},
     MapNode{Operation::SumOfSquares, sOperation(" + ", "", "", "", "^2")},
     MapNode{Operation::SumOfAbsolutes, sOperation(" + ", "", "", "ABS(", ")")},
     MapNode{Operation::Product, sOperation(" * ", "", "", "", "")}};
+
+public:
+  constexpr static CEnumAnnotation< Operation, sOperation > OperationParts{_OperationParts};
 
   std::string mType;
   std::string mSelection;

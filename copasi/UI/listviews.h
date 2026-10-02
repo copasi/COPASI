@@ -161,7 +161,8 @@ public:
     UNKNOWN
   };
 
-  constexpr static CEnumAnnotation ObjectTypeName{
+private:
+  constexpr static CEnumAnnotationInstance _ObjectTypeName{
     ObjectType::UNKNOWN,
     MapNode{ObjectType::METABOLITE, "Species"},
     MapNode{ObjectType::COMPARTMENT, "Compartment"},
@@ -183,7 +184,11 @@ public:
     MapNode{ObjectType::PARAMETEROVERVIEW, "Parameter Overview"},
     MapNode{ObjectType::UNKNOWN, "Unknown"}};
 
-  constexpr static CEnumAnnotation DataObjectType{
+public:
+  constexpr static CEnumAnnotation< ObjectType, std::string_view > ObjectTypeName{_ObjectTypeName};
+
+private:
+  constexpr static CEnumAnnotationInstance _DataObjectType{
     ObjectType::UNKNOWN,
     MapNode{ObjectType::METABOLITE, "Metabolite"},
     MapNode{ObjectType::COMPARTMENT, "Compartment"},
@@ -204,6 +209,9 @@ public:
     MapNode{ObjectType::VECTOR, "Vector"},
     MapNode{ObjectType::PARAMETEROVERVIEW, "ParameterOverView"},
     MapNode{ObjectType::UNKNOWN, "Unknown"}};
+
+public:
+  constexpr static CEnumAnnotation< ObjectType, std::string_view > DataObjectType{_DataObjectType};
 
   enum struct WidgetType
   {
@@ -272,7 +280,8 @@ public:
     UnitDetail
   };
 
-  constexpr static CEnumAnnotation WidgetName{
+private:
+  constexpr static CEnumAnnotationInstance _WidgetName{
     WidgetType::NotFound,
     MapNode{WidgetType::NotFound, "NotFound"},
     MapNode{WidgetType::COPASI, "COPASI"},
@@ -337,6 +346,9 @@ public:
     MapNode{WidgetType::FunctionDetail, "Function Detail"},
     MapNode{WidgetType::Units, "Units"},
     MapNode{WidgetType::UnitDetail, "Unit Detail"}};
+
+public:
+  constexpr static CEnumAnnotation< WidgetType, std::string_view > WidgetName{_WidgetName};
 
   DataModelGUI * getDataModelGUI();
   CDataModel * getDataModel();

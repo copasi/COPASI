@@ -121,10 +121,14 @@ public:
     ParticleNumbers,
   };
 
-  constexpr static CEnumAnnotation FrameworkNames{
+private:
+  constexpr static CEnumAnnotationInstance _FrameworkNames{
     Framework::Concentration,
     MapNode{Framework::Concentration, "Concentration"},
     MapNode{Framework::ParticleNumbers, "Particle Numbers"}};
-};
+
+public:
+  constexpr static CEnumAnnotation< Framework, std::string_view > FrameworkNames{_FrameworkNames};
+  };
 
 #endif // COPASI_CCore

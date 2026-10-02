@@ -56,12 +56,16 @@ public:
     __SIZE // Needed for CFlags
   };
 
-  constexpr static CEnumAnnotation OutputTypeName{
+private:
+  constexpr static CEnumAnnotationInstance _OutputTypeName{
     OutputType::subTaskNone,
     MapNode{OutputType::subTaskNone, "none"},
     MapNode{OutputType::subTaskBefore, "subTaskBefore"},
     MapNode{OutputType::subTaskDuring, "subTaskDuring"},
     MapNode{OutputType::subTaskAfter, "subTaskAfter"}};
+
+public:
+  constexpr static CEnumAnnotation< OutputType, std::string_view > OutputTypeName{_OutputTypeName};
 
   typedef CFlags< OutputType > OutputFlags;
 

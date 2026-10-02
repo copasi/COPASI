@@ -30,7 +30,7 @@ public:
     zAxis
   };
 
-  constexpr static CEnumAnnotation AxisNames{
+  constexpr static CEnumAnnotationInstance AxisNames{
     Axis::xAxis,
     MapNode{Axis::xAxis, "x axis"},
     MapNode{Axis::yAxis, "y axis"},

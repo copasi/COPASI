@@ -79,7 +79,8 @@ public:
     UNKNOWN
   };
 
-  constexpr static CEnumAnnotation ContentTypeNames{
+private:
+  constexpr static CEnumAnnotationInstance _ContentTypeNames{
     ContentType::UNKNOWN,
     MapNode{ContentType::COPASI, "COPASI"},
     MapNode{ContentType::GEPASI, "GEPASI"},
@@ -87,6 +88,9 @@ public:
     MapNode{ContentType::SEDML, "SED-ML"},
     MapNode{ContentType::OMEX, "OMEX"},
     MapNode{ContentType::UNKNOWN, "UNKNOWN"}};
+
+public:
+  constexpr static CEnumAnnotation< ContentType, std::string_view > ContentTypeNames{_ContentTypeNames};
 
   /**
    * Determine the content type of the given content stream

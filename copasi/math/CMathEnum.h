@@ -185,7 +185,8 @@ public:
     TransitionTime
   };
 
-  constexpr static CEnumAnnotation ValueTypeName{
+private:
+  constexpr static CEnumAnnotationInstance _ValueTypeName{
     ValueType::Undefined,
     MapNode{ValueType::Undefined, "undefined"},
     MapNode{ValueType::Value, "value"},
@@ -208,6 +209,9 @@ public:
     MapNode{ValueType::DelayLag, "delay lag"},
     MapNode{ValueType::TransitionTime, "transition time"}};
 
+public:
+  constexpr static CEnumAnnotation< ValueType, std::string_view > ValueTypeName{_ValueTypeName};
+
   enum struct SimulationType
   {
     Undefined,
@@ -221,7 +225,8 @@ public:
     Conversion
   };
 
-  constexpr static CEnumAnnotation SimulationTypeName{
+private:
+  constexpr static CEnumAnnotationInstance _SimulationTypeName{
     SimulationType::Undefined,
     MapNode{SimulationType::Undefined, "undefined"},
     MapNode{SimulationType::Fixed, "fixed"},
@@ -232,6 +237,9 @@ public:
     MapNode{SimulationType::Dependent, "dependent"},
     MapNode{SimulationType::Assignment, "assignment"},
     MapNode{SimulationType::Conversion, "conversion"}};
+
+public:
+  constexpr static CEnumAnnotation< SimulationType, std::string_view > SimulationTypeName{_SimulationTypeName};
 
   enum struct EntityType
   {
@@ -249,7 +257,8 @@ public:
     Delay
   };
 
-  constexpr static CEnumAnnotation EntityTypeName{
+private:
+  constexpr static CEnumAnnotationInstance _EntityTypeName{
     EntityType::Undefined,
     MapNode{EntityType::Undefined, "undefined"},
     MapNode{EntityType::Model, "model"},
@@ -263,6 +272,9 @@ public:
     MapNode{EntityType::Moiety, "moiety"},
     MapNode{EntityType::Event, "event"},
     MapNode{EntityType::Delay, "delay"}};
+
+public:
+  constexpr static CEnumAnnotation< EntityType, std::string_view > EntityTypeName{_EntityTypeName};
 
   enum struct eStateChange
   {

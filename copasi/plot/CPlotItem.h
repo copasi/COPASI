@@ -109,12 +109,16 @@ public:
     LinesAndSymbols
   };
 
-  constexpr static CEnumAnnotation LineTypeNames{
+private:
+  constexpr static CEnumAnnotationInstance _LineTypeNames{
     LineType::Lines,
     MapNode{LineType::Lines, "Lines"},
     MapNode{LineType::Points, "Points"},
     MapNode{LineType::Symbols, "Symbols"},
     MapNode{LineType::LinesAndSymbols, "Lines & Symbols"}};
+
+public:
+  constexpr static CEnumAnnotation< LineType, std::string_view > LineTypeNames{_LineTypeNames};
 
   enum class LineStyle
   {
@@ -126,7 +130,8 @@ public:
     None
   };
 
-  constexpr static CEnumAnnotation LineStyleNames{
+private:
+  constexpr static CEnumAnnotationInstance _LineStyleNames{
     LineStyle::Solid,
     MapNode{LineStyle::Solid, "Solid"},
     MapNode{LineStyle::Dotted, "Dotted"},
@@ -134,6 +139,9 @@ public:
     MapNode{LineStyle::DotDash, "Dot-Dash"},
     MapNode{LineStyle::DotDotDash, "Dot-Dot-Dash"},
     MapNode{LineStyle::None, "None"}};
+
+public:
+  constexpr static CEnumAnnotation< LineStyle, std::string_view > LineStyleNames{_LineStyleNames};
 
   enum class SymbolType
   {
@@ -154,7 +162,8 @@ public:
     None
   };
 
-  constexpr static CEnumAnnotation SymbolNames{
+private:
+  constexpr static CEnumAnnotationInstance _SymbolNames{
     SymbolType::SmallCross,
     MapNode{SymbolType::SmallCross, "small cross"},
     MapNode{SymbolType::LargeCross, "large cross"},
@@ -171,6 +180,9 @@ public:
     MapNode{SymbolType::hDash, "hDash"},
     MapNode{SymbolType::vDash, "vDash"},
     MapNode{SymbolType::None, "None"}};
+
+public:
+  constexpr static CEnumAnnotation< SymbolType, std::string_view > SymbolNames{_SymbolNames};
 
   /**
    * String literals for the GUI to display plot item names of methods known

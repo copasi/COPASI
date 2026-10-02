@@ -61,26 +61,27 @@ enum ProblemType
 /** @dia:pos -4.4,4.15 */
 class COptProblem : public CCopasiProblem
 {
-  // Implementation
-
-public:
   /**
    * The methods which can be selected for performing this task.
    */
-  constexpr static CEnumAnnotation ValidSubtasks{
-    CTaskEnum::TaskName.subset(
+private:
+   constexpr static CEnumAnnotationSubset _ValidSubtasks{
+    CTaskEnum::TaskName,
+    CTaskEnum::Task::timeCourse,
+    std::array{
+      CTaskEnum::Task::steadyState,
       CTaskEnum::Task::timeCourse,
-      std::array{
-        CTaskEnum::Task::steadyState,
-        CTaskEnum::Task::timeCourse,
-        CTaskEnum::Task::scan,
-        CTaskEnum::Task::parameterFitting,
-        CTaskEnum::Task::mca,
-        CTaskEnum::Task::lyap,
-        CTaskEnum::Task::tssAnalysis,
-        CTaskEnum::Task::sens,
-        CTaskEnum::Task::crosssection,
-        CTaskEnum::Task::lna})};
+      CTaskEnum::Task::scan,
+      CTaskEnum::Task::parameterFitting,
+      CTaskEnum::Task::mca,
+      CTaskEnum::Task::lyap,
+      CTaskEnum::Task::tssAnalysis,
+      CTaskEnum::Task::sens,
+      CTaskEnum::Task::crosssection,
+      CTaskEnum::Task::lna}};
+
+public:
+  constexpr static CEnumAnnotation< CTaskEnum::Task, std::string_view > ValidSubtasks{_ValidSubtasks};
 
   struct sCounter
   {

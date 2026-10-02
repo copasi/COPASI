@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -30,9 +30,9 @@
 
 %ignore operator<<;
 %ignore CFunctionParameter::load;
-%ignore CFunctionParameter::DataTypeName;
-%ignore CFunctionParameter::RoleNameXML;
-%ignore CFunctionParameter::RoleNameDisplay;
+%ignore CFunctionParameter::_DataTypeName;
+%ignore CFunctionParameter::_RoleNameXML;
+%ignore CFunctionParameter::_RoleNameDisplay;
 
 %include "function/CFunctionParameter.h"
 

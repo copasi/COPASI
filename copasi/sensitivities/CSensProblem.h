@@ -79,29 +79,23 @@ public:
    * this enumeration
    */
 
-  enum SubTaskType
-  {
-    Evaluation,
-    SteadyState,
-    TimeSeries,
-    ParameterEstimation,
-    Optimization,
-    CrossSection,
-    __SIZE
-    //LyapunovExp
-  };
+private:
+  constexpr static CEnumAnnotationSubset _ValidSubtask{
+    CTaskEnum::TaskName,
+    CTaskEnum::Task::UnsetTask,
+    std::array{
+      CTaskEnum::Task::UnsetTask,
+      CTaskEnum::Task::steadyState,
+      CTaskEnum::Task::timeCourse,
+      CTaskEnum::Task::parameterFitting,
+      CTaskEnum::Task::optimization,
+      CTaskEnum::Task::crosssection}};
 
-  constexpr static CEnumAnnotation SubTaskTypeToTask{
-    SubTaskType::Evaluation,
-    MapNode{SubTaskType::Evaluation, CTaskEnum::Task::UnsetTask},
-    MapNode{SubTaskType::SteadyState, CTaskEnum::Task::steadyState},
-    MapNode{SubTaskType::TimeSeries, CTaskEnum::Task::timeCourse},
-    MapNode{SubTaskType::ParameterEstimation, CTaskEnum::Task::parameterFitting},
-    MapNode{SubTaskType::Optimization, CTaskEnum::Task::optimization},
-    MapNode{SubTaskType::CrossSection, CTaskEnum::Task::crosssection}};
+public:
+  constexpr static CEnumAnnotation< CTaskEnum::Task, std::string_view > ValidSubtask{_ValidSubtask};
 
-  static std::vector< CObjectLists::ListType > getPossibleTargetFunctions(CSensProblem::SubTaskType);
-  static std::vector< CObjectLists::ListType > getPossibleVariables(CSensProblem::SubTaskType);
+  static std::vector< CObjectLists::ListType > getPossibleTargetFunctions(CTaskEnum::Task);
+  static std::vector< CObjectLists::ListType > getPossibleVariables(CTaskEnum::Task);
 
   // Operations
 
@@ -134,12 +128,12 @@ public:
   /**
    *   set the problem's SubTaskType:
    */
-  void setSubTaskType(const CSensProblem::SubTaskType & type);
+  void setSubTaskType(const CTaskEnum::Task & type);
 
   /**
    *   get the problem's SubTaskType:
    */
-  CSensProblem::SubTaskType getSubTaskType() const;
+  CTaskEnum::Task getSubTaskType() const;
 
   CSensItem getTargetFunctions() const;
   void setTargetFunctions(const CSensItem item);
@@ -217,7 +211,7 @@ private:
    */
   void initDebugProblem();
 
-  CSensProblem::SubTaskType * mpSubTaskType;
+  CTaskEnum::Task * mpSubTaskType;
 
   CCopasiParameterGroup * mpTargetFunctions;
 

@@ -66,12 +66,21 @@ public:
     stochastic
   };
 
-constexpr static CEnumAnnotation ModelTypeNames{
-  ModelType::deterministic,
-  MapNode{ModelType::deterministic, "deterministic"},
-  MapNode{ModelType::stochastic, "stochastic"}};
+private:
+  constexpr static CEnumAnnotationInstance _ModelTypeNames{
+    ModelType::deterministic,
+    MapNode{ModelType::deterministic, "deterministic"},
+    MapNode{ModelType::stochastic, "stochastic"}};
 
-  enum DependencyType {initial = 0, transient, physical};
+public:
+  constexpr static CEnumAnnotation< ModelType, std::string_view > ModelTypeNames{_ModelTypeNames};
+
+  enum DependencyType
+  {
+    initial = 0,
+    transient,
+    physical
+  };
 
   enum UnitType {volume = 0,
                  area,

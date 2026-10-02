@@ -29,21 +29,6 @@
 %}
 
 %ignore CNewtonMethod::load;
-%ignore CNewtonMethod::TargetCriterion;
-
-%extend CNewtonMethod {
-  %{
-    using CNewtonMethod_TargetCriterion = decltype(CNewtonMethod::TargetCriterion);
-    using CNewtonMethod_TargetCriterion_Map = CBidirectionalMap< CNewtonMethod_TargetCriterion::EnumType, CNewtonMethod_TargetCriterion::AnnotationType, CNewtonMethod_TargetCriterion::Size >;
-    using CNewtonMethod_TargetCriterion_AnnotationType = CEnumAnnotation< CNewtonMethod_TargetCriterion_Map >;
-  %}
-
-  // 2. Define the getter function for SWIG using a clean macro string definition
-  // We use RealAnnotationType const& so SWIG treats it as a non-owning read-only memory reference
-  const CNewtonMethod_TargetCriterion_AnnotationType& getTargetCriterion() {
-    return CNewtonMethod::TargetCriterion;
-  }
-}
 
 %include "copasi/steadystate/CNewtonMethod.h"
 

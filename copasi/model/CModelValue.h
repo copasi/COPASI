@@ -76,8 +76,8 @@ public:
   /**
    * String representation of the states
    */
-  //static
-  constexpr static CEnumAnnotation StatusName{
+private:
+  constexpr static CEnumAnnotationInstance _StatusName{
     Status::FIXED,
     MapNode{Status::FIXED, "fixed"},
     MapNode{Status::ASSIGNMENT, "assignment"},
@@ -85,14 +85,20 @@ public:
     MapNode{Status::ODE, "ode"},
     MapNode{Status::TIME, "time"}};
 
-  //static
-  constexpr static CEnumAnnotation XMLStatus{
+public:
+  constexpr static CEnumAnnotation< Status, std::string_view > StatusName{_StatusName};
+
+private:
+  constexpr static CEnumAnnotationInstance _XMLStatus{
     Status::FIXED,
     MapNode{Status::FIXED, "fixed"},
     MapNode{Status::ASSIGNMENT, "assignment"},
     MapNode{Status::REACTIONS, "reactions"},
     MapNode{Status::ODE, "ode"},
     MapNode{Status::TIME, "time"}};
+
+public:
+  constexpr static CEnumAnnotation< Status, std::string_view > XMLStatus{_XMLStatus};
 
   /**
    * Static method to create a CDataObject based on the provided data

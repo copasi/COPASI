@@ -54,27 +54,35 @@ public:
     TEMPORARY
   };
 
-constexpr static CEnumAnnotation RoleNameXML{
-  Role::VARIABLE,
-  MapNode{Role::SUBSTRATE, "substrate"},
-  MapNode{Role::PRODUCT, "product"},
-  MapNode{Role::MODIFIER, "modifier"},
-  MapNode{Role::PARAMETER, "constant"},
-  MapNode{Role::VOLUME, "volume"},
-  MapNode{Role::TIME, "time"},
-  MapNode{Role::VARIABLE, "variable"},
-  MapNode{Role::TEMPORARY, "temporary"}};
+private:
+  constexpr static CEnumAnnotationInstance _RoleNameXML{
+    Role::VARIABLE,
+    MapNode{Role::SUBSTRATE, "substrate"},
+    MapNode{Role::PRODUCT, "product"},
+    MapNode{Role::MODIFIER, "modifier"},
+    MapNode{Role::PARAMETER, "constant"},
+    MapNode{Role::VOLUME, "volume"},
+    MapNode{Role::TIME, "time"},
+    MapNode{Role::VARIABLE, "variable"},
+    MapNode{Role::TEMPORARY, "temporary"}};
 
-constexpr static CEnumAnnotation RoleNameDisplay{
-  Role::VARIABLE,
-  MapNode{Role::SUBSTRATE, "Substrate"},
-  MapNode{Role::PRODUCT, "Product"},
-  MapNode{Role::MODIFIER, "Modifier"},
-  MapNode{Role::PARAMETER, "Parameter"},
-  MapNode{Role::VOLUME, "Volume"},
-  MapNode{Role::TIME, "Time"},
-  MapNode{Role::VARIABLE, "Variable"},
-  MapNode{Role::TEMPORARY, "Temporary"}};
+public:
+  constexpr static CEnumAnnotation< Role, std::string_view > RoleNameXML{_RoleNameXML};
+
+private:
+  constexpr static CEnumAnnotationInstance _RoleNameDisplay{
+    Role::VARIABLE,
+    MapNode{Role::SUBSTRATE, "Substrate"},
+    MapNode{Role::PRODUCT, "Product"},
+    MapNode{Role::MODIFIER, "Modifier"},
+    MapNode{Role::PARAMETER, "Parameter"},
+    MapNode{Role::VOLUME, "Volume"},
+    MapNode{Role::TIME, "Time"},
+    MapNode{Role::VARIABLE, "Variable"},
+    MapNode{Role::TEMPORARY, "Temporary"}};
+
+public:
+  constexpr static CEnumAnnotation< Role, std::string_view > RoleNameDisplay{_RoleNameDisplay};
 
   /**
    *  Valid data type for a function parameter
@@ -87,12 +95,16 @@ constexpr static CEnumAnnotation RoleNameDisplay{
     VFLOAT64
   };
 
-  constexpr static CEnumAnnotation DataTypeName{
+private:
+  constexpr static CEnumAnnotationInstance _DataTypeName{
     DataType::FLOAT64,
     MapNode{DataType::INT32, "Integer"},
     MapNode{DataType::FLOAT64, "Double"},
     MapNode{DataType::VINT32, "Vector of Integer"},
     MapNode{DataType::VFLOAT64, "Vector of Double"}};
+
+public:
+  constexpr static CEnumAnnotation< DataType, std::string_view > DataTypeName{_DataTypeName};
 
 private:
   /**

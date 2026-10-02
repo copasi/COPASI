@@ -75,7 +75,8 @@ public:
 
   typedef CFlags< eUserInterfaceFlag > UserInterfaceFlag;
 
-  constexpr static CEnumAnnotation TypeName{
+private:
+  constexpr static CEnumAnnotationInstance _TypeName{
     Type::INVALID,
     MapNode{Type::DOUBLE, "float"},
     MapNode{Type::UDOUBLE, "unsigned float"},
@@ -90,8 +91,11 @@ public:
     MapNode{Type::EXPRESSION, "expression"},
     MapNode{Type::INVALID, "invalid"}};
 
-  // static
-  constexpr static CEnumAnnotation XMLType{
+public:
+  constexpr static CEnumAnnotation< Type, std::string_view > TypeName{_TypeName};
+
+private:
+  constexpr static CEnumAnnotationInstance _XMLType{
     Type::INVALID,
     MapNode{Type::DOUBLE, "float"},
     MapNode{Type::UDOUBLE, "unsignedFloat"},
@@ -105,6 +109,9 @@ public:
     MapNode{Type::FILE, "file"},
     MapNode{Type::EXPRESSION, "expression"},
     MapNode{Type::INVALID, "invalid"}};
+
+public:
+  constexpr static CEnumAnnotation< Type, std::string_view > XMLType{_XMLType};
 
   static void allocateValue(const Type & type, void *& pValue);
   static void assignValue(const Type & type, void *& pValue, const void * pNewValue);

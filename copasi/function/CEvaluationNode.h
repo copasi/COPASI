@@ -73,7 +73,8 @@ public:
     DELAY,
     UNIT};
 
-  constexpr static CEnumAnnotation MainTypeName{
+private:
+  constexpr static CEnumAnnotationInstance _MainTypeName{
     MainType::INVALID,
     MapNode{MainType::INVALID, "INVALID"},
     MapNode{MainType::NUMBER, "NUMBER"},
@@ -91,6 +92,9 @@ public:
     MapNode{MainType::VECTOR, "VECTOR"},
     MapNode{MainType::DELAY, "DELAY"},
     MapNode{MainType::UNIT, "UNIT"}};
+
+public:
+  constexpr static CEnumAnnotation< MainType, std::string_view > MainTypeName{_MainTypeName};
 
   enum struct SubType
   {
@@ -179,7 +183,8 @@ public:
     INVALID
   };
 
-  constexpr static CEnumAnnotation SubTypeName{
+private:
+  constexpr static CEnumAnnotationInstance _SubTypeName{
     SubType::INVALID,
     MapNode{SubType::DEFAULT, "DEFAULT"},
     MapNode{SubType::DELAY, "DELAY"},
@@ -264,6 +269,9 @@ public:
     MapNode{SubType::SIGN, "SIGN"},
     MapNode{SubType::AVOGADRO, "AVOGADRO"},
     MapNode{SubType::INVALID, "INVALID"}};
+
+public:
+  constexpr static CEnumAnnotation< SubType, std::string_view > SubTypeName{_SubTypeName};
 
   enum struct ValueType
   {
