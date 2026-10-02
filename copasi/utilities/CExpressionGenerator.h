@@ -61,9 +61,6 @@ public:
 
   constexpr bool operator<(const sOperation & rhs) const
   {
-    if (this == &rhs)
-      return false;
-
     if (join != rhs.join)
       return join < rhs.join;
 
