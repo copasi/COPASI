@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -112,13 +112,7 @@ bool CMoietiesTask::process(const bool & /* useInitialValues */)
 }
 
 // virtual
-const CTaskEnum::Method * CMoietiesTask::getValidMethods() const
+const CEnumAnnotation< CTaskEnum::Method, std::string_view > CMoietiesTask::getValidMethods() const
 {
-  static const CTaskEnum::Method ValidMethods[] =
-  {
-    CTaskEnum::Method::Householder,
-    CTaskEnum::Method::UnsetMethod
-  };
-
-  return ValidMethods;
+  return CMoietiesTask::ValidMethods;
 }

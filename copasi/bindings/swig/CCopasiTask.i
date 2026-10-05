@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -115,15 +115,13 @@ typedef std::vector<CTaskEnum::Method> MethodSubTypeVector;
 
   std::vector<C_INT32> getValidMethods() const
     {
-      const CTaskEnum::Method *methods = $self->getValidMethods();
-      
       std::vector<C_INT32> validMethods;
-      unsigned int i=0;
-      while(methods[i]!=CTaskEnum::Method::UnsetMethod)
+
+      for (const CTaskEnum::Method & e: $self->getValidMethods().keys())
       {
-        validMethods.push_back(static_cast< C_INT32>(methods[i]));
-        ++i;
+        validMethods.push_back(static_cast< C_INT32>(e));
       }
+
       return validMethods;
     } 
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,31 +40,6 @@
 #include "copasi/model/CModel.h"
 #include "copasi/model/CState.h"
 #include "copasi/utilities/CMethodFactory.h"
-
-// static
-const CTaskEnum::Method COptTask::ValidMethods[]  =
-{
-  CTaskEnum::Method::Statistics,
-#ifdef COPASI_DEBUG
-  CTaskEnum::Method::CoranaWalk,
-#endif // COPASI_DEBUG
-  CTaskEnum::Method::DifferentialEvolution,
-  CTaskEnum::Method::SRES,
-  CTaskEnum::Method::EvolutionaryProgram,
-  CTaskEnum::Method::GeneticAlgorithm,
-  CTaskEnum::Method::GeneticAlgorithmSR,
-  CTaskEnum::Method::HookeJeeves,
-  CTaskEnum::Method::LevenbergMarquardt,
-  CTaskEnum::Method::NelderMead,
-  CTaskEnum::Method::ParticleSwarm,
-  CTaskEnum::Method::Praxis,
-  CTaskEnum::Method::RandomSearch,
-  CTaskEnum::Method::ScatterSearch,
-  CTaskEnum::Method::SimulatedAnnealing,
-  CTaskEnum::Method::SteepestDescent,
-  CTaskEnum::Method::TruncatedNewton,
-  CTaskEnum::Method::UnsetMethod
-};
 
 COptTask::COptTask(const CDataContainer * pParent,
                    const CTaskEnum::Task & type):
@@ -165,7 +140,7 @@ bool COptTask::process(const bool & useInitialValues)
 }
 
 // virtual
-const CTaskEnum::Method * COptTask::getValidMethods() const
+const CEnumAnnotation< CTaskEnum::Method, std::string_view > COptTask::getValidMethods() const
 {
-  return COptTask::ValidMethods;
+return COptTask::ValidMethods;
 }

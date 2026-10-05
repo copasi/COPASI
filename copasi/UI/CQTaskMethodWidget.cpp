@@ -87,14 +87,14 @@ void CQTaskMethodWidget::setTask(CCopasiTask * pTask)
     }
 }
 
-void CQTaskMethodWidget::setValidMethods(const CTaskEnum::Method * validMethods)
+void CQTaskMethodWidget::setValidMethods(const CEnumAnnotation< CTaskEnum::Method, std::string_view > & validMethods)
 {
   unsigned C_INT32 i;
 
-  for (i = 0; validMethods[i] != CTaskEnum::Method::UnsetMethod; i++)
-    mpBoxMethod->insertItem(mpBoxMethod->count(), FROM_UTF8(CTaskEnum::MethodName[validMethods[i]]));
+  for (const auto & a : validMethods.annotations())
+    mpBoxMethod->insertItem(mpBoxMethod->count(), FROM_UTF8(a));
 
-  if (i > 0)
+  if (mpBoxMethod->count() > 1)
     {
       mShowMethods = true;
       mpLblMethod->show();

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,16 +51,6 @@ class CProcessReportLevel;
 class CCopasiTask : public CDataContainer
 {
 public:
-  /**
-   * Check whether the given method is in the list of valid methods
-   * This list must end with CCopasiMethod::unset
-   * @param const CTaskEnum::Method & method
-   * @param const CTaskEnum::Method * validMethods
-   * @return bool isValid
-   */
-  static bool isValidMethod(const CTaskEnum::Method & method,
-                            const CTaskEnum::Method * validMethods);
-
   enum struct OutputFlagBase
   {
     INITIALIZE = 0,
@@ -357,7 +347,7 @@ public:
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  virtual const CTaskEnum::Method * getValidMethods() const;
+  virtual const CEnumAnnotation< CTaskEnum::Method, std::string_view > getValidMethods() const;
 #endif
 
   /**
@@ -393,7 +383,7 @@ public:
    *    this task as a subtask
    */
   virtual C_FLOAT64 getEstimatedMethodError() const;
-  
+
   /**
    * Retrieve the report
    */
@@ -543,7 +533,7 @@ protected:
   OutputFlag mDoOutput;
   COutputHandler * mpOutputHandler;
   unsigned C_INT32 mOutputCounter;
-  
+
   std::string mMethodName;
 
 #ifndef SWIG

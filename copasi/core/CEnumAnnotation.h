@@ -40,7 +40,7 @@ public:
     : _Map(map)
     , mEnumDefault(enumDefault)
   {
-    isDefaultValid(this->keys(), mEnumDefault);
+    isDefaultValid(this->_Map::keys(), mEnumDefault);
   }
 
   // Accepts the unpacked Nodes and constructs the flat arrays smoothly
@@ -49,7 +49,7 @@ public:
     : _Map({std::forward< Nodes >(nodes)...})
     , mEnumDefault(enumDefault)
   {
-    isDefaultValid(this->keys(), mEnumDefault);
+    isDefaultValid(this->_Map::keys(), mEnumDefault);
   }
 
   constexpr size_t size() const
@@ -60,6 +60,11 @@ public:
   constexpr EnumType enumDefault() const
   {
     return mEnumDefault;
+  }
+
+  constexpr bool isValid(EnumType e) const
+  {
+    return this->containsKey(e);
   }
 
   /**
@@ -108,6 +113,11 @@ public:
     return mEnumDefault;
   }
 
+  std::vector< EnumType > keys() const
+  {
+    return std::vector< EnumType >(this->_Map::keys().begin(), this->_Map::keys().end());
+  }
+
   std::vector< AnnotationType > values() const
   {
     return std::vector< AnnotationType >(this->_Map::values().begin(), this->_Map::values().end());
@@ -150,8 +160,10 @@ private:
   {
     size_t (*size)(const void *) = nullptr;
     EnumType (*eDefault)(const void *) = nullptr;
+    bool (*isValid)(const void *, EnumType) = nullptr;
     AnnotationTypeReturn (*at)(const void *, EnumType) = nullptr;
     EnumType (*toEnum)(const void *, EnumType) = nullptr;
+    std::vector< EnumType > (*keys)(const void *) = nullptr;
     std::vector< AnnotationType > (*values)(const void *) = nullptr;
     EnumType (*toEnumAnnot)(const void *, const AnnotationType &, EnumType) = nullptr;
   };
@@ -163,8 +175,10 @@ private:
     return VTable{
       .size = [](const void * ptr) {return static_cast< const ConcreteType * >(ptr)->size(); },
       .eDefault = [](const void * ptr) {return static_cast< const ConcreteType * >(ptr)->enumDefault(); },
+      .isValid = [](const void * ptr, EnumType e) {return static_cast< const ConcreteType * >(ptr)->isValid(e); },
       .at = [](const void * ptr, EnumType e) {return (*static_cast< const ConcreteType * >(ptr))[e]; },
       .toEnum = [](const void * ptr, EnumType e) {return static_cast< const ConcreteType * >(ptr)->toEnum(e); },
+      .keys = [](const void * ptr) {return static_cast< const ConcreteType * >(ptr)->keys(); },
       .values = [](const void * ptr) {return static_cast< const ConcreteType * >(ptr)->values(); },
       .toEnumAnnot = [](const void * ptr, const AnnotationType & a, EnumType d) {return static_cast< const ConcreteType * >(ptr)->toEnum(a, d); }};
   }
@@ -192,6 +206,11 @@ public:
     return mVtbl->eDefault(mSelf);
   }
 
+  bool isValid(EnumType e) const
+  {
+    return mVtbl->isValid(mSelf, e);
+  }
+
   AnnotationTypeReturn operator[](EnumType e) const
   {
     return mVtbl->at(mSelf, e);
@@ -215,6 +234,11 @@ public:
   EnumType toEnum(const AnnotationType & a, EnumType d) const
   {
     return mVtbl->toEnumAnnot(mSelf, a, d);
+  }
+
+  std::vector< EnumType > keys() const
+  {
+    return mVtbl->keys(mSelf);
   }
 
   std::vector< AnnotationType > values() const
@@ -306,6 +330,11 @@ public:
     return mEnumDefault;
   }
 
+  constexpr bool isValid(EnumType e) const
+  {
+    return std::find(mSubset.begin(), mSubset.end(), e) != mSubset.end();
+  }
+
   constexpr AnnotationTypeReturn operator[](EnumType e) const
   {
     // If the requested enum is part of our subset bounds, query the original map
@@ -341,6 +370,11 @@ public:
       }
 
     return enumDefault; // Fallback to your subset default
+  }
+
+  std::vector< EnumType > keys() const
+  {
+    return std::vector< EnumType >(mSubset.begin(), mSubset.end());
   }
 
   std::vector< AnnotationType > values() const

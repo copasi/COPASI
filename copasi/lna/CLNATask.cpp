@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -193,15 +193,9 @@ bool CLNATask::setCallBack(CProcessReportLevel callBack)
 }
 
 // virtual
-const CTaskEnum::Method * CLNATask::getValidMethods() const
+const CEnumAnnotation< CTaskEnum::Method, std::string_view > CLNATask::getValidMethods() const
 {
-  static const CTaskEnum::Method ValidMethods[] =
-  {
-    CTaskEnum::Method::linearNoiseApproximation,
-    CTaskEnum::Method::UnsetMethod
-  };
-
-  return ValidMethods;
+  return CLNATask::ValidMethods;
 }
 
 std::ostream &operator<<(std::ostream &os, const CLNATask & C_UNUSED(A))

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -59,15 +59,6 @@ bool tble(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 
 bool tbl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 {return (d1 > d2);}
-
-// static
-const CTaskEnum::Method CTSSATask::ValidMethods[] =
-{
-  CTaskEnum::Method::tssILDM,
-  CTaskEnum::Method::tssILDMModified,
-  CTaskEnum::Method::tssCSP,
-  CTaskEnum::Method::UnsetMethod
-};
 
 CTSSATask::CTSSATask(const CDataContainer * pParent,
                      const CTaskEnum::Task & type):
@@ -371,7 +362,7 @@ bool CTSSATask::processStep(const C_FLOAT64 & nextTime)
 }
 
 // virtual
-const CTaskEnum::Method * CTSSATask::getValidMethods() const
+const CEnumAnnotation< CTaskEnum::Method, std::string_view > CTSSATask::getValidMethods() const
 {
   return CTSSATask::ValidMethods;
 }

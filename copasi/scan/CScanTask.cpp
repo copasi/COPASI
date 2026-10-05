@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -142,7 +142,7 @@ bool CScanTask::process(const bool & useInitialValues)
       mpContainer->applyInitialValues();
     }
 
-  // if subtask is optimization or parameter estimation, and continue 
+  // if subtask is optimization or parameter estimation, and continue
   // from current state is enabled, enable the update model flag
   // on the subtask
   COptProblem * pOptProblem = dynamic_cast< COptProblem * >(mpSubTask->getProblem());
@@ -210,15 +210,9 @@ bool CScanTask::process(const bool & useInitialValues)
 }
 
 // virtual
-const CTaskEnum::Method * CScanTask::getValidMethods() const
+const CEnumAnnotation< CTaskEnum::Method, std::string_view > CScanTask::getValidMethods() const
 {
-  static const CTaskEnum::Method ValidMethods[] =
-  {
-    CTaskEnum::Method::scanMethod,
-    CTaskEnum::Method::UnsetMethod
-  };
-
-  return ValidMethods;
+  return CScanTask::ValidMethods;
 }
 
 bool CScanTask::processCallback()

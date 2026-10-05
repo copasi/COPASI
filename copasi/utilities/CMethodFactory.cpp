@@ -73,7 +73,7 @@ CCopasiMethod * CMethodFactory::create(const CTaskEnum::Task & taskType,
     pTask = CTaskFactory::create(taskType, NULL);
 
   if (pTask == NULL
-      || !pTask->isValidMethod(methodType, pTask->getValidMethods()))
+      || !pTask->getValidMethods().isValid(methodType))
     return NULL;
 
   CCopasiMethod * pMethod = NULL;

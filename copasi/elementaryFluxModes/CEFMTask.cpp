@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -103,25 +103,9 @@ bool CEFMTask::process(const bool & /* useInitialValues */)
 }
 
 // virtual
-const CTaskEnum::Method * CEFMTask::getValidMethods() const
+const CEnumAnnotation< CTaskEnum::Method, std::string_view > CEFMTask::getValidMethods() const
 {
-  static const CTaskEnum::Method ValidMethods[] =
-  {
-    CTaskEnum::Method::EFMAlgorithm,
-
-#ifdef COPASI_DEBUG
-    CTaskEnum::Method::EFMBitPatternTreeAlgorithm,
-    CTaskEnum::Method::EFMBitPatternAlgorithm,
-#endif // COPASI_DEBUG
-
-#ifdef COPASI_SSA
-    CTaskEnum::Method::stoichiometricStabilityAnalysis,
-#endif // COPASI_SSA
-
-    CTaskEnum::Method::UnsetMethod
-  };
-
-  return ValidMethods;
+  return CEFMTask::ValidMethods;
 }
 
 std::string CEFMTask::getFluxModeDescription(const CFluxMode & fluxMode) const
