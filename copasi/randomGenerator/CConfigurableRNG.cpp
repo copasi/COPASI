@@ -28,9 +28,16 @@
 #include "copasi/utilities/CopasiTime.h"
 
 CConfigurableRNG::CConfigurableRNG(CConfigurableRNG::Type engineType, CConfigurableRNG::result_type initialSeed)
-{
-  setType(engineType, initialSeed);
-}
+  : mEngine(false)
+  , mType(engineType)
+  , mSeed(initialSeed)
+{}
+
+CConfigurableRNG::CConfigurableRNG(const CConfigurableRNG & src)
+  : mEngine(false)
+  , mType(src.mType)
+  , mSeed(src.mSeed)
+{}
 
 CConfigurableRNG * CConfigurableRNG::copy()
 {
@@ -39,38 +46,47 @@ CConfigurableRNG * CConfigurableRNG::copy()
 
 void CConfigurableRNG::seed(CConfigurableRNG::result_type newSeed)
 {
-  std::visit([newSeed](auto & eng) {
-    using EngineType = std::decay_t< decltype(eng) >;
+  if (mEngine.index() != 0)
+    {
+      mSeed = (newSeed != 0) ? newSeed : getSystemSeed();
+      std::visit([this](auto & eng) {
+        using EngineType = std::decay_t< decltype(eng) >;
 
-    if constexpr (std::is_same_v< EngineType, std::mt19937_64 >)
-      eng.seed(static_cast< typename EngineType::result_type >(newSeed));
-    else if constexpr (std::is_same_v< EngineType, std::independent_bits_engine< CR250, 64, result_type > >)
-      eng.seed(static_cast< typename CR250::result_type >(newSeed));
-    else if constexpr (std::is_same_v< EngineType, std::independent_bits_engine< CSobolSequence, 64, result_type > >)
-      eng.seed(static_cast< typename CSobolSequence::result_type >(newSeed));
-  },
-             mEngine);
+        if constexpr (!std::is_same_v< EngineType, bool >)
+          eng.seed(mSeed);
+      },
+                 mEngine);
+    }
+  else
+    mSeed = newSeed;
 }
 
 CConfigurableRNG::result_type CConfigurableRNG::operator()()
 {
+  if (mEngine.index() == 0)
+    initialize();
+
   return std::visit([](auto & eng) -> result_type {
-    return static_cast< result_type >(eng());
+    using EngineType = std::decay_t< decltype(eng) >;
+
+    if constexpr (std::is_same_v < EngineType, bool >)
+      return 0;
+    else
+      return static_cast< result_type >(eng());
   },
                     mEngine);
 }
 
 void CConfigurableRNG::discard(result_type z)
 {
+  if (mEngine.index() == 0)
+    initialize();
+
   std::visit([z](auto & eng) {
     using EngineType = std::decay_t< decltype(eng) >;
 
-    if constexpr (std::is_same_v< EngineType, std::mt19937_64 >)
-      eng.discard(static_cast< typename EngineType::result_type >(z));
-    else if constexpr (std::is_same_v< EngineType, std::independent_bits_engine< CR250, 64, result_type > >)
-      eng.discard(static_cast< typename CR250::result_type >(z));
-    else if constexpr (std::is_same_v< EngineType, std::independent_bits_engine< CSobolSequence, 64, result_type > >)
-      eng.discard(static_cast< typename CSobolSequence::result_type >(z));
+    if constexpr (!std::is_same_v< EngineType, bool >)
+      eng.discard(z);
   },
              mEngine);
 }
@@ -82,21 +98,29 @@ CConfigurableRNG::Type CConfigurableRNG::getType() const
 
 void CConfigurableRNG::setType(Type engineType, result_type initialSeed)
 {
-  if (initialSeed == 0)
-    initialSeed = getSystemSeed();
-
+  mEngine = false;
   mType = engineType;
+  mSeed = initialSeed;
+}
+
+void CConfigurableRNG::initialize()
+{
+  if (mSeed == 0)
+    mSeed = getSystemSeed();
 
   switch (mType)
     {
     case Type::R250:
-      mEngine = std::independent_bits_engine< CR250, 64, result_type >{static_cast< CR250::result_type >(initialSeed)};
+      mEngine = std::independent_bits_engine< CR250, 64, result_type >{mSeed};
       break;
     case Type::MersenneTwister:
-      mEngine = std::mt19937_64{static_cast< std::mt19937_64::result_type >(initialSeed)};
+      mEngine = std::independent_bits_engine< std::mt19937, 64, result_type >{mSeed};
+      break;
+    case Type::MersenneTwister_64:
+      mEngine = std::mt19937_64{mSeed};
       break;
     case Type::SobolSequence:
-      mEngine = std::independent_bits_engine< CSobolSequence, 64, result_type >{static_cast< CSobolSequence::result_type >(initialSeed)};
+      mEngine = std::independent_bits_engine< CSobolSequence, 64, result_type >{mSeed};
       break;
     }
 }

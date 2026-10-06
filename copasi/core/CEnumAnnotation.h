@@ -64,7 +64,7 @@ public:
 
   constexpr bool isValid(EnumType e) const
   {
-    return this->containsKey(e);
+    return this->_Map::containsKey(e);
   }
 
   /**
@@ -74,22 +74,22 @@ public:
    */
   AnnotationTypeReturn operator[](EnumType e) const
   {
-    if (!this->containsKey(e))
+    if (!this->_Map::containsKey(e))
       e = mEnumDefault;
 
     if constexpr (std::is_same_v< AnnotationType, std::string_view >)
       {
-        return std::string(*this->findByKey(e));
+        return std::string(*this->_Map::findByKey(e));
       }
     else
       {
-        return *this->findByKey(e);
+        return *this->_Map::findByKey(e);
       }
   }
 
   EnumType toEnum(EnumType e) const
   {
-    if (this->containsKey(e))
+    if (this->_Map::containsKey(e))
       return e;
 
     return mEnumDefault;
@@ -102,12 +102,12 @@ public:
    */
   EnumType toEnum(const AnnotationType & annotation, EnumType enumDefault) const
   {
-    const EnumType * pEnum = this->findByValue(annotation);
+    const EnumType * pEnum = this->_Map::findByValue(annotation);
 
     if (pEnum != nullptr)
       return *pEnum;
 
-    if (this->containsKey(enumDefault))
+    if (this->_Map::containsKey(enumDefault))
       return enumDefault;
 
     return mEnumDefault;
@@ -383,7 +383,7 @@ public:
     Values.reserve(Size);
 
     for (const AnnotationType & a : mEnumAnnotation.values())
-      if (std::find(mSubset.begin(), mSubset.end(), toEnum(a, mEnumDefault)) != mSubset.end())
+      if (std::find(mSubset.begin(), mSubset.end(), mEnumAnnotation.toEnum(a)) != mSubset.end())
         Values.emplace_back(a);
 
     return Values;

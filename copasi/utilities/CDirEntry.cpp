@@ -245,8 +245,8 @@ std::string CDirEntry::createTmpName(const std::string & dir,
       return "";
     }
 
-  auto RNG = std::make_unique< CConfigurableRNG >();
- 
+  static CConfigurableRNG RNG;
+
   std::uniform_int_distribution< unsigned short > distribution(0, 35);
 
   CLocaleString Path = CLocaleString::fromUtf8(dir);
@@ -260,7 +260,7 @@ std::string CDirEntry::createTmpName(const std::string & dir,
 
       for (size_t i = 0; i < 8; i++)
         {
-          Char = distribution(*RNG);
+          Char = distribution(RNG);
 
           if (Char < 10)
             TmpName += '0' + Char;

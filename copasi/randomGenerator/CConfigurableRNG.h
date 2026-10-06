@@ -18,7 +18,9 @@ class CConfigurableRNG
 {
 public:
   using result_type = std::mt19937_64::result_type;
-  using EngineVariant = std::variant< std::mt19937_64,
+  using EngineVariant = std::variant< bool,
+                                      std::independent_bits_engine< std::mt19937, 64, result_type >,
+                                      std::mt19937_64,
                                       std::independent_bits_engine< CSobolSequence, 64, result_type >,
                                       std::independent_bits_engine< CR250, 64, result_type > >;
 
@@ -26,15 +28,8 @@ public:
   {
     R250 = 0,
     MersenneTwister,
+    MersenneTwister_64,
     SobolSequence
-  };
-
-  enum struct OldType
-  {
-    r250 = 0,
-    mt19937,
-    mt19937HR,
-    unkown
   };
 
 private:
@@ -42,23 +37,18 @@ private:
     Type::MersenneTwister,
     MapNode{Type::R250, "R250"},
     MapNode{Type::MersenneTwister, "Mersenne Twister"},
+    MapNode{Type::MersenneTwister_64, "Mersenne Twister (64 bit)"},
     MapNode{Type::SobolSequence, "Sobol Sequence"}
   };
 
 public:
   constexpr static CEnumAnnotation< Type, std::string_view > TypeAnnotation{_TypeAnnotation};
 
-  constexpr static CBidirectionalMap Conversion{
-    MapNode{OldType::r250, Type::R250},
-    MapNode{OldType::mt19937, Type::MersenneTwister},
-    MapNode{OldType::mt19937HR, Type::MersenneTwister},
-    MapNode{OldType::unkown, Type::MersenneTwister}
-  };
-
   static CConfigurableRNG::result_type getSystemSeed();
 
   CConfigurableRNG(Type engineType = Type::MersenneTwister, result_type initialSeed = 0);
-  CConfigurableRNG(const CConfigurableRNG &) = default;
+
+  CConfigurableRNG(const CConfigurableRNG & src);
 
   CConfigurableRNG * copy();
 
@@ -72,11 +62,16 @@ public:
 
   constexpr static result_type max() {return std::numeric_limits< result_type >::max();};
 
+  // Type getType() const;
+
   Type getType() const;
 
   void setType(Type engineType, result_type initialSeed = 0);
 
 private:
+  void initialize();
+
   EngineVariant mEngine;
   Type mType;
+  result_type mSeed;
 };
