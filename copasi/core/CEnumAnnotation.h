@@ -288,12 +288,6 @@ public:
     return Annotations;
   }
 
-  template < size_t N >
-  constexpr auto subset(EnumType def, const std::array< EnumType, N > & keys) const
-  {
-    return CEnumAnnotationSubset< EnumType, AnnotationType, N >(*this, def, keys);
-  }
-
 private:
   constexpr CEnumAnnotation()
     : mSelf(nullptr)

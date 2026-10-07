@@ -9,8 +9,6 @@
 #include "copasi/randomGenerator/CConfigurableRNG.h"
 %}
 
-%ignore CConfigurableRNG::Conversion;
-
 %include "copasi/randomGenerator/CConfigurableRNG.h"
 
 
