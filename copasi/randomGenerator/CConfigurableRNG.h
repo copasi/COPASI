@@ -28,7 +28,7 @@ public:
   {
     R250 = 0,
     MersenneTwister,
-    MersenneTwister_64,
+    MersenneTwister64,
     SobolSequence
   };
 
@@ -37,7 +37,7 @@ private:
     Type::MersenneTwister,
     MapNode{Type::R250, "R250"},
     MapNode{Type::MersenneTwister, "Mersenne Twister"},
-    MapNode{Type::MersenneTwister_64, "Mersenne Twister (64 bit)"},
+    MapNode{Type::MersenneTwister64, "Mersenne Twister (64 bit)"},
     MapNode{Type::SobolSequence, "Sobol Sequence"}
   };
 

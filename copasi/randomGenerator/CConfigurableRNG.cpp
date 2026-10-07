@@ -116,7 +116,7 @@ void CConfigurableRNG::initialize()
     case Type::MersenneTwister:
       mEngine = std::independent_bits_engine< std::mt19937, 64, result_type >{mSeed};
       break;
-    case Type::MersenneTwister_64:
+    case Type::MersenneTwister64:
       mEngine = std::mt19937_64{mSeed};
       break;
     case Type::SobolSequence:
