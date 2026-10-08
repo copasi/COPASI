@@ -453,19 +453,19 @@ if (ENABLE_OMP)
       # Store as a CMake list (semicolon-separated) so target_compile_options
       # passes each token as a separate argument to the compiler.
       if(DEFINED ENV{OpenMP_C_FLAGS})
-        set(OpenMP_C_FLAGS $ENV(OpenMP_C_FLAGS))
+        set(OpenMP_C_FLAGS $ENV{OpenMP_C_FLAGS})
       else() 
         set(OpenMP_C_FLAGS "-Xpreprocessor;-fopenmp;-I${LIBOMP_PREFIX}/include")
       endif()
 
       if(DEFINED ENV{OpenMP_CXX_FLAGS})
-        set(OpenMP_CXX_FLAGS $ENV(OpenMP_CXX_FLAGS))
+        set(OpenMP_CXX_FLAGS $ENV{OpenMP_CXX_FLAGS})
       else() 
         set(OpenMP_CXX_FLAGS "-Xpreprocessor;-fopenmp;-I${LIBOMP_PREFIX}/include")
       endif()
       
       if(DEFINED ENV{OpenMP_omp_LIBRARY})
-        set(OpenMP_omp_LIBRARY $ENV(OpenMP_omp_LIBRARY))
+        set(OpenMP_omp_LIBRARY $ENV{OpenMP_omp_LIBRARY})
       else() 
         set(OpenMP_omp_LIBRARY ${LIBOMP_PREFIX}/lib/libomp.dylib)
       endif()
