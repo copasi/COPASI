@@ -1468,7 +1468,7 @@ void CFitProblem::printResult(std::ostream * ostream) const
   os << "\n";
   os << "Validation Data:";
   os << "\n";
-  k, kmax = mpCrossValidationSet->getExperimentCount();
+  kmax = mpCrossValidationSet->getExperimentCount();
 
   for (k = 0; k < kmax; k++)
     {
