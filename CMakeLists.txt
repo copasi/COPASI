@@ -452,11 +452,26 @@ if (ENABLE_OMP)
       # Apple/Homebrew Clang needs -Xpreprocessor to accept -fopenmp.
       # Store as a CMake list (semicolon-separated) so target_compile_options
       # passes each token as a separate argument to the compiler.
-      set(OpenMP_C_FLAGS "-Xpreprocessor;-fopenmp;-I${LIBOMP_PREFIX}/include")
-      set(OpenMP_CXX_FLAGS "-Xpreprocessor;-fopenmp;-I${LIBOMP_PREFIX}/include")
+      if(DEFINED ENV{OpenMP_C_FLAGS})
+        set(OpenMP_C_FLAGS $ENV(OpenMP_C_FLAGS))
+      else() 
+        set(OpenMP_C_FLAGS "-Xpreprocessor;-fopenmp;-I${LIBOMP_PREFIX}/include")
+      endif()
+
+      if(DEFINED ENV{OpenMP_CXX_FLAGS})
+        set(OpenMP_CXX_FLAGS $ENV(OpenMP_CXX_FLAGS))
+      else() 
+        set(OpenMP_CXX_FLAGS "-Xpreprocessor;-fopenmp;-I${LIBOMP_PREFIX}/include")
+      endif()
+      
+      if(DEFINED ENV{OpenMP_omp_LIBRARY})
+        set(OpenMP_omp_LIBRARY $ENV(OpenMP_omp_LIBRARY))
+      else() 
+        set(OpenMP_omp_LIBRARY ${LIBOMP_PREFIX}/lib/libomp.dylib)
+      endif()
+      
       set(OpenMP_C_LIB_NAMES omp)
       set(OpenMP_CXX_LIB_NAMES omp)
-      set(OpenMP_omp_LIBRARY ${LIBOMP_PREFIX}/lib/libomp.dylib)
       set(OMP_HAVE_MONOTONIC 1 CACHE INTERNAL "" FORCE)
     endif()
   endif()
