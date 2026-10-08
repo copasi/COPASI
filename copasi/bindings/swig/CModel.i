@@ -95,7 +95,6 @@ typedef std::map< std::string, double > StringDoubleMap;
 %ignore CMathContainer::getInitialState() const;
 %ignore CMathContainer::getReactions() const;
 %ignore CModel::getActiveModelParameterSet() const;
-%ignore CModel::getMathContainer() const;
 %ignore CCopasiParameterGroup::getElementTemplates() const;
 
 
