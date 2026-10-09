@@ -344,7 +344,7 @@ TEST_CASE("importing an SBML file multiple times", "[copasi][sbml]")
   REQUIRE(dm != nullptr);
 
   auto * pFunDB = CRootContainer::getFunctionList();
-  REQUIRE(pFunDB->loadedFunctions().size() == 85);
+  REQUIRE(pFunDB->loadedFunctions().size() == 87);
   pFunDB->purgeUnusedUserDefinedFunctions();
   REQUIRE(pFunDB->loadedFunctions().size() == 83);
 
