@@ -3198,6 +3198,7 @@ void CMathContainer::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
   jacobian.resize(Rows, Columns);
 
   C_FLOAT64 DerivationFactor = std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
+  CVector< C_FLOAT64 > Atol = initializeAtolVector(DerivationFactor, reduced);
 
   C_FLOAT64 * pState = mState.array() + mSize.nFixedEventTargets + (includeTime ? 0 : 1);
   const C_FLOAT64 * pRate = mRate.array() + mSize.nFixedEventTargets + 1;
@@ -3220,20 +3221,21 @@ void CMathContainer::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
 
   C_FLOAT64 * pJacobian;
   C_FLOAT64 * pJacobianEnd = jacobian.array() + jacobian.size();
+  C_FLOAT64 * pAtol = Atol.array() + mSize.nFixedEventTargets + (includeTime ? 0 : 1);
 
-  for (Col = 0; pX != pXEnd; ++pX, ++Col)
+  for (Col = 0; pX != pXEnd; ++pX, ++Col, ++pAtol)
     {
       Store = *pX;
 
       // We only need to make sure that we do not have an underflow problem
-      if (fabs(Store) < DerivationFactor)
+      if (fabs(Store) < *pAtol)
         {
           X1 = 0.0;
 
           if (Store < 0.0)
-            X2 = -2.0 * DerivationFactor;
+            X2 = -2.0 * *pAtol;
           else
-            X2 = 2.0 * DerivationFactor;;
+            X2 = 2.0 * *pAtol;
         }
       else
         {
