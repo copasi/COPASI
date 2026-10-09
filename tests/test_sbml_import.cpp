@@ -12,14 +12,78 @@ extern std::string getTestFile(const std::string & fileName);
 #include <copasi/sbml/SBMLUnitSupport.h>
 #include <sbml/SBMLTypes.h>
 
+TEST_CASE("importing linear model and test jacobian", "[copasi][sbml][jacobian]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  auto test_file = getTestFile("test-data/chain2.xml");
+  dm->importSBML(test_file, NULL, true);
+
+  REQUIRE(dm->getModel() != nullptr);
+
+  CMatrix< double > jacobian; 
+  dm->getModel()->applyInitialValues();
+  dm->getModel()->getMathContainer().calculateJacobian(jacobian, 1e-3, false, false);
+
+  REQUIRE(int(jacobian(0, 0)) == -2);
+
+  auto& jac = dm->getModel()->getJacobianAnnotation(false, 1e-3);
+  std::stringstream str; 
+  str << jac;
+
+  auto jacobianString = str.str();
+  REQUIRE(jacobianString.find("-2") != std::string::npos);
+
+  CRootContainer::removeDatamodel(dm);
+}
+
 TEST_CASE("importing algebraic rules", "[copasi][sbml][algebraic]")
 {
 
   auto * dm = CRootContainer::addDatamodel();
-  std::string test_file = getTestFile("test-data/01142-sbml-l3v1.xml");
+
+  dm->newModel(NULL, true);
+  auto allMessages = CCopasiMessage::getAllMessageText();
+
+  CCopasiMessage(CCopasiMessage::ERROR, "testing");
+
+  std::string test_file = getTestFile("test-data/brusselator.cps");
+  {
+    dm->loadModel(test_file, NULL, true);
+    allMessages = CCopasiMessage::getAllMessageText();
+    REQUIRE(allMessages.empty());
+
+    dm->loadFromFile(test_file, NULL, true);
+    allMessages = CCopasiMessage::getAllMessageText();
+    REQUIRE(allMessages.empty());
+  }
+
+  test_file = getTestFile("test-data/brusselator.gps");
+  {
+    dm->loadModel(test_file, NULL, true);
+    allMessages = CCopasiMessage::getAllMessageText();
+    REQUIRE(allMessages.empty());
+
+    dm->loadFromFile(test_file, NULL, true);
+    allMessages = CCopasiMessage::getAllMessageText();
+    REQUIRE(allMessages.empty());
+  }
+
+  test_file = getTestFile("test-data/brusselator.xml");
+  {
+    dm->importSBML(test_file, NULL, true);
+    dm->compile({&(dm->getModel()->getMathContainer())});
+    allMessages = CCopasiMessage::getAllMessageText();
+    REQUIRE(allMessages.empty());
+
+    dm->loadFromFile(test_file, NULL, true);
+    allMessages = CCopasiMessage::getAllMessageText();
+    REQUIRE(allMessages.empty());
+  }
+
+  test_file = getTestFile("test-data/01142-sbml-l3v1.xml");
   dm->importSBML(test_file);
   
-  auto allMessages = CCopasiMessage::getAllMessageText();
+  allMessages = CCopasiMessage::getAllMessageText();
   REQUIRE(allMessages.find("algebraic rules that were ignored") != std::string::npos);
 
   REQUIRE(dm != NULL);

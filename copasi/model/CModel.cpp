@@ -235,7 +235,11 @@ CModel::CModel(CDataContainer* pParent):
   mReorderNeeded(false),
   mIsAutonomous(true),
   mBuildInitialSequence(true),
-  mpMathContainer(NULL)
+  mpMathContainer(NULL),
+  mJacobian(),
+  mJacobianRed(),
+  mpJacobianAnn(NULL), 
+  mpJacobianAnnRed(NULL)
 {
   initObjects();
 
@@ -313,6 +317,9 @@ CModel::~CModel()
   pdelete(mpStoiAnnotation);
   pdelete(mpRedStoiAnnotation);
   pdelete(mpLinkMatrixAnnotation);
+
+  pdelete(mpJacobianAnn);
+  pdelete(mpJacobianAnnRed);
 
   pdelete(mpMathContainer);
 
@@ -3169,6 +3176,20 @@ void CModel::initObjects()
   mpLinkMatrixAnnotation->setMode(1, CDataArray::Mode::Objects);
   mpLinkMatrixAnnotation->setDimensionDescription(1, "Species (reduced system)");
 
+  mpJacobianAnn = new CDataArray("Jacobian (complete system)", NULL,
+                                 new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mJacobian), true);
+  mpJacobianAnn->setMode(CDataArray::Mode::Objects);
+  mpJacobianAnn->setDescription("");
+  mpJacobianAnn->setDimensionDescription(0, "Variables of the system, including dependent species");
+  mpJacobianAnn->setDimensionDescription(1, "Variables of the system, including dependent species");
+
+  mpJacobianAnnRed = new CDataArray("Jacobian (reduced system)", NULL,
+                                    new CMatrixInterface< CMatrix< C_FLOAT64 > >(&mJacobianRed), true);
+  mpJacobianAnnRed->setMode(CDataArray::Mode::Objects);
+  mpJacobianAnnRed->setDescription("");
+  mpJacobianAnnRed->setDimensionDescription(0, "Independent variables of the system");
+  mpJacobianAnnRed->setDimensionDescription(1, "Independent variables of the system");
+
   mpMathContainer = new CMathContainer(*this);
 }
 
@@ -3495,6 +3516,56 @@ CVector< C_FLOAT64 > CModel::initializeAtolVector(const C_FLOAT64 & atol, const 
   return Atol;
 }
 
+void CModel::updateJacobianAnnotation()
+{
+  const CMathContainer & container = getMathContainer();
+  size_t containerStateSize = container.getState(true).size();
+  size_t containerFixedEventTargets = container.getCountFixedEventTargets();
+
+  if (containerStateSize == 0)
+    {
+      return; //
+    }
+
+  size_t sizeReduced = containerStateSize - containerFixedEventTargets - 1;
+  mJacobianRed.resize(sizeReduced, sizeReduced);
+  mJacobianRed = std::numeric_limits< double >::quiet_NaN();
+  size_t size = container.getState(false).size() - containerFixedEventTargets - 1;
+  mJacobian.resize(size, size);
+  mJacobian = std::numeric_limits< double >::quiet_NaN();
+
+  mpJacobianAnn->resize();
+  mpJacobianAnn->setObjectParent(getObjectDataModel());
+  mpJacobianAnnRed->resize();
+  mpJacobianAnnRed->setObjectParent(getObjectDataModel());
+
+  const CMathObject * pObject = container.getMathObject(container.getState(false).array() + container.getCountFixedEventTargets() + 1);
+  const CMathObject * pObjectEnd = pObject + sizeReduced;
+
+  size_t i;
+
+  for (i = 0; pObject != pObjectEnd; ++pObject, ++i)
+    {
+      const CDataObject * pDatabject = pObject->getDataObject()->getObjectParent();
+
+      mpJacobianAnn->setAnnotation(0, i, pDatabject);
+      mpJacobianAnn->setAnnotation(1, i, pDatabject);
+
+      mpJacobianAnnRed->setAnnotation(0, i, pDatabject);
+      mpJacobianAnnRed->setAnnotation(1, i, pDatabject);
+    }
+
+  pObjectEnd += size - sizeReduced;
+
+  for (; pObject != pObjectEnd; ++pObject, ++i)
+    {
+      const CDataObject * pDataObject = pObject->getDataObject()->getObjectParent();
+
+      mpJacobianAnn->setAnnotation(0, i, pDataObject);
+      mpJacobianAnn->setAnnotation(1, i, pDataObject);
+    }
+}
+
 CMathContainer & CModel::getMathContainer() const
 {return *mpMathContainer;}
 
@@ -3703,4 +3774,43 @@ std::map< std::string, CUnit > CModel::getUsedUnits() const
   UsedUnits[mQuantityUnit] = CUnit(mQuantityUnit);
 
   return UsedUnits;
+}
+
+void CModel::updateJacobian(bool reducedModel, double derivationFactor)
+{
+  try
+    {
+      // need to compile at this point otherwise elements might not be valid anymore
+      compileIfNecessary(NULL);
+
+      updateJacobianAnnotation();
+
+      CMathContainer & container = getMathContainer();
+
+      if (!reducedModel)
+        {
+          container.calculateJacobian(mJacobian, derivationFactor, reducedModel);
+        }
+      else
+        {
+          container.calculateJacobian(mJacobianRed, derivationFactor, reducedModel);
+        }
+    }
+  catch (...)
+    {
+      // jacobian couldn't be calculated
+    }
+}
+
+const CDataArray & CModel::getJacobianAnnotation(bool reducedModel, double derivationFactor)
+{
+  updateJacobian(reducedModel, derivationFactor);
+  if (reducedModel)
+    {
+      return *mpJacobianAnnRed;
+    }
+  else
+    {
+      return *mpJacobianAnn;
+    }
 }
