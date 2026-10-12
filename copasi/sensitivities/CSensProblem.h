@@ -152,6 +152,16 @@ public:
    */
   CTaskEnum::Task getSubTaskType() const;
 
+  /**
+   * retrieve the old sub task type. This is used for backward compatibility with old files.
+   */
+  SubtaskType getOldSubTaskType() const;
+
+  /**
+   * set the old sub task type. This is used for backward compatibility with old files.
+   */
+  void setOldSubTaskType(SubtaskType oldType);
+
   CSensItem getTargetFunctions() const;
   void setTargetFunctions(const CSensItem item);
 

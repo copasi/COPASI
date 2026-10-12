@@ -314,6 +314,18 @@ CTaskEnum::Task CSensProblem::getSubTaskType() const
     return CTaskEnum::Task::UnsetTask;
 }
 
+CSensProblem::SubtaskType CSensProblem::getOldSubTaskType() const
+{
+  if (mpSubTaskType)
+    return *mpSubTaskType;
+  return SubtaskType::SteadyState;
+}
+
+void CSensProblem::setOldSubTaskType(SubtaskType oldType)
+{
+  *mpSubTaskType = oldType;
+}
+
 CSensItem CSensProblem::getTargetFunctions() const
 {
   CSensItem ret;
