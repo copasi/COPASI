@@ -410,7 +410,6 @@ size_t INVALID_INDEX();
 typedef CDataVector<CUnitDefinition> CUnitDefinitionVector;
 %template(CUnitDefinitionVectorN) CDataVectorN<CUnitDefinition>;
 typedef CDataVectorN<CUnitDefinition> CUnitDefinitionVectorN;
-%template(CUnitStdVector) std::vector< CUnit >;
 typedef std::vector< CUnit > CUnitStdVector;
 
 %{

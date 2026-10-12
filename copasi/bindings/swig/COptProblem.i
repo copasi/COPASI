@@ -58,7 +58,5 @@ typedef std::vector<COptItem*> OptItemStdVector;
 //%ignore COptProblem::setCallBack;
 %ignore COptProblem::getCalculateVariableUpdateMethods;
 
-%template(FloatCVector) CVector<C_FLOAT64>;
-
 %include "optimization/COptProblem.h"
 

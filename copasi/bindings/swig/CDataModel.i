@@ -110,6 +110,8 @@ typedef CDataVector<CSlider> SliderVector;
 %include "copasi/sedml/CSEDMLExporter.h"
 %include "copasi/sedml/SEDMLUtils.h"
 %include "copasi/sedml/SedmlImportOptions.h"
+%ignore CSlider::TypeName;
+%ignore CSlider::ScaleName;
 %include "copasi/utilities/CSlider.h"
 
 %rename(newModel) CDataModel::newModel;
