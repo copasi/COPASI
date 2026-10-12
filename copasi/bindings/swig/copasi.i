@@ -97,6 +97,11 @@ size_t INVALID_INDEX() {
 
 %ignore DebugFile;
 
+// CCore.h includes CEnumAnnotation.h, so this has to be ignored before that parse.
+%ignore CEnumAnnotation::operator[];
+%ignore CEnumAnnotationInstance::operator[];
+%ignore CEnumAnnotationSubset::operator[];
+
 %include "copasi.h"
 %include CCore.i
 
@@ -120,7 +125,6 @@ size_t INVALID_INDEX();
 
 %include <copasi/undo/CUndoObjectInterface.h>
 
-%include "CEnumAnnotation.i"
 %include "CTaskEnum.i"
 %include "CDataValue.i"
 %include "CData.i"
@@ -496,4 +500,7 @@ typedef std::vector< CReactionResult > CReactionResultStdVector;
 
 %template(CFluxModeStdVector) std::vector<CFluxMode>;
 typedef std::vector<CFluxMode> CFluxModeStdVector;
+
+// Enum types above are parsed by now.
+%include "CEnumAnnotation.i"
 
