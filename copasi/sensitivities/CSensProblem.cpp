@@ -262,7 +262,7 @@ void CSensProblem::initObjects()
 
 void CSensProblem::initializeParameter()
 {
-  mpSubTaskType = (CTaskEnum::Task *) assertParameter("SubtaskType", CCopasiParameter::Type::UINT, (unsigned C_INT32) CTaskEnum::Task::steadyState);
+  mpSubTaskType = (SubtaskType *) assertParameter("SubtaskType", CCopasiParameter::Type::UINT, (unsigned C_INT32) SubtaskType::SteadyState);
   mpTargetFunctions = assertGroup("TargetFunctions");
   mpVariablesGroup = assertGroup("ListOfVariables");
 
@@ -288,7 +288,7 @@ CCopasiTask * CSensProblem::getSubTask() const
       CDataVectorN< CCopasiTask >::iterator end = pDataModel->getTaskList()->end();
 
       for (; it != end; ++it)
-        if (it->getType() == *mpSubTaskType)
+        if (it->getType() == *Old2New.findByKey(*mpSubTaskType))
           return &*it;
     }
 
@@ -300,7 +300,7 @@ CCopasiTask * CSensProblem::getSubTask() const
  */
 void CSensProblem::setSubTaskType(const CTaskEnum::Task & type)
 {
-  *mpSubTaskType = ValidSubtask.toEnum(type);
+  *mpSubTaskType = *Old2New.findByValue(type);
 }
 
 /**
@@ -309,7 +309,7 @@ void CSensProblem::setSubTaskType(const CTaskEnum::Task & type)
 CTaskEnum::Task CSensProblem::getSubTaskType() const
 {
   if (mpSubTaskType)
-    return *mpSubTaskType;
+    return *Old2New.findByKey(*mpSubTaskType);
   else
     return CTaskEnum::Task::UnsetTask;
 }

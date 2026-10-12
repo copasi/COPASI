@@ -78,8 +78,25 @@ public:
   /**
    * this enumeration
    */
+  enum struct SubtaskType
+  {
+    Evaluation,
+    SteadyState,
+    TimeSeries,
+    ParameterEstimation,
+    Optimization,
+    CrossSection
+  };
 
 private:
+  constexpr static CBidirectionalMap Old2New{
+    MapNode{SubtaskType::Evaluation, CTaskEnum::Task::UnsetTask},
+    MapNode{SubtaskType::SteadyState, CTaskEnum::Task::steadyState},
+    MapNode{SubtaskType::TimeSeries, CTaskEnum::Task::timeCourse},
+    MapNode{SubtaskType::ParameterEstimation, CTaskEnum::Task::parameterFitting},
+    MapNode{SubtaskType::Optimization, CTaskEnum::Task::optimization},
+    MapNode{SubtaskType::CrossSection, CTaskEnum::Task::crosssection}};
+
   constexpr static CEnumAnnotationSubset _ValidSubtask{
     CTaskEnum::TaskName,
     CTaskEnum::Task::UnsetTask,
@@ -211,7 +228,7 @@ private:
    */
   void initDebugProblem();
 
-  CTaskEnum::Task * mpSubTaskType;
+  SubtaskType * mpSubTaskType;
 
   CCopasiParameterGroup * mpTargetFunctions;
 
