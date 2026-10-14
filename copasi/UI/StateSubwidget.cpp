@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -292,7 +292,7 @@ void StateSubwidget::loadJacobian()
 
       //time scales in 3rd col
       pItem = new QTableWidgetItem(QMetaType::Double);
-      pItem->setData(Qt::DisplayRole, 1 / eigen_r[i]);
+      pItem->setData(Qt::DisplayRole, 1 / fabs(eigen_r[i]));
 
       if (eigen_r[i] > 0)
         pItem->setBackground(QBrush(QColor(255, 200, 200)));
@@ -356,7 +356,7 @@ void StateSubwidget::loadJacobian()
 
       //time scales in 3rd col
       pItem = new QTableWidgetItem(QMetaType::Double);
-      pItem->setData(Qt::DisplayRole, 1 / eigen_rX[i]);
+      pItem->setData(Qt::DisplayRole, 1 / fabs(eigen_rX[i]));
 
       if (eigen_rX[i] > 0)
         pItem->setBackground(QBrush(QColor(255, 200, 200)));
