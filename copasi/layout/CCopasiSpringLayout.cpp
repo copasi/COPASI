@@ -972,7 +972,7 @@ void placeTextGlyphs(CLayout* pLayout)
  */
 void CCopasiSpringLayout::randomize()
 {
-  CConfigurableRNG RNG(CConfigurableRNG::Type::MersenneTwister);
+  static CConfigurableRNG RNG(CConfigurableRNG::Type::MersenneTwister);
 
   size_t i;
 
