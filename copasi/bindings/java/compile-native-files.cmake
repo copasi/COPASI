@@ -48,6 +48,8 @@ set (SWIG_ENUM_FIX_FILES
         "${BIN_DIRECTORY}/java-files/org/COPASI/COptMethod.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/COptItem.java"
         "${BIN_DIRECTORY}/java-files/org/COPASI/CConfigurableRNG.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CExpressionGenerator.java"
+        "${BIN_DIRECTORY}/java-files/org/COPASI/CSensProblem.java"
      )
 
 foreach(broken_file ${SWIG_ENUM_FIX_FILES})
