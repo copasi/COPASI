@@ -453,7 +453,7 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
       ppOrderedAmuEnd = mPartitionedAmu.array() + NonCriticalReactions;
 
       C_FLOAT64 **ppOrderedReactionFiring = mPartitionedReactionFiring.array();
-      std::poisson_distribution< size_t > poisson_dist;
+      poisson_distribution< size_t > poisson_dist;
 
       for (; ppOrderedAmu != ppOrderedAmuEnd; ++ppOrderedAmu, ++ppOrderedReactionFiring)
         {
@@ -464,7 +464,7 @@ C_FLOAT64 CTrajAdaptiveSA::doSingleTauLeapStep(const C_FLOAT64 & curTime, const 
           else if (Lambda > 2.0e9)
             CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 26);
 
-          **ppOrderedReactionFiring = poisson_dist(*mRNG, std::poisson_distribution< size_t >::param_type(Lambda));
+          **ppOrderedReactionFiring = poisson_dist(*mRNG, poisson_distribution< size_t >::param_type(Lambda));
         }
 
       size_t CriticalReactionIndex = C_INVALID_INDEX;

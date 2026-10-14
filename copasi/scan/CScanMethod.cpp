@@ -391,7 +391,7 @@ void CScanItemRandom::step()
             if (mMin < 0)
               CCopasiMessage(CCopasiMessage::WARNING, "Invalid ScanItem: Requested Poisson random variable for negative argument: %lf", mMin);
 
-            Value = std::poisson_distribution< size_t >(mMin)(mRNG);
+            Value = poisson_distribution< size_t >(mMin)(mRNG);
 
             break;
 

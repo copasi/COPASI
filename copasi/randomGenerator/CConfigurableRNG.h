@@ -75,3 +75,5 @@ private:
   Type mType;
   result_type mSeed;
 };
+
+#include "copasi/randomGenerator/CDistribution.h"

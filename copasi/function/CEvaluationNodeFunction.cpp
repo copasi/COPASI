@@ -57,7 +57,7 @@ C_FLOAT64 CEvaluationNodeFunction::rgamma(C_FLOAT64 shape,
 //static
 C_FLOAT64 CEvaluationNodeFunction::rpoisson(C_FLOAT64 mu)
 {
-  return std::poisson_distribution< size_t >(mu)(*mpRandom);
+  return poisson_distribution< size_t >(mu)(*mpRandom);
 }
 
 // static

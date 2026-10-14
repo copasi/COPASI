@@ -304,7 +304,7 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
   size_t * pK = mK.begin();
   size_t * pKEnd = mK.end();
 
-  std::poisson_distribution< size_t > PoissonDistribution;
+  poisson_distribution< size_t > PoissonDistribution;
 
   for (; pAmu != pAmuEnd; ++pAmu, ++pK)
     {
@@ -315,7 +315,7 @@ C_FLOAT64 CTauLeapMethod::doSingleStep(C_FLOAT64 ds)
       else if (Lambda > 2.0e9)
         CCopasiMessage(CCopasiMessage::EXCEPTION, MCTrajectoryMethod + 26);
 
-      *pK = PoissonDistribution(*mRNG, std::poisson_distribution< size_t >::param_type(Lambda));
+      *pK = PoissonDistribution(*mRNG, poisson_distribution< size_t >::param_type(Lambda));
     }
 
   std::uniform_int_distribution< unsigned short > UniformDistribution(0, 1);
