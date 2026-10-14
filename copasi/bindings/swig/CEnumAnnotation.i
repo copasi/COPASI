@@ -8,12 +8,26 @@
 #include "copasi/core/CEnumAnnotation.h"
 #include "copasi/utilities/CTaskEnum.h"
 #include "copasi/utilities/CExpressionGenerator.h"
+#include <vector>
+#include <string>
 %}
+
+// Tell SWIG to load the standard library types for all target languages
+%include "std_string.i"
+%include "std_vector.i"
+
+// Instantiate standard collection proxies so they are recognized by Java, C#, and Python
+%template(StringVector) std::vector< std::string >;
+%template(IntVector) std::vector< int >;
 
 // SWIG cannot wrap operator[]. Lookups go through getIntValue and getStrValue.
 %ignore CEnumAnnotation::operator[];
 %ignore CEnumAnnotationInstance::operator[];
 %ignore CEnumAnnotationSubset::operator[];
+
+// Ignore the original values() method returning std::string_view vectors 
+// to prevent code generation errors on unsupported types.
+%ignore CEnumAnnotation::values;
 
 // 4. Process the main header
 %include "copasi/core/CEnumAnnotation.h"
@@ -41,15 +55,14 @@
 
     return result;
   }
-}
 
-// add a typemap to convert std::vector< std::string_view > to std::vector< std::string >
-%typemap(out) std::vector< std::string_view > {
-  // $1 is a SwigValueWrapper named result. operator& yields the vector.
-  // Do not declare a local named result; it hides that wrapper.
-  const std::vector< std::string_view > & views = *(&$1);
-  std::vector< std::string > strings(views.begin(), views.end());
-  $result = swig::from(strings);
+  // CROSS-PLATFORM FIX: Do the string_view to string conversion directly inside C++
+  // SWIG will now automatically use the correct target language wrapper (StringVector)
+  std::vector< std::string > values() const
+  {
+    auto views = $self->values();
+    return std::vector< std::string >(views.begin(), views.end());
+  }
 }
 
 // Included from the end of copasi.i, after the enum types have been parsed.
