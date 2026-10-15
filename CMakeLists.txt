@@ -277,6 +277,8 @@ endif()
 
 option(ENABLE_JIT "Enable Just In Time compilation for math expressions" ${ENABLE_JIT_DEFAULT})
 
+option(ENABLE_LLVM "Enable LLVM based Just In Time compilation" OFF)
+
 # Java, C#, and Python bindings are configured before OpenMP so Linux can
 # prefer a shared libomp runtime when those bindings are enabled.
 option(ENABLE_CSHARP "Enable language bindings for the C# language." OFF)
@@ -430,6 +432,12 @@ if (ENABLE_JIT)
   find_package(CPUFEATURES REQUIRED)
   include_directories(BEFORE ${CPUFEATURE_INCLUDE_DIR})
 endif (ENABLE_JIT)
+
+if (ENABLE_LLVM)
+  find_package(LLVM REQUIRED CONFIG)
+  llvm_map_components_to_libnames(LLVM_LIBRARIES core mcjit native Core OrcJIT Support native)
+  set(USE_LLVM 1)
+endif (ENABLE_LLVM)
 
 if (ENABLE_OMP)
   set(USE_OMP 1)
@@ -1114,6 +1122,10 @@ message(STATUS "-----------------------------------------------------------
    OpenMP Libs          = ${OpenMP_C_LIB_NAMES}
    OpenMP CXX Flags     = ${OpenMP_CXX_FLAGS}
 
+   LLVM Libs            = ${LLVM_LIBRARIES}
+   LLVM include         = ${LLVM_INCLUDE_DIRS}
+   LLVM CXX Flags       = ${LLVM_DEFINITIONS}
+
  Options:
 
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
@@ -1129,6 +1141,7 @@ message(STATUS "-----------------------------------------------------------
    Analytics Task           = ${ENABLE_ANALYTICS}
    Time Sensitivities task  = ${ENABLE_TIME_SENS}
    JIT Compilation          = ${ENABLE_JIT}
+   LLVM JIT Compilation     = ${ENABLE_LLVM}
    OpenMP                   = ${ENABLE_OMP}
 
    CXX Flags                = ${CMAKE_CXX_FLAGS}
