@@ -89,6 +89,7 @@ TaskWidget::TaskWidget(QWidget * parent, const char * name, Qt::WindowFlags fl)
   setWindowTitle("TaskWidget");
 
   mpTaskThread = new CQTaskThread(this);
+  mpTaskThread->setStackSize(4 * 1024 * 1024);
 
   mpHeaderWidget = new CQTaskHeaderWidget(this);
   mpMethodWidget = new CQTaskMethodWidget(this);
