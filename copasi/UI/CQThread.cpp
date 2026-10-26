@@ -23,13 +23,21 @@ CQThread::CQThread():
   mpMethod(NULL)
 {
   COpenMPConfig::Apply();
+
+  // ensure we at least have a 1mb stack
+  if (stackSize() < 1024 * 1024 * 1)
+    setStackSize(1024 * 1024 * 1);
 }
 
 CQThread::CQThread(DataModelGUI * pClass, void (DataModelGUI::*pMethod)()):
   QThread(),
   mpClass(pClass),
   mpMethod(pMethod)
-{}
+{
+  // ensure we at least have a 1mb stack
+  if (stackSize() < 1024 * 1024 * 1)
+    setStackSize(1024 * 1024 * 1);
+}
 
 CQThread::~CQThread()
 {}
