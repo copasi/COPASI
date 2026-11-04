@@ -48,7 +48,7 @@ static inline double round(double value)
 
 #include "copasi/function/CEvaluationNode.h"
 
-class CRandom;
+class CConfigurableRNG;
 class CDataModel;
 
 /**
@@ -318,7 +318,7 @@ private:
   const C_FLOAT64 * mpArgValue3;
   const C_FLOAT64 * mpArgValue4;
 
-  static CRandom * mpRandom;
+  static CConfigurableRNG * mpRandom;
 };
 
 #endif // COPASI_CEvaluationNodeFunction

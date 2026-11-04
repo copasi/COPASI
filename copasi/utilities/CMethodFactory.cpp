@@ -73,7 +73,7 @@ CCopasiMethod * CMethodFactory::create(const CTaskEnum::Task & taskType,
     pTask = CTaskFactory::create(taskType, NULL);
 
   if (pTask == NULL
-      || !pTask->isValidMethod(methodType, pTask->getValidMethods()))
+      || !pTask->getValidMethods().isValid(methodType))
     return NULL;
 
   CCopasiMethod * pMethod = NULL;
@@ -271,7 +271,6 @@ CCopasiMethod * CMethodFactory::create(const CTaskEnum::Task & taskType,
       case CTaskEnum::Method::HybridGASA:
       case CTaskEnum::Method::LSODA2:
       case CTaskEnum::Method::analyticsMethod:
-      case CTaskEnum::Method::__SIZE:
         break;
     }
 
@@ -486,7 +485,6 @@ CCopasiMethod * CMethodFactory::copy(const CCopasiMethod * pSrc, const CDataCont
       case CTaskEnum::Method::HybridGASA:
       case CTaskEnum::Method::LSODA2:
       case CTaskEnum::Method::analyticsMethod:
-      case CTaskEnum::Method::__SIZE:
         break;
     }
 

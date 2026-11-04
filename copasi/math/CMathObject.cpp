@@ -714,7 +714,6 @@ bool CMathObject::compile(CMathContainer & container)
       case CMath::ValueType::EventRootState:
       case CMath::ValueType::DelayValue:
       case CMath::ValueType::DelayLag:
-      case CMath::ValueType::__SIZE:
         // These objects are compiled through the event compile,
         // which is executed after the object compile. It is therefore
         // correct to leave the object in its default state.
@@ -799,9 +798,6 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
           case CMath::SimulationType::Undefined:
             success = false;
             break;
-
-          case CMath::SimulationType::__SIZE:
-            break;
         }
     }
   else
@@ -836,9 +832,6 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
           case CMath::SimulationType::Independent:
           case CMath::SimulationType::Dependent:
             success = false;
-            break;
-
-          case CMath::SimulationType::__SIZE:
             break;
         }
     }
@@ -899,9 +892,6 @@ bool CMathObject::compileValue(CMathContainer & container)
           case CMath::SimulationType::Dependent:
             success = false;
             break;
-
-          case CMath::SimulationType::__SIZE:
-            break;
         }
     }
   else
@@ -950,9 +940,6 @@ bool CMathObject::compileValue(CMathContainer & container)
           case CMath::SimulationType::Undefined:
             success = false;
             break;
-
-          case CMath::SimulationType::__SIZE:
-            break;
         }
     }
 
@@ -998,9 +985,6 @@ bool CMathObject::compileRate(CMathContainer & container)
           case CMath::SimulationType::Dependent:
           case CMath::SimulationType::Conversion:
             success = false;
-            break;
-
-          case CMath::SimulationType::__SIZE:
             break;
         }
     }
@@ -1049,9 +1033,6 @@ bool CMathObject::compileRate(CMathContainer & container)
           case CMath::SimulationType::EventTarget:
           case CMath::SimulationType::Conversion:
             success = false;
-            break;
-
-          case CMath::SimulationType::__SIZE:
             break;
         }
     }
@@ -1184,9 +1165,6 @@ bool CMathObject::compileNoise(CMathContainer & container)
           case CMath::SimulationType::Conversion:
             success = false;
             break;
-
-          case CMath::SimulationType::__SIZE:
-            break;
         }
     }
   else
@@ -1234,9 +1212,6 @@ bool CMathObject::compileNoise(CMathContainer & container)
           case CMath::SimulationType::EventTarget:
           case CMath::SimulationType::Conversion:
             success = false;
-            break;
-
-          case CMath::SimulationType::__SIZE:
             break;
         }
     }
@@ -2339,10 +2314,6 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
       case CMath::ValueType::TransitionTime:
         os << "TransitionTime" << "\n";
         break;
-
-      case CMath::ValueType::__SIZE:
-        os << "***ENUM RANGE" << "\n";
-        break;
     }
 
   os << "  Simulation Type:        ";
@@ -2383,10 +2354,6 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 
       case CMath::SimulationType::Conversion:
         os << "Conversion" << "\n";
-        break;
-
-      case CMath::SimulationType::__SIZE:
-        os << "***ENUM RANGE" << "\n";
         break;
     };
 
@@ -2440,10 +2407,6 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 
       case CMath::EntityType::Delay:
         os << "Delay" << "\n";
-        break;
-
-      case CMath::EntityType::__SIZE:
-        os << "***ENUM RANGE" << "\n";
         break;
     };
 

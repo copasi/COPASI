@@ -85,3 +85,6 @@ TestSuite/distribution/out.txt
 .~lock*
 
 tests/opt.cps
+
+copasi/randomGenerator/LowDiscrepancySequences/
+/tests/test*_Data_set_*.txt

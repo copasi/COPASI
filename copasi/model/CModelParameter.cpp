@@ -34,30 +34,6 @@
 #include "copasi/core/CDataString.h"
 
 // static
-const CEnumAnnotation< std::string, CModelParameter::Type > CModelParameter::TypeNames(
-{
-  "Model",
-  "Compartment",
-  "Species",
-  "ModelValue",
-  "ReactionParameter",
-  "Reaction",
-  "Group",
-  "Set",
-  "unknown"
-});
-
-// static
-const CEnumAnnotation< std::string, CModelParameter::CompareResult > CModelParameter::CompareResultNames(
-{
-  "Obsolete",
-  "Missing",
-  "Modified",
-  "Conflict",
-  "Identical"
-});
-
-// static
 CModelParameter * CModelParameter::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   CModelParameter * pModelParameter = NULL;

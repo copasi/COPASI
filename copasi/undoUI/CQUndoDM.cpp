@@ -168,7 +168,6 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
                 case CDataValue::Type::DATA_VECTOR:
                 case CDataValue::Type::VOID_POINTER:
                 case CDataValue::Type::INVALID:
-                case CDataValue::Type::__SIZE:
                   break;
               }
           }
@@ -213,7 +212,6 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
                     case CDataValue::Type::DATA_VECTOR:
                     case CDataValue::Type::VOID_POINTER:
                     case CDataValue::Type::INVALID:
-                    case CDataValue::Type::__SIZE:
                       break;
                   }
               }
@@ -258,7 +256,6 @@ QVariant CQUndoDM::displayData(const QModelIndex &index) const
                     case CDataValue::Type::DATA_VECTOR:
                     case CDataValue::Type::VOID_POINTER:
                     case CDataValue::Type::INVALID:
-                    case CDataValue::Type::__SIZE:
                       break;
                   }
               }

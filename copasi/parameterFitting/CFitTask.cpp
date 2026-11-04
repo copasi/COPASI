@@ -39,31 +39,6 @@
 #include "copasi/utilities/CCopasiMethod.h"
 #include "copasi/utilities/CMethodFactory.h"
 
-const CTaskEnum::Method CFitTask::ValidMethods[]  =
-{
-  CTaskEnum::Method::Statistics,
-#ifdef COPASI_DEBUG
-  CTaskEnum::Method::CoranaWalk,
-#endif // COPASI_DEBUG
-  CTaskEnum::Method::DifferentialEvolution,
-  CTaskEnum::Method::SRES,
-  CTaskEnum::Method::EvolutionaryProgram,
-  CTaskEnum::Method::GeneticAlgorithm,
-  CTaskEnum::Method::GeneticAlgorithmSR,
-  CTaskEnum::Method::HookeJeeves,
-  CTaskEnum::Method::LevenbergMarquardt,
-  CTaskEnum::Method::NL2SOL,
-  CTaskEnum::Method::NelderMead,
-  CTaskEnum::Method::ParticleSwarm,
-  CTaskEnum::Method::Praxis,
-  CTaskEnum::Method::RandomSearch,
-  CTaskEnum::Method::ScatterSearch,
-  CTaskEnum::Method::SimulatedAnnealing,
-  CTaskEnum::Method::SteepestDescent,
-  CTaskEnum::Method::TruncatedNewton,
-  CTaskEnum::Method::UnsetMethod
-};
-
 CFitTask::CFitTask(const CDataContainer * pParent,
                    const CTaskEnum::Task & type):
   COptTask(pParent, type)
@@ -146,7 +121,7 @@ void CFitTask::fixBuild55()
   return;
 }
 
-const CTaskEnum::Method * CFitTask::getValidMethods() const
+const CEnumAnnotation< CTaskEnum::Method, std::string_view > CFitTask::getValidMethods() const
 {
   return CFitTask::ValidMethods;
 }

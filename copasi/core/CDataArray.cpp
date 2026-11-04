@@ -532,7 +532,7 @@ CDataArray::name_index_type CDataArray::displayNamesToCN(const std::vector< std:
 
           if (ValidIndex)
             {
-              if (itCNs->empty())
+              if (itCNs->empty() || itCNs->size() <= index)
                 {
                   *to = *it;
                 }

@@ -83,7 +83,7 @@ class CMetab;
 class CTrajectoryProblem;
 class CVersion;
 class CMathReaction;
-class CRandom;
+class CConfigurableRNG;
 class CIndexedPriorityQueue;
 class CDependencyGraph;
 
@@ -445,7 +445,7 @@ protected:
   /**
    *   The random number generator.
    */
-  CRandom * mpRandomGenerator;
+  CConfigurableRNG * mRNG;
 
   /**
    *   The graph of reactions and their dependent reactions. When a reaction is

@@ -141,7 +141,7 @@ jobs:
     - name: Test
       working-directory: ${{github.workspace}}/build_copasi
       shell: bash
-      run: ctest -C $BUILD_TYPE -V
+      run: ctest -C $BUILD_TYPE -V  --output-on-failure
 
     - name: binary archive
       uses: actions/upload-artifact@v4

@@ -34,7 +34,7 @@
 class CModel;
 class CMetab;
 class CTrajectoryProblem;
-class CRandom;
+class CConfigurableRNG;
 class CMathReaction;
 class FDescent;
 
@@ -140,7 +140,7 @@ protected:
   /**
    * The random number generator
    */
-  CRandom *mpRandomGenerator;
+  CConfigurableRNG *mRNG;
 
   /**
    * The particle and reaction numbers

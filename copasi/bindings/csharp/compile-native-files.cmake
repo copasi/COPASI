@@ -79,6 +79,9 @@ set (SWIG_ENUM_FIX_FILES
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CPlotItem.cs"
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/COptMethod.cs"
         "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/COptItem.cs"
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CConfigurableRNG.cs"
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CExpressionGenerator.cs"
+        "${CMAKE_CURRENT_BINARY_DIR}/csharp-files/CSensProblem.cs"
     )
 
 

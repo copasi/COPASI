@@ -31,11 +31,25 @@ public:
     DATA_VALUES,
     DATA_VECTOR,
     VOID_POINTER,
-    INVALID,
-    __SIZE
+    INVALID
   };
 
-  static const CEnumAnnotation< std::string, Type > TypeName;
+private:
+  constexpr static CEnumAnnotationInstance _TypeName{
+    Type::STRING,
+    MapNode{Type::DOUBLE, "real"},
+    MapNode{Type::INT, "integer"},
+    MapNode{Type::UINT, "unsignedInteger"},
+    MapNode{Type::BOOL, "Boolean"},
+    MapNode{Type::STRING, "text"},
+    MapNode{Type::DATA, "data"},
+    MapNode{Type::DATA_VALUES, "dataValues"},
+    MapNode{Type::DATA_VECTOR, "dataVector"},
+    MapNode{Type::VOID_POINTER, "pointer"},
+    MapNode{Type::INVALID, "invalid"}};
+
+public:
+  constexpr static CEnumAnnotation< Type, std::string_view > TypeName{_TypeName};
 
   friend std::ostream & operator << (std::ostream & os, const CDataValue & o);
   friend std::istream & operator >> (std::istream & is, CDataValue & i);

@@ -141,17 +141,6 @@ std::vector< CDataObject * > CSensItem::getVariablesPointerList(CDataModel * pDa
 
 //************************ CSensProblem ***************************
 
-// static
-const CEnumAnnotation< CTaskEnum::Task, CSensProblem::SubTaskType > CSensProblem::SubTaskTypeToTask(
-{
-  CTaskEnum::Task::UnsetTask, // Evaluation
-  CTaskEnum::Task::steadyState, // SteadyState
-  CTaskEnum::Task::timeCourse, // TimeSeries
-  CTaskEnum::Task::parameterFitting, // ParameterEstimation
-  CTaskEnum::Task::optimization, // Optimization
-  CTaskEnum::Task::crosssection //  CrossSection
-});
-
 //static
 void CSensProblem::createParametersInGroup(CCopasiParameterGroup * pg)
 {
@@ -273,7 +262,7 @@ void CSensProblem::initObjects()
 
 void CSensProblem::initializeParameter()
 {
-  mpSubTaskType = (CSensProblem::SubTaskType *) assertParameter("SubtaskType", CCopasiParameter::Type::UINT, (unsigned C_INT32) SteadyState);
+  mpSubTaskType = (SubtaskType *) assertParameter("SubtaskType", CCopasiParameter::Type::UINT, (unsigned C_INT32) SubtaskType::SteadyState);
   mpTargetFunctions = assertGroup("TargetFunctions");
   mpVariablesGroup = assertGroup("ListOfVariables");
 
@@ -299,7 +288,7 @@ CCopasiTask * CSensProblem::getSubTask() const
       CDataVectorN< CCopasiTask >::iterator end = pDataModel->getTaskList()->end();
 
       for (; it != end; ++it)
-        if (it->getType() == SubTaskTypeToTask[*mpSubTaskType])
+        if (it->getType() == *Old2New.findByKey(*mpSubTaskType))
           return &*it;
     }
 
@@ -309,20 +298,32 @@ CCopasiTask * CSensProblem::getSubTask() const
 /**
  *   set the problem's SubTaskType:
  */
-void CSensProblem::setSubTaskType(const CSensProblem::SubTaskType & type)
+void CSensProblem::setSubTaskType(const CTaskEnum::Task & type)
 {
-  *mpSubTaskType = type;
+  *mpSubTaskType = *Old2New.findByValue(type);
 }
 
 /**
  *   get the problem's SubTaskType:
  **/
-CSensProblem::SubTaskType CSensProblem::getSubTaskType() const
+CTaskEnum::Task CSensProblem::getSubTaskType() const
+{
+  if (mpSubTaskType)
+    return *Old2New.findByKey(*mpSubTaskType);
+  else
+    return CTaskEnum::Task::UnsetTask;
+}
+
+CSensProblem::SubtaskType CSensProblem::getOldSubTaskType() const
 {
   if (mpSubTaskType)
     return *mpSubTaskType;
-  else
-    return CSensProblem::Evaluation;
+  return SubtaskType::SteadyState;
+}
+
+void CSensProblem::setOldSubTaskType(SubtaskType oldType)
+{
+  *mpSubTaskType = oldType;
 }
 
 CSensItem CSensProblem::getTargetFunctions() const
@@ -468,7 +469,7 @@ bool CSensProblem::collapsRequested() const
 
 //static
 std::vector< CObjectLists::ListType >
-CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
+CSensProblem::getPossibleTargetFunctions(CTaskEnum::Task type)
 {
   std::vector< CObjectLists::ListType > list;
 
@@ -479,7 +480,7 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
   //   getTargetFunctionName()
   switch (type)
     {
-      case (CSensProblem::Evaluation):
+      case (CTaskEnum::Task::UnsetTask):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::REACTION_CONC_FLUXES);
         list.push_back(CObjectLists::REACTION_PART_FLUXES);
@@ -488,7 +489,7 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
         list.push_back(CObjectLists::GLOBAL_PARAMETER_RATES);
         break;
 
-      case (CSensProblem::SteadyState):
+      case (CTaskEnum::Task::steadyState):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_VARIABLES);
         list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
@@ -502,7 +503,7 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
         list.push_back(CObjectLists::REDUCED_JACOBIAN_EV_IM);
         break;
 
-      case (CSensProblem::TimeSeries):
+      case (CTaskEnum::Task::timeCourse):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_VARIABLES);
         list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
@@ -515,9 +516,9 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
         //TODO all model variables
         break;
 
-      case (CSensProblem::ParameterEstimation):
-      case (CSensProblem::Optimization):
-      case (CSensProblem::CrossSection):
+      case (CTaskEnum::Task::parameterFitting):
+      case (CTaskEnum::Task::optimization):
+      case (CTaskEnum::Task::crosssection):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         break;
 
@@ -528,9 +529,6 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
                   list.push_back(CObjectLists::REACTION_CONC_FLUXES);
                   list.push_back(CObjectLists::NON_CONST_METAB_PART_RATES);
             break;*/
-
-      case __SIZE:
-        break;
     }
 
   return list;
@@ -538,7 +536,7 @@ CSensProblem::getPossibleTargetFunctions(CSensProblem::SubTaskType type)
 
 //static
 std::vector< CObjectLists::ListType >
-CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
+CSensProblem::getPossibleVariables(CTaskEnum::Task type)
 {
   std::vector< CObjectLists::ListType > list;
 
@@ -550,7 +548,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
   //   getVariableName()
   switch (type)
     {
-      case (Evaluation):
+      case (CTaskEnum::Task::UnsetTask):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::NON_CONST_METAB_CONCENTRATIONS);
         list.push_back(CObjectLists::METAB_CONCENTRATIONS);
@@ -561,7 +559,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
         list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
         break;
 
-      case (SteadyState):
+      case (CTaskEnum::Task::steadyState):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
         list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
@@ -569,7 +567,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
         //TODO all const values, all model parameters
         break;
 
-      case (TimeSeries):
+      case (CTaskEnum::Task::timeCourse):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
         list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
@@ -578,8 +576,8 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
         //TODO all const values, all model parameters, all initial values
         break;
 
-      case (CSensProblem::ParameterEstimation):
-      case (CSensProblem::Optimization):
+      case (CTaskEnum::Task::parameterFitting):
+      case (CTaskEnum::Task::optimization):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
         list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
@@ -587,7 +585,7 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
         list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
         break;
 
-      case (CSensProblem::CrossSection):
+      case (CTaskEnum::Task::crosssection):
         list.push_back(CObjectLists::SINGLE_OBJECT);
         list.push_back(CObjectLists::ALL_LOCAL_PARAMETER_VALUES);
         list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
@@ -603,9 +601,6 @@ CSensProblem::getPossibleVariables(CSensProblem::SubTaskType type)
                   list.push_back(CObjectLists::ALL_PARAMETER_VALUES);
                   list.push_back(CObjectLists::ALL_PARAMETER_AND_INITIAL_VALUES);
             break;*/
-
-      case __SIZE:
-        break;
     }
 
   return list;
@@ -662,7 +657,7 @@ std::ostream & operator<<(std::ostream & os, const CSensProblem & o)
      << "\n";
 
   os << "Calculation to perform: "
-     << CTaskEnum::TaskName[CSensProblem::SubTaskTypeToTask[o.getSubTaskType()]] << "\n"
+     << CTaskEnum::TaskName[o.getSubTaskType()] << "\n"
      << "\n";
 
   size_t i, imax = o.getNumberOfVariables();

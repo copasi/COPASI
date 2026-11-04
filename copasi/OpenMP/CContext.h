@@ -7,7 +7,7 @@
 #define COPASI_CCONTEXT
 
 #include <string>
-#include "copasi/config.h"
+#include "copasi/core/CCore.h"
 
 #ifdef USE_MPI
 #include <mpi.h>

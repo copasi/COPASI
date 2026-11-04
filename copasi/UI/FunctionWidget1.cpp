@@ -186,9 +186,6 @@ bool FunctionWidget1::loadParameterTable()
             Variables[2].push_back(Time);
             Variables[3].push_back(Time);
             break;
-
-          case CFunctionParameter::Role::__SIZE:
-            break;
         }
     }
 

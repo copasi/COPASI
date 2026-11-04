@@ -389,7 +389,6 @@ QVariant CQParameterOverviewDM::diffData(const CModelParameter * pNode, int role
               break;
 
             case CModelParameter::CompareResult::Identical:
-            case CModelParameter::CompareResult::__SIZE:
               return QVariant();
               break;
           }
@@ -423,9 +422,6 @@ QVariant CQParameterOverviewDM::diffData(const CModelParameter * pNode, int role
 
             case CModelParameter::CompareResult::Identical:
               return QVariant(QString("The item's value is identical with the current model."));
-              break;
-
-            case CModelParameter::CompareResult::__SIZE:
               break;
           }
 

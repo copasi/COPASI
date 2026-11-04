@@ -30,7 +30,6 @@
 #define COPASI_CRandomSearch
 
 #include "copasi/optimization/COptMethod.h"
-#include "copasi/randomGenerator/CRandom.h"
 #include "copasi/core/CVector.h"
 
 //class CRandom;
@@ -87,11 +86,6 @@ private:
    * array of values of objective function f/ individuals
    */
   C_FLOAT64 mValue;
-
-  /**
-   * a pointer to the randomnumber generator.
-   */
-  CRandom * mpRandom {NULL};
 
   /**
    * *** Perhaps this is actually not needed ****number of parameters

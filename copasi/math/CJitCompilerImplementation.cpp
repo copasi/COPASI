@@ -219,7 +219,6 @@ CJitCompilerImplementation::Function CJitCompilerImplementation::compile(const C
                   case CEvaluationNode::MainType::STRUCTURE:
                   case CEvaluationNode::MainType::UNIT:
                   case CEvaluationNode::MainType::INVALID:
-                  case CEvaluationNode::MainType::__SIZE:
                     pNode = NULL;
                     break;
                 }

@@ -31,7 +31,7 @@
 #define SSA_UPPER_NUM 100
 
 class CTrajectoryProblem;
-class CRandom;
+class CConfigurableRNG;
 class CMathReaction;
 
 class CTrajAdaptiveSA : public CTrajectoryMethod
@@ -181,7 +181,7 @@ protected:
   /**
    * The random number generator
    */
-  CRandom *mpRandomGenerator;
+  CConfigurableRNG *mRNG;
 
   /**
    * The particle and reaction numbers

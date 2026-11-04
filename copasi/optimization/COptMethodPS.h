@@ -33,7 +33,7 @@
 #include "copasi/core/CVector.h"
 #include "copasi/optimization/COptPopulationMethod.h"
 
-class CRandom;
+class CConfigurableRNG;
 class CPermutation;
 
 class COptMethodPS : public COptPopulationMethod
@@ -79,7 +79,7 @@ public:
   unsigned C_INT32 getMaxLogVerbosity() const override;
 
 protected:
-  void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom) override;
+  void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG & rng) override;
 
 private:
   /**

@@ -206,9 +206,6 @@ void CQSpeciesDetail::setFramework(int framework)
         mpEditCurrentValue->setText(convertToQString(mpMetab->getValue()));
         mpEditRate->setText(convertToQString(mpMetab->getRate()));
         break;
-
-      case CCore::Framework::__SIZE:
-        break;
     }
 }
 
@@ -553,9 +550,6 @@ void CQSpeciesDetail::slotCompartmentChanged(int compartment)
       case CCore::Framework::ParticleNumbers:
         mInitialConcentration = CMetab::convertToConcentration(mInitialNumber, *pNewCompartment);
         break;
-
-      case CCore::Framework::__SIZE:
-        break;
     }
 
   mpCurrentCompartment = pNewCompartment;
@@ -627,9 +621,6 @@ void CQSpeciesDetail::slotInitialValueLostFocus()
 
         mInitialNumber = mpEditInitialValue->text().toDouble();
         mInitialConcentration = CMetab::convertToConcentration(mInitialNumber, *mpCurrentCompartment);
-        break;
-
-      case CCore::Framework::__SIZE:
         break;
     }
 }

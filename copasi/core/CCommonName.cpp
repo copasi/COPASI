@@ -280,17 +280,24 @@ const CObjectInterface * CCommonName::resolve(const CDataObject *  pContainer) c
       if (mpCN->find("CN=Root") == std::string::npos
           && mpComponent->isValid())
         {
-          CCommonName FullCN = CCommonNameComponent::append(pContainer->getCN(), *mpCN);
-          const CObjectInterface * pObject = FullCN.resolve(pContainer);
-
-          if (pObject != nullptr)
+          if (!mpComponent->isVectorElement()
+              || (pContainer->hasFlag(CDataObject::Vector)
+                  || pContainer->hasFlag(CDataObject::NameVector)
+                  || pContainer->hasFlag(CDataObject::Array)
+                  || pContainer->hasFlag(CDataObject::Matrix)))
             {
-              mpComponent = pObject->getCNComponent();
-              mpCN = mpComponent->getCN();
+              CCommonName FullCN = CCommonNameComponent::append(pContainer->getCN(), *mpCN);
+              const CObjectInterface * pObject = FullCN.resolve(pContainer);
 
-              return pObject;
+              if (pObject != nullptr)
+                {
+                  mpComponent = pObject->getCNComponent();
+                  mpCN = mpComponent->getCN();
+
+                  return pObject;
+                }
             }
-          }
+        }
 
       return nullptr;
     }

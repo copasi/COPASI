@@ -45,11 +45,18 @@ public:
   {
     DistanceAndRate,
     Distance,
-    Rate,
-    __SIZE
+    Rate
   };
 
-  static const CEnumAnnotation< std::string, eTargetCriterion > TargetCriterion;
+private:
+  constexpr static CEnumAnnotationInstance _TargetCriterion{
+    eTargetCriterion::DistanceAndRate,
+    MapNode{eTargetCriterion::DistanceAndRate, "Distance and Rate"},
+    MapNode{eTargetCriterion::Distance, "Distance"},
+    MapNode{eTargetCriterion::Rate, "Rate"}};
+
+public:
+  constexpr static CEnumAnnotation< eTargetCriterion, std::string_view > TargetCriterion{_TargetCriterion};
 
   // Attributes
 private:

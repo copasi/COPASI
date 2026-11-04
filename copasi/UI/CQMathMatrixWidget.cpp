@@ -376,7 +376,7 @@ void CQMathMatrixWidget::calculateJacobian(CMatrix< C_FLOAT64 >& matrix,
 
       //time scales in 3rd col
       pItem = new QTableWidgetItem(QMetaType::Double);
-      pItem->setData(Qt::DisplayRole, 1 / eigen_r[i]);
+      pItem->setData(Qt::DisplayRole, 1 / fabs(eigen_r[i]));
 
       if (eigen_r[i] > 0)
         pItem->setBackground(QBrush(QColor(255, 200, 200)));

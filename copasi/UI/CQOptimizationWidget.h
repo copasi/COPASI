@@ -58,7 +58,6 @@ protected:
   QColor mSavedColor;
   bool mTypeChanged;
 
-  std::map< std::string, size_t > mSubtaskMap;
   size_t mnParamterSetsBeforeRun;
 
   bool saveTaskProtected() override;

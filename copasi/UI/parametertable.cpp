@@ -231,9 +231,6 @@ void ParameterTable::updateTable(CReactionInterface & ri, CReaction * pReaction)
           case CFunctionParameter::Role::TIME:
             Variables.push_back(ri.getUnit(i));
             break;
-
-          case CFunctionParameter::Role::__SIZE:
-            break;
         }
     }
 

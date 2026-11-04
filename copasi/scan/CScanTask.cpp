@@ -210,15 +210,9 @@ bool CScanTask::process(const bool & useInitialValues)
 }
 
 // virtual
-const CTaskEnum::Method * CScanTask::getValidMethods() const
+const CEnumAnnotation< CTaskEnum::Method, std::string_view > CScanTask::getValidMethods() const
 {
-  static const CTaskEnum::Method ValidMethods[] =
-  {
-    CTaskEnum::Method::scanMethod,
-    CTaskEnum::Method::UnsetMethod
-  };
-
-  return ValidMethods;
+  return CScanTask::ValidMethods;
 }
 
 bool CScanTask::processCallback()

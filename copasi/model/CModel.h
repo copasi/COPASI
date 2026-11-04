@@ -63,16 +63,24 @@ public:
   enum struct ModelType
   {
     deterministic,
-    stochastic,
-    __SIZE
+    stochastic
   };
 
-  /**
-   * String representation of the valid model types.
-   */
-  static const CEnumAnnotation< std::string, ModelType > ModelTypeNames;
+private:
+  constexpr static CEnumAnnotationInstance _ModelTypeNames{
+    ModelType::deterministic,
+    MapNode{ModelType::deterministic, "deterministic"},
+    MapNode{ModelType::stochastic, "stochastic"}};
 
-  enum DependencyType {initial = 0, transient, physical};
+public:
+  constexpr static CEnumAnnotation< ModelType, std::string_view > ModelTypeNames{_ModelTypeNames};
+
+  enum DependencyType
+  {
+    initial = 0,
+    transient,
+    physical
+  };
 
   enum UnitType {volume = 0,
                  area,
@@ -1358,21 +1366,30 @@ private:
    */
   CMathContainer * mpMathContainer;
 
+  /**
+   * updates the labels of the Jacobian matrices
+   */
+  void updateJacobianAnnotation();
+
+  /**
+   * update the Jacobian of the model, either full or reduced, using finite differences
+   * @param reducedModel if true, update the reduced Jacobian, otherwise update the full Jacobian
+   * @param derivationFactor the factor used for finite difference approximation
+   */
+  void updateJacobian(bool reducedModel = false, double derivationFactor = 1e-6);
+
+  CMatrix< C_FLOAT64 > mJacobian;
+  CMatrix< C_FLOAT64 > mJacobianRed;
+  CDataArray * mpJacobianAnn;
+  CDataArray * mpJacobianAnnRed;
+
   // Operations
 public:
   /**
    * Retrieve the container of all mathematical objects
-   * @return const CMathContainer & mathContainer
-   */
-  const CMathContainer & getMathContainer() const;
-
-  /**
-   * Retrieve the container of all mathematical objects
    * @return CMathContainer & mathContainer
    */
-  CMathContainer & getMathContainer();
-
-  //bool prepareSymbolicJacobian();
+  CMathContainer & getMathContainer() const;
 
   CEvaluationNode* prepareElasticity(const CReaction * pReaction, const CModelEntity* pVar, bool simplify);
 
@@ -1381,6 +1398,14 @@ public:
   void changeUnitExpressionSymbols(std::string oldSymbol, std::string newSymbol);
 
   std::map< std::string, CUnit > getUsedUnits() const;
+
+  /**
+   * computes the Jacobian of the model from current state, either full or reduced, using finite differences
+   * @param reducedModel if true, get the reduced Jacobian, otherwise get the full Jacobian (default: false)
+   * @param derivationFactor the factor used for finite difference approximation (default: 1e-6)
+   * @return CDataArray & the Jacobian matrix
+   */
+  const CDataArray & getJacobianAnnotation(bool reducedModel = false, double derivationFactor = 1e-6);
 
   friend class CFunctionDB;
 };

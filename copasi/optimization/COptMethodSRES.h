@@ -28,7 +28,7 @@
 #include "copasi/core/CVector.h"
 #include "copasi/optimization/COptPopulationMethod.h"
 
-class CRandom;
+class CConfigurableRNG;
 
 /**
  * COptMethodSRES class
@@ -144,7 +144,7 @@ private:
   C_FLOAT64 phi(size_t indvNum);
 
 protected:
-  void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom) override;
+  void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG & rng) override;
 
   // Attributes
 private:

@@ -10,44 +10,14 @@ CRandomContext::CRandomContext(const bool & parallel)
 {}
 
 CRandomContext::~CRandomContext()
-{
-  CRandom * pRNG = Base::master();
+{}
 
-  if (pRNG != nullptr)
-    {
-      Base::setMaster(nullptr);
-      delete pRNG;
-    }
-
-  if (Base::size() > 1)
-    for (size_t i = 0; i < Base::size(); ++i)
-      delete Base::threadData()[i];
-}
-
-void  CRandomContext::init(CRandom::Type type, unsigned C_INT32 seed)
+void  CRandomContext::init(CConfigurableRNG::Type type, CConfigurableRNG::result_type seed)
 {
   Base::init();
+  Base::master().setType(type, seed);
 
-  if (Base::master() != nullptr)
-    {
-      if (Base::master()->getType() == type
-          && seed == 0)
-        return;
-
-      delete Base::master();
-      Base::master() = nullptr;
-
-      if (Base::size() > 1)
-        for (size_t i = 0; i < Base::size(); ++i)
-          delete Base::threadData()[i];
-    }
-
-  Base::setMaster(nullptr);
-
-  Base::master() = CRandom::createGenerator(type, seed);
-
-  // We must not parallelize this to ensure higher reproducibility.
   if (Base::size() > 1)
     for (size_t i = 0; i < Base::size(); ++i)
-      Base::threadData()[i] = CRandom::createGenerator(type, Base::master()->getRandomU());
+      Base::threadData()[i].setType(type, Base::master().operator()());
 }

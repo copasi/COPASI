@@ -1197,9 +1197,6 @@ void CFunctionAnalyzer::constructCallParameters(const CFunctionParameters & fp, 
           case CFunctionParameter::Role::TEMPORARY:
             callParameters[i] = posi ? CValue::positive : CValue::unknown;
             break;
-
-          case CFunctionParameter::Role::__SIZE:
-            break;
         }
     }
 }
@@ -1248,9 +1245,6 @@ void CFunctionAnalyzer::constructCallParametersActualValues(std::vector<CValue> 
           case CFunctionParameter::Role::VARIABLE:
           case CFunctionParameter::Role::TEMPORARY:
             callParameters[i] = CValue::unknown;
-            break;
-
-          case CFunctionParameter::Role::__SIZE:
             break;
         }
     }

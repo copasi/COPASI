@@ -15,21 +15,11 @@
 
 #include "copasi/copasi.h"
 
-#include "CPermutation.h"
-#include "CRandom.h"
+#include "copasi/randomGenerator/CPermutation.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
-// static
-size_t CPermutation::InvalidIndex(C_INVALID_INDEX);
-
-CPermutation::CPermutation() :
-  mpRandom(NULL),
-  mVector(),
-  mpNext(NULL),
-  mpBeyond(NULL)
-{};
-
-CPermutation::CPermutation(CRandom * pRandom, const size_t & size) :
-  mpRandom(pRandom),
+CPermutation::CPermutation(CConfigurableRNG & rng, const size_t & size) :
+  mpRNG(&rng),
   mVector(size),
   mpNext(NULL),
   mpBeyond(NULL)
@@ -38,7 +28,7 @@ CPermutation::CPermutation(CRandom * pRandom, const size_t & size) :
 };
 
 CPermutation::CPermutation(const CPermutation & src) :
-  mpRandom(src.mpRandom),
+  mpRNG(src.mpRNG),
   mVector(src.mVector),
   mpNext(NULL),
   mpBeyond(NULL)
@@ -56,39 +46,34 @@ CPermutation::~CPermutation()
 void CPermutation::init()
 {
   size_t Index = 0;
-  size_t * pIt = mVector.array();
-  size_t * pEnd = pIt + mVector.size();
 
-  for (; pIt != pEnd; ++pIt, ++Index)
-    {
-      *pIt = Index;
-    }
+  for (size_t & value : mVector)
+    value = Index++;
 
   if (Index != 0)
     {
-      mpNext = mVector.array();
-      mpBeyond = pEnd;
+      mpNext = mVector.begin();
+      mpBeyond = mVector.end();
     }
 }
 
-void CPermutation::shuffle(const size_t & swaps)
+void CPermutation::shuffle()
 {
-  if (mpRandom == NULL || mpNext == NULL) return;
+  if (mpRNG == NULL || mpNext == NULL) return;
 
   if (mVector.size() > 1)
     {
-      unsigned C_INT32 max = (unsigned C_INT32) mVector.size() - 1;
-      size_t Swaps = std::min(swaps, mVector.size());
-
       // We swap each element once.
-      size_t * pBegin = mVector.array();
-      size_t * pIt = pBegin;
-      size_t * pEnd = pIt + Swaps;
+      size_t * pBegin = mVector.begin();
+      size_t * pEnd = mVector.end();
+      size_t * pIt;
       size_t * pTo;
 
-      for (; pIt != pEnd; ++pIt)
+      std::uniform_int_distribution<size_t> dist(0, mVector.size() - 1);
+
+      for (pIt = pBegin; pIt != pEnd; ++pIt)
         {
-          pTo = pBegin + mpRandom->getRandomU(max);
+          pTo = pBegin + dist(*mpRNG);
 
           if (pTo != pIt)
             std::swap(*pIt, *pTo);
@@ -96,19 +81,43 @@ void CPermutation::shuffle(const size_t & swaps)
     }
 }
 
+void CPermutation::createUniquePermutation(std::set< const CPermutation * > & permutations)
+{
+  bool Found = false;
+  size_t Count = 0;
+
+  while (!Found
+         && Count < MaxCount)
+    {
+      ++Count;
+      shuffle();
+
+      for (const CPermutation * pPermutation : permutations)
+        {
+          if (mVector == pPermutation->mVector)
+            {
+              Found = false;
+              break;
+            }
+        }
+    }
+}
+
 const size_t & CPermutation::pick()
 {
-  if (mpRandom == NULL || mpNext == NULL) return InvalidIndex;
+  if (mpRNG == NULL || mpNext == NULL) return InvalidIndex;
+
+  std::uniform_int_distribution<size_t> dist(0, mVector.size() - 1);
 
   if (mVector.size() > 1)
-    mpNext = mVector.array() + mpRandom->getRandomU((unsigned C_INT32)mVector.size() - 1);
+    mpNext = mVector.array() + dist(*mpRNG);
 
   return *mpNext;
 }
 
 const size_t & CPermutation::next()
 {
-  if (mpRandom == NULL || mpNext == NULL) return InvalidIndex;
+  if (mpRNG == NULL || mpNext == NULL) return InvalidIndex;
 
   if (++mpNext >= mpBeyond)
     mpNext = mVector.array();

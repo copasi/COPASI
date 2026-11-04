@@ -39,7 +39,7 @@ public:
 
   void setTask(CCopasiTask * pTask);
 
-  void setValidMethods(const CTaskEnum::Method * validMethods);
+  void setValidMethods(const CEnumAnnotation< CTaskEnum::Method, std::string_view > & validMethods);
 
   bool loadMethod();
 

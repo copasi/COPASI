@@ -49,7 +49,7 @@
 #include "copasi/function/CEvaluationTree.h"
 #include "copasi/function/CFunction.h"
 
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/core/CDataTimer.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/utilities/CVersion.h"

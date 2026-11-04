@@ -31,9 +31,18 @@ public:
   {
     INSERT = 0,
     CHANGE,
-    REMOVE,
-    __SIZE
+    REMOVE
   };
+
+private:
+  constexpr static CEnumAnnotationInstance _TypeName{
+    Type::CHANGE,
+    MapNode{Type::INSERT, "Insert"},
+    MapNode{Type::CHANGE, "Change"},
+    MapNode{Type::REMOVE, "Remove"}};
+
+public:
+  constexpr static CEnumAnnotation< Type, std::string_view > TypeName{_TypeName};
 
   struct ChangeInfo
   {
@@ -73,8 +82,6 @@ public:
 
     std::map< std::string, size_t > mMap;
   };
-
-  static const CEnumAnnotation< std::string, Type > TypeName;
 
   static CUndoObjectInterface * getObject(const CDataModel & dataModel, const CData & data);
 

@@ -31,7 +31,7 @@
 
 class CTrajectoryProblem;
 class CMathReaction;
-class CRandom;
+class CConfigurableRNG;
 
 class CStochMethod : public CTrajectoryMethod
 {
@@ -151,7 +151,7 @@ protected:
   /**
    * The random number generator
    */
-  CRandom *mpRandomGenerator;
+  CConfigurableRNG *mRNG;
 
   /**
    * The sum of the propensities

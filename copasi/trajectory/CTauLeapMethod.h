@@ -32,7 +32,7 @@
 
 /* CLASSES *******************************************************************/
 class CTrajectoryProblem;
-class CRandom;
+class CConfigurableRNG;
 class CMathReaction;
 
 class CTauLeapMethod : public CTrajectoryMethod
@@ -166,7 +166,7 @@ protected:
    *   The k-values of the reactions, that is the
    *   probabilistic number of firings within one leap.
    */
-  CVector< C_FLOAT64 > mK;
+  CVector< size_t > mK;
 
   /**
    *   For tau-selection method
@@ -202,7 +202,7 @@ protected:
   /**
    *   The random number generator.
    */
-  CRandom * mpRandomGenerator;
+  CConfigurableRNG * mRNG;
 
   /**
    * index of first species in a CState

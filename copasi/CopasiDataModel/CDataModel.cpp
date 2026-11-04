@@ -81,15 +81,6 @@
 LIBCOMBINE_CPP_NAMESPACE_USE
 
 // static
-const CEnumAnnotation< std::string, CDataModel::ContentType >
-CDataModel::ContentTypeNames({"COPASI",
-                              "GEPASI",
-                              "SBML",
-                              "SED-ML",
-                              "OMEX"
-                             });
-
-// static
 CDataModel::ContentType CDataModel::contentType(std::istream & content)
 {
   std::string Line;
@@ -100,7 +91,7 @@ CDataModel::ContentType CDataModel::contentType(std::istream & content)
   content.seekg(0);
 
   if (content.fail())
-    return ContentType::__SIZE;
+    return ContentType::UNKNOWN;
 
   if (isZip == 0x04034b50)
     return ContentType::OMEX;
@@ -109,7 +100,7 @@ CDataModel::ContentType CDataModel::contentType(std::istream & content)
   ++LinesRead;
 
   if (content.fail())
-    return ContentType::__SIZE;
+    return ContentType::UNKNOWN;
 
   if (!Line.compare(0, 8, "Version="))
     {
@@ -125,10 +116,10 @@ CDataModel::ContentType CDataModel::contentType(std::istream & content)
           return ContentType::GEPASI;
         }
 
-      return ContentType::__SIZE;
+      return ContentType::UNKNOWN;
     }
 
-  while (LinesRead <= 10)
+  while (LinesRead <= 100)
     {
       if (Line.find("<sedML") != std::string::npos
           || Line.find(":sedML") != std::string::npos)
@@ -155,7 +146,7 @@ CDataModel::ContentType CDataModel::contentType(std::istream & content)
       ++LinesRead;
     }
 
-  return ContentType::__SIZE;
+  return ContentType::UNKNOWN;
 }
 
 CDataModel::CDataModel()
@@ -299,7 +290,7 @@ bool CDataModel::loadFromString(const std::string & content,
 
       break;
 
-      case ContentType::__SIZE:
+      case ContentType::UNKNOWN:
         CCopasiMessage Message(CCopasiMessage::ERROR,
                                "Content not supported for string '%s'.",
                                content.substr(0, 512).c_str());
@@ -385,7 +376,7 @@ bool CDataModel::loadFromFile(const std::string & fileName,
         success = openCombineArchive(FileName, pProcessReport, deleteOldData);
         break;
 
-      case ContentType::__SIZE:
+      case ContentType::UNKNOWN:
         CCopasiMessage Message(CCopasiMessage::ERROR,
                                "Content not supported for file '%s'.",
                                FileName.c_str());
@@ -3081,7 +3072,7 @@ CDataModel::CContent::CContent()
   , pCurrentSBMLDocument(NULL)
   , mpUndoStack(NULL)
   , mSaveFileName()
-  , mContentType(ContentType::__SIZE)
+  , mContentType(ContentType::UNKNOWN)
   , mChanged(false)
   , mAutoSaveNeeded(false)
   , mSBMLFileName("")
@@ -3369,7 +3360,7 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
               it->setMathContainer(&mData.pModel->getMathContainer());
             }
 
-          CCopasiMessage::clearDeque();
+          CCopasiMessage::popMessages(Size);
 
           // need initialize, so that all objects are created for the
           // object browser
@@ -3379,7 +3370,7 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
           // by the task, without updating the model
           it->restore(false);
 
-          CCopasiMessage::clearDeque();
+          CCopasiMessage::popMessages(Size);
         }
 
       catch (...)
@@ -3388,8 +3379,7 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
 
   // Remove error messages created by the task initialization as this may fail
   // due to incomplete task specification at this time.
-  while (CCopasiMessage::size() > Size)
-    CCopasiMessage::getLastMessage();
+  CCopasiMessage::popMessages(Size);
 
   if (mData.pModel)
     {

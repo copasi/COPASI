@@ -322,9 +322,6 @@ CReactionResult CModelAnalyzer::checkReaction(const CReaction* reaction)
             ret.mFunctionParametersVar.push_back(reaction->getFunctionParameters()[i]->getObjectName());
           }
           break;
-
-          case CFunctionParameter::Role::__SIZE:
-            break;
         }
     }
 

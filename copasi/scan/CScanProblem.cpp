@@ -36,15 +36,6 @@
 #include <copasi/utilities/CCopasiTask.h>
 #include <copasi/core/CDataVector.h>
 
-// static
-const CEnumAnnotation< std::string, CScanProblem::OutputType > CScanProblem::OutputTypeName(
-{
-  "none",
-  "subTaskBefore",
-  "subTaskDuring",
-  "subTaskAfter"
-});
-
 /**
  *  Default constructor.
  *  @param "CModel *" pModel

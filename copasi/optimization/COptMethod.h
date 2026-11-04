@@ -46,10 +46,12 @@
 #include "copasi/OpenMP/COpenMPConfig.h"
 #include "copasi/utilities/CCopasiMethod.h"
 #include "copasi/optimization/COptLog.h"
+#include "copasi/OpenMP/CRandomContext.h"
 
 class COptProblem;
 class COptItem;
 class COptTask;
+
 template < class CType > class CVector;
 
 // YOHE: this is an abstract class that contains many virtual functions
@@ -92,6 +94,11 @@ protected:
    * A thread specific problem
    */
   CProblemContext< COptProblem > mProblemContext;
+
+  /**
+   * a pointer to the random number generator.
+   */
+  CRandomContext  mRandomContext;
 
   /**
    * Define the current verbosity for the log

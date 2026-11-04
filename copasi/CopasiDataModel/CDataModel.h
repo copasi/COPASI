@@ -76,13 +76,21 @@ public:
     SBML,
     SEDML,
     OMEX,
-    __SIZE
+    UNKNOWN
   };
 
-  /**
-   * String representation of the valid model types.
-   */
-  static const CEnumAnnotation< std::string, ContentType > ContentTypeNames;
+private:
+  constexpr static CEnumAnnotationInstance _ContentTypeNames{
+    ContentType::UNKNOWN,
+    MapNode{ContentType::COPASI, "COPASI"},
+    MapNode{ContentType::GEPASI, "GEPASI"},
+    MapNode{ContentType::SBML, "SBML"},
+    MapNode{ContentType::SEDML, "SED-ML"},
+    MapNode{ContentType::OMEX, "OMEX"},
+    MapNode{ContentType::UNKNOWN, "UNKNOWN"}};
+
+public:
+  constexpr static CEnumAnnotation< ContentType, std::string_view > ContentTypeNames{_ContentTypeNames};
 
   /**
    * Determine the content type of the given content stream

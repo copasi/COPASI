@@ -113,7 +113,6 @@ QVariant getParameterValue(const CCopasiParameter * pParameter)
       }
 
       case CCopasiParameter::Type::INVALID:
-      case CCopasiParameter::Type::__SIZE:
         break;
     }
 
@@ -202,7 +201,6 @@ QList< QPair < QVariant, QVariant > > getParameterValidValues(const CCopasiParam
 
       case CCopasiParameter::Type::GROUP:
       case CCopasiParameter::Type::INVALID:
-      case CCopasiParameter::Type::__SIZE:
         break;
     }
 
@@ -246,7 +244,6 @@ bool setParameterValue(CCopasiParameter * pParameter,
 
       case CCopasiParameter::Type::GROUP:
       case CCopasiParameter::Type::INVALID:
-      case CCopasiParameter::Type::__SIZE:
         break;
     }
 

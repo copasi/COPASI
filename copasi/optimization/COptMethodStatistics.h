@@ -29,12 +29,11 @@
 #ifndef COPASI_COptMethodStatistics
 #define COPASI_COptMethodStatistics
 
-//class CRandom;
+#include "copasi/optimization/COptMethod.h"
+
 //*** need to be added for definition
 class COptProblem;
-class COptMethod;
 
-#include "copasi/randomGenerator/CRandom.h"
 #include "copasi/core/CVector.h"
 
 // YOHE: this is an abstract class that contains many virtual functions

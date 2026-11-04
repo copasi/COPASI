@@ -69,6 +69,7 @@
 #define SLOW_REACT                  -1
 
 class CMathReaction;
+class CConfigurableRNG;
 
 /**
  * A class to record whether a metab is slow or fast
@@ -425,7 +426,7 @@ private:
   /**
    * The random number generator.
    */
-  CRandom * mpRandomGenerator;
+  CConfigurableRNG * mRNG;
 
   //========System Related========
   /**

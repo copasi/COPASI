@@ -47,9 +47,6 @@ class CSteadyStateTask;
 
 class CTrajectoryTask : public CCopasiTask
 {
-public:
-  static const CTaskEnum::Method ValidMethods[];
-
 private:
   /**
    * Default constructor
@@ -57,6 +54,24 @@ private:
   CTrajectoryTask();
 
 public:
+  constexpr static CEnumAnnotationSubset ValidMethods{
+    CTaskEnum::MethodName,
+    CTaskEnum::Method::deterministic,
+    std::array{
+      CTaskEnum::Method::deterministic,
+      CTaskEnum::Method::RADAU5,
+      CTaskEnum::Method::stochastic,
+      CTaskEnum::Method::directMethod,
+      CTaskEnum::Method::tauLeap,
+      CTaskEnum::Method::adaptiveSA,
+      CTaskEnum::Method::hybrid,
+      CTaskEnum::Method::hybridLSODA,
+      CTaskEnum::Method::hybridODE45,
+#ifdef COPASI_DEBUG
+      CTaskEnum::Method::DsaLsodar,
+#endif // COPASI_DEBUG
+      CTaskEnum::Method::stochasticRunkeKuttaRI5}};
+
   /**
    * Specific constructor
    * @param const CDataContainer * pParent
@@ -124,7 +139,7 @@ public:
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  const CTaskEnum::Method * getValidMethods() const override;
+  const CEnumAnnotation< CTaskEnum::Method, std::string_view > getValidMethods() const override;
 #endif
 
   /**

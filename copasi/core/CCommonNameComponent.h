@@ -1,4 +1,4 @@
-// Copyright (C) 2026 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2025 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -14,10 +14,28 @@
 class CDataObject;
 class CDataContainer;
 
+#include "copasi/core/CBidirectionalMap.h"
 class CCommonNameComponent : public std::enable_shared_from_this< CCommonNameComponent >
 {
 private:
-  static const std::map< std::string, std::string > VectorName2ObjectType;
+  constexpr static CBidirectionalMap VectorName2ObjectType{
+    MapNode{"Compartments", "Compartment"},
+    MapNode{"Events", "Event"},
+    MapNode{"Fitted Points", "Fitted Point"},
+    MapNode{"Functions", "Function"},
+    MapNode{"ListOfLayouts", "Layout"},
+    MapNode{"ListOflayouts", "Layout"},
+    MapNode{"Metabolites", "Metabolite"},
+    MapNode{"ModelList", "CN"},
+    MapNode{"Moieties", "Moiety"},
+    MapNode{"OutputDefinitions", "PlotItem"},
+    MapNode{"ParameterSets", "ModelParameterSet"},
+    MapNode{"Reactions", "Reaction"},
+    MapNode{"Reduced Model Metabolites", "Metabolite"},
+    MapNode{"ReportDefinitions", "ReportDefinition"},
+    MapNode{"TaskList", "Task"},
+    MapNode{"Units list", "Unit"},
+    MapNode{"Values", "ModelValue"}};
 
   /**
    * @brief Construct a new CCommonNameComponent object
@@ -86,6 +104,7 @@ public:
   bool hasAncestor(const CDataObject * pObject) const;
   bool mayHaveAncestor(const CDataObject * pObject) const;
   bool isValid() const;
+  bool isVectorElement() const;
   size_t size() const;
   void addPrerequisite(shared_ptr prerequisite);
   void clearPrerequisites();

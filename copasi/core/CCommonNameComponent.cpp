@@ -1,4 +1,4 @@
-// Copyright (C) 2026 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2025 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -10,33 +10,12 @@
 #include "copasi/utilities/utility.h"
 
 // static
-const std::map< std::string, std::string > CCommonNameComponent::VectorName2ObjectType = {
-  {"Compartments", "Compartment"},
-  {"Events", "Event"},
-  {"Fitted Points", "Fitted Point"},
-  {"Functions", "Function"},
-  {"ListOfLayouts", "Layout"},
-  {"ListOflayouts", "Layout"},
-  {"Metabolites", "Metabolite"},
-  {"ModelList", "CN"},
-  {"Moieties", "Moiety"},
-  {"OutputDefinitions", "PlotItem"},
-  {"ParameterSets", "ModelParameterSet"},
-  {"Reactions", "Reaction"},
-  {"Reduced Model Metabolites", "Metabolite"},
-  {"ReportDefinitions", "ReportDefinition"},
-  {"TaskList", "Task"},
-  {"Units list", "Unit"},
-  {"Values", "ModelValue"}
-};
-
-// static
 std::string CCommonNameComponent::ObjectTypeFromVectorName(const std::string & name)
 {
-  auto it = VectorName2ObjectType.find(name);
+  auto * pType = VectorName2ObjectType.findByKey(name);
 
-  if (it != VectorName2ObjectType.end())
-    return it->second;
+  if (pType != nullptr)
+    return std::string(*pType);
 
   return " "; // This is an invalid type
 }
@@ -46,7 +25,8 @@ CCommonNameComponent::CCommonNameComponent(const CDataObject * pObject)
   , mType(pObject->getObjectType())
   , mName(pObject->getObjectName())
   , mpParent((pObject->getObjectParent() != nullptr
-              && pObject->getObjectType() != "CN")
+              && (pObject->getObjectType() != "CN"
+                  || pObject->getObjectName() != "Root"))
                ? pObject->getObjectParent()->getCNComponent()
                : nullptr)
   , mpObject(pObject)
@@ -303,9 +283,14 @@ bool CCommonNameComponent::isValid() const
          || mpParent
          || (!mType.empty()
              && !mName.empty())
-         || (mPartialCN.size() > 2
-             && mPartialCN.front() == '['
-             && mPartialCN.back() == ']');
+         || isVectorElement();
+}
+
+bool CCommonNameComponent::isVectorElement() const
+{
+  return mPartialCN.size() > 2
+         && mPartialCN.front() == '['
+         && mPartialCN.back() == ']';
 }
 
 size_t CCommonNameComponent::size() const
@@ -357,7 +342,8 @@ bool CCommonNameComponent::updatePartialCN() {
   std::string OldPartialCN = mPartialCN;
 
   // Root object
-  if (mType == "CN")
+  if (mType == "CN"
+      && mName == "Root")
     {
       mPartialCN = "CN=Root";
     }
@@ -466,7 +452,7 @@ std::string CCommonNameComponent::getObjectTypeFromParent() const
 {
   if (mpParent
       && mpParent->mType == "Vector")
-    return ObjectTypeFromVectorName(mpParent->mName);
+    return std::string(ObjectTypeFromVectorName(mpParent->mName));
 
   return " "; // This is an invalid type.
 }

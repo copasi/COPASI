@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -15,8 +15,6 @@
 
 
 
-%ignore CModelParameter::TypeNames;
-
 %{
 
 #include "copasi/model/CModelParameter.h"
@@ -25,8 +23,7 @@
 
 %extend CModelParameter
 {
-
-   CModelParameterGroup *asGroup() 
+  CModelParameterGroup *asGroup() 
    {
      return dynamic_cast<CModelParameterGroup *>($self);
    }
@@ -94,7 +91,30 @@
 	return !(value != value);
   }
 
+  void setCN(const std::string & cn)
+  {
+    $self->setCN(CRegisteredCommonName(cn));
+  }
+
+  void setCN(const CCommonName & cn)
+  {
+    $self->setCN(CRegisteredCommonName(cn));
+  }
   
+}
+
+%extend CModelParameterSpecies
+{
+
+  void setCN(const std::string & cn)
+  {
+    $self->setCN(CRegisteredCommonName(cn));
+  }
+
+  void setCN(const CCommonName & cn)
+  {
+    $self->setCN(CRegisteredCommonName(cn));
+  }
 }
 
 %include "model/CModelParameter.h"

@@ -255,17 +255,6 @@ void CCopasiTask::createUndoData(CUndoData & undoData,
   return;
 }
 
-bool CCopasiTask::isValidMethod(const CTaskEnum::Method & method,
-                                const CTaskEnum::Method * validMethods)
-{
-  unsigned C_INT32 i;
-
-  for (i = 0; validMethods[i] != CTaskEnum::Method::UnsetMethod; i++)
-    if (method == validMethods[i]) return true;
-
-  return false;
-}
-
 CCopasiTask::CCopasiTask()
   : CDataContainer(CTaskEnum::TaskName[CTaskEnum::Task::UnsetTask], NULL, "Task")
   , mType(CTaskEnum::Task::UnsetTask)
@@ -603,12 +592,13 @@ bool CCopasiTask::restore(const bool & updateModel)
 }
 
 // virtual
-const CTaskEnum::Method * CCopasiTask::getValidMethods() const
+const CEnumAnnotation< CTaskEnum::Method, std::string_view > CCopasiTask::getValidMethods() const
 {
-  static const CTaskEnum::Method ValidMethods[] =
-  {
-    CTaskEnum::Method::UnsetMethod
-  };
+  static const CEnumAnnotationSubset ValidMethods{
+    CTaskEnum::MethodName,
+    CTaskEnum::Method::UnsetMethod,
+    std::array{
+      CTaskEnum::Method::UnsetMethod}};
 
   return ValidMethods;
 }
@@ -620,7 +610,7 @@ const CCopasiProblem * CCopasiTask::getProblem() const {return mpProblem;}
 // virtual
 bool CCopasiTask::setMethodType(const CTaskEnum::Method & type)
 {
-  if (!isValidMethod(type, getValidMethods())) return false;
+  if (!getValidMethods().isValid(type)) return false;
 
   if (mpMethod && mpMethod->getSubType() == type) return true;
 

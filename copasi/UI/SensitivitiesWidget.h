@@ -73,7 +73,7 @@ private:
   /**
    * updates the variable and target function boxes
    */
-  void updateComboBoxes(CSensProblem::SubTaskType type);
+  void updateComboBoxes(CTaskEnum::Task type);
 
   const CDataObject * mpSingleFunction;
   const CDataObject * mpSingleVariable;

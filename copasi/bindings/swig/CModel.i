@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -95,7 +95,6 @@ typedef std::map< std::string, double > StringDoubleMap;
 %ignore CMathContainer::getInitialState() const;
 %ignore CMathContainer::getReactions() const;
 %ignore CModel::getActiveModelParameterSet() const;
-%ignore CModel::getMathContainer() const;
 %ignore CCopasiParameterGroup::getElementTemplates() const;
 
 

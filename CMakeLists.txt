@@ -277,6 +277,8 @@ endif()
 
 option(ENABLE_JIT "Enable Just In Time compilation for math expressions" ${ENABLE_JIT_DEFAULT})
 
+option(ENABLE_LLVM "Enable LLVM based Just In Time compilation" OFF)
+
 # Java, C#, and Python bindings are configured before OpenMP so Linux can
 # prefer a shared libomp runtime when those bindings are enabled.
 option(ENABLE_CSHARP "Enable language bindings for the C# language." OFF)
@@ -431,6 +433,12 @@ if (ENABLE_JIT)
   include_directories(BEFORE ${CPUFEATURE_INCLUDE_DIR})
 endif (ENABLE_JIT)
 
+if (ENABLE_LLVM)
+  find_package(LLVM REQUIRED CONFIG)
+  llvm_map_components_to_libnames(LLVM_LIBRARIES core mcjit native Core OrcJIT Support native)
+  set(USE_LLVM 1)
+endif (ENABLE_LLVM)
+
 if (ENABLE_OMP)
   set(USE_OMP 1)
 
@@ -452,11 +460,26 @@ if (ENABLE_OMP)
       # Apple/Homebrew Clang needs -Xpreprocessor to accept -fopenmp.
       # Store as a CMake list (semicolon-separated) so target_compile_options
       # passes each token as a separate argument to the compiler.
-      set(OpenMP_C_FLAGS "-Xpreprocessor;-fopenmp;-I${LIBOMP_PREFIX}/include")
-      set(OpenMP_CXX_FLAGS "-Xpreprocessor;-fopenmp;-I${LIBOMP_PREFIX}/include")
+      if(DEFINED ENV{OpenMP_C_FLAGS})
+        set(OpenMP_C_FLAGS $ENV{OpenMP_C_FLAGS})
+      else() 
+        set(OpenMP_C_FLAGS "-Xpreprocessor;-fopenmp;-I${LIBOMP_PREFIX}/include")
+      endif()
+
+      if(DEFINED ENV{OpenMP_CXX_FLAGS})
+        set(OpenMP_CXX_FLAGS $ENV{OpenMP_CXX_FLAGS})
+      else() 
+        set(OpenMP_CXX_FLAGS "-Xpreprocessor;-fopenmp;-I${LIBOMP_PREFIX}/include")
+      endif()
+      
+      if(DEFINED ENV{OpenMP_omp_LIBRARY})
+        set(OpenMP_omp_LIBRARY $ENV{OpenMP_omp_LIBRARY})
+      else() 
+        set(OpenMP_omp_LIBRARY ${LIBOMP_PREFIX}/lib/libomp.dylib)
+      endif()
+      
       set(OpenMP_C_LIB_NAMES omp)
       set(OpenMP_CXX_LIB_NAMES omp)
-      set(OpenMP_omp_LIBRARY ${LIBOMP_PREFIX}/lib/libomp.dylib)
       set(OMP_HAVE_MONOTONIC 1 CACHE INTERNAL "" FORCE)
     endif()
   endif()
@@ -1099,6 +1122,10 @@ message(STATUS "-----------------------------------------------------------
    OpenMP Libs          = ${OpenMP_C_LIB_NAMES}
    OpenMP CXX Flags     = ${OpenMP_CXX_FLAGS}
 
+   LLVM Libs            = ${LLVM_LIBRARIES}
+   LLVM include         = ${LLVM_INCLUDE_DIRS}
+   LLVM CXX Flags       = ${LLVM_DEFINITIONS}
+
  Options:
 
    COPASI_EXTUNIT           = ${ENABLE_COPASI_EXTUNIT}
@@ -1114,6 +1141,7 @@ message(STATUS "-----------------------------------------------------------
    Analytics Task           = ${ENABLE_ANALYTICS}
    Time Sensitivities task  = ${ENABLE_TIME_SENS}
    JIT Compilation          = ${ENABLE_JIT}
+   LLVM JIT Compilation     = ${ENABLE_LLVM}
    OpenMP                   = ${ENABLE_OMP}
 
    CXX Flags                = ${CMAKE_CXX_FLAGS}

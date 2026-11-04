@@ -124,7 +124,6 @@ CUndoObjectInterface * CModelParameterSet::insert(const CData & data)
       case CModelParameter::Type::Group:
       case CModelParameter::Type::Set:
       case CModelParameter::Type::unknown:
-      case CModelParameter::Type::__SIZE:
         break;
     }
 

@@ -223,7 +223,6 @@ bool CTimeSeries::compile(CObjectInterface::ContainerList listOfContainer)
 
             break;
 
-          case CMath::SimulationType::__SIZE:
           case CMath::SimulationType::Undefined:
             break;
         }

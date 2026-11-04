@@ -34,8 +34,6 @@
 #include "copasi/core/CMatrix.h"
 #include "copasi/optimization/COptMethod.h"
 
-class CRandom;
-
 class COptMethodSA : public COptMethod
 {
   // Operations
@@ -127,11 +125,6 @@ private:
    * The tolerance
    */
   C_FLOAT64 mTolerance;
-
-  /**
-   * a pointer to the randomnumber generator.
-   */
-  CRandom * mpRandom {NULL};
 
   /**
    * number of parameters

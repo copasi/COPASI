@@ -33,6 +33,7 @@
 
 #include "copasi/utilities/CCopasiProblem.h"
 #include "copasi/utilities/CReadConfig.h"
+#include "copasi/core/CEnumAnnotation.h"
 
 class CScanProblem : public CCopasiProblem
 {
@@ -52,10 +53,20 @@ public:
     subTaskBefore,
     subTaskDuring,
     subTaskAfter,
-    __SIZE
+    __SIZE // Needed for CFlags
   };
 
-  static const CEnumAnnotation< std::string, OutputType > OutputTypeName;
+private:
+  constexpr static CEnumAnnotationInstance _OutputTypeName{
+    OutputType::subTaskNone,
+    MapNode{OutputType::subTaskNone, "none"},
+    MapNode{OutputType::subTaskBefore, "subTaskBefore"},
+    MapNode{OutputType::subTaskDuring, "subTaskDuring"},
+    MapNode{OutputType::subTaskAfter, "subTaskAfter"}};
+
+public:
+  constexpr static CEnumAnnotation< OutputType, std::string_view > OutputTypeName{_OutputTypeName};
+
   typedef CFlags< OutputType > OutputFlags;
 
 private:

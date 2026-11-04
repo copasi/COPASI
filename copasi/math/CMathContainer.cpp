@@ -31,7 +31,7 @@
 #include "copasi/CopasiDataModel/CDataModel.h"
 #include "copasi/utilities/CNodeIterator.h"
 #include "copasi/utilities/dgemm.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/lapack/blaswrap.h"
 
 // Uncomment this line below to get debug print out.
@@ -222,7 +222,7 @@ CMathContainer::CMathContainer()
   , mpQuantity2NumberFactor(NULL)
   , mRandom("Random", this, InvalidValue)
   , mpProcessQueue(new CMathEventQueue(*this))
-  , mpRandomGenerator(CRandom::createGenerator())
+  , mRNG()
   , mValues()
   , mpValuesBuffer(NULL)
   , mInitialExtensiveValues()
@@ -320,7 +320,7 @@ CMathContainer::CMathContainer(CModel & model)
   , mpQuantity2NumberFactor(NULL)
   , mRandom("Random", this, InvalidValue)
   , mpProcessQueue(nullptr)
-  , mpRandomGenerator(CRandom::createGenerator())
+  , mRNG()
   , mValues()
   , mOldValues()
   , mpValuesBuffer(NULL)
@@ -432,7 +432,7 @@ CMathContainer::CMathContainer(const CMathContainer & src)
   , mpQuantity2NumberFactor(src.mpQuantity2NumberFactor)
   , mRandom("Random", this, InvalidValue)
   , mpProcessQueue(nullptr)
-  , mpRandomGenerator(CRandom::createGenerator())
+  , mRNG()
   , mValues()
   , mOldValues()
   , mpValuesBuffer(src.mpValuesBuffer)
@@ -607,7 +607,6 @@ CMathContainer::CMathContainer(const CMathContainer & src)
 CMathContainer::~CMathContainer()
 {
   pdelete(mpProcessQueue);
-  pdelete(mpRandomGenerator);
   pdeletev(mpValuesBuffer)
   pdeletev(mpObjectsBuffer)
 
@@ -934,9 +933,6 @@ void CMathContainer::updateInitialValues(const CCore::Framework & framework)
       case CCore::Framework::ParticleNumbers:
         applyUpdateSequence(mSynchronizeInitialValuesSequenceExtensive);
         break;
-
-      case CCore::Framework::__SIZE:
-        break;
     }
 }
 
@@ -1121,9 +1117,6 @@ const CCore::CUpdateSequence & CMathContainer::getSynchronizeInitialValuesSequen
 
       case CCore::Framework::ParticleNumbers:
         return mSynchronizeInitialValuesSequenceExtensive;
-        break;
-
-      case CCore::Framework::__SIZE:
         break;
     }
 
@@ -1581,7 +1574,14 @@ void CMathContainer::compile()
     }
 
   // Create eventual delays
-  createDelays();
+  try
+  {
+      createDelays();
+  }
+  catch (...)
+  {
+      CCopasiMessage(CCopasiMessage::EXCEPTION, "Error while creating delays.");
+  }
 
   createDependencyGraphs();
   createValueChangeProhibited();
@@ -2698,7 +2698,6 @@ void CMathContainer::createSynchronizeInitialValuesSequence()
 
                   break;
 
-                case CMath::SimulationType::__SIZE:
                 case CMath::SimulationType::Undefined:
                   break;
               }
@@ -2816,7 +2815,6 @@ void CMathContainer::createApplyInitialValuesSequence()
                   Requested.insert(pObject);
                   break;
 
-                case CMath::SimulationType::__SIZE:
                 case CMath::SimulationType::Undefined:
                   break;
               }
@@ -3200,6 +3198,7 @@ void CMathContainer::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
   jacobian.resize(Rows, Columns);
 
   C_FLOAT64 DerivationFactor = std::max(derivationFactor, 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
+  CVector< C_FLOAT64 > Atol = initializeAtolVector(DerivationFactor, reduced);
 
   C_FLOAT64 * pState = mState.array() + mSize.nFixedEventTargets + (includeTime ? 0 : 1);
   const C_FLOAT64 * pRate = mRate.array() + mSize.nFixedEventTargets + 1;
@@ -3222,20 +3221,21 @@ void CMathContainer::calculateJacobian(CMatrix< C_FLOAT64 > & jacobian,
 
   C_FLOAT64 * pJacobian;
   C_FLOAT64 * pJacobianEnd = jacobian.array() + jacobian.size();
+  C_FLOAT64 * pAtol = Atol.array() + mSize.nFixedEventTargets + (includeTime ? 0 : 1);
 
-  for (Col = 0; pX != pXEnd; ++pX, ++Col)
+  for (Col = 0; pX != pXEnd; ++pX, ++Col, ++pAtol)
     {
       Store = *pX;
 
       // We only need to make sure that we do not have an underflow problem
-      if (fabs(Store) < DerivationFactor)
+      if (fabs(Store) < *pAtol)
         {
           X1 = 0.0;
 
           if (Store < 0.0)
-            X2 = -2.0 * DerivationFactor;
+            X2 = -2.0 * *pAtol;
           else
-            X2 = 2.0 * DerivationFactor;;
+            X2 = 2.0 * *pAtol;
         }
       else
         {
@@ -4039,9 +4039,6 @@ CMath::Entity< CMathObject > CMathContainer::addAnalysisObject(const CMath::Enti
       case CMath::SimulationType::Conversion:
         fatalError();
         break;
-
-      case CMath::SimulationType::__SIZE:
-        break;
     }
 
   resize(Size);
@@ -4193,9 +4190,6 @@ bool CMathContainer::removeAnalysisObject(CMath::Entity< CMathObject > & mathObj
       case CMath::SimulationType::Independent:
       case CMath::SimulationType::Conversion:
         fatalError();
-        break;
-
-      case CMath::SimulationType::__SIZE:
         break;
     }
 
@@ -4732,9 +4726,9 @@ bool CMathContainer::removeAnalysisEvent(CMathEvent *& pMathEvent)
   return true;
 }
 
-CRandom & CMathContainer::getRandomGenerator() const
+CConfigurableRNG & CMathContainer::getRandomGenerator()
 {
-  return * mpRandomGenerator;
+  return mRNG;
 }
 
 const CDataObject * CMathContainer::getRandomObject() const
@@ -4915,6 +4909,8 @@ void CMathContainer::createDelays()
         }
     }
 
+  // Bug 3347: We need to call finishResize() before we call resize() since the latter relies on the fact mOldValues and mOldObjects are valid.
+  finishResize();
   std::vector< CMath::sRelocate > Relocations = resize(Size);
 
   // Update the mappings of the delays
@@ -5034,7 +5030,6 @@ void CMathContainer::createDelays()
         }
     }
 
-  finishResize();
   map();
 }
 

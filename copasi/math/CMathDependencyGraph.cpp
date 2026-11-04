@@ -729,9 +729,6 @@ std::string CMathDependencyGraph::getDOTNodeId(const CObjectInterface * pObject)
           case CMath::ValueType::TransitionTime:
             os << "TransitionTime";
             break;
-
-          case CMath::ValueType::__SIZE:
-            break;
         }
 
       std::map< const CObjectInterface *, size_t >::const_iterator found = mObject2Index.find(pMathObject);

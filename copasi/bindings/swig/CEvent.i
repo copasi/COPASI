@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -127,6 +127,19 @@ typedef CExpression DisownedExpression;
 
 %extend CEvent
 {
+
+  CEventAssignment* createAssignment(CCommonName& targetCN)
+  {
+    CEventAssignment* pAssignment=new CEventAssignment(targetCN);
+
+    if (!$self->getAssignments().add(pAssignment,true))
+      {
+        delete pAssignment;
+        pAssignment = NULL;
+      }
+     return pAssignment;
+  }
+
   CEventAssignment* createAssignment(std::string targetCN = "")
   {
     CEventAssignment* pAssignment=new CEventAssignment(targetCN);

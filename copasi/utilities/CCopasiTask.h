@@ -51,16 +51,6 @@ class CProcessReportLevel;
 class CCopasiTask : public CDataContainer
 {
 public:
-  /**
-   * Check whether the given method is in the list of valid methods
-   * This list must end with CCopasiMethod::unset
-   * @param const CTaskEnum::Method & method
-   * @param const CTaskEnum::Method * validMethods
-   * @return bool isValid
-   */
-  static bool isValidMethod(const CTaskEnum::Method & method,
-                            const CTaskEnum::Method * validMethods);
-
   enum struct OutputFlagBase
   {
     INITIALIZE = 0,
@@ -357,7 +347,7 @@ public:
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  virtual const CTaskEnum::Method * getValidMethods() const;
+  virtual const CEnumAnnotation< CTaskEnum::Method, std::string_view > getValidMethods() const;
 #endif
 
   /**

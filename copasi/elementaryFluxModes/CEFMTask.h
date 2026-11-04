@@ -49,6 +49,20 @@ private:
   CEFMTask();
 
 public:
+  constexpr static CEnumAnnotationSubset ValidMethods{
+    CTaskEnum::MethodName,
+    CTaskEnum::Method::EFMAlgorithm,
+    std::array{
+      CTaskEnum::Method::EFMAlgorithm,
+#ifdef COPASI_DEBUG
+      CTaskEnum::Method::EFMBitPatternTreeAlgorithm,
+      CTaskEnum::Method::EFMBitPatternAlgorithm,
+#endif // COPASI_DEBUG
+#ifdef COPASI_SSA
+      CTaskEnum::Method::stoichiometricStabilityAnalysis,
+#endif // COPASI_SSA
+    }};
+
   /**
    * Specific constructor
    * @param const CDataContainer * pParent
@@ -102,7 +116,7 @@ public:
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  const CTaskEnum::Method * getValidMethods() const override;
+  const CEnumAnnotation< CTaskEnum::Method, std::string_view > getValidMethods() const override;
 #endif
 
   /**

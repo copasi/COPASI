@@ -70,19 +70,35 @@ public:
     ASSIGNMENT, //the entity is changed by an assignment rule
     REACTIONS, //applies only for species, the species concentration is changed by reactions
     ODE, //the entity is changed by an ordinary differential equation
-    TIME,
-    __SIZE
+    TIME
   };
 
   /**
    * String representation of the states
    */
-  static const CEnumAnnotation< std::string, Status > StatusName;
+private:
+  constexpr static CEnumAnnotationInstance _StatusName{
+    Status::FIXED,
+    MapNode{Status::FIXED, "fixed"},
+    MapNode{Status::ASSIGNMENT, "assignment"},
+    MapNode{Status::REACTIONS, "reactions"},
+    MapNode{Status::ODE, "ode"},
+    MapNode{Status::TIME, "time"}};
 
-  /**
-   * XML representation of the states
-   */
-  static const CEnumAnnotation< std::string, Status > XMLStatus;
+public:
+  constexpr static CEnumAnnotation< Status, std::string_view > StatusName{_StatusName};
+
+private:
+  constexpr static CEnumAnnotationInstance _XMLStatus{
+    Status::FIXED,
+    MapNode{Status::FIXED, "fixed"},
+    MapNode{Status::ASSIGNMENT, "assignment"},
+    MapNode{Status::REACTIONS, "reactions"},
+    MapNode{Status::ODE, "ode"},
+    MapNode{Status::TIME, "time"}};
+
+public:
+  constexpr static CEnumAnnotation< Status, std::string_view > XMLStatus{_XMLStatus};
 
   /**
    * Static method to create a CDataObject based on the provided data

@@ -27,11 +27,14 @@ public:
   {
     xAxis = 0,
     yAxis,
-    zAxis,
-    __SIZE
+    zAxis
   };
 
-  static const CEnumAnnotation< std::string, Axis > AxisNames;
+  constexpr static CEnumAnnotationInstance AxisNames{
+    Axis::xAxis,
+    MapNode{Axis::xAxis, "x axis"},
+    MapNode{Axis::yAxis, "y axis"},
+    MapNode{Axis::zAxis, "z axis"}};
 
   /**
   * Destructor

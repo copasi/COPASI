@@ -173,9 +173,6 @@ void CAnnotation::createUndoData(CUndoData & undoData,
         undoData.addProperty(CData::Property::NOTES, mNotes);
         undoData.addProperty(CData::Property::MIRIAM_RDF_XML, mMiriamAnnotation);
         break;
-
-      case CUndoData::Type::__SIZE:
-        break;
     }
 }
 

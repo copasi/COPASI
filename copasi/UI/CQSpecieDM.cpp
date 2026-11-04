@@ -422,9 +422,6 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
                       // Preserve Particle Numbers
                       Species.setInitialConcentration(CMetab::convertToConcentration(Species.getInitialValue(), Compartment));
                       break;
-
-                    case CCore::Framework::__SIZE:
-                      break;
                   }
               }
           }

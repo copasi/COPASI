@@ -50,7 +50,7 @@ typedef struct stat STAT;
 #include "utility.h"
 #include "CCopasiMessage.h"
 
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/commandline/CLocaleString.h"
 
 #ifdef WIN32
@@ -245,7 +245,9 @@ std::string CDirEntry::createTmpName(const std::string & dir,
       return "";
     }
 
-  CRandom * pRandom = CRandom::createGenerator();
+  static CConfigurableRNG RNG;
+
+  std::uniform_int_distribution< unsigned short > distribution(0, 35);
 
   CLocaleString Path = CLocaleString::fromUtf8(dir);
   std::string TmpName;
@@ -254,12 +256,11 @@ std::string CDirEntry::createTmpName(const std::string & dir,
   do
     {
       TmpName = Path.toUtf8() + Separator;
-
-      unsigned C_INT32 Char;
+      unsigned short Char;
 
       for (size_t i = 0; i < 8; i++)
         {
-          Char = pRandom->getRandomU(35);
+          Char = distribution(RNG);
 
           if (Char < 10)
             TmpName += '0' + Char;
@@ -283,8 +284,6 @@ std::string CDirEntry::createTmpName(const std::string & dir,
 
   close(FD);
 #endif
-
-  pdelete(pRandom);
 
   return TmpName;
 }

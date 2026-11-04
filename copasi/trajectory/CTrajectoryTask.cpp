@@ -66,25 +66,6 @@ bool ble(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 bool bl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 {return (d1 > d2);}
 
-// static
-const CTaskEnum::Method CTrajectoryTask::ValidMethods[] =
-{
-  CTaskEnum::Method::deterministic,
-  CTaskEnum::Method::RADAU5,
-  CTaskEnum::Method::stochastic,
-  CTaskEnum::Method::directMethod,
-  CTaskEnum::Method::tauLeap,
-  CTaskEnum::Method::adaptiveSA,
-  CTaskEnum::Method::hybrid,
-  CTaskEnum::Method::hybridLSODA,
-  CTaskEnum::Method::hybridODE45,
-#ifdef COPASI_DEBUG
-  CTaskEnum::Method::DsaLsodar,
-#endif // COPASI_DEBUG
-  CTaskEnum::Method::stochasticRunkeKuttaRI5,
-  CTaskEnum::Method::UnsetMethod
-};
-
 CTrajectoryTask::CTrajectoryTask(const CDataContainer * pParent,
                                  const CTaskEnum::Task & type):
   CCopasiTask(pParent, type),
@@ -719,9 +700,9 @@ bool CTrajectoryTask::processStep(const C_FLOAT64 & endTime, const bool & final)
 }
 
 // virtual
-const CTaskEnum::Method * CTrajectoryTask::getValidMethods() const
+const CEnumAnnotation< CTaskEnum::Method, std::string_view > CTrajectoryTask::getValidMethods() const
 {
-  return CTrajectoryTask::ValidMethods;
+  return ValidMethods;
 }
 
 // virtual

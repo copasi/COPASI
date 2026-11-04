@@ -77,6 +77,33 @@ typedef std::vector<CTaskEnum::Task> TaskSubTypeVector;
 typedef std::vector<CTaskEnum::Method> MethodSubTypeVector;
 #endif // SWIGJAVA
 
+#ifdef SWIGPYTHON
+// allow a CCopasiTask::OutputFlag (e.g. CCopasiTask::OUTPUT, or a combination
+// created via OR'ing several flags) to be passed wherever an int outputFlags
+// argument is expected, converting it to its underlying integer value
+%typemap(in) int outputFlags {
+  void *argp = 0;
+  int res = SWIG_ConvertPtr($input, &argp, $descriptor(CCopasiTask::OutputFlag *), 0);
+
+  if (SWIG_IsOK(res))
+  {
+    $1 = (int) reinterpret_cast< CCopasiTask::OutputFlag * >(argp)->to_ulong();
+  }
+  else
+  {
+    int val = 0;
+    res = SWIG_AsVal_int($input, &val);
+
+    if (!SWIG_IsOK(res))
+    {
+      %argument_fail(res, "int", $symname, $argnum);
+    }
+
+    $1 = val;
+  }
+}
+#endif // SWIGPYTHON
+
 %include "copasi/utilities/CTaskEnum.h"
 %include "copasi/utilities/CCopasiTask.h"
 
@@ -88,15 +115,13 @@ typedef std::vector<CTaskEnum::Method> MethodSubTypeVector;
 
   std::vector<C_INT32> getValidMethods() const
     {
-      const CTaskEnum::Method *methods = $self->getValidMethods();
-      
       std::vector<C_INT32> validMethods;
-      unsigned int i=0;
-      while(methods[i]!=CTaskEnum::Method::UnsetMethod)
+
+      for (const CTaskEnum::Method & e: $self->getValidMethods().keys())
       {
-        validMethods.push_back(static_cast< C_INT32>(methods[i]));
-        ++i;
+        validMethods.push_back(static_cast< C_INT32>(e));
       }
+
       return validMethods;
     } 
 

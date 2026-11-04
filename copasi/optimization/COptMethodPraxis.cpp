@@ -141,7 +141,7 @@ bool COptMethodPraxis::optimise()
   // carry out the minimisation
   try
     {
-      mPraxis(mTolerance, stepmx, mVariableSize, prin, mCurrent.array(), mpPraxis);
+      mPraxis(mTolerance, stepmx, mVariableSize, prin, mCurrent.array(), mRandomContext.active(), mpPraxis);
     }
   catch (bool)
     {}

@@ -25,8 +25,6 @@
 #include "copasi/core/CMatrix.h"
 #include "copasi/optimization/COptMethod.h"
 
-class CRandom;
-
 class COptMethodCoranaWalk : public COptMethod
 {
   // Operations
@@ -118,11 +116,6 @@ private:
    * The current iteration
    */
   unsigned C_INT32 mCurrentIteration;
-
-  /**
-   * a pointer to the randomnumber generator.
-   */
-  CRandom * mpRandom {NULL};
 
   /**
    * number of parameters

@@ -10,26 +10,6 @@
 #include <copasi/model/CModel.h>
 
 // static
-const CEnumAnnotation< std::string, CExpressionGenerator::Operation > CExpressionGenerator::OperationNames(
-{
-  "Sum",
-  "Sum of Squares",
-  "Sum of Absolutes",
-  "Product"
-}
-);
-
-// static
-const CEnumAnnotation< CExpressionGenerator::sOperation, CExpressionGenerator::Operation > CExpressionGenerator::OperationParts(
-{
-  sOperation(" + ", "", "", "", ""),
-  sOperation(" + ", "", "", "", "^2"),
-  sOperation(" + ", "", "", "ABS(", ")"),
-  sOperation(" * ", "", "", "", "")
-}
-);
-
-// static
 std::vector< std::string > CExpressionGenerator::mSupportedTypes =
 {
   "Global Quantities",

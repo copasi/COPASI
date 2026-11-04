@@ -44,13 +44,6 @@
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/utilities/CLeastSquareSolution.h"
 
-// static
-const CEnumAnnotation< std::string, CNewtonMethod::eTargetCriterion > CNewtonMethod::TargetCriterion(
-{
-  "Distance and Rate",
-  "Distance",
-  "Rate"});
-
 CNewtonMethod::CNewtonMethod(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
                              const CTaskEnum::Task & taskType)
@@ -688,9 +681,6 @@ std::string CNewtonMethod::targetValueToString() const
 
       case eTargetCriterion::Rate:
         os << "Rate: " << mTargetRate;
-        break;
-
-      case eTargetCriterion::__SIZE:
         break;
     }
 

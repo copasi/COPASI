@@ -105,6 +105,12 @@ private:
   CSteadyStateTask();
 
 public:
+  constexpr static CEnumAnnotationSubset ValidMethods{
+    CTaskEnum::MethodName,
+    CTaskEnum::Method::Newton,
+    std::array{
+      CTaskEnum::Method::Newton}};
+
   /**
    * Specific constructor
    * @param const CDataContainer * pParent
@@ -174,7 +180,7 @@ public:
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  const CTaskEnum::Method * getValidMethods() const override;
+  const CEnumAnnotation< CTaskEnum::Method, std::string_view > getValidMethods() const override;
 #endif
 
   /**

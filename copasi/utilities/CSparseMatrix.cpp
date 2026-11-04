@@ -594,7 +594,7 @@ CCompressedColumnFormat::const_row_iterator CCompressedColumnFormat::endRow(cons
 // ---------- SparseMatrixTest
 
 #ifdef COPASI_DEBUG
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/core/CDataTimer.h"
 
 bool SparseMatrixTest(const size_t & size,
@@ -606,8 +606,7 @@ bool SparseMatrixTest(const size_t & size,
                       const bool & CCMP)
 {
   size_t i, j, l, loop = 1;
-  CRandom * pRandom =
-    CRandom::createGenerator(CRandom::mt19937, seed);
+  CConfigurableRNG RNG(CConfigurableRNG::Type::MersenneTwister, seed);
 
   // If the sparseness is not specified we expect 4 metabolites per reaction
   C_FLOAT64 Sparseness = sparseness;
@@ -619,19 +618,20 @@ bool SparseMatrixTest(const size_t & size,
   CMatrix< C_FLOAT64 > MM(size, size + 3);
   CSparseMatrix Ss(size, size + 3);
   C_FLOAT64 tmp;
+  std::uniform_real_distribution< C_FLOAT64 > distribution(0.0, 1.0);
 
   for (i = 0; i < size - 3; i++)
     for (j = 0; j < size; j++)
       {
-        if (pRandom->getRandomCC() < Sparseness)
-          S(i, j) = (pRandom->getRandomCC() - 0.5) * 100.0;
+        if (distribution(RNG) < Sparseness)
+          S(i, j) = (distribution(RNG) - 0.5) * 100.0;
       }
 
   for (i = 0; i < size; i++)
     for (j = 0; j < size + 3; j++)
       {
-        if (pRandom->getRandomCC() < Sparseness)
-          Ss(i, j) = (pRandom->getRandomCC() - 0.5) * 100.0;
+        if (distribution(RNG) < Sparseness)
+          Ss(i, j) = (distribution(RNG) - 0.5) * 100.0;
       }
 
   M = S;

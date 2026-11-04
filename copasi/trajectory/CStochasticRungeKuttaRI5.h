@@ -25,7 +25,7 @@
 #include "copasi/model/CState.h"
 
 class CModel;
-class CRandom;
+class CConfigurableRNG;
 
 class CStochasticRungeKuttaRI5 : public CTrajectoryMethod
 {
@@ -165,7 +165,7 @@ private:
   /**
    * A pointer to the random number generator
    */
-  CRandom * mpRandom;
+  CConfigurableRNG * mpRandom;
 
   C_FLOAT64 mStepSize;
   C_FLOAT64 mSqrtStepSize;
