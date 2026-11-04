@@ -584,6 +584,8 @@ bool CModelParameterGroup::refreshFromModel(const bool & modifyExistence)
 CModelParameter * CModelParameterGroup::getModelParameter(const std::string & cn) const
 {
   CModelParameter * pModelParameter = NULL;
+  if (cn.empty())
+    return pModelParameter;
 
   const_iterator it = begin();
   const_iterator End = end();
