@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2021 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,9 +31,18 @@ public:
   {
     INSERT = 0,
     CHANGE,
-    REMOVE,
-    __SIZE
+    REMOVE
   };
+
+private:
+  constexpr static CEnumAnnotationInstance _TypeName{
+    Type::CHANGE,
+    MapNode{Type::INSERT, "Insert"},
+    MapNode{Type::CHANGE, "Change"},
+    MapNode{Type::REMOVE, "Remove"}};
+
+public:
+  constexpr static CEnumAnnotation< Type, std::string_view > TypeName{_TypeName};
 
   struct ChangeInfo
   {
@@ -74,8 +83,6 @@ public:
     std::map< std::string, size_t > mMap;
   };
 
-  static const CEnumAnnotation< std::string, Type > TypeName;
-
   static CUndoObjectInterface * getObject(const CDataModel & dataModel, const CData & data);
 
   friend std::ostream & operator << (std::ostream & os, const CUndoData & o);
@@ -89,6 +96,8 @@ public:
   CUndoData(const CUndoData & src);
 
   ~CUndoData();
+
+  CUndoData & operator =(const CUndoData & rhs);
 
   const Type & getType() const;
 

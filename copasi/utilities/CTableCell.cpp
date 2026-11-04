@@ -42,14 +42,6 @@ CTableCell::CTableCell(const char & separator):
   mIsEmpty(true)
 {}
 
-CTableCell::CTableCell(const CTableCell & src):
-  mSeparator(src.mSeparator),
-  mName(src.mName),
-  mValue(src.mValue),
-  mIsValue(src.mIsValue),
-  mIsEmpty(src.mIsEmpty)
-{}
-
 CTableCell::~CTableCell() {}
 
 bool CTableCell::setSeparator(const char & separator)

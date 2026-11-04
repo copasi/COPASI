@@ -110,7 +110,7 @@ void CQCompartment::slotBtnNew()
 
   CUndoData UndoData(CUndoData::Type::INSERT, mpCompartment);
   ListViews::addUndoMetaData(this, UndoData);
-  UndoData.addMetaDataProperty("Widget Object CN (after)", mpCompartment->getStringCN());
+  UndoData.addMetaDataProperty("Widget Object CN (after)", mpCompartment->getCN());
   UndoData.addMetaDataProperty("Widget Object Name (after)", mpCompartment->getObjectName());
 
   slotNotifyChanges(mpDataModel->recordData(UndoData));
@@ -186,7 +186,7 @@ void CQCompartment::copy()
 
             if (!pRi->isMulticompartment())
               {
-                if (pRi->getChemEqInterface().getCompartment()->getStringCN() == mObjectCN)
+                if (pRi->getChemEqInterface().getCompartment()->getCN() == mObjectCN)
                   compartmentObjectsToCopy.addReaction(it);
               }
           }
@@ -212,7 +212,7 @@ void CQCompartment::copy()
       const CDataObject * pObject = origToCopyMappings.getDuplicateFromObject(mpObject);
 
       ListViews::addUndoMetaData(this, UndoData);
-      UndoData.addMetaDataProperty("Widget Object CN (after)", pObject->getStringCN());
+      UndoData.addMetaDataProperty("Widget Object CN (after)", pObject->getCN());
       UndoData.addMetaDataProperty("Widget Object Name (after)", pObject->getObjectName());
 
       slotNotifyChanges(mpDataModel->recordData(UndoData));

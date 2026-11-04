@@ -83,11 +83,11 @@ public:
 
   /**
    * Map object whose CN starts with srcSN to children of the target container
-   * @param const std::string srcCN
+   * @param const CDataContainer * pSource
    * @param const CDataContainer * pTarget
    * @return bool success;
    */
-  bool mapObject(const std::string srcCN, const CDataContainer * pTarget);
+  bool mapObject(const CDataContainer * pSource, const CDataContainer * pTarget);
 
   /**
    * Retrieve the value of the node.

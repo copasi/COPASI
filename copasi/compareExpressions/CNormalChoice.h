@@ -1,10 +1,22 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalChoice.h,v $
-//   $Revision: 1.6 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/12/12 09:11:50 $
-// End CVS Header
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
@@ -32,7 +44,7 @@ class CNormalChoice : public CNormalBase
     CNormalChoice(const CNormalChoice& src);
     virtual ~CNormalChoice();
 
-    virtual CNormalBase * copy() const;
+    CNormalBase * copy() const override;
 
     CNormalChoice& operator=(const CNormalChoice& src);
     bool operator==(const CNormalChoice& rhs) const;
@@ -54,8 +66,8 @@ class CNormalChoice : public CNormalBase
     static bool checkConditionTree(const CNormalBase& branch);
     static bool checkExpressionTree(const CNormalBase& branch);
 
-    virtual std::string toString() const;
-    virtual bool simplify();
+    std::string toString() const override;
+    bool simplify() override;
 
     friend std::ostream& operator<<(std::ostream& os, const CNormalChoice& choice);
   };

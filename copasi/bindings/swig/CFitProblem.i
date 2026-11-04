@@ -24,6 +24,29 @@
 
 %}
 
+%extend CFitProblem
+{
+  CFitItem & addFitItem(const CCommonName & objectCN)
+  {
+    return $self->addFitItem(CRegisteredCommonName(objectCN));
+  }
+  
+  CFitItem & addFitItem(const std::string & objectCN)
+  {
+    return $self->addFitItem(CRegisteredCommonName(objectCN));
+  }
+
+  CFitConstraint& addFitConstraint(const CCommonName & objectCN)
+  {
+    return $self->addFitConstraint(CRegisteredCommonName(objectCN));
+  }
+
+  CFitConstraint& addFitConstraint(const std::string & objectCN)
+  {
+    return $self->addFitConstraint(CRegisteredCommonName(objectCN));
+  }
+}
+
 %rename (output) CFitProblem::print;
 //%ignore CFitProblem::setCallBack;
 %ignore CFitProblem::getExperimentSet() const;

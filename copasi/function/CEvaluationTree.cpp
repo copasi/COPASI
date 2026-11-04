@@ -137,7 +137,7 @@ CEvaluationTree::copy(const CEvaluationTree & src)
   return pNew;
 }
 
-CEvaluationTree * CEvaluationTree::fromData(const CData & data, CUndoObjectInterface * pParent)
+CEvaluationTree * CEvaluationTree::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   CEvaluationTree * pNew = create((CEvaluationTree::Type) data.getProperty(CData::EVALUATION_TREE_TYPE).toUint());
 
@@ -606,10 +606,10 @@ CIssue CEvaluationTree::updateTree()
 // virtual
 const CObjectInterface * CEvaluationTree::getNodeObject(const CCommonName & CN) const
 {
-  if (CN == "Reference=Avogadro Constant")
-    return CRootContainer::getFunctionList()->getObject(CN);
+  CObjectInterface::ContainerList ListOfContainer;
+  ListOfContainer.push_back(getObjectDataModel());
 
-  return getObjectFromCN(CN);
+  return CObjectInterface::GetObjectFromCN(ListOfContainer, CN);
 }
 
 bool CEvaluationTree::setTree(const ASTNode& pRootNode, bool isFunction)
@@ -618,8 +618,6 @@ bool CEvaluationTree::setTree(const ASTNode& pRootNode, bool isFunction)
 
   // The compile order must be child first.
   CNodeIterator< CEvaluationNode > itNode(mpRootNode);
-  CEvaluationNode *pErrorNode = NULL;
-
   bool UpdateTree = false;
 
   while (itNode.next() != itNode.end())
@@ -979,7 +977,6 @@ bool CEvaluationTree::mapObjectNodes(const CDataContainer * pSrc, const CDataCon
   mCalculationSequence.resize(0);
 
   bool success = true;
-  std::string SrcCN = pSrc->getStringCN();
 
   std::vector< CEvaluationNode * >::iterator it = mpNodeList->begin();
   std::vector< CEvaluationNode * >::iterator end = mpNodeList->end();
@@ -989,7 +986,7 @@ bool CEvaluationTree::mapObjectNodes(const CDataContainer * pSrc, const CDataCon
       switch ((*it)->mainType() | (*it)->subType())
         {
           case (CEvaluationNode::MainType::OBJECT | CEvaluationNode::SubType::CN):
-            success &= static_cast<CEvaluationNodeObject*>(*it)->mapObject(SrcCN, pTarget);
+            success &= static_cast<CEvaluationNodeObject*>(*it)->mapObject(pSrc, pTarget);
             mPrerequisits.insert(static_cast<CEvaluationNodeObject*>(*it)->getObjectInterfacePtr());
 
             break;

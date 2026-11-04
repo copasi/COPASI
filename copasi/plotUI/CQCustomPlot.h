@@ -116,6 +116,8 @@ public:
    */
   bool saveData(const std::string & filename) override;
 
+  void saveDataToStream(std::ostream & os) override;
+
   /**
    * Shows or hide all curves depending on whether visibility is false or true
    * @param const bool & visibility

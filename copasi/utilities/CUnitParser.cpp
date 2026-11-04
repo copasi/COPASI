@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -17,14 +17,14 @@
 
 #include "CUnitParser.h"
 
-CUnitParserBase::CUnitParserBase():
-  mPosition(0),
-  mpUnit(NULL),
-  mpCurrentUnitDef(NULL),
-  mSymbols(),
-  mOldSymbol(),
-  mNewSymbol(),
-  mReplacedExpression()
+CUnitParserBase::CUnitParserBase()
+  : mpUnit(NULL)
+  , mPosition(0)
+  , mpCurrentUnitDef(NULL)
+  , mSymbols()
+  , mOldSymbol()
+  , mNewSymbol()
+  , mReplacedExpression()
 {}
 
 CUnitParserBase::~CUnitParserBase()

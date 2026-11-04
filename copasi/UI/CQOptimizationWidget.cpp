@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -92,10 +92,10 @@ bool CQOptimizationWidget::saveTaskProtected()
       mChanged = true;
     }
 
-  if (mpBoxSubtask->currentText() != FROM_UTF8(CTaskEnum::TaskName[pProblem->getSubtaskType()]))
+  if (mpBoxSubtask->currentText() != FROM_UTF8(COptProblem::ValidSubtasks[pProblem->getSubtaskType()]))
     {
       mChanged = true;
-      pProblem->setSubtaskType((CTaskEnum::Task) mSubtaskMap[TO_UTF8(mpBoxSubtask->currentText())]);
+      pProblem->setSubtaskType(COptProblem::ValidSubtasks.toEnum(TO_UTF8(mpBoxSubtask->currentText())));
     }
 
   if (mpBtnMaximize->isChecked() != pProblem->maximize())
@@ -197,7 +197,6 @@ bool CQOptimizationWidget::runTask()
   return commonRunTask();
 }
 
-
 bool CQOptimizationWidget::taskFinishedEvent()
 {
   bool result = TaskWidget::taskFinishedEvent();
@@ -263,12 +262,9 @@ void CQOptimizationWidget::init()
   mpExpressionEMW->mpExpressionWidget->setExpressionType(CQExpressionWidget::ObjectiveFunctions);
 
   //mpBtnMaximize->setMinimumWidth(mpLblExpression->width());
-  const CTaskEnum::Task * pSubtask = COptProblem::ValidSubtasks;
-
-  for (; *pSubtask != CTaskEnum::Task::UnsetTask; ++pSubtask)
+  for (auto name: COptProblem::ValidSubtasks.annotations())
     {
-      mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(CTaskEnum::TaskName[*pSubtask]));
-      mSubtaskMap[CTaskEnum::TaskName[*pSubtask]] = static_cast< size_t>(*pSubtask);
+      mpBoxSubtask->insertItem(mpBoxSubtask->count(), FROM_UTF8(name));
     }
 
   mpParameters->setItemType(CQFittingItemWidget::OPT_ITEM);

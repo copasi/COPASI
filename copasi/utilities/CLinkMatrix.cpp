@@ -35,14 +35,6 @@ CLinkMatrix::CLinkMatrix():
   mIndependent(0)
 {}
 
-CLinkMatrix::CLinkMatrix(const CLinkMatrix & src):
-  CMatrix< C_FLOAT64 >(src),
-  mRowPivots(src.mRowPivots),
-  mPivotInverse(src.mPivotInverse),
-  mSwapVector(src.mSwapVector),
-  mIndependent(src.mIndependent)
-{}
-
 CLinkMatrix::~CLinkMatrix()
 {}
 

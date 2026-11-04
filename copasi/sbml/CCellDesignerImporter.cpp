@@ -4884,7 +4884,9 @@ REACTION_TYPE CCellDesignerImporter::reactionTypeToEnum(std::string s)
     {
       bool status;
       FAIL_WITH_ERROR(status, "unsupported reaction type: " << s << " assuming state transition");
-      result = STATE_TRANSITION_RTYPE;
+
+      if (!status)
+        result = STATE_TRANSITION_RTYPE;
     }
 
   return result;
@@ -4972,7 +4974,9 @@ MODIFICATION_LINK_TYPE CCellDesignerImporter::modificationLinkTypeToEnum(std::st
     {
       bool status;
       FAIL_WITH_ERROR(status, "unsupported modification link type: " << s << " assuming modulation");
-      result = MODULATION_ML_TYPE;
+
+      if (!status)
+        result = MODULATION_ML_TYPE;
     }
 
   return result;
@@ -5040,7 +5044,9 @@ MODIFICATION_TYPE CCellDesignerImporter::modificationTypeToEnum(std::string s)
     {
       bool status;
       FAIL_WITH_ERROR(status, "unsupported modification type: " << s << " assuming modulation");
-      result = MODULATION_MTYPE;
+
+      if (!status)
+        result = MODULATION_MTYPE;
     }
 
   return result;
@@ -10932,7 +10938,9 @@ SPECIES_MODIFICATION_TYPE CCellDesignerImporter::speciesModificationTypeToEnum(s
     {
       bool status;
       FAIL_WITH_ERROR(status, "unsupported species modification type: " << cl << " assuming empty");
-      result = EMPTY_MOD_TYPE;
+
+      if (!status)
+        result = EMPTY_MOD_TYPE;
     }
 
   return result;

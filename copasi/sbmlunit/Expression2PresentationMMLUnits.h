@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -50,8 +50,8 @@ public:
 
 protected:
 //    virtual void writeMathMLFunction(std::ostream & out, const ASTNode* node, size_t l) const;
-  virtual void writeMathMLName(std::ostream & out, const ASTNode* node, size_t l) const;
-  virtual void writeMathMLNumber(std::ostream & out, const ASTNode* node, size_t l) const;
+  void writeMathMLName(std::ostream & out, const ASTNode* node, size_t l) const override;
+  void writeMathMLNumber(std::ostream & out, const ASTNode* node, size_t l) const override;
 
   /**
    * write the mathML for a box that is used to display an object identifier + its unit information

@@ -44,7 +44,7 @@
 #include "copasi/core/CRootContainer.h"
 
 // static
-CLayout * CLayout::fromData(const CData & data, CUndoObjectInterface * pParent)
+CLayout * CLayout::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CLayout(data.getProperty(CData::OBJECT_NAME).toString(),
                      NO_PARENT);
@@ -62,7 +62,7 @@ CData CLayout::toData() const
 }
 
 // virtual
-bool CLayout::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CLayout::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 
@@ -74,30 +74,30 @@ bool CLayout::applyData(const CData & data, CUndoData::CChangeSet & changes)
 
 CLayout::CLayout(const std::string & name,
                  const CDataContainer * pParent)
-  : CLBase(),
-    CDataContainer(name, pParent, "Layout"),
-    mKey(CRootContainer::getKeyFactory()->add("Layout", this)),
-    mDimensions(),
-    mvCompartments("ListOfCompartmentGlyphs", this),
-    mvMetabs("ListOfMetaboliteGlyphs", this),
-    mvReactions("ListOfReactionGlyphs", this),
-    mvLabels("ListOfTextGlyphs", this),
-    mvGraphicalObjects("ListOfGraphicalObjects", this)
-    , mvLocalRenderInformationObjects("ListOfLocalRenderInformationObjects", this)
+  : CLBase()
+  , CDataContainer(name, pParent, "Layout")
+  , mKey(CRootContainer::getKeyFactory()->add("Layout", this))
+  , mDimensions()
+  , mvCompartments("ListOfCompartmentGlyphs", this)
+  , mvMetabs("ListOfMetaboliteGlyphs", this)
+  , mvReactions("ListOfReactionGlyphs", this)
+  , mvLabels("ListOfTextGlyphs", this)
+  , mvGraphicalObjects("ListOfGraphicalObjects", this)
+  , mvLocalRenderInformationObjects("ListOfLocalRenderInformationObjects", this)
 {}
 
 CLayout::CLayout(const CLayout & src,
                  const CDataContainer * pParent)
-  : CLBase(src),
-    CDataContainer(src, pParent),
-    mKey(CRootContainer::getKeyFactory()->add("Layout", this)),
-    mDimensions(src.mDimensions),
-    mvCompartments("ListOfCompartmentGlyphs", this),
-    mvMetabs("ListOfMetaboliteGlyphs", this),
-    mvReactions("ListOfReactionGlyphs", this),
-    mvLabels("ListOfTextGlyphs", this),
-    mvGraphicalObjects("ListOfGraphicalObjects", this)
-    , mvLocalRenderInformationObjects(src.mvLocalRenderInformationObjects, this)
+  : CLBase(src)
+  , CDataContainer(src, pParent)
+  , mKey(CRootContainer::getKeyFactory()->add("Layout", this))
+  , mDimensions(src.mDimensions)
+  , mvCompartments("ListOfCompartmentGlyphs", this)
+  , mvMetabs("ListOfMetaboliteGlyphs", this)
+  , mvReactions("ListOfReactionGlyphs", this)
+  , mvLabels("ListOfTextGlyphs", this)
+  , mvGraphicalObjects("ListOfGraphicalObjects", this)
+  , mvLocalRenderInformationObjects(src.mvLocalRenderInformationObjects, this)
 {
   //TODO references from one glyph to another have to be reconstructed after
   //     copying. This applies to Labels and species reference glyphs
@@ -431,7 +431,7 @@ void CLayout::writeDotEdge(std::ostream & os, const std::string & id1,
 
 void CLayout::exportToSBML(Layout * layout, const std::map<const CDataObject*, SBase*> & copasimodelmap,
                            std::map<std::string, const SBase*>& sbmlIDs
-                           , const std::map<std::string, std::string>& globalKeyToIdMap
+                           , const std::map<std::string, std::string>& /* globalKeyToIdMap */
                            //,const std::map<std::string,std::map<std::string,std::string> >& globalColorKeyToIdMapMap
                            //,const std::map<std::string,std::map<std::string,std::string> >& globalGradientKeyToIdMapMap
                            //,const std::map<std::string,std::map<std::string,std::string> >& globalLineEndingKeyToIdMapMap

@@ -1,10 +1,22 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/compareExpressions/CNormalItem.h,v $
-//   $Revision: 1.4 $
-//   $Name:  $
-//   $Author: gauges $
-//   $Date: 2007/12/12 09:11:50 $
-// End CVS Header
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 // Copyright (C) 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
@@ -44,7 +56,7 @@ class CNormalItem : public CNormalBase
      */
     CNormalItem(const std::string& name, const Type& type);
 
-    virtual CNormalBase * copy() const;
+    CNormalBase * copy() const override;
 
     /**
      * Copy contructor
@@ -92,9 +104,9 @@ class CNormalItem : public CNormalBase
      */
     bool operator<(const CNormalItem & rhs) const;
 
-    virtual std::string toString() const;
+    std::string toString() const override;
 
-    virtual bool simplify(){return true;};
+    bool simplify() override {return true;};
 
     friend std::ostream & operator<< (std::ostream &os,
                                       const CNormalItem & d);

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -69,27 +69,27 @@ public:
    * Retrieve the display string of the node and its eventual child nodes in C.
    * @return std::string CCodeString
    */
-  virtual std::string getCCodeString(const std::vector< std::string > & children) const;
+  std::string getCCodeString(const std::vector< std::string > & children) const override;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes
    * in Berkeley Madonna format.
    * @return std::string BerkeleyMadonnaString
    */
-  virtual std::string getBerkeleyMadonnaString(const std::vector< std::string > & children) const;
+  std::string getBerkeleyMadonnaString(const std::vector< std::string > & children) const override;
 
   /**
    * Retrieve the display string of the node and its eventual child nodes
    * in XPPAUT format.
    * @return std::string XPPString
    */
-  virtual std::string getXPPString(const std::vector< std::string > & children) const;
+  std::string getXPPString(const std::vector< std::string > & children) const override;
 
   /**
    * Create a new invalid ASTNode.
    * @return ASTNode* return a pointer to the newly created node;
    */
-  virtual ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const;
+  ASTNode * toAST(const CDataModel * pDataModel, int sbmlLevel = 3, int sbmlVersion = 1) const override;
 
   /**
    * Build the MathML string
@@ -98,9 +98,9 @@ public:
    * @param const std::vector< std::vector< std::string > > & variables
    * @return std::string MMLString
    */
-  virtual std::string getMMLString(const std::vector< std::string > & children,
-                                   bool expand,
-                                   const std::vector< std::vector< std::string > > & variables) const;
+  std::string getMMLString(const std::vector< std::string > & children,
+                           bool expand,
+                           const std::vector< std::vector< std::string > > & variables) const override;
 
   /**
    * Figure out the appropriate CUnit to use, based on the child nodes.
@@ -109,8 +109,8 @@ public:
    * @param const std::vector< CValidatedUnit > & units
    * @return CUnit unit
    */
-  virtual CValidatedUnit getUnit(const CMathContainer & container,
-                                 const std::vector< CValidatedUnit > & units) const;
+  CValidatedUnit getUnit(const CMathContainer & container,
+                         const std::vector< CValidatedUnit > & units) const override;
 };
 
 #endif // COPASI_CEvaluationNode

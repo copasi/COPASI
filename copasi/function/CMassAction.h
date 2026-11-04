@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -80,23 +80,23 @@ public:
    *  @param const CCallParameters<C_FLOAT64> & callParameters
    *  @return const C_FLOAT64 & result
    */
-  virtual const C_FLOAT64 &
-  calcValue(const CCallParameters<C_FLOAT64> & callParameters);
+  const C_FLOAT64 & calcValue(const CCallParameters<C_FLOAT64> & callParameters) override;
 
   /**
    * Set the infix description of the tree and compile it.
    * @param const std::string & infix
    * @return CIssue issue
    */
-  virtual CIssue setInfix(const std::string & infix);
+  CIssue setInfix(const std::string & infix) override;
 
   /**
    * Compile the evaluation tree.
    */
-  virtual CIssue compile();
+  CIssue compile() override;
 
-  virtual std::string writeMathML(const std::vector< std::vector< std::string > > & variables,
-                                  bool expand = true, bool fullExpand = true) const;
+  std::string writeMathML(const std::vector< std::vector< std::string > > & variables,
+                          bool expand = true,
+                          bool fullExpand = true) const override;
 };
 
 #endif // COPASI_CMassAction

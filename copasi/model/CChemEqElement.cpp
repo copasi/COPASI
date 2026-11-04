@@ -40,7 +40,7 @@
 #include "copasi/core/CRootContainer.h"
 
 // static
-CChemEqElement * CChemEqElement::fromData(const CData & data, CUndoObjectInterface * pParent)
+CChemEqElement * CChemEqElement::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CChemEqElement(data.getProperty(CData::OBJECT_NAME).toString(),
                             NO_PARENT);

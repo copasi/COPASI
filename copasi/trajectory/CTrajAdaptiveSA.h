@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,7 @@
 #define SSA_UPPER_NUM 100
 
 class CTrajectoryProblem;
-class CRandom;
+class CConfigurableRNG;
 class CMathReaction;
 
 class CTrajAdaptiveSA : public CTrajectoryMethod
@@ -181,12 +181,17 @@ protected:
   /**
    * The random number generator
    */
-  CRandom *mpRandomGenerator;
+  CConfigurableRNG *mRNG;
 
   /**
    * The particle and reaction numbers
    */
   size_t mNumReactions;
+
+  /**
+   *   Number of variable metabolites.
+   */
+  size_t mNumReactionSpecies;
 
   /**
    * max number of single stochastic steps to do in one step()
@@ -202,11 +207,6 @@ protected:
    * The index of the next reaction which fires
    */
   size_t mNextReactionIndex;
-
-  /**
-   *   Number of variable metabolites.
-   */
-  size_t mNumReactionSpecies;
 
   /**
    * A reference to the math container's reactions

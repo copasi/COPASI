@@ -187,8 +187,6 @@ size_t CFunctionParameters::findParameterByName(const std::string & name,
     const CFunctionParameter ** ppFunctionParameter) const
 {
   std::string Name;
-  size_t imax = mParameters.size();
-
   size_t Index = mParameters.getIndex(name);
 
   if (ppFunctionParameter != NULL)

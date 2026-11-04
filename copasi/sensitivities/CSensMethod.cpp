@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -39,6 +39,26 @@
 #include "copasi/math/CMathContainer.h"
 #include "copasi/utilities/CProcessReport.h"
 
+CSensMethodLocalData::CSensMethodLocalData()
+  : tmp1()
+  , tmp2()
+  , mInitialStateVariables()
+  , mInitialSequences(nullptr)
+  , index(0)
+{}
+
+CSensMethodLocalData::CSensMethodLocalData(const CSensMethodLocalData & src)
+  : tmp1(src.tmp1)
+  , tmp2(src.tmp2)
+  , mInitialStateVariables(src.mInitialStateVariables)
+  , mInitialSequences(src.mInitialSequences, nullptr)
+  , index(src.index)
+{}
+
+// virtual
+CSensMethodLocalData::~CSensMethodLocalData()
+{}
+
 /**
  *  Default constructor.
  */
@@ -50,7 +70,7 @@ CSensMethod::CSensMethod(const CDataContainer * pParent,
   mLocalData(),
   mTargetValuePointers(),
   mpSubTask(NULL),
-  mTargetValueSequence(),
+  mTargetValueSequence(nullptr),
   mpDeltaFactor(NULL),
   mpMinDelta(NULL),
   mStoreSubtasktUpdateFlag(false),
@@ -76,7 +96,7 @@ CSensMethod::CSensMethod(const CSensMethod & src,
   mLocalData(),
   mTargetValuePointers(),
   mpSubTask(NULL),
-  mTargetValueSequence(),
+  mTargetValueSequence(nullptr),
   mpDeltaFactor(NULL),
   mpMinDelta(NULL),
   mStoreSubtasktUpdateFlag(false),
@@ -483,17 +503,16 @@ bool CSensMethod::initialize(CSensProblem* problem)
 
   switch (mpProblem->getSubTaskType())
     {
-      case CSensProblem::Evaluation:
-      case CSensProblem::__SIZE:
+      case CTaskEnum::Task::UnsetTask:
         mpSubTask = NULL;
         break;
 
-      case CSensProblem::SteadyState:
+      case CTaskEnum::Task::steadyState:
         mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Steady-State"));
         break;
 
-      case CSensProblem::TimeSeries:
+      case CTaskEnum::Task::timeCourse:
         mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Time-Course"));
         break;
@@ -503,17 +522,17 @@ bool CSensMethod::initialize(CSensProblem* problem)
                         (&pDataModel->getTaskList()->operator[]("Lyapunov Exponents"));
             break;*/
 
-      case CSensProblem::ParameterEstimation:
+      case CTaskEnum::Task::parameterFitting:
         mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Parameter Estimation"));
         break;
 
-      case CSensProblem::Optimization:
+      case CTaskEnum::Task::optimization:
         mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Optimization"));
         break;
 
-      case CSensProblem::CrossSection:
+      case CTaskEnum::Task::crosssection:
         mpSubTask = dynamic_cast<CCopasiTask*>
                     (&pDataModel->getTaskList()->operator[]("Cross Section"));
         break;

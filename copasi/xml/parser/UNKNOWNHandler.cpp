@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -56,8 +56,8 @@ void UNKNOWNHandler::end(const XML_Char * pszName)
 }
 
 // virtual
-CXMLHandler * UNKNOWNHandler::processStart(const XML_Char * pszName,
-    const XML_Char ** papszAttrs)
+CXMLHandler * UNKNOWNHandler::processStart(const XML_Char * /* pszName */,
+    const XML_Char ** /* papszAttrs */)
 {
   mLevel++;
 
@@ -65,7 +65,7 @@ CXMLHandler * UNKNOWNHandler::processStart(const XML_Char * pszName,
 }
 
 // virtual
-bool UNKNOWNHandler::processEnd(const XML_Char * pszName)
+bool UNKNOWNHandler::processEnd(const XML_Char * /* pszName */)
 {
   mLevel--;
 

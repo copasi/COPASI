@@ -1,4 +1,4 @@
-// Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2025 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -22,33 +22,7 @@ CQPLGenerateWidget::CQPLGenerateWidget(QWidget * parent)
 {
   setupUi(this);
 
-  CTaskEnum::Method validMethods[] = {
-    // local
-    CTaskEnum::Method::LevenbergMarquardt,
-    CTaskEnum::Method::NelderMead,
-    CTaskEnum::Method::HookeJeeves,
-
-    // statistic
-    CTaskEnum::Method::Statistics,
-
-    // others
-    CTaskEnum::Method::DifferentialEvolution,
-    CTaskEnum::Method::SRES,
-    CTaskEnum::Method::EvolutionaryProgram,
-    CTaskEnum::Method::GeneticAlgorithm,
-    CTaskEnum::Method::GeneticAlgorithmSR,
-    CTaskEnum::Method::NL2SOL,
-    CTaskEnum::Method::ParticleSwarm,
-    CTaskEnum::Method::Praxis,
-    CTaskEnum::Method::RandomSearch,
-    CTaskEnum::Method::ScatterSearch,
-    CTaskEnum::Method::SimulatedAnnealing,
-    CTaskEnum::Method::SteepestDescent,
-    CTaskEnum::Method::TruncatedNewton,
-    CTaskEnum::Method::UnsetMethod
-  };
-
-  mpMethodWidget->setValidMethods(validMethods);
+  mpMethodWidget->setValidMethods(COptTask::ValidMethods);
   mpMethodWidget->showMethodParameters(true);
   mpMethodWidget->showMethodCheckbox(true);
 }

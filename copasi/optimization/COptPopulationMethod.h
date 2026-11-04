@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -103,7 +103,7 @@ public:
 protected:
   bool createIndividual(const size_t & index, const COptItem::CheckPolicyFlag & policy);
 
-  virtual void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CRandom * pRandom);
+  virtual void finalizeCreation(const size_t & individual, const size_t & index, const COptItem & item, CConfigurableRNG & rng);
 
   /**
    * size of the population / swarm size
@@ -139,11 +139,6 @@ protected:
    * array of values of objective function f/ individuals
    */
   CVector< C_FLOAT64 > mValues;
-
-  /**
-   * a pointer to the random number generator.
-   */
-  CRandomContext  mRandomContext;
 };
 
 #endif // COPASI_COptPopulationMethod_H

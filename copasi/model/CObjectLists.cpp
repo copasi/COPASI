@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -282,7 +282,7 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
         for (; itMetab != endMetab; ++itMetab)
           if (itMetab->getStatus() == CModelEntity::Status::ODE ||
               itMetab->getStatus() == CModelEntity::Status::REACTIONS)
-            ret.push_back(static_cast< const CDataObject * >(itMetab->getObject(CCommonName("Reference=TransitionTime"))));
+            ret.push_back(static_cast< const CDataObject * >(itMetab->getChildObject(CCommonName("Reference=TransitionTime"))));
 
         break;
 
@@ -297,14 +297,14 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
       case REACTION_CONC_FLUXES:
 
         for (; itReaction != endReaction; ++itReaction)
-          ret.push_back(static_cast< const CDataObject * >(itReaction->getObject(CCommonName("Reference=Flux"))));
+          ret.push_back(static_cast< const CDataObject * >(itReaction->getChildObject(CCommonName("Reference=Flux"))));
 
         break;
 
       case REACTION_PART_FLUXES:
 
         for (; itReaction != endReaction; ++itReaction)
-          ret.push_back(static_cast< const CDataObject * >(itReaction->getObject(CCommonName("Reference=ParticleFlux"))));
+          ret.push_back(static_cast< const CDataObject * >(itReaction->getChildObject(CCommonName("Reference=ParticleFlux"))));
 
         break;
 
@@ -506,7 +506,8 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
         if (!pParent)
           break;
 
-        const CDataArray * pEV = dynamic_cast<const CDataArray*>(pParent->getObject(CCommonName("Vector=TaskList[Steady-State],Array=Eigenvalues of reduced system Jacobian")));
+        CCommonName cn(pParent->getCN() + "Vector=TaskList[Steady-State],Array=Eigenvalues of reduced system Jacobian");
+        const CDataArray * pEV = dynamic_cast<const CDataArray * >(cn.resolve(pParent));
 
         if (pEV->dimensionality() != 2) //2d matrix
           break;
@@ -529,7 +530,8 @@ CObjectLists::getListOfConstObjects(ListType t, const CModel* pModel)
         if (!pParent)
           break;
 
-        const CDataArray * pEV = dynamic_cast<const CDataArray*>(pParent->getObject(CCommonName("Vector=TaskList[Steady-State],Array=Eigenvalues of reduced system Jacobian")));
+        CCommonName cn(pParent->getCN() + "Vector=TaskList[Steady-State],Array=Eigenvalues of reduced system Jacobian");
+        const CDataArray * pEV = dynamic_cast<const CDataArray * >(cn.resolve(pParent));
 
         if (pEV->dimensionality() != 2) //2d matrix
           break;

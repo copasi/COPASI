@@ -138,6 +138,11 @@
 	return $self->CModelParameterGroup::getModelParameter(cn);
   }
    
+  CModelParameter * getModelParameter(const CCommonName & cn) const
+  {
+	return $self->CModelParameterGroup::getModelParameter(cn);
+  }
+
     /**
    * Retrieve a pointer to the parameter with the given name and type
    * @param const std::string & name

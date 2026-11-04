@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -105,14 +105,14 @@ bool SensitivitiesWidget::saveTaskProtected()
     return false;
 
   // subtask
-  problem->setSubTaskType((CSensProblem::SubTaskType)SubTaskChooser->currentIndex());
+  problem->setSubTaskType(CSensProblem::ValidSubtask.toEnum(TO_UTF8(SubTaskChooser->currentText())));
   // target function
   CSensItem TargetFunctions;
 
   if (FunctionChooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     {
       if (mpSingleFunction)
-        TargetFunctions.setSingleObjectCN(CRegisteredCommonName(mpSingleFunction->getStringCN()));
+        TargetFunctions.setSingleObjectCN(CRegisteredCommonName(mpSingleFunction->getCN()));
     }
   else
     TargetFunctions.setListType(FunctionChooser->getCurrentObjectList());
@@ -129,7 +129,7 @@ bool SensitivitiesWidget::saveTaskProtected()
   if (VariableChooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     {
       if (mpSingleVariable)
-        FirstVariables.setSingleObjectCN(CRegisteredCommonName(mpSingleVariable->getStringCN()));
+        FirstVariables.setSingleObjectCN(CRegisteredCommonName(mpSingleVariable->getCN()));
     }
   else
     FirstVariables.setListType(VariableChooser->getCurrentObjectList());
@@ -147,7 +147,7 @@ bool SensitivitiesWidget::saveTaskProtected()
   if (Variable2Chooser->getCurrentObjectList() == CObjectLists::SINGLE_OBJECT)
     {
       if (mpSingleVariable2)
-        SecondVariables.setSingleObjectCN(CRegisteredCommonName(mpSingleVariable2->getStringCN()));
+        SecondVariables.setSingleObjectCN(CRegisteredCommonName(mpSingleVariable2->getCN()));
     }
   else
     SecondVariables.setListType(Variable2Chooser->getCurrentObjectList());
@@ -219,7 +219,7 @@ bool SensitivitiesWidget::loadTaskProtected()
   //  dynamic_cast<CSensMethod *>(sensTask->getMethod());
   //assert(method);
   //mSubTaskType = problem->getSubTaskType();
-  SubTaskChooser->setCurrentIndex((int)problem->getSubTaskType());
+  SubTaskChooser->setCurrentText(FROM_UTF8(CSensProblem::ValidSubtask[problem->getSubTaskType()]));
   updateComboBoxes(problem->getSubTaskType());
   CSensItem tmp = problem->getTargetFunctions();
 
@@ -321,19 +321,18 @@ SensitivitiesWidget::initCombos()
   QStringList StringList;
   //std::vector<int> mFunctionIndexTable, mVariableIndexTable;
   // SubTaskChooser combo
-  int i = 0;
 
-  for (int i = 0; i < CSensProblem::SubTaskType::__SIZE; ++i)
+  for (const auto & a:  CSensProblem::ValidSubtask.annotations())
     {
-      StringList.append(FROM_UTF8(CTaskEnum::TaskName[CSensProblem::SubTaskTypeToTask[i]]));
+      StringList.append(FROM_UTF8(a));
     }
 
   SubTaskChooser->insertItems(SubTaskChooser->count(), StringList);
-  SubTaskChooser->setCurrentIndex(0);
-  updateComboBoxes((CSensProblem::SubTaskType)0);
+  SubTaskChooser->setCurrentText(FROM_UTF8(CSensProblem::ValidSubtask[CTaskEnum::Task::UnsetTask]));
+  updateComboBoxes(CTaskEnum::Task::UnsetTask);
 }
 
-void SensitivitiesWidget::updateComboBoxes(CSensProblem::SubTaskType type)
+void SensitivitiesWidget::updateComboBoxes(CTaskEnum::Task type)
 {
   FunctionChooser->fillFromList(CSensProblem::getPossibleTargetFunctions(type));
   VariableChooser->fillFromList(CSensProblem::getPossibleVariables(type));
@@ -346,7 +345,7 @@ void
 //SensitivitiesWidget::on_SubTaskChooser_activated(int)
 SensitivitiesWidget::slotChooseSubTask(int)
 {
-  CSensProblem::SubTaskType subTaskType = (CSensProblem::SubTaskType)SubTaskChooser->currentIndex();
+  CTaskEnum::Task subTaskType = CSensProblem::ValidSubtask.toEnum(TO_UTF8(SubTaskChooser->currentText()));
   updateComboBoxes(subTaskType);
   updateAllLineditEnable();
 }

@@ -60,15 +60,21 @@ bool CQTaskHeaderWidget::setTaskName(const std::string & name)
 void CQTaskHeaderWidget::saved()
 {
   mUpdateChanged = false;
-  mpUpdateModel->setStyleSheet(QString(mpUpdateModel->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
-
   mExecutableChanged = false;
+ 
+  if (isDarkMode())
+    return;
+
+  mpUpdateModel->setStyleSheet(QString(mpUpdateModel->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
   mpBoxExecutable->setStyleSheet(QString(mpBoxExecutable->metaObject()->className()) + " {background-color:" + mSavedColor.name() + ";}");
 }
 
 void CQTaskHeaderWidget::slotUpdate()
 {
   mUpdateChanged = !mUpdateChanged;
+
+  if (isDarkMode())
+    return;
 
   if (mUpdateChanged)
     {
@@ -83,6 +89,9 @@ void CQTaskHeaderWidget::slotUpdate()
 void CQTaskHeaderWidget::slotExecutable()
 {
   mExecutableChanged = !mExecutableChanged;
+
+  if (isDarkMode())
+    return;
 
   if (mExecutableChanged)
     {

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -30,7 +30,7 @@
 #include "copasi/undo/CData.h"
 
 // static
-CLColorDefinition * CLColorDefinition::fromData(const CData & data, CUndoObjectInterface * pParent)
+CLColorDefinition * CLColorDefinition::fromData(const CData & /* data */, CUndoObjectInterface * /* pParent */)
 {
   return new CLColorDefinition(NO_PARENT);
 }
@@ -47,7 +47,7 @@ CData CLColorDefinition::toData() const
 }
 
 // virtual
-bool CLColorDefinition::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CLColorDefinition::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 

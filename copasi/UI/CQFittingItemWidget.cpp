@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -152,9 +152,9 @@ void CQFittingItemWidget::slotCheckLowerInf(bool checked)
   CRegisteredCommonName Number;
 
   if (checked)
-    Number = CRegisteredCommonName("-inf", nullptr);
+    Number = CCommonName("-inf");
   else if (isNumber(TO_UTF8(mpEditLower->text())))
-    Number = CRegisteredCommonName(TO_UTF8(mpEditLower->text()), nullptr);
+    Number = CCommonName(TO_UTF8(mpEditLower->text()));
   else if (mpLowerObject)
     Number = mpLowerObject->getCN();
   else return;
@@ -188,9 +188,9 @@ void CQFittingItemWidget::slotCheckUpperInf(bool checked)
   CRegisteredCommonName Number;
 
   if (checked)
-    Number = CRegisteredCommonName("inf", nullptr);
+    Number = CCommonName("inf");
   else if (isNumber(TO_UTF8(mpEditUpper->text())))
-    Number = CRegisteredCommonName(TO_UTF8(mpEditUpper->text()), nullptr);
+    Number = CCommonName(TO_UTF8(mpEditUpper->text()));
   else if (mpUpperObject)
     Number = mpUpperObject->getCN();
   else return;
@@ -1430,14 +1430,14 @@ void CQFittingItemWidget::saveSelection()
       pItem = (*mpItemsCopy)[*it];
 
       if (mpCheckLowerInf->isChecked())
-        pItem->setLowerBound(CRegisteredCommonName("-inf", nullptr));
+        pItem->setLowerBound(CCommonName("-inf"));
       else if (isNumber(TO_UTF8(mpEditLower->text())))
-        pItem->setLowerBound(CRegisteredCommonName(TO_UTF8(mpEditLower->text()), nullptr));
+        pItem->setLowerBound(CCommonName(TO_UTF8(mpEditLower->text())));
 
       if (mpCheckUpperInf->isChecked())
-        pItem->setUpperBound(CRegisteredCommonName("inf", nullptr));
+        pItem->setUpperBound(CCommonName("inf"));
       else if (isNumber(TO_UTF8(mpEditUpper->text())))
-        pItem->setUpperBound(CRegisteredCommonName(TO_UTF8(mpEditUpper->text()), nullptr));
+        pItem->setUpperBound(CCommonName(TO_UTF8(mpEditUpper->text())));
 
       if (isNumber(TO_UTF8(mpEditStart->text())))
         pItem->setStartValue(mpEditStart->text().toDouble());
@@ -1508,7 +1508,7 @@ void CQFittingItemWidget::slotLowerLostFocus()
 
   for (; it != end; ++it)
     {
-      (*mpItemsCopy)[*it]->setLowerBound(CRegisteredCommonName(Number, nullptr));
+      (*mpItemsCopy)[*it]->setLowerBound(CCommonName(Number));
 
       if (first)
         {
@@ -1541,7 +1541,7 @@ void CQFittingItemWidget::slotUpperLostFocus()
 
   for (; it != end; ++it)
     {
-      (*mpItemsCopy)[*it]->setUpperBound(CRegisteredCommonName(Number, nullptr));
+      (*mpItemsCopy)[*it]->setUpperBound(CCommonName(Number));
 
       if (first)
         {
@@ -1581,11 +1581,11 @@ void CQFittingItemWidget::slotReset()
 
       case CQStartValueReset::RANDOM:
       {
-        CRandom &Random = mpDataModel->getModel()->getMathContainer().getRandomGenerator();
+        CConfigurableRNG & RNG = mpDataModel->getModel()->getMathContainer().getRandomGenerator();
 
         for (; it != end; ++it)
           {
-            (*mpItemsCopy)[*it]->setStartValue((*mpItemsCopy)[*it]->getRandomValue(&Random));
+            (*mpItemsCopy)[*it]->setStartValue((*mpItemsCopy)[*it]->getRandomValue(RNG));
             mpEditStart->setText(convertToQString((*mpItemsCopy)[*it]->getStartValue()));
             setTableText((int) *it, (*mpItemsCopy)[*it]);
           }

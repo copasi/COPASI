@@ -310,7 +310,7 @@ const MESSAGES Messages[] =
   {MCSBML + 87, "SBML (87): Reactions with references to local kinetic parameters found in delay calls.\nLocal parameters in the following reactions have been converted to global variables:\n%s"},
   {MCSBML + 88, "SBML (88): Reaction with id \"%s\" referenced in kinetic law for reaction with id \"%s\".\nCOPASI can not handle references to reaction fluxes in kinetic laws.\nPlease modify your model to use global parameters which reference the reaction id instead of referencing the reaction id directly."},
   {MCSBML + 89, "SBML (89): Reaction with id \"%s\" has non-integer dimensionality. This is currently not supported by COPASI. COPASI will assume that the compartment is three dimensional."},
-  {MCSBML + 90, "SBML (90): Reaction with id \"%s\" has no spatial dimensions set. COPASI will assume that the compartment is three dimensional."},
+  {MCSBML + 90, "SBML (90): Compartment with id \"%s\" has no spatial dimensions set. COPASI will assume that the compartment is three dimensional."},
   {MCSBML + 91, "SBML (91): The default %s unit has not been set in the model. COPASI will use %s as the default %s unit."},
   {MCSBML + 92, "SBML (92): The default extent unit has not been set in the model or differs from the substance default units. COPASI will assume that the extent units are the same as the substance units."},
   {MCSBML + 93, "SBML (93): The model uses units on numbers which COPASI currently can't handle. Please be aware that the display of units in COPASI might therefore be incorrect,"},

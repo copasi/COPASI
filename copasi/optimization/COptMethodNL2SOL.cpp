@@ -211,7 +211,7 @@ const CVector< C_FLOAT64 > * COptMethodNL2SOL::getCurrentParameters() const
 }
 
 C_INT COptMethodNL2SOL::calcr(integer *n, integer *p, doublereal *x, integer *nf, doublereal *resid,
-                              integer *uiparm, doublereal *urparm, U_fp /* ufparm */)
+                              integer * /* uiparm */, doublereal *urparm, U_fp /* ufparm */)
 {
   int i;
   const std::vector< COptItem * > & OptItemList = mProblemContext.active()->getOptItemList(true);

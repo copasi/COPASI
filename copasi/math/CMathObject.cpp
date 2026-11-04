@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -82,26 +82,6 @@ CMathObject::CMathObject():
   mpDataObject(NULL)
 {}
 
-CMathObject::CMathObject(const CMathObject & src):
-  CObjectInterface(src),
-  mpExpression(src.mpExpression),
-  mpValue(src.mpValue),
-  mPrerequisites(src.mPrerequisites),
-  mValueType(src.mValueType),
-  mEntityType(src.mEntityType),
-  mSimulationType(src.mSimulationType),
-  mIsIntensiveProperty(src.mIsIntensiveProperty),
-  mIsInitialValue(src.mIsInitialValue),
-  mpCorrespondingProperty(src.mpCorrespondingProperty),
-  mpCorrespondingPropertyValue(src.mpCorrespondingPropertyValue),
-  mpCompartmentValue(src.mpCompartmentValue),
-  mpQuantity2NumberValue(src.mpQuantity2NumberValue),
-  mStoichiometryVector(src.mStoichiometryVector),
-  mRateVector(src.mRateVector),
-  mpCalculate(src.mpCalculate),
-  mpDataObject(src.mpDataObject)
-{}
-
 // virtual
 CMathObject::~CMathObject()
 {
@@ -150,12 +130,24 @@ void CMathObject::relocate(CMathContainer * pContainer,
 }
 
 // virtual
-CCommonName CMathObject::getCNProtected() const
+const CObjectInterface * CMathObject::resolve(const CCommonNameComponent::shared_ptr & pCN) const
 {
-  if (mpDataObject == NULL)
-    return CCommonName("CMathObject: no data equivalence.");
+  if (mpDataObject != nullptr)
+    return mpDataObject->getChildObject(pCN);
 
-  return mpDataObject->getStringCN();
+  return nullptr;
+}
+
+const CCommonNameComponent::shared_ptr & CMathObject::getCNComponent() const
+{
+  if (mpDataObject == nullptr)
+    {
+      static const CCommonNameComponent::shared_ptr emptyCNComponent = CCommonNameComponent::create("Math Object=Math Container Internal Object", "Math Object", "Math Container Internal Object");
+
+      return emptyCNComponent;
+    }
+
+  return mpDataObject->getCNComponent();
 }
 
 std::string CMathObject::getObjectDisplayName() const
@@ -169,6 +161,7 @@ std::string CMathObject::getObjectDisplayName() const
 }
 
 //virtual
+/*
 const CObjectInterface * CMathObject::getObject(const CCommonName & cn) const
 {
   if (mpDataObject == NULL)
@@ -181,6 +174,7 @@ const CObjectInterface * CMathObject::getObject(const CCommonName & cn) const
 
   return this;
 }
+ */
 
 // virtual
 const CObjectInterface::ObjectSet & CMathObject::getPrerequisites() const
@@ -621,7 +615,9 @@ bool CMathObject::compile(CMathContainer & container)
       if (mEntityType == CMath::EntityType::Species)
         {
           const CMetab * pSpecies = static_cast< const CMetab * >(mpDataObject->getObjectParent());
-          mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pSpecies->getCompartment()->getValueReference())->getValuePointer());
+          auto * pMathObj = container.getMathObject(pSpecies->getCompartment()->getValueReference());
+          if (pMathObj)
+          mpCompartmentValue = static_cast< const C_FLOAT64 * >(pMathObj->getValuePointer());
         }
       else if (mEntityType == CMath::EntityType::Reaction)
         {
@@ -629,7 +625,9 @@ bool CMathObject::compile(CMathContainer & container)
 
           if (pReaction->getScalingCompartment() != NULL)
             {
-              mpCompartmentValue = static_cast< const C_FLOAT64 * >(container.getMathObject(pReaction->getScalingCompartment()->getValueReference())->getValuePointer());
+              auto * pMathObj = container.getMathObject(pReaction->getScalingCompartment()->getValueReference());
+              if (pMathObj)
+                mpCompartmentValue = static_cast< const C_FLOAT64 * >(pMathObj->getValuePointer());
             }
         }
 
@@ -716,7 +714,6 @@ bool CMathObject::compile(CMathContainer & container)
       case CMath::ValueType::EventRootState:
       case CMath::ValueType::DelayValue:
       case CMath::ValueType::DelayLag:
-      case CMath::ValueType::__SIZE:
         // These objects are compiled through the event compile,
         // which is executed after the object compile. It is therefore
         // correct to leave the object in its default state.
@@ -801,9 +798,6 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
           case CMath::SimulationType::Undefined:
             success = false;
             break;
-
-          case CMath::SimulationType::__SIZE:
-            break;
         }
     }
   else
@@ -838,9 +832,6 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
           case CMath::SimulationType::Independent:
           case CMath::SimulationType::Dependent:
             success = false;
-            break;
-
-          case CMath::SimulationType::__SIZE:
             break;
         }
     }
@@ -901,9 +892,6 @@ bool CMathObject::compileValue(CMathContainer & container)
           case CMath::SimulationType::Dependent:
             success = false;
             break;
-
-          case CMath::SimulationType::__SIZE:
-            break;
         }
     }
   else
@@ -952,9 +940,6 @@ bool CMathObject::compileValue(CMathContainer & container)
           case CMath::SimulationType::Undefined:
             success = false;
             break;
-
-          case CMath::SimulationType::__SIZE:
-            break;
         }
     }
 
@@ -1000,9 +985,6 @@ bool CMathObject::compileRate(CMathContainer & container)
           case CMath::SimulationType::Dependent:
           case CMath::SimulationType::Conversion:
             success = false;
-            break;
-
-          case CMath::SimulationType::__SIZE:
             break;
         }
     }
@@ -1051,9 +1033,6 @@ bool CMathObject::compileRate(CMathContainer & container)
           case CMath::SimulationType::EventTarget:
           case CMath::SimulationType::Conversion:
             success = false;
-            break;
-
-          case CMath::SimulationType::__SIZE:
             break;
         }
     }
@@ -1186,9 +1165,6 @@ bool CMathObject::compileNoise(CMathContainer & container)
           case CMath::SimulationType::Conversion:
             success = false;
             break;
-
-          case CMath::SimulationType::__SIZE:
-            break;
         }
     }
   else
@@ -1236,9 +1212,6 @@ bool CMathObject::compileNoise(CMathContainer & container)
           case CMath::SimulationType::EventTarget:
           case CMath::SimulationType::Conversion:
             success = false;
-            break;
-
-          case CMath::SimulationType::__SIZE:
             break;
         }
     }
@@ -1824,14 +1797,10 @@ bool CMathObject::createConvertedExpression(const CExpression * pExpression,
   return success;
 }
 
-bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
+bool CMathObject::createIntensiveValueExpression(const CMetab * /* pSpecies */,
     CMathContainer & container)
 {
   bool success = true;
-
-  // mConc = *mpValue / (mpModel->getQuantity2NumberFactor() * mpCompartment->getValue());
-  CObjectInterface * pNumber = NULL;
-  CObjectInterface * pCompartment = NULL;
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
@@ -1858,26 +1827,10 @@ bool CMathObject::createIntensiveValueExpression(const CMetab * pSpecies,
   return success;
 }
 
-bool CMathObject::createExtensiveValueExpression(const CMetab * pSpecies,
+bool CMathObject::createExtensiveValueExpression(const CMetab * /* pSpecies */,
     CMathContainer & container)
 {
   bool success = true;
-
-  // mConc * mpCompartment->getValue() * mpModel->getQuantity2NumberFactor();
-
-  CObjectInterface * pIntensiveValue = NULL;
-  CObjectInterface * pCompartment = NULL;
-
-  if (mIsInitialValue)
-    {
-      pIntensiveValue = pSpecies->getInitialConcentrationReference();
-      pCompartment = pSpecies->getCompartment()->getInitialValueReference();
-    }
-  else
-    {
-      pIntensiveValue = pSpecies->getConcentrationReference();
-      pCompartment = pSpecies->getCompartment()->getValueReference();
-    }
 
   std::ostringstream Infix;
   Infix.imbue(std::locale::classic());
@@ -2270,7 +2223,7 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 {
   if (o.mpDataObject != NULL)
     {
-      os << o.mpDataObject->getStringCN() << "\n";
+      os << o.mpDataObject->getCN() << "\n";
     }
   else
     {
@@ -2361,10 +2314,6 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
       case CMath::ValueType::TransitionTime:
         os << "TransitionTime" << "\n";
         break;
-
-      case CMath::ValueType::__SIZE:
-        os << "***ENUM RANGE" << "\n";
-        break;
     }
 
   os << "  Simulation Type:        ";
@@ -2405,10 +2354,6 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 
       case CMath::SimulationType::Conversion:
         os << "Conversion" << "\n";
-        break;
-
-      case CMath::SimulationType::__SIZE:
-        os << "***ENUM RANGE" << "\n";
         break;
     };
 
@@ -2463,10 +2408,6 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
       case CMath::EntityType::Delay:
         os << "Delay" << "\n";
         break;
-
-      case CMath::EntityType::__SIZE:
-        os << "***ENUM RANGE" << "\n";
-        break;
     };
 
   os << "  Is Intensive Property:  " << (o.mIsIntensiveProperty ? "true" : "false") << "\n";
@@ -2477,7 +2418,7 @@ std::ostream &operator<<(std::ostream &os, const CMathObject & o)
 
   if (o.mpCorrespondingProperty != NULL)
     {
-      os << o.mpCorrespondingProperty->getCNProtected() << "\n";
+      os << o.mpCorrespondingProperty->getCN() << "\n";
     }
   else
     {

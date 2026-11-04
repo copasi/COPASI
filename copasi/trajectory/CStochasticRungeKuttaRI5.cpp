@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -24,7 +24,7 @@
 #include "copasi/math/CMathContainer.h"
 #include "copasi/model/CModel.h"
 #include "copasi/model/CState.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
 // Uncomment this line below to get debug print out.
 // #define DEBUG_OUTPUT 1
@@ -154,50 +154,50 @@ CStochasticRungeKuttaRI5::CStochasticRungeKuttaRI5(const CStochasticRungeKuttaRI
   , mContainerRates()
   , mContainerNoise()
   , mContainerRoots()
-  , mNumVariables(src.mNumVariables)
-  , mNumNoise(src.mNumNoise)
-  , mNumRoots(src.mNumRoots)
+  , mNumVariables(0)
+  , mNumNoise(0)
+  , mNumRoots(0)
   , mpInternalStepSize(NULL)
   , mpMaxInternalSteps(NULL)
   , mpForcePhysicalCorrectness(NULL)
   , mpRootRelativeTolerance(NULL)
   , mpAbsoluteTolerance(NULL)
-  , mAtol(src.mAtol)
+  , mAtol()
   , mpRandom(NULL)
-  , mStepSize(src.mStepSize)
-  , mSqrtStepSize(src.mSqrtStepSize)
-  , mRandomIHat(src.mRandomIHat)
-  , mRandomITilde(src.mRandomITilde)
-  , mRandomIMatrix(src.mRandomIMatrix)
-  , mTime(src.mTime)
-  , mTargetTime(src.mTargetTime)
-  , mTargetDelta(src.mTargetDelta)
-  , mLastCalculatedTime(src.mLastCalculatedTime)
-  , mLastCalculatedVariables(src.mLastCalculatedVariables)
-  , mInternalSteps(src.mInternalSteps)
-  , mH10(src.mH10)
-  , mSumAll1(src.mSumAll1)
-  , mSumPartial1(src.mSumPartial1)
-  , mH20(src.mH20)
-  , mH2k(src.mH2k)
-  , mHH2k(src.mHH2k)
-  , mSumAll2(src.mSumAll2)
-  , mSumPartial2(src.mSumPartial2)
-  , mH30(src.mH30)
-  , mH3k(src.mH3k)
-  , mHH3k(src.mHH3k)
-  , mA(src.mA)
-  , mB(src.mB)
-  , mBB(src.mBB)
-  , mNoiseInputValues(src.mNoiseInputValues)
-  , mNoiseUpdateSequences(src.mNoiseUpdateSequences)
-  , mPhysicalValues(src.mPhysicalValues)
-  , mRootFinder(src.mRootFinder)
+  , mStepSize(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mSqrtStepSize(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mRandomIHat()
+  , mRandomITilde()
+  , mRandomIMatrix()
+  , mTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mTargetTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mTargetDelta(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mLastCalculatedTime(std::numeric_limits< C_FLOAT64 >::quiet_NaN())
+  , mLastCalculatedVariables()
+  , mInternalSteps(0)
+  , mH10()
+  , mSumAll1()
+  , mSumPartial1()
+  , mH20()
+  , mH2k()
+  , mHH2k()
+  , mSumAll2()
+  , mSumPartial2()
+  , mH30()
+  , mH3k()
+  , mHH3k()
+  , mA()
+  , mB()
+  , mBB()
+  , mNoiseInputValues()
+  , mNoiseUpdateSequences()
+  , mPhysicalValues()
+  , mRootFinder()
   , mRootValueCalculator(std::bind(&CStochasticRungeKuttaRI5::evalRoot, this, std::placeholders::_1, std::placeholders::_2))
   , mRoots()
-  , mRootCounter(src.mRootCounter)
-  , mRootMask(src.mRootMask)
-  , mRootMasking(src.mRootMasking)
+  , mRootCounter(0)
+  , mRootMask()
+  , mRootMasking(RootMask::NONE)
 {
   initializeParameter();
 
@@ -374,7 +374,7 @@ void CStochasticRungeKuttaRI5::start()
           pUpdateSequence->insert(pUpdateSequence->end(), *itNoiseInputObject);
         }
 
-      CCore::CUpdateSequence Sequence;
+      CCore::CUpdateSequence Sequence(nullptr);
       mpContainer->getTransientDependencies().getUpdateSequence(Sequence, CCore::SimulationContext::Default, Objects, NoiseObjects);
       pUpdateSequence->insert(pUpdateSequence->end(), Sequence.begin(), Sequence.end());
     }
@@ -486,7 +486,7 @@ C_FLOAT64 CStochasticRungeKuttaRI5::randomIHat()
 {
   static const double sqrt3 = sqrt(3.0);
 
-  switch (mpRandom->getRandomU(5))
+  switch (std::uniform_int_distribution< unsigned short >(0, 5)(*mpRandom))
     {
       case 0:
         return -sqrt3;
@@ -504,7 +504,7 @@ C_FLOAT64 CStochasticRungeKuttaRI5::randomIHat()
 
 C_FLOAT64 CStochasticRungeKuttaRI5::randomITilde()
 {
-  return mpRandom->getRandomU(1) ? 1.0 : -1.0;
+  return std::uniform_int_distribution< unsigned short >(0, 1)(*mpRandom) ? 1.0 : -1.0;
 }
 
 void CStochasticRungeKuttaRI5::buildStage1()
@@ -882,8 +882,10 @@ CTrajectoryMethod::Status CStochasticRungeKuttaRI5::internalStep()
 
                         for (; pRootFound != pRootFoundEnd; ++pRootFound)
                           if (*pRootFound != static_cast< C_INT >(CMath::RootToggleType::NoToggle))
-                            Result = ROOT;
-                            break;
+                            {
+                              Result = ROOT;
+                              break;
+                            }
                       }
                   }
 

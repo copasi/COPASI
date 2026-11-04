@@ -343,7 +343,7 @@ bool CQCompartmentDM::removeRows(int position, int rows, const QModelIndex & par
 
   for (; it != end; ++it, ++itRow)
     {
-      *it = itRow->getStringCN();
+      *it = itRow->getCN();
     }
 
   for (it = ToBeDeleted.begin(); it != end; ++it)

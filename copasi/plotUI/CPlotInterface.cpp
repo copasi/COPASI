@@ -1,7 +1,7 @@
-// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2022 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
 #include "CPlotInterface.h"
 #include <copasi/UI/qtUtilities.h>
@@ -14,14 +14,6 @@
 
 #include <QtSvg/QtSvg>
 #include <QtSvg/QSvgGenerator>
-
-// static
-const CEnumAnnotation< std::string, CPlotInterface::Axis > CPlotInterface::AxisNames(
-{
-  "x axis",
-  "y axis",
-  "z axis"
-});
 
 // virtual
 CPlotInterface::~CPlotInterface()

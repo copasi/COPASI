@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -40,12 +40,6 @@ CMathEvent::CAssignment::CAssignment()
   : mpTarget(NULL)
   , mpAssignment(NULL)
   , mIsStateValue(false)
-{}
-
-CMathEvent::CAssignment::CAssignment(const CMathEvent::CAssignment & src)
-  : mpTarget(src.mpTarget)
-  , mpAssignment(src.mpAssignment)
-  , mIsStateValue(src.mIsStateValue)
 {}
 
 CMathEvent::CAssignment::~CAssignment()
@@ -119,7 +113,7 @@ bool CMathEvent::CAssignment::compile(const CEventAssignment * pDataAssignment,
 
       Infix << pointerToString(&container.getQuantity2NumberFactor());
       Infix << "*<";
-      Infix << pSpecies->getCompartment()->getValueReference()->getStringCN();
+      Infix << pSpecies->getCompartment()->getValueReference()->getCN();
       Infix << ">*(";
       Infix << pDataAssignment->getExpression();
       Infix << ")";
@@ -176,16 +170,6 @@ CMathEvent::CTrigger::CRootProcessor::CRootProcessor():
   mLastToggleTime(),
   mpRootValue(NULL),
   mpRootStateValue(NULL)
-{}
-
-CMathEvent::CTrigger::CRootProcessor::CRootProcessor(const CMathEvent::CTrigger::CRootProcessor & src):
-  mpRoot(src.mpRoot),
-  mpRootState(src.mpRootState),
-  mEquality(src.mEquality),
-  mDiscrete(src.mDiscrete),
-  mLastToggleTime(src.mLastToggleTime),
-  mpRootValue(src.mpRootValue),
-  mpRootStateValue(src.mpRootStateValue)
 {}
 
 CMathEvent::CTrigger::CRootProcessor::~CRootProcessor()
@@ -352,13 +336,6 @@ CMathEvent::CTrigger::CTrigger():
   mpInitialTrigger(NULL),
   mRoots(),
   mInfix()
-{}
-
-CMathEvent::CTrigger::CTrigger(const CMathEvent::CTrigger & src):
-  mpTrigger(src.mpTrigger),
-  mpInitialTrigger(src.mpInitialTrigger),
-  mRoots(src.mRoots.size()),
-  mInfix(src.mInfix)
 {}
 
 CMathEvent::CTrigger::~CTrigger()
@@ -948,7 +925,7 @@ CEvaluationNode * CMathEvent::CTrigger::compileEQ(const CEvaluationNode * pTrigg
 }
 
 // static
-CEvaluationNode * CMathEvent::CTrigger::compileNE(const CEvaluationNode * pTriggerNode,
+CEvaluationNode * CMathEvent::CTrigger::compileNE(const CEvaluationNode * /* pTriggerNode */,
     const std::vector< CEvaluationNode * > & children,
     const CMath::Variables< CEvaluationNode * > & variables,
     CMathEvent::CTrigger::CRootProcessor *& pRoot,
@@ -1011,7 +988,7 @@ CEvaluationNode * CMathEvent::CTrigger::compileLE(const CEvaluationNode * pTrigg
         pRootNode->addChild(children[1]);
         Equality = false;
         break;
-        
+
       default:
         break;
     }
@@ -1110,36 +1087,14 @@ CMathEvent::CMathEvent():
   mTargetValues(),
   mTargetPointers(),
   mEffectsSimulation(CMath::StateChange::None),
-  mDelaySequence(),
-  mTargetValuesSequence(),
-  mPostAssignmentSequence(),
+  mDelaySequence(nullptr),
+  mTargetValuesSequence(nullptr),
+  mPostAssignmentSequence(nullptr),
   mFireAtInitialTime(false),
   mTriggerIsPersistent(false),
   mDelayExecution(true),
   mpPendingAction(NULL),
   mDisabled(false)
-{}
-
-CMathEvent::CMathEvent(const CMathEvent & src):
-  mpContainer(src.mpContainer),
-  mpTime(src.mpTime),
-  mType(src.mType),
-  mTrigger(src.mTrigger),
-  mAssignments(src.mAssignments),
-  mpDelay(src.mpDelay),
-  mpPriority(src.mpPriority),
-  mpCallback(src.mpCallback),
-  mTargetValues(src.mTargetValues.size(), const_cast< double * >(src.mTargetValues.array())),
-  mTargetPointers(src.mTargetPointers),
-  mEffectsSimulation(src.mEffectsSimulation),
-  mDelaySequence(src.mDelaySequence),
-  mTargetValuesSequence(src.mTargetValuesSequence),
-  mPostAssignmentSequence(src.mPostAssignmentSequence),
-  mFireAtInitialTime(src.mFireAtInitialTime),
-  mTriggerIsPersistent(src.mTriggerIsPersistent),
-  mDelayExecution(src.mDelayExecution),
-  mpPendingAction(NULL),
-  mDisabled(src.mDisabled)
 {}
 
 /**
@@ -1150,6 +1105,7 @@ CMathEvent::~CMathEvent()
   pdelete(mpPendingAction);
 }
 
+/*
 CMathEvent & CMathEvent::operator = (const CMathEvent & rhs)
 {
   if (this == &rhs) return * this;
@@ -1176,6 +1132,7 @@ CMathEvent & CMathEvent::operator = (const CMathEvent & rhs)
 
   return *this;
 }
+ */
 
 const CMathEvent::CTrigger & CMathEvent::getTrigger() const
 {
@@ -1208,14 +1165,26 @@ void CMathEvent::initialize(CMath::sPointers & pointers)
                           false, false, NULL);
 }
 
+CMathEvent & CMathEvent::operator = (const CMathEvent & rhs)
+{
+  if (&rhs == this)
+    return * this;
+
+  copy(rhs, *rhs.mpContainer);
+
+  return *this;
+}
+
 void CMathEvent::copy(const CMathEvent & src, CMathContainer & container)
 {
   assert(&src != this);
-  *this = src;
 
+  mpContainer = &container;
+  mpTime = src.mpTime;
+  mType = src.mType;
   mTrigger.copy(src.mTrigger, container);
-
   mAssignments.resize(src.mAssignments.size());
+
   CAssignment * pAssignment = mAssignments.array();
   CAssignment * pAssignmentEnd = pAssignment + mAssignments.size();
   const CAssignment * pAssignmentSrc = src.mAssignments.array();
@@ -1224,6 +1193,21 @@ void CMathEvent::copy(const CMathEvent & src, CMathContainer & container)
     {
       pAssignment->copy(*pAssignmentSrc, container);
     }
+
+  mpDelay = src.mpDelay;
+  mpPriority = src.mpPriority;
+  mpCallback = src.mpCallback;
+  mTargetValues.initialize(src.mTargetValues);
+  mTargetPointers = src.mTargetPointers;
+  mEffectsSimulation = src.mEffectsSimulation;
+  mDelaySequence.copy(src.mDelaySequence, &container);
+  mTargetValuesSequence.copy(src.mTargetValuesSequence, &container);
+  mPostAssignmentSequence.copy(src.mPostAssignmentSequence, &container);
+  mFireAtInitialTime = src.mFireAtInitialTime;
+  mTriggerIsPersistent = src.mTriggerIsPersistent;
+  mDelayExecution = src.mDelayExecution;
+  mpPendingAction = NULL;
+  mDisabled = src.mDisabled;
 }
 
 void CMathEvent::relocate(const CMathContainer * pContainer,
@@ -1462,7 +1446,7 @@ void CMathEvent::createUpdateSequences()
 
   mpContainer->getTransientDependencies().getUpdateSequence(mPostAssignmentSequence, CCore::SimulationContext::UpdateMoieties, EventTargets, ExtendedStateValues);
 
-  CCore::CUpdateSequence StateEffects;
+  CCore::CUpdateSequence StateEffects(mpContainer);
   mpContainer->getTransientDependencies().getUpdateSequence(StateEffects, CCore::SimulationContext::Default, EventTargets, ExtendedStateValues);
 
   if (!StateEffects.empty())
@@ -1470,7 +1454,7 @@ void CMathEvent::createUpdateSequences()
       mEffectsSimulation |= CMath::eStateChange::State;
     }
 
-  CCore::CUpdateSequence ContiousSimulationEffects;
+  CCore::CUpdateSequence ContiousSimulationEffects(mpContainer);
   mpContainer->getTransientDependencies().getUpdateSequence(ContiousSimulationEffects, CCore::SimulationContext::Default, EventTargets, SimulationValues);
 
   if (!ContiousSimulationEffects.empty())
@@ -1488,7 +1472,7 @@ void CMathEvent::createUpdateSequences()
       DiscreteSimulationValues.insert(pRoot);
     }
 
-  CCore::CUpdateSequence DiscreteSimulationEffects;
+  CCore::CUpdateSequence DiscreteSimulationEffects(mpContainer);
   mpContainer->getTransientDependencies().getUpdateSequence(DiscreteSimulationEffects, CCore::SimulationContext::Default, EventTargets, DiscreteSimulationValues);
 
   if (!DiscreteSimulationEffects.empty())

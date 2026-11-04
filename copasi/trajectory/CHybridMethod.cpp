@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -59,7 +59,7 @@
 #include "copasi/core/CMatrix.h"
 #include "copasi/utilities/CDependencyGraph.h"
 #include "copasi/utilities/CIndexedPriorityQueue.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/utilities/CVersion.h"
 #include "copasi/math/CMathContainer.h"
 
@@ -94,7 +94,7 @@ CHybridMethod::CHybridMethod(const CDataContainer * pParent,
   , mMetab2React()
   , mAmu()
   , mAmuOld()
-  , mpRandomGenerator(nullptr)
+  , mRNG(nullptr)
   , mDG()
   , mPQ()
   , mAutomaticStepSize(false)
@@ -129,7 +129,7 @@ CHybridMethod::CHybridMethod(const CHybridMethod & src,
   , mMetab2React()
   , mAmu()
   , mAmuOld()
-  , mpRandomGenerator(nullptr)
+  , mRNG(nullptr)
   , mDG()
   , mPQ()
   , mAutomaticStepSize(src.mAutomaticStepSize)
@@ -265,11 +265,11 @@ void CHybridMethod::start()
   mUseRandomSeed = getValue< bool >("Use Random Seed");
   mRandomSeed = getValue< unsigned C_INT32 >("Random Seed");
 
-  mpRandomGenerator = &mpContainer->getRandomGenerator();
+  mRNG = &mpContainer->getRandomGenerator();
 
   if (mUseRandomSeed)
     {
-      mpRandomGenerator->initialize(mRandomSeed);
+      mRNG->seed(mRandomSeed);
     }
 
   mStepsAfterPartitionSystem = 0;
@@ -404,7 +404,6 @@ C_FLOAT64 CHybridMethod::doSingleStep(C_FLOAT64 currentTime, C_FLOAT64 endTime)
  */
 void CHybridMethod::calculateDerivative(CVectorCore< C_FLOAT64 > & deriv)
 {
-  C_INT32 bal = 0;
   CHybridStochFlag * j;
 
   mpContainer->updateSimulatedValues(false);
@@ -510,7 +509,7 @@ C_FLOAT64 CHybridMethod::generateReactionTime(size_t rIndex)
 {
   if (mAmu[rIndex] == 0) return std::numeric_limits<C_FLOAT64>::infinity();
 
-  C_FLOAT64 rand2 = mpRandomGenerator->getRandomOO();
+  C_FLOAT64 rand2 = std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mRNG);
   return -1.0 * log(rand2) / mAmu[rIndex];
 }
 

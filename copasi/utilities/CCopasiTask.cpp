@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -87,7 +87,7 @@ const CCopasiTask::OutputFlag CCopasiTask::OUTPUT_UI = CCopasiTask::OutputFlag(C
 const CCopasiTask::OutputFlag CCopasiTask::ONLY_TIME_SERIES = CCopasiTask::OutputFlag(CCopasiTask::OutputFlagBase::TIME_SERIES) | CCopasiTask::OutputFlagBase::INITIALIZE | CCopasiTask::OutputFlagBase::STREAM | CCopasiTask::OutputFlagBase::FINISH;
 
 // static
-CCopasiTask * CCopasiTask::fromData(const CData & data, CUndoObjectInterface * pParent)
+CCopasiTask * CCopasiTask::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   CCopasiTask * pNew = CTaskFactory::create(CTaskEnum::TaskName.toEnum(data.getProperty(CData::TASK_TYPE).toString()), NO_PARENT);
 
@@ -107,7 +107,7 @@ CData CCopasiTask::toData() const
   Data.addProperty(CData::TASK_TYPE, CTaskEnum::TaskName[mType]);
   Data.addProperty(CData::TASK_SCHEDULED, mScheduled);
   Data.addProperty(CData::TASK_UPDATE_MODEL, mUpdateModel);
-  Data.addProperty(CData::TASK_REPORT, mReport.getReportDefinition() != NULL ? mReport.getReportDefinition()->getStringCN() : CCommonName());
+  Data.addProperty(CData::TASK_REPORT, mReport.getReportDefinition() != NULL ? mReport.getReportDefinition()->getCN() : CCommonName());
   Data.addProperty(CData::TASK_REPORT_TARGET, mReport.getTarget());
   Data.addProperty(CData::TASK_REPORT_APPEND, mReport.append());
   Data.addProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE, mReport.confirmOverwrite());
@@ -145,7 +145,8 @@ bool CCopasiTask::applyData(const CData & data, CUndoData::CChangeSet & changes)
 
   if (data.isSetProperty(CData::TASK_REPORT))
     {
-      const CReportDefinition * pReportDefinition = dynamic_cast< const CReportDefinition * >(getObjectFromCN(data.getProperty(CData::TASK_REPORT).toString()));
+      CCommonName CN = data.getProperty(CData::TASK_REPORT).toString();
+      const CReportDefinition * pReportDefinition = dynamic_cast< const CReportDefinition * >(getObjectFromCN(CN));
       mReport.setReportDefinition(pReportDefinition);
     }
 
@@ -200,7 +201,7 @@ void CCopasiTask::createUndoData(CUndoData & undoData,
   undoData.addProperty(CData::TASK_TYPE, oldData.getProperty(CData::TASK_TYPE), CTaskEnum::TaskName[mType]);
   undoData.addProperty(CData::TASK_SCHEDULED, oldData.getProperty(CData::TASK_SCHEDULED), mScheduled);
   undoData.addProperty(CData::TASK_UPDATE_MODEL, oldData.getProperty(CData::TASK_UPDATE_MODEL), mUpdateModel);
-  undoData.addProperty(CData::TASK_REPORT, oldData.getProperty(CData::TASK_REPORT), mReport.getReportDefinition() != NULL ? mReport.getReportDefinition()->getStringCN() : CCommonName());
+  undoData.addProperty(CData::TASK_REPORT, oldData.getProperty(CData::TASK_REPORT), mReport.getReportDefinition() != NULL ? mReport.getReportDefinition()->getCN() : CCommonName());
   undoData.addProperty(CData::TASK_REPORT_TARGET, oldData.getProperty(CData::TASK_REPORT_TARGET), mReport.getTarget());
   undoData.addProperty(CData::TASK_REPORT_APPEND, oldData.getProperty(CData::TASK_REPORT_APPEND), mReport.append());
   undoData.addProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE, oldData.getProperty(CData::TASK_REPORT_CONFIRM_OVERWRITE), mReport.confirmOverwrite());
@@ -254,17 +255,6 @@ void CCopasiTask::createUndoData(CUndoData & undoData,
   return;
 }
 
-bool CCopasiTask::isValidMethod(const CTaskEnum::Method & method,
-                                const CTaskEnum::Method * validMethods)
-{
-  unsigned C_INT32 i;
-
-  for (i = 0; validMethods[i] != CTaskEnum::Method::UnsetMethod; i++)
-    if (method == validMethods[i]) return true;
-
-  return false;
-}
-
 CCopasiTask::CCopasiTask()
   : CDataContainer(CTaskEnum::TaskName[CTaskEnum::Task::UnsetTask], NULL, "Task")
   , mType(CTaskEnum::Task::UnsetTask)
@@ -277,8 +267,8 @@ CCopasiTask::CCopasiTask()
   , mpProblem(NULL)
   , mpMethod(NULL)
   , mReport()
-  , mInitialState()
   , mpContainer(NULL)
+  , mInitialState()
   , mProcessReport()
   , mpSliders(NULL)
   , mDoOutput(OUTPUT_SE)
@@ -508,6 +498,8 @@ bool CCopasiTask::initialize(const OutputFlag & of,
   if (!isTaskValid())
     return false;
 
+  mMethodName = mpMethod ? mpMethod->getObjectName() : std::string();
+
   bool success = true;
 
   if (mpContainer != NULL)
@@ -600,12 +592,13 @@ bool CCopasiTask::restore(const bool & updateModel)
 }
 
 // virtual
-const CTaskEnum::Method * CCopasiTask::getValidMethods() const
+const CEnumAnnotation< CTaskEnum::Method, std::string_view > CCopasiTask::getValidMethods() const
 {
-  static const CTaskEnum::Method ValidMethods[] =
-  {
-    CTaskEnum::Method::UnsetMethod
-  };
+  static const CEnumAnnotationSubset ValidMethods{
+    CTaskEnum::MethodName,
+    CTaskEnum::Method::UnsetMethod,
+    std::array{
+      CTaskEnum::Method::UnsetMethod}};
 
   return ValidMethods;
 }
@@ -617,7 +610,7 @@ const CCopasiProblem * CCopasiTask::getProblem() const {return mpProblem;}
 // virtual
 bool CCopasiTask::setMethodType(const CTaskEnum::Method & type)
 {
-  if (!isValidMethod(type, getValidMethods())) return false;
+  if (!getValidMethods().isValid(type)) return false;
 
   if (mpMethod && mpMethod->getSubType() == type) return true;
 
@@ -636,6 +629,14 @@ void CCopasiTask::signalMethodChanged()
 CCopasiMethod * CCopasiTask::getMethod() {return mpMethod;}
 
 const CCopasiMethod * CCopasiTask::getMethod() const {return mpMethod;}
+
+//virtual
+C_FLOAT64 CCopasiTask::getEstimatedMethodError() const
+{
+  if (mpMethod)
+    return mpMethod->getEstimatedError();
+  return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+}
 
 CReport & CCopasiTask::getReport() {return mReport;}
 
@@ -722,6 +723,7 @@ void CCopasiTask::separate(const COutputInterface::Activity & activity)
 void CCopasiTask::initObjects()
 {
   addObjectReference("Output counter", mOutputCounter, CDataObject::ValueInt);
+  addObjectReference("Method Name", mMethodName, CDataObject::ValueString);
   new CCopasiTimer(CCopasiTimer::Type::WALL, this);
   new CCopasiTimer(CCopasiTimer::Type::PROCESS, this);
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -31,7 +31,7 @@ ListOfGradientDefinitionsHandler::~ListOfGradientDefinitionsHandler()
 
 // virtual
 CXMLHandler * ListOfGradientDefinitionsHandler::processStart(const XML_Char * pszName,
-    const XML_Char ** papszAttrs)
+    const XML_Char ** /* papszAttrs */)
 {
   CXMLHandler * pHandlerToCall = NULL;
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -106,6 +106,7 @@ DataModelGUI::DataModelGUI(QObject * parent, CDataModel * pDataModel)
   , mFileName()
   , mDownloadUrl()
   , mDownloadDestination()
+  , mDownloadActive(false)
   , mOverWrite(false)
   , mSBMLLevel(2)
   , mSBMLVersion(4)
@@ -216,8 +217,11 @@ void DataModelGUI::loadModel(const std::string & fileName)
 void DataModelGUI::downloadFileFromUrl(const std::string & url, const std::string& destination, bool withProgress)
 {
   mRunningThreads["downloadFileFromUrl"].success = false;
+  mDownloadActive = true;
 
   QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+  manager->setStrictTransportSecurityEnabled(true);
+  manager->setRedirectPolicy(QNetworkRequest::NoLessSafeRedirectPolicy);
 
   QString server = FROM_UTF8(CRootContainer::getConfiguration()->getProxyServer());
 
@@ -496,6 +500,9 @@ void DataModelGUI::exportSBMLToStringFinished()
 
 bool DataModelGUI::isBusy() const
 {
+  if (mDownloadActive)
+    return true;
+
   for (const std::pair< const std::string, sThreadData > &data: mRunningThreads)
     if (data.second.pProgressBar != nullptr)
       return true;
@@ -709,6 +716,7 @@ void DataModelGUI::downloadFinished(QNetworkReply *reply)
     }
 
   reply->deleteLater();
+  mDownloadActive = false;
   threadFinished("downloadFileFromUrl");
 }
 
@@ -739,6 +747,7 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
   mpMiriamResources = &miriamResources;
 
   QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+  manager->setRedirectPolicy(QNetworkRequest::SameOriginRedirectPolicy);
 
   QString server = FROM_UTF8(CRootContainer::getConfiguration()->getProxyServer());
 
@@ -787,6 +796,20 @@ bool DataModelGUI::updateMIRIAM(CMIRIAMResources & miriamResources)
 }
 
 //************** QApplication ***********************************************
+
+void DataModelGUI::detachOutputHandler()
+{
+  mpDataModel->removeInterface(mpOutputHandlerPlot);
+}
+
+void DataModelGUI::attachOutputHandler()
+{
+  mpDataModel->addInterface(mpOutputHandlerPlot);
+
+  mpOutputHandlerPlot->setOutputDefinitionVector(mpDataModel->getPlotDefinitionList());
+
+  linkDataModelToGUI();
+}
 
 //************Model-View Architecture*****************************************
 bool DataModelGUI::notify(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn)
@@ -875,9 +898,6 @@ void DataModelGUI::notifyChanges(const CUndoData::CChangeSet & changes)
                 Action = ListViews::Action::DELETE;
                 CN = it->objectBefore;
                 break;
-
-              case CUndoData::Type::__SIZE:
-                break;
             }
 
           ListViews::ObjectType ObjectType = ListViews::DataObjectType.toEnum(it->objectType, ListViews::ObjectType::STATE);
@@ -899,7 +919,7 @@ void DataModelGUI::notifyChanges(const CUndoData::CChangeSet & changes)
                 }
             }
 
-          notify(ObjectType, Action, CRegisteredCommonName(MappedCN, mpDataModel));
+          notify(ObjectType, Action, CCommonName(MappedCN));
         }
 
       std::pair< const CUndoData *, bool > LastExecution = mpDataModel->getUndoStack()->getLastExecution();
@@ -922,9 +942,9 @@ void DataModelGUI::notifyChanges(const CUndoData::CChangeSet & changes)
 
           if (CN.find("CN=Root,FunctionDB=FunctionDB") == 0
               || CN.find("CN=Root,Vector=Units list") == 0)
-            emit this->signalSwitchWidget(Id, CRegisteredCommonName(CN, nullptr), TabIndex);
+            emit this->signalSwitchWidget(Id, CCommonName(CN), TabIndex);
           else
-            emit this->signalSwitchWidget(Id, CRegisteredCommonName(CN, mpDataModel), TabIndex);
+            emit this->signalSwitchWidget(Id, CCommonName(CN), TabIndex);
         }
     }
 }
@@ -1015,7 +1035,6 @@ void DataModelGUI::addRecentFile(const std::string & file)
         break;
 
       case CDataModel::ContentType::OMEX:
-      case CDataModel::ContentType::__SIZE:
         break;
     }
 

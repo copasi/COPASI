@@ -364,7 +364,7 @@ bool CQTimeSensWidget::loadTaskProtected()
         }
 
       QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
-      pItem->setData(Qt::UserRole, FROM_UTF8(pObject->getStringCN()));
+      pItem->setData(Qt::UserRole, FROM_UTF8(pObject->getCN()));
       mpListParameters->addItem(pItem);
     }
 
@@ -393,7 +393,7 @@ bool CQTimeSensWidget::loadTaskProtected()
         }
 
       QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(pObject->getObjectDisplayName()));
-      pItem->setData(Qt::UserRole, FROM_UTF8(pObject->getStringCN()));
+      pItem->setData(Qt::UserRole, FROM_UTF8(pObject->getCN()));
       mpListTargets->addItem(pItem);
     }
 
@@ -572,10 +572,10 @@ void CQTimeSensWidget::slotAddParameter()
         continue;
 
       QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(item->getObjectDisplayName()));
-      pItem->setData(Qt::UserRole, FROM_UTF8(item->getStringCN()));
+      pItem->setData(Qt::UserRole, FROM_UTF8(item->getCN()));
       mpListParameters->addItem(pItem);
 
-      mpTimeSensProblem->addParameterCN(item->getStringCN());
+      mpTimeSensProblem->addParameterCN(item->getCN());
     }
 }
 
@@ -613,10 +613,10 @@ void CQTimeSensWidget::slotAddTarget()
         continue;
 
       QListWidgetItem* pItem = new QListWidgetItem(FROM_UTF8(item->getObjectDisplayName()));
-      pItem->setData(Qt::UserRole, FROM_UTF8(item->getStringCN()));
+      pItem->setData(Qt::UserRole, FROM_UTF8(item->getCN()));
       mpListTargets->addItem(pItem);
 
-      mpTimeSensProblem->addTargetCN(item->getStringCN());
+      mpTimeSensProblem->addTargetCN(item->getCN());
     }
 }
 

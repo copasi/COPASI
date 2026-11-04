@@ -285,7 +285,7 @@ bool CQReactionDM::removeRows(int position, int rows, const QModelIndex & parent
 
   for (; it != end; ++it, ++itRow)
     {
-      *it = itRow->getStringCN();
+      *it = itRow->getCN();
     }
 
   for (it = ToBeDeleted.begin(); it != end; ++it)

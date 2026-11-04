@@ -1,8 +1,7 @@
-// Copyright (C) 2020 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
-
 
 #ifndef COPASI_CDataHandler
 #define COPASI_CDataHandler
@@ -15,7 +14,6 @@
 #include "copasi/core/CRegisteredCommonName.h"
 
 #include "copasi/output/COutputHandler.h"
-
 
 /**
  * CDataHandler implements an output handler, that captures float
@@ -154,25 +152,24 @@ public:
    * @param CObjectInterface::ContainerList listOfContainer
    * @return bool success
    */
-  virtual bool compile(CObjectInterface::ContainerList listOfContainer);
+  bool compile(CObjectInterface::ContainerList listOfContainer) override;
 
   /**
    * Perform an output event for the current activity
    * @param const Activity & activity
    */
-  virtual void output(const Activity & activity);
+  void output(const Activity & activity) override;
 
   /**
    * Introduce an additional separator into the output
    * @param const Activity & activity
    */
-  virtual void separate(const Activity & /* activity */);
+  void separate(const Activity & /* activity */) override;
 
   /**
    * Finish the output
    */
-  virtual void finish();
-
+  void finish() override;
 
 private:
   void storeDataBefore();
@@ -185,7 +182,6 @@ private:
   bool generateObjectsFromName(const CObjectInterface::ContainerList & listOfContainer,
                                std::vector< CObjectInterface * > & objectList,
                                const std::vector< CRegisteredCommonName > * nameVector);
-
 };
 
 #endif

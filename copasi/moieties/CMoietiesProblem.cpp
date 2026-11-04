@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -66,13 +66,13 @@ void CMoietiesProblem::printResult(std::ostream * pOstream) const
   *pOstream << "\n";
 
   // Print Reordered Stoichiometry Matrix
-  *pOstream << *dynamic_cast<const CDataArray *>(Model.getObject(CCommonName("Array=Stoichiometry(ann)"))) << "\n";
+  *pOstream << *dynamic_cast<const CDataArray *>(Model.getChildObject(CCommonName("Array=Stoichiometry(ann)"))) << "\n";
 
   // Print Link Matrix
-  *pOstream << *dynamic_cast<const CDataArray *>(Model.getObject(CCommonName("Array=Link matrix(ann)"))) << "\n";
+  *pOstream << *dynamic_cast<const CDataArray *>(Model.getChildObject(CCommonName("Array=Link matrix(ann)"))) << "\n";
 
   // Print Reduced Stoichiometry Matrix
-  *pOstream << *dynamic_cast<const CDataArray *>(Model.getObject(CCommonName("Array=Reduced stoichiometry(ann)"))) << "\n";
+  *pOstream << *dynamic_cast<const CDataArray *>(Model.getChildObject(CCommonName("Array=Reduced stoichiometry(ann)"))) << "\n";
 
   return;
 }

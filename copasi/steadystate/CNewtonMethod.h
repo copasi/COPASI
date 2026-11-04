@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,11 +45,18 @@ public:
   {
     DistanceAndRate,
     Distance,
-    Rate,
-    __SIZE
+    Rate
   };
 
-  static const CEnumAnnotation< std::string, eTargetCriterion > TargetCriterion;
+private:
+  constexpr static CEnumAnnotationInstance _TargetCriterion{
+    eTargetCriterion::DistanceAndRate,
+    MapNode{eTargetCriterion::DistanceAndRate, "Distance and Rate"},
+    MapNode{eTargetCriterion::Distance, "Distance"},
+    MapNode{eTargetCriterion::Rate, "Rate"}};
+
+public:
+  constexpr static CEnumAnnotation< eTargetCriterion, std::string_view > TargetCriterion{_TargetCriterion};
 
   // Attributes
 private:
@@ -88,8 +95,8 @@ private:
 
   CCore::CUpdateSequence mUpdateConcentrations;
   eTargetCriterion mTargetCriterion;
-  C_FLOAT64 mTargetDistance;
   C_FLOAT64 mTargetRate;
+  C_FLOAT64 mTargetDistance;
 
   // Operations
 private:

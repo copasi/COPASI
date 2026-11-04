@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -42,7 +42,7 @@ CEvaluationNodeUnit::~CEvaluationNodeUnit()
 {}
 
 // virtual
-std::string CEvaluationNodeUnit::getCCodeString(const std::vector< std::string > & children) const
+std::string CEvaluationNodeUnit::getCCodeString(const std::vector< std::string > & /* children */) const
 {
   return "1.0";
 }
@@ -53,7 +53,7 @@ std::string CEvaluationNodeUnit::getCCodeString(const std::vector< std::string >
  * @return std::string BerkeleyMadonnaString
  */
 // virtual
-std::string CEvaluationNodeUnit::getBerkeleyMadonnaString(const std::vector< std::string > & children) const
+std::string CEvaluationNodeUnit::getBerkeleyMadonnaString(const std::vector< std::string > & /* children */) const
 {
   return "1.0";
 }
@@ -64,13 +64,13 @@ std::string CEvaluationNodeUnit::getBerkeleyMadonnaString(const std::vector< std
  * @return std::string XPPString
  */
 // virtual
-std::string CEvaluationNodeUnit::getXPPString(const std::vector< std::string > & children) const
+std::string CEvaluationNodeUnit::getXPPString(const std::vector< std::string > & /* children */) const
 {
   return "1.0";
 }
 
 // virtual
-ASTNode* CEvaluationNodeUnit::toAST(const CDataModel* pDataModel, int, int) const
+ASTNode* CEvaluationNodeUnit::toAST(const CDataModel* /* pDataModel */, int, int) const
 {
   // TODO CRITICAL Implement me!
   fatalError();

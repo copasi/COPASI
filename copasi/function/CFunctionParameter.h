@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,15 +51,38 @@ public:
     VOLUME,
     TIME,
     VARIABLE,
-    TEMPORARY,
-    __SIZE
+    TEMPORARY
   };
 
-  /**
-   *  The string representation of valid roles of a function parameter
-   */
-  static const CEnumAnnotation< std::string, Role > RoleNameXML;
-  static const CEnumAnnotation< std::string, Role > RoleNameDisplay;
+private:
+  constexpr static CEnumAnnotationInstance _RoleNameXML{
+    Role::VARIABLE,
+    MapNode{Role::SUBSTRATE, "substrate"},
+    MapNode{Role::PRODUCT, "product"},
+    MapNode{Role::MODIFIER, "modifier"},
+    MapNode{Role::PARAMETER, "constant"},
+    MapNode{Role::VOLUME, "volume"},
+    MapNode{Role::TIME, "time"},
+    MapNode{Role::VARIABLE, "variable"},
+    MapNode{Role::TEMPORARY, "temporary"}};
+
+public:
+  constexpr static CEnumAnnotation< Role, std::string_view > RoleNameXML{_RoleNameXML};
+
+private:
+  constexpr static CEnumAnnotationInstance _RoleNameDisplay{
+    Role::VARIABLE,
+    MapNode{Role::SUBSTRATE, "Substrate"},
+    MapNode{Role::PRODUCT, "Product"},
+    MapNode{Role::MODIFIER, "Modifier"},
+    MapNode{Role::PARAMETER, "Parameter"},
+    MapNode{Role::VOLUME, "Volume"},
+    MapNode{Role::TIME, "Time"},
+    MapNode{Role::VARIABLE, "Variable"},
+    MapNode{Role::TEMPORARY, "Temporary"}};
+
+public:
+  constexpr static CEnumAnnotation< Role, std::string_view > RoleNameDisplay{_RoleNameDisplay};
 
   /**
    *  Valid data type for a function parameter
@@ -69,11 +92,19 @@ public:
     INT32,
     FLOAT64,
     VINT32,
-    VFLOAT64,
-    __SIZE
+    VFLOAT64
   };
 
-  static const CEnumAnnotation< std::string, DataType > DataTypeName;
+private:
+  constexpr static CEnumAnnotationInstance _DataTypeName{
+    DataType::FLOAT64,
+    MapNode{DataType::INT32, "Integer"},
+    MapNode{DataType::FLOAT64, "Double"},
+    MapNode{DataType::VINT32, "Vector of Integer"},
+    MapNode{DataType::VFLOAT64, "Vector of Double"}};
+
+public:
+  constexpr static CEnumAnnotation< DataType, std::string_view > DataTypeName{_DataTypeName};
 
 private:
   /**
@@ -112,14 +143,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Default constructor
@@ -172,7 +203,7 @@ public:
    *  Retrieves the key of the function parameter.
    *  @return std::string name
    */
-  virtual const std::string & getKey() const;
+  const std::string & getKey() const override;
 
   /**
    *  Retrieves the data type of the parameter

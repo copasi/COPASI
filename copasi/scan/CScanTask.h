@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -77,6 +77,12 @@ private:
   CScanTask();
 
 public:
+  constexpr static CEnumAnnotationSubset ValidMethods{
+    CTaskEnum::MethodName,
+    CTaskEnum::Method::scanMethod,
+    std::array{
+      CTaskEnum::Method::scanMethod}};
+
   /**
    * Specific constructor
    * @param const CDataContainer * pParent
@@ -129,7 +135,7 @@ public:
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  const CTaskEnum::Method * getValidMethods() const override;
+  const CEnumAnnotation< CTaskEnum::Method, std::string_view > getValidMethods() const override;
 #endif
 
   /**
@@ -157,7 +163,7 @@ public:
    */
   void fixBuild81();
 
-  /** 
+  /**
    * @return the subtask
    */
   CCopasiTask * getSubTask();

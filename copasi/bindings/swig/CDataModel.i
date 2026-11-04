@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -24,9 +24,6 @@ typedef CDataVector<CSlider> SliderVector;
 %}
 
 #include <string>
-
-%ignore CDataModelRenameHandler;
-%ignore CRenameHandler;
 
 %ignore CDataModel::CDataModel(const bool);
 %ignore CDataModel::autoSave();
@@ -113,16 +110,16 @@ typedef CDataVector<CSlider> SliderVector;
 %include "copasi/sedml/CSEDMLExporter.h"
 %include "copasi/sedml/SEDMLUtils.h"
 %include "copasi/sedml/SedmlImportOptions.h"
+%ignore CSlider::TypeName;
+%ignore CSlider::ScaleName;
 %include "copasi/utilities/CSlider.h"
 
 %rename(newModel) CDataModel::newModel;
 
-
 %template(SliderVector) CDataVector<CSlider>;
 typedef CDataVector<CSlider> SliderVector;
 
-%extend CDataModel
-{
+%extend CDataModel {
   SliderVector* getSliders()
   {
     if (self->getGUI() == NULL)

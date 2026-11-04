@@ -51,14 +51,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   CFittingPoint(const CRegisteredCommonName & name,
                 const CDataContainer * pParent = NO_PARENT);
@@ -68,9 +68,9 @@ public:
 
   ~CFittingPoint();
 
-  virtual std::string getObjectDisplayName() const;
+  std::string getObjectDisplayName() const override;
 
-  const std::string & getModelObjectCN() const;
+  const CCommonName & getModelObjectCN() const;
 
   void setValues(const C_FLOAT64 & independent,
                  const C_FLOAT64 & measured,

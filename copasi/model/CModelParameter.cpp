@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -34,31 +34,7 @@
 #include "copasi/core/CDataString.h"
 
 // static
-const CEnumAnnotation< std::string, CModelParameter::Type > CModelParameter::TypeNames(
-{
-  "Model",
-  "Compartment",
-  "Species",
-  "ModelValue",
-  "ReactionParameter",
-  "Reaction",
-  "Group",
-  "Set",
-  "unknown"
-});
-
-// static
-const CEnumAnnotation< std::string, CModelParameter::CompareResult > CModelParameter::CompareResultNames(
-{
-  "Obsolete",
-  "Missing",
-  "Modified",
-  "Conflict",
-  "Identical"
-});
-
-// static
-CModelParameter * CModelParameter::fromData(const CData & data, CUndoObjectInterface * pParent)
+CModelParameter * CModelParameter::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   CModelParameter * pModelParameter = NULL;
 
@@ -111,7 +87,7 @@ CData CModelParameter::toData() const
     {
       Data.addProperty(CData::OBJECT_NAME, mCN);
       Data.addProperty(CData::OBJECT_UUID, getUuidString());
-      Data.addProperty(CData::OBJECT_PARENT_CN, getSet() != NULL ? getSet()->getStringCN() : CCommonName());
+      Data.addProperty(CData::OBJECT_PARENT_CN, getSet() != NULL ? getSet()->CObjectInterface::getCN() : CCommonName());
       Data.addProperty(CData::OBJECT_TYPE, TypeNames[mType]);
       Data.addProperty(CData::OBJECT_INDEX, getIndex());
     }
@@ -141,7 +117,7 @@ CData CModelParameter::toData() const
 }
 
 // virtual
-bool CModelParameter::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CModelParameter::applyData(const CData & data, CUndoData::CChangeSet & /* changes */)
 {
   if (mType == Type::Set)
     {
@@ -150,7 +126,7 @@ bool CModelParameter::applyData(const CData & data, CUndoData::CChangeSet & chan
 
   if (data.isSetProperty(CData::OBJECT_NAME))
     {
-      setCN(CRegisteredCommonName(data.getProperty(CData::OBJECT_NAME).toString(), getSet()));
+      setCN(CCommonName(data.getProperty(CData::OBJECT_NAME).toString()));
     }
 
   if (mpParent != NULL && data.isSetProperty(CData::OBJECT_INDEX))
@@ -195,7 +171,7 @@ void CModelParameter::createUndoData(CUndoData & undoData,
       undoData.addProperty(CData::OBJECT_NAME, oldData.getProperty(CData::OBJECT_NAME), mCN);
       // The UUID of an object must never be changed.
       // undoData.addProperty(CData::OBJECT_UUID, oldData.getProperty(CData::OBJECT_UUID), getUuid().str());
-      undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), getSet() != NULL ? getSet()->getStringCN() : CCommonName());
+      undoData.addProperty(CData::OBJECT_PARENT_CN, oldData.getProperty(CData::OBJECT_PARENT_CN), getSet() != NULL ? getSet()->CObjectInterface::getCN() : CCommonName());
       undoData.addProperty(CData::OBJECT_TYPE, oldData.getProperty(CData::OBJECT_TYPE), TypeNames[mType]);
       undoData.addProperty(CData::OBJECT_INDEX, oldData.getProperty(CData::OBJECT_INDEX), getIndex());
     }
@@ -290,11 +266,6 @@ bool CModelParameter::operator<(const CModelParameter & rhs) const
 void CModelParameter::setParent(CModelParameterGroup * pParent)
 {
   mpParent = pParent;
-}
-
-void CModelParameter::unsetDataModel()
-{
-  mCN.setDataModel(NULL);
 }
 
 CModelParameterGroup * CModelParameter::getParent() const
@@ -802,7 +773,7 @@ bool CModelParameter::refreshFromModel(const bool & modifyExistence)
                     assert(ModelValue.size() == 1);
 
                     const CModelValue * pModelValue = dynamic_cast< const CModelValue * >(ModelValue[0]);
-                    static_cast< CModelParameterReactionParameter * >(this)->setGlobalQuantityCN(pModelValue != NULL ? pModelValue->getInitialValueReference()->getStringCN() : CDataString("not found").getStringCN());
+                    static_cast< CModelParameterReactionParameter * >(this)->setGlobalQuantityCN(pModelValue != NULL ? pModelValue->getInitialValueReference()->getCN() : CDataString("not found").getCN());
                   }
               }
 
@@ -912,17 +883,6 @@ void CModelParameterCompartment::removeSpecies(CModelParameterSpecies * pSpecies
   mSpecies.erase(pSpecies);
 }
 
-void CModelParameterCompartment::unsetDataModel()
-{
-  CModelParameter::unsetDataModel();
-  std::set< CModelParameterSpecies * >::iterator it = mSpecies.begin();
-  std::set< CModelParameterSpecies * >::iterator end = mSpecies.end();
-  for (; it != end; ++it)
-    {
-      (*it)->unsetDataModel();
-    }
-}
-
 // virtual
 CData CModelParameterSpecies::toData() const
 {
@@ -1029,13 +989,8 @@ void CModelParameterSpecies::setCN(const CRegisteredCommonName & cn)
 
   // Determine the CN for the compartment.
   // "CN=Root,Model=New Model,Vector=Compartments[compartment],Vector=Metabolites[A]"
-  mCompartmentCN = CRegisteredCommonName(mCN.substr(0, mCN.find(",Vector=Metabolites")), getSet());
-}
-
-void CModelParameterSpecies::unsetDataModel()
-{
-  CModelParameter::unsetDataModel();
-  mCompartmentCN.setDataModel(NULL);
+  std::string CN = mCN;
+  mCompartmentCN = CCommonName(CN.substr(0, CN.find(",Vector=Metabolites")));
 }
 
 // virtual
@@ -1188,12 +1143,6 @@ void CModelParameterReactionParameter::compile()
   mpReaction = static_cast< CReaction * >(const_cast< CDataObject * >(CObjectInterface::DataObject(CObjectInterface::GetObjectFromCN(ListOfContainer, mpParent->getCN()))));
 }
 
-void CModelParameterReactionParameter::unsetDataModel()
-{
-  CModelParameter::unsetDataModel();
-  mGlobalQuantityCN.setDataModel(NULL);
-}
-
 const CReaction * CModelParameterReactionParameter::getReaction() const
 {
   return mpReaction;
@@ -1202,7 +1151,8 @@ const CReaction * CModelParameterReactionParameter::getReaction() const
 // static
 CCommonName CModelParameterReactionParameter::getReactionCN(const CCommonName & reactionParameterCN)
 {
-  return reactionParameterCN.substr(0, reactionParameterCN.find(",ParameterGroup=Parameters"));
+  std::string CN = reactionParameterCN;
+  return CN.substr(0, CN.find(",ParameterGroup=Parameters"));
 }
 
 void CModelParameterReactionParameter::setGlobalQuantityCN(const std::string & globalQuantityCN)

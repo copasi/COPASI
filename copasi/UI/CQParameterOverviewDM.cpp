@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -389,7 +389,6 @@ QVariant CQParameterOverviewDM::diffData(const CModelParameter * pNode, int role
               break;
 
             case CModelParameter::CompareResult::Identical:
-            case CModelParameter::CompareResult::__SIZE:
               return QVariant();
               break;
           }
@@ -423,9 +422,6 @@ QVariant CQParameterOverviewDM::diffData(const CModelParameter * pNode, int role
 
             case CModelParameter::CompareResult::Identical:
               return QVariant(QString("The item's value is identical with the current model."));
-              break;
-
-            case CModelParameter::CompareResult::__SIZE:
               break;
           }
 
@@ -597,7 +593,7 @@ bool CQParameterOverviewDM::setData(const QModelIndex & index, const QVariant &v
 
           case COL_ASSIGNMENT:
           {
-            const CModelParameter * pGlobalQuantity = mpModelParameterSet->getModelParameter(mpModelParameterSet->getModel()->getModelValues().getStringCN() + "[" + CCommonName::escape(TO_UTF8(value.toString())) + "]");
+            const CModelParameter * pGlobalQuantity = mpModelParameterSet->getModelParameter(mpModelParameterSet->getModel()->getModelValues().getCN() + "[" + CCommonName::escape(TO_UTF8(value.toString())) + "]");
 
             if (mpModelParameterSet->isActive() &&
                 (pObject = pNode->getObject()) != NULL)
@@ -665,11 +661,11 @@ void CQParameterOverviewDM::resetCacheProtected()
   if (mpModelParameterSet == NULL)
     return;
 
-  mpTimes = static_cast< const CModelParameterGroup * >(mpModelParameterSet->getModelParameter(CDataString("Initial Time").getStringCN()));
-  mpCompartments = static_cast< const CModelParameterGroup * >(mpModelParameterSet->getModelParameter(CDataString("Initial Compartment Sizes").getStringCN()));
-  mpSpecies = static_cast< const CModelParameterGroup * >(mpModelParameterSet->getModelParameter(CDataString("Initial Species Values").getStringCN()));
-  mpModelValues = static_cast< const CModelParameterGroup * >(mpModelParameterSet->getModelParameter(CDataString("Initial Global Quantities").getStringCN()));
-  mpReactions = static_cast< const CModelParameterGroup * >(mpModelParameterSet->getModelParameter(CDataString("Kinetic Parameters").getStringCN()));
+  mpTimes = static_cast< const CModelParameterGroup * >(mpModelParameterSet->getModelParameter(CDataString("Initial Time").getCN()));
+  mpCompartments = static_cast< const CModelParameterGroup * >(mpModelParameterSet->getModelParameter(CDataString("Initial Compartment Sizes").getCN()));
+  mpSpecies = static_cast< const CModelParameterGroup * >(mpModelParameterSet->getModelParameter(CDataString("Initial Species Values").getCN()));
+  mpModelValues = static_cast< const CModelParameterGroup * >(mpModelParameterSet->getModelParameter(CDataString("Initial Global Quantities").getCN()));
+  mpReactions = static_cast< const CModelParameterGroup * >(mpModelParameterSet->getModelParameter(CDataString("Kinetic Parameters").getCN()));
 
   size_t FetchLimit = mFetchLimit;
 

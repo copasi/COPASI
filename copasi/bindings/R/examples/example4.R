@@ -67,7 +67,7 @@ while (i < iMax) {
         # we want the concentration in the output
         # alternatively, we could use "Reference=Amount" to get the
         # particle number
-        conc <- metab$getObject(CCommonName("Reference=Concentration"))
+        conc <- metab$getChildObject(CCommonName("Reference=Concentration"))
         conc_string <- conc$getCN()$getString()
         invisible(body$push_back(CRegisteredCommonName(conc_string)))
         # add the corresponding id to the header

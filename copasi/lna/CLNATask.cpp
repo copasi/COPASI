@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -94,10 +94,9 @@ bool CLNATask::initialize(const OutputFlag & of,
     dynamic_cast<CLNAProblem *>(mpProblem);
   assert(pProblem);
 
-  bool success = mpMethod->isValidProblem(mpProblem);
-
-  //we need to resize and initialize the result matrices before initializing the output
-  success &= updateMatrices();
+  // we need to resize and initialize the result matrices before initializing the output
+  // update matrices will also check whether the method is valid for the problem.
+  bool success = updateMatrices();
 
   //initialize reporting
   success &= CCopasiTask::initialize(of, pOutputHandler, pOstream);
@@ -194,15 +193,9 @@ bool CLNATask::setCallBack(CProcessReportLevel callBack)
 }
 
 // virtual
-const CTaskEnum::Method * CLNATask::getValidMethods() const
+const CEnumAnnotation< CTaskEnum::Method, std::string_view > CLNATask::getValidMethods() const
 {
-  static const CTaskEnum::Method ValidMethods[] =
-  {
-    CTaskEnum::Method::linearNoiseApproximation,
-    CTaskEnum::Method::UnsetMethod
-  };
-
-  return ValidMethods;
+  return CLNATask::ValidMethods;
 }
 
 std::ostream &operator<<(std::ostream &os, const CLNATask & C_UNUSED(A))

@@ -70,10 +70,10 @@ TEST_CASE("create a new model with invalid trigger", "[copasi][creation]")
   REQUIRE(model != nullptr);
 
   auto * event = model->createEvent("e0");
-  event->setTriggerExpression(CRegisteredCommonName(std::string("<") + std::string(model->getValueReference()->getStringCN().c_str()) + std::string("> >  10")));
+  event->setTriggerExpression(CRegisteredCommonName(std::string("<") + std::string(model->getValueReference()->getCN().c_str()) + std::string("> >  10")));
   event->compile({dm});
   REQUIRE(model->compileIfNecessary(NULL) == true);
-  event->setTriggerExpression(CRegisteredCommonName(std::string(model->getValueReference()->getStringCN().c_str())));
+  event->setTriggerExpression(CRegisteredCommonName(std::string(model->getValueReference()->getCN().c_str())));
   event->compile({dm});
   REQUIRE(model->compileIfNecessary(NULL) == false);
 

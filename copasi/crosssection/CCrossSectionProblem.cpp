@@ -149,7 +149,7 @@ void CCrossSectionProblem::setTimeLimit(const C_FLOAT64 &timeLimit)
 /**
  * return the variable
  */
-const std::string& CCrossSectionProblem::getSingleObjectCN() const
+const CCommonName & CCrossSectionProblem::getSingleObjectCN() const
 {
   return *mpSingleObjectCN;
 }

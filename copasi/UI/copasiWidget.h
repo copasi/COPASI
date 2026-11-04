@@ -109,7 +109,7 @@ protected:
   int mFramework;
 
 private:
-  CCommonName mOldCN;
+  std::string mOldCN;
 
 protected slots:
   virtual bool protectedNotify(ListViews::ObjectType objectType, ListViews::Action action, const CRegisteredCommonName & cn = CRegisteredCommonName());

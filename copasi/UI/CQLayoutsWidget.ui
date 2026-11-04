@@ -151,7 +151,7 @@
  <connections>
   <connection>
    <sender>mpBtnClear</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>CQLayoutsWidget</receiver>
    <slot>slotBtnClearClicked()</slot>
    <hints>
@@ -167,7 +167,7 @@
   </connection>
   <connection>
    <sender>mpBtnDelete</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>CQLayoutsWidget</receiver>
    <slot>slotBtnDeleteClicked()</slot>
    <hints>
@@ -183,7 +183,7 @@
   </connection>
   <connection>
    <sender>mpBtnNew</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>CQLayoutsWidget</receiver>
    <slot>slotBtnNewClicked()</slot>
    <hints>

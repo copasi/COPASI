@@ -1,4 +1,4 @@
-// Copyright (C) 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2025 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -48,10 +48,10 @@ void CProfileGenerator::getCurrentSolution()
 
   mCurrentSolution.mIsParameterEstimation = (*mpSettings)["IsParameterEstimation"];
 
-  auto& task = mCurrentSolution.mIsParameterEstimation ? (*mpDM->getTaskList())["Parameter Estimation"]
+  CCopasiTask & task = mCurrentSolution.mIsParameterEstimation ? (*mpDM->getTaskList())["Parameter Estimation"]
                                                          : (*mpDM->getTaskList())["Optimization"];
 
-  auto* pProblem = dynamic_cast<COptProblem*>(task.getProblem());
+  COptProblem * pProblem = dynamic_cast<COptProblem*>(task.getProblem());
 
   if (!pProblem)
     return;
@@ -59,10 +59,10 @@ void CProfileGenerator::getCurrentSolution()
   // run current solution statistics if needed
   if ((*mpSettings)["Run Statistics"])
   {
-    auto method = task.getMethod()->getSubType();
-    auto report = task.getReport().getTarget();
-    auto updateModel = task.isUpdateModel();
-    auto calculateStats = pProblem->getCalculateStatistics();
+    const CTaskEnum::Method & method = task.getMethod()->getSubType();
+    const std::string & report = task.getReport().getTarget();
+    bool updateModel = task.isUpdateModel();
+    bool calculateStats = pProblem->getCalculateStatistics();
 
     try {
       task.setUpdateModel(true);
@@ -104,7 +104,7 @@ void CProfileGenerator::getCurrentSolution()
   const CVector< C_FLOAT64 > * stddeves = NULL;
   if (mCurrentSolution.mIsParameterEstimation)
     {
-      auto* pFitProblem = dynamic_cast< CFitProblem * >(pProblem);
+      CFitProblem * pFitProblem = dynamic_cast< CFitProblem * >(pProblem);
       stddeves = &(pFitProblem->getVariableStdDeviations());
       if (stddeves->size() == 0)
       {
@@ -115,14 +115,14 @@ void CProfileGenerator::getCurrentSolution()
       mCurrentSolution.mNumDataPoints = pFitProblem->getExperimentSet().getValidValueCount();
     }
 
-  auto& parameters = pProblem->getOptItemList();
+  const std::vector< COptItem * > & parameters = pProblem->getOptItemList();
   for (int i = 0; i < parameters.size(); ++i)
   {
-    auto * item = parameters[i];
-    auto & cn = item->getObjectCN();
+    const COptItem * item = parameters[i];
+    const CCommonName & cn = item->getObjectCN();
     mCurrentSolution.mParameterCNs.push_back(cn);
 
-    auto * obj = mpDM->getObject(cn);
+    const CObjectInterface * obj = mpDM->getObject(cn);
     if (!obj)
       {
         mMessages << "Could not find object for fitItem: " << cn << " ignoring." << std::endl;
@@ -147,7 +147,7 @@ void CProfileGenerator::saveBaseModel()
   int scanInterval = generate.at("Scan Interval").get<int>();
 
   // change opt method and apply method settings
-  auto& task = mCurrentSolution.mIsParameterEstimation ? (*mpDM->getTaskList())["Parameter Estimation"]
+  CCopasiTask & task = mCurrentSolution.mIsParameterEstimation ? (*mpDM->getTaskList())["Parameter Estimation"]
                                                        : (*mpDM->getTaskList())["Optimization"];
 
   auto settingsStr = mpSettings->dump(4);
@@ -395,7 +395,7 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
 
   auto* pProblem = dynamic_cast<COptProblem*>(task.getProblem());
 
-  CCopasiParameterGroup optItems = *pProblem->getGroup("OptimizationItemList");
+  const CCopasiParameterGroup & optItems = *pProblem->getGroup("OptimizationItemList");
   mMessages << "Number of Parameters to optimize: " << optItems.size() << std::endl;
 
   auto itemsJson = CProfileSettings::toJson(&optItems);
@@ -422,10 +422,18 @@ void CProfileGenerator::generateProfiles(CProfileSettings * pSettings, CDataMode
       list->removeParameter(g);
 
     std::string itemName = mCurrentSolution.mIsParameterEstimation ? "FitItem" : "OptimizationItem";
+    auto allItems = itemsJson[itemName];
+    if (!allItems.is_array())
+      {
+        allItems = nlohmann::json::array({allItems});
+      }
 
     // recreate from array
-    for (const auto & current : itemsJson[itemName])
+    for (const auto & current : allItems)
     {
+      if (current.is_null())
+        continue;
+
       auto currentCN = current["ObjectCN"].get< std::string >();
 
       // skip current cn

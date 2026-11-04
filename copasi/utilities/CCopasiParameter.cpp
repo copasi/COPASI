@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,39 +45,7 @@
 #include "copasi/undo/CUndoData.h"
 
 // static
-const CEnumAnnotation< std::string, CCopasiParameter::Type > CCopasiParameter::TypeName(
-{
-  "float",
-  "unsigned float",
-  "integer",
-  "unsigned integer",
-  "bool",
-  "group",
-  "string",
-  "common name",
-  "key",
-  "file",
-  "expression"
-});
-
-// static
-const CEnumAnnotation< std::string, CCopasiParameter::Type > CCopasiParameter::XMLType(
-{
-  "float",
-  "unsignedFloat",
-  "integer",
-  "unsignedInteger",
-  "bool",
-  "group",
-  "string",
-  "cn",
-  "key",
-  "file",
-  "expression"
-});
-
-// static
-CCopasiParameter * CCopasiParameter::fromData(const CData & data, CUndoObjectInterface * pParent)
+CCopasiParameter * CCopasiParameter::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   CCopasiParameter * pNew = NULL;
 
@@ -125,13 +93,15 @@ CData CCopasiParameter::toData() const
       case CCopasiParameter::Type::KEY:
       case CCopasiParameter::Type::FILE:
       case CCopasiParameter::Type::EXPRESSION:
-      case CCopasiParameter::Type::CN:
         Data.addProperty(CData::PARAMETER_VALUE, * static_cast< std::string * >(mpValue));
+        break;
+
+      case CCopasiParameter::Type::CN:
+        Data.addProperty(CData::PARAMETER_VALUE, * static_cast< CRegisteredCommonName * >(mpValue));
         break;
 
       case CCopasiParameter::Type::GROUP:
       case CCopasiParameter::Type::INVALID:
-      case CCopasiParameter::Type::__SIZE:
         break;
     }
 
@@ -206,13 +176,15 @@ void CCopasiParameter::createUndoData(CUndoData & undoData,
       case CCopasiParameter::Type::KEY:
       case CCopasiParameter::Type::FILE:
       case CCopasiParameter::Type::EXPRESSION:
-      case CCopasiParameter::Type::CN:
         undoData.addProperty(CData::PARAMETER_VALUE, oldData.getProperty(CData::PARAMETER_VALUE), * static_cast< std::string * >(mpValue));
+        break;
+
+      case CCopasiParameter::Type::CN:
+        undoData.addProperty(CData::PARAMETER_VALUE, oldData.getProperty(CData::PARAMETER_VALUE), * static_cast< CRegisteredCommonName * >(mpValue));
         break;
 
       case CCopasiParameter::Type::GROUP:
       case CCopasiParameter::Type::INVALID:
-      case CCopasiParameter::Type::__SIZE:
         break;
     }
 
@@ -403,6 +375,13 @@ bool CCopasiParameter::isValidValue(const std::string & value) const
   return inValidValues(value);
 }
 
+bool CCopasiParameter::isValidValue(const CCommonName & /* value */) const
+{
+  if (mType != CCopasiParameter::Type::CN) return false;
+
+  return true;
+}
+
 bool CCopasiParameter::isValidValue(const CRegisteredCommonName & /* value */) const
 {
   if (mType != CCopasiParameter::Type::CN) return false;
@@ -461,7 +440,6 @@ std::ostream &operator<<(std::ostream &os, const CCopasiParameter & o)
 
       case CCopasiParameter::Type::GROUP:
       case CCopasiParameter::Type::INVALID:
-      case CCopasiParameter::Type::__SIZE:
         break;
     }
 
@@ -517,21 +495,6 @@ bool operator==(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
   return false;
 }
 
-// virtual
-CCommonName CCopasiParameter::getCNProtected() const
-{
-  CDataContainer * pObjectParent = getObjectParent();
-  CCopasiParameterGroup * pGroup;
-
-  if (pObjectParent != NULL &&
-      (pGroup = dynamic_cast< CCopasiParameterGroup * >(pObjectParent)) != NULL)
-    {
-      return pObjectParent->getStringCN() + "," + CCommonName::escape(getObjectType()) + "=" + CCommonName::escape(pGroup->getUniqueParameterName(this));
-    }
-
-  return CDataObject::getCNProtected();
-}
-
 void * CCopasiParameter::getValuePointer() const
 {return const_cast<void *>(mpValue);}
 
@@ -579,7 +542,6 @@ void CCopasiParameter::createValue()
         break;
 
       case CCopasiParameter::Type::INVALID:
-      case CCopasiParameter::Type::__SIZE:
         break;
     }
 }
@@ -652,7 +614,6 @@ void CCopasiParameter::assignValidValues(const void * pValidValues)
 
       case CCopasiParameter::Type::GROUP:
       case CCopasiParameter::Type::INVALID:
-      case CCopasiParameter::Type::__SIZE:
         break;
     }
 }
@@ -715,7 +676,6 @@ void CCopasiParameter::allocateValue(const Type & type, void *& pValue)
         break;
 
       case CCopasiParameter::Type::INVALID:
-      case CCopasiParameter::Type::__SIZE:
         pValue = NULL;
         break;
     }
@@ -765,7 +725,6 @@ void CCopasiParameter::assignValue(const Type & type, void *& pTarget, const voi
 
       case CCopasiParameter::Type::GROUP:
       case CCopasiParameter::Type::INVALID:
-      case CCopasiParameter::Type::__SIZE:
         break;
     }
 }
@@ -860,7 +819,6 @@ void CCopasiParameter::allocateValidValues(const Type & type, void *& pValidValu
 
       case CCopasiParameter::Type::GROUP:
       case CCopasiParameter::Type::INVALID:
-      case CCopasiParameter::Type::__SIZE:
         break;
     }
 }

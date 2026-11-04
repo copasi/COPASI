@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -28,6 +28,28 @@
 
 %}
 
+%extend COptProblem {
+  COptItem & addOptItem(const CCommonName & objectCN)
+  {
+    return $self->addOptItem(CRegisteredCommonName(objectCN));
+  }
+  
+  COptItem & addOptItem(const std::string & objectCN)
+  {
+    return $self->addOptItem(CRegisteredCommonName(objectCN));
+  }
+
+  COptItem& addOptConstraint(const CCommonName & objectCN)
+  {
+    return $self->addOptConstraint(CRegisteredCommonName(objectCN));
+  }
+
+  COptItem& addOptConstraint(const std::string & objectCN)
+  {
+    return $self->addOptConstraint(CRegisteredCommonName(objectCN));
+  }
+}
+
 typedef std::vector<COptItem*> OptItemStdVector;
 
 %ignore operator<<(std::ostream& os, const COptProblem& o);
@@ -35,8 +57,6 @@ typedef std::vector<COptItem*> OptItemStdVector;
 %ignore COptProblem::getVariableSize() const;
 //%ignore COptProblem::setCallBack;
 %ignore COptProblem::getCalculateVariableUpdateMethods;
-
-%template(FloatCVector) CVector<C_FLOAT64>;
 
 %include "optimization/COptProblem.h"
 

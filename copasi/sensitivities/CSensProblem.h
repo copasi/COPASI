@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -78,23 +78,41 @@ public:
   /**
    * this enumeration
    */
-
-  enum SubTaskType
+  enum struct SubtaskType
   {
     Evaluation,
     SteadyState,
     TimeSeries,
     ParameterEstimation,
     Optimization,
-    CrossSection,
-    __SIZE
-    //LyapunovExp
+    CrossSection
   };
 
-  static const CEnumAnnotation< CTaskEnum::Task, SubTaskType > SubTaskTypeToTask;
+private:
+  constexpr static CBidirectionalMap Old2New{
+    MapNode{SubtaskType::Evaluation, CTaskEnum::Task::UnsetTask},
+    MapNode{SubtaskType::SteadyState, CTaskEnum::Task::steadyState},
+    MapNode{SubtaskType::TimeSeries, CTaskEnum::Task::timeCourse},
+    MapNode{SubtaskType::ParameterEstimation, CTaskEnum::Task::parameterFitting},
+    MapNode{SubtaskType::Optimization, CTaskEnum::Task::optimization},
+    MapNode{SubtaskType::CrossSection, CTaskEnum::Task::crosssection}};
 
-  static std::vector< CObjectLists::ListType > getPossibleTargetFunctions(CSensProblem::SubTaskType);
-  static std::vector< CObjectLists::ListType > getPossibleVariables(CSensProblem::SubTaskType);
+  constexpr static CEnumAnnotationSubset _ValidSubtask{
+    CTaskEnum::TaskName,
+    CTaskEnum::Task::UnsetTask,
+    std::array{
+      CTaskEnum::Task::UnsetTask,
+      CTaskEnum::Task::steadyState,
+      CTaskEnum::Task::timeCourse,
+      CTaskEnum::Task::parameterFitting,
+      CTaskEnum::Task::optimization,
+      CTaskEnum::Task::crosssection}};
+
+public:
+  constexpr static CEnumAnnotation< CTaskEnum::Task, std::string_view > ValidSubtask{_ValidSubtask};
+
+  static std::vector< CObjectLists::ListType > getPossibleTargetFunctions(CTaskEnum::Task);
+  static std::vector< CObjectLists::ListType > getPossibleVariables(CTaskEnum::Task);
 
   // Operations
 
@@ -127,12 +145,22 @@ public:
   /**
    *   set the problem's SubTaskType:
    */
-  void setSubTaskType(const CSensProblem::SubTaskType & type);
+  void setSubTaskType(const CTaskEnum::Task & type);
 
   /**
    *   get the problem's SubTaskType:
    */
-  CSensProblem::SubTaskType getSubTaskType() const;
+  CTaskEnum::Task getSubTaskType() const;
+
+  /**
+   * retrieve the old sub task type. This is used for backward compatibility with old files.
+   */
+  SubtaskType getOldSubTaskType() const;
+
+  /**
+   * set the old sub task type. This is used for backward compatibility with old files.
+   */
+  void setOldSubTaskType(SubtaskType oldType);
 
   CSensItem getTargetFunctions() const;
   void setTargetFunctions(const CSensItem item);
@@ -210,7 +238,7 @@ private:
    */
   void initDebugProblem();
 
-  CSensProblem::SubTaskType * mpSubTaskType;
+  SubtaskType * mpSubTaskType;
 
   CCopasiParameterGroup * mpTargetFunctions;
 

@@ -199,6 +199,11 @@
     return self->setValue(v);
   }
   
+  bool setCNValue(const CCommonName & v)
+  {
+    return self->setValue(CRegisteredCommonName(v));
+  }
+  
   bool setCNValue(const std::string & v)
   {
     return self->setValue(CRegisteredCommonName(v));

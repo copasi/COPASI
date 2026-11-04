@@ -105,9 +105,6 @@ void CILDMMethod::step(const double & deltaT)
   // TO REMOVE : Model.applyAssignments();
   mpContainer->calculateJacobian(mJacobian, 1e-6, true);
 
-  C_INT flag_jacob;
-  flag_jacob = 1;  // Set flag_jacob=0 to printing Jacobian
-
   // To get the reduced Stoichiometry Matrix;
 
   const CMatrix<C_FLOAT64> & Stoichiom = mpContainer->getModel().getRedStoi();
@@ -219,9 +216,6 @@ void CILDMMethod::step(const double & deltaT)
 
       goto integration;
     }
-
-  C_INT flag_schur;
-  flag_schur = 0;
 
 #ifdef ILDMDEBUG
 
@@ -883,9 +877,6 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
   C_INT i, j;
   C_INT dim = mDim;
   C_INT fast = dim - slow;
-  C_INT flag_deufl;
-
-  flag_deufl = 1;  // set flag_deufl = 0 to print the results of calculations
 
   /* calculations before relaxing yf to slow manifold */
 
@@ -1026,13 +1017,10 @@ void CILDMMethod::deuflhard(C_INT & slow, C_INT & info)
     if (max < re[i])
       max = re[i];
 
-  C_FLOAT64 max1;
   C_FLOAT64 norm = 0;
 
   for (i = 0; i < slow; i++)
     norm = norm + fabs(g_relax[i] - g_slow[i]);
-
-  max1 = norm * mEPS;
 
   if (max >= mDtol / mpContainer->getModel().getNumber2QuantityFactor())
     info = 1;

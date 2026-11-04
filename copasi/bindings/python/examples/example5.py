@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual 
+# Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
+# University of Virginia, University of Heidelberg, and University 
+# of Connecticut School of Medicine. 
+# All rights reserved. 
+
+# Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
 # Properties, Inc., University of Heidelberg, and University of 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -42,15 +47,15 @@ def main():
    variableModelValue.setStatus(CModelEntity.Status_ASSIGNMENT)
    # we create a very simple assignment that is easy on the optimization
    # a parabole with the minimum at x=6 should do just fine
-   s=fixedModelValue.getObject(CCommonName("Reference=Value")).getCN().getString()
+   s=fixedModelValue.getChildObject(CCommonName("Reference=Value")).getCN().getString()
    s="(<"+s+"> - 6.0)^2"
    variableModelValue.setExpression(s)
    # now we compile the model and tell COPASI which values have changed so
    # that COPASI can update the values that depend on those
    model.compileIfNecessary()
    changedObjects=ObjectStdVector()
-   changedObjects.push_back(fixedModelValue.getObject(CCommonName("Reference=InitialValue")))
-   changedObjects.push_back(variableModelValue.getObject(CCommonName("Reference=InitialValue")))
+   changedObjects.push_back(fixedModelValue.getChildObject(CCommonName("Reference=InitialValue")))
+   changedObjects.push_back(variableModelValue.getChildObject(CCommonName("Reference=InitialValue")))
    model.updateInitialValues(changedObjects)
    
    # now we set up the optimization
@@ -95,7 +100,7 @@ def main():
    # we want to minimize the value of the variable model value at the end of
    # the simulation
    # the objective function is normally minimized
-   objectiveFunction=variableModelValue.getObject(CCommonName("Reference=Value")).getCN().getString()
+   objectiveFunction=variableModelValue.getChildObject(CCommonName("Reference=Value")).getCN().getString()
    # we need to put the angled brackets around the common name of the object
    objectiveFunction="<"+objectiveFunction+">"
    # now we set the objective function in the problem
@@ -104,7 +109,7 @@ def main():
    # now we create the optimization items
    # i.e. the model elements that have to be changed during the optimization
    # in order to get to the optimal solution
-   optItem=optProblem.addOptItem(CCommonName(fixedModelValue.getObject(CCommonName("Reference=InitialValue")).getCN()))
+   optItem=optProblem.addOptItem(CCommonName(fixedModelValue.getChildObject(CCommonName("Reference=InitialValue")).getCN()))
    # we want to change the fixed model value from -100 to +100 with a start
    # value of 50
    optItem.setStartValue(50.0)
@@ -152,9 +157,9 @@ def main():
    header.push_back(CRegisteredCommonName(CDataString("initial value of F").getCN().getString()))
    # in the report body we write the best value of the objective function and
    # the initial value of the fixed parameter separated by a komma
-   body.push_back(CRegisteredCommonName(optProblem.getObject(CCommonName("Reference=Best Value")).getCN().getString()))
+   body.push_back(CRegisteredCommonName(optProblem.getChildObject(CCommonName("Reference=Best Value")).getCN().getString()))
    body.push_back(CRegisteredCommonName(report.getSeparator().getCN().getString()))
-   body.push_back(CRegisteredCommonName(fixedModelValue.getObject(CCommonName("Reference=InitialValue")).getCN().getString()))
+   body.push_back(CRegisteredCommonName(fixedModelValue.getChildObject(CCommonName("Reference=InitialValue")).getCN().getString()))
 
    
    # set the report for the task

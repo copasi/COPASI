@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -44,6 +44,8 @@ echo mkdir share/copasi/examples
 mkdir share/copasi/examples
 echo mkdir share/copasi/icons
 mkdir share/copasi/icons
+echo mkdir share/copasi/bin
+mkdir share/copasi/bin
 echo mkdir share/copasi/lib
 mkdir share/copasi/lib
 chmod -R 755 *
@@ -72,6 +74,10 @@ chmod 755 bin/CopasiUI
 echo cp "${BINARY_DIR}/copasi/CopasiUI/CopasiUI"  share/copasi/lib
 cp "${BINARY_DIR}/copasi/CopasiUI/CopasiUI"  share/copasi/lib
 chmod 755 share/copasi/lib/CopasiUI
+
+echo cp "${BINARY_DIR}/copasi/CopasiUI/CopasiUI"  share/copasi/bin
+cp "${BINARY_DIR}/copasi/CopasiUI/CopasiUI"  share/copasi/bin
+chmod 755 share/copasi/bin/CopasiUI
 
 echo cp "${BINARY_DIR}/copasi/CopasiSE/CopasiSE"  bin
 cp "${BINARY_DIR}/copasi/CopasiSE/CopasiSE"  bin
@@ -113,16 +119,16 @@ echo cp -r "${SETUP_DIR}"/src/share/copasi/lib share/copasi
 cp -r "${SETUP_DIR}"/src/share/copasi/lib share/copasi
 
 # Copy Qt libraries
-echo cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libQt/ {print $3}'` share/copasi/lib
-cp `ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libQt/ {print $3}'` share/copasi/lib
+echo cp $(ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libQt/ {print $3}') share/copasi/lib
+cp $(ldd share/copasi/lib/CopasiUI | awk -- '$0 ~ /libQt/ {print $3}') share/copasi/lib
 chmod 644 share/copasi/lib/libQt*
 
 # If linuxdeployqt is set, use it to bundle the Qt libraries
 if [ -n "${COPASI_LINUXDEPLOYQT}" ]; then  
   pushd ${SETUP_DIR}/${PACKAGE_NAME}/share/copasi/lib  
   echo "running linuxdeployqt"
-  echo ${COPASI_LINUXDEPLOYQT} ./CopasiUI  -always-overwrite -bundle-non-qt-libs -qmake=`which qmake` -extra-plugins=platforms/libqxcb.so
-  ${COPASI_LINUXDEPLOYQT} ./CopasiUI  -always-overwrite -bundle-non-qt-libs -qmake=`which qmake` -extra-plugins=platforms/libqxcb.so
+  echo ${COPASI_LINUXDEPLOYQT} ./CopasiUI  -always-overwrite -bundle-non-qt-libs -qmake=$(which qmake) -no-translations -extra-plugins=platforms/libqxcb.so
+  ${COPASI_LINUXDEPLOYQT} ./CopasiUI  -always-overwrite -bundle-non-qt-libs -qmake=$(which qmake) -no-translations -extra-plugins=platforms/libqxcb.so
   if [ -n "${EXTRA_LIBS}" ]; then
     # copy all files from extra_libs to lib
     cp -r ${EXTRA_LIBS}/* lib/    

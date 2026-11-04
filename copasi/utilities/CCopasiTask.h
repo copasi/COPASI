@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,16 +51,6 @@ class CProcessReportLevel;
 class CCopasiTask : public CDataContainer
 {
 public:
-  /**
-   * Check whether the given method is in the list of valid methods
-   * This list must end with CCopasiMethod::unset
-   * @param const CTaskEnum::Method & method
-   * @param const CTaskEnum::Method * validMethods
-   * @return bool isValid
-   */
-  static bool isValidMethod(const CTaskEnum::Method & method,
-                            const CTaskEnum::Method * validMethods);
-
   enum struct OutputFlagBase
   {
     INITIALIZE = 0,
@@ -191,14 +181,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -209,10 +199,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & type,
-                              const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+  void createUndoData(CUndoData & undoData,
+                      const CUndoData::Type & type,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
   /**
    * Specific constructor
@@ -253,7 +243,7 @@ public:
    * Retrieve the key for the task.
    * @return std::string key
    */
-  virtual const std::string & getKey() const;
+  const std::string & getKey() const override;
 
   /**
    * Set whether the task is scheduled
@@ -357,7 +347,7 @@ public:
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  virtual const CTaskEnum::Method * getValidMethods() const;
+  virtual const CEnumAnnotation< CTaskEnum::Method, std::string_view > getValidMethods() const;
 #endif
 
   /**
@@ -386,6 +376,13 @@ public:
    * Retrieve the method
    */
   const CCopasiMethod * getMethod() const;
+
+  /**
+   *  Return a (possibly rough) estimate for the accuracy of the method under current method settings.
+   *   This is not intended for numerical calculations but rather for allowing sanity checks in parent tasks that use
+   *    this task as a subtask
+   */
+  virtual C_FLOAT64 getEstimatedMethodError() const;
 
   /**
    * Retrieve the report
@@ -536,6 +533,8 @@ protected:
   OutputFlag mDoOutput;
   COutputHandler * mpOutputHandler;
   unsigned C_INT32 mOutputCounter;
+
+  std::string mMethodName;
 
 #ifndef SWIG
   // used by language bindings to hold last process warnings / errors

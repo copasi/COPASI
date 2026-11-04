@@ -68,28 +68,28 @@ CRadau5Method::CRadau5Method(const CRadau5Method & src,
   mpAbsoluteTolerance(NULL),
   mpMaxInternalSteps(NULL),
   mpInitialStepSize(NULL),
-  mData(src.mData),
+  mData(),
   mpY(NULL),
   mpYdot(NULL),
-  mNumRoots(src.mNumRoots),
-  mTime(src.mTime),
-  mLsodaStatus(src.mLsodaStatus),
-  mLastSuccessState(src.mLastSuccessState),
-  mLastRootState(src.mLastRootState),
-  mAtol(src.mAtol),
+  mNumRoots(0),
+  mTime(),
+  mLsodaStatus(1),
+  mLastSuccessState(),
+  mLastRootState(),
+  mAtol(),
   mpAtol(NULL),
-  mErrorMsg(src.mErrorMsg.str()),
+  mErrorMsg(),
   mRADAU(),
-  mTask(src.mTask),
-  mDWork(src.mDWork),
-  mIWork(src.mIWork),
-  mJType(src.mJType),
-  mRootMask(src.mRootMask),
+  mTask(),
+  mDWork(),
+  mIWork(),
+  mJType(),
+  mRootMask(),
   mDiscreteRoots(),
-  mRootMasking(src.mRootMasking),
-  mTargetTime(src.mTargetTime),
-  mRootCounter(src.mRootCounter),
-  mPeekAheadMode(src.mPeekAheadMode)
+  mRootMasking(CRadau5Method::NONE),
+  mTargetTime(),
+  mRootCounter(0),
+  mPeekAheadMode(false)
 {
   assert((void *) &mData == (void *) &mData.dim);
 
@@ -412,7 +412,7 @@ void CRadau5Method::EvalF(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 
   static_cast<Data *>((void *) n)->pMethod->evalF(t, y, ydot);
 }
 
-void CRadau5Method::evalF(const C_FLOAT64 * t, const C_FLOAT64 * y, C_FLOAT64 * ydot)
+void CRadau5Method::evalF(const C_FLOAT64 * /* t */, const C_FLOAT64 * y, C_FLOAT64 * ydot)
 {
   CVector< C_FLOAT64 > yTemp(mData.dim);
   memcpy(yTemp.array(), mpContainerStateTime, mData.dim * sizeof(C_FLOAT64));
@@ -467,15 +467,15 @@ void CRadau5Method::EvalJ(const C_INT * n, const C_FLOAT64 * t, const C_FLOAT64 
 {static_cast<Data *>((void *) n)->pMethod->evalJ(t, y, ml, mu, pd, nRowPD);}
 
 // virtual
-void CRadau5Method::evalJ(const C_FLOAT64 * t, const C_FLOAT64 * y,
-                          C_FLOAT64 * ml, const C_INT * mu, C_FLOAT64 * pd, const C_INT * nRowPD)
+void CRadau5Method::evalJ(const C_FLOAT64 * /* t */, const C_FLOAT64 * /* y */,
+                          C_FLOAT64 * /* ml */, const C_INT * /* mu */, C_FLOAT64 * /* pd */, const C_INT * /* nRowPD */)
 {
   // TODO Implement me.
 }
 
 /* solout function to generate output after successful computation for automatic step size */
-void CRadau5Method::solout(C_INT * nr, double * xold, double * x, double * y, double * cont,
-                           C_INT * lrc, C_INT * n, double * rpar, C_INT * ipar, C_INT * irtrn)
+void CRadau5Method::solout(C_INT * /* nr */, double * xold, double * x, double * /* y */, double * /* cont */,
+                           C_INT * /* lrc */, C_INT * /* n */, double * rpar, C_INT * /* ipar */, C_INT * irtrn)
 {
   if (*x != *xold && *(x + 1) != *rpar)
     {

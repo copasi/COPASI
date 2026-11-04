@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -33,7 +33,7 @@ class CCommonName;
 class COptProblem;
 class CDataModel;
 class CMathObject;
-class CRandom;
+class CConfigurableRNG;
 
 class COptItem: public CCopasiParameterGroup
 {
@@ -291,10 +291,10 @@ public:
    * Retrieve a random value in the interval (lower bound, upper bound).
    * Optionally one may provide a random number generator to be used
    * to create the random value.
-   * @param CRandom & Random
+   * @param ConfigurableRNG & rng
    * @return C_FLOAT64 randomValue
    */
-  C_FLOAT64 getRandomValue(CRandom * Random) const;
+  C_FLOAT64 getRandomValue(CConfigurableRNG & rng) const;
 
   /**
    * Output stream operator
@@ -310,9 +310,9 @@ public:
    */
   bool influencesIntervals() const;
 
-  void setIntervalUpdateSequence(const CCore::CUpdateSequence & updateSequence);
-
   const CCore::CUpdateSequence & getIntervalUpdateSequence() const;
+
+  CCore::CUpdateSequence & getIntervalUpdateSequence();
 
   void addDependentItem(COptItem * pDependentItem);
 

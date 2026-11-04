@@ -1,4 +1,4 @@
-// Copyright (C) 2020 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2020 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -55,9 +55,6 @@ void CPointerContext< Data >::setMaster(Data * pMaster)
   if (Base::size() == 0)
     return;
 
-  if (Base::master() == pMaster)
-    return;
-
   if (Base::master() != NULL)
     {
       Base::master() = NULL;
@@ -77,18 +74,10 @@ void CPointerContext< Data >::setMaster(Data * pMaster)
       Base::master() = pMaster;
 
       {
-        bool renameEnabled = CRegisteredCommonName::isEnabled();
-
-        if (renameEnabled)
-          CRegisteredCommonName::setEnabled(false);
-
         if (Base::size() > 1)
 #pragma omp parallel for
           for (size_t i = 0; i < Base::size(); ++i)
             Base::threadData()[i] = dynamic_cast< Data * >(pMaster->copy());
-
-        if (renameEnabled)
-          CRegisteredCommonName::setEnabled(true);
       }
     }
 }

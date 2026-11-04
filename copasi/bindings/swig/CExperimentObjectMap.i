@@ -25,6 +25,23 @@
 
 %}
 
+%extend CExperimentObjectMap
+{
+    bool setObjectCN(const size_t & index,
+                    const std::string & CN)
+    {
+
+        return $self->setObjectCN(index, CRegisteredCommonName(CN));
+    }
+
+    bool setObjectCN(const size_t & index,
+                    const CCommonName & CN)
+    {
+
+        return $self->setObjectCN(index, CRegisteredCommonName(CN));
+    }
+}
+
 // suppress warnings on nested structures
 %warnfilter(325) CDataColumn;
 

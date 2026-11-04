@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -56,14 +56,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -74,10 +74,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & type,
-                              const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+  void createUndoData(CUndoData & undoData,
+                      const CUndoData::Type & type,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
   /**
    * Default constructor
    * @param const std::string & name (default: "NoName")
@@ -105,7 +105,7 @@ public:
    * Retrieves the key of the EvaluationTree
    * @return const std::string & key
    */
-  const std::string & getKey() const;
+  const std::string & getKey() const override;
 
   /**
    * Sets the SBMLId.
@@ -122,7 +122,7 @@ public:
    * @param const std::string & infix
    * @return CIssue issue
    */
-  virtual CIssue setInfix(const std::string & infix);
+  CIssue setInfix(const std::string & infix) override;
 
   /**
    * Check whether a function is read only
@@ -149,7 +149,7 @@ public:
    * @param const std::string & name
    * @return size_t index
    */
-  virtual size_t getVariableIndex(const std::string & name) const;
+  size_t getVariableIndex(const std::string & name) const override;
 
   /**
    * Function to retrieve the value of the indexed variable.
@@ -159,7 +159,7 @@ public:
    * @param const size_t & index
    * @return const C_FLOAT64 & variableValue
    */
-  virtual const C_FLOAT64 & getVariableValue(const size_t & index) const;
+  const C_FLOAT64 & getVariableValue(const size_t & index) const override;
 
   /**
    * Function to set whether it is reversible.

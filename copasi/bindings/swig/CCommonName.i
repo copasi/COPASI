@@ -32,6 +32,26 @@
 %include "copasi/core/CCommonName.h"
 %include "copasi/core/CRegisteredCommonName.h"
 
+
+%extend CRegisteredCommonName
+{
+  CRegisteredCommonName(const CRegisteredCommonName & name, const CObjectInterface*)
+  {
+   return new CRegisteredCommonName(name);
+  }
+  
+  CRegisteredCommonName(const CCommonName & name, const CObjectInterface*)
+  {
+   return new CRegisteredCommonName(name);
+  }
+
+  CRegisteredCommonName(const std::string & name, const CObjectInterface*)
+  {
+   return new CRegisteredCommonName(name);
+  }
+}
+
+
 %extend CCommonName
 {
   std::string getString()

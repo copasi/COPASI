@@ -363,7 +363,7 @@ void ObjectBrowserWidget::eXport(ObjectBrowserItem *pCurrent, std::vector< const
               unsigned C_INT32 i = 0;
 
               for (; i < outputVector->size(); i++)
-                if (pCurrent->getObject()->pCopasiObject->getStringCN() == (*outputVector)[i]->getStringCN()) insertFlag = false;
+                if (pCurrent->getObject()->pCopasiObject->getCN() == (*outputVector)[i]->getCN()) insertFlag = false;
 
               if (insertFlag)
                 outputVector->push_back(pCurrent->getObject()->pCopasiObject);

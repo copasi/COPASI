@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -60,9 +60,9 @@
 #include "copasi/utilities/CDependencyGraph.h"
 #include "copasi/utilities/CIndexedPriorityQueue.h"
 #include "copasi/utilities/CVersion.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/math/CMathContainer.h"
-#include "CHybridMethodODE45.h"
+#include "copasi/trajectory/CHybridMethodODE45.h"
 
 // Uncomment this line below to get debug print out.
 // #define DEBUG_OUTPUT 1
@@ -82,52 +82,52 @@ std::string CHybridMethodODE45::PartitioningStrategy[] =
  */
 CHybridMethodODE45::CHybridMethodODE45(const CDataContainer * pParent,
                                        const CTaskEnum::Method & methodType,
-                                       const CTaskEnum::Task & taskType):
-  CTrajectoryMethod(pParent, methodType, taskType),
-  mSlowReactions(),
-  mFirstReactionSpeciesIndex(C_INVALID_INDEX),
-  mCountReactionSpecies(C_INVALID_INDEX),
-  mHasStoiReaction(false),
-  mHasDetermReaction(false),
-  mIntegrationType(HYBRID),
-  mLastSuccessState(),
-  mTargetTime(0.0),
-  mODE45(),
-  mODEInitalized(false),
-  mRootCounter(0),
-  mMaxStepsReached(false),
-  mMaxBalance(0),
-  mData(),
-  mY(),
-  mpYdot(NULL),
-  mCountContainerVariables(0),
-  mSpeciesRateUpdateSequence(),
-  mRKMethodStatus(CRungeKutta::INITIALIZE),
-  mAmuVariables(),
-  mAmuPointers(),
-  mA0(0.0),
-  mContainerFluxes(),
-  mSavedFluxes(),
-  mFluxPointers(),
-  mPropensitiesUpdateSequence(),
-  mEventProcessing(false),
-  mFireReaction(false),
-  mRootMask(),
-  mDiscreteRoots(),
-  mRootMasking(RootMask::NONE),
-  mRootValuesLeft(),
-  mRootValuesRight(),
-  mpRandomGenerator(NULL),
-  mOutputFile(),
-  mOutputFileName(),
-  mOutputCounter(0),
-  mpMaxInternalSteps(NULL),
-  mpRelativeTolerance(NULL),
-  mpAbsoluteTolerance(NULL),
-  mpPartitioningStrategy(NULL),
-  mpUseRandomSeed(NULL),
-  mpRandomSeed(NULL),
-  mpFastReactions(NULL)
+                                       const CTaskEnum::Task & taskType)
+  : CTrajectoryMethod(pParent, methodType, taskType)
+  , mSlowReactions()
+  , mFirstReactionSpeciesIndex(C_INVALID_INDEX)
+  , mCountReactionSpecies(C_INVALID_INDEX)
+  , mHasStoiReaction(false)
+  , mHasDetermReaction(false)
+  , mIntegrationType(HYBRID)
+  , mLastSuccessState()
+  , mTargetTime(0.0)
+  , mODE45()
+  , mRKMethodStatus(CRungeKutta::INITIALIZE)
+  , mODEInitalized(false)
+  , mRootCounter(0)
+  , mMaxStepsReached(false)
+  , mMaxBalance(0)
+  , mData()
+  , mY()
+  , mpYdot(NULL)
+  , mCountContainerVariables(0)
+  , mSpeciesRateUpdateSequence(nullptr)
+  , mAmuVariables()
+  , mAmuPointers()
+  , mA0(0.0)
+  , mContainerFluxes()
+  , mSavedFluxes()
+  , mFluxPointers()
+  , mPropensitiesUpdateSequence(nullptr)
+  , mEventProcessing(false)
+  , mFireReaction(false)
+  , mRootMask()
+  , mDiscreteRoots()
+  , mRootMasking(RootMask::NONE)
+  , mRootValuesLeft()
+  , mRootValuesRight()
+  , mRNG(NULL)
+  , mOutputFile()
+  , mOutputFileName()
+  , mOutputCounter(0)
+  , mpMaxInternalSteps(NULL)
+  , mpRelativeTolerance(NULL)
+  , mpAbsoluteTolerance(NULL)
+  , mpPartitioningStrategy(NULL)
+  , mpUseRandomSeed(NULL)
+  , mpRandomSeed(NULL)
+  , mpFastReactions(NULL)
 {
   assert((void *) &mData == (void *) &mData.dim);
   mData.pMethod = this;
@@ -138,52 +138,52 @@ CHybridMethodODE45::CHybridMethodODE45(const CDataContainer * pParent,
  * Copy Constructor
  */
 CHybridMethodODE45::CHybridMethodODE45(const CHybridMethodODE45 & src,
-                                       const CDataContainer * pParent):
-  CTrajectoryMethod(src, pParent),
-  mSlowReactions(),
-  mFirstReactionSpeciesIndex(C_INVALID_INDEX),
-  mCountReactionSpecies(C_INVALID_INDEX),
-  mHasStoiReaction(false),
-  mHasDetermReaction(false),
-  mIntegrationType(HYBRID),
-  mLastSuccessState(),
-  mTargetTime(0.0),
-  mODE45(),
-  mODEInitalized(false),
-  mRootCounter(0),
-  mMaxStepsReached(false),
-  mMaxBalance(0),
-  mData(),
-  mY(),
-  mpYdot(NULL),
-  mCountContainerVariables(0),
-  mSpeciesRateUpdateSequence(),
-  mRKMethodStatus(CRungeKutta::INITIALIZE),
-  mAmuVariables(),
-  mAmuPointers(),
-  mA0(0.0),
-  mContainerFluxes(),
-  mSavedFluxes(),
-  mFluxPointers(),
-  mPropensitiesUpdateSequence(),
-  mEventProcessing(false),
-  mFireReaction(false),
-  mRootMask(),
-  mDiscreteRoots(),
-  mRootMasking(RootMask::NONE),
-  mRootValuesLeft(),
-  mRootValuesRight(),
-  mpRandomGenerator(NULL),
-  mOutputFile(),
-  mOutputFileName(),
-  mOutputCounter(0),
-  mpMaxInternalSteps(NULL),
-  mpRelativeTolerance(NULL),
-  mpAbsoluteTolerance(NULL),
-  mpPartitioningStrategy(NULL),
-  mpUseRandomSeed(NULL),
-  mpRandomSeed(NULL),
-  mpFastReactions(NULL)
+                                       const CDataContainer * pParent)
+  : CTrajectoryMethod(src, pParent)
+  , mSlowReactions()
+  , mFirstReactionSpeciesIndex(C_INVALID_INDEX)
+  , mCountReactionSpecies(C_INVALID_INDEX)
+  , mHasStoiReaction(false)
+  , mHasDetermReaction(false)
+  , mIntegrationType(HYBRID)
+  , mLastSuccessState()
+  , mTargetTime(0.0)
+  , mODE45()
+  , mRKMethodStatus(CRungeKutta::INITIALIZE)
+  , mODEInitalized(false)
+  , mRootCounter(0)
+  , mMaxStepsReached(false)
+  , mMaxBalance(0)
+  , mData()
+  , mY()
+  , mpYdot(NULL)
+  , mCountContainerVariables(0)
+  , mSpeciesRateUpdateSequence(nullptr)
+  , mAmuVariables()
+  , mAmuPointers()
+  , mA0(0.0)
+  , mContainerFluxes()
+  , mSavedFluxes()
+  , mFluxPointers()
+  , mPropensitiesUpdateSequence(nullptr)
+  , mEventProcessing(false)
+  , mFireReaction(false)
+  , mRootMask()
+  , mDiscreteRoots()
+  , mRootMasking(RootMask::NONE)
+  , mRootValuesLeft()
+  , mRootValuesRight()
+  , mRNG(NULL)
+  , mOutputFile()
+  , mOutputFileName()
+  , mOutputCounter(0)
+  , mpMaxInternalSteps(NULL)
+  , mpRelativeTolerance(NULL)
+  , mpAbsoluteTolerance(NULL)
+  , mpPartitioningStrategy(NULL)
+  , mpUseRandomSeed(NULL)
+  , mpRandomSeed(NULL)
+  , mpFastReactions(NULL)
 {
   assert((void *) &mData == (void *) &mData.dim);
   mData.pMethod = this;
@@ -255,7 +255,7 @@ void CHybridMethodODE45::initializeParameter()
 
   CCopasiParameter FastReactionTemplate("Reaction", CCopasiParameter::Type::CN);
   std::vector< std::pair< CRegisteredCommonName, CRegisteredCommonName > > Reactions;
-  Reactions.push_back(std::make_pair(CRegisteredCommonName("Reactions"), CRegisteredCommonName("Reactions")));
+  Reactions.push_back(std::make_pair(CCommonName("Reactions"), CCommonName("Reactions")));
   FastReactionTemplate.setValidValues(Reactions);
 
   mpFastReactions->getElementTemplates().addParameter(FastReactionTemplate);
@@ -305,14 +305,14 @@ void CHybridMethodODE45::start()
   mRootCounter = 0;
   mMaxStepsReached = false;
 
-  mpRandomGenerator = &mpContainer->getRandomGenerator();
+  mRNG = &mpContainer->getRandomGenerator();
 
   if (*mpUseRandomSeed)
     {
-      mpRandomGenerator->initialize(*mpRandomSeed);
+      mRNG->seed(*mpRandomSeed);
     }
 
-  mA0 = -log(mpRandomGenerator->getRandomOO());
+  mA0 = -log(std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mRNG));
 
   //(6)----set attributes for ODE45
   mRKMethodStatus = CRungeKutta::INITIALIZE;
@@ -592,7 +592,7 @@ void CHybridMethodODE45::fireReaction()
   mFireReaction = false;
 
   mAmuVariables = 0.0;
-  mA0 = -log(mpRandomGenerator->getRandomOO());
+  mA0 = -log(std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mRNG));
 
   // Update all values needed for simulation.
   // TODO PERFORMANCE Use a reaction dependent update sequence.
@@ -703,6 +703,9 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
                 break;
 
               case RootMask::ALL:
+              case RootMask::CONTINUOUS:
+              case RootMask::CONTINUOUS_NEGATIVE:
+              case RootMask::CONTINUOUS_POSITIVE:
                 break;
             }
         }
@@ -730,6 +733,9 @@ void CHybridMethodODE45::integrateDeterministicPart(C_FLOAT64 endTime)
             break;
 
           case RootMask::ALL:
+          case RootMask::CONTINUOUS:
+          case RootMask::CONTINUOUS_NEGATIVE:
+          case RootMask::CONTINUOUS_POSITIVE:
           {
             const bool *pDiscrete = mDiscreteRoots.array();
             RootMask * pMask = mRootMask.begin();
@@ -885,7 +891,7 @@ CMathReaction * CHybridMethodODE45::getReactionToFire()
   C_FLOAT64 * pAmuEnd = mAmuVariables.end();
 
   //get the threshold
-  C_FLOAT64 A0 = mA0 * mpRandomGenerator->getRandomOO();
+  C_FLOAT64 A0 = mA0 * std::uniform_real_distribution< C_FLOAT64 >(0.0, 1.0)(*mRNG);
 
   //get the reaction index
   CMathReaction ** ppSlowReaction = mSlowReactions.array();

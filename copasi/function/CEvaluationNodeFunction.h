@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -48,7 +48,7 @@ static inline double round(double value)
 
 #include "copasi/function/CEvaluationNode.h"
 
-class CRandom;
+class CConfigurableRNG;
 class CDataModel;
 
 /**
@@ -318,7 +318,7 @@ private:
   const C_FLOAT64 * mpArgValue3;
   const C_FLOAT64 * mpArgValue4;
 
-  static CRandom * mpRandom;
+  static CConfigurableRNG * mpRandom;
 };
 
 #endif // COPASI_CEvaluationNodeFunction

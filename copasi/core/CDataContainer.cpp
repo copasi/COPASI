@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -27,7 +27,7 @@
 #include "copasi/core/CDataContainer.h"
 #include "copasi/core/CDataVector.h"
 #include "copasi/core/CRootContainer.h"
-#include "copasi/core/CRegisteredCommonName.h"
+#include "copasi/core/CCommonName.h"
 #include "copasi/core/CDataTimer.h"
 #include "copasi/core/CDataString.h"
 
@@ -41,7 +41,7 @@
 const CObjectInterface::ContainerList CDataContainer::EmptyList;
 
 // static
-CDataContainer * CDataContainer::fromData(const CData & data, CUndoObjectInterface * pParent)
+CDataContainer * CDataContainer::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CDataContainer(data.getProperty(CData::OBJECT_NAME).toString(),
                             NO_PARENT,
@@ -223,6 +223,52 @@ CDataContainer::~CDataContainer()
       }
 }
 
+// virtual
+const CObjectInterface * CDataContainer::resolve(const CCommonNameComponent::shared_ptr & pCN) const
+{
+  const CObjectInterface * pObject = nullptr;
+
+  if (pCN)
+    {
+      if (pCN->isResolved())
+        {
+          pObject = pCN->getObject();
+        }
+      else
+        {
+          const std::string & Name = pCN->getObjectName();
+          const std::string & Type = pCN->getObjectType();
+
+          if (Name == "CMIRIAMInfoObject"
+              && Type == "CMIRIAMInfo"
+              && CAnnotation::castObject(this) != NULL)
+            {
+              // Create a MIRIAM Info if needed.
+              pObject = CAnnotation::allocateMiriamInfo(const_cast< CDataContainer * >(this));
+            }
+          else
+            {
+              ObjectMap::range range = mObjects.equal_range(Name);
+
+              while (range.first != range.second && (*range.first)->getObjectType() != Type)
+                ++range.first;
+
+              if (range.first != range.second) //found in the list of children
+                pObject = (*range.first);
+              else if (Type == "String")
+                pObject = new CDataString(Name, this);
+              else if (Type == "Separator")
+                pObject = new CCopasiReportSeparator(Name, this);
+              else
+                pObject = CDataObject::resolve(pCN);
+            }
+        }
+    }
+
+  return pObject;
+}
+
+/*
 const CObjectInterface * CDataContainer::getObject(const CCommonName & cn) const
 {
   if (cn == "")
@@ -234,6 +280,7 @@ const CObjectInterface * CDataContainer::getObject(const CCommonName & cn) const
     }
 
   if (cn == "Reference=Name"
+      || cn == "Reference=DisplayName"
       || cn == "Property=Name"
       || cn == "Property=DisplayName")
     {
@@ -310,6 +357,7 @@ const CObjectInterface * CDataContainer::getObject(const CCommonName & cn) const
 
   return (*range.first)->getObject(cn.getRemainder());
 }
+ */
 
 const CDataContainer::ObjectMap & CDataContainer::getObjects() const
 {return mObjects;}
@@ -368,7 +416,7 @@ bool CDataContainer::remove(CDataObject * pObject)
 }
 
 // virtual
-size_t CDataContainer::getIndex(const CDataObject * pObject) const
+size_t CDataContainer::getIndex(const CDataObject * /* pObject */) const
 {
   return C_INVALID_INDEX;
 }
@@ -406,7 +454,7 @@ std::string CDataContainer::getChildObjectUnits(const CDataObject * /* pObject *
 {return "?";}
 
 // virtual
-CUndoObjectInterface * CDataContainer::insert(const CData & data)
+CUndoObjectInterface * CDataContainer::insert(const CData & /* data */)
 {
   return NULL;
 }

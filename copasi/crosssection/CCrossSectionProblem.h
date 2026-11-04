@@ -76,7 +76,7 @@ public:
   /**
    * return the variable
    */
-  const std::string& getSingleObjectCN() const;
+  const CCommonName & getSingleObjectCN() const;
   /*
    * set the variable
    */

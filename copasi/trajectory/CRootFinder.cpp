@@ -413,7 +413,7 @@ CRootFinder::ReturnStatus CRootFinder::checkRoots(C_FLOAT64 timeRight, const Roo
  * @param const RootMask & rootMask
  * @return bool ReturnStatus
  */
-CRootFinder::ReturnStatus CRootFinder::checkRoots(const CVector< C_FLOAT64 > & rootsLeft, const CVector< C_FLOAT64 > & rootsRight, const RootMask & rootMasking)
+CRootFinder::ReturnStatus CRootFinder::checkRoots(const CVector< C_FLOAT64 > & rootsLeft, const CVector< C_FLOAT64 > & rootsRight, const RootMask & /* rootMasking */)
 {
   // Default return values
   ReturnStatus Status = NotFound;

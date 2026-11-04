@@ -30,6 +30,7 @@ struct PlotArgs
   QString label;
   double param_value;
   double param_sd;
+  double parabola_coeff;
   double obj_val;
   std::vector< LineArgs > thresholds;
   std::vector< LineArgs > verticals;

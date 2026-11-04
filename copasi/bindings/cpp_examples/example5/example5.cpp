@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -132,7 +132,7 @@ int main()
   // we want to minimize the value of the variable model value at the end of
   // the simulation
   // the objective function is normally minimized
-  std::string objectiveFunction = pVariableModelValue->getObject(CCommonName("Reference=Value"))->getCN();
+  std::string objectiveFunction = pVariableModelValue->getChildObject(CCommonName("Reference=Value"))->getCN();
   // we need to put the angled brackets around the common name of the object
   objectiveFunction = "<" + objectiveFunction + ">";
   // now we set the objective function in the problem
@@ -141,7 +141,7 @@ int main()
   // now we create the optimization items
   // i.e. the model elements that have to be changed during the optimization
   // in order to get to the optimal solution
-  COptItem* pOptItem = &pOptProblem->addOptItem(pFixedModelValue->getObject(CCommonName("Reference=InitialValue"))->getCN());
+  COptItem* pOptItem = &pOptProblem->addOptItem(pFixedModelValue->getChildObject(CCommonName("Reference=InitialValue"))->getCN());
   // we want to change the fixed model value from -100 to +100 with a start
   // value of 50
   pOptItem->setStartValue(50.0);
@@ -189,9 +189,9 @@ int main()
   pHeader->push_back(CRegisteredCommonName(CDataString("initial value of F").getCN()));
   // in the report body we write the best value of the objective function and
   // the initial value of the fixed parameter separated by a comma
-  pBody->push_back(CRegisteredCommonName(pOptProblem->getObject(CCommonName("Reference=Best Value"))->getCN()));
+  pBody->push_back(CRegisteredCommonName(pOptProblem->getChildObject(CCommonName("Reference=Best Value"))->getCN()));
   pBody->push_back(CRegisteredCommonName(pReport->getSeparator().getCN()));
-  pBody->push_back(CRegisteredCommonName(pFixedModelValue->getObject(CCommonName("Reference=InitialValue"))->getCN()));
+  pBody->push_back(CRegisteredCommonName(pFixedModelValue->getChildObject(CCommonName("Reference=InitialValue"))->getCN()));
 
   // set the report for the task
   pOptTask->getReport().setReportDefinition(pReport);

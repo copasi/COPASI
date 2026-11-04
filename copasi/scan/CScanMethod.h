@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -36,12 +36,12 @@
 #include "copasi/steadystate/CSteadyStateTask.h"
 #include "copasi/trajectory/CTrajectoryTask.h"
 #include "copasi/report/CReport.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
 class CScanProblem;
 class CScanTask;
 class CSteadyStateTask;
 class CTrajectory;
-class CRandom;
 class CModelParameterSet;
 
 class CScanItem
@@ -64,7 +64,7 @@ protected:
 public:
   static
   CScanItem* createScanItemFromParameterGroup(CCopasiParameterGroup* si,
-      CRandom* rg);
+      CConfigurableRNG & rng);
 
   size_t getNumSteps() const;
 
@@ -118,11 +118,11 @@ class CScanItemRepeat: public CScanItem
 public:
   CScanItemRepeat(CCopasiParameterGroup* si);
 
-  virtual void step();
+  void step() override;
 
   virtual ~CScanItemRepeat() {};
 
-  virtual bool isValidScanItem(const bool & continueFromCurrentState);
+  bool isValidScanItem(const bool & continueFromCurrentState) override;
 };
 
 class CScanItemParameterSet : public CScanItem
@@ -135,14 +135,14 @@ private:
 
 public:
   CScanItemParameterSet(CCopasiParameterGroup * si);
-  virtual void step();
+  void step() override;
 
   virtual ~CScanItemParameterSet(){};
 
-  virtual bool isValidScanItem(const bool & continueFromCurrentState);
+  bool isValidScanItem(const bool & continueFromCurrentState) override;
 
 protected:
-  virtual void ensureParameterGroupHasAllElements(CCopasiParameterGroup * pg);
+  void ensureParameterGroupHasAllElements(CCopasiParameterGroup * pg) override;
 };
 
 //***********************************+
@@ -156,13 +156,13 @@ private:
   bool mUseValues;
 public:
   CScanItemLinear(CCopasiParameterGroup* si);
-  virtual void step();
+  void step() override;
 
   virtual ~CScanItemLinear() {};
 
-  virtual bool isValidScanItem(const bool & continueFromCurrentState);
+  bool isValidScanItem(const bool & continueFromCurrentState) override;
 protected:
-  virtual void ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg);
+  void ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg) override;
 };
 
 //***********************************+
@@ -171,17 +171,18 @@ class CScanItemRandom: public CScanItem
 {
 private:
   C_FLOAT64 mMin, mMax, mFaktor;
-  CRandom* mRg;
+  CConfigurableRNG & mRNG;
   unsigned C_INT32 mRandomType;
   bool mLog;
 public:
-  CScanItemRandom(CCopasiParameterGroup* si, CRandom* rg);
+  CScanItemRandom() = delete;
+  CScanItemRandom(CCopasiParameterGroup* si, CConfigurableRNG & rng);
   virtual ~CScanItemRandom() {};
 
-  virtual void step();
-  virtual bool isNesting() const {return false;};
+  void step() override;
+  bool isNesting() const  override {return false;};
 protected:
-  virtual void ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg);
+  void ensureParameterGroupHasAllElements(CCopasiParameterGroup* pg) override;
 };
 
 //***********************************+
@@ -216,7 +217,7 @@ protected:
   /**
    * A pointer to the random number generator
    */
-  CRandom * mpRandomGenerator;
+  CConfigurableRNG mRNG;
 
   std::vector<CScanItem*> mScanItems;
 

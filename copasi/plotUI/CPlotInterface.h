@@ -1,7 +1,7 @@
-// Copyright (C) 2022 - 2024 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2022 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
 #ifndef COPASIPLOT_INTERFACE_H
 #define COPASIPLOT_INTERFACE_H
@@ -11,6 +11,8 @@
 #include <QRect>
 
 #include <string>
+#include <ostream>
+
 #include "copasi/output/COutputHandler.h"
 #include "copasi/plot/CPlotSpecification.h"
 
@@ -25,11 +27,14 @@ public:
   {
     xAxis = 0,
     yAxis,
-    zAxis,
-    __SIZE
+    zAxis
   };
 
-  static const CEnumAnnotation< std::string, Axis > AxisNames;
+  constexpr static CEnumAnnotationInstance AxisNames{
+    Axis::xAxis,
+    MapNode{Axis::xAxis, "x axis"},
+    MapNode{Axis::yAxis, "y axis"},
+    MapNode{Axis::zAxis, "z axis"}};
 
   /**
   * Destructor
@@ -72,6 +77,8 @@ public:
 
   virtual void saveToFile(const QString & fileName, QRect & rect);
 
+  virtual void saveDataToStream(std::ostream & os) = 0;
+
   /**
    * @return a string with supported file filters to save files
    */
@@ -88,7 +95,7 @@ public:
 
   /**
    * Optionally allows a interface to customize the status bar of the plot window
-   * @param bar 
+   * @param bar
    */
   virtual void setupStatusbar(QStatusBar * bar);
 };

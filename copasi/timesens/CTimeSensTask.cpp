@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2022 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -51,13 +51,6 @@ bool CTimeSensTask::ble(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 
 bool CTimeSensTask::bl(const C_FLOAT64 & d1, const C_FLOAT64 & d2)
 {return (d1 > d2);}
-
-// static
-const CTaskEnum::Method CTimeSensTask::ValidMethods[] =
-{
-  CTaskEnum::Method::timeSensLsoda,
-  CTaskEnum::Method::UnsetMethod
-};
 
 CTimeSensTask::CTimeSensTask(const CDataContainer * pParent,
                              const CTaskEnum::Task & type):
@@ -519,7 +512,7 @@ bool CTimeSensTask::processStep(const C_FLOAT64 & endTime, const bool & final)
 }
 
 // virtual
-const CTaskEnum::Method * CTimeSensTask::getValidMethods() const
+const CEnumAnnotation< CTaskEnum::Method, std::string_view > CTimeSensTask::getValidMethods() const
 {
   return CTimeSensTask::ValidMethods;
 }

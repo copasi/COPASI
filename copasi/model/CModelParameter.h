@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -45,11 +45,24 @@ public:
     Reaction,
     Group,
     Set,
-    unknown,
-    __SIZE
+    unknown
   };
 
-  static const CEnumAnnotation< std::string, Type > TypeNames;
+private:
+  constexpr static CEnumAnnotationInstance _TypeNames{
+    Type::unknown,
+    MapNode{Type::Model, "Model"},
+    MapNode{Type::Compartment, "Compartment"},
+    MapNode{Type::Species, "Species"},
+    MapNode{Type::ModelValue, "ModelValue"},
+    MapNode{Type::ReactionParameter, "ReactionParameter"},
+    MapNode{Type::Reaction, "Reaction"},
+    MapNode{Type::Group, "Group"},
+    MapNode{Type::Set, "Set"},
+    MapNode{Type::unknown, "unknown"}};
+
+public:
+  constexpr static CEnumAnnotation< Type, std::string_view > TypeNames{_TypeNames};
 
   enum struct CompareResult
   {
@@ -57,11 +70,20 @@ public:
     Missing,
     Modified,
     Conflict,
-    Identical,
-    __SIZE
+    Identical
   };
 
-  static const CEnumAnnotation< std::string, CompareResult > CompareResultNames;
+private:
+  constexpr static CEnumAnnotationInstance _CompareResultNames{
+    CompareResult::Identical,
+    MapNode{CompareResult::Obsolete, "Obsolete"},
+    MapNode{CompareResult::Missing, "Missing"},
+    MapNode{CompareResult::Modified, "Modified"},
+    MapNode{CompareResult::Conflict, "Conflict"},
+    MapNode{CompareResult::Identical, "Identical"}};
+
+public:
+  constexpr static CEnumAnnotation< CompareResult, std::string_view > CompareResultNames{_CompareResultNames};
 
   /**
    * Static method to create a CDataObject based on the provided data
@@ -73,20 +95,20 @@ public:
   /**
    * Destruct the object
    */
-  virtual void destruct();
+  void destruct() override;
 
   /**
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -97,10 +119,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & type,
-                              const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+  void createUndoData(CUndoData & undoData,
+                      const CUndoData::Type & type,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
 private:
   /**
@@ -138,8 +160,6 @@ public:
    * @param CModelParameterGroup * pParent
    */
   void setParent(CModelParameterGroup * pParent);
-
-  virtual void unsetDataModel();
 
   /**
    * Retrieve the parent, i.e., containing group, of the parameter.
@@ -396,8 +416,6 @@ public:
    */
   void removeSpecies(CModelParameterSpecies * pSpecies);
 
-  void unsetDataModel() override;
-
 private:
   /**
    * The set of species parameters which are contained in the compartment
@@ -464,8 +482,6 @@ public:
    * @param const CRegisteredCommonName & cn
    */
   void setCN(const CRegisteredCommonName & cn) override;
-
-  void unsetDataModel() override;
 
   /**
    * Set the value of the parameter based on the current framework
@@ -541,8 +557,6 @@ public:
    * Compile the parameter
    */
   void compile() override;
-
-  void unsetDataModel() override;
 
   /**
    * Retrieve a pointer to the reaction the parameter belongs to.

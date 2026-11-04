@@ -384,7 +384,7 @@ void CTrajectoryProblem::setValues(const std::vector<C_FLOAT64>& values)
 
   for (C_FLOAT64 value : values)
     {
-      str << value;
+      str << value << ' ';
     }
 
   setValues(str.str());

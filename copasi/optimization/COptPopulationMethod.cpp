@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,7 +20,7 @@
 #include "copasi/optimization/COptItem.h"
 #include "copasi/optimization/COptTask.h"
 
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 #include "copasi/randomGenerator/CIntervalValue.h"
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/core/CDataObject.h"
@@ -38,9 +38,14 @@ COptPopulationMethod::COptPopulationMethod(const CDataContainer * pParent,
   , mVariableSize(0)
   , mIndividuals()
   , mValues()
-  , mRandomContext(parallel)
 {
   initObjects();
+
+  if (parallel)
+    {
+      mOpenMPApplyCallback = std::make_shared< std::function< void() > >(std::bind(&COptMethod::openMPApplyCallback, this));
+      COpenMPConfig::RegisterApplyCallback(mOpenMPApplyCallback);
+    }
 }
 
 COptPopulationMethod::COptPopulationMethod(const COptPopulationMethod & src,
@@ -54,9 +59,14 @@ COptPopulationMethod::COptPopulationMethod(const COptPopulationMethod & src,
   , mVariableSize(0)
   , mIndividuals()
   , mValues()
-  , mRandomContext(src.mParallel)
 {
   initObjects();
+
+  if (parallel)
+    {
+      mOpenMPApplyCallback = std::make_shared< std::function< void() > >(std::bind(&COptMethod::openMPApplyCallback, this));
+      COpenMPConfig::RegisterApplyCallback(mOpenMPApplyCallback);
+    }
 }
 
 COptPopulationMethod::~COptPopulationMethod()
@@ -73,8 +83,7 @@ void COptPopulationMethod::initObjects()
 
 #include <iostream>
 
-bool
-COptPopulationMethod::initialize()
+bool COptPopulationMethod::initialize()
 {
   cleanup();
 
@@ -102,10 +111,6 @@ COptPopulationMethod::initialize()
   else
     mPopulationSize = 0;
 
-  CRandom::Type RNG = (getParameter("Random Number Generator") != NULL) ? (CRandom::Type) getValue< unsigned C_INT32 >("Random Number Generator") : CRandom::Type::mt19937;
-  unsigned C_INT32 seed = (getParameter("Seed") != NULL) ? getValue< unsigned C_INT32 >("Seed") : 0;
-
-  mRandomContext.init(RNG, seed);
   mVariableSize = mProblemContext.active()->getOptItemList(true).size();
 
   return true;
@@ -131,7 +136,7 @@ bool COptPopulationMethod::createIndividual(const size_t & index, const COptItem
   size_t Index = useStartValues ? 0 : index;
 
   COptProblem *& pProblem = mProblemContext.active();
-  CRandom * pRandom = mRandomContext.active();
+  CConfigurableRNG & RNG = mRandomContext.active();
 
   C_FLOAT64 * pIndividual = mIndividuals[Index]->begin();
   C_FLOAT64 * pEnd = mIndividuals[Index]->end();
@@ -147,7 +152,7 @@ bool COptPopulationMethod::createIndividual(const size_t & index, const COptItem
           *pIndividual = pOptItem->getStartValue();
           success &= pOptItem->setItemValue(*pIndividual, policy);
           pointInParameterDomain &= (*pIndividual == pOptItem->getStartValue());
-          finalizeCreation(Index, item, *pOptItem, pRandom);
+          finalizeCreation(Index, item, *pOptItem, RNG);
         }
 
       if (!pointInParameterDomain && !success && (mLogVerbosity > 0))
@@ -158,9 +163,9 @@ bool COptPopulationMethod::createIndividual(const size_t & index, const COptItem
       for (size_t item = 0; pIndividual != pEnd; ++pIndividual, ++item)
         {
           COptItem * pOptItem = OptItemList[item];
-          *pIndividual = pOptItem->getRandomValue(pRandom);
+          *pIndividual = pOptItem->getRandomValue(RNG);
           success &= pOptItem->setItemValue(*pIndividual, policy);
-          finalizeCreation(Index, item, *pOptItem, pRandom);
+          finalizeCreation(Index, item, *pOptItem, RNG);
         }
     }
 
@@ -168,7 +173,7 @@ bool COptPopulationMethod::createIndividual(const size_t & index, const COptItem
 }
 
 // virtual
-void COptPopulationMethod::finalizeCreation(const size_t & /* individual */ , const size_t & /* index */, const COptItem & /* item */, CRandom * /* pRandom */)
+void COptPopulationMethod::finalizeCreation(const size_t & /* individual */ , const size_t & /* index */, const COptItem & /* item */, CConfigurableRNG & /* pRandom */)
 {}
 
 C_INT32 COptPopulationMethod::getPopulationSize()

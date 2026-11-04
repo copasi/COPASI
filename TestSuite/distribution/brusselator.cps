@@ -321,7 +321,7 @@ Reaction scheme where the products are created from the reactants and the change
     <Task key="Task_4" name="Optimization" type="optimization" scheduled="false" updateModel="false">
       <Report reference="Report_1" target="" append="1" confirmOverwrite="0"/>
       <Problem>
-        <Parameter name="Subtask" type="cn" value="Vector=TaskList[Time-Course]"/>
+        <Parameter name="Subtask" type="cn" value="CN=Root,Vector=TaskList[Time-Course]"/>
         <ParameterText name="ObjectiveExpression" type="expression">
           
         </ParameterText>

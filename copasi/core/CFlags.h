@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -20,7 +20,8 @@
 template < class Enum > class CFlags : public std::bitset< static_cast< size_t >(Enum::__SIZE) >
 {
 public:
-  typedef std::bitset< static_cast< size_t >(Enum::__SIZE) > bitset;
+  constexpr static size_t __SIZE = static_cast< size_t >(Enum::__SIZE);
+  typedef std::bitset< __SIZE > bitset;
 
   /**
    * Static member where no flag is set
@@ -37,14 +38,6 @@ public:
    */
   CFlags():
     bitset()
-  {}
-
-  /**
-   * Copy constructor
-   * @param const CFlags & src
-   */
-  CFlags(const CFlags & src):
-    bitset(src)
   {}
 
   /**
@@ -108,7 +101,7 @@ public:
    */
   bool operator == (const CFlags< Enum > & rhs) const
   {
-    return bitset::operator == ((bitset) rhs);
+    return bitset::operator == (static_cast< bitset >(rhs));
   }
 
   /**
@@ -118,7 +111,7 @@ public:
    */
   bool operator != (const CFlags< Enum > & rhs) const
   {
-    return !(bitset::operator == ((bitset) rhs));
+    return !(bitset::operator == (static_cast< bitset >(rhs)));
   }
 
   /**
@@ -128,7 +121,7 @@ public:
    */
   CFlags & operator |= (const CFlags & flags)
   {
-    bitset::operator |= ((bitset) flags);
+    bitset::operator |= (static_cast< bitset >(flags));
 
     return *this;
   }
@@ -150,7 +143,7 @@ public:
    */
   CFlags & operator &= (const CFlags & flags)
   {
-    bitset::operator &= ((bitset) flags);
+    bitset::operator &= (static_cast< bitset >(flags));
 
     return *this;
   }
@@ -172,7 +165,7 @@ public:
    */
   CFlags & operator ^= (const CFlags & flags)
   {
-    bitset::operator ^= ((bitset) flags);
+    bitset::operator ^= (static_cast< bitset >(flags));
 
     return *this;
   }
@@ -203,13 +196,13 @@ public:
    * @param const CFlags & filter (Default: All)
    * @return std::vector< AType > Annotations
    */
-  template< typename AType >
-  std::vector< AType > getAnnotations(const CEnumAnnotation< AType, Enum > & annotation,
+  template< typename T >
+  std::vector< typename T::AnnotationTypeReturn > getAnnotations(const T & annotation,
                                       const CFlags & filter = All) const
   {
-    std::vector< AType > Annotations;
+    std::vector< typename T::AnnotationTypeReturn > Annotations;
 
-    for (size_t i = 0; i < static_cast< size_t >(Enum::__SIZE); i++)
+    for (size_t i = 0; i < annotation.size(); i++)
       if (bitset::operator[](i) && filter[i])
         {
           Annotations.push_back(annotation[i]);
@@ -224,14 +217,14 @@ public:
    * @param const CFlags & filter (Default: All)
    * @return std::vector< AType > Annotations
    */
-  template< typename AType >
-  void fromAnnotations(std::vector< AType > & annotations,
-                       const CEnumAnnotation< AType, Enum > & annotation)
+  template< typename T >
+  void fromAnnotations(std::vector< typename T::AnnotationType > & annotations,
+                       const T & annotation)
   {
     bitset::reset();
 
-for (const AType & a : annotations)
-      operator &= (annotation.toEnum(a));
+    for (const typename T::AnnotationType & a : annotations)
+      operator&=(annotation.toEnum(a));
   }
 };
 
@@ -244,8 +237,8 @@ for (const AType & a : annotations)
 template < class Enum >
 CFlags< Enum > operator | (const CFlags< Enum > & lhs, const CFlags< Enum > & rhs)
 {
-  return operator | ((std::bitset< static_cast< size_t >(Enum::__SIZE) >) lhs,
-                     (std::bitset< static_cast< size_t >(Enum::__SIZE) >) rhs);
+  typedef typename CFlags< Enum >::bitset bitset;
+  return operator | (static_cast< bitset >(lhs),  static_cast< bitset >(rhs));
 }
 
 /**
@@ -269,8 +262,8 @@ CFlags< Enum > operator | (const CFlags< Enum > & lhs, const Enum & rhs)
 template < class Enum >
 CFlags< Enum > operator & (const CFlags< Enum > & lhs, const CFlags< Enum > & rhs)
 {
-  return operator & ((std::bitset< static_cast< size_t >(Enum::__SIZE) >) lhs,
-                     (std::bitset< static_cast< size_t >(Enum::__SIZE) >) rhs);
+  typedef typename CFlags< Enum >::bitset bitset;
+  return operator & (static_cast< bitset >(lhs),  static_cast< bitset >(rhs));
 }
 
 /**
@@ -294,8 +287,8 @@ CFlags< Enum > operator & (const CFlags< Enum > & lhs, const Enum & rhs)
 template < class Enum >
 CFlags< Enum > operator ^ (const CFlags< Enum > & lhs, const CFlags< Enum > & rhs)
 {
-  return operator ^ ((std::bitset< static_cast< size_t >(Enum::__SIZE) >) lhs,
-                     (std::bitset< static_cast< size_t >(Enum::__SIZE) >) rhs);
+  typedef typename CFlags< Enum >::bitset bitset;
+  return operator ^ (static_cast< bitset >(lhs),  static_cast< bitset >(rhs));
 }
 
 /**

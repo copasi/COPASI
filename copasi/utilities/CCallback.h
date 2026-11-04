@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -14,13 +19,13 @@
 class CCallbackInterface
 {
 public:
-  typedef void (*Type)(void * /* pData */,
-                       void * /* pCaller */);
+  typedef void (*Type)(void * pData,
+                       void * pCaller);
 
   virtual ~CCallbackInterface() {};
 
-  virtual void operator()(void * /* pData */ = NULL,
-                          void * /* pCaller */ = NULL) = 0;
+  virtual void operator()(void * pData = NULL,
+                          void * pCaller = NULL) = 0;
 };
 
 template <class Callee>
@@ -52,8 +57,8 @@ public:
   virtual ~CCallback() {}
 
   // override operator "()"
-  virtual void operator()(void * pData = NULL,
-                          void * pCaller = NULL)
+  void operator()(void * pData = NULL,
+                  void * pCaller = NULL) override
   {
     // execute member function
     (*mpInstance.*mMethod)(pData, pCaller);
@@ -79,8 +84,8 @@ public:
   virtual ~CStaticCallback() {}
 
   // override operator "()"
-  virtual void operator()(void * pData = NULL,
-                          void * pCaller = NULL)
+  void operator()(void * pData = NULL,
+                  void * pCaller = NULL) override
   {
     // execute member function
     (*mMethod)(pData, pCaller);

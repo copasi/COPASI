@@ -616,7 +616,7 @@ std::string CQExpressionWidget::getExpression() const
         }
 
       if (itObject != mParseList.end())
-        Infix += "<" + FROM_UTF8(itObject->second->getStringCN()) + ">";
+        Infix += "<" + FROM_UTF8(itObject->second->getCN()) + ">";
       else
         {
           Infix += "<";

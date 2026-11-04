@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -62,8 +62,7 @@ public:
     KEY,
     FILE,
     EXPRESSION,
-    INVALID,
-    __SIZE
+    INVALID
   };
 
   enum struct eUserInterfaceFlag
@@ -76,16 +75,43 @@ public:
 
   typedef CFlags< eUserInterfaceFlag > UserInterfaceFlag;
 
-  /**
-   * String literals for the GUI to display type names of parameters known
-   * to COPASI.
-   */
-  static const CEnumAnnotation< std::string, Type > TypeName;
+private:
+  constexpr static CEnumAnnotationInstance _TypeName{
+    Type::INVALID,
+    MapNode{Type::DOUBLE, "float"},
+    MapNode{Type::UDOUBLE, "unsigned float"},
+    MapNode{Type::INT, "integer"},
+    MapNode{Type::UINT, "unsigned integer"},
+    MapNode{Type::BOOL, "bool"},
+    MapNode{Type::GROUP, "group"},
+    MapNode{Type::STRING, "string"},
+    MapNode{Type::CN, "common name"},
+    MapNode{Type::KEY, "key"},
+    MapNode{Type::FILE, "file"},
+    MapNode{Type::EXPRESSION, "expression"},
+    MapNode{Type::INVALID, "invalid"}};
 
-  /**
-   * XML type names of parameters known to COPASI.
-   */
-  static const CEnumAnnotation< std::string, Type > XMLType;
+public:
+  constexpr static CEnumAnnotation< Type, std::string_view > TypeName{_TypeName};
+
+private:
+  constexpr static CEnumAnnotationInstance _XMLType{
+    Type::INVALID,
+    MapNode{Type::DOUBLE, "float"},
+    MapNode{Type::UDOUBLE, "unsignedFloat"},
+    MapNode{Type::INT, "integer"},
+    MapNode{Type::UINT, "unsignedInteger"},
+    MapNode{Type::BOOL, "bool"},
+    MapNode{Type::GROUP, "group"},
+    MapNode{Type::STRING, "string"},
+    MapNode{Type::CN, "cn"},
+    MapNode{Type::KEY, "key"},
+    MapNode{Type::FILE, "file"},
+    MapNode{Type::EXPRESSION, "expression"},
+    MapNode{Type::INVALID, "invalid"}};
+
+public:
+  constexpr static CEnumAnnotation< Type, std::string_view > XMLType{_XMLType};
 
   static void allocateValue(const Type & type, void *& pValue);
   static void assignValue(const Type & type, void *& pValue, const void * pNewValue);
@@ -318,6 +344,13 @@ public:
    * @param const CRegisteredCommonName & value
    * @return bool isValidValue
    */
+  bool isValidValue(const CCommonName & value) const;
+
+  /**
+   * Check whether the value corresponds to the type
+   * @param const CRegisteredCommonName & value
+   * @return bool isValidValue
+   */
   bool isValidValue(const CRegisteredCommonName & value) const;
 
   /**
@@ -354,11 +387,11 @@ public:
     return true;
   }
 
-  template < class CType, class Enum> bool setValidValues(const CEnumAnnotation< CType, Enum> & validValues)
+  template < class T > bool setValidValues(const T & validValues)
   {
-    if (!isValidValue(CType())) return false;
+    if (!isValidValue(typename T::AnnotationTypeReturn())) return false;
 
-    std::vector< std::pair < CType, CType > > ValidValues;
+    std::vector< std::pair < typename T::AnnotationTypeReturn, typename T::AnnotationTypeReturn > > ValidValues;
 
     for (size_t i = 0; i < validValues.size(); i++)
       {
@@ -435,15 +468,6 @@ public:
 
   bool isDefault() const;
 
-protected:
-  /**
-   * Retrieve the CN of the math container
-   * The math container provides values for the numerical values of model objects.
-   * For the CN mechanism to work properly it has to pretend to be the model.
-   * @return CCommonName
-   */
-  CCommonName getCNProtected() const override;
-
 private:
   /**
    * Create or copy the value
@@ -510,6 +534,23 @@ bool compareValues(const CCopasiParameter & lhs, const CCopasiParameter & rhs)
 }
 
 #include "copasi/utilities/CCopasiParameterGroup.h"
+
+template <>
+inline bool CCopasiParameter::setValue(const CCommonName &value)
+{
+  if (!isValidValue(value))
+    return false;
+
+  *static_cast< CRegisteredCommonName * >(mpValue) = value;
+
+  CDataContainer * pParent = getObjectParent();
+
+  if (pParent != nullptr
+      && dynamic_cast< CCopasiParameterGroup * >(pParent) != nullptr)
+    static_cast< CCopasiParameterGroup * >(pParent)->signalChanged(this);
+
+  return true;
+}
 
 template < class CType >
 bool CCopasiParameter::setValue(const CType & value)

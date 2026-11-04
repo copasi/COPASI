@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -10,25 +10,11 @@
 
 #include "copasi/copasi.h"
 
-#include "CDataValue.h"
-#include "CData.h"
+#include "copasi/undo/CDataValue.h"
+#include "copasi/undo/CData.h"
 
+#include "copasi/core/CCommonName.h"
 #include "copasi/utilities/utility.h"
-
-// static
-const CEnumAnnotation< std::string, CDataValue::Type > CDataValue::TypeName(
-{
-  "real", // DOUBLE = 0,
-  "integer", // INT,
-  "unsignedInteger", // UINT
-  "Boolean", // BOOL
-  "text", // STRING
-  "data", // DATA,
-  "dataValues", // DATA_VALUES,
-  "dataVector", // DATA_VECTOR,
-  "pointer", // VOID_POINTER
-  "invalid" // INVALID
-});
 
 CDataValue::CDataValue(const Type & type):
   mType(CDataValue::INVALID),
@@ -91,6 +77,13 @@ CDataValue::CDataValue(const std::string & value):
 }
 
 CDataValue::CDataValue(const char * value):
+  mType(CDataValue::INVALID),
+  mpData(NULL)
+{
+  assignData(std::string(value));
+}
+
+CDataValue::CDataValue(const CCommonName & value):
   mType(CDataValue::INVALID),
   mpData(NULL)
 {
@@ -350,9 +343,6 @@ bool CDataValue::operator == (const CDataValue & rhs) const
 
       case INVALID:
         return (raw() == rhs.raw());
-
-      case __SIZE:
-        break;
     }
 
   return false;
@@ -401,7 +391,6 @@ bool CDataValue::operator != (const CDataValue & rhs) const
         break;
 
       case INVALID:
-      case __SIZE:
         return (raw() != rhs.raw());
         break;
     }
@@ -456,7 +445,6 @@ void CDataValue::allocateData(const CDataValue::Type & type)
         break;
 
       case INVALID:
-      case __SIZE:
         mpData = NULL;
         break;
     }
@@ -504,7 +492,6 @@ void CDataValue::deleteData()
 
       case VOID_POINTER:
       case INVALID:
-      case __SIZE:
         break;
     }
 
@@ -552,7 +539,6 @@ void CDataValue::assignData(const CDataValue & rhs)
         break;
 
       case INVALID:
-      case __SIZE:
         break;
     }
 }
@@ -702,7 +688,6 @@ std::ostream & operator << (std::ostream & os, const CDataValue & o)
         break;
 
       case CDataValue::INVALID:
-      case CDataValue::__SIZE:
         os << "??? Invalid ???";
         break;
     }
@@ -786,7 +771,6 @@ std::istream & operator >> (std::istream & is, CDataValue & i)
       break;
 
       case CDataValue::INVALID:
-      case CDataValue::__SIZE:
       {
         // Advance past "??? Invalid ???"
         std::string dummy;

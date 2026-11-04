@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -77,6 +77,33 @@ typedef std::vector<CTaskEnum::Task> TaskSubTypeVector;
 typedef std::vector<CTaskEnum::Method> MethodSubTypeVector;
 #endif // SWIGJAVA
 
+#ifdef SWIGPYTHON
+// allow a CCopasiTask::OutputFlag (e.g. CCopasiTask::OUTPUT, or a combination
+// created via OR'ing several flags) to be passed wherever an int outputFlags
+// argument is expected, converting it to its underlying integer value
+%typemap(in) int outputFlags {
+  void *argp = 0;
+  int res = SWIG_ConvertPtr($input, &argp, $descriptor(CCopasiTask::OutputFlag *), 0);
+
+  if (SWIG_IsOK(res))
+  {
+    $1 = (int) reinterpret_cast< CCopasiTask::OutputFlag * >(argp)->to_ulong();
+  }
+  else
+  {
+    int val = 0;
+    res = SWIG_AsVal_int($input, &val);
+
+    if (!SWIG_IsOK(res))
+    {
+      %argument_fail(res, "int", $symname, $argnum);
+    }
+
+    $1 = val;
+  }
+}
+#endif // SWIGPYTHON
+
 %include "copasi/utilities/CTaskEnum.h"
 %include "copasi/utilities/CCopasiTask.h"
 
@@ -88,15 +115,13 @@ typedef std::vector<CTaskEnum::Method> MethodSubTypeVector;
 
   std::vector<C_INT32> getValidMethods() const
     {
-      const CTaskEnum::Method *methods = $self->getValidMethods();
-      
       std::vector<C_INT32> validMethods;
-      unsigned int i=0;
-      while(methods[i]!=CTaskEnum::Method::UnsetMethod)
+
+      for (const CTaskEnum::Method & e: $self->getValidMethods().keys())
       {
-        validMethods.push_back(static_cast< C_INT32>(methods[i]));
-        ++i;
+        validMethods.push_back(static_cast< C_INT32>(e));
       }
+
       return validMethods;
     } 
 
@@ -110,7 +135,7 @@ typedef std::vector<CTaskEnum::Method> MethodSubTypeVector;
       return self->Warning;
     }
   
-    bool initializeRaw(CCopasiTask::OutputFlag outputFlags)
+    bool initializeRaw(int outputFlags)
     {
         bool success;
         CDataModel* pDataModel=self->getObjectDataModel();
@@ -119,7 +144,7 @@ typedef std::vector<CTaskEnum::Method> MethodSubTypeVector;
         // Initialize the task
         try
         {
-          success = self->initialize(outputFlags, pDataModel, NULL);
+          success = self->initialize((CCopasiTask::OutputFlag)outputFlags, pDataModel, NULL);
         }
         
         catch (CCopasiException &)
@@ -132,14 +157,14 @@ typedef std::vector<CTaskEnum::Method> MethodSubTypeVector;
         return success;
     }
 
-    bool initializeRawWithOutputHandler(CCopasiTask::OutputFlag outputFlags, COutputHandler *pHandler)
+    bool initializeRawWithOutputHandler(int outputFlags, COutputHandler *pHandler)
     {
         bool success;
 
         // Initialize the task
         try
         {
-          success = self->initialize(outputFlags, pHandler, NULL);
+          success = self->initialize((CCopasiTask::OutputFlag)outputFlags, pHandler, NULL);
         }
         
         catch (CCopasiException &)
@@ -152,7 +177,7 @@ typedef std::vector<CTaskEnum::Method> MethodSubTypeVector;
         return success;
     }
 
-    bool initialize(CCopasiTask::OutputFlag outputFlags)
+    bool initialize(int outputFlags)
     {
          bool success = true;
         CCopasiMessage::clearDeque();
@@ -162,7 +187,7 @@ typedef std::vector<CTaskEnum::Method> MethodSubTypeVector;
         // Initialize the task
         try
         {
-          if (!self->initialize(outputFlags, pDataModel, NULL))
+          if (!self->initialize((CCopasiTask::OutputFlag)outputFlags, pDataModel, NULL))
           {
             throw CCopasiException(CCopasiMessage::peekLastMessage());
           }
@@ -206,7 +231,7 @@ typedef std::vector<CTaskEnum::Method> MethodSubTypeVector;
         return success;
     }
 
-    bool processWithOutputFlags(bool useInitialValues, CCopasiTask::OutputFlag outputFlags) 
+    bool processWithOutputFlags(bool useInitialValues, int outputFlags) 
       {
         bool success = true;
         
@@ -220,7 +245,7 @@ typedef std::vector<CTaskEnum::Method> MethodSubTypeVector;
         // Initialize the task
         try
         {
-          if (!self->initialize(outputFlags, pDataModel, NULL))
+          if (!self->initialize((CCopasiTask::OutputFlag)outputFlags, pDataModel, NULL))
           {
             throw CCopasiException(CCopasiMessage::peekLastMessage());
           }

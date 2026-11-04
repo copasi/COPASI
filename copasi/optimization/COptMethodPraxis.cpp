@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -93,8 +93,7 @@ bool COptMethodPraxis::optimise()
 
   C_INT32 i;
   C_INT32 prin = 0;
-  C_FLOAT64 tmp = 0.0;
-  C_FLOAT64 machep, stepmx, d1, d2;
+  C_FLOAT64 stepmx, d1, d2;
 
   // initial point is the first guess but we have to make sure that
   // we are within the parameter domain
@@ -136,15 +135,13 @@ bool COptMethodPraxis::optimise()
     }
   while (d2 != 1.0);
 
-  machep = d1 * 2.0;
-
   //estimate the maximum step size
   stepmx = 0.6;
 
   // carry out the minimisation
   try
     {
-      tmp = mPraxis(mTolerance, stepmx, mVariableSize, prin, mCurrent.array(), mpPraxis);
+      mPraxis(mTolerance, stepmx, mVariableSize, prin, mCurrent.array(), mRandomContext.active(), mpPraxis);
     }
   catch (bool)
     {}

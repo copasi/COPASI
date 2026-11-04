@@ -672,11 +672,6 @@ CRDFPredicate::CRDFPredicate(const std::string & uri):
     mURI = CRDFPredicate::PredicateURI[mType];
 }
 
-CRDFPredicate::CRDFPredicate(const CRDFPredicate & src):
-  mType(src.mType),
-  mURI(src.mURI)
-{}
-
 CRDFPredicate::~CRDFPredicate()
 {}
 

@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -11,6 +11,83 @@ extern std::string getTestFile(const std::string & fileName);
 #include <copasi/utilities/CCopasiException.h>
 #include <copasi/sbml/SBMLUnitSupport.h>
 #include <sbml/SBMLTypes.h>
+
+TEST_CASE("importing linear model and test jacobian", "[copasi][sbml][jacobian]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  auto test_file = getTestFile("test-data/chain2.xml");
+  dm->importSBML(test_file, NULL, true);
+
+  REQUIRE(dm->getModel() != nullptr);
+
+  CMatrix< double > jacobian; 
+  dm->getModel()->applyInitialValues();
+  dm->getModel()->getMathContainer().calculateJacobian(jacobian, 1e-3, false, false);
+
+  REQUIRE(int(jacobian(0, 0)) == -2);
+
+  auto& jac = dm->getModel()->getJacobianAnnotation(false, 1e-3);
+  std::stringstream str; 
+  str << jac;
+
+  auto jacobianString = str.str();
+  REQUIRE(jacobianString.find("-2") != std::string::npos);
+
+  CRootContainer::removeDatamodel(dm);
+}
+
+TEST_CASE("importing algebraic rules", "[copasi][sbml][algebraic]")
+{
+
+  auto * dm = CRootContainer::addDatamodel();
+
+  dm->newModel(NULL, true);
+  auto allMessages = CCopasiMessage::getAllMessageText();
+
+  CCopasiMessage(CCopasiMessage::ERROR, "testing");
+
+  std::string test_file = getTestFile("test-data/brusselator.cps");
+  {
+    dm->loadModel(test_file, NULL, true);
+    allMessages = CCopasiMessage::getAllMessageText();
+    REQUIRE(allMessages.empty());
+
+    dm->loadFromFile(test_file, NULL, true);
+    allMessages = CCopasiMessage::getAllMessageText();
+    REQUIRE(allMessages.empty());
+  }
+
+  test_file = getTestFile("test-data/brusselator.gps");
+  {
+    dm->loadModel(test_file, NULL, true);
+    allMessages = CCopasiMessage::getAllMessageText();
+    REQUIRE(allMessages.empty());
+
+    dm->loadFromFile(test_file, NULL, true);
+    allMessages = CCopasiMessage::getAllMessageText();
+    REQUIRE(allMessages.empty());
+  }
+
+  test_file = getTestFile("test-data/brusselator.xml");
+  {
+    dm->importSBML(test_file, NULL, true);
+    dm->compile({&(dm->getModel()->getMathContainer())});
+    allMessages = CCopasiMessage::getAllMessageText();
+    REQUIRE(allMessages.empty());
+
+    dm->loadFromFile(test_file, NULL, true);
+    allMessages = CCopasiMessage::getAllMessageText();
+    REQUIRE(allMessages.empty());
+  }
+
+  test_file = getTestFile("test-data/01142-sbml-l3v1.xml");
+  dm->importSBML(test_file);
+  
+  allMessages = CCopasiMessage::getAllMessageText();
+  REQUIRE(allMessages.find("algebraic rules that were ignored") != std::string::npos);
+
+  REQUIRE(dm != NULL);
+}
 
 TEST_CASE("1: importing sbml files", "[copasi][sbml]")
 {
@@ -171,7 +248,7 @@ TEST_CASE("3: creating a new model testing avogadro", "[copasi][sbml]")
   std::stringstream str;
 
   str << "<"
-      << CObjectInterface::DataObject(model->getObject(CCommonName("Reference=Avogadro Constant")))->getValueObject()->getStringCN()
+      << CObjectInterface::DataObject(model->getChildObject(CCommonName("Reference=Avogadro Constant")))->getValueObject()->getCN()
       << ">";
 
   mv->setInitialExpression(str.str());
@@ -233,9 +310,9 @@ for (auto & metab : model->getMetabolites())
       str.str("");
       str
           << "<"
-          << metab.getConcentrationReference()->getStringCN()
+          << metab.getConcentrationReference()->getCN()
           << "> * <"
-          << metab.getCompartment()->getValueReference()->getStringCN()
+          << metab.getCompartment()->getValueReference()->getCN()
           << ">";
       mv->setStatus(CModelEntity::Status::ASSIGNMENT);
       REQUIRE(mv->setExpression(str.str()).isSuccess());
@@ -267,9 +344,9 @@ TEST_CASE("importing an SBML file multiple times", "[copasi][sbml]")
   REQUIRE(dm != nullptr);
 
   auto * pFunDB = CRootContainer::getFunctionList();
-  REQUIRE(pFunDB->loadedFunctions().size() == 84);
+  REQUIRE(pFunDB->loadedFunctions().size() == 87);
   pFunDB->purgeUnusedUserDefinedFunctions();
-  REQUIRE(pFunDB->loadedFunctions().size() == 82);
+  REQUIRE(pFunDB->loadedFunctions().size() == 83);
 
   std::string test_file = getTestFile("test-data/BIOMD0000000027_url.xml");
 
@@ -332,17 +409,17 @@ TEST_CASE("SBML import / export of events with particle numbers", "[copasi][sbml
   {
     auto * event = model->createEvent("event");
     std::stringstream str;
-    str << "<" << model->getValueReference()->getStringCN() << "> > 1";
+    str << "<" << model->getValueReference()->getCN() << "> > 1";
     event->setTriggerExpression(str.str());
     auto & assignments = event->getAssignments();
     assignments.clear();
-    auto * assignment = new CEventAssignment(model->getMetabolites()[0].getConcentrationReference()->getStringCN(), model);
+    auto * assignment = new CEventAssignment(model->getMetabolites()[0].getConcentrationReference()->getCN(), model);
     assignment->setExpression("1");
     assignments.add(assignment);
-    assignment = new CEventAssignment(model->getMetabolites()[1].getValueReference()->getStringCN(), model);
+    assignment = new CEventAssignment(model->getMetabolites()[1].getValueReference()->getCN(), model);
     assignment->setExpression("2");
     assignments.add(assignment);
-    assignment = new CEventAssignment(model->getMetabolites()[2].getStringCN(), model);
+    assignment = new CEventAssignment(model->getMetabolites()[2].getCN(), model);
     assignment->setExpression("3");
     assignments.add(assignment);
   }

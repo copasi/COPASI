@@ -114,9 +114,6 @@ void CILDMModifiedMethod::step(const double & deltaT)
   // TO REMOVE : Model.applyAssignments();
   mpContainer->calculateJacobian(mJacobian, 1e-6, true);
 
-  C_INT flag_jacob;
-  flag_jacob = 1;  // Set flag_jacob=0 to print Jacobian
-
   //this is an ugly hack that only makes sense if all metabs are in the same compartment
   //at the moment is is the only case the algorithm deals with
 
@@ -176,9 +173,6 @@ void CILDMModifiedMethod::step(const double & deltaT)
   C_INT number, k;
   C_INT failed_while = 0;
 
-  C_INT flag_deufl;
-  flag_deufl = 1;
-
   C_FLOAT64 max = 0.;
 
   //C_FLOAT64 max = 0;
@@ -220,10 +214,6 @@ void CILDMModifiedMethod::step(const double & deltaT)
   for (i = 0; i < dim; i++)
     for (j = 0; j < dim; j++)
       mTdInverse(i, j) = mQ(j, i);
-
-  C_INT flag_schur;
-
-  flag_schur = 1;  // set flag_schur = 0 to print Schur decomposition of jacobian (matrices mR and transformation mQ)
 
   mY_cons.resize(dim);  // consistent initial vector for DAE
 
@@ -505,10 +495,6 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
   C_INT dim = mDim;
   C_INT fast = dim - slow;
 
-  C_INT flag_deufl;
-
-  flag_deufl = 1;  // set flag_deufl=0  to print temporaly steps for this function
-
   C_FLOAT64 max = 0;
   CVector<C_FLOAT64> re;
   CVector<C_FLOAT64> dxdt_relax;
@@ -616,9 +602,7 @@ void CILDMModifiedMethod::deuflhard_metab(C_INT & slow, C_INT & info)
 void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & info)
 {
   C_INT i, j, k, m, iter, iterations, itermax;
-  C_INT nrhs, ok, fast, flag_newton;
-
-  flag_newton = 1;  // set flag_newton=1  to print temporaly steps of newton iterations
+  C_INT nrhs, ok, fast;
 
   C_FLOAT64 tol, err;
   C_INT dim = mDim;
@@ -844,11 +828,9 @@ void CILDMModifiedMethod::newton_new(C_INT *index_metab, C_INT & slow, C_INT & i
  */
 void CILDMModifiedMethod::newton_for_timestep(C_INT metabolite_number, C_FLOAT64 & y_consistent, C_INT & info)
 {
-  C_INT i, iter, itermax, flag_newton;
+  C_INT i, iter, itermax;
   iter = 0;
   itermax = 150;
-
-  flag_newton = 1;  // set flag_newton=0 to print the iteration steps
 
   C_FLOAT64 tol, err;
   tol = 1e-6;

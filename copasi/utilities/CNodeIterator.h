@@ -141,16 +141,6 @@ public:
   {}
 
   /**
-   * Copy constructor
-   * @param const CNodeContextIterator & src
-   */
-  CNodeContextIterator(const CNodeContextIterator & src):
-    mStack(src.mStack),
-    mCurrentMode(src.mCurrentMode),
-    mProcessingModes(src.mProcessingModes)
-  {}
-
-  /**
    * Constructor
    * @param Node * pNode
    * @param Context * pParentContext (default: NULL)
@@ -355,13 +345,6 @@ public:
    */
   CNodeIterator():
     CNodeContextIterator< Node, int >()
-  {}
-
-  /**
-   * Copy constructor.
-   */
-  CNodeIterator(const CNodeIterator & src):
-    CNodeContextIterator< Node, int >(src)
   {}
 
   /**

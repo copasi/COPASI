@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -92,7 +92,7 @@ std::string SEDMLUtils::findIdByNameAndType(
 std::string
 SEDMLUtils::getXPathAndName(std::string & sbmlId,
                             const std::string & type,
-                            const CModel * pModel,
+                            const CModel * /* pModel */,
                             const CDataModel & dataModel)
 {
   std::vector< std::string > stringsContainer;
@@ -259,7 +259,7 @@ SEDMLUtils::resolveDatagenerator(CModel * model, const SedDataGenerator * dataRe
 
   if (var->isSetSymbol() && var->getSymbol() == SEDML_TIME_URN)
     {
-      return static_cast< const CDataObject * >(model->getObject(CCommonName("Reference=Time")));
+      return static_cast< const CDataObject * >(model->getChildObject(CCommonName("Reference=Time")));
     }
 
   return resolveVariable(model, var);
@@ -386,8 +386,8 @@ CModelValue * SEDMLUtils::createAmountMV(CModel * pModel, const CMetab * pMetab)
 
   pMV->setStatus(CModelEntity::Status::ASSIGNMENT);
   std::stringstream expr;
-  expr << "<" << pMetab->getConcentrationReference()->getStringCN() << "> * "
-       << "<" << pMetab->getCompartment()->getValueReference()->getStringCN() << ">";
+  expr << "<" << pMetab->getConcentrationReference()->getCN() << "> * "
+       << "<" << pMetab->getCompartment()->getValueReference()->getCN() << ">";
   pMV->setExpression(expr.str());
 
   return pMV;
@@ -686,7 +686,7 @@ SEDMLUtils::getObjectForSbmlId(const CModel * pModel, const std::string & id, co
     return NULL;
 
   if (SBMLType == "Time")
-    return static_cast< const CDataObject * >(pModel->getObject(CCommonName("Reference=Time")));
+    return static_cast< const CDataObject * >(pModel->getChildObject(CCommonName("Reference=Time")));
 
   if (SBMLType == "species")
     {
@@ -807,8 +807,13 @@ std::map< std::string, std::string > SEDMLUtils::PARAMETER_KISAO_MAP =
 };
 
 VariableInfo::VariableInfo(const CDataObject * pObject)
-  : mpObject(pObject)
+  : name()
+  , term()
+  , symbol()
+  , xpath()
+  , sbmlId()
   , mIsValid(false)
+  , mpObject(pObject)
 {
   if (!pObject)
     return;

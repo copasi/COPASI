@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -76,13 +76,21 @@ public:
     SBML,
     SEDML,
     OMEX,
-    __SIZE
+    UNKNOWN
   };
 
-  /**
-   * String representation of the valid model types.
-   */
-  static const CEnumAnnotation< std::string, ContentType > ContentTypeNames;
+private:
+  constexpr static CEnumAnnotationInstance _ContentTypeNames{
+    ContentType::UNKNOWN,
+    MapNode{ContentType::COPASI, "COPASI"},
+    MapNode{ContentType::GEPASI, "GEPASI"},
+    MapNode{ContentType::SBML, "SBML"},
+    MapNode{ContentType::SEDML, "SED-ML"},
+    MapNode{ContentType::OMEX, "OMEX"},
+    MapNode{ContentType::UNKNOWN, "UNKNOWN"}};
+
+public:
+  constexpr static CEnumAnnotation< ContentType, std::string_view > ContentTypeNames{_ContentTypeNames};
 
   /**
    * Determine the content type of the given content stream
@@ -173,14 +181,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   CDataModel();
 
@@ -493,7 +501,7 @@ protected:
                        const bool & deleteOldData);
 
   void replaceCnInGroup(CModelParameter* pParam,
-                        const std::string &oldCn, const std::string& newCN);
+                        const CCommonName & ldCn, const CCommonName & newCN);
 
   // Attributes
 protected:

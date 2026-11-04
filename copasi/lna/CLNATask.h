@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,6 +47,12 @@ private:
   CLNATask();
 
 public:
+  constexpr static CEnumAnnotationSubset ValidMethods{
+    CTaskEnum::MethodName,
+    CTaskEnum::Method::linearNoiseApproximation,
+    std::array{
+      CTaskEnum::Method::linearNoiseApproximation}};
+
   /**
    * Specific constructor
    * @param const CDataContainer * pParent
@@ -109,7 +115,7 @@ public:
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  const CTaskEnum::Method * getValidMethods() const override;
+  const CEnumAnnotation< CTaskEnum::Method, std::string_view > getValidMethods() const override;
 #endif
 
   /**

@@ -1,4 +1,9 @@
-// Copyright (C) 2017 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and University of
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -149,19 +154,19 @@ extern "C++"
 
     virtual ~yyFlexLexer();
 
-    void yy_switch_to_buffer(yy_buffer_state * new_buffer);
-    yy_buffer_state * yy_create_buffer(std::istream * s, int size);
-    yy_buffer_state * yy_create_buffer(std::istream & s, int size);
-    void yy_delete_buffer(yy_buffer_state * b);
-    void yyrestart(std::istream * s);
-    void yyrestart(std::istream & s);
+    void yy_switch_to_buffer(yy_buffer_state * new_buffer) override;
+    yy_buffer_state * yy_create_buffer(std::istream * s, int size) override;
+    yy_buffer_state * yy_create_buffer(std::istream & s, int size) override;
+    void yy_delete_buffer(yy_buffer_state * b) override;
+    void yyrestart(std::istream * s) override;
+    void yyrestart(std::istream & s) override;
 
     void yypush_buffer_state(yy_buffer_state * new_buffer);
     void yypop_buffer_state();
 
-    virtual int yylex();
-    virtual void switch_streams(std::istream & new_in, std::ostream & new_out);
-    virtual void switch_streams(std::istream* new_in = 0, std::ostream* new_out = 0);
+    virtual int yylex() override;
+    virtual void switch_streams(std::istream & new_in, std::ostream & new_out) override;
+    virtual void switch_streams(std::istream* new_in = 0, std::ostream* new_out = 0) override;
     virtual int yywrap();
 
   protected:

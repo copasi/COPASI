@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -47,9 +47,9 @@ public:
 
   bool removeReportDefinition(const std::string & key);
 
-  void cleanup();
+  void cleanup() override;
 
-  virtual const std::string & getKey() const;
+  const std::string & getKey() const override;
 };
 
 #endif // !defined(AFX_REPORTDEFINITIONVECTOR_H__172081F2_7BF6_49FA_8FC7_C890F2CB1974__INCLUDED_)

@@ -408,8 +408,6 @@ void CTSSAMethod::mat_anal_mod_space(C_INT & slow)
   C_INT i, j, dim;
 
   dim = mDim;
-  C_INT fast;
-  fast = dim - slow;
 
   CMatrix<C_FLOAT64> Matrix_anal;
   Matrix_anal.resize(dim, dim);
@@ -466,8 +464,6 @@ void CTSSAMethod::mat_anal_fast_space(C_INT & slow)
   C_INT i, j, dim;
 
   dim = mDim;
-  C_INT fast;
-  fast = dim - slow;
 
   CMatrix<C_FLOAT64> Matrix_anal;
   Matrix_anal.resize(dim, dim);
@@ -524,8 +520,6 @@ void CTSSAMethod::mat_anal_fast_space_thomas(C_INT & slow)
   C_INT i, j, k, dim;
 
   dim = mDim;
-  C_INT fast;
-  fast = dim - slow;
 
   //C_FLOAT64 number2conc = 1.;
 
@@ -1645,10 +1639,6 @@ void CTSSAMethod::sylvester(C_INT slow, C_INT & info)
             S(i, j) = S(i, j) + mTdInverse(i, k) * E(k, j);
         }
     }
-
-  C_INT flag_sylvester;
-
-  flag_sylvester = 1;
 
   for (i = 0; i < dim; i++)
     for (j = 0; j < dim; j++)

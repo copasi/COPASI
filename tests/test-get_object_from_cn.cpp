@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -12,16 +12,37 @@ extern std::string getTestFile(const std::string& fileName);
 bool verify_cn(const CDataModel* dm, const std::string& cn)
 {
   auto* ref = dm->getObject({cn });
+  CCommonName objName(cn);
+  auto* ref2 = objName.resolve(dm);
+  REQUIRE(ref == ref2);
+
+  if (cn != objName)
+    {
+      ref = dm->getObject(objName);
+      REQUIRE(ref == ref2);
+    }
 
   if (ref == NULL)
     return false;
 
-  auto resolved = ref->getStringCN();
+  std::string resolved = ref->getCN();
 
   if (resolved.find("not found") != std::string::npos)
     return false;
 
   return true;
+}
+
+TEST_CASE("Ensure name is not resolvable", "[copasi][cn]")
+{
+  auto * dm = CRootContainer::addDatamodel();
+  REQUIRE(dm->loadModel(getTestFile("test-data/brusselator.cps"), NULL) == true);
+
+  // getObject should not resolve [X] to the species X
+  auto * object = dm->getObject(CCommonName("[X]"));
+  REQUIRE(object == nullptr);
+
+  CRootContainer::removeDatamodel(dm);
 }
 
 TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
@@ -48,11 +69,18 @@ TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
     REQUIRE(verify_cn(dm, "CN=Root,Model=The Brusselator,Array=Stoichiometry(ann)[X][(R1)]"));
     REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[0][0]"));
     REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[\\[X\\]][(R1).k1]"));
+    REQUIRE(verify_cn(dm, "CN=Blubber") == false);
+    REQUIRE(CObjectInterface::GetObjectFromCN({dm}, {"CN=Blubber"}) == nullptr);
   }
 
   SECTION("simple_v3_event")
   {
     REQUIRE(dm->loadModel(getTestFile("test-data/simple_v3_event.cps"), NULL) == true);
+
+    const auto* comp = CObjectInterface::DataObject(dm->getObject({"CN=Root,Model=New Model,Vector=Compartments[compartment]"}));
+    CCommonName objName("CN=Root,Model=New Model,Vector=Compartments[compartment],Property=DisplayName");
+    auto* ref2 = objName.resolve(comp);
+    REQUIRE(ref2 != nullptr);
 
     REQUIRE(verify_cn(dm, "CN=Root,Model=New Model,Vector=Compartments[compartment],Reference=InitialVolume"));
     REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[\\[C\\]][Values\\[X\\].InitialValue]"));
@@ -74,7 +102,7 @@ TEST_CASE("1: loading example files, and resolve CNs", "[copasi]")
     REQUIRE(verify_cn(dm, "CN=Root,Vector=TaskList[Sensitivities],Problem=Sensitivities,Array=Sensitivities array[A.ParticleNumber][(reaction).k1]"));
 
     auto registeredCN = cn;
-    registeredCN.sanitizeObjectNames();
+    registeredCN.resolve(dm);
     REQUIRE(cn == registeredCN);
   }
 

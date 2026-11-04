@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -63,16 +63,24 @@ public:
   enum struct ModelType
   {
     deterministic,
-    stochastic,
-    __SIZE
+    stochastic
   };
 
-  /**
-   * String representation of the valid model types.
-   */
-  static const CEnumAnnotation< std::string, ModelType > ModelTypeNames;
+private:
+  constexpr static CEnumAnnotationInstance _ModelTypeNames{
+    ModelType::deterministic,
+    MapNode{ModelType::deterministic, "deterministic"},
+    MapNode{ModelType::stochastic, "stochastic"}};
 
-  enum DependencyType {initial = 0, transient, physical};
+public:
+  constexpr static CEnumAnnotation< ModelType, std::string_view > ModelTypeNames{_ModelTypeNames};
+
+  enum DependencyType
+  {
+    initial = 0,
+    transient,
+    physical
+  };
 
   enum UnitType {volume = 0,
                  area,
@@ -102,14 +110,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -120,10 +128,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & type,
-                              const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+  void createUndoData(CUndoData & undoData,
+                      const CUndoData::Type & type,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
   /**
    *  constructor
    */
@@ -139,19 +147,19 @@ public:
    * @param const CDataContainer * pParent
    * @return bool success
    */
-  virtual bool setObjectParent(const CDataContainer * pParent);
+  bool setObjectParent(const CDataContainer * pParent) override;
 
   /**
    * Retrieve the units of the object.
    * @return std::string units
    */
-  virtual const std::string getUnits() const;
+  const std::string getUnits() const override;
 
   /**
    * Retrieve the units of the child object.
    * @return std::string units
    */
-  virtual std::string getChildObjectUnits(const CDataObject * pObject) const;
+  std::string getChildObjectUnits(const CDataObject * pObject) const override;
 
   /**
    * Converts the set of reactions to a set of reactions where all reactions are irreversible.
@@ -383,7 +391,7 @@ public:
    * Return the key of this model
    * @return string key
    */
-  const std::string & getKey() const;
+  const std::string & getKey() const override;
 
   /**
    * Return a pointer to the current time
@@ -1015,10 +1023,10 @@ public:
    * on the changed objects. For metabolites the initial particle number is
    * updated by default unless itself is in the list of changed objects. In
    * that case the initial concentration is updated.
+   * @param CCore::CUpdateSequence & updateSequence
    * @param std::set< const CDataObject * > & changedObjects
-   * @return CCore::CUpdateSequence initialRefreshSequence
    */
-  CCore::CUpdateSequence buildInitialRefreshSequence(std::set< const CDataObject * > & changedObjects);
+  void buildInitialRefreshSequence(CCore::CUpdateSequence & updateSequence, std::set< const CDataObject * > & changedObjects);
 
   /**
    * Builds and executes the the update sequence used to calculate all initial
@@ -1069,7 +1077,7 @@ public:
 
 private:
 
-  CIssue compile();
+  CIssue compile() override;
 
   /**
    * Handles unused metabolites and moves them to the end of mMetabolites.
@@ -1358,21 +1366,31 @@ private:
    */
   CMathContainer * mpMathContainer;
 
+  /**
+   * updates the labels of the Jacobian matrices
+   */
+  void updateJacobianAnnotation();
+  
+  /**    
+   * update the Jacobian of the model, either full or reduced, using finite differences
+   * @param reducedModel if true, update the reduced Jacobian, otherwise update the full Jacobian
+   * @param derivationFactor the factor used for finite difference approximation
+   */
+  void updateJacobian(bool reducedModel = false, double derivationFactor = 1e-6);
+
+
+  CMatrix< C_FLOAT64 > mJacobian;
+  CMatrix< C_FLOAT64 > mJacobianRed;
+  CDataArray * mpJacobianAnn;
+  CDataArray * mpJacobianAnnRed;
+
   // Operations
 public:
   /**
    * Retrieve the container of all mathematical objects
-   * @return const CMathContainer & mathContainer
-   */
-  const CMathContainer & getMathContainer() const;
-
-  /**
-   * Retrieve the container of all mathematical objects
    * @return CMathContainer & mathContainer
    */
-  CMathContainer & getMathContainer();
-
-  //bool prepareSymbolicJacobian();
+  CMathContainer & getMathContainer() const;
 
   CEvaluationNode* prepareElasticity(const CReaction * pReaction, const CModelEntity* pVar, bool simplify);
 
@@ -1381,6 +1399,14 @@ public:
   void changeUnitExpressionSymbols(std::string oldSymbol, std::string newSymbol);
 
   std::map< std::string, CUnit > getUsedUnits() const;
+
+  /**
+   * computes the Jacobian of the model from current state, either full or reduced, using finite differences
+   * @param reducedModel if true, get the reduced Jacobian, otherwise get the full Jacobian (default: false)
+   * @param derivationFactor the factor used for finite difference approximation (default: 1e-6)
+   * @return CDataArray & the Jacobian matrix
+   */
+  const CDataArray & getJacobianAnnotation(bool reducedModel = false, double derivationFactor = 1e-6);
 
   friend class CFunctionDB;
 };

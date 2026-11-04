@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -44,13 +44,6 @@
 #include "copasi/utilities/CProcessReport.h"
 #include "copasi/utilities/CLeastSquareSolution.h"
 
-// static
-const CEnumAnnotation< std::string, CNewtonMethod::eTargetCriterion > CNewtonMethod::TargetCriterion(
-{
-  "Distance and Rate",
-  "Distance",
-  "Rate"});
-
 CNewtonMethod::CNewtonMethod(const CDataContainer * pParent,
                              const CTaskEnum::Method & methodType,
                              const CTaskEnum::Task & taskType)
@@ -71,7 +64,7 @@ CNewtonMethod::CNewtonMethod(const CDataContainer * pParent,
   , mdxdt()
   , mpTrajectory(NULL)
   , mStartState()
-  , mUpdateConcentrations()
+  , mUpdateConcentrations(nullptr)
   , mTargetCriterion(eTargetCriterion::DistanceAndRate)
   , mTargetRate(std::numeric_limits< C_FLOAT64 >::infinity())
   , mTargetDistance(std::numeric_limits< C_FLOAT64 >::infinity())
@@ -99,7 +92,7 @@ CNewtonMethod::CNewtonMethod(const CNewtonMethod & src,
   , mdxdt()
   , mpTrajectory(NULL)
   , mStartState(src.mStartState)
-  , mUpdateConcentrations(src.mUpdateConcentrations)
+  , mUpdateConcentrations(src.mUpdateConcentrations, nullptr)
   , mTargetCriterion(src.mTargetCriterion)
   , mTargetRate(src.mTargetRate)
   , mTargetDistance(src.mTargetDistance)
@@ -688,9 +681,6 @@ std::string CNewtonMethod::targetValueToString() const
 
       case eTargetCriterion::Rate:
         os << "Rate: " << mTargetRate;
-        break;
-
-      case eTargetCriterion::__SIZE:
         break;
     }
 

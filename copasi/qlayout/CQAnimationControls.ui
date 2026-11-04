@@ -222,7 +222,7 @@
   </connection>
   <connection>
    <sender>cmdBack</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>CQAnimationControls</receiver>
    <slot>slotBack()</slot>
    <hints>
@@ -238,7 +238,7 @@
   </connection>
   <connection>
    <sender>cmdForward</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>CQAnimationControls</receiver>
    <slot>slotForward()</slot>
    <hints>
@@ -254,7 +254,7 @@
   </connection>
   <connection>
    <sender>cmdPlayPause</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>CQAnimationControls</receiver>
    <slot>slotTogglePlayPause()</slot>
    <hints>
@@ -270,7 +270,7 @@
   </connection>
   <connection>
    <sender>cmdStepBack</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>CQAnimationControls</receiver>
    <slot>slotStepBack()</slot>
    <hints>
@@ -286,7 +286,7 @@
   </connection>
   <connection>
    <sender>cmdStepForward</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>CQAnimationControls</receiver>
    <slot>slotStepForward()</slot>
    <hints>
@@ -302,7 +302,7 @@
   </connection>
   <connection>
    <sender>cmdStop</sender>
-   <signal>pressed()</signal>
+   <signal>clicked()</signal>
    <receiver>CQAnimationControls</receiver>
    <slot>slotStop()</slot>
    <hints>

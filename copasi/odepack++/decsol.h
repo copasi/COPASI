@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -15,74 +15,139 @@
 #define decsol_h
 
 #include <cmath>
-#include "copasi/copasi.h"
+#include "copasi/core/CCore.h"
 
-# ifdef HAVE_F2C_H
+#ifdef HAVE_F2C_H
 #  include <f2c.h>
-# else
+#else
 #  include "copasi/lapack/f2c.h"
-# endif
-
+#endif
 
 #ifdef min
-# undef min
+#  undef min
 #endif // min
 
 #ifdef max
-# undef max
+#  undef max
 #endif // max
 
-//template<class T>
-//inline const T& max(const T& a, const T& b)
-//{ return a > b ? a : b; }
-//
-//template<class T>
-//inline const T& min(const T& a, const T& b)
-//{ return a < b ? a : b; }
+#ifdef abs
+#  undef abs
+#endif // abs
 
 // Matrix Triangularization by Gaussian Elimination
-int dec_(integer n, double **A, int *ip);
+int dec_(const integer * n,
+         const integer * ndim,
+         doublereal * a,
+         integer * ip,
+         integer * ier);
 
 // Solution of linear system A*x = b
-void sol_(integer n, double **A, double *b, int *ip);
+int sol_(const integer * n,
+         const integer * ndim,
+         const doublereal * a,
+         doublereal * b,
+         const integer * ip);
 
 // Matrix Triangularization by Gaussian Elimination of a Hessenberg
 // matrix with lower bandwidth lb
-int dech_(integer n, double **A, int lb, int *ip);
+int dech_(const integer * n,
+          const integer * ndim,
+          doublereal * a,
+          const integer * lb,
+          integer * ip,
+          integer * ier);
 
 // Solution of linear system A*x = b -- Hessenberg matrix
-void solh_(integer n, double **A, int lb, double *b, int *ip);
+int solh_(const integer * n,
+          const integer * ndim,
+          const doublereal * a,
+          const integer * lb,
+          doublereal * b,
+          const integer * ip);
 
 // Matrix Triangularization by Gaussian Elimination for complex matrices
-int decc_(integer n, double **AR, double **AI, int *ip);
+int decc_(const integer * n,
+          const integer * ndim,
+          doublereal * ar,
+          doublereal * ai,
+          integer * ip,
+          integer * ier);
 
 // Solution of linear system A*x = b -- complex matrices
-void solc_(integer n, double **AR, double **AI, double *br,
-           double *bi, int *ip);
+int solc_(const integer * n,
+          const integer * ndim,
+          const doublereal * ar,
+          const doublereal * ai,
+          doublereal * br,
+          doublereal * bi,
+          const integer * ip);
 
 // Matrix Triangularization by Gaussian Elimination -- Hessenberg, complex
 // matrices
-int dechc_(integer n, double **AR, double **AI, int lb, int *ip);
+int dechc_(const integer * n,
+           const integer * ndim,
+           doublereal * ar,
+           doublereal * ai,
+           const integer * lb,
+           integer * ip,
+           integer * ie);
 
 // Solution of linear system A*x = b -- Hessenberg, complex matrices
-void solhc_(integer n, double **AR, double **AI, int lb,
-            double *br, double *bi, int *ip);
+int solhc_(const integer * n,
+           const integer * ndim,
+           const doublereal * ar,
+           const doublereal * ai,
+           const integer * lb,
+           doublereal * br,
+           doublereal * bi,
+           const integer * ip);
 
 //Matrix Triangularization by Gaussian Elimination -- banded matrix
-int decb_(integer n, double **A, int ml, int mu, int *ip);
+int decb_(const integer * n,
+          const integer * ndim,
+          doublereal * a,
+          const integer * ml,
+          const integer * mu,
+          integer * ip,
+          integer * ier);
 
 // Solution of linear system A*x = b -- banded matrix
-void solb_(integer n, double **A, int ml, int mu, double *b, int *ip);
+int solb_(const integer * n,
+          const integer * ndim,
+          const doublereal * a,
+          const integer * ml,
+          const integer * mu,
+          doublereal * b,
+          const integer * ip);
 
 //Matrix Triangularization by Gaussian Elimination -- banded, complex matrices
-int decbc_(integer n, double **AR, double **AI, int ml, int mu, int *ip);
+int decbc_(const integer * n,
+           const integer * ndim,
+           doublereal * ar,
+           doublereal * ai,
+           const integer * ml,
+           const integer * mu,
+           integer * ip,
+           integer * ier);
 
 // Solution of linear system A*x = b -- banded, complex matrices
-void solbc_(integer n, double **AR, double **AI, int ml, int mu,
-            double *br, double *bi, int *ip);
+int solbc_(const integer * n,
+           const integer * ndim,
+           const doublereal * ar,
+           const doublereal * ai,
+           const integer * ml,
+           const integer * mu,
+           doublereal * br,
+           doublereal * bi,
+           const integer * ip);
 
 // reduces a submatrix to upper Hessenberg form
-void elmhes_(integer n, int low, int igh, double **A, int *inter);
-
+int elmhes_(const integer * nm,
+            const integer * n,
+            const integer * low,
+            const integer * igh,
+            doublereal * a,
+            integer * int__);
 
 #endif /* decsol_h */

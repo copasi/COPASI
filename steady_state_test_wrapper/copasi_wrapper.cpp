@@ -1,4 +1,4 @@
-// Copyright (C) 2019 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -70,7 +70,7 @@ CReportDefinition* createReport(CDataModel* pDataModel, CReportDefinitionVector*
     {
       if (compartments[j].getStatus() != CModelEntity::Status::FIXED)
         {
-          pFoot->push_back(compartments[j].getObject(CCommonName("Reference=Volume"))->getCN());
+          pFoot->push_back(compartments[j].getChildObject(CCommonName("Reference=Volume"))->getCN());
           pFoot->push_back(pReport->getSeparator().getCN());
           pHeader->push_back(CDataString(compartments[j].getSBMLId()).getCN());
           pHeader->push_back(pReport->getSeparator().getCN());
@@ -85,7 +85,7 @@ CReportDefinition* createReport(CDataModel* pDataModel, CReportDefinitionVector*
     {
       if (metabolites[j].getStatus() != CModelEntity::Status::FIXED)
         {
-          pFoot->push_back(metabolites[j].getObject(CCommonName("Reference=Concentration"))->getCN());
+          pFoot->push_back(metabolites[j].getChildObject(CCommonName("Reference=Concentration"))->getCN());
           pFoot->push_back(pReport->getSeparator().getCN());
           pHeader->push_back(CDataString(metabolites[j].getSBMLId()).getCN());
           pHeader->push_back(pReport->getSeparator().getCN());
@@ -100,7 +100,7 @@ CReportDefinition* createReport(CDataModel* pDataModel, CReportDefinitionVector*
     {
       if (parameters[j].getStatus() != CModelEntity::Status::FIXED)
         {
-          pFoot->push_back(parameters[j].getObject(CCommonName("Reference=Value"))->getCN());
+          pFoot->push_back(parameters[j].getChildObject(CCommonName("Reference=Value"))->getCN());
           pFoot->push_back(pReport->getSeparator().getCN());
           pHeader->push_back(CDataString(parameters[j].getSBMLId()).getCN());
           pHeader->push_back(pReport->getSeparator().getCN());
@@ -112,7 +112,7 @@ CReportDefinition* createReport(CDataModel* pDataModel, CReportDefinitionVector*
   jMax = reactions.size();
   for (j = 0; j < jMax;++j)
   {
-  pBody->push_back(reactions[j]->getObject(CCommonName("Reference=Flux"))->getCN());
+  pBody->push_back(reactions[j]->getChildObject(CCommonName("Reference=Flux"))->getCN());
   pBody->push_back(pReport->getSeparator().getCN());
   pHeader->push_back(CCopasiStaticString(reactions[j]->getSBMLId()).getCN());
   pHeader->push_back(pReport->getSeparator().getCN());

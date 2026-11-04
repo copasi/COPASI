@@ -1,17 +1,24 @@
-// Begin CVS Header
-//   $Source: /Volumes/Home/Users/shoops/cvs/copasi_dev/copasi/utilities/CSparseMatrix.h,v $
-//   $Revision: 1.7 $
-//   $Name:  $
-//   $Author: shoops $
-//   $Date: 2011/10/25 17:15:54 $
-// End CVS Header
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2011 - 2010 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
+
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc., University of Heidelberg, and The University
 // of Manchester.
 // All rights reserved.
 
-// Copyright (C) 2001 - 2007 by Pedro Mendes, Virginia Tech Intellectual
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
+
+// Copyright (C) 2005 - 2007 by Pedro Mendes, Virginia Tech Intellectual
 // Properties, Inc. and EML Research, gGmbH.
 // All rights reserved.
 
@@ -139,16 +146,29 @@ private:
 private:
   CCompressedColumnFormat();
 
-  // Iterator
 public:
-#if (defined __GNUC__ && __GNUC__ < 3)
+  // Iterator
+#if (defined __GNUC__ && __GNUC__ < 3 && !defined __APPLE_CC__)
   class const_row_iterator: public std::forward_iterator< C_FLOAT64, ptrdiff_t >
+  {
+#else
+    // Check for C++17 or later, where std::iterator is deprecated
+#if __cplusplus >= 201703L
+  class const_row_iterator
+  {
+  public:
+    typedef C_FLOAT64 value_type;
+    typedef const C_FLOAT64* pointer;
+    typedef const C_FLOAT64& reference;
+    typedef ptrdiff_t difference_type;
+    typedef std::forward_iterator_tag iterator_category;
 #else
   class const_row_iterator:
-      public std::iterator< std::forward_iterator_tag, C_FLOAT64, ptrdiff_t >
-#endif
-
+    public std::iterator< std::forward_iterator_tag, C_FLOAT64, ptrdiff_t >
   {
+#endif // __cplusplus >= 201703L
+#endif // (defined __GNUC__ && __GNUC__ < 3 && !defined __APPLE_CC__)
+
   public:
     /**
      * Default constructor.

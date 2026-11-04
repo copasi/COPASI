@@ -1,4 +1,4 @@
-// Copyright (C) 2021 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2021 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -16,7 +16,7 @@
 // static
 size_t CJitCompilerImplementation::InitalBufferSize = 64*1024;
 
-// static 
+// static
 C_FLOAT64 CJitCompilerImplementation::Invalid = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 
 // static
@@ -219,7 +219,6 @@ CJitCompilerImplementation::Function CJitCompilerImplementation::compile(const C
                   case CEvaluationNode::MainType::STRUCTURE:
                   case CEvaluationNode::MainType::UNIT:
                   case CEvaluationNode::MainType::INVALID:
-                  case CEvaluationNode::MainType::__SIZE:
                     pNode = NULL;
                     break;
                 }
@@ -822,7 +821,7 @@ CJitCompilerImplementation::Node * CJitCompilerImplementation::compile(const CEv
   return pNodeJIT;
 }
 
-CJitCompilerImplementation::Node * CJitCompilerImplementation::compile(const CEvaluationNodeChoice * pNode, const std::vector< CJitCompilerImplementation::Node * > & context)
+CJitCompilerImplementation::Node * CJitCompilerImplementation::compile(const CEvaluationNodeChoice * /* pNode */, const std::vector< CJitCompilerImplementation::Node * > & context)
 {
   /**
    * We have four different cases to consider:

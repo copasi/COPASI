@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -38,8 +38,6 @@
 class CFitTask : public COptTask
 {
 public:
-  static const CTaskEnum::Method ValidMethods[];
-
   //Attributes
 
 private:
@@ -49,6 +47,30 @@ private:
   CFitTask();
 
 public:
+  constexpr static CEnumAnnotationSubset ValidMethods{
+    CTaskEnum::MethodName,
+    CTaskEnum::Method::Statistics,
+    std::array{
+      CTaskEnum::Method::Statistics,
+#ifdef COPASI_DEBUG
+      CTaskEnum::Method::CoranaWalk,
+#endif // COPASI_DEBUG
+      CTaskEnum::Method::DifferentialEvolution,
+      CTaskEnum::Method::SRES,
+      CTaskEnum::Method::EvolutionaryProgram,
+      CTaskEnum::Method::GeneticAlgorithm,
+      CTaskEnum::Method::GeneticAlgorithmSR,
+      CTaskEnum::Method::HookeJeeves,
+      CTaskEnum::Method::LevenbergMarquardt,
+      CTaskEnum::Method::NL2SOL,
+      CTaskEnum::Method::NelderMead,
+      CTaskEnum::Method::ParticleSwarm,
+      CTaskEnum::Method::Praxis,
+      CTaskEnum::Method::RandomSearch,
+      CTaskEnum::Method::ScatterSearch,
+      CTaskEnum::Method::SimulatedAnnealing,
+      CTaskEnum::Method::SteepestDescent,
+      CTaskEnum::Method::TruncatedNewton}};
 
   /**
    * Specific constructor
@@ -114,7 +136,7 @@ public:
    * Retrieve the list of valid methods
    * @return const CTaskEnum::Method * pValidMethods
    */
-  const CTaskEnum::Method * getValidMethods() const override;
+  const CEnumAnnotation< CTaskEnum::Method, std::string_view > getValidMethods() const override;
 #endif
 };
 #endif // COPASI_CFitTask

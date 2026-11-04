@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -126,15 +126,19 @@ typedef CVector<const CDataObject*> ConstObjectVector;
 #endif
 %template(SizeTVectorCore) CVectorCore<size_t>;
 %template(SizeTVector) CVector<size_t>;
+%ignore CVectorCore<CDataObject *>::operator()(const size_t &) const;
 %template(ObjectVectorCore) CVectorCore<CDataObject*>;
 %template(ObjectVector) CVector<CDataObject*>;
 ExtendCVectorPtr(CVector, CDataObject*);
+%ignore CVectorCore<const CDataObject *>::operator()(const size_t &) const;
 %template(ConstObjectVectorCore) CVectorCore<const CDataObject*>;
 %template(ConstObjectVector) CVector<const CDataObject*>;
 ExtendCVectorPtr(CVector, const CDataObject*);
+%ignore CVectorCore<const CFunction *>::operator()(const size_t &) const;
 %template(ConstFunctionVectorCore) CVectorCore<const CFunction*>;
 %template(ConstFunctionVector) CVector<const CFunction*>;
 ExtendCVectorPtr(CVector, const CFunction*);
+%ignore CVectorCore<const CObjectInterface *>::operator()(const size_t &) const;
 %template(ConstObjectInterfaceVectorCore) CVectorCore<const CObjectInterface*>;
 %template(ConstObjectInterfaceVector) CVector<const CObjectInterface*>;
 ExtendCVectorPtr(CVector, const CObjectInterface*);

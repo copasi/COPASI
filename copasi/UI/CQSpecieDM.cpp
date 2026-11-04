@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -422,9 +422,6 @@ bool CQSpecieDM::setData(const QModelIndex &index, const QVariant &value,
                       // Preserve Particle Numbers
                       Species.setInitialConcentration(CMetab::convertToConcentration(Species.getInitialValue(), Compartment));
                       break;
-
-                    case CCore::Framework::__SIZE:
-                      break;
                   }
               }
           }
@@ -499,7 +496,7 @@ bool CQSpecieDM::removeRows(int position, int rows, const QModelIndex & parent)
 
   for (; it != end; ++it, ++itRow)
     {
-      *it = itRow->getStringCN();
+      *it = itRow->getCN();
     }
 
   for (it = ToBeDeleted.begin(); it != end; ++it)
@@ -592,7 +589,7 @@ bool CQSpecieDM::removeRows(QModelIndexList rows, const QModelIndex & parent)
   for (const auto& index : rows)
     {
       if (index.isValid() && !isDefaultRow(index) && index.row() < (int) mpMetabolites->size())
-        names.append(mpMetabolites->operator[](index.row()).getStringCN());
+        names.append(mpMetabolites->operator[](index.row()).getCN());
     }
 
   for (auto& objectCn : names)

@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -21,7 +21,7 @@
 #include "CMathContainer.h"
 #include "CMathEvent.h"
 #include "copasi/function/CExpression.h"
-#include "copasi/randomGenerator/CRandom.h"
+#include "copasi/randomGenerator/CConfigurableRNG.h"
 
 #include "copasi/core/CRootContainer.h"
 #include "copasi/commandline/CConfigurationFile.h"
@@ -84,8 +84,8 @@ CMathEventQueue::CAction::CAction():
 
 CMathEventQueue::CAction::CAction(const CAction & src):
   mType(src.mType),
-  mpPriority(src.mpPriority),
   mValues(src.mValues),
+  mpPriority(src.mpPriority),
   mpEvent(src.mpEvent),
   mpProcessQueue(src.mpProcessQueue)
 {}
@@ -211,7 +211,7 @@ CMathEventQueue::CMathEventQueue() :
   mpContainer(NULL),
   mpTime(NULL),
   mActions(),
-  mUpdateSequence(),
+  mUpdateSequence(nullptr),
   mExecutionLimit(10000),
   mExecutionCounter(0),
   mEquality(true),
@@ -227,7 +227,7 @@ CMathEventQueue::CMathEventQueue(CMathContainer & container):
   mpContainer(& container),
   mpTime(NULL),
   mActions(),
-  mUpdateSequence(),
+  mUpdateSequence(& container),
   mExecutionLimit(10000),
   mExecutionCounter(0),
   mEquality(true),
@@ -466,7 +466,7 @@ CMathEventQueue::iterator CMathEventQueue::getAction()
 
       // Pick one randomly
       default:
-        return PriorityActions[mpContainer->getRandomGenerator().getRandomU((int)PriorityActions.size() - 1)];
+        return PriorityActions[std::uniform_int_distribution< size_t>(0, PriorityActions.size() - 1)(mpContainer->getRandomGenerator())];
         break;
     }
 

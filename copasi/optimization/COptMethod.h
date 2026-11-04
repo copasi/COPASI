@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -43,12 +43,15 @@
 #include <string>
 
 #include "copasi/OpenMP/CProblemContext.h"
+#include "copasi/OpenMP/COpenMPConfig.h"
 #include "copasi/utilities/CCopasiMethod.h"
 #include "copasi/optimization/COptLog.h"
+#include "copasi/OpenMP/CRandomContext.h"
 
 class COptProblem;
 class COptItem;
 class COptTask;
+
 template < class CType > class CVector;
 
 // YOHE: this is an abstract class that contains many virtual functions
@@ -93,6 +96,11 @@ protected:
   CProblemContext< COptProblem > mProblemContext;
 
   /**
+   * a pointer to the random number generator.
+   */
+  CRandomContext  mRandomContext;
+
+  /**
    * Define the current verbosity for the log
    */
   unsigned C_INT32 mLogVerbosity;
@@ -102,6 +110,7 @@ protected:
   */
   COptLog mMethodLog;
 
+  std::shared_ptr< std::function< void() > > mOpenMPApplyCallback;
   // Operations
 private:
   /**
@@ -191,6 +200,8 @@ public:
    * @return a the current guess for parameters
    */
   virtual const CVector< C_FLOAT64 > * getCurrentParameters() const;
+
+  virtual void openMPApplyCallback();
 
 protected:
   /**

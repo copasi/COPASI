@@ -243,7 +243,7 @@ bool TaskHandler::processEnd(const XML_Char * pszName)
                       continue;
 
                     pGroup->addParameter("Role", CCopasiParameter::Type::UINT, entry.second.first);
-                    pGroup->addParameter("Object CN", CCopasiParameter::Type::CN, CRegisteredCommonName(entry.second.second, mpData->pDataModel));
+                    pGroup->addParameter("Object CN", CCopasiParameter::Type::CN, CRegisteredCommonName(CCommonName(entry.second.second)));
                   }
               }
           }

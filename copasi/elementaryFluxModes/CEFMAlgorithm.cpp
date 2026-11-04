@@ -125,7 +125,7 @@ bool CEFMAlgorithm::initialize()
 
   CEFMTask * pTask = dynamic_cast< CEFMTask *>(getObjectParent());
 
-  if (pTask == NULL) return false;
+  if (pTask == NULL || mpContainer == NULL) return false;
 
   mpModel = &mpContainer->getModel();
 

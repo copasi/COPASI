@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -70,19 +70,35 @@ public:
     ASSIGNMENT, //the entity is changed by an assignment rule
     REACTIONS, //applies only for species, the species concentration is changed by reactions
     ODE, //the entity is changed by an ordinary differential equation
-    TIME,
-    __SIZE
+    TIME
   };
 
   /**
    * String representation of the states
    */
-  static const CEnumAnnotation< std::string, Status > StatusName;
+private:
+  constexpr static CEnumAnnotationInstance _StatusName{
+    Status::FIXED,
+    MapNode{Status::FIXED, "fixed"},
+    MapNode{Status::ASSIGNMENT, "assignment"},
+    MapNode{Status::REACTIONS, "reactions"},
+    MapNode{Status::ODE, "ode"},
+    MapNode{Status::TIME, "time"}};
 
-  /**
-   * XML representation of the states
-   */
-  static const CEnumAnnotation< std::string, Status > XMLStatus;
+public:
+  constexpr static CEnumAnnotation< Status, std::string_view > StatusName{_StatusName};
+
+private:
+  constexpr static CEnumAnnotationInstance _XMLStatus{
+    Status::FIXED,
+    MapNode{Status::FIXED, "fixed"},
+    MapNode{Status::ASSIGNMENT, "assignment"},
+    MapNode{Status::REACTIONS, "reactions"},
+    MapNode{Status::ODE, "ode"},
+    MapNode{Status::TIME, "time"}};
+
+public:
+  constexpr static CEnumAnnotation< Status, std::string_view > XMLStatus{_XMLStatus};
 
   /**
    * Static method to create a CDataObject based on the provided data
@@ -548,14 +564,14 @@ public:
    * Retrieve the data describing the object
    * @return CData data
    */
-  virtual CData toData() const;
+  CData toData() const override;
 
   /**
    * Apply the provided data to the object
    * @param const CData & data
    * @return bool success
    */
-  virtual bool applyData(const CData & data, CUndoData::CChangeSet & changes);
+  bool applyData(const CData & data, CUndoData::CChangeSet & changes) override;
 
   /**
    * Create the undo data which represents the changes recording the
@@ -566,10 +582,10 @@ public:
    * @param const CCore::Framework & framework (default: CCore::Framework::ParticleNumbers)
    * @return CUndoData undoData
    */
-  virtual void createUndoData(CUndoData & undoData,
-                              const CUndoData::Type & type,
-                              const CData & oldData = CData(),
-                              const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const;
+  void createUndoData(CUndoData & undoData,
+                      const CUndoData::Type & type,
+                      const CData & oldData = CData(),
+                      const CCore::Framework & framework = CCore::Framework::ParticleNumbers) const override;
 
   /**
    * Default constructor
@@ -596,7 +612,7 @@ public:
    * Retrieve the units of the object.
    * @return std::string units
    */
-  virtual const std::string getUnits() const;
+  const std::string getUnits() const override;
 
   /**
    * insert operator

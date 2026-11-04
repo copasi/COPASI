@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -30,7 +30,7 @@
 #include "copasi/core/CDataObjectReference.h"
 
 // static
-CPlotSpecification * CPlotSpecification::fromData(const CData & data, CUndoObjectInterface * pParent)
+CPlotSpecification * CPlotSpecification::fromData(const CData & data, CUndoObjectInterface * /* pParent */)
 {
   return new CPlotSpecification(data.getProperty(CData::OBJECT_NAME).toString(),
                                 NO_PARENT,
@@ -49,7 +49,7 @@ CData CPlotSpecification::toData() const
 }
 
 // virtual
-bool CPlotSpecification::applyData(const CData & data, CUndoData::CChangeSet & changes)
+bool CPlotSpecification::applyData(const CData & /* data */, CUndoData::CChangeSet & /* changes */)
 {
   bool success = true;
 

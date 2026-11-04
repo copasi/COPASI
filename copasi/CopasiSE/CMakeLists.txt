@@ -1,4 +1,4 @@
-# Copyright (C) 2019 - 2023 by Pedro Mendes, Rector and Visitors of the 
+# Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 # University of Virginia, University of Heidelberg, and University 
 # of Connecticut School of Medicine. 
 # All rights reserved. 
@@ -49,7 +49,7 @@ target_link_libraries(CopasiSE libCOPASISE-static)
 
 install(TARGETS CopasiSE DESTINATION bin)
 
-if (PYTHONINTERP_FOUND)
+if (Python_Interpreter_FOUND OR PYTHONINTERP_FOUND)
 
 # call python test script 
 add_test(NAME CopasiTestsuite

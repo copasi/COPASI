@@ -1,22 +1,22 @@
-// Copyright (C) 2019 - 2024 by Pedro Mendes, Rector and Visitors of the 
-// University of Virginia, University of Heidelberg, and University 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// University of Virginia, University of Heidelberg, and University
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and University of 
-// of Connecticut School of Medicine. 
-// All rights reserved. 
+// Copyright (C) 2017 - 2018 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and University of
+// of Connecticut School of Medicine.
+// All rights reserved.
 
-// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., University of Heidelberg, and The University 
-// of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2010 - 2016 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., University of Heidelberg, and The University
+// of Manchester.
+// All rights reserved.
 
-// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual 
-// Properties, Inc., EML Research, gGmbH, University of Heidelberg, 
-// and The University of Manchester. 
-// All rights reserved. 
+// Copyright (C) 2008 - 2009 by Pedro Mendes, Virginia Tech Intellectual
+// Properties, Inc., EML Research, gGmbH, University of Heidelberg,
+// and The University of Manchester.
+// All rights reserved.
 
 #include "copasi/copasi.h"
 
@@ -152,6 +152,7 @@ CRDFGraphConverter::sChange CRDFGraphConverter::SBML2CopasiChanges[] =
     {
       CRDFPredicate::about, CRDFPredicate::dcterms_creator, CRDFPredicate::end
     },
+    NULL
   },
   {
     CRDFPredicate::end,
@@ -170,11 +171,11 @@ bool CRDFGraphConverter::SBML2Copasi(std::string & XML)
     CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 75);
 
   // Create the RDF graph
-  #ifdef COPASI_USE_RAPTOR
+#ifdef COPASI_USE_RAPTOR
   CRDFGraph * pGraph = CRDFParser::graphFromXml(XML);
-  #else
+#else
   CRDFGraph * pGraph = CRDFGraph::fromString(XML);
-  #endif
+#endif
 
   if (pGraph == NULL)
     return false;
@@ -202,11 +203,11 @@ bool CRDFGraphConverter::SBML2Copasi(std::string & XML)
   // Another parse and write should take care of this.
   size_t Size = CCopasiMessage::size();
 
-  #ifdef COPASI_USE_RAPTOR
+#ifdef COPASI_USE_RAPTOR
   pGraph = CRDFParser::graphFromXml(XML);
-  #else
+#else
   pGraph = CRDFGraph::fromString(XML);
-  #endif
+#endif
 
   if (pGraph == NULL)
     return false;
@@ -273,7 +274,6 @@ bool CRDFGraphConverter::convert(CRDFGraph * pGraph, const CRDFGraphConverter::s
 
               if (it == end) break;
             }
-
 
           if (Failed.find(*it) != Failed.end()) // if this triplet failed before, stop
             break;

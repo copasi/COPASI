@@ -60,6 +60,7 @@ private:
   QAction *mpaPrint;
   QAction *mpaSaveImage;
   QAction *mpaSaveData;
+  QAction *mpaCopyData;
   QAction *mpaZoomOut;
   QAction *mpaToggleLogX;
   QAction *mpaToggleLogY;
@@ -146,6 +147,9 @@ private slots:
 
   /// Save data into a file
   void slotSaveData();
+
+  /// copy data to clipboard
+  void slotCopyData();
 
   /// Zoom out
   void slotZoomOut();

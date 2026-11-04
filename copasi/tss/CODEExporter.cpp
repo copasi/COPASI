@@ -157,7 +157,7 @@ bool CODEExporter::exportModelValuesExpressions(const CModel *copasiModel)
   return true;
 }
 
-bool CODEExporter::exportSingleFunction(const CFunction *func, std::set<std::string>& isExported)
+bool CODEExporter::exportSingleFunction(const CFunction * /* func */, std::set<std::string>& /* isExported */)
 {
   return true;
 }
