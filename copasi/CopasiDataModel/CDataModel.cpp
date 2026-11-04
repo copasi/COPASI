@@ -3364,11 +3364,12 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
 
           // need initialize, so that all objects are created for the
           // object browser
-          it->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
+          bool initOk = it->initialize(CCopasiTask::NO_OUTPUT, NULL, NULL);
 
           // but we should restore any possible changes made to the model
           // by the task, without updating the model
-          it->restore(false);
+          if (initOk)
+            it->restore(false);
 
           CCopasiMessage::popMessages(Size);
         }
