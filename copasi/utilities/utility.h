@@ -37,6 +37,25 @@
 struct tm;
 
 /**
+ * Sets the process locale to "C" and restores the previous locale
+ * when destroyed. vsnprintf and strtod then use '.' as the decimal
+ * point for the lifetime of this object, without leaving "C" in
+ * place for later callers.
+ */
+class CLocaleGuard
+{
+public:
+  CLocaleGuard();
+  ~CLocaleGuard();
+
+  CLocaleGuard(const CLocaleGuard &) = delete;
+  CLocaleGuard & operator=(const CLocaleGuard &) = delete;
+
+private:
+  std::string mSaved;
+};
+
+/**
  * Returns the time pointed to by pTime in ISO format
  */
 std::string ISODateTime(tm * pTime);

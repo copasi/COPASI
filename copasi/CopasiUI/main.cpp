@@ -23,7 +23,6 @@
 // All rights reserved.
 
 #include <stdexcept>
-#include <locale.h>
 
 #include <QApplication>
 #include <QLocale>
@@ -45,6 +44,7 @@
 #include "copasi/function/CFunction.h"
 #include "copasi/commandline/COptionParser.h"
 #include "copasi/commandline/COptions.h"
+#include "copasi/utilities/utility.h"
 
 #ifdef COPASI_SBW_INTEGRATION
 // SBW includes
@@ -61,7 +61,7 @@ int main(int argc, char *argv[])
 {
   // Fix for Issue 1377, if locale is not set to the default one, some
   // numbers will be displayed in the systems default locale:
-  setlocale(LC_ALL, "C");
+  CLocaleGuard Guard;
   QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
 
   // Fix of Issue with Text centering on OSX Mavericks

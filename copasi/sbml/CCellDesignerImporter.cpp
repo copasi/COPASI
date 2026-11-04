@@ -75,6 +75,7 @@
 #include "SBMLUtils.h"
 
 #include <copasi/utilities/CCopasiMessage.h>
+#include <copasi/utilities/utility.h>
 
 // TODO set the role on species reference glyphs where possible, this is done on substrates and products already
 // TODO modifiers are missing
@@ -119,7 +120,6 @@ CCellDesignerImporter::CCellDesignerImporter(SBMLDocument* pDocument)
   , mpLocalRenderInfo(NULL)
   , mFont("Arial") //, mFont("serif")
 {
-  setlocale(LC_ALL, "C");
   setSBMLDocument(pDocument);
 }
 
@@ -161,6 +161,8 @@ void CCellDesignerImporter::removeCurrentLayout()
 void
 CCellDesignerImporter::setSBMLDocument(SBMLDocument* pDocument)
 {
+  CLocaleGuard Guard;
+
   if (pDocument == this->mpDocument)
     return;
 

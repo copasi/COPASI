@@ -34,6 +34,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <locale.h>
 
 #include "copasi/copasi.h"
 
@@ -115,15 +116,29 @@ bool isNumber(const std::string & str)
   return true;
 }
 
+CLocaleGuard::CLocaleGuard()
+{
+  // Copy first: setlocale returns a pointer to internal storage
+  // that the next call overwrites.
+  const char * Current = setlocale(LC_ALL, NULL);
+  mSaved = (Current != NULL) ? Current : "C";
+  setlocale(LC_ALL, "C");
+}
+
+CLocaleGuard::~CLocaleGuard()
+{
+  setlocale(LC_ALL, mSaved.c_str());
+}
+
 std::string StringPrint(const char * format, ...)
 {
+  CLocaleGuard Guard;
+
   C_INT32 TextSize = INITIALTEXTSIZE;
   C_INT32 Printed = 0;
 
   char * Text = NULL;
   Text = new char[TextSize + 1];
-
-  setlocale(LC_ALL, "C");
 
   va_list Arguments; // = NULL;
   va_start(Arguments, format);

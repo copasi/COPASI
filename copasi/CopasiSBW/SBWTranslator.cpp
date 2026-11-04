@@ -28,6 +28,7 @@
 #include <copasi/commandline/COptions.h>
 #include <copasi/utilities/CVersion.h>
 #include <copasi/utilities/CDirEntry.h>
+#include <copasi/utilities/utility.h>
 
 using namespace SystemsBiologyWorkbench;
 using namespace std;
@@ -158,10 +159,10 @@ DataBlockWriter Copasi2SBMLTranslator::translateToSBML(Module from, DataBlockRea
 
 int main(int argc, char *argv[])
 {
+  CLocaleGuard Guard;
 
   try
     {
-      setlocale(LC_ALL, "C");
       bool doTranslate = false;
       string fileName;
 

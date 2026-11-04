@@ -53,6 +53,7 @@
 #include "copasi/core/CDataTimer.h"
 #include "copasi/report/CKeyFactory.h"
 #include "copasi/utilities/CVersion.h"
+#include "copasi/utilities/utility.h"
 #include "copasi/utilities/CDirEntry.h"
 #include "copasi/utilities/CSparseMatrix.h"
 #include "copasi/utilities/CProcessReport.h"
@@ -429,6 +430,8 @@ SedmlImportOptions getSedmlImportOptionsForArchive(
 
 int main(int argc, char *argv[])
 {
+  CLocaleGuard Guard;
+
   int retcode = 0;
   CProcessReport * pProcessReport = NULL;
   int MaxTime = 0;
