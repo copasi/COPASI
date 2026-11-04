@@ -30,6 +30,15 @@
 
 %ignore CTrajectoryProblem::load;
 
+%ignore CTrajectoryProblem::getValues;
+
 %include "trajectory/CTrajectoryProblem.h"
+
+%extend CTrajectoryProblem {
+  std::vector<C_FLOAT64> getValues() const {
+    const std::set<C_FLOAT64> values = self->getValues();
+    return std::vector<C_FLOAT64>(values.begin(), values.end());
+  }
+}
 
 
