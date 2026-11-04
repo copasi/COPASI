@@ -66,10 +66,20 @@
       return (*self)[index];
   }
 
+  virtual void set(unsigned C_INT32 index, CType value)
+  {
+      (*self)[index] = value;
+  }
+
 #ifdef SWIGPYTHON
   virtual size_t __len__() const
   {
     return self->size();
+  }
+
+  virtual void __setitem__(unsigned C_INT32 index, CType value)
+  {
+      (*self)[index] = value;
   }
 #endif // SWIGPYTHON
 }
