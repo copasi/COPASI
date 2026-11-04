@@ -381,6 +381,7 @@ void CTrajectoryProblem::setValues(const std::string& values)
 void CTrajectoryProblem::setValues(const std::vector<C_FLOAT64>& values)
 {
   std::stringstream str;
+  str.precision(std::numeric_limits< C_FLOAT64 >::digits10 + 2);
 
   for (C_FLOAT64 value : values)
     {
