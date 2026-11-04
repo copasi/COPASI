@@ -129,11 +129,20 @@ if (NOT RAPTOR_FOUND AND Raptor_FIND_VERSION_MAJOR EQUAL "2" AND NOT Raptor_FIND
     endif ()
 endif ()
 
+# Raptor (built with libxml2 SAX2 support) requires libxml2 at link time.
+# Prefer shared libxml2 over static to avoid missing transitive deps (zlib, lzma, icu)
+find_library(LIBXML2_LIBRARY NAMES libxml2.so xml2)
+find_package(LibXml2 QUIET)
+
 if(NOT TARGET RAPTOR::RAPTOR)
   add_library(RAPTOR::RAPTOR UNKNOWN IMPORTED)
   set_target_properties(RAPTOR::RAPTOR PROPERTIES
     IMPORTED_LOCATION "${RAPTOR_LIBRARY}"
     INTERFACE_INCLUDE_DIRECTORIES "${RAPTOR_INCLUDE_DIR}")
+  if (LibXml2_FOUND)
+    set_property(TARGET RAPTOR::RAPTOR APPEND PROPERTY
+      INTERFACE_LINK_LIBRARIES LibXml2::LibXml2)
+  endif ()
 endif()
 
 if ((WIN32 AND NOT CYGWIN) AND RAPTOR_FOUND)
