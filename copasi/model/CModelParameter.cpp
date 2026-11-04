@@ -971,7 +971,12 @@ void CModelParameterSpecies::compile()
 {
   CModelParameter::compile();
 
-  mpCompartment = static_cast< CModelParameterCompartment * >(getSet()->toGroup()->getModelParameter(mCompartmentCN));
+  mpCompartment = NULL;
+  if (!mCompartmentCN.empty())
+    {
+      CModelParameter * p = getSet()->toGroup()->getModelParameter(mCompartmentCN);
+      mpCompartment = dynamic_cast< CModelParameterCompartment * >(p);
+    }
 
   if (mpCompartment != NULL)
     {
@@ -1000,7 +1005,11 @@ void CModelParameterSpecies::setValue(const C_FLOAT64 & value, const CCore::Fram
 
   if (mpCompartment == NULL)
     {
-      mpCompartment = static_cast< CModelParameterCompartment * >(getSet()->toGroup()->getModelParameter(mCompartmentCN));
+      if (!mCompartmentCN.empty())
+        {
+          CModelParameter * p = getSet()->toGroup()->getModelParameter(mCompartmentCN);
+          mpCompartment = dynamic_cast< CModelParameterCompartment * >(p);
+        }
 
       if (mpCompartment != NULL)
         {
