@@ -12,13 +12,11 @@
 #include <string>
 %}
 
-// Tell SWIG to load the standard library types for all target languages
-%include "std_string.i"
-%include "std_vector.i"
-
-// Instantiate standard collection proxies so they are recognized by Java, C#, and Python
-%template(StringVector) std::vector< std::string >;
-%template(IntVector) std::vector< int >;
+// std_string.i and std_vector.i are already included from copasi.i, and
+// CDataVector.i has already instantiated these types as StringStdVector and
+// IntStdVector (C_INT32 is int). A second %template emits a second copy of the
+// same C++ wrapper functions and MSVC rejects the translation unit (C2084).
+// values() and intValues() below therefore come back as those existing types.
 
 // SWIG cannot wrap operator[]. Lookups go through getIntValue and getStrValue.
 %ignore CEnumAnnotation::operator[];
@@ -56,8 +54,8 @@
     return result;
   }
 
-  // CROSS-PLATFORM FIX: Do the string_view to string conversion directly inside C++
-  // SWIG will now automatically use the correct target language wrapper (StringVector)
+  // CROSS-PLATFORM FIX: Do the string_view to string conversion directly inside C++.
+  // The return type is the StringStdVector proxy instantiated in CDataVector.i.
   std::vector< std::string > values() const
   {
     auto views = $self->values();
