@@ -3363,7 +3363,8 @@ CModelValue* SBMLImporter::createCModelValueFromParameter(const Parameter* sbmlP
 
   if (sbmlParameter->isSetUnits())
     {
-      const SUnitInfo & UnitInfo = importUnit(sbmlParameter->getModel()->getUnitDefinition(sbmlParameter->getUnits()), false);
+      auto* model = dynamic_cast<Model*>(copasi2sbmlmap[copasiModel]);
+      const SUnitInfo & UnitInfo = importUnit(model == NULL ? NULL : model->getUnitDefinition(sbmlParameter->getUnits()), false);
 
       if (UnitInfo.valid)
         {
