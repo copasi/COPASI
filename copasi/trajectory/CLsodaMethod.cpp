@@ -259,6 +259,22 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
   C_FLOAT64 StartTime = mTime;
   C_FLOAT64 EndTime = mTime + deltaT;
 
+  // DLSODAR refuses to start when |TOUT - T| < 2 * uround * max(|T|, |TOUT|).
+  // just advance
+  if (mLsodaStatus == 1)
+    {
+      const C_FLOAT64 Scale = std::max(fabs(StartTime), fabs(EndTime));
+
+      if (fabs(EndTime - StartTime) < 2.0 * std::numeric_limits< C_FLOAT64 >::epsilon() * Scale)
+        {
+          mTime = EndTime;
+          *mpContainerStateTime = mTime;
+          mTargetTime = EndTime;
+
+          return NORMAL;
+        }
+    }
+
   if (mTargetTime != EndTime)
     {
       // We have a new end time and reset the root counter.
