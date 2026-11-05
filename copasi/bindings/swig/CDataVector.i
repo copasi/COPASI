@@ -329,21 +329,6 @@
 
 %template(ParameterVector) std::vector<CCopasiParameter*>;
 
-%template(IntStdVector) std::vector<C_INT32>;
-
-#if !SWIGPYTHON && !SWIGR && !SWIGOCTAVE
-%template(UIntStdVector) std::vector<unsigned int>;
-#endif
-
-#if !SWIGR
-%template(SizeTStdVector) std::vector<size_t>;
-#endif
-
-%template(StringStdVector) std::vector<std::string>;
-%template(VectorOfStringVectors) std::vector<std::vector<std::string> >;
-
-%template(FloatStdVector) std::vector<C_FLOAT64>;
-
 %template(OptItemStdVector) std::vector<COptItem*>;
 
 %template(ContainerStdVector) std::vector<CDataContainer*>;
@@ -393,17 +378,7 @@ typedef CDataVector<CChemEqElement> CChemEqElementVector;
 
 typedef CDataVector<CDataModel> DataModelVector;
 
-#if !SWIGPYTHON && !SWIGR
-typedef std::vector<C_INT32> IntStdVector;
-typedef std::vector<unsigned int> UIntStdVector;
-#endif
-typedef std::vector<size_t> SizeTStdVector;
-typedef std::vector<C_FLOAT64> FloatStdVector;
-
 typedef std::vector<COptItem*> OptItemStdVector;
-
-typedef std::vector<std::string> StringStdVector;
-typedef std::vector<std::vector<std::string> > VectorOfStringVectors;
 
 typedef std::vector<CDataContainer*> ContainerStdVector;
 

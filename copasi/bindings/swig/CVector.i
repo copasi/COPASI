@@ -59,6 +59,22 @@
 
 %include "copasi/core/CVector.h"
 
+%template(IntStdVector) std::vector<C_INT32>;
+
+#if !SWIGPYTHON && !SWIGR && !SWIGOCTAVE
+%template(UIntStdVector) std::vector<unsigned int>;
+#endif
+
+#if !SWIGR
+%template(SizeTStdVector) std::vector<size_t>;
+#endif
+
+%template(StringStdVector) std::vector<std::string>;
+%template(VectorOfStringVectors) std::vector<std::vector<std::string> >;
+
+%template(FloatStdVector) std::vector<C_FLOAT64>;
+
+
 %extend CVectorCore
 {
   virtual CType get(unsigned C_INT32 index)
@@ -66,9 +82,12 @@
       return (*self)[index];
   }
 
-  virtual void set(unsigned C_INT32 index, CType value)
+    void initialize(unsigned C_INT32 size, const std::vector< CType >& values)
   {
-      (*self)[index] = value;
+      self->resize(size);
+      for (unsigned C_INT32 i = 0; i < size; i++) {
+        (*self)[i] = values[i];
+      }
   }
 
 #ifdef SWIGPYTHON
@@ -83,7 +102,6 @@
   }
 #endif // SWIGPYTHON
 }
-
 
 %define ExtendCVectorPtr(name, T)
 %extend name<T>
@@ -152,3 +170,16 @@ ExtendCVectorPtr(CVector, const CFunction*);
 %template(ConstObjectInterfaceVectorCore) CVectorCore<const CObjectInterface*>;
 %template(ConstObjectInterfaceVector) CVector<const CObjectInterface*>;
 ExtendCVectorPtr(CVector, const CObjectInterface*);
+
+
+#if !SWIGPYTHON && !SWIGR
+typedef std::vector<C_INT32> IntStdVector;
+typedef std::vector<unsigned int> UIntStdVector;
+#endif
+typedef std::vector<size_t> SizeTStdVector;
+typedef std::vector<C_FLOAT64> FloatStdVector;
+
+typedef std::vector<std::string> StringStdVector;
+typedef std::vector<std::vector<std::string> > VectorOfStringVectors;
+
+

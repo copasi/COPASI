@@ -206,6 +206,67 @@ public:
    */
   size_t size() const {return mSize;}
 
+  
+  /**
+   * Resize the vector. The previous content is lost
+   * @param size_t size
+   */
+  void resize(size_t size, const bool & copy = false)
+  {
+    //TODO: maybe we should only resize if the vector gets bigger
+    //or much smaller?
+    if (size == CVectorCore< CType >::mSize)
+      return;
+
+    size_t OldSize = CVectorCore< CType >::mSize;
+    CType * OldVector = CVectorCore< CType >::mpBuffer;
+
+    //TODO: maybe we should only resize if the vector gets bigger
+    //or much smaller?
+    CVectorCore< CType >::mSize = size;
+    CVectorCore< CType >::mpBuffer = NULL;
+
+    if (CVectorCore< CType >::mSize > 0)
+      {
+        try
+          {
+            // We need to detect size_t overflow
+            if ((C_FLOAT64) CVectorCore< CType >::mSize * (C_FLOAT64) sizeof(CType) >= (C_FLOAT64) std::numeric_limits< size_t >::max())
+              {
+                CVectorCore< CType >::mpBuffer = NULL;
+              }
+            else
+              {
+                CVectorCore< CType >::mpBuffer = new CType[CVectorCore< CType >::mSize];
+              }
+          }
+
+        catch (...)
+          {
+            CVectorCore< CType >::mSize = 0;
+            CVectorCore< CType >::mpBuffer = NULL;
+          }
+      }
+
+    if (copy && CVectorCore< CType >::mpBuffer != NULL && OldVector != NULL)
+      {
+        memcpy((void *) CVectorCore< CType >::mpBuffer,
+               (void *) OldVector,
+               std::min(CVectorCore< CType >::mSize, OldSize) * sizeof(CType));
+      }
+
+    if (OldVector != NULL)
+      {
+        delete[] OldVector;
+      }
+
+    // Check if allocation failed
+    if (CVectorCore< CType >::mpBuffer == NULL && size > 0)
+      {
+        CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, size * sizeof(CType));
+      }
+  }
+
   /**
    * Retrieve an element of the vector
    * @param const size_t & row
@@ -400,66 +461,9 @@ public:
     return *this;
   }
 
-  /**
-   * Resize the vector. The previous content is lost
-   * @param size_t size
-   */
-  void resize(size_t size, const bool & copy = false)
+  void resize(size_t size, const bool& copy = false)
   {
-    //TODO: maybe we should only resize if the vector gets bigger
-    //or much smaller?
-    if (size == CVectorCore< CType >::mSize) return;
-
-    size_t OldSize = CVectorCore< CType >::mSize;
-    CType * OldVector = CVectorCore< CType >::mpBuffer;
-
-    //TODO: maybe we should only resize if the vector gets bigger
-    //or much smaller?
-    CVectorCore< CType >::mSize = size;
-    CVectorCore< CType >::mpBuffer = NULL;
-
-    if (CVectorCore< CType >::mSize > 0)
-      {
-        try
-          {
-            // We need to detect size_t overflow
-            if ((C_FLOAT64) CVectorCore< CType >::mSize * (C_FLOAT64) sizeof(CType) >= (C_FLOAT64) std::numeric_limits< size_t >::max())
-              {
-                CVectorCore< CType >::mpBuffer = NULL;
-              }
-            else
-              {
-                CVectorCore< CType >::mpBuffer = new CType[CVectorCore< CType >::mSize];
-              }
-          }
-
-        catch (...)
-          {
-            CVectorCore< CType >::mSize = 0;
-            CVectorCore< CType >::mpBuffer = NULL;
-          }
-      }
-
-    if (copy &&
-        CVectorCore< CType >::mpBuffer != NULL &&
-        OldVector != NULL)
-      {
-        memcpy((void *) CVectorCore< CType >::mpBuffer,
-               (void *) OldVector,
-               std::min(CVectorCore< CType >::mSize, OldSize) * sizeof(CType));
-      }
-
-    if (OldVector != NULL)
-      {
-        delete [] OldVector;
-      }
-
-    // Check if allocation failed
-    if (CVectorCore< CType >::mpBuffer == NULL &&
-        size > 0)
-      {
-        CCopasiMessage(CCopasiMessage::EXCEPTION, MCopasiBase + 1, size * sizeof(CType));
-      }
+    CVectorCore< CType >::resize(size, copy);
   }
 
 protected:
