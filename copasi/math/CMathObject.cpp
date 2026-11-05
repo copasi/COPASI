@@ -1633,10 +1633,10 @@ bool CMathObject::compileTransitionTime(CMathContainer & container)
         std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > CalculationVector;
         CalculationVector.push_back(std::make_pair(1.0, (C_FLOAT64 *) container.getMathObject(pSpecies->getValueReference())->getValuePointer()));
 
-        const std::set< std::pair< const CReaction *, C_FLOAT64 > > & Stoichiometry = container.getModel().getReactionsPerSpecies(pSpecies);
+        const std::vector< std::pair< const CReaction *, C_FLOAT64 > > & Stoichiometry = container.getModel().getReactionsPerSpecies(pSpecies);
 
-        std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoichiometry.begin();
-        std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator endStoi = Stoichiometry.end();
+        std::vector< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoichiometry.begin();
+        std::vector< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator endStoi = Stoichiometry.end();
 
         for (; itStoi != endStoi; ++itStoi)
           {
@@ -1945,10 +1945,10 @@ bool CMathObject::createExtensiveReactionRateExpression(const CMetab * pSpecies,
 
   bool First = true;
   std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > CalculationVector;
-  const std::set< std::pair< const CReaction *, C_FLOAT64 > > & Stoichiometry = container.getModel().getReactionsPerSpecies(pSpecies);
+  const std::vector< std::pair< const CReaction *, C_FLOAT64 > > & Stoichiometry = container.getModel().getReactionsPerSpecies(pSpecies);
 
-  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoichiometry.begin();
-  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator endStoi = Stoichiometry.end();
+  std::vector< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoichiometry.begin();
+  std::vector< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator endStoi = Stoichiometry.end();
 
   for (; itStoi != endStoi; ++itStoi)
     {
@@ -2128,10 +2128,10 @@ bool CMathObject::createExtensiveReactionNoiseExpression(const CMetab * pSpecies
 
   bool First = true;
   std::vector< std::pair < C_FLOAT64, const C_FLOAT64 *> > CalculationVector;
-  const std::set< std::pair< const CReaction *, C_FLOAT64 > > & Stoichiometry = container.getModel().getReactionsPerSpecies(pSpecies);
+  const std::vector< std::pair< const CReaction *, C_FLOAT64 > > & Stoichiometry = container.getModel().getReactionsPerSpecies(pSpecies);
 
-  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoichiometry.begin();
-  std::set< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator endStoi = Stoichiometry.end();
+  std::vector< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator itStoi = Stoichiometry.begin();
+  std::vector< std::pair< const CReaction *, C_FLOAT64 > >::const_iterator endStoi = Stoichiometry.end();
 
   for (; itStoi != endStoi; ++itStoi)
     {

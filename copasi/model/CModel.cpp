@@ -895,7 +895,7 @@ void CModel::buildStoi()
             if (itMetab->getKey() == key)
               {
                 *pRow = itBalance->getMultiplicity();
-                mReactionsPerSpecies[&*itMetab].insert(std::make_pair(&*itStep, *pRow));
+                mReactionsPerSpecies[&*itMetab].push_back(std::make_pair(&*itStep, *pRow));
                 break;
               }
         }
@@ -1247,18 +1247,18 @@ void CModel::initializeMetabolites()
   // mMetabolitesX = mMetabolites;
 }
 
-const std::set< std::pair< const CReaction *, C_FLOAT64 > > & CModel::getReactionsPerSpecies(const CMetab * pSpecies) const
+const std::vector< std::pair< const CReaction *, C_FLOAT64 > > & CModel::getReactionsPerSpecies(const CMetab * pSpecies) const
 {
-  static std::set< std::pair< const CReaction *, C_FLOAT64 > > EmptySet;
+  static std::vector< std::pair< const CReaction *, C_FLOAT64 > > Empty;
 
-  std::map < const CMetab *, std::set< std::pair< const CReaction *, C_FLOAT64 > > >::const_iterator found = mReactionsPerSpecies.find(pSpecies);
+  std::map < const CMetab *, std::vector< std::pair< const CReaction *, C_FLOAT64 > > >::const_iterator found = mReactionsPerSpecies.find(pSpecies);
 
   if (found != mReactionsPerSpecies.end())
     {
       return found->second;
     }
 
-  return EmptySet;
+  return Empty;
 }
 
 CDataVectorNS < CReaction > & CModel::getReactions()
