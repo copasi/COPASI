@@ -437,7 +437,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
         {
           if (!sbmlModel->isSetExtentUnits())
             {
-              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 92);
+              CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 92);
             }
           else
             {
@@ -447,7 +447,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
                 {
                   if (!areSBMLUnitDefinitionsIdentical(*mpSubstanceUnit, ExtentUnits))
                     {
-                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 92);
+                      CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 92);
                     }
                 }
               else
@@ -455,7 +455,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
                   // only issue warning if the extent units are actual different
                   if (sbmlModel->getExtentUnits() != sbmlModel->getSubstanceUnits())
                     {
-                      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "extent", "the same units as the substances");
+                      CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 66, "extent", "the same units as the substances");
                     }
                 }
             }
@@ -465,7 +465,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
     {
       // the unit could not be handled, give an error message and
       // set the units to mole
-      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "substance", "Mole");
+      CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 66, "substance", "Mole");
       pCopasiModel->setQuantityUnit("mol", CCore::Framework::Concentration);
     }
 
@@ -480,7 +480,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
     {
       // the unit could not be handled, give an error message and
       // set the units to mole
-      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "time", "second");
+      CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 66, "time", "second");
       pCopasiModel->setTimeUnit("s");
     }
 
@@ -495,7 +495,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
     {
       // the unit could not be handled, give an error message and
       // set the units to mole
-      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "volume", "liter");
+      CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 66, "volume", "liter");
       pCopasiModel->setVolumeUnit("l");
     }
 
@@ -510,7 +510,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
     {
       // the unit could not be handled, give an error message and
       // set the units to mole
-      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "area", "meter^2");
+      CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 66, "area", "meter^2");
       pCopasiModel->setAreaUnit("m^2");
     }
 
@@ -525,7 +525,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
     {
       // the unit could not be handled, give an error message and
       // set the units to mole
-      CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 66, "length", "meter");
+      CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 66, "length", "meter");
       pCopasiModel->setLengthUnit("m");
     }
 
@@ -1080,7 +1080,7 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
               else
                 {
                   // warning message
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 103, pCompartment->getId().c_str(), pCompartment->getSpatialDimensionsAsDouble(), UnitInfo.expression.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 103, pCompartment->getId().c_str(), pCompartment->getSpatialDimensionsAsDouble(), UnitInfo.expression.c_str());
                 }
             }
         }
@@ -1116,7 +1116,7 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
               else
                 {
                   // warning message
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 103, pCompartment->getId().c_str(), pCompartment->getSpatialDimensionsAsDouble(), UnitInfo.expression.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 103, pCompartment->getId().c_str(), pCompartment->getSpatialDimensionsAsDouble(), UnitInfo.expression.c_str());
                 }
             }
         }
@@ -1152,7 +1152,7 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
               else
                 {
                   // warning message
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 103, pCompartment->getId().c_str(), pCompartment->getSpatialDimensionsAsDouble(), UnitInfo.expression.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 103, pCompartment->getId().c_str(), pCompartment->getSpatialDimensionsAsDouble(), UnitInfo.expression.c_str());
                 }
             }
         }
@@ -1171,7 +1171,7 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
               else
                 {
                   // warning message
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 103, pCompartment->getId().c_str(), pCompartment->getSpatialDimensionsAsDouble(), UnitInfo.expression.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 103, pCompartment->getId().c_str(), pCompartment->getSpatialDimensionsAsDouble(), UnitInfo.expression.c_str());
                 }
             }
         }
@@ -1229,7 +1229,7 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
 
     if (!message.empty())
       {
-        CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 24, message.substr(0, message.size() - 2).c_str());
+        CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 24, message.substr(0, message.size() - 2).c_str());
       }
   }
 
@@ -1256,32 +1256,32 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
 
               if (!UnitInfo.valid)
                 {
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 104, "species", pSpecies->getId().c_str(), "spatial size", spatialSizeUnits.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 104, "species", pSpecies->getId().c_str(), "spatial size", spatialSizeUnits.c_str());
                 }
 
               if (areApproximatelyEqual(pCompartment->getSpatialDimensionsAsDouble(), 3.0))
                 {
                   if (mpVolumeUnit != nullptr
                       && !areSBMLUnitDefinitionsIdentical(*mpVolumeUnit, UnitInfo))
-                    CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
+                    CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 19, pSpecies->getId().c_str());
                 }
               else if (areApproximatelyEqual(pCompartment->getSpatialDimensionsAsDouble(), 2.0))
                 {
                   if (mpAreaUnit != nullptr
                       && !areSBMLUnitDefinitionsIdentical(*mpAreaUnit, UnitInfo))
-                    CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
+                    CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 19, pSpecies->getId().c_str());
                 }
               else if (areApproximatelyEqual(pCompartment->getSpatialDimensionsAsDouble(), 1.0))
                 {
                   if (mpLengthUnit != nullptr
                       && !areSBMLUnitDefinitionsIdentical(*mpLengthUnit, UnitInfo))
-                    CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
+                    CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 19, pSpecies->getId().c_str());
                 }
               else
                 {
                   if (pDimensionlessUnit != nullptr
                       && !areSBMLUnitDefinitionsIdentical(*pDimensionlessUnit, UnitInfo))
-                    CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 19, pSpecies->getId().c_str());
+                    CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 19, pSpecies->getId().c_str());
                 }
             }
         }
@@ -1341,7 +1341,7 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
 
     if (!message.empty())
       {
-        CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 25, message.substr(0, message.size() - 2).c_str());
+        CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 25, message.substr(0, message.size() - 2).c_str());
       }
   }
 
@@ -1389,7 +1389,7 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
               else
                 {
                   // error message
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 104, "kinetic law of the reaction", pReaction->getId().c_str(), "substance", unitId.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 104, "kinetic law of the reaction", pReaction->getId().c_str(), "substance", unitId.c_str());
                 }
             }
 
@@ -1425,7 +1425,7 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
               else
                 {
                   // error message
-                  CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 104, "kinetic law of the reaction", pReaction->getId().c_str(), "time", unitId.c_str());
+                  CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 104, "kinetic law of the reaction", pReaction->getId().c_str(), "time", unitId.c_str());
                 }
             }
         }
@@ -1454,7 +1454,7 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
 
     if (!message.empty())
       {
-        CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 44, message.substr(0, message.size() - 2).c_str());
+        CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 44, message.substr(0, message.size() - 2).c_str());
       }
   }
 
@@ -1481,7 +1481,7 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
 
     if (!message.empty())
       {
-        CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 53, message.substr(0, message.size() - 2).c_str());
+        CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 53, message.substr(0, message.size() - 2).c_str());
       }
   }
 
@@ -1526,7 +1526,7 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
           else if (!unitId.empty())
             {
               // error message
-              CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 104, "event", pEvent->getId().c_str(), "time", unitId.c_str());
+              CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 104, "event", pEvent->getId().c_str(), "time", unitId.c_str());
             }
         }
     }
@@ -1554,7 +1554,7 @@ void SBMLUnitSupport::checkElementUnits(const Model * pSBMLModel, CModel * pCopa
 
     if (!message.empty())
       {
-        CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 53, message.substr(0, message.size() - 2).c_str());
+        CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 53, message.substr(0, message.size() - 2).c_str());
       }
   }
 }
@@ -1767,7 +1767,7 @@ void SBMLUnitSupport::checkForSpatialSizeUnits(const CDataModel & dataModel, std
                                       case 0:
                                         // the species is not allowed to have a
                                         // spatialDimensionsUnit attribute
-                                        CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 83, pSBMLSpecies->getId().c_str());
+                                        CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 83, pSBMLSpecies->getId().c_str());
                                         break;
 
                                       case 1:
@@ -1783,7 +1783,7 @@ void SBMLUnitSupport::checkForSpatialSizeUnits(const CDataModel & dataModel, std
                                         break;
 
                                       default:
-                                        CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 82, pCompartment->getId().c_str());
+                                        CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 82, pCompartment->getId().c_str());
                                         break;
                                     }
                                 }
