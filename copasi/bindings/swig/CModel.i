@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the 
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the 
 // University of Virginia, University of Heidelberg, and University 
 // of Connecticut School of Medicine. 
 // All rights reserved. 
@@ -172,6 +172,9 @@ typedef std::map< std::string, double > StringDoubleMap;
 %rename(CMathEventAssignment) CMathEvent::CAssignment;
 %rename(CMathEventTrigger) CMathEvent::CTrigger;
 %rename(CMathEventRootProcessor) CMathEvent::CTrigger::CRootProcessor;
+%ignore CMathEvent::CAssignment::operator<<;
+%ignore CMathEvent::CTrigger::operator<<;
+%ignore CMathEvent::CTrigger::CRootProcessor::operator<<;
 %include "copasi/math/CMathEvent.h"
 
 #if defined(SWIGPYTHON) || defined(SWIGRUBY)
