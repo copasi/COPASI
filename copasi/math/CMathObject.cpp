@@ -749,13 +749,15 @@ bool CMathObject::compileInitialValue(CMathContainer & container)
   // The default value is NaN
   *mpValue = InvalidValue;
 
+  const CModelEntity * pEntity = NULL; 
+
   // Initial values are taken from the data model
   if (mpDataObject != NULL)
     {
       *mpValue = * (C_FLOAT64 *) mpDataObject->getValuePointer();
+      pEntity = dynamic_cast< const CModelEntity * >(mpDataObject->getObjectParent());
     }
 
-  const CModelEntity * pEntity = dynamic_cast< const CModelEntity * >(mpDataObject->getObjectParent());
   const CMetab * pSpecies = NULL;
 
   // Only species have corresponding properties (extensive vs intensive).
