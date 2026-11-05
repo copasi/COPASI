@@ -12,6 +12,7 @@
 %{
 #include "copasi/core/CRegisteredCommonName.h"
 #include "copasi/core/CDataObject.h"
+#include "copasi/math/CMathObject.h"
 %}
 
 %ignore CObjectInterface::getValidity() const;
@@ -103,11 +104,20 @@ public:
   bool setDblValue(double value)
   {
     CDataObject* obj = dynamic_cast<CDataObject*>($self);
-    if (obj == NULL || obj->getValuePointer() == NULL || obj->hasFlag(CDataObject::ValueDbl))
-      return false;
+    if (obj != NULL)
+      {
+        if (obj->getValuePointer() == NULL || obj->hasFlag(CDataObject::ValueDbl))
+          return false;
 
-    *(C_FLOAT64*)obj->getValuePointer() = value;
-    return true;
+        *(C_FLOAT64*)obj->getValuePointer() = value;
+        return true;
+      }
+
+    CMathObject* mathObject = dynamic_cast<CMathObject*>($self);
+    if (mathObject != NULL)
+      return mathObject->setValue(value);
+
+    return false;
   }
 
 }

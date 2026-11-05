@@ -148,6 +148,14 @@ public:
   const C_FLOAT64 & getValue() const;
 
   /**
+   * Set the value of an object that owns its number. Calculated objects
+   * (dependent, assignment, conversion) are left unchanged.
+   * @param const C_FLOAT64 & value
+   * @return bool success
+   */
+  bool setValue(const C_FLOAT64 & value);
+
+  /**
    * Check whether the object can calculate its value
    */
   bool canCalculateValue() const;

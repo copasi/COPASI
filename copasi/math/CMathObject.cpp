@@ -371,6 +371,26 @@ const C_FLOAT64 & CMathObject::getValue() const
   return *mpValue;
 }
 
+bool CMathObject::setValue(const C_FLOAT64 & value)
+{
+  if (mpValue == NULL || mpValue == &InvalidValue)
+    return false;
+
+  switch (mSimulationType)
+    {
+      case CMath::SimulationType::Fixed:
+      case CMath::SimulationType::EventTarget:
+      case CMath::SimulationType::Time:
+      case CMath::SimulationType::ODE:
+      case CMath::SimulationType::Independent:
+        *mpValue = value;
+        return true;
+
+      default:
+        return false;
+    }
+}
+
 bool CMathObject::canCalculateValue() const
 {
   return mpCalculate != NULL;
