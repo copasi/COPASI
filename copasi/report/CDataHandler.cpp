@@ -12,6 +12,7 @@
 #include "copasi/core/CRootContainer.h"
 
 #include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/model/CModel.h"
 #include "copasi/math/CMathContainer.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/utilities/CDirEntry.h"
@@ -289,7 +290,15 @@ bool CDataHandler::compile(CObjectInterface::ContainerList listOfContainer)
   CObjectInterface::ContainerList::const_iterator endContainer = listOfContainer.end();
 
   for (mpContainer = NULL; itContainer != endContainer && mpContainer == NULL; ++itContainer)
-    mpContainer = dynamic_cast< const CMathContainer * >(*itContainer);
+    {
+      mpContainer = dynamic_cast< const CMathContainer * >(*itContainer);
+
+      auto * pDataModel = dynamic_cast< const CDataModel * >(*itContainer);
+      if (pDataModel && pDataModel->getModel())
+        {
+          mpContainer = &pDataModel->getModel()->getMathContainer();
+        }
+    }
 
   success &= generateObjectsFromName(listOfContainer, mBeforeObjectList,
                                      &mCNsBefore);
