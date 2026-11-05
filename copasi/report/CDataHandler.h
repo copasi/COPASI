@@ -148,7 +148,8 @@ public:
   void setSeparate(bool separate);
 
   /**
-   * compile the object list from name vector
+   * Resolve the registered names to objects. When this handler is its own
+   * master, also compile the transient update sequence for those objects.
    * @param CObjectInterface::ContainerList listOfContainer
    * @return bool success
    */

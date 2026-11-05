@@ -12,6 +12,7 @@
 #include "copasi/core/CRootContainer.h"
 
 #include "copasi/CopasiDataModel/CDataModel.h"
+#include "copasi/math/CMathContainer.h"
 #include "copasi/utilities/CCopasiMessage.h"
 #include "copasi/utilities/CDirEntry.h"
 #include "copasi/utilities/utility.h"
@@ -168,6 +169,9 @@ void CDataHandler::cleanup()
 
 void CDataHandler::output(const Activity & activity)
 {
+  if (isMaster())
+    applyUpdateSequence();
+
   switch (activity)
     {
       case COutputInterface::BEFORE:
@@ -281,6 +285,12 @@ bool CDataHandler::compile(CObjectInterface::ContainerList listOfContainer)
   bool success = true;
   COutputInterface::mObjects.clear();
 
+  CObjectInterface::ContainerList::const_iterator itContainer = listOfContainer.begin();
+  CObjectInterface::ContainerList::const_iterator endContainer = listOfContainer.end();
+
+  for (mpContainer = NULL; itContainer != endContainer && mpContainer == NULL; ++itContainer)
+    mpContainer = dynamic_cast< const CMathContainer * >(*itContainer);
+
   success &= generateObjectsFromName(listOfContainer, mBeforeObjectList,
                                      &mCNsBefore);
 
@@ -289,6 +299,16 @@ bool CDataHandler::compile(CObjectInterface::ContainerList listOfContainer)
 
   success &= generateObjectsFromName(listOfContainer, mAfterObjectList,
                                      &mCNsAfter);
+
+  if (isMaster())
+    {
+      if (!mpContainer)
+      {
+          return false;
+      }
+
+      success &= compileUpdateSequence(listOfContainer);
+    }
 
   return success;
 }
