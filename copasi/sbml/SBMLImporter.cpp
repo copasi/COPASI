@@ -8039,6 +8039,7 @@ void SBMLImporter::applyConversionFactors()
               if (pChemEq != NULL && pMetab != NULL)
                 {
                   pChemEq->setMultiplicity(pMetab, v, it->second.second);
+                  mpCopasiModel->setCompileFlag(true);
                 }
               else
                 {
