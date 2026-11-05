@@ -165,7 +165,42 @@ typedef std::map< std::string, double > StringDoubleMap;
 %include <copasi/utilities/CValidatedUnit.h>
 %include <copasi/utilities/CUnitValidator.h>
 %include "copasi/math/CMathObject.h"
+
+#if defined(SWIGPYTHON) || defined(SWIGRUBY)
+%feature("flatnested", "1");
+#endif
+%rename(CMathEventAssignment) CMathEvent::CAssignment;
+%rename(CMathEventTrigger) CMathEvent::CTrigger;
+%rename(CMathEventRootProcessor) CMathEvent::CTrigger::CRootProcessor;
 %include "copasi/math/CMathEvent.h"
+
+#if defined(SWIGPYTHON) || defined(SWIGRUBY)
+%feature("flatnested", "0");
+#endif
+
+%ignore CVectorCore<CMathEvent::CTrigger::CRootProcessor *>::operator()(const size_t &) const;
+%template(RootProcessorVectorCore) CVectorCore<CMathEvent::CTrigger::CRootProcessor *>;
+%template(RootProcessorVector) CVector<CMathEvent::CTrigger::CRootProcessor *>;
+ExtendCVectorPtr(CVector, CMathEvent::CTrigger::CRootProcessor *);
+%template(RootProcessorValueVectorCore) CVectorCore<CMathEvent::CTrigger::CRootProcessor>;
+%template(RootProcessorValueVector) CVector<CMathEvent::CTrigger::CRootProcessor>;
+
+%ignore CVectorCore<CMathEvent>::get;
+%ignore CVectorCore<CMathEvent>::set;
+%ignore CVectorCore<CMathEvent>::initialize;
+%ignore CVectorCore<CMathEvent>::__setitem__;
+%rename(get) CVectorCore<CMathEvent>::item;
+%extend CVectorCore<CMathEvent>
+{
+  const CMathEvent * item(unsigned C_INT32 index)
+  {
+    if (index >= self->size())
+      return NULL;
+
+    return &(*self)[index];
+  }
+}
+%template(MathEventVectorCore) CVectorCore<CMathEvent>;
 %include "copasi/math/CMathDependencyGraph.h"
 %include "copasi/math/CMathReaction.h"
 %include "copasi/math/CMathDelay.h"
