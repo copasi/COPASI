@@ -3054,6 +3054,12 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
                     messageType = CCopasiMessage::ERROR_FILTERED;
                   }
 
+                if (messageType == CCopasiMessage::RAW)
+                  {
+                    // flag errors as such
+                    messageType = CCopasiMessage::ERROR;
+                  }
+
                 CCopasiMessage(messageType, MCSBML + 40, "ERROR", pSBMLError->getErrorId(), pSBMLError->getLine(), pSBMLError->getColumn(), pSBMLError->getMessage().c_str());
                 break;
 
@@ -3061,6 +3067,17 @@ bool SBMLImporter::checkValidityOfSourceDocument(SBMLDocument* sbmlDoc)
 
               // treat unknown as fatal
               default:
+
+                if (mIgnoredSBMLMessages.find(pSBMLError->getErrorId()) != mIgnoredSBMLMessages.end())
+                  {
+                    messageType = CCopasiMessage::ERROR_FILTERED;
+                  }
+
+                if (messageType == CCopasiMessage::RAW)
+                  {
+                    // flag errors as such
+                    messageType = CCopasiMessage::ERROR;
+                  }
 
                 //CCopasiMessage(CCopasiMessage::TRACE, MCSBML + 40,"FATAL",pSBMLError->getLine(),pSBMLError->getColumn(),pSBMLError->getMessage().c_str());
                 if (pSBMLError->getErrorId() == 10804)

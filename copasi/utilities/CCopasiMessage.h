@@ -217,6 +217,12 @@ public:
 
   /**
    * Retrieve highest severity of the messages in the dequeue.
+   * 
+   * Note: this function returns errors / exceptions as highest status, even 
+   * though past versions of COPASI would have reported filtered messages
+   * like RAW_FILTERED, TRACE_FILTERED, COMMANDLINE_FILTERED or WARNING_FILTERED 
+   * as having higher severity.
+   * 
    * @return const CCopasiMessage::Type & highestSeverity
    */
   static CCopasiMessage::Type getHighestSeverity();

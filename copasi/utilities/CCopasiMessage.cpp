@@ -147,8 +147,30 @@ CCopasiMessage::Type CCopasiMessage::getHighestSeverity()
   std::deque< CCopasiMessage >::const_iterator it = mMessageDeque.active().begin();
   std::deque< CCopasiMessage >::const_iterator end = mMessageDeque.active().end();
 
+  bool hasError = false;
+  bool hasException = false;
+
   for (; it != end; ++it)
-    if (it->getType() > HighestSeverity) HighestSeverity = it->getType();
+    {
+      if (it->getType() == ERROR)
+        hasError = true;
+
+      if (it->getType() == EXCEPTION)
+        hasException = true;
+
+      if (it->getType() > HighestSeverity)
+        HighestSeverity = it->getType();
+    }
+
+  // If there is an error or exception, we return that as the highest severity
+  // instead of  RAW_FILTERED, TRACE_FILTERED, COMMANDLINE_FILTERED or WARNING_FILTERED 
+  if (HighestSeverity == RAW_FILTERED || HighestSeverity == TRACE_FILTERED || HighestSeverity == COMMANDLINE_FILTERED || HighestSeverity == WARNING_FILTERED)
+    {
+      if (hasError)
+        HighestSeverity = ERROR;
+      else if (hasException)
+        HighestSeverity = EXCEPTION;
+    }
 
   return HighestSeverity;
 }

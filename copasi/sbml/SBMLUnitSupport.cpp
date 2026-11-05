@@ -180,7 +180,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
           if (!mpSubstanceUnit->valid)
             {
               std::string message = "COPASI can't handle substance unit \"" + units + "\". Setting unit for substances to dimensionless.";
-              CCopasiMessage(CCopasiMessage::WARNING, message.c_str());
+              CCopasiMessage(CCopasiMessage::WARNING_FILTERED, message.c_str());
 
               UnitDefinition * pUnitDefintion = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
               pUnitDefintion->setId("dimensionless");
@@ -201,7 +201,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
           if (!mpTimeUnit->valid)
             {
               std::string message = "COPASI can't handle time unit \"" + units + "\". Setting unit for time to dimensionless.";
-              CCopasiMessage(CCopasiMessage::WARNING, message.c_str());
+              CCopasiMessage(CCopasiMessage::WARNING_FILTERED, message.c_str());
 
               UnitDefinition * pUnitDefintion = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
               pUnitDefintion->setId("dimensionless");
@@ -222,7 +222,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
           if (!mpVolumeUnit->valid)
             {
               std::string message = "COPASI can't handle volume unit \"" + units + "\". Setting unit for volume to dimensionless.";
-              CCopasiMessage(CCopasiMessage::WARNING, message.c_str());
+              CCopasiMessage(CCopasiMessage::WARNING_FILTERED, message.c_str());
 
               UnitDefinition * pUnitDefintion = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
               pUnitDefintion->setId("dimensionless");
@@ -243,7 +243,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
           if (!mpAreaUnit->valid)
             {
               std::string message = "COPASI can't handle area unit \"" + units + "\". Setting unit for area to dimensionless.";
-              CCopasiMessage(CCopasiMessage::WARNING, message.c_str());
+              CCopasiMessage(CCopasiMessage::WARNING_FILTERED, message.c_str());
 
               UnitDefinition * pUnitDefintion = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
               pUnitDefintion->setId("dimensionless");
@@ -264,7 +264,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
           if (!mpLengthUnit->valid)
             {
               std::string message = "COPASI can't handle length unit \"" + units + "\". Setting unit for length to dimensionless.";
-              CCopasiMessage(CCopasiMessage::WARNING, message.c_str());
+              CCopasiMessage(CCopasiMessage::WARNING_FILTERED, message.c_str());
 
               UnitDefinition * pUnitDefintion = new UnitDefinition(sbmlModel->getLevel(), sbmlModel->getVersion());
               pUnitDefintion->setId("dimensionless");
@@ -273,7 +273,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
               unit.setMultiplier(1.0);
               unit.setScale(0);
               pUnitDefintion->addUnit(&unit);
-              mpAreaUnit = &importUnit(pUnitDefintion, true);
+              mpLengthUnit = &importUnit(pUnitDefintion, true);
             }
         }
     }
@@ -319,7 +319,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
       if (mLevel > 2)
         {
           // issue a warning
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "substance", "mole", "substance");
+          CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 91, "substance", "mole", "substance");
         }
 
       // create the default units
@@ -341,7 +341,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
       if (mLevel > 2)
         {
           // issue a warning
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "time", "second", "time");
+          CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 91, "time", "second", "time");
         }
 
       // create the default units
@@ -363,7 +363,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
       if (mLevel > 2)
         {
           // issue a warning
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "volume", "litre", "volume");
+          CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 91, "volume", "litre", "volume");
         }
 
       // create the default units
@@ -385,7 +385,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
       if (mLevel > 2)
         {
           // issue a warning
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "area", "m^2", "area");
+          CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 91, "area", "m^2", "area");
         }
 
       // create the default units
@@ -407,7 +407,7 @@ void SBMLUnitSupport::importUnitsFromSBMLDocument(Model * sbmlModel,
       if (mLevel > 2)
         {
           // issue a warning
-          CCopasiMessage(CCopasiMessage::WARNING, MCSBML + 91, "length", "m", "length");
+          CCopasiMessage(CCopasiMessage::WARNING_FILTERED, MCSBML + 91, "length", "m", "length");
         }
 
       // create the default units
