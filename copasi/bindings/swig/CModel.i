@@ -45,6 +45,16 @@
 #include "copasi/model/CModel.h"
 #include <copasi/model/CModelExpansion.h>
 
+static CVector<C_FLOAT64> cvectorFrom(const std::vector<C_FLOAT64> & values)
+{
+  CVector<C_FLOAT64> vector(values.size());
+
+  if (!values.empty())
+    memcpy(vector.array(), values.data(), values.size() * sizeof(C_FLOAT64));
+
+  return vector;
+}
+
 %}
 
 %template(ObjectStdVector) std::vector<CDataObject*>;
@@ -161,6 +171,29 @@ typedef std::map< std::string, double > StringDoubleMap;
 %include "copasi/math/CMathDelay.h"
 %include "copasi/math/CMathHistory.h"
 %include "copasi/math/CMathContainer.h"
+
+%extend CMathContainer
+{
+  void setValues(const std::vector<C_FLOAT64> & values)
+  {
+    self->setValues(cvectorFrom(values));
+  }
+
+  void setInitialState(const std::vector<C_FLOAT64> & initialState)
+  {
+    self->setInitialState(cvectorFrom(initialState));
+  }
+
+  void setCompleteInitialState(const std::vector<C_FLOAT64> & initialState)
+  {
+    self->setCompleteInitialState(cvectorFrom(initialState));
+  }
+
+  void setState(const std::vector<C_FLOAT64> & state)
+  {
+    self->setState(cvectorFrom(state));
+  }
+}
 
 %include "model/CModel.h"
 
