@@ -318,6 +318,31 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
       if (mLsodaStatus != 3
           && mTime != mTargetTime)
         {
+          // A root can be reported from inside a step whose mesh point is
+          // already past a delayed event. Presenting that event time as
+          // TCRIT makes DLSODAR reject the call. Interpolate when the time
+          // lies in the last step, and restart when it lies behind that step.
+          C_INT Task = mTask;
+
+          if ((Task == 4 || Task == 5) &&
+              mLsodaStatus == 2)
+            {
+              const C_FLOAT64 tcur = mDWork[12]; // RWORK(13), TCUR
+              const C_FLOAT64 h = mDWork[11];    // RWORK(12), H
+              const C_FLOAT64 hu = mDWork[10];   // RWORK(11), HU
+
+              if ((tcur - EndTime) * h > 0.0)
+                {
+                  const C_FLOAT64 tBound =
+                    tcur - hu * (1.0 + 100.0 * std::numeric_limits< C_FLOAT64 >::epsilon());
+
+                  if ((tBound - EndTime) * h > 0.0)
+                    mLsodaStatus = 1;
+                  else
+                    Task = 1;
+                }
+            }
+
           mLSODAR(&EvalF, //  1. evaluate F
                   &mData.dim, //  2. number of variables
                   mpY, //  3. the array of current concentrations
@@ -326,7 +351,7 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
                   &ITOL, //  6. error control
                   mpRelativeTolerance, //  7. relative tolerance array
                   mpAtol, //  8. absolute tolerance array
-                  &mTask, //  9. output by overshoot & interpolation
+                  &Task, //  9. output by overshoot & interpolation
                   &mLsodaStatus, // 10. the state control variable
                   &one, // 11. further options (one)
                   mDWork.array(), // 12. the double work array
