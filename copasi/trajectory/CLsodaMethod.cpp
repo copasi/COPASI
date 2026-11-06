@@ -304,6 +304,14 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
     }
   else
     {
+      // Peek-ahead commits this end, then rolls the work array back to the root.
+      // TCRIT stays behind TOUT and DLSODAR rejects the restart. A repeated end
+      // keeps the committed target, so put that target back into TCRIT.
+      if (mTask == 5)
+        {
+          mDWork[0] = mTargetTime;
+        }
+
       // We are called with the same end time which means a root has previously been
       // found. We increase the root counter and check whether the limit is reached.
       mRootCounter++;
