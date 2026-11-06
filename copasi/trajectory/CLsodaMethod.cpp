@@ -68,6 +68,7 @@ CLsodaMethod::CLsodaMethod(const CDataContainer * pParent,
   mUseExternalRootFinder(false),
   mRootMasking(RootMask::DISCRETE),
   mTargetTime(),
+  mIntegrationScale(0.0),
   mRootCounter(0),
   mPeekAheadMode(false)
 {
@@ -105,6 +106,7 @@ CLsodaMethod::CLsodaMethod(const CLsodaMethod & src,
   mUseExternalRootFinder(src.mUseExternalRootFinder),
   mRootMasking(src.mRootMasking),
   mTargetTime(src.mTargetTime),
+  mIntegrationScale(src.mIntegrationScale),
   mRootCounter(src.mRootCounter),
   mPeekAheadMode(src.mPeekAheadMode)
 {
@@ -258,6 +260,20 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
 
   C_FLOAT64 StartTime = mTime;
   C_FLOAT64 EndTime = mTime + deltaT;
+
+  mIntegrationScale = std::max(mIntegrationScale, std::max(fabs(StartTime), fabs(EndTime)));
+
+  // Snap to the target time when the remaining gap is within floating-point
+  // precision, avoiding a retry of a step that makes no time progress.
+  if (mLsodaStatus == 1 &&
+      !mPeekAheadMode &&
+      EndTime < mTargetTime)
+    {
+      const C_FLOAT64 Scale = std::max(mIntegrationScale, fabs(mTargetTime));
+
+      if (mTargetTime - EndTime <= 4.0 * std::numeric_limits< C_FLOAT64 >::epsilon() * Scale)
+        EndTime = mTargetTime;
+    }
 
   // DLSODAR refuses to start when |TOUT - T| < 2 * uround * max(|T|, |TOUT|).
   // just advance
@@ -671,6 +687,7 @@ void CLsodaMethod::start()
   mTime = *mpContainerStateTime;
 
   mTargetTime = mTime;
+  mIntegrationScale = fabs(mTime);
   mRootCounter = 0;
   mPeekAheadMode = false;
 

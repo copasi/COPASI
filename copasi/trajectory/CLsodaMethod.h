@@ -204,6 +204,12 @@ private:
   C_FLOAT64 mTargetTime;
 
   /**
+   * Largest absolute time in this run. Used to remember the magnitude
+   * of the time step for the next step.
+   */
+  C_FLOAT64 mIntegrationScale;
+
+  /**
    * Root counter to determine whether the internal
    * step limit is exceeded.
    */
