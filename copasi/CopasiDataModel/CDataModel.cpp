@@ -225,6 +225,14 @@ CDataModel::CDataModel(const CDataModel & src,
 
 CDataModel::~CDataModel()
 {
+  // User-defined functions stay in the global list after this model is gone.
+  // Drop their compiled nodes now, while those nodes are still valid. The next
+  // use compiles them again from the infix.
+  CFunctionDB * pFunctionDB = CRootContainer::getFunctionList();
+
+  if (pFunctionDB != NULL)
+    pFunctionDB->releaseUserDefinedNodes();
+
   // Make sure that the old data is deleted
   mOldData.clear();
   // Delete the current data
@@ -2560,6 +2568,16 @@ CDataModel::exportSEDML(const std::string & fileName, bool overwriteFile,
 
 void CDataModel::deleteOldData()
 {
+  // The previous model is about to be deleted. User-defined functions are not
+  // part of it, but their compiled nodes may refer to it.
+  if (mOldData.pModel != NULL)
+    {
+      CFunctionDB * pFunctionDB = CRootContainer::getFunctionList();
+
+      if (pFunctionDB != NULL)
+        pFunctionDB->releaseUserDefinedNodes();
+    }
+
   mOldData.clear();
 }
 
@@ -3402,6 +3420,7 @@ void CDataModel::commonAfterLoad(CProcessReport * pProcessReport,
 
   if (deleteOldData)
     {
+      // Discards the previous model and releases user-defined function nodes.
       CDataModel::deleteOldData();
     }
 

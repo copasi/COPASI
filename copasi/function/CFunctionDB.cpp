@@ -501,3 +501,13 @@ void CFunctionDB::purgeUnusedUserDefinedFunctions()
     if (UsedFunctions.find(pFunction) == UsedFunctions.end())
       delete pFunction;
 }
+
+void CFunctionDB::releaseUserDefinedNodes()
+{
+  CDataVectorN< CFunction >::iterator it = mLoadedFunctions.begin();
+  CDataVectorN< CFunction >::iterator end = mLoadedFunctions.end();
+
+  for (; it != end; ++it)
+    if (it->getType() == CFunction::Type::UserDefined)
+      it->releaseNodes();
+}

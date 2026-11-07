@@ -208,6 +208,11 @@ CIssue CFunction::setInfix(const std::string & infix)
   return firstWorstIssue;
 }
 
+void CFunction::releaseNodes()
+{
+  clearNodes();
+}
+
 // virtual
 bool CFunction::isReadOnly() const
 {

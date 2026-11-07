@@ -125,6 +125,14 @@ public:
   CIssue setInfix(const std::string & infix) override;
 
   /**
+   * Drop the compiled nodes.
+   *
+   * The infix and the parameter list are kept. The next compile builds the
+   * tree again. Used when a model is unloaded and these nodes may refer to it.
+   */
+  void releaseNodes();
+
+  /**
    * Check whether a function is read only
    * @return bool isReadOnly
    */

@@ -345,12 +345,26 @@ CIssue CEvaluationTree::parse()
 }
 
 CIssue CEvaluationTree::compile()
-{return compileNodes();}
+{
+  // Nodes are dropped when a model is unloaded. The infix is still here,
+  // so build the tree again before compiling it.
+  if (mpNodeList == NULL && !mInfix.empty())
+    {
+      CIssue issue = parse();
+
+      if (!issue)
+        return issue;
+    }
+
+  return compileNodes();
+}
 
 bool CEvaluationTree::isBoolean() const
 {
-  if (mpRootNode != NULL)
-    return mpRootNode->isBoolean();
+  const CEvaluationNode * pRoot = getRoot();
+
+  if (pRoot != NULL)
+    return pRoot->isBoolean();
 
   return false;
 }
@@ -494,6 +508,9 @@ void CEvaluationTree::calculate()
 {
   try
     {
+      if (mpRootNode == NULL && !mInfix.empty())
+        compile();
+
       if (mpRootNode != NULL && mValidity.getFirstWorstIssue().isSuccess())
         {
           CEvaluationNode ** ppIt = mCalculationSequence.begin();
@@ -542,6 +559,7 @@ void CEvaluationTree::clearNodes()
 
   mpRootNode = NULL;
   mpRootValue = NULL;
+  mCalculationSequence.resize(0);
   mValue = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }
 
@@ -827,11 +845,17 @@ CEvaluationNode * CEvaluationTree::fromAST(const ASTNode * pASTNode, bool isFunc
 
 const CEvaluationNode* CEvaluationTree::getRoot() const
 {
+  if (mpRootNode == NULL && !mInfix.empty())
+    const_cast< CEvaluationTree * >(this)->compile();
+
   return mpRootNode;
 }
 
 CEvaluationNode* CEvaluationTree::getRoot()
 {
+  if (mpRootNode == NULL && !mInfix.empty())
+    compile();
+
   return mpRootNode;
 }
 
@@ -842,7 +866,12 @@ void CEvaluationTree::initObjects()
 
 ASTNode * CEvaluationTree::toAST(const CDataModel * pDataModel, int sbmlLevel, int sbmlVersion) const
 {
-  return mpRootNode->toAST(pDataModel, sbmlLevel, sbmlVersion);
+  const CEvaluationNode * pRoot = getRoot();
+
+  if (pRoot == NULL)
+    return NULL;
+
+  return pRoot->toAST(pDataModel, sbmlLevel, sbmlVersion);
 }
 
 bool CEvaluationTree::hasCircularDependency() const

@@ -210,6 +210,15 @@ public:
    * Purge all unused user defined functions from the data base
    */
   void purgeUnusedUserDefinedFunctions();
+
+  /**
+   * Drop the compiled nodes of every user-defined function.
+   *
+   * The functions stay in the database. The next use compiles them again
+   * from the infix. Call this when a model is unloaded, because those nodes
+   * may refer to objects that are about to be deleted.
+   */
+  void releaseUserDefinedNodes();
 };
 
 #endif // COPASI_CFunctionDB
