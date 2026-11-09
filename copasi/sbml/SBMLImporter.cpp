@@ -2514,65 +2514,23 @@ SBMLImporter::createCReactionFromReaction(Reaction* sbmlReaction, Model* pSBMLMo
                         }
                       else
                         {
-                          // find corresponding reaction does *not* return the function if it is already in the function db
-                          // we better change this to return this instance.
-                          CFunction* pExistingFunction = findCorrespondingFunction(&KineticLawExpression, copasiReaction);
+                          // The call already names a function that was imported from a
+                          // function definition. 
+                          const CFunctionParameters& funParams = pImportedFunction->getVariables();
+                          const CEvaluationNode* pTmpNode = static_cast<const CEvaluationNode*>(pExpressionTreeRoot->getChild());
+                          size_t i, iMax = funParams.size();
 
-                          // if it does, we set the existing function for this reaction
-                          if (pExistingFunction)
+                          for (i = 0; (i < iMax) && pTmpNode; ++i)
                             {
-                              copasiReaction->setFunction(pExistingFunction);
-                              // do the mapping
-                              doMapping(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
+                              if (!(pTmpNode->mainType() == CEvaluationNode::MainType::OBJECT)) fatalError();
+
+                              pTmpNode = static_cast<const CEvaluationNode*>(pTmpNode->getSibling());
                             }
-                          // else we take the function from the pTmpFunctionDB, copy it and set the usage correctly
-                          else
-                            {
-                              // replace the variable nodes in pImportedFunction with  nodes from
-                              std::map<std::string, std::string > arguments;
-                              const CFunctionParameters& funParams = pImportedFunction->getVariables();
-                              const CEvaluationNode* pTmpNode = static_cast<const CEvaluationNode*>(pExpressionTreeRoot->getChild());
-                              size_t i, iMax = funParams.size();
 
-                              for (i = 0; (i < iMax) && pTmpNode; ++i)
-                                {
-                                  if (!(pTmpNode->mainType() == CEvaluationNode::MainType::OBJECT)) fatalError();
+                          assert((i == iMax) && pTmpNode == NULL);
 
-                                  arguments[funParams[i]->getObjectName()] = pTmpNode->getData().substr(1, pTmpNode->getData().length() - 2);
-                                  pTmpNode = static_cast<const CEvaluationNode*>(pTmpNode->getSibling());
-                                }
-
-                              assert((i == iMax) && pTmpNode == NULL);
-
-                              CEvaluationNode* pTmpExpression = variables2objects(pImportedFunction->getRoot()->copyBranch(), arguments);
-
-                              CExpression TmpTree2;
-                              TmpTree2.setRoot(pTmpExpression);
-
-                              // code to fix bug 1874
-                              // since this is a user defined function, we want to retain the original name
-                              // next setFunctionFromExpressionTree will take this name if it is not 'Expression'
-                              // (the default)
-                              TmpTree2.setObjectName(functionName);
-
-                              size_t ExistingFunctions = CRootContainer::getFunctionList()->loadedFunctions().size();
-                              CFunction * pNewFunction = copasiReaction->setFunctionFromExpressionTree(TmpTree2, copasi2sbmlmap);
-
-                              if (pNewFunction != NULL &&
-                                  pNewFunction->getType() == CEvaluationTree::UserDefined)
-                                {
-                                  // code to fix Bug 1015
-                                  if (!pNewFunction->isSuitable(copasiReaction->getChemEq().getSubstrates().size(),
-                                                                copasiReaction->getChemEq().getProducts().size(),
-                                                                copasiReaction->isReversible() ? TriTrue : TriFalse))
-                                    {
-                                      pNewFunction->setReversible(TriUnspecified);
-                                    }
-
-                                  if (CRootContainer::getFunctionList()->loadedFunctions().size() < ExistingFunctions)
-                                    mCreatedFunctions.insert(pNewFunction->getObjectName());
-                                }
-                            }
+                          copasiReaction->setFunction(pImportedFunction);
+                          doMapping(copasiReaction, dynamic_cast<const CEvaluationNodeCall*>(pExpressionTreeRoot));
                         }
 
                       pdelete(v);
@@ -4067,10 +4025,18 @@ bool SBMLImporter::areEqualFunctions(const CFunction* pFun, const CFunction* pFu
           const CFunctionParameter* pFunParam1 = funParams1[i];
           const CFunctionParameter* pFunParam2 = funParams2[i];
 
-          // Compare paramemeter types if assigned
+          // VARIABLE means the role has not been assigned yet. The first
+          // reaction that calls an imported function records a role on that
+          // shared function. A later import of the same definition still has
+          // VARIABLE roles, and the two are the same function. Roles only
+          // distinguish them when both have been assigned and they differ.
+          CFunctionParameter::Role usage1 = pFunParam1->getUsage();
+          CFunctionParameter::Role usage2 = pFunParam2->getUsage();
+
           if (pFunParam1->getObjectName() != pFunParam2->getObjectName()
-              || (pFunParam1->getUsage() != CFunctionParameter::Role::VARIABLE
-                  && pFunParam1->getUsage() != pFunParam2->getUsage()))
+              || (usage1 != usage2
+                  && usage1 != CFunctionParameter::Role::VARIABLE
+                  && usage2 != CFunctionParameter::Role::VARIABLE))
             {
               result = false;
               break;
