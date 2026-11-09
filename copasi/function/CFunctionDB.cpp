@@ -30,6 +30,7 @@
  */
 
 #include <algorithm>
+#include <set>
 
 #include "copasi/copasi.h"
 
@@ -502,12 +503,48 @@ void CFunctionDB::purgeUnusedUserDefinedFunctions()
       delete pFunction;
 }
 
-void CFunctionDB::releaseUserDefinedNodes()
+void CFunctionDB::releaseUserDefinedNodes(const CModel * pRetiredModel)
 {
-  CDataVectorN< CFunction >::iterator it = mLoadedFunctions.begin();
-  CDataVectorN< CFunction >::iterator end = mLoadedFunctions.end();
+  std::set< const CFunction * > keep;
+  CDataVector< CDataModel > * pDataModels = CRootContainer::getDatamodelList();
 
-  for (; it != end; ++it)
-    if (it->getType() == CFunction::Type::UserDefined)
-      it->releaseNodes();
+  if (pDataModels != NULL)
+    {
+      CDataVector< CDataModel >::iterator it = pDataModels->begin();
+      CDataVector< CDataModel >::iterator end = pDataModels->end();
+
+      for (; it != end; ++it)
+        {
+          // While the datamodel list itself is being destroyed, earlier
+          // slots are already NULL. The conversion yields the pointer
+          // without touching the object.
+          CDataModel * pDataModel = it;
+
+          if (pDataModel == NULL)
+            continue;
+
+          const CModel * pModel = pDataModel->getModel();
+
+          if (pModel == NULL || pModel == pRetiredModel)
+            continue;
+
+          std::vector< const CFunction * > used = getUsedFunctions(pModel);
+          keep.insert(used.begin(), used.end());
+
+          CDataVectorNS< CReaction >::const_iterator itReaction = pModel->getReactions().begin();
+          CDataVectorNS< CReaction >::const_iterator endReaction = pModel->getReactions().end();
+
+          for (; itReaction != endReaction; ++itReaction)
+            if (itReaction->getFunction() != NULL)
+              keep.insert(itReaction->getFunction());
+        }
+    }
+
+  CDataVectorN< CFunction >::iterator itFunction = mLoadedFunctions.begin();
+  CDataVectorN< CFunction >::iterator endFunction = mLoadedFunctions.end();
+
+  for (; itFunction != endFunction; ++itFunction)
+    if (itFunction->getType() == CFunction::Type::UserDefined
+        && keep.find(&*itFunction) == keep.end())
+      itFunction->releaseNodes();
 }

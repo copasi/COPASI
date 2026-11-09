@@ -231,7 +231,7 @@ CDataModel::~CDataModel()
   CFunctionDB * pFunctionDB = CRootContainer::getFunctionList();
 
   if (pFunctionDB != NULL)
-    pFunctionDB->releaseUserDefinedNodes();
+    pFunctionDB->releaseUserDefinedNodes(mData.pModel);
 
   // Make sure that the old data is deleted
   mOldData.clear();
@@ -2575,7 +2575,7 @@ void CDataModel::deleteOldData()
       CFunctionDB * pFunctionDB = CRootContainer::getFunctionList();
 
       if (pFunctionDB != NULL)
-        pFunctionDB->releaseUserDefinedNodes();
+        pFunctionDB->releaseUserDefinedNodes(mOldData.pModel);
     }
 
   mOldData.clear();

@@ -212,13 +212,14 @@ public:
   void purgeUnusedUserDefinedFunctions();
 
   /**
-   * Drop the compiled nodes of every user-defined function.
+   * Drop compiled nodes of user-defined functions no loaded model still uses.
    *
-   * The functions stay in the database. The next use compiles them again
-   * from the infix. Call this when a model is unloaded, because those nodes
-   * may refer to objects that are about to be deleted.
+   * @param pRetiredModel  The model about to be deleted. Its functions are
+   * not kept: those nodes may refer to it. Functions used by any other
+   * loaded model stay compiled, so a later SBML export still has a root.
+   * Pass NULL to keep every function a loaded model uses.
    */
-  void releaseUserDefinedNodes();
+  void releaseUserDefinedNodes(const CModel * pRetiredModel = NULL);
 };
 
 #endif // COPASI_CFunctionDB
