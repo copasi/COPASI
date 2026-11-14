@@ -2387,6 +2387,22 @@ bool CReaction::setParameterCNs(const size_t & index, const std::vector< CRegist
         {
           const CDataObject * pObject = DataObject(getObjectFromCN(*itCN));
 
+          if (pObject == NULL)
+            {
+              CCommonName CN(*itCN);
+              CCommonName ParentCN;
+              std::string ObjectType;
+              std::string ObjectName;
+
+              CN.split(ParentCN, ObjectType, ObjectName);
+
+              if (ParentCN == mParameters.getCN()
+                  && ObjectType == "Parameter")
+                {
+                  pObject = mParameters.getParameter(ObjectName);
+                }
+            }
+
           if (pObject != NULL)
             {
               *itObject = pObject;
