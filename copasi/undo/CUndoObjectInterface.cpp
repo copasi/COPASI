@@ -170,7 +170,7 @@ bool CUndoObjectInterface::setUuid(const uuids::uuid & uuid)
   if (mUuidLocked &&
       !mUuid.is_nil())
     {
-      return false;
+      return mUuid == uuid;
     }
 
   mUuid = uuid;
