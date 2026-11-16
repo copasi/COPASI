@@ -242,4 +242,12 @@ public:
   const_iterator end() const;
 };
 
+#ifndef SWIG
+void to_json(nlohmann::json & j, const CData & o);
+void from_json(const nlohmann::json & j, CData & o);
+#endif 
+
+std::string to_json_string(const CData & o, const int indent = -1);
+bool from_json_string(const std::string & json, CData & o);
+
 #endif // CData

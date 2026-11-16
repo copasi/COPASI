@@ -187,6 +187,50 @@ std::ostream & operator << (std::ostream & os, const CData & o)
   return os;
 }
 
+void to_json(nlohmann::json & j, const CData & o)
+{
+  j = nlohmann::json::object();
+
+  for (CData::const_iterator it = o.begin(), end = o.end(); it != end; ++it)
+    {
+      j[it->first] = it->second;
+    }
+}
+
+void from_json(const nlohmann::json & j, CData & o)
+{
+  o.clear();
+
+  if (!j.is_object())
+    {
+      return;
+    }
+
+  for (nlohmann::json::const_iterator it = j.begin(), end = j.end(); it != end; ++it)
+    {
+      o.addProperty(it.key(), it.value().get< CDataValue >());
+    }
+}
+
+std::string to_json_string(const CData & o, const int indent)
+{
+  return nlohmann::json(o).dump(indent);
+}
+
+bool from_json_string(const std::string & json, CData & o)
+{
+  nlohmann::json parsed = nlohmann::json::parse(json, nullptr, false);
+
+  if (parsed.is_discarded())
+    {
+      return false;
+    }
+
+  o = parsed.get< CData >();
+
+  return true;
+}
+
 std::istream & operator >> (std::istream & is, const CData & /* i */)
 {
   // TODO CRITICAL Implement me!

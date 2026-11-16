@@ -77,6 +77,10 @@ public:
 
     bool empty() const;
 
+    std::string to_json_string(const int indent = -1) const;
+
+    bool from_json_string(const std::string & json);
+
   private:
     void remove(const size_t & index);
 
@@ -86,6 +90,12 @@ public:
   static CUndoObjectInterface * getObject(const CDataModel & dataModel, const CData & data);
 
   friend std::ostream & operator << (std::ostream & os, const CUndoData & o);
+
+#  ifndef SWIG
+
+  friend void to_json(nlohmann::json & j, const CUndoData & o);
+  friend void from_json(const nlohmann::json & j, CUndoData & o);
+#  endif
 
   CUndoData();
 
@@ -213,5 +223,22 @@ private:
 
   CData mMetaData;
 };
+
+#ifndef SWIG
+void to_json(nlohmann::json & j, const CUndoData & o);
+void from_json(const nlohmann::json & j, CUndoData & o);
+void to_json(nlohmann::json & j, const CUndoData::ChangeInfo & o);
+void from_json(const nlohmann::json & j, CUndoData::ChangeInfo & o);
+void to_json(nlohmann::json & j, const CUndoData::CChangeSet & o);
+void from_json(const nlohmann::json & j, CUndoData::CChangeSet & o);
+#endif
+
+std::string to_json_string(const CUndoData & o, const int indent = -1);
+bool from_json_string(const std::string & json, CUndoData & o);
+
+std::string to_json_string(const CUndoData::ChangeInfo & o, const int indent = -1);
+bool from_json_string(const std::string & json, CUndoData::ChangeInfo & o);
+std::string to_json_string(const CUndoData::CChangeSet & o, const int indent = -1);
+bool from_json_string(const std::string & json, CUndoData::CChangeSet & o);
 
 #endif // COPASI_CUndoData

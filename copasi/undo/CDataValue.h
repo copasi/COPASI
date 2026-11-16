@@ -14,6 +14,8 @@
 #include <string>
 #include <vector>
 
+#include "copasi/utilities/json.hpp"
+
 class CData;
 class CCommonName;
 
@@ -53,6 +55,12 @@ public:
 
   friend std::ostream & operator << (std::ostream & os, const CDataValue & o);
   friend std::istream & operator >> (std::istream & is, CDataValue & i);
+
+#  ifndef SWIG
+
+  friend void to_json(nlohmann::json & j, const CDataValue & o);
+  friend void from_json(const nlohmann::json & j, CDataValue & o);
+#  endif
 
   CDataValue(const Type & type = INVALID);
   CDataValue(const CDataValue & src);
@@ -127,5 +135,13 @@ private:
   Type mType;
   void * mpData;
 };
+
+#ifndef SWIG
+void to_json(nlohmann::json & j, const CDataValue & o);
+void from_json(const nlohmann::json & j, CDataValue & o);
+#endif
+
+std::string to_json_string(const CDataValue & o, const int indent = -1);
+bool from_json_string(const std::string & json, CDataValue & o);
 
 #endif // COPASI_CDataValue

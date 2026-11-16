@@ -34,6 +34,25 @@ CUndoData::CChangeSet::CChangeSet(const CUndoData::CChangeSet & src) :
 CUndoData::CChangeSet::~CChangeSet()
 {}
 
+std::string CUndoData::CChangeSet::to_json_string(const int indent) const
+{
+  return nlohmann::json(*this).dump(indent);
+}
+
+bool CUndoData::CChangeSet::from_json_string(const std::string & json)
+{
+  nlohmann::json parsed = nlohmann::json::parse(json, nullptr, false);
+
+  if (parsed.is_discarded())
+    {
+      return false;
+    }
+
+  *this = parsed.get< CUndoData::CChangeSet >();
+
+  return true;
+}
+
 void CUndoData::CChangeSet::add(const CUndoData::ChangeInfo & info)
 {
   CCommonName NewParentCN;
@@ -165,6 +184,86 @@ void CUndoData::CChangeSet::remove(const size_t & index)
     {
       mMap.erase(it);
     }
+}
+
+void to_json(nlohmann::json & j, const CUndoData::ChangeInfo & o)
+{
+  j = nlohmann::json{{"type", CUndoData::TypeName[o.type]},
+                     {"objectType", o.objectType},
+                     {"objectBefore", o.objectBefore},
+                     {"objectAfter", o.objectAfter}};
+}
+
+void from_json(const nlohmann::json & j, CUndoData::ChangeInfo & o)
+{
+  const std::string Type = j.value("type", CUndoData::TypeName[CUndoData::Type::CHANGE]);
+  o.type = CUndoData::TypeName.toEnum(Type, CUndoData::Type::CHANGE);
+  o.objectType = j.value("objectType", std::string());
+  o.objectBefore = j.value("objectBefore", std::string());
+  o.objectAfter = j.value("objectAfter", std::string());
+}
+
+std::string to_json_string(const CUndoData::ChangeInfo & o, const int indent)
+{
+  return nlohmann::json(o).dump(indent);
+}
+
+bool from_json_string(const std::string & json, CUndoData::ChangeInfo & o)
+{
+  nlohmann::json parsed = nlohmann::json::parse(json, nullptr, false);
+
+  if (parsed.is_discarded())
+    {
+      return false;
+    }
+
+  o = parsed.get< CUndoData::ChangeInfo >();
+
+  return true;
+}
+
+void to_json(nlohmann::json & j, const CUndoData::CChangeSet & o)
+{
+  j = nlohmann::json::array();
+
+  for (CUndoData::CChangeSet::const_iterator it = o.begin(), end = o.end(); it != end; ++it)
+    {
+      j.push_back(*it);
+    }
+}
+
+void from_json(const nlohmann::json & j, CUndoData::CChangeSet & o)
+{
+  o.clear();
+
+  if (!j.is_array())
+    {
+      return;
+    }
+
+  for (nlohmann::json::const_iterator it = j.begin(), end = j.end(); it != end; ++it)
+    {
+      o.add(it->get< CUndoData::ChangeInfo >());
+    }
+}
+
+std::string to_json_string(const CUndoData::CChangeSet & o, const int indent)
+{
+  return nlohmann::json(o).dump(indent);
+}
+
+bool from_json_string(const std::string & json, CUndoData::CChangeSet & o)
+{
+  nlohmann::json parsed = nlohmann::json::parse(json, nullptr, false);
+
+  if (parsed.is_discarded())
+    {
+      return false;
+    }
+
+  o = parsed.get< CUndoData::CChangeSet >();
+
+  return true;
 }
 
 CUndoData::CUndoData():
@@ -1071,6 +1170,70 @@ CUndoObjectInterface * CUndoData::getObject(const CDataModel & dataModel, const 
     }
 
   return const_cast< CUndoObjectInterface * >(pObject);
+}
+
+void to_json(nlohmann::json & j, const CUndoData & o)
+{
+  j = nlohmann::json{{"type", CUndoData::TypeName[o.mType]},
+                     {"oldData", o.mOldData},
+                     {"newData", o.mNewData},
+                     {"preProcessData", o.mPreProcessData},
+                     {"postProcessData", o.mPostProcessData},
+                     {"time", o.mTime},
+                     {"authorId", o.mAuthorID},
+                     {"changedProperties", o.mChangedProperties},
+                     {"metaData", o.mMetaData}};
+}
+
+void from_json(const nlohmann::json & j, CUndoData & o)
+{
+  const std::string Type = j.value("type", CUndoData::TypeName[CUndoData::Type::CHANGE]);
+  o.mType = CUndoData::TypeName.toEnum(Type, CUndoData::Type::CHANGE);
+
+  o.mOldData = j.value("oldData", CData());
+  o.mNewData = j.value("newData", CData());
+  o.mPreProcessData = j.value("preProcessData", std::vector< CUndoData >());
+  o.mPostProcessData = j.value("postProcessData", std::vector< CUndoData >());
+
+  if (j.contains("time"))
+    {
+      j.at("time").get_to(o.mTime);
+    }
+  else
+    {
+      time(&o.mTime);
+    }
+
+  o.mAuthorID = j.value("authorId", static_cast< size_t >(C_INVALID_INDEX));
+
+  o.mChangedProperties.clear();
+
+  if (j.contains("changedProperties"))
+    {
+      std::vector< std::string > Changed = j.at("changedProperties").get< std::vector< std::string > >();
+      o.mChangedProperties.insert(Changed.begin(), Changed.end());
+    }
+
+  o.mMetaData = j.value("metaData", CData());
+}
+
+std::string to_json_string(const CUndoData & o, const int indent)
+{
+  return nlohmann::json(o).dump(indent);
+}
+
+bool from_json_string(const std::string & json, CUndoData & o)
+{
+  nlohmann::json parsed = nlohmann::json::parse(json, nullptr, false);
+
+  if (parsed.is_discarded())
+    {
+      return false;
+    }
+
+  o = parsed.get< CUndoData >();
+
+  return true;
 }
 
 std::ostream & operator << (std::ostream & os, const CUndoData & o)

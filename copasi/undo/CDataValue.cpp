@@ -781,3 +781,119 @@ std::istream & operator >> (std::istream & is, CDataValue & i)
 
   return is;
 }
+
+void to_json(nlohmann::json & j, const CDataValue & o)
+{
+  j = nlohmann::json{{"type", CDataValue::TypeName[o.mType]}};
+
+  switch (o.mType)
+    {
+      case CDataValue::DOUBLE:
+        j["value"] = o.toDouble();
+        break;
+
+      case CDataValue::INT:
+        j["value"] = o.toInt();
+        break;
+
+      case CDataValue::UINT:
+        j["value"] = o.toUint();
+        break;
+
+      case CDataValue::BOOL:
+        j["value"] = o.toBool();
+        break;
+
+      case CDataValue::STRING:
+        j["value"] = o.toString();
+        break;
+
+      case CDataValue::DATA:
+        j["value"] = o.toData();
+        break;
+
+      case CDataValue::DATA_VALUES:
+        j["value"] = o.toDataValues();
+        break;
+
+      case CDataValue::DATA_VECTOR:
+        j["value"] = o.toDataVector();
+        break;
+
+      case CDataValue::VOID_POINTER:
+        j["value"] = pointerToString(o.toVoidPointer());
+        break;
+
+      case CDataValue::INVALID:
+        j["value"] = nullptr;
+        break;
+    }
+}
+
+void from_json(const nlohmann::json & j, CDataValue & o)
+{
+  const std::string Type = j.value("type", CDataValue::TypeName[CDataValue::INVALID]);
+  const CDataValue::Type ValueType = CDataValue::TypeName.toEnum(Type, CDataValue::INVALID);
+
+  switch (ValueType)
+    {
+      case CDataValue::DOUBLE:
+        o = CDataValue(j.at("value").get< C_FLOAT64 >());
+        break;
+
+      case CDataValue::INT:
+        o = CDataValue(j.at("value").get< C_INT32 >());
+        break;
+
+      case CDataValue::UINT:
+        o = CDataValue(j.at("value").get< unsigned C_INT32 >());
+        break;
+
+      case CDataValue::BOOL:
+        o = CDataValue(j.at("value").get< bool >());
+        break;
+
+      case CDataValue::STRING:
+        o = CDataValue(j.at("value").get< std::string >());
+        break;
+
+      case CDataValue::DATA:
+        o = CDataValue(j.at("value").get< CData >());
+        break;
+
+      case CDataValue::DATA_VALUES:
+        o = CDataValue(j.at("value").get< std::vector< CDataValue > >());
+        break;
+
+      case CDataValue::DATA_VECTOR:
+        o = CDataValue(j.at("value").get< std::vector< CData > >());
+        break;
+
+      case CDataValue::VOID_POINTER:
+        o = CDataValue(stringToPointer(j.at("value").get< std::string >()));
+        break;
+
+      case CDataValue::INVALID:
+        o = CDataValue(CDataValue::INVALID);
+        break;
+    }
+}
+
+std::string to_json_string(const CDataValue & o, const int indent)
+{
+  return nlohmann::json(o).dump(indent);
+}
+
+bool from_json_string(const std::string & json, CDataValue & o)
+{
+  nlohmann::json parsed = nlohmann::json::parse(json, nullptr, false);
+
+  if (parsed.is_discarded())
+    {
+      return false;
+    }
+
+  o = parsed.get< CDataValue >();
+
+  return true;
+}
