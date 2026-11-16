@@ -435,7 +435,7 @@ endif (ENABLE_JIT)
 
 if (ENABLE_LLVM)
   find_package(LLVM REQUIRED CONFIG)
-  llvm_map_components_to_libnames(LLVM_LIBRARIES core mcjit native Core OrcJIT Support native)
+  set (LLVM_LIBRARIES LLVM)
   set(USE_LLVM 1)
 endif (ENABLE_LLVM)
 
