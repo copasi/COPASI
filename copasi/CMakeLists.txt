@@ -65,6 +65,11 @@ include(elementaryFluxModes/CMakeLists.txt)
 include(function/CMakeLists.txt)
 include(layout/CMakeLists.txt)
 include(lgpl/CMakeLists.txt)
+
+if (ENABLE_LLVM)
+include(llvm/CMakeLists.txt)
+endif (ENABLE_LLVM)
+
 include(lna/CMakeLists.txt)
 include(lyap/CMakeLists.txt)
 include(math/CMakeLists.txt)
@@ -282,11 +287,12 @@ else()
     ${CLAPACK_LIBRARIES} 
     ${NATIVEJIT_LIBRARY} 
     ${CPUFEATURES_LIBRARY}
+    ${LLVM_LIBRARIES}
   )
   
   if (COPASI_USE_CROSSGUID)
     target_link_libraries(libCOPASISE-core ${CROSSGUID_LIBRARY})
-  endif()
+endif()
 
   if (COPASI_USE_RAPTOR)
     target_link_libraries(libCOPASISE-core RAPTOR::RAPTOR)
@@ -325,7 +331,9 @@ target_link_libraries(libCOPASISE-static
   EXPAT::EXPAT
   ${CLAPACK_LIBRARIES} 
   ${NATIVEJIT_LIBRARY} 
-  ${CPUFEATURES_LIBRARY})
+  ${CPUFEATURES_LIBRARY}
+  ${LLVM_LIBRARIES}
+  )
 
   if (COPASI_USE_RAPTOR)
     target_link_libraries(libCOPASISE-static RAPTOR::RAPTOR)

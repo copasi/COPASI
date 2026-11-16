@@ -22,7 +22,7 @@ file(GLOB SOURCES_LGPL lgpl/*.cpp)
 
 
 # create source group for IDEs
-source_group(randomGenerator FILES ${SOURCES_LGPL} ${HEADERS_LGPL})
+source_group(lgpl FILES ${SOURCES_LGPL} ${HEADERS_LGPL})
 
 # add files to main COPASI sources
 set(COPASI_SOURCES ${COPASI_SOURCES} ${SOURCES_LGPL})
