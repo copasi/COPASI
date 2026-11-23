@@ -38,6 +38,10 @@ public:
 
   void apply(CVectorCore< C_FLOAT64 > & roots) const;
 
+  // Magnitude below which a continuous mask must keep its +/-1. A smaller true
+  // root is the residual the mask was built to hide.
+  C_FLOAT64 continuousLimit(size_t index) const;
+
   bool adjust(RootMask & type, const CVectorCore< C_INT > & found);
 
   RootMask * begin();
@@ -55,4 +59,5 @@ private:
   RootMask mType = RootMask::NONE;
   CMathContainer * mpContainer = nullptr;
   C_FLOAT64 mAbsoluteTolerance = std::numeric_limits< C_FLOAT64 >::quiet_NaN();
+  CVector< C_FLOAT64 > mLimit;
 };

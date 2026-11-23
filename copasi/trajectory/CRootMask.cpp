@@ -47,6 +47,9 @@ void CRootMask::setMathContainer(CMathContainer * pContainer)
   else
     resize(0);
 
+  mLimit.resize(size());
+  mLimit = 0.0;
+
   if (std::isnan(mAbsoluteTolerance)
       || (mType == RootMask::NONE))
     CVector< RootMask >::operator =(RootMask::NONE);
@@ -75,6 +78,9 @@ void CRootMask::create(RootMask type, const CVectorCore< C_INT > & rootsFound)
 
   mType = type;
 
+  mLimit.resize(size());
+  mLimit = 0.0;
+
   if (mType == RootMask::NONE)
     {
       CVector< RootMask >::operator =(RootMask::NONE);
@@ -101,13 +107,15 @@ void CRootMask::create(RootMask type, const CVectorCore< C_INT > & rootsFound)
 
       RootMask *pMask = begin();
       RootMask *pMaskEnd = end();
+      C_FLOAT64 * pLimit = mLimit.begin();
       const C_FLOAT64 & Time = mpContainer->getState(false)[mpContainer->getCountFixedEventTargets()];
       const C_FLOAT64 * pRootValue = mpContainer->getRoots().begin();
       const C_FLOAT64 * pRootDerivative = RootDerivatives.begin();
       const bool * pDiscrete = mpContainer->getRootIsDiscrete().begin();
       const C_INT * pFound = pRootsFound->begin();
+      const C_FLOAT64 Epsilon = std::numeric_limits< C_FLOAT64 >::epsilon();
 
-      for (; pMask != pMaskEnd; ++pMask, ++pRootValue, ++pRootDerivative, ++pDiscrete, ++pFound)
+      for (; pMask != pMaskEnd; ++pMask, ++pLimit, ++pRootValue, ++pRootDerivative, ++pDiscrete, ++pFound)
         {
           if (*pDiscrete
               && (RootMask::DISCRETE & mType) != RootMask::NONE)
@@ -115,7 +123,7 @@ void CRootMask::create(RootMask type, const CVectorCore< C_INT > & rootsFound)
           else if ((RootMask::CONTINUOUS & mType) != RootMask::NONE
                    && (fabs(*pRootValue) < 1e50 * std::numeric_limits< C_FLOAT64 >::min()
                        || ((*pFound > 0)
-                           && fabs(*pRootValue) < 1e3 * Time * fabs(*pRootDerivative) * std::numeric_limits< C_FLOAT64 >::epsilon())))
+                           && fabs(*pRootValue) < 1e3 * Time * fabs(*pRootDerivative) * Epsilon)))
             {
               if (*pRootValue < 0
                   && (RootMask::CONTINUOUS_NEGATIVE & mType) != RootMask::NONE)
@@ -125,11 +133,29 @@ void CRootMask::create(RootMask type, const CVectorCore< C_INT > & rootsFound)
                 *pMask = RootMask::CONTINUOUS_POSITIVE;
               else
                 *pMask = RootMask::NONE;
+
+              if ((*pMask & RootMask::CONTINUOUS) != RootMask::NONE)
+                {
+                  // Same band the test above treats as numerically zero, and at
+                  // least a thousand epsilons, so a vanishing derivative cannot
+                  // make every residual look like a departure.
+                  const C_FLOAT64 Floor = 1.0e3 * std::max(fabs(Time), 1.0) * Epsilon;
+                  const C_FLOAT64 DerivativeBand = 1.0e3 * fabs(Time) * fabs(*pRootDerivative) * Epsilon;
+                  *pLimit = std::max(Floor, DerivativeBand);
+                }
             }
           else
             *pMask = RootMask::NONE;
         }
     }
+}
+
+C_FLOAT64 CRootMask::continuousLimit(size_t index) const
+{
+  if (index >= mLimit.size())
+    return 0.0;
+
+  return mLimit[index];
 }
 
 void CRootMask::setType(RootMask type)

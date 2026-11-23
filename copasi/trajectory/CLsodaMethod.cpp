@@ -806,10 +806,13 @@ void CLsodaMethod::evalR(const C_FLOAT64 * t, const C_FLOAT64 *  /* y */,
     {
       mRootMask.apply(RootValues);
 
-      // While a continuous root is exactly zero, a mask replaces it with ±1
-      // and a later departure is no longer a sign change. Hold the current
-      // trigger side for the exact zero and hand the true value back as soon
-      // as the root leaves zero.
+      // While a continuous mask is active, a root of exactly zero has been
+      // replaced with +/-1 and a later departure is no longer a sign change.
+      // Hold the current trigger side for that masked zero. A residual of a
+      // few epsilons has to keep the mask, or the same root is reported again.
+      // Hand the true value back only after it leaves the neighborhood the
+      // mask was built for. An unmasked zero stays zero so a step that lands
+      // on the root is still found.
       const C_FLOAT64 * pTrue = mpContainer->getRoots().array();
       CMathEvent::CTrigger::CRootProcessor ** ppRoot = mpContainer->getRootProcessors().array();
       const RootMask * pMask = mRootMask.begin();
@@ -820,9 +823,17 @@ void CLsodaMethod::evalR(const C_FLOAT64 * t, const C_FLOAT64 *  /* y */,
           if ((*ppRoot)->mDiscrete)
             continue;
 
+          // An unmasked zero has to stay zero. The root finder recognizes a
+          // step that lands on the root only while the right value is exactly
+          // zero; the stored trigger side is still the side from before the
+          // crossing, so replacing that zero hides the root until the next step.
           if (*pTrue == 0.0)
-            *pOut = (*ppRoot)->isTrue() ? 1.0 : -1.0;
-          else if ((*pMask & RootMask::CONTINUOUS) != RootMask::NONE)
+            {
+              if ((*pMask & RootMask::CONTINUOUS) != RootMask::NONE)
+                *pOut = (*ppRoot)->isTrue() ? 1.0 : -1.0;
+            }
+          else if ((*pMask & RootMask::CONTINUOUS) != RootMask::NONE
+                   && fabs(*pTrue) > mRootMask.continuousLimit(static_cast< size_t >(i)))
             *pOut = *pTrue;
         }
     }
