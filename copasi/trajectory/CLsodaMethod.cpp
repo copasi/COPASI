@@ -1,4 +1,4 @@
-// Copyright (C) 2019 - 2025 by Pedro Mendes, Rector and Visitors of the
+// Copyright (C) 2019 - 2026 by Pedro Mendes, Rector and Visitors of the
 // University of Virginia, University of Heidelberg, and University
 // of Connecticut School of Medicine.
 // All rights reserved.
@@ -320,6 +320,18 @@ CTrajectoryMethod::Status CLsodaMethod::step(const double & deltaT,
         {
           return FAILURE;
         }
+    }
+
+  // DLSODAR only reports a sign change. A restart that sits exactly on a
+  // threshold, with the derivative leaving it, never produces one: the
+  // initial root check steps off zero and keeps the value from after the
+  // threshold. Report that root before the integrator starts.
+  if (mLsodaStatus == 1 &&
+      !mPeekAheadMode &&
+      rootsLeavingThreshold())
+    {
+      saveState(mLastRootState, ROOT);
+      return ROOT;
     }
 
   C_INT ITOL = 2; // mRtol scalar, mAtol vector
@@ -793,6 +805,26 @@ void CLsodaMethod::evalR(const C_FLOAT64 * t, const C_FLOAT64 *  /* y */,
   if (!mUseExternalRootFinder)
     {
       mRootMask.apply(RootValues);
+
+      // While a continuous root is exactly zero, a mask replaces it with ±1
+      // and a later departure is no longer a sign change. Hold the current
+      // trigger side for the exact zero and hand the true value back as soon
+      // as the root leaves zero.
+      const C_FLOAT64 * pTrue = mpContainer->getRoots().array();
+      CMathEvent::CTrigger::CRootProcessor ** ppRoot = mpContainer->getRootProcessors().array();
+      const RootMask * pMask = mRootMask.begin();
+      C_FLOAT64 * pOut = RootValues.array();
+
+      for (C_INT i = 0; i < *nr; ++i, ++pTrue, ++ppRoot, ++pOut, ++pMask)
+        {
+          if ((*ppRoot)->mDiscrete)
+            continue;
+
+          if (*pTrue == 0.0)
+            *pOut = (*ppRoot)->isTrue() ? 1.0 : -1.0;
+          else if ((*pMask & RootMask::CONTINUOUS) != RootMask::NONE)
+            *pOut = *pTrue;
+        }
     }
 
 #ifdef DEBUG_NUMERICS
@@ -810,6 +842,77 @@ void CLsodaMethod::evalJ(const C_FLOAT64 * /* t */ , const C_FLOAT64 * /* y */,
                          const C_INT * /* ml */, const C_INT * /* mu */, C_FLOAT64 * /* pd */, const C_INT * /* nRowPD */)
 {
   // TODO Implement me.
+}
+
+bool CLsodaMethod::rootsLeavingThreshold()
+{
+  if (mNumRoots <= 0)
+    return false;
+
+  *mpContainerStateTime = mTime;
+  mpContainer->updateRootValues(*mpReducedModel);
+
+  const CVectorCore< C_FLOAT64 > & Roots = mpContainer->getRoots();
+  CMathEvent::CTrigger::CRootProcessor ** ppRoot = mpContainer->getRootProcessors().array();
+  const size_t n = std::min(Roots.size(), mpContainer->getRootProcessors().size());
+
+  bool NeedDerivative = false;
+
+  for (size_t i = 0; i < n; ++i)
+    if (Roots[i] == 0.0)
+      NeedDerivative = true;
+
+  if (!NeedDerivative)
+    return false;
+
+  // The derivative perturbs the state. Restore it before integrating or
+  // reporting the root.
+  CVector< C_FLOAT64 > SavedState(mpContainer->getState(false));
+  CVector< C_FLOAT64 > Derivatives(n);
+  mpContainer->calculateRootDerivatives(Derivatives);
+  mpContainer->setState(SavedState);
+  mpContainer->updateSimulatedValues(*mpReducedModel);
+  mpContainer->updateRootValues(*mpReducedModel);
+
+  const size_t TimeIndex = mpContainer->getCountFixedEventTargets();
+  const bool SameTime = mLastRootState.Status == ROOT
+                        && mLastRootState.ContainerState.size() > TimeIndex
+                        && mLastRootState.ContainerState[TimeIndex] == mTime
+                        && mLastRootState.RootsFound.size() == n;
+
+  CVector< C_INT > Found(static_cast< size_t >(mNumRoots));
+  Found = 0;
+  bool Any = false;
+
+  for (size_t i = 0; i < n; ++i)
+    {
+      if (Roots[i] != 0.0)
+        continue;
+
+      CMathEvent::CTrigger::CRootProcessor * pRoot = ppRoot[i];
+      const bool Equality = pRoot->isEquality();
+
+      if (Equality)
+        {
+          if (!(Derivatives[i] < 0.0) || !pRoot->isTrue())
+            continue;
+        }
+      else if (!(Derivatives[i] > 0.0) || pRoot->isTrue())
+        continue;
+
+      // Already reported at this time: toggling again would not change the
+      // trigger, and returning ROOT again would not advance the integration.
+      if (SameTime && mLastRootState.RootsFound[i] != 0)
+        continue;
+
+      Found[i] = static_cast< C_INT >(CMath::RootToggleType::ToggleBoth);
+      Any = true;
+    }
+
+  if (Any)
+    mRootsFound = Found;
+
+  return Any;
 }
 
 CTrajectoryMethod::Status CLsodaMethod::peekAhead()
@@ -1050,6 +1153,6 @@ C_FLOAT64 CLsodaMethod::getEstimatedError() const
 {
   if(mpRelativeTolerance)
     return *mpRelativeTolerance;
-  
+
   return std::numeric_limits< C_FLOAT64 >::quiet_NaN();
 }
