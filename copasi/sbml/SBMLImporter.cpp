@@ -4742,6 +4742,21 @@ void SBMLImporter::doMapping(CReaction* pCopasiReaction, const CEvaluationNodeCa
           const CDataObject* pObject = CObjectInterface::DataObject(mpCopasiModel->getObjectFromCN(objectCN));
 
           if (!pObject)
+          {
+              CCommonName ParentCN;
+              std::string ObjectType;
+              std::string ObjectName;
+
+              objectCN.split(ParentCN, ObjectType, ObjectName);
+
+              if (ParentCN == pCopasiReaction->getParameters().getCN()
+                  && ObjectType == "Parameter")
+                {
+                  pObject = pCopasiReaction->getParameters().getParameter(ObjectName);
+                }
+          }
+
+          if (!pObject)
             {
               fatalError();
             }
