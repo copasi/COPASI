@@ -1,0 +1,168 @@
+{
+  "creators": [
+    {
+      "affiliations": [
+        {
+          "name": "Heidelberg University"
+        }
+      ],
+      "person_or_org": {
+        "family_name": "Frank Bergmann",
+        "name": "Frank Bergmann",
+        "type": "personal"
+      }
+    },
+    {
+      "person_or_org": {
+        "family_name": "Sven Sahle",
+        "name": "Sven Sahle",
+        "type": "personal"
+      }
+    },
+    {
+      "affiliations": [
+        {
+          "name": "Biocomplexity Institute & Initiative at University of Virginia"
+        }
+      ],
+      "person_or_org": {
+        "family_name": "Stefan Hoops",
+        "name": "Stefan Hoops",
+        "type": "personal"
+      }
+    },
+    {
+      "affiliations": [
+        {
+          "name": "@copasi"
+        }
+      ],
+      "person_or_org": {
+        "family_name": "Pedro Mendes",
+        "name": "Pedro Mendes",
+        "type": "personal"
+      }
+    },
+    {
+      "person_or_org": {
+        "family_name": "J\u00fcrgen Pahle",
+        "name": "J\u00fcrgen Pahle",
+        "type": "personal"
+      }
+    },
+    {
+      "person_or_org": {
+        "family_name": "Brian Klahn",
+        "name": "Brian Klahn",
+        "type": "personal"
+      }
+    },
+    {
+      "person_or_org": {
+        "family_name": "Abhishekh Gupta",
+        "name": "Abhishekh Gupta",
+        "type": "personal"
+      }
+    },
+    {
+      "affiliations": [
+        {
+          "name": "University of Manchester"
+        }
+      ],
+      "person_or_org": {
+        "family_name": "Joseph O Dada",
+        "name": "Joseph O Dada",
+        "type": "personal"
+      }
+    },
+    {
+      "person_or_org": {
+        "family_name": "Shuo Wang",
+        "name": "Shuo Wang",
+        "type": "personal"
+      }
+    },
+    {
+      "person_or_org": {
+        "family_name": "Joseph O. Dada",
+        "name": "Joseph O. Dada",
+        "type": "personal"
+      }
+    },
+    {
+      "person_or_org": {
+        "family_name": "Ettore Murabito",
+        "name": "Ettore Murabito",
+        "type": "personal"
+      }
+    },
+    {
+      "affiliations": [
+        {
+          "name": "@ssciwr"
+        }
+      ],
+      "person_or_org": {
+        "family_name": "Liam Keegan",
+        "name": "Liam Keegan",
+        "type": "personal"
+      }
+    },
+    {
+      "person_or_org": {
+        "family_name": "Cristian Le",
+        "name": "Cristian Le",
+        "type": "personal"
+      }
+    },
+    {
+      "person_or_org": {
+        "family_name": "Dustin Machi",
+        "name": "Dustin Machi",
+        "type": "personal"
+      }
+    },
+    {
+      "affiliations": [
+        {
+          "name": "German Cancer Research Center (DKFZ)"
+        }
+      ],
+      "person_or_org": {
+        "family_name": "Jonas D. F\u00f6rster",
+        "name": "Jonas D. F\u00f6rster",
+        "type": "personal"
+      }
+    },
+    {
+      "person_or_org": {
+        "family_name": "William S Fulton",
+        "name": "William S Fulton",
+        "type": "personal"
+      }
+    }
+  ],
+  "resource_type": {
+    "id": "software",
+    "title": {
+      "de": "Software",
+      "en": "Software"
+    }
+  },
+  "rights": [
+    {
+      "description": {
+        "en": ""
+      },
+      "id": "artistic-2.0",
+      "props": {
+        "scheme": "spdx",
+        "url": "http://www.perlfoundation.org/artistic_license_2_0"
+      },
+      "title": {
+        "en": "Artistic License 2.0"
+      }
+    }
+  ]
+}
