@@ -22,13 +22,20 @@
     {
       "affiliations": [
         {
-          "name": "Biocomplexity Institute & Initiative at University of Virginia"
+          "name": "Center for Cell Analysis & Modeling, UConn Health"
         }
       ],
       "person_or_org": {
         "family_name": "Stefan Hoops",
         "name": "Stefan Hoops",
         "type": "personal"
+      },
+      "role": {
+        "id": "contactperson",
+        "title": {
+          "de": "Kontaktperson",
+          "en": "Contact person"
+        }
       }
     },
     {
